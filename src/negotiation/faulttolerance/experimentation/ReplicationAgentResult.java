@@ -1,0 +1,97 @@
+package negotiation.faulttolerance.experimentation;
+
+import java.util.Date;
+
+import negotiation.experimentationframework.ExperimentationResults;
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
+import dima.basicagentcomponents.AgentIdentifier;
+
+public class ReplicationAgentResult implements ExperimentationResults {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -1872609884691513136L;
+
+	private final long creation;
+
+	final AgentIdentifier myAgentIdentifier;
+
+	final double criticity;
+	final double disponibility;
+	final double reliability;
+
+	public void setiAmDead(final boolean iAmDead) {
+		this.iAmDead = iAmDead;
+	}
+
+	boolean iAmDead;
+
+	final AgentStateStatus status;
+
+	public ReplicationAgentResult(final ReplicaState s,
+			final Date agentCreationTime, final AgentStateStatus status) {
+		super();
+		this.creation = new Date().getTime() - agentCreationTime.getTime();
+		this.myAgentIdentifier = s.getMyAgentIdentifier();
+		this.criticity = s.getMyCriticity();
+		this.disponibility = s.getMyDisponibility();
+		this.reliability = s.getMyReliability();
+		this.iAmDead = s.getMyDisponibility() == 0;
+		this.status = status;
+	}
+
+	public ReplicationAgentResult(final ReplicaState s,
+			final Date agentCreationTime) {
+		super();
+		this.creation = new Date().getTime() - agentCreationTime.getTime();
+		this.myAgentIdentifier = s.getMyAgentIdentifier();
+		this.criticity = s.getMyCriticity();
+		this.disponibility = s.getMyDisponibility();
+		this.reliability = s.getMyReliability();
+		this.iAmDead = s.getMyDisponibility() == 0;
+		this.status = null;
+	}
+
+	@Override
+	public AgentIdentifier getId() {
+		return this.myAgentIdentifier;
+	}
+
+	public double getCriticity() {
+		return this.criticity;
+	}
+
+	public double getDisponibility() {
+		return this.disponibility;
+	}
+
+	public double getReliability() {
+		return this.reliability;
+	}
+
+	public boolean isiAmDead() {
+		return this.iAmDead;
+	}
+
+	@Override
+	public long getUptime() {
+		return this.creation;
+	}
+
+	public AgentStateStatus getStatus() {
+		return this.status;
+	}
+
+	@Override
+	public boolean hasDied() {
+		return this.iAmDead;
+	}
+
+	@Override
+	public boolean isHost() {
+		return false;
+	}
+
+}

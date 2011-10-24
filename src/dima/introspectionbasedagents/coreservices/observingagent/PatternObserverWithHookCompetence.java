@@ -1,0 +1,115 @@
+package dima.introspectionbasedagents.coreservices.observingagent;
+
+import java.io.Serializable;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import dima.introspectionbasedagents.BasicCompetentAgent;
+import dima.introspectionbasedagents.competences.AgentCompetence;
+import dima.introspectionbasedagents.competences.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.shells.BasicCompetenceShell;
+import dima.introspectionbasedagents.shells.IntrospectionStaticPrimitivesLibrary;
+import dima.introspectionbasedagents.shells.MethodHandler;
+import dimaxx.tools.mappedcollections.HashedHashSet;
+
+
+public class PatternObserverWithHookCompetence extends PatternObserverCompetence {
+
+	@Documented
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public @interface EventHookedMethod {
+		Class<? extends Serializable> value();
+		//		String key() default "";
+
+
+	}
+
+	//
+	// Field
+	//
+
+	public HashedHashSet<String, MethodHandler> registeredMethods;
+
+
+	//
+	// Accessors
+	//
+
+	public PatternObserverWithHookCompetence(
+			BasicCompetentAgent ag) throws UnrespectedCompetenceSyntaxException {
+		super(ag);
+	}
+
+	public static void registerEventMethod(BasicCompetentAgent ag, PatternObserverWithHookCompetence me) 
+			throws UnrespectedCompetenceSyntaxException{
+
+		me.registeredMethods =
+				new HashedHashSet<String, MethodHandler>();
+		for (Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(ag.getClass())){
+			if (m.isAnnotationPresent(EventHookedMethod.class)){
+				if (checkEventHookedMethodValidity(m)){
+					me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(ag, m));
+				}else
+					throw new  UnrespectedCompetenceSyntaxException(me.toString());
+			}
+		}
+		for (AgentCompetence<?> comp : BasicCompetenceShell.getNativeCompetences(ag)){
+			for (Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(comp.getClass())){
+				if (m.isAnnotationPresent(EventHookedMethod.class)){
+					if (checkEventHookedMethodValidity(m)){
+						me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(comp, m));
+					}else
+						throw new  UnrespectedCompetenceSyntaxException(me.toString());
+				}
+			}
+		}
+	}
+
+	//
+	// Methods
+	//
+
+	@Override
+	public <Notification extends Serializable> Boolean notify(final Notification notification, final String key) {
+
+		//		System.out.flush();
+		if (registeredMethods!=null){//C'EST MOOOOOOOOOOOOOOOOOOCCCCCCCCCCCCCCCHHHHHHHHHHHHEEEEEEEEEEEEEEEEEEEEEE!!!!!!!!!!!!!!	
+			try {
+				for (MethodHandler m : registeredMethods.get(key)){
+					m.execute(notification);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException("devrait etre plus propre!!!");
+			}
+		}
+		return super.notify(notification,key);
+	}
+
+	//
+	// Primitives
+	//
+
+	public static boolean checkEventHookedMethodValidity(Method mt){
+		if (mt.isAnnotationPresent(EventHookedMethod.class)){
+			Class<? extends Serializable> keyclass = mt.getAnnotation(EventHookedMethod.class).value();
+			if ((mt.getParameterTypes().length == 1
+					&& keyclass.isAssignableFrom(
+							mt.getParameterTypes()[0]))) {
+				return true;
+			} else {
+				LogCompetence.writeException(
+						mt,
+						"Wrong parameters type for message parser method " + mt
+						+ " should be only one message class");
+				return false;
+			}
+		} else
+			return false;
+	}
+}

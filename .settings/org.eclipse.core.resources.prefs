@@ -1,0 +1,10 @@
+#Thu Oct 06 11:33:19 CEST 2011
+eclipse.preferences.version=1
+encoding//src/dima/introspectionbasedagents/coreservices/information/SimpleOpinionService.java=UTF-8
+encoding//src/negotiation/experimentationframework/Laborantin.java=UTF-8
+encoding//src/negotiation/faulttolerance/candidaturenegotiation/statusdestruction/CandidatureReplicaCoreWithStatus.java=UTF-8
+encoding//src/negotiation/faulttolerance/candidaturenegotiation/statusdestruction/CandidatureReplicaProposerWithStatus.java=UTF-8
+encoding//src/negotiation/faulttolerance/experimentation/ReplicationLaborantin.java=UTF-8
+encoding//src/negotiation/faulttolerance/negotiatingagent/ReplicaCore.java=UTF-8
+encoding//src/negotiation/negotiationframework/interaction/consensualnegotiation/NegotiationProtocol.java=UTF-8
+encoding//src/negotiation/negotiationframework/interaction/selectioncores/AbstractSelectionCore.java=UTF-8

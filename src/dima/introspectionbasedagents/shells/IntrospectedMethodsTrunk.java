@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.tools.SimpleAgentStatus;
 
 public interface IntrospectedMethodsTrunk extends DimaComponentInterface{
 

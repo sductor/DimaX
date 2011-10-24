@@ -10,10 +10,10 @@ import dima.basicinterfaces.AbstractMessageInterface;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageCollectionHandler;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
 import dima.introspectionbasedagents.ontologies.ClassEnveloppe;
 import dima.introspectionbasedagents.ontologies.Envelope;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.support.DimaException;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
@@ -105,7 +105,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 			} 
 
 			else {
-				LogCompetence.writeException(mt.getMyComponent(), "Impossible : mauvais annotation pour "+mt);
+				LogService.writeException(mt.getMyComponent(), "Impossible : mauvais annotation pour "+mt);
 			}
 
 			getStatus().resetCurrentlyExecutedMethod();
@@ -168,7 +168,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 			if (!(mt.getParameterTypes().length == 1
 					&& AbstractMessage.class.isAssignableFrom(
 							mt.getParameterTypes()[0]))) {
-				LogCompetence.writeException(
+				LogService.writeException(
 						mt.getMyComponent(),
 						"Wrong parameters type for message parser method " + mt
 						+ " should be only one message class");
@@ -183,7 +183,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 					(mt.getReturnType().equals(boolean.class) || mt.getReturnType().equals(Boolean.class)))
 				return true;
 			else{
-				LogCompetence.writeException(
+				LogService.writeException(
 						mt.getMyComponent(),
 						"Wrong parameters type for message parser method "
 						+ mt
@@ -257,7 +257,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 
 				if (e!=null){
 					//The method has more than one envelope!
-					LogCompetence.writeException(
+					LogService.writeException(
 							mt.getMyComponent(),
 							"Conflicting envelopes for method "+mt);
 					return null;
@@ -269,7 +269,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 						getConstructor(a.annotationType(), MethodHandler.class).
 						newInstance(a,mt);
 					} catch (final Exception ex) {
-						LogCompetence.writeException(mt.getMyComponent(),
+						LogService.writeException(mt.getMyComponent(),
 								"La classe envelope " +
 								"n'est pas bien construite pour la methode "
 								+mt+" et l'annotation "+a, ex);
@@ -288,7 +288,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 		else if (mt.isAnnotationPresent(MessageCollectionHandler.class))
 			return (Class<? extends AbstractMessageInterface>) mt.getGenericClassOfFirstArgument();
 		else{
-			LogCompetence.writeException(
+			LogService.writeException(
 					mt.getMyComponent(),
 					"Inappropriate usage : the method is not a message handler:"+mt);
 			return null;

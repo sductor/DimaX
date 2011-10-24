@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.support.GimaObject;
 
 
@@ -73,14 +73,14 @@ public class MethodHandler extends SimpleMethodHandler {
 			try {
 				return execute(this.caller, args);
 			} catch (final IllegalAccessException e) {
-				LogCompetence.writeException(this, "Impossible");
+				LogService.writeException(this, "Impossible");
 				return null;
 			} catch (final IllegalArgumentException e) {
-				LogCompetence.writeException(this, "wrong arg!! "+args,e);
+				LogService.writeException(this, "wrong arg!! "+args,e);
 				return null;
 			}  catch (final InvocationTargetException e) {
 				// The method has not been invocated
-				LogCompetence.writeException(caller,
+				LogService.writeException(caller,
 						"Couldn't invokate method "+
 						this,
 						e.getCause());
@@ -95,14 +95,14 @@ public class MethodHandler extends SimpleMethodHandler {
 			try {
 				return execute(this.caller, this.args);
 			} catch (final IllegalAccessException e) {
-				LogCompetence.writeException(this, "Impossible");
+				LogService.writeException(this, "Impossible");
 				return null;
 			} catch (final IllegalArgumentException e) {
-				LogCompetence.writeException(this, "Impossible");
+				LogService.writeException(this, "Impossible");
 				return null;
 			}  catch (final InvocationTargetException e) {
 				// The method has not been invocated
-				LogCompetence.writeException(caller,
+				LogService.writeException(caller,
 						"Couldn't invokate method "+
 						this,
 						e.getCause());
@@ -167,7 +167,7 @@ class SimpleMethodHandler extends GimaObject {
 			return m;
 		} catch (final Exception e) {
 			// The method has not been invocated
-			LogCompetence.writeException(
+			LogService.writeException(
 					"Couldn't invocate method "+this.methodName,
 					e);
 			return null;
@@ -227,7 +227,7 @@ class SimpleMethodHandler extends GimaObject {
 			return null;
 		} catch (final Exception e) {
 			// The method has not been invocated
-			LogCompetence.writeException(this,
+			LogService.writeException(this,
 					"Couldn't invocate method "+
 					this.getMethodName(),
 					e);
@@ -258,7 +258,7 @@ class SimpleMethodHandler extends GimaObject {
 			try {
 				return Class.forName(e.getStackTrace()[level].getClassName());
 			} catch (final ClassNotFoundException e1) {
-				LogCompetence.writeException("Impossible de pas trouver la classe!!");
+				LogService.writeException("Impossible de pas trouver la classe!!");
 				return null;
 			}
 		}
@@ -288,7 +288,7 @@ class SimpleMethodHandler extends GimaObject {
 				                                                              && cpt < attachement.length - 1)
 					cpt++;
 				if (cpt != attachement.length - 1) {
-					LogCompetence.writeException("unappropriate message ("
+					LogService.writeException("unappropriate message ("
 							+ cpt + ") :\n" + Arrays.asList(attachement) + ","
 							+ Arrays.asList(attachementSignature));
 					return false;
@@ -296,7 +296,7 @@ class SimpleMethodHandler extends GimaObject {
 					return true;
 			}
 		} else {
-			LogCompetence.writeException("unappropriate message (different length) :"
+			LogService.writeException("unappropriate message (different length) :"
 					+ Arrays.asList(attachement) + ","
 					+ Arrays.asList(attachementSignature));
 			return false;

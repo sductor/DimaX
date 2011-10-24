@@ -6,11 +6,11 @@ import java.util.List;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
 import dima.introspectionbasedagents.ontologies.Envelope;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
 import dima.introspectionbasedagents.ontologies.MessageWithProtocol;
 import dima.introspectionbasedagents.ontologies.Protocol;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.MethodHandler;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
@@ -117,7 +117,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 	public AgentIdentifier getReplyTo() {
 		if (this.replyto==null){
 			if (this.getSender()==null){
-				LogCompetence.write("aaaaaargh");
+				LogService.write("aaaaaargh");
 				return null;
 			} else
 				return this.getSender();
@@ -248,7 +248,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 			this.setArgs(attachement);
 			this.attachementSignature = attachementSignature;
 		} else
-			LogCompetence.writeException(this, "Unappropriate attachement");
+			LogService.writeException(this, "Unappropriate attachement");
 	}
 	public void setAttachement(final Object[] attachement) {
 		final Class<?>[] attachementSignature = MethodHandler.getSignature(attachement);

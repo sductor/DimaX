@@ -16,9 +16,7 @@ import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
-import dima.introspectionbasedagents.tools.SimpleAgentStatus;
-import dima.introspectionbasedagents.tools.Ticker;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 /**
@@ -120,7 +118,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	public void load(DimaComponentInterface a) {
 		for (final MethodHandler mt : this.getRelevantMethods(a))
 			if (!this.checkMethodValidity(mt))
-				LogCompetence.writeException(
+				LogService.writeException(
 						a,"cannot add " + mt+" method not valid ");
 			else
 				this.addMethod(mt);
@@ -192,7 +190,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 				|| mt.isAnnotationPresent(PostStepComposant.class)
 				|| mt.isAnnotationPresent(ProactivityFinalisation.class)){
 			if (mt.getParameterTypes().length > 0) {
-				LogCompetence.writeException(mt.getMyComponent(),"StepComposant method " + mt
+				LogService.writeException(mt.getMyComponent(),"StepComposant method " + mt
 						+ " can not take any argument!");
 				return false;
 			} else
@@ -205,7 +203,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 		if (mt.isAnnotationPresent(Transient.class)) {
 			if (!(mt.getReturnType().equals(boolean.class) || mt
 					.getReturnType().equals(Boolean.class))) {
-				LogCompetence.writeException(mt.getMyComponent(),"method " + mt
+				LogService.writeException(mt.getMyComponent(),"method " + mt
 						+ " must return a boolean value");
 				return false;
 			} else

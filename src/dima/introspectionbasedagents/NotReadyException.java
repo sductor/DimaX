@@ -1,6 +1,6 @@
 package dima.introspectionbasedagents;
 
-import dima.introspectionbasedagents.competences.AgentCompetence;
+import dima.introspectionbasedagents.services.AgentCompetence;
 
 public class NotReadyException extends Exception {
 	private static final long serialVersionUID = -804054179327698565L;

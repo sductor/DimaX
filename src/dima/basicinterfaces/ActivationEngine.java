@@ -1,7 +1,7 @@
 package dima.basicinterfaces;
 
 import dima.basiccommunicationcomponents.CometCommunicationComponent;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.ProactiveComponents.ProactiveComponentEngine;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
@@ -80,7 +80,7 @@ public abstract class ActivationEngine extends GimaObject implements ActivableCo
 		try	{
 			darxEngine.activateTask(PortNb);
 		}  catch (final java.rmi.RemoteException e){
-			LogCompetence.writeException(this,"Error during Activation : ",e);
+			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
 
@@ -94,7 +94,7 @@ public abstract class ActivationEngine extends GimaObject implements ActivableCo
 		try	{
 			darxEngine.activateTask(url,PortNb);
 		}  catch (final java.rmi.RemoteException e){
-			LogCompetence.writeException(this,"Error during Activation : ",e);
+			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
 
@@ -107,7 +107,7 @@ public abstract class ActivationEngine extends GimaObject implements ActivableCo
 		try	{
 			darxEngine.activateTask(url,PortNb);
 		}  catch (final java.rmi.RemoteException e){
-			LogCompetence.writeException(this,"Error during Activation : ",e);
+			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
 }

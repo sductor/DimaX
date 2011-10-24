@@ -7,9 +7,8 @@ import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCommunicatingMethodTrunk.UnHandledMessageException;
-import dima.introspectionbasedagents.tools.SimpleExceptionHandler;
 
 public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 
@@ -104,7 +103,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 					this.metToRemove.add(mt);
 			} catch (final UnHandledMessageException e) {
 				// Unhandled envellope
-				LogCompetence.writeWarning(
+				LogService.writeWarning(
 						this.getStatus(),
 						" Unhandled envellope!:\n"
 						+mess+

@@ -12,8 +12,6 @@ import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.tools.SimpleAgentStatus;
-import dima.introspectionbasedagents.tools.SimpleExceptionHandler;
 import dima.support.GimaObject;
 
 public class BasicIntrospectiveShell extends GimaObject {

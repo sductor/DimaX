@@ -73,7 +73,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 	//Return the methods to be removed
 	@Override
 	public Collection<MethodHandler> parseMail(final AbstractMessage m)
-	throws UnHandledMessageException, IllegalArgumentException, InvocationTargetException{
+	throws UnHandledMessageException, IllegalArgumentException, Throwable{
 
 		Collection<MethodHandler> toRemove = new ArrayList<MethodHandler>();
 		getStatus().setCurrentlyReadedMail(m);

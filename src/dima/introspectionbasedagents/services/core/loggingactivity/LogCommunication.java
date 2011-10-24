@@ -40,7 +40,7 @@ public class LogCommunication extends LogNotification {
 	//
 
 	@Override
-	public String generateLogToScreen(final boolean printDetails) {
+	public String generateLogToScreen() {
 		final String result = "*** On " + this.date + " ("
 		+ this.date.getTime() + "):\n" + " * " + getCaller()
 		+ " :\n * New Message " + this.status + " *\n"
@@ -49,7 +49,7 @@ public class LogCommunication extends LogNotification {
 	}
 
 	@Override
-	public String generateLogToWrite(final boolean printDetails) {
+	public String generateLogToWrite() {
 		final String result = "*** On " + this.date + " ("
 		+ this.date.getTime() + "):\n" + " * " + getCaller()
 		+ " :\n * New Message " + this.status + " *\n"

@@ -21,20 +21,26 @@ public class MethodHandler extends SimpleMethodHandler {
 	private static final long serialVersionUID = -8867529827033886947L;
 	DimaComponentInterface caller;
 	Object[] args=null;
+	private boolean isActive=true;
 
 	//
 	// Constructor
 	//
 
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+
 	public MethodHandler(final DimaComponentInterface caller, Method mt)//, final Object[] args)
-	throws SecurityException, IllegalArgumentException{
+			throws SecurityException, IllegalArgumentException{
 		super(mt);
 		this.caller = caller;
 	}
 
 
 	public MethodHandler(final DimaComponentInterface caller, final String methodName, final Class<?>[] signature, final Object[] args)
-	throws SecurityException, NoSuchMethodException, IllegalArgumentException{
+			throws SecurityException, NoSuchMethodException, IllegalArgumentException{
 		super(caller.getClass().getMethod(methodName, signature==null?SimpleMethodHandler.getSignature(args):signature));
 		this.caller = caller;
 		this.args = args;
@@ -68,7 +74,7 @@ public class MethodHandler extends SimpleMethodHandler {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public Object execute(final Object... args) throws InvocationTargetException {
+	public Object execute(final Object... args) throws Throwable {
 		if (!(caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) caller).isActive()){
 			try {
 				return execute(this.caller, args);
@@ -80,17 +86,17 @@ public class MethodHandler extends SimpleMethodHandler {
 				return null;
 			}  catch (final InvocationTargetException e) {
 				// The method has not been invocated
-				LogService.writeException(caller,
-						"Couldn't invokate method "+
-						this,
-						e.getCause());
-				throw e;
+				//				LogService.writeException(caller,
+				//						"Couldn't invokate method "+
+				//						this,
+				//						e.getCause());
+				throw e.getCause();
 			}
 		} else 
 			return null;
 	}
 
-	public Object execute() throws InvocationTargetException {
+	public Object execute() throws Throwable {
 		if (!(caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) caller).isActive()){
 			try {
 				return execute(this.caller, this.args);
@@ -102,11 +108,11 @@ public class MethodHandler extends SimpleMethodHandler {
 				return null;
 			}  catch (final InvocationTargetException e) {
 				// The method has not been invocated
-				LogService.writeException(caller,
-						"Couldn't invokate method "+
-						this,
-						e.getCause());
-				throw e;
+				//				LogService.writeException(caller,
+				//						"Couldn't invokate method "+
+				//						this,
+				//						e.getCause());
+				throw e.getCause();
 			}
 		} else 
 			return null;
@@ -117,10 +123,13 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 
 	private Object execute(final Object myComponent, final Object[] args) throws IllegalArgumentException, InvocationTargetException, IllegalAccessException {
-		final Method m = this.getMethod();
-		if (!m.isAccessible())
-			m.setAccessible(true);
-		return m.invoke(myComponent, args);
+		if (isActive){
+			final Method m = this.getMethod();
+			if (!m.isAccessible())
+				m.setAccessible(true);
+			return m.invoke(myComponent, args);
+		} else 
+			return null;
 	}
 }
 
@@ -218,9 +227,9 @@ class SimpleMethodHandler extends GimaObject {
 		try {
 			final Method mt = this.caller.getMethod(this.getMethodName(), this.getParameterTypes());
 			return
-			(Class<?>)
-			((ParameterizedType) mt.getGenericParameterTypes()[numberofArg]).
-			getActualTypeArguments()[numberOfGernericType];
+					(Class<?>)
+					((ParameterizedType) mt.getGenericParameterTypes()[numberofArg]).
+					getActualTypeArguments()[numberOfGernericType];
 		} catch (final ClassCastException e){
 			return null;
 		} catch (final ArrayIndexOutOfBoundsException e){
@@ -229,8 +238,8 @@ class SimpleMethodHandler extends GimaObject {
 			// The method has not been invocated
 			LogService.writeException(this,
 					"Couldn't invocate method "+
-					this.getMethodName(),
-					e);
+							this.getMethodName(),
+							e);
 			return null;
 		}
 	}
@@ -271,7 +280,7 @@ class SimpleMethodHandler extends GimaObject {
 			final LinkedList<Class<?>> r = new LinkedList<Class<?>>();
 			for (final Object arg : args)
 				r.addLast(arg.getClass());
-			return r.toArray(new Class<?>[0]);
+					return r.toArray(new Class<?>[0]);
 		}
 	}
 
@@ -284,13 +293,13 @@ class SimpleMethodHandler extends GimaObject {
 			else {
 				int cpt = 0;
 				while (attachementSignature[cpt].isAssignableFrom(attachement[cpt]
-				                                                              .getClass())
-				                                                              && cpt < attachement.length - 1)
+						.getClass())
+						&& cpt < attachement.length - 1)
 					cpt++;
 				if (cpt != attachement.length - 1) {
 					LogService.writeException("unappropriate message ("
 							+ cpt + ") :\n" + Arrays.asList(attachement) + ","
-							+ Arrays.asList(attachementSignature));
+									+ Arrays.asList(attachementSignature));
 					return false;
 				} else
 					return true;
@@ -312,9 +321,9 @@ class SimpleMethodHandler extends GimaObject {
 	@Override
 	public String toString() {
 		return
-		this.getMethodName()
-		+ "\n      --> param :"+ (this.parameterTypes == null ? "null" : Arrays.asList(this.parameterTypes))
-		+ "\n      --> callerClass: '" + this.caller	+ "'";
+				this.getMethodName()
+				+ "\n      --> param :"+ (this.parameterTypes == null ? "null" : Arrays.asList(this.parameterTypes))
+				+ "\n      --> callerClass: '" + this.caller	+ "'";
 	}
 }
 

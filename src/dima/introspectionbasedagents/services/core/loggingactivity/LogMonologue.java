@@ -9,7 +9,7 @@ public class LogMonologue extends LogNotification {
 	 *
 	 */
 	private static final long serialVersionUID = -5475469040879130633L;
-	String text, details = null;
+	final String text;
 	final String host = LocalHost.getUrl();
 
 	public LogMonologue(final AgentIdentifier id, final String text) {
@@ -17,24 +17,16 @@ public class LogMonologue extends LogNotification {
 		this.text = text;
 	}
 
-	public LogMonologue(final AgentIdentifier id, final String text, final String details) {
-		super(id);
-		this.text = text;
-		this.details = details;
-	}
-
 	@Override
-	public String generateLogToScreen(final boolean printDetails) {
+	public String generateLogToScreen() {
 		return "**** NEW MONOLOGUE FROM AGENT " + getCaller() + " :" + "\n"
 		+ "** On Host" + this.host + "(" + this.date.toString() + " - "
-		+ this.date.getTime() + "):\n" + this.text
-		+ (printDetails ? this.details : "");
+		+ this.date.getTime() + "):\n" + this.text;
 	}
 
 	@Override
-	public String generateLogToWrite(final boolean printDetails) {
+	public String generateLogToWrite() {
 		return "** On Host" + this.host + "(" + this.date.toString() + " - "
-		+ this.date.getTime() + "):\n" + this.text
-		+ (printDetails ? this.details : "");
+		+ this.date.getTime() + "):\n" + this.text;
 	}
 }

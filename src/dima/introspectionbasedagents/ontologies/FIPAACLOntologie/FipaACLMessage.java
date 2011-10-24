@@ -225,9 +225,9 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 	public String description() {
 		return "\n *Performative:" + this.performative + "\n *Protocol:"
 		+ this.protocol.getSimpleName() + "\n *signature:"
-		+ this.attachementSignature==null?"":Arrays.asList(this.attachementSignature)
-				+ "\n *attachement:"
-//		+ this.getArgs()==null?"":Arrays.asList(this.getArgs()).toString()
+		+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))			
+//		+ Arrays.asList(this.getArgs())==null?
+//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
 				;
 	}
 

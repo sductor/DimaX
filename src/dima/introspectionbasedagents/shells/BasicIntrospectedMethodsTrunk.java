@@ -131,7 +131,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 */
 	@Override
 	public boolean executeStepMethod(final MethodHandler mt)
-	throws IllegalArgumentException, InvocationTargetException {
+	throws IllegalArgumentException, Throwable {
 		if (this.isReady(mt)){
 			this.status.setCurrentlyExecutedAgent(mt.getMyComponent());	
 			this.status.setCurrentlyExecutedMethod(mt);

@@ -21,6 +21,6 @@ public interface IntrospectedMethodsTrunk extends DimaComponentInterface{
 	public SimpleAgentStatus getStatus() ;
 	
 	public abstract boolean executeStepMethod(MethodHandler mt)
-			throws IllegalArgumentException, InvocationTargetException;
+			throws IllegalArgumentException,  Throwable;
 
 }

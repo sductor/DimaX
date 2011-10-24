@@ -106,6 +106,10 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	/**/
 
 	public Boolean addToBlackList(AgentIdentifier o, Boolean add) ;
+	
+	/**/
+	
+	public void sendNotificationNow();
 
 	/*
 	 * Log

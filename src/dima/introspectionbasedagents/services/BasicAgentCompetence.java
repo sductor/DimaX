@@ -177,7 +177,11 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	public Boolean logWarning(final String text) {
 		return this.myAgent.logWarning(text);
 	}
-	
+
+	@Override
+	public void addLogKey(String key, boolean toString, boolean toFile) {
+		this.myAgent.addLogKey(key, toString, toFile);
+	}
 	/*
 	 * Observation
 	 */
@@ -246,6 +250,9 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		myAgent.removeObserver(observerAgent, notificationKey);
 	}
 
+	public void sendNotificationNow(){
+		myAgent.sendNotificationNow();
+	}
 	/*
 	 * 
 	 */
@@ -259,6 +266,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	public Collection<AgentIdentifier> getObservers(Class<?> notificationKey) {
 		return myAgent.getObservers(notificationKey);
 	}
+
 
 
 

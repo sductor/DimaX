@@ -50,6 +50,8 @@ BasicCommunicatingShell {
 			final LogService exceptionHandler) 
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		super(myComponent, horloge, mailbox, exceptionHandler);
+		getExceptionHandler().setMyAgentShell(this);
+		
 		myMainComponent = myComponent;
 		for (AgentCompetence<Agent> comp : getNativeCompetences(myMainComponent)){
 			load(comp);
@@ -65,7 +67,6 @@ BasicCommunicatingShell {
 			final AbstractMailBox mailbox) 
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		super(myComponent, horloge, mailbox, new LogService(myComponent));
-		myMainComponent = myComponent;
 		for (AgentCompetence<Agent> comp : getNativeCompetences(myMainComponent)){
 			load(comp);
 		}
@@ -85,6 +86,11 @@ BasicCommunicatingShell {
 	// Methods
 	//
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public LogService<Agent> getExceptionHandler(){
+		return (LogService<Agent>) super.getExceptionHandler();
+	}
 	@SuppressWarnings("unchecked")
 	public void load(AgentCompetence<Agent> competence)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
@@ -106,10 +112,10 @@ BasicCommunicatingShell {
 				this.getMyMethods().load(competence);
 	}
 
-	public void unload(BasicAgentCompetence<CompetentComponent> newComp) {
+	public void unload(AgentCompetence<Agent> newComp) {
 		throw new RuntimeException("todo : parcout des méthodes de 'getMyMethods()' " +
 				"et suppression de tous les méthod handler dont le caller est newComp + suppression de loadedCompetence" +
-				"attention a mise a jour des hook; restriction au comp non native (attribut)??");
+				"attention a mise a jour des hook; restriction au comp non native (attribut)??+ passage de l'etat de l'agent a faulty");
 	}
 	//
 	// Behavior
@@ -188,7 +194,7 @@ BasicCommunicatingShell {
 						this.methodsHook.remove(compM);
 				}
 			}
-		} catch (final InvocationTargetException e) {
+		} catch (final Throwable e) {
 			((LogService) this.getExceptionHandler()).handleExceptionOnHooks(e, this.getStatus());
 		}
 	}

@@ -163,7 +163,7 @@ public class BasicIntrospectiveShell extends GimaObject {
 					final boolean toRemove = this.myMethods.executeStepMethod(mt);
 					if (toRemove)
 						this.metToRemove.add(mt);
-				} catch (final Exception e) {
+				} catch (final Throwable e) {
 					// The exception is raised by the method
 					this.getExceptionHandler().handleException(
 							e, this.getStatus());

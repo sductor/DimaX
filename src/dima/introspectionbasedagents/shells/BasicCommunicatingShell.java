@@ -110,7 +110,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 						"\n sended by "+mess.getSender()+" to "+mess.getReceiver()+
 						"\n --> Known envellopes are: "+this.getMyMethods().getHandledEnvellope()+
 						"\n --> Exception handle say :\n"+this.getExceptionHandler().handleUnhandledMessage(mess, this.getStatus()));
-			} catch (final Exception e) {
+			} catch (final Throwable e) {
 				this.getExceptionHandler().handleException(e, this.getStatus());
 			}
 

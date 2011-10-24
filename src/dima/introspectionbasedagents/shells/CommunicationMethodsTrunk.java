@@ -11,7 +11,7 @@ public interface CommunicationMethodsTrunk extends IntrospectedMethodsTrunk {
 
 	//Return the methods to be removed
 	public abstract Collection<MethodHandler> parseMail(AbstractMessage m) 
-	throws UnHandledMessageException,IllegalArgumentException, InvocationTargetException;
+	throws UnHandledMessageException,IllegalArgumentException, Throwable;
 
 	Collection<Envelope> getHandledEnvellope();
 

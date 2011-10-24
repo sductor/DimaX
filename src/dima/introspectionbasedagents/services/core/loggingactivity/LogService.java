@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.management.Notification;
@@ -30,10 +31,10 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.shells.BasicCompetenceShell;
 import dima.introspectionbasedagents.shells.MethodHandler;
 import dima.introspectionbasedagents.shells.SimpleAgentStatus;
 import dima.introspectionbasedagents.shells.SimpleExceptionHandler;
-
 /**
  * OLD :
  * Le LoggerManager est chargé d'écrire et d'afficher les logs d'activité des
@@ -52,8 +53,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 
 	public static final String logKey = "log official key!!";
-	public Map<String, Boolean> keysToScreen;
-	public Map<String, Boolean> keysToFiles;
+	public Map<String, Boolean> keysToScreen=new HashMap<String, Boolean>();
+	public Map<String, Boolean> keysToFiles=new HashMap<String, Boolean>();
 
 	//Order or the log to be written to screen
 	public  boolean commtoScreen = false;
@@ -69,14 +70,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public LogService(Agent myComponent) throws UnrespectedCompetenceSyntaxException {
 		setMyAgent(myComponent);
 	}
-	
+
 	//
 	// Accessors
 	//
 
 	@Override
-	public void addLogKey(String key, boolean toString, boolean toFile){
-		keysToScreen.put(key,toString);
+	public void addLogKey(String key, boolean toScreen, boolean toFile){
+		keysToScreen.put(key,toScreen);
 		keysToFiles.put(key, toFile);
 	}
 
@@ -94,20 +95,20 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public Boolean  logMonologue(final String text) {
 		LogNotification log = new LogMonologue(getIdentifier(),text);
 		if (monotoScreen)
-			System.out.println(log.generateLogToScreen(printDetails));
+			System.out.println(log.generateLogToScreen());
 		if (toFiles)
 			return this.getMyAgent().notify(log,logKey);
 		return true;
 	}
 
 	@Override
-	public Boolean  logMonologue(final String text, final String details) {
-		LogNotification log = new LogMonologue(getIdentifier(),text,details);
-		if (monotoScreen)
-			System.out.println(log.generateLogToScreen(printDetails));
+	public Boolean  logMonologue(final String text, final String key) {
+		LogNotification log = new LogMonologue(getIdentifier(),text);
+		if (toScreen(key))
+			System.out.println(log.generateLogToScreen());
 		//			System.out.println("*** * From "+this.getMyAgent().getIdentifier()
 		//					+ ":\n       ----> "+text+" ("+details+")");
-		if (toFiles)
+		if (toFile(key))
 			return this.getMyAgent().notify(log,logKey);
 		return true;
 	}
@@ -117,8 +118,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public Boolean logCommunication(Message am, MessageStatus s){
 		if (!(am instanceof NotificationMessage && ((NotificationMessage)am).getNotification() instanceof LogNotification) && (commtoScreen||commtoFiles)){
 			LogNotification log = new LogCommunication(getIdentifier(), am, s);
-			if (commtoScreen)
-				System.out.println(log.generateLogToScreen(printDetails));
+			if (commtoScreen )
+				System.out.println(log.generateLogToScreen());
 			if (commtoFiles)
 				return this.notify(log,logKey);
 		}
@@ -131,7 +132,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public Boolean logException(final String text) {
 		LogNotification log = new LogException(getIdentifier(),text);
 		if (exceptoScreen)
-			System.err.println(log.generateLogToScreen(printDetails));
+			System.err.println(log.generateLogToScreen());
 		//			System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 		//					+"!!!!EXCEPTION!!!!:\n       ----> "+text);
 		if (toFiles)
@@ -143,40 +144,46 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public Boolean logException(final String text, final Throwable e) {
 		LogNotification log = new LogException(getIdentifier(),text,e);
 		if (exceptoScreen){
-			System.err.println(log.generateLogToScreen(printDetails));
-			e.printStackTrace();
+			System.err.println(log.generateLogToScreen());
+			if (e!=null)
+				e.printStackTrace();
+			else
+				System.err.println("exception is null!!!!");
 			//			System.err.println("From "+this.getMyAgent().getIdentifier()
 			//					+"!!!!EXCEPTION!!!!:\n       ----> "+text);
-			e.printStackTrace();
 		} 
-		if (toFiles)
-			return this.notify(log,logKey);
+		if (toFiles){
+			this.notify(log,logKey);
+			sendNotificationNow();
+		}
 		return true;
 	}
 
 	@Override
-	public Boolean logException(final String text, final String details) {
-		LogNotification log = new LogException(getIdentifier(),text,details);
-		if (exceptoScreen)
-			System.err.println(log.generateLogToScreen(printDetails));
+	public Boolean logException(final String text, final String key) {
+		LogNotification log = new LogException(getIdentifier(),text);
+		if (toScreen(key))
+			System.err.println(log.generateLogToScreen());
 		//			System.err.println("From "+this.getMyAgent().getIdentifier()
 		//					+"!!!!EXCEPTION!!!!:\n       ----> "+text+" ("+details+")");
-		if (toFiles)
+		if (toFile(key))
 			return this.notify(log,logKey);
 		return true;
 	}
 
 	@Override
-	public Boolean  logException(final String text, final String details,
+	public Boolean  logException(final String text, final String key,
 			final Throwable e) {
-		LogNotification log = new LogException(getIdentifier(),text,details,e);
-		if (exceptoScreen){
-			System.err.println(log.generateLogToScreen(printDetails));
+		LogNotification log = new LogException(getIdentifier(),text,e);
+		if (toScreen(key)){
+			System.err.println(log.generateLogToScreen());
 			e.printStackTrace();
 			//			System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 			//					+"!!!!EXCEPTION!!!!:\n       ----> "+text);
-		}if (toFiles)
-			return this.notify(log,logKey);
+		}if (toFile(key)){
+			this.notify(log,logKey);
+			sendNotificationNow();
+		}
 		return true;
 	}
 
@@ -186,7 +193,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public Boolean logWarning(final String text) {
 		LogNotification log = new LogWarning(getIdentifier(),text);
 		if (exceptoScreen)
-			System.err.println(log.generateLogToScreen(printDetails));
+			System.err.println(log.generateLogToScreen());
 		//					System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 		//							+"!!!!WARNING!!!!:\n       ----> "+text);
 		if (toFiles)
@@ -197,7 +204,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public Boolean logWarning(final String text, final Throwable e) {
 		LogNotification log = new LogWarning(getIdentifier(),text,e);
 		if (exceptoScreen){
-			System.err.println(log.generateLogToScreen(printDetails));
+			System.err.println(log.generateLogToScreen());
 			//			System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 			//					+"!!!!WARNING!!!!:\n       ----> "+text);
 			e.printStackTrace();
@@ -207,28 +214,28 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public Boolean logWarning(final String text, final String details) {
-		LogNotification log = new LogWarning(getIdentifier(),text,details);
-		if (exceptoScreen)
-			System.err.println(log.generateLogToScreen(printDetails));
+	public Boolean logWarning(final String text, final String key) {
+		LogNotification log = new LogWarning(getIdentifier(),text);
+		if (toFile(key))
+			System.err.println(log.generateLogToScreen());
 		//			System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 		//					+"!!!!WARNING!!!!:\n       ----> "+text+" ("+details+")");
-		if (toFiles)
+		if (toScreen(key))
 			return this.notify(log,logKey);
 		return true;
 	}
 
 	@Override
-	public Boolean  logWarning(final String text, final String details,
+	public Boolean  logWarning(final String text, final String key,
 			final Throwable e) {
-		LogNotification log = new LogWarning(getIdentifier(),text,details,e);
-		if (exceptoScreen){
-			System.err.println(log.generateLogToScreen(printDetails));
+		LogNotification log = new LogWarning(getIdentifier(),text,e);
+		if (toScreen(key)){
+			System.err.println(log.generateLogToScreen());
 			//			System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 			//					+"!!!!WARNING!!!!:\n       ----> "+text);
 			e.printStackTrace();
 		}
-		if (toFiles)
+		if (toFile(key))
 			return this.notify(log,logKey);
 		return true;
 	}	
@@ -246,16 +253,16 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		LogNotification log = n.getNotification();
 		if (log instanceof LogMonologue){
 			File agentFile = new File(getMyPath()+log.getCaller()+".log");
-			logOnFile(agentFile,log.generateLogToWrite(printDetails),false,false);
-			logOnFile(myAllLogFile,log.generateLogToWrite(printDetails),false,false);
+			logOnFile(agentFile,log.generateLogToWrite(),false,false);
+			logOnFile(myAllLogFile,log.generateLogToWrite(),false,false);
 		} else if (log instanceof LogCommunication){
-			logOnFile(myMessageLogFile,log.generateLogToWrite(printDetails),false,false);
-			logOnFile(myAllLogFile,log.generateLogToWrite(printDetails),false,false);
+			logOnFile(myMessageLogFile,log.generateLogToWrite(),false,false);
+			logOnFile(myAllLogFile,log.generateLogToWrite(),false,false);
 		} else if (log instanceof LogException){
 			File agentFile = new File(getMyPath()+log.getCaller()+".log");
-			logOnFile(agentFile,log.generateLogToWrite(printDetails),false,false);
-			logOnFile(myExceptionLogFile,log.generateLogToWrite(printDetails),false,((LogException) log).getException());
-			logOnFile(myAllLogFile,log.generateLogToWrite(printDetails),false,((LogException) log).getException());		
+			logOnFile(agentFile,log.generateLogToWrite(),false,false);
+			logOnFile(myExceptionLogFile,log.generateLogToWrite(),false,((LogException) log).getException());
+			logOnFile(myAllLogFile,log.generateLogToWrite(),false,((LogException) log).getException());		
 		}
 
 	}
@@ -298,8 +305,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			final Throwable e) {
 		System.err.println("!!!!EXCEPTION!!!!\n "+component+" ("+component.getClass()+")\n >>> "+text+ " caused by " + e);
 		e.printStackTrace();
-//		if (e!=null)
-//			e.printStackTrace();
+		//		if (e!=null)
+		//			e.printStackTrace();
 	}
 	public synchronized static void flush(){
 		System.out.flush();
@@ -376,13 +383,13 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//myPath = getDimaXDir()+"log/"+getHostIdentifier()+"#"+DimaXServer.getCreationTime()+"/";	
 	private  File myExceptionLogFile;
 	private  File myMessageLogFile;
-//	private  File myInfoLogFile;
+	//	private  File myInfoLogFile;
 	private  File myAllLogFile;
 
 	protected void setLogConfiguration() {
 		new File(getMyPath()).mkdirs();	
 
-//		myInfoLogFile = new File(getMyPath() + "__INFO.log");
+		//		myInfoLogFile = new File(getMyPath() + "__INFO.log");
 		myMessageLogFile = new File(getMyPath() + "__Messages.log");
 		myExceptionLogFile = new File(getMyPath() + "__ERREUR.log");
 		myAllLogFile = new File(getMyPath() + "__ALL.log");
@@ -393,11 +400,37 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public static String getMyPath() {
 		return myPath;
 	}
-	
+
+	//
+	// Primitives
+	//
+
+	private boolean toScreen(String key){
+		if (keysToScreen.containsKey(key))
+			return keysToScreen.get(key);
+		else{
+			logWarning("Unknown log key!!!!! "+key);
+			return false; 
+		}
+	}
+
+	private boolean toFile(String key){
+		if (keysToFiles.containsKey(key))
+			return keysToFiles.get(key);
+		else{
+			logWarning("Unknown log key!!!!! "+key);
+			return false; 
+		}
+	}
+
 	//
 	// Exception handling override
 	//
-	
+	BasicCompetenceShell myAgentShell;
+
+	public void setMyAgentShell(BasicCompetenceShell myAgentShell) {
+		this.myAgentShell = myAgentShell;
+	}
 
 	protected String handleExceptionOnMessage(
 			final DimaComponentInterface dimaComponentInterface,
@@ -406,37 +439,45 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			final Throwable e){
 		logException(
 				"Method "+methodHandler+" on message "+abstractMessage
-				+"\n(" + e+")"
-				+"\n has raised EXCEPTION :\n" , e);
+				+"\n has raised EXCEPTION :" , e);
+		stopFaultyMethods(methodHandler);
 		return super.handleExceptionOnMessage(dimaComponentInterface, methodHandler, abstractMessage, e);
 	}
-	
+
 	protected String handleExceptionOnMethod(
 			final DimaComponentInterface dimaComponentInterface,
 			final MethodHandler mt,
 			final Throwable e){
 		logException(
 				"Method "+mt.getMethodName()
-				+"\n has raised EXCEPTION :\n" , e.getCause());
+				+"\n has raised EXCEPTION :" , e);
+		stopFaultyMethods(mt);
 		return super.handleExceptionOnMethod(dimaComponentInterface, mt, e);
 
 	}
-	
-	public String handleExceptionOnHooks(final Exception e,
+
+	public String handleExceptionOnHooks(final Throwable e,
 			final SimpleAgentStatus status) {
 		logException(
 				"Hook"
-				+"\n(" + status+")"
-				+"\n has raised EXCEPTION :\n" , e.getCause());
+						+"\n(" + status+")"
+						+"\n has raised EXCEPTION :" , e);
 		return "Hook"
 		+"\n(" + status+")"
 		+"\n has raised an EXCEPTION :\n";
 	}
-	
-	
-	
-	
-	
+
+	private void stopFaultyMethods(MethodHandler m){
+		m.setActive(false);
+//		if (m.getMyComponent() instanceof AgentCompetence)
+//			myAgentShell.unload((AgentCompetence) m.getMyComponent());
+//		else
+//			myAgentShell.getMyMethods().removeMethod(m);
+	}
+
+
+
+
 	//
 	// Competence methods (copy for BasicAgentCompetence et BasicAgentCommunicatingCompetence
 	//
@@ -446,9 +487,9 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 
 	Agent myAgent;
-	
+
 	boolean active=true;
-	
+
 	protected void sendMessage(final AgentIdentifier id, final Message m ){
 		this.getMyAgent().sendMessage(id, m);
 	}
@@ -466,7 +507,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public AgentIdentifier getIdentifier(){
 		return this.getMyAgent().getIdentifier();
 	}
-	
+
 	@Override
 	public void setMyAgent(final Agent ag) throws UnrespectedCompetenceSyntaxException {
 		this.myAgent=ag;
@@ -481,7 +522,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public boolean isActive() {
 		return active;
 	}
-	
+
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;
@@ -494,7 +535,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 	// Methods
 	//
-	
+
 	/*
 	 * Hook
 	 */
@@ -506,7 +547,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		return myAgent.retryWhen(comp, methodToTest, methodComponent, testArgs,
 				methodsArgs);
 	}
-	
+
 	@Override
 	public boolean when(final AgentCompetence comp, final String compMethodToTest,
 			final Class<?>[] compSignature, final Object[] compargs,
@@ -551,11 +592,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public boolean whenIsReady(NotReadyException e) {
 		return this.myAgent.whenIsReady(e);
 	}
-	
+
 	/*
 	 * Observation
 	 */
-	
+
 	@Override
 	public <Notification extends Serializable> Boolean notify(final Notification notification, final String key) {
 		return this.myAgent.notify(notification, key);
@@ -623,7 +664,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	/*
 	 * 
 	 */
-	
+
 	@Override
 	public Boolean isObserved(Class<?> notificationKey) {
 		return myAgent.isObserved(notificationKey);
@@ -632,6 +673,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@Override
 	public Collection<AgentIdentifier> getObservers(Class<?> notificationKey) {
 		return myAgent.getObservers(notificationKey);
+	}
+
+	@Override
+	public void sendNotificationNow() {
+		myAgent.sendNotificationNow();		
 	}
 
 

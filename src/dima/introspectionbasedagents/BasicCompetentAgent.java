@@ -377,6 +377,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public Collection<AgentIdentifier> getObservers(Class<?> notificationKey) {
 		return this.observer.getObservers(notificationKey);
 	}
+
+	public void sendNotificationNow(){
+		this.observer.autoSendOfNotifications();
+	}
 	/*
 	 *
 	 */
@@ -444,6 +448,15 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public Boolean logWarning(final String text) {
 		return this.log.logWarning(text);
 	}
+	
+	@Override
+	public void addLogKey(String key, boolean toString, boolean toFile) {
+		this.log.addLogKey(key, toString, toFile);
+	}
+	
+	/*
+	 * Message 
+	 */
 	
 	@Override
 	public void sendMessage(final AgentIdentifier agentId, final Message am) {

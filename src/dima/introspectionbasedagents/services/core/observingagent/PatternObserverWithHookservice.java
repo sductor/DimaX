@@ -83,9 +83,8 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 				for (MethodHandler m : registeredMethods.get(key)){
 					m.execute(notification);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException("devrait etre plus propre!!!");
+			} catch (Throwable e) {
+				throw new RuntimeException("devrait etre plus propre!!!",e);
 			}
 		}
 		return super.notify(notification,key);

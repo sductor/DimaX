@@ -4,11 +4,11 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.competences.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
+import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 
 public class SayingAliveToPeerCompetence extends BasicAgentCommunicatingCompetence<BasicCompetentAgent> {
 

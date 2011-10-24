@@ -10,7 +10,7 @@ import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.IllAnswer;
 import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
 import negotiation.negotiationframework.interaction.consensualnegotiation.SelectionCore;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 /**
  * Selection Cores must extenbds this class to be coherent with the roles. They

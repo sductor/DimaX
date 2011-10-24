@@ -2,7 +2,7 @@ package examples.Factorial2.apis;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.deployment.DimaXLocalLaunchScript;
 import examples.Factorial2.masapplication.AgentFact;
 import examples.Factorial2.masapplication.AgentMult;
@@ -34,6 +34,6 @@ public class LocalDarXFactorialAPI2 {
 		M2.activateWithDarx(7004);
 
 		F.activateWithDarx(7001);
-		LogCompetence.write("\n\n\n"+" Factorial:  " + n+"\n\n\n");
+		LogService.write("\n\n\n"+" Factorial:  " + n+"\n\n\n");
 	}
 }

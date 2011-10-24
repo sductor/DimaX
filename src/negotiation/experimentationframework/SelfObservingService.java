@@ -5,7 +5,7 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public abstract class SelfObservingService
 extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{

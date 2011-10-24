@@ -62,13 +62,22 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//Order or the log to be written in specific files
 	public static boolean toFiles = true;
 	public static boolean commtoFiles = false;
-	private  boolean printDetails = false;
 	//
 	// Constructors
 	//
 
 	public LogService(Agent myComponent) throws UnrespectedCompetenceSyntaxException {
 		setMyAgent(myComponent);
+	}
+	
+	//
+	// Accessors
+	//
+
+	@Override
+	public void addLogKey(String key, boolean toString, boolean toFile){
+		keysToScreen.put(key,toString);
+		keysToFiles.put(key, toFile);
 	}
 
 	//

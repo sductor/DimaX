@@ -9,7 +9,7 @@ import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 /**
  * Service used by the agent to be concious of the system state

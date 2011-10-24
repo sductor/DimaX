@@ -3,9 +3,9 @@ package negotiation.negotiationframework.strategy.evaluation;
 import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.competences.BasicAgentModule;
-import dima.introspectionbasedagents.coreservices.information.ObservationService.Information;
-import dima.introspectionbasedagents.coreservices.information.OpinionService.Opinion;
+import dima.introspectionbasedagents.services.BasicAgentModule;
+import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
 import negotiation.negotiationframework.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;

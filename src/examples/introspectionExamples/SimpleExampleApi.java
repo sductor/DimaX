@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import dima.introspectionbasedagents.APILauncherAgent;
 import dima.introspectionbasedagents.BasicCompetentAgent;
-import dima.introspectionbasedagents.competences.CompetenceException;
+import dima.introspectionbasedagents.services.CompetenceException;
 
 public class SimpleExampleApi extends APILauncherAgent{
 	private static final long serialVersionUID = 2197507938900786081L;

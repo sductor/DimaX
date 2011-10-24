@@ -11,7 +11,7 @@ import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.NotReadyException;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public class CandidatureReplicaProposer
 extends

@@ -132,4 +132,6 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 
 	public Boolean logWarning(String text);
 
+	public void addLogKey(String key, boolean toString, boolean toFile);
+
 }

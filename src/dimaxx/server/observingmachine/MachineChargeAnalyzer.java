@@ -3,7 +3,7 @@ package dimaxx.server.observingmachine;
 import java.util.Collection;
 import java.util.List;
 
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.hostcontrol.Executor;
 import dimaxx.server.HostIdentifier;
 
@@ -95,7 +95,7 @@ public class MachineChargeAnalyzer extends Executor implements
 						.executeWithBash(getLatence)).doubleValue());
 			} catch (final ExecutorException e) {
 				latence = 0.;
-				LogCompetence.writeException(this, e.toString()
+				LogService.writeException(this, e.toString()
 						+ " latence instancié a 0", e);
 			}
 		}
@@ -114,7 +114,7 @@ public class MachineChargeAnalyzer extends Executor implements
 						.executeWithBash(getLatence)).doubleValue());
 			} catch (final ExecutorException e) {
 				latence = 0.;
-				LogCompetence.writeException(this, e.toString()
+				LogService.writeException(this, e.toString()
 						+ " latence instancié a 0", e);
 			}
 		}
@@ -141,7 +141,7 @@ public class MachineChargeAnalyzer extends Executor implements
 				totalMem = this.executeWithBash(gettotalMem);
 			} catch (final ExecutorException e) {
 				totalMem = "1";
-				LogCompetence.writeException(this,
+				LogService.writeException(this,
 						" totalMemory instancié à 1", e);
 			}
 			totalMem = totalMem.trim();
@@ -176,7 +176,7 @@ public class MachineChargeAnalyzer extends Executor implements
 			// 2 : les 10 dernieres
 		} catch (final ExecutorException e) {
 			avgProc = "0";
-			LogCompetence.writeException(this,
+			LogService.writeException(this,
 					" charge processeur instancié a 0", e);
 		}
 		final long charge = new Double(avgProc).longValue()
@@ -198,7 +198,7 @@ public class MachineChargeAnalyzer extends Executor implements
 			bMips = this.executeWithBash(getBMips);
 		} catch (final ExecutorException e) {
 			bMips = "0";
-			LogCompetence.writeException(this, e.toString()
+			LogService.writeException(this, e.toString()
 					+ " bogoMips instancié a 0");
 		}
 		final double perf = new Double(bMips).doubleValue();

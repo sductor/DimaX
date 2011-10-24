@@ -14,7 +14,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.hostcontrol.LocalHost;
 import dimaxx.tools.computingFuzzyLogic.defuzzyficator.Defuzzificateur;
 import dimaxx.tools.computingFuzzyLogic.implicator.Implicateur;
@@ -46,7 +46,7 @@ public class FuzzyController implements Serializable {
 			final File xml = new File(f);
 			this.init(xml, alors, d);
 		} catch (final Exception e) {
-			LogCompetence.writeException(this, "Le fichier " + f
+			LogService.writeException(this, "Le fichier " + f
 					+ " n'existe pas", e);
 		}
 	}
@@ -84,7 +84,7 @@ public class FuzzyController implements Serializable {
 
 	public FuzzySubSet mixageConclusions(final List<FuzzySubSet> conclusions) {
 		if (conclusions.size() == 0)
-			LogCompetence.writeException(this,
+			LogService.writeException(this,
 					"ERREUR Dans Mixage de Regle# aucune conclusion");
 
 		final Iterator<FuzzySubSet> itConclusion = conclusions.iterator();

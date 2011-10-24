@@ -17,7 +17,7 @@ import darx.DarxTask;
 import darx.RemoteTask;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 public class Node extends Thread {
@@ -202,7 +202,7 @@ public class Node extends Thread {
 				if (msg instanceof Message)
 					((Channel) in.getChannel(((Message) msg).getSender())).addMessage((Message) msg); 
 				else
-					LogCompetence.writeException(this, msg+" is not a message : can not be added to mail box!");
+					LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
 		}
 
 //		/**

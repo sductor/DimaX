@@ -27,9 +27,9 @@ public abstract class LogNotification implements Serializable{
 		return this.date;
 	}
 
-	public abstract String generateLogToScreen(boolean printDetails);
+	public abstract String generateLogToScreen();
 
-	public abstract String generateLogToWrite(boolean printDetails);
+	public abstract String generateLogToWrite();
 
 	public String getCaller() {
 		return caller;

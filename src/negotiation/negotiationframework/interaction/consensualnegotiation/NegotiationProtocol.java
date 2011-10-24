@@ -17,12 +17,12 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.competences.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.coreservices.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
 
 /**
  * Negotiation, as a protocol, provide : * the involved roles * the method to
@@ -448,12 +448,14 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				else if (lost) {
 					// do nothing
 				} else if (!this.contracts.contains(c)
-						&& !c.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect))
-					throw new RuntimeException("aaaaaaaaarrrgh" + "i should now "
-							+ c + "!!!!!\n" + this.losts+ "!!!!!\n" +contracts);
+						&& !c.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect)){
+					RuntimeException e = new RuntimeException();
+					logException("aaaaaaaaarrrgh" + "i should now "
+							+ c + "!!!!!\n" + this.losts+ "!!!!!\n" +contracts,e);
+					throw e;
 				// do nothing : probleme avec losts : contract identifier mal
 				// reconnu???
-				else {
+				}else {
 					Contract contract;
 					try {
 						contract = this.contracts.getContract(c);

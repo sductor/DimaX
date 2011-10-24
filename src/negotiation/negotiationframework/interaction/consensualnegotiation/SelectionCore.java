@@ -3,7 +3,7 @@ package negotiation.negotiationframework.interaction.consensualnegotiation;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import dima.introspectionbasedagents.competences.AgentCompetence;
+import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface SelectionCore<
 ActionSpec extends AbstractActionSpecification,

@@ -12,9 +12,9 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.coreservices.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.coreservices.information.ObservationService;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.library.information.ObservationService;
 import dimaxx.tools.distribution.PoissonLaw;
 import dimaxx.tools.distribution.WeibullLaw;
 
@@ -115,7 +115,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			} else
 				return null;
 		} catch (final NoInformationAvailableException e) {
-			LogCompetence
+			LogService
 			.writeException("immmmmmmmmoooooooooooooossssssssssssiiiiiiiiiiblle");
 			return null;
 		}
@@ -134,7 +134,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			else
 				throw new RuntimeException("impossiblle!!");
 		} catch (final NoInformationAvailableException e) {
-			LogCompetence
+			LogService
 			.writeException("immmmmmmmmoooooooooooooosssssssssssiiiiiiiiiiblle");
 		}
 	}
@@ -156,7 +156,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			return myAgentInformation.getInformation(HostState.class, h)
 					.getLambda();
 		} catch (final NoInformationAvailableException e) {
-			LogCompetence.writeException(
+			LogService.writeException(
 					"immmmmmmmmooooooooooooosssssssssssiiiiiiiiiiblle to find "+h
 					+" knwon info "+myAgentInformation.show(HostState.class)
 					+"\n"+myAgentInformation.toString(),e);
@@ -170,7 +170,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			return myAgentInformation.getInformation(HostState.class, h)
 					.getCreationTime();
 		} catch (final NoInformationAvailableException e) {
-			LogCompetence
+			LogService
 			.writeException("immmmmmmmmooooooooooooosssssssssssiiiiiiiiiibllle",e);
 			return null;
 		}

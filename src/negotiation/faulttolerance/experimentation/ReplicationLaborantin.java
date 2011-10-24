@@ -42,15 +42,15 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.competences.BasicAgentCommunicatingCompetence;
-import dima.introspectionbasedagents.competences.CompetenceException;
-import dima.introspectionbasedagents.coreservices.information.ObservationService;
-import dima.introspectionbasedagents.coreservices.information.SimpleObservationService;
-import dima.introspectionbasedagents.coreservices.information.SimpleOpinionService;
-import dima.introspectionbasedagents.coreservices.information.ObservationService.Information;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
-import dima.introspectionbasedagents.coreservices.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.coreservices.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
+import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
@@ -549,13 +549,13 @@ public class ReplicationLaborantin extends Laborantin {
 
 	@Override
 	protected synchronized void writeResult() {
-		LogCompetence.logOnFile(
+		LogService.logOnFile(
 				this.getSimulationParameters().getF(),
 				"launched :\n--> " + new Date().toString() + "\n "
 						+ this.getSimulationParameters().getName()
 						+ this.getSimulationParameters() + "\n results are :",
 						true, false);
-		LogCompetence.logOnFile(this.getSimulationParameters().getF(), this
+		LogService.logOnFile(this.getSimulationParameters().getF(), this
 				.getQuantileTimeEvolutionObs("reliability",
 						this.agentsReliabilityEvolution, 0.75 * (this
 								.getAliveAgentsNumber() / this
@@ -564,7 +564,7 @@ public class ReplicationLaborantin extends Laborantin {
 								false);
 		// Taux de survie = moyenne pond��r�� des (wi, li) | li ��� {0,1} agent
 		// mort/vivant
-		LogCompetence.logOnFile(this.getSimulationParameters().getF(), this
+		LogService.logOnFile(this.getSimulationParameters().getF(), this
 				.getMeanTimeEvolutionObs("criticity", this.criticite,
 						0.75 * (this.getAliveAgentsNumber() / this
 								.getSimulationParameters().nbAgents), this
@@ -579,11 +579,11 @@ public class ReplicationLaborantin extends Laborantin {
 		// Writing.log(this.p.f, getQuantilePointObs("Protocol Execution Time",
 		// protocoleExecutiontime.values(),0.75*p.nbAgents), true, false);
 		/**/
-		LogCompetence.logOnFile(this.getSimulationParameters().getF(), this
+		LogService.logOnFile(this.getSimulationParameters().getF(), this
 				.getQuantileTimeEvolutionObs("charge",
 						this.hostsChargeEvolution, 0.75,
 						this.getSimulationParameters().nbHosts), true, false);
-		LogCompetence.logOnFile(this.getSimulationParameters().getF(), this
+		LogService.logOnFile(this.getSimulationParameters().getF(), this
 				.getMeanTimeEvolutionObs("percent of hosts that are alive",
 						this.faulty, 0.75,
 						this.getSimulationParameters().nbHosts), true, false);
@@ -691,7 +691,7 @@ public class ReplicationLaborantin extends Laborantin {
 				/ ReplicationLaborantin.this.getSimulationParameters().nbAgents
 				+ ")\n";
 
-			LogCompetence.logOnFile(ReplicationLaborantin.this.getSimulationParameters()
+			LogService.logOnFile(ReplicationLaborantin.this.getSimulationParameters()
 					.getF(), result, true, false);
 		}
 

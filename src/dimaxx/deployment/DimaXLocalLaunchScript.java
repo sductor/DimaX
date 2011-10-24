@@ -2,7 +2,7 @@ package dimaxx.deployment;
 
 import darx.Darx;
 import darx.NameServerImpl;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.hostcontrol.LocalHost;
 
 public class DimaXLocalLaunchScript {
@@ -29,7 +29,7 @@ public class DimaXLocalLaunchScript {
 			s[4] = port.toString();
 			Darx.main(s);
 		} else
-			LogCompetence.writeException(this, "name server has not been initialized");
+			LogService.writeException(this, "name server has not been initialized");
 	}
 
 	public void launchDARX(final Integer nameServer, final Integer... darxsString) {

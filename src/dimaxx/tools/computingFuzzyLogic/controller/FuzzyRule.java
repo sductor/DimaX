@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.tools.computingFuzzyLogic.implicator.Implicateur;
 
 /**
@@ -88,7 +88,7 @@ public class FuzzyRule implements Serializable {
 			final List<Double> observations) {
 
 		if (s.size() != observations.size() || s.size() == 0) {
-			LogCompetence.writeException(this, "ERREUR # premisse : "
+			LogService.writeException(this, "ERREUR # premisse : "
 					+ s.size() + " != #nombre obs : " + observations.size()
 					+ "... exiting");
 			System.exit(-1);
@@ -98,7 +98,7 @@ public class FuzzyRule implements Serializable {
 		final Iterator<Double> itO = observations.iterator();
 
 		if (!itS.hasNext() || !itO.hasNext()) {
-			LogCompetence.writeException(this,
+			LogService.writeException(this,
 					"Erreur dans la construction... exiting");
 			System.exit(-1);
 		}

@@ -450,7 +450,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				} else if (!this.contracts.contains(c)
 						&& !c.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect))
 					throw new RuntimeException("aaaaaaaaarrrgh" + "i should now "
-							+ c + "!!!!!\n" + this.losts+ "!!!!!\n" +contracts);
+							+ c + "!!!!!\n" + this.losts);
 				// do nothing : probleme avec losts : contract identifier mal
 				// reconnu???
 				else {

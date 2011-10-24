@@ -2,10 +2,10 @@ package dima.introspectionbasedagents.ontologies;
 
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
-import dima.introspectionbasedagents.competences.BasicAgentCommunicatingCompetence;
-import dima.introspectionbasedagents.competences.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
+import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 /**
  * @see negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol

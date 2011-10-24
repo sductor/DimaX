@@ -6,7 +6,8 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
-import dima.introspectionbasedagents.competences.AgentCompetence;
+import dima.introspectionbasedagents.services.AgentCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 
@@ -111,9 +112,9 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	 */
 
 
-	public Boolean logException(String text, Exception e);
+	public Boolean logException(String text, Throwable e);
 
-	public Boolean logException(String text, String details, Exception e);
+	public Boolean logException(String text, String details, Throwable e);
 
 	public Boolean logException(String text, String details);
 
@@ -123,11 +124,14 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 
 	public Boolean logMonologue(String text);
 
-	public Boolean logWarning(String text, Exception e);
+	public Boolean logWarning(String text, Throwable e);
 
-	public Boolean logWarning(String text, String details, Exception e);
+	public Boolean logWarning(String text, String details, Throwable e);
 
 	public Boolean logWarning(String text, String details);
 
 	public Boolean logWarning(String text);
+
+	public void addLogKey(String key, boolean toString, boolean toFile);
+
 }

@@ -15,14 +15,13 @@ import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.competences.AgentCompetence;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
-import dima.introspectionbasedagents.competences.DuplicateCompetenceException;
-import dima.introspectionbasedagents.competences.UnInstanciedCompetenceException;
-import dima.introspectionbasedagents.competences.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
-import dima.introspectionbasedagents.coreservices.observingagent.PatternObserverWithHookCompetence;
-import dima.introspectionbasedagents.tools.SimpleExceptionHandler;
+import dima.introspectionbasedagents.services.AgentCompetence;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.DuplicateCompetenceException;
+import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 
 /**
  * The competence shell adds the handle of competences to an agent introspective shell
@@ -48,7 +47,7 @@ BasicCommunicatingShell {
 	public BasicCompetenceShell(
 			final Agent myComponent, final Date horloge,
 			final AbstractMailBox mailbox,
-			final SimpleExceptionHandler exceptionHandler) 
+			final LogService exceptionHandler) 
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		super(myComponent, horloge, mailbox, exceptionHandler);
 		myMainComponent = myComponent;
@@ -57,7 +56,7 @@ BasicCommunicatingShell {
 		}
 				if (myMainComponent instanceof BasicCompetentAgent) {
 					BasicCompetentAgent agent = (BasicCompetentAgent) myMainComponent;
-					PatternObserverWithHookCompetence.registerEventMethod(agent, agent.observer);
+					PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
 		
 				}
 	}
@@ -65,21 +64,21 @@ BasicCommunicatingShell {
 			final Agent myComponent, final Date horloge,
 			final AbstractMailBox mailbox) 
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
-		super(myComponent, horloge, mailbox, new SimpleExceptionHandler());
+		super(myComponent, horloge, mailbox, new LogService(myComponent));
 		myMainComponent = myComponent;
 		for (AgentCompetence<Agent> comp : getNativeCompetences(myMainComponent)){
 			load(comp);
 		}
 				if (myMainComponent instanceof BasicCompetentAgent) {
 					BasicCompetentAgent agent = (BasicCompetentAgent) myMainComponent;
-					PatternObserverWithHookCompetence.registerEventMethod(agent, agent.observer);
+					PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
 		
 				}
 	}
 
 	public BasicCompetenceShell(final Agent myComponent, final Date horloge) 
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException {
-		this(myComponent, horloge, myComponent.getMailBox(), new SimpleExceptionHandler());
+		this(myComponent, horloge, myComponent.getMailBox(), new LogService(myComponent));
 	}
 
 	//
@@ -90,7 +89,7 @@ BasicCommunicatingShell {
 	public void load(AgentCompetence<Agent> competence)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		if (competence==null){
-			LogCompetence.writeException(this,
+			LogService.writeException(this,
 					"This competence '"+competence
 					+"' has not been instanciated, it can not be used");
 			throw new UnInstanciedCompetenceException(competence.toString());
@@ -126,7 +125,7 @@ BasicCommunicatingShell {
 				competence.die();
 
 		} catch (Exception e) {
-			LogCompetence.writeException(this,"proactivityTerminate : Impossible!!");
+			LogService.writeException(this,"proactivityTerminate : Impossible!!");
 		}
 
 		this.myMainComponent=null;
@@ -190,7 +189,7 @@ BasicCommunicatingShell {
 				}
 			}
 		} catch (final InvocationTargetException e) {
-			this.getExceptionHandler().handleExceptionOnHooks(e, this.getStatus());
+			((LogService) this.getExceptionHandler()).handleExceptionOnHooks(e, this.getStatus());
 		}
 	}
 
@@ -216,7 +215,7 @@ BasicCommunicatingShell {
 				try {							
 					myComp = (AgentCompetence<SAgent>)comp.get(mainComponent);
 				} catch (final Exception e) {
-					LogCompetence.writeException(mainComponent,
+					LogService.writeException(mainComponent,
 							"Impossible!! (voir fieldIsACompetence)", e);
 					throw new RuntimeException(comp.getName());
 				}
@@ -239,7 +238,7 @@ BasicCommunicatingShell {
 			if (AgentCompetence.class.isAssignableFrom(comp.getType()))
 				return true;
 			else{
-				LogCompetence.writeWarning(comp,
+				LogService.writeWarning(comp,
 						"This field '"+comp.getName()
 						+"' is annotated with competence but " +
 						"does not implement AgentCompetence interface, " +
@@ -252,7 +251,7 @@ BasicCommunicatingShell {
 			if (comp.isAnnotationPresent(Competence.class))
 				return true;
 			else {
-				LogCompetence.writeWarning(comp,
+				LogService.writeWarning(comp,
 						"This field '"+comp.getName()
 						+"' implements AgentCompetence interface " +
 						"is not annotated with competence, " +

@@ -10,10 +10,10 @@ import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.competences.CompetenceException;
-import dima.introspectionbasedagents.coreservices.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.coreservices.information.ObservationService;
-import dima.introspectionbasedagents.coreservices.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
 public class SimpleRationalAgent<
 ActionSpec extends AbstractActionSpecification,

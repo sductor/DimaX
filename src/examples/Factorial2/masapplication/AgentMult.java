@@ -2,7 +2,7 @@ package examples.Factorial2.masapplication;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 /**
@@ -28,7 +28,7 @@ public class AgentMult extends BasicCommunicatingAgent {
 
 	public void multiply(final Integer a, final Integer b) {
 		final Integer c = new Integer(a.intValue() * b.intValue());
-		LogCompetence.write(this.getId(),""+a+" * "+b+" = " + c);
+		LogService.write(this.getId(),""+a+" * "+b+" = " + c);
 		final Message m = new Message("result", c);
 		this.sendMessage(this.myFact, m);
 	}

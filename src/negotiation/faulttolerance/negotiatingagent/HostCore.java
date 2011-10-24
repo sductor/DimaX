@@ -8,9 +8,9 @@ import negotiation.faulttolerance.experimentation.SocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
-import dima.introspectionbasedagents.coreservices.information.SimpleObservationService;
-import dima.introspectionbasedagents.coreservices.replication.ReplicationHandler;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.library.replication.ReplicationHandler;
 
 /**
  * This class contains the core evaluation, decision and execution methods of an

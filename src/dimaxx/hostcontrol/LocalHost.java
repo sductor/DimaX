@@ -2,7 +2,7 @@ package dimaxx.hostcontrol;
 
 import java.net.InetAddress;
 
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 public class LocalHost {
@@ -15,7 +15,7 @@ public class LocalHost {
 			return InetAddress.getLocalHost().getHostName().toString();
 
 		} catch (final java.net.UnknownHostException e) {
-			LogCompetence.writeException("could not retrieve local ip", e);
+			LogService.writeException("could not retrieve local ip", e);
 			return null;
 		}
 	}

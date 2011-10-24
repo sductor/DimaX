@@ -11,7 +11,7 @@ import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public abstract class ExperimentationParameters
 implements DimaComponentInterface {
@@ -120,7 +120,7 @@ implements DimaComponentInterface {
 			try {
 				result += f.getName()+" : "+f.get(this)+"\n";
 			} catch (final Exception e) {
-				LogCompetence.writeException("immmmmmmmpppppppppoooooooossssssssiiiiiiiiiibbbbllllllllllle",e);
+				LogService.writeException("immmmmmmmpppppppppoooooooossssssssiiiiiiiiiibbbbllllllllllle",e);
 			}
 			result+="**************";
 			return result;

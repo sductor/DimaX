@@ -14,7 +14,7 @@ import negotiation.negotiationframework.strategy.evaluation.BasicPossibilistUtil
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.coreservices.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 
 public class BasicGradientSearch
 <Action extends AbstractContractTransition<ActionSpec>,

@@ -8,7 +8,7 @@ import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.CommunicatingComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.ProactiveComponentInterface;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.hostcontrol.LocalHost;
 
 public class DimaXTask<Component extends ProactiveComponentInterface & IdentifiedComponentInterface> extends DarxTask {
@@ -88,7 +88,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 
 		this.active = true;
 		if (this.isActive()){
-			LogCompetence.write(this, "Starting "+this.getTaskName());
+			LogService.write(this, "Starting "+this.getTaskName());
 			if (this.thread == null)
 				this.thread = new DimaXTaskEngine(this);
 
@@ -104,7 +104,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	 */
 	@Override
 	public void suspend() {
-		LogCompetence.write(this, "Suspending "+ this.getTaskName());
+		LogService.write(this, "Suspending "+ this.getTaskName());
 		this.active = false;
 	}
 
@@ -116,7 +116,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	 */
 	@Override
 	public void resume() {
-		LogCompetence.write(this, "Resuming "+ this.getTaskName());
+		LogService.write(this, "Resuming "+ this.getTaskName());
 		this.active = true;
 	}
 
@@ -147,9 +147,9 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 			if (msg instanceof Message)
 				((CommunicatingComponentInterface) this.dimaComponent).receive((Message) msg);
 			else
-				LogCompetence.writeException(this, msg+" is not a message : can not be added to mail box!");
+				LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
 		} else
-			LogCompetence.writeException(this, this.dimaComponent+" does not communicate!");
+			LogService.writeException(this, this.dimaComponent+" does not communicate!");
 
 	}
 

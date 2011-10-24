@@ -7,7 +7,7 @@ import org.jdom.JDOMException;
 
 import darx.Darx;
 import darx.NameServerImpl;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.hostcontrol.RemoteHostExecutor;
 
 public class DimaXDeploymentScript extends HostsPark{
@@ -57,7 +57,7 @@ public class DimaXDeploymentScript extends HostsPark{
 			this.execute(this.getNameServer(), this.getNameServerClass(), this.getNameServerCommandArgs());
 			try{Thread.sleep(2000);}catch(final Exception e){};
 		} catch (final Exception e) {
-			LogCompetence.writeException(this, "Error while instanciating name server", e);
+			LogService.writeException(this, "Error while instanciating name server", e);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class DimaXDeploymentScript extends HostsPark{
 			host.executeWithJava(this.getDarxServerClass(), this.getDarxServerCommandArgs(host));
 			try{Thread.sleep(2000);}catch(final Exception e){};
 		} catch (final Exception e) {
-			LogCompetence.writeException(this, "Error while instanciating "+ host, e);
+			LogService.writeException(this, "Error while instanciating "+ host, e);
 		}
 	}
 

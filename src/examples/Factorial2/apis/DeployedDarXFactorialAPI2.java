@@ -9,7 +9,7 @@ import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.deployment.DimaXDeploymentScript;
 import dimaxx.hostcontrol.RemoteHostExecutor;
 import examples.Factorial2.masapplication.AgentFact;
@@ -51,6 +51,6 @@ public class DeployedDarXFactorialAPI2 {
 		final RemoteHostExecutor h = machines.getHosts().iterator().next();
 		F.activateWithDarx(h.getUrl(), h.getPort());
 
-		LogCompetence.write("\n\n\n"+" Factorial:  " + n+"\n\n\n");
+		LogService.write("\n\n\n"+" Factorial:  " + n+"\n\n\n");
 	}
 }

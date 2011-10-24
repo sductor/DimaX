@@ -1,6 +1,6 @@
 package negotiation.negotiationframework.strategy.evaluation;
 
-import dima.introspectionbasedagents.coreservices.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
 

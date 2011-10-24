@@ -15,7 +15,7 @@ import dima.basiccommunicationcomponents.CommunicationComponent;
 import dima.basiccommunicationcomponents.Message;
 import dima.basiccommunicationcomponents.SimpleMailBox;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.BasicAgents.AgentEngine;
 import dima.kernel.BasicAgents.BasicReactiveAgent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
@@ -133,7 +133,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		try	{
 			darxEngine.activateTask(PortNb);
 		}  catch (final java.rmi.RemoteException e){
-			LogCompetence.writeException(this,"Error during Activation : ",e);
+			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
 
@@ -147,7 +147,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		try	{
 			darxEngine.activateTask(url,PortNb);
 		}  catch (final java.rmi.RemoteException e){
-			LogCompetence.writeException(this,"Error during Activation : ",e);
+			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
 
@@ -160,7 +160,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		try	{
 			darxEngine.activateTask(url,PortNb);
 		}  catch (final java.rmi.RemoteException e){
-			LogCompetence.writeException(this,"Error during Activation : ",e);
+			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
 	/**

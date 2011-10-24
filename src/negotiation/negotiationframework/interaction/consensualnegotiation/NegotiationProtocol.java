@@ -17,12 +17,12 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.competences.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.coreservices.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
 
 /**
  * Negotiation, as a protocol, provide : * the involved roles * the method to
@@ -453,18 +453,17 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 							+ c + "!!!!!\n" + this.losts);
 				// do nothing : probleme avec losts : contract identifier mal
 				// reconnu???
-				else {
-					Contract contract;
-					try {
-						contract = this.contracts.getContract(c);
-					} catch (final UnknownContractException e) {
-						this.faceAnUnknownContract(e);
-						return;
-					}
-					logMonologue("I 've been accepted! =) "+c+"\n"+getMyAgent().getMyCurrentState());
-					this.contracts.addAcceptation(id, contract);
-					contract.setSpecification(s);
+			}else {
+				Contract contract;
+				try {
+					contract = this.contracts.getContract(c);
+				} catch (final UnknownContractException e) {
+					this.faceAnUnknownContract(e);
+					return;
 				}
+				logMonologue("I 've been accepted! =) "+c+"\n"+getMyAgent().getMyCurrentState());
+				this.contracts.addAcceptation(id, contract);
+				contract.setSpecification(s);
 			}
 	}
 

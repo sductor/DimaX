@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 
@@ -122,7 +122,7 @@ public class Executor implements Serializable {
 			in.flush();
 			return p;
 		} catch (final Exception ex) {
-			LogCompetence.writeException(this, "Erreur execute commande ", ex);
+			LogService.writeException(this, "Erreur execute commande ", ex);
 			throw new ErrorOnProcessExecutionException();
 		}
 	}
@@ -148,7 +148,7 @@ public class Executor implements Serializable {
 		try {
 			return Runtime.getRuntime().exec("/bin/bash");
 		} catch (final IOException ex) {
-			LogCompetence.writeException(this,
+			LogService.writeException(this,
 					"Erreur de creation de process ", ex);
 			throw new ErrorOnProcessExecutionException();
 		}
@@ -167,7 +167,7 @@ public class Executor implements Serializable {
 			// TODO
 			return Runtime.getRuntime().exec("HUH!!! JEN SAIS RIEN!!!");
 		} catch (final IOException ex) {
-			LogCompetence.writeException(this,
+			LogService.writeException(this,
 					"Erreur de creation de process ", ex);
 			throw new ErrorOnProcessExecutionException();
 		}
@@ -195,7 +195,7 @@ public class Executor implements Serializable {
 				sortie = "Le processus n'a pas renvoyé de sortie";
 			return sortie;
 		} catch (final IOException ex) {
-			LogCompetence.writeException(this, "Erreur lecture commande ", ex);
+			LogService.writeException(this, "Erreur lecture commande ", ex);
 			throw new ErrorOnProcessExecutionException();
 		}
 	}

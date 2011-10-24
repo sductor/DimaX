@@ -2,8 +2,8 @@ package negotiation.faulttolerance.candidaturenegotiation.statusdestruction;
 
 import java.util.Collection;
 
-import dima.introspectionbasedagents.coreservices.information.OpinionService;
-import dima.introspectionbasedagents.coreservices.information.OpinionService.Opinion;
+import dima.introspectionbasedagents.services.library.information.OpinionService;
+import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
 
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;

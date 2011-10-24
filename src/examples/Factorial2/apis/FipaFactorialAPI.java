@@ -2,7 +2,7 @@ package examples.Factorial2.apis;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import examples.Factorial2.masapplication.AgentFact;
 import examples.Factorial2.masapplication.AgentMult;
@@ -31,6 +31,6 @@ public class FipaFactorialAPI {
 		M2.activateWithFipa();
 
 		F.activateWithFipa();
-		LogCompetence.write("\n\n\n"+" Factroial:  " + n+"\n\n\n");
+		LogService.write("\n\n\n"+" Factroial:  " + n+"\n\n\n");
 	}
 }

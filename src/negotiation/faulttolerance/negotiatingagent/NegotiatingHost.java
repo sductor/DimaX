@@ -16,12 +16,12 @@ import negotiation.negotiationframework.interaction.consensualnegotiation.Abstra
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.competences.CompetenceException;
-import dima.introspectionbasedagents.coreservices.information.ObservationService;
-import dima.introspectionbasedagents.coreservices.information.ObservationService.Information;
-import dima.introspectionbasedagents.coreservices.information.SimpleObservationService;
-import dima.introspectionbasedagents.coreservices.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.coreservices.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 
 public class NegotiatingHost
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>

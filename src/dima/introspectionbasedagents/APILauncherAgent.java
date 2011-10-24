@@ -13,8 +13,8 @@ import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.competences.CompetenceException;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.ProactiveComponents.ProactiveComponent;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
@@ -148,8 +148,8 @@ public abstract class APILauncherAgent extends BasicCompetentAgent{
 		this.wwait(1000);
 		StartSimulationMessage m = new StartSimulationMessage();
 		for (BasicCompetentAgent ag : getAgents()){
-			if (LogCompetence.toFiles)
-				ag.addObserver(this.getIdentifier(), LogCompetence.logKey);
+			if (LogService.toFiles)
+				ag.addObserver(this.getIdentifier(), LogService.logKey);
 			ag.start();
 			//			logMonologue("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! sended to "+ag.getIdentifier());
 		}
@@ -212,11 +212,11 @@ class LocalFipaScheduler extends ArrayList<BasicCommunicatingAgent>{
 		for (final ProactiveComponent c : this){
 			//			LoggerManager.write("\n\n-------------------->");//SIMULATION : executing "+c.toString()+"***********");
 			c.preActivity();
-			LogCompetence.flush();
+			LogService.flush();
 			c.step();
-			LogCompetence.flush();
+			LogService.flush();
 			c.postActivity();
-			LogCompetence.flush();
+			LogService.flush();
 		}
 
 		final Iterator<BasicCommunicatingAgent> it = this.iterator();
@@ -234,26 +234,26 @@ class LocalFipaScheduler extends ArrayList<BasicCommunicatingAgent>{
 		int step = 0;
 		while (!this.isEmpty()){
 			//			LoggerManager.write("\n\n***********SIMULATION : starting step "+step+", nbAgent:"+this.size()+"***********\n\n\n");
-			LogCompetence.flush();
+			LogService.flush();
 			this.executeStep();
-			LogCompetence.flush();
+			LogService.flush();
 			step++;
 		}
-		LogCompetence.write("\n\n\n***********SIMULATION : END OF SIMULATION***********\n\n\n");
+		LogService.write("\n\n\n***********SIMULATION : END OF SIMULATION***********\n\n\n");
 		System.exit(1);
 	}
 
 	public void runApplication(final int nbMaxStep){
 		this.initialize();
-		LogCompetence.flush();
+		LogService.flush();
 		while (!( this.isEmpty() || step > nbMaxStep) ){
 			//			LoggerManager.write("\n\n***********SIMULATION : starting step "+step+", nbAgent:"+this.size()+"***********\n\n\n");
-			LogCompetence.flush();
+			LogService.flush();
 			this.executeStep();
-			LogCompetence.flush();
+			LogService.flush();
 			step++;
 		}
-		LogCompetence.write("\n\n***********SIMULATION : END OF SIMULATION***********\n\n\n");
+		LogService.write("\n\n***********SIMULATION : END OF SIMULATION***********\n\n\n");
 		System.exit(1);
 	}
 }

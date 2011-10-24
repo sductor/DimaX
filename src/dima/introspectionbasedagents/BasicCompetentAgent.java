@@ -12,18 +12,17 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.Transient;
-import dima.introspectionbasedagents.competences.AgentCompetence;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
-import dima.introspectionbasedagents.competences.CompetenceException;
-import dima.introspectionbasedagents.competences.DuplicateCompetenceException;
-import dima.introspectionbasedagents.competences.UnInstanciedCompetenceException;
-import dima.introspectionbasedagents.competences.UnknownCompetenceException;
-import dima.introspectionbasedagents.competences.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
-import dima.introspectionbasedagents.coreservices.observingagent.PatternObserverCompetence;
-import dima.introspectionbasedagents.coreservices.observingagent.PatternObserverWithHookCompetence;
+import dima.introspectionbasedagents.services.AgentCompetence;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.DuplicateCompetenceException;
+import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
+import dima.introspectionbasedagents.services.UnknownCompetenceException;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.core.observingagent.PatternObserverService;
+import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
 import dima.introspectionbasedagents.shells.MethodHandler;
@@ -41,6 +40,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	private BasicCompetenceShell myShell;
 	private Date creation;
 
+	
 	//
 	// Constructor
 	//
@@ -49,29 +49,29 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public BasicCompetentAgent(final AgentIdentifier newId)  throws CompetenceException {
 		super(newId);
 		this.creation = new Date();
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	public BasicCompetentAgent(final Map<?, ?> mp, final AgentIdentifier newId)  throws CompetenceException {
 		super(mp, newId);
 		this.creation = new Date();
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	public BasicCompetentAgent(final Map<?, ?> mp)  throws CompetenceException  {
 		super(mp);
 		this.creation = new Date();
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	public BasicCompetentAgent(final String newId) throws CompetenceException {
 		super(newId);
 		this.creation = new Date();
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	/*
@@ -81,29 +81,29 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public BasicCompetentAgent(final AgentIdentifier newId, final Date horloge)  throws CompetenceException {
 		super(newId);
 		this.creation = horloge;
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	public BasicCompetentAgent(final Map<?, ?> mp, final AgentIdentifier newId, final Date horloge)  throws CompetenceException {
 		super(mp, newId);
 		this.creation = horloge;
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	public BasicCompetentAgent(final Map<?, ?> mp, final Date horloge)  throws CompetenceException  {
 		super(mp);
 		this.creation = horloge;
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	public BasicCompetentAgent(final String newId, final Date horloge) throws CompetenceException {
 		super(newId);
 		this.creation = horloge;
-		log= new LogCompetence(this);
-		observer=	new PatternObserverWithHookCompetence(this);
+		log= new LogService(this);
+		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	//
@@ -156,6 +156,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public void setActive( boolean active) {
 		this.active=active;
 	}
+
 	//
 	// Launch
 	//
@@ -300,7 +301,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 */
 
 	@Competence()
-	public final PatternObserverWithHookCompetence observer;
+	public final PatternObserverWithHookservice observer;
 
 	/**/
 
@@ -391,16 +392,16 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 */
 
 	@Competence()
-	private final LogCompetence log;
+	private final LogService log;
 
 
 	@Override
-	public Boolean logException(final String text, final Exception e) {
+	public Boolean logException(final String text, final Throwable e) {
 		return this.log.logException(text, e);
 	}
 
 	@Override
-	public Boolean logException(final String text, final String details, final Exception e) {
+	public Boolean logException(final String text, final String details, final Throwable e) {
 		return this.log.logException(text, details, e);
 	}
 
@@ -425,12 +426,12 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	@Override
-	public Boolean logWarning(final String text, final Exception e) {
+	public Boolean logWarning(final String text, final Throwable e) {
 		return this.log.logWarning(text, e);
 	}
 
 	@Override
-	public Boolean logWarning(final String text, final String details, final Exception e) {
+	public Boolean logWarning(final String text, final String details, final Throwable e) {
 		return this.log.logWarning(text, details, e);
 	}
 

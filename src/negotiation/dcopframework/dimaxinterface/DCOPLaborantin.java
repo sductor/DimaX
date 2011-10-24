@@ -11,8 +11,8 @@ import negotiation.dcopframework.dcop.Helper;
 
 import dima.introspectionbasedagents.APILauncherAgent;
 import dima.introspectionbasedagents.BasicCompetentAgent;
-import dima.introspectionbasedagents.competences.DuplicateCompetenceException;
-import dima.introspectionbasedagents.competences.UnInstanciedCompetenceException;
+import dima.introspectionbasedagents.services.DuplicateCompetenceException;
+import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 
 public class DCOPLaborantin extends APILauncherAgent {
 

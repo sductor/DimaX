@@ -1,7 +1,7 @@
 package negotiation.negotiationframework.interaction;
 
 import negotiation.negotiationframework.agent.AgentState;
-import dima.introspectionbasedagents.coreservices.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 
 /**
  * Represents a state and a qos (args)

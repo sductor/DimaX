@@ -3,7 +3,7 @@ package negotiation.negotiationframework.interaction.consensualnegotiation;
 import java.util.Collection;
 
 import dima.introspectionbasedagents.NotReadyException;
-import dima.introspectionbasedagents.competences.AgentCompetence;
+import dima.introspectionbasedagents.services.AgentCompetence;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import dima.introspectionbasedagents.competences.AgentCompetence;
+import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface RationalCore<
 ActionSpec extends AbstractActionSpecification,

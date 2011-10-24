@@ -6,8 +6,8 @@ import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
-import dima.introspectionbasedagents.coreservices.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
 public  class ReplicaCore
 extends

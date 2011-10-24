@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 
@@ -71,7 +71,7 @@ public class AgentFact extends BasicCommunicatingAgent {
 
 	@Override
 	public void proactivityTerminate(){
-		LogCompetence.write(this.getId(),"La factoriel de "+this.n+" vaut "+this.liste.pop());
+		LogService.write(this.getId(),"La factoriel de "+this.n+" vaut "+this.liste.pop());
 		System.exit(1);
 	}
 

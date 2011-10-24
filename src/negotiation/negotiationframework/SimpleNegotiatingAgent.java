@@ -16,10 +16,10 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
-import dima.introspectionbasedagents.competences.AgentCompetence;
-import dima.introspectionbasedagents.competences.CompetenceException;
-import dima.introspectionbasedagents.coreservices.information.ObservationService;
-import dima.introspectionbasedagents.coreservices.observingagent.ShowYourPocket;
+import dima.introspectionbasedagents.services.AgentCompetence;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
+import dima.introspectionbasedagents.services.library.information.ObservationService;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,

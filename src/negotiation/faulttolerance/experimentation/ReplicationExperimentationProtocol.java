@@ -10,8 +10,8 @@ import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.experimentationframework.IfailedException;
 import negotiation.experimentationframework.MachineNetwork;
 import negotiation.experimentationframework.MachineNetwork.NotEnoughMachinesException;
-import dima.introspectionbasedagents.competences.CompetenceException;
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.distribution.ZeroOneSymbolicValue;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
@@ -235,7 +235,7 @@ public class ReplicationExperimentationProtocol implements
 		return 1;
 	}
 
-	public static final String resultPath = LogCompetence.getMyPath()+"result_"			
+	public static final String resultPath = LogService.getMyPath()+"result_"			
 			+ ReplicationExperimentationProtocol.nbAgents + "agents_"
 			+ ReplicationExperimentationProtocol.nbHosts + "hosts_"
 			+ ReplicationExperimentationProtocol._simulationTime / 60000
@@ -268,7 +268,7 @@ public class ReplicationExperimentationProtocol implements
 								+ ReplicationExperimentationProtocol.nbHosts));
 				erreur = false;
 			} catch (final IfailedException e) {
-				LogCompetence.writeException(
+				LogService.writeException(
 						"retrying to launch simu " + p.getName()
 								+ " failure caused by : ", e.e);
 				erreur = true;

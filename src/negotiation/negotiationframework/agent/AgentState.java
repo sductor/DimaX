@@ -2,7 +2,7 @@ package negotiation.negotiationframework.agent;
 
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.coreservices.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 
 public interface AgentState extends Information {
 

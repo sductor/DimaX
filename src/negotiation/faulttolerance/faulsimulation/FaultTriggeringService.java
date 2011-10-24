@@ -9,7 +9,7 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationProt
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLaborantin> {
 	private static final long serialVersionUID = -5136934098832050285L;

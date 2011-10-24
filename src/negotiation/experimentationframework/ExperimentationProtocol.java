@@ -3,7 +3,7 @@ package negotiation.experimentationframework;
 import java.util.LinkedList;
 import negotiation.experimentationframework.MachineNetwork.NotEnoughMachinesException;
 
-import dima.introspectionbasedagents.competences.CompetenceException;
+import dima.introspectionbasedagents.services.CompetenceException;
 import dimaxx.server.HostIdentifier;
 
 public interface ExperimentationProtocol {

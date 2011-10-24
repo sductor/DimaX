@@ -7,8 +7,8 @@ import negotiation.negotiationframework.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import dima.introspectionbasedagents.competences.BasicAgentCompetence;
-import dima.introspectionbasedagents.coreservices.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 
 public class StrategicProposerCore<
 ActionSpec extends AbstractActionSpecification,

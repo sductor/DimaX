@@ -1,6 +1,6 @@
 package dimaxx.kernel;
 
-import dima.introspectionbasedagents.coreservices.loggingactivity.LogCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 
@@ -45,7 +45,7 @@ public class DimaXTaskEngine extends Thread {
 				}
 
 			// Terminate
-			LogCompetence.write(this.task.getTaskName(), "end of proactivity <<<");
+			LogService.write(this.task.getTaskName(), "end of proactivity <<<");
 			this.task.terminate();
 			Thread.yield();
 		}

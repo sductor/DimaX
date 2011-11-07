@@ -108,7 +108,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 
 		// Verification de la consistance
 		if (!this.getMyAgent().respectMyRights(currentState))
-			throw new RuntimeException("what the  (2)!!!!!!" + currentState);
+			throw new RuntimeException("what the  (2)!!!!!!" + currentState+" accepted "+participantAlreadyAccepted);
 
 		Collection<Contract> toValidate = new ArrayList<Contract>();
 		final Collection<Contract> toReject = new ArrayList<Contract>();

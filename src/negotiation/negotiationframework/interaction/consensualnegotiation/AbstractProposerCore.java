@@ -1,6 +1,7 @@
 package negotiation.negotiationframework.interaction.consensualnegotiation;
 
 import java.util.Collection;
+import java.util.Set;
 
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.AgentCompetence;
@@ -16,7 +17,7 @@ PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends AgentCompetence<Agent>{
 	
-	public Collection<? extends Contract> getNextContractsToPropose()
+	public Set<? extends Contract> getNextContractsToPropose()
 			throws NotReadyException;
 
 }

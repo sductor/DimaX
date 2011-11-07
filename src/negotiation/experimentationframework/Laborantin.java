@@ -13,6 +13,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.APILauncherAgent;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -74,10 +75,19 @@ public abstract class Laborantin extends APILauncherAgent {
 		setObservation();
 		//		if (true)
 		//			throw new RuntimeException();
-		launch();	
+			launch();
 		//		throw new RuntimeException();
+		this.start();
 	}
 
+//	@ProactivityInitialisation
+	public void launch(){
+//				this.launchWithFipa();
+
+		//		launchWithDarx(7777, 7001);
+		//								launchWithoutThreads(100);
+		launchWithoutThreads();
+	}
 
 	//
 	// Implemented
@@ -88,14 +98,7 @@ public abstract class Laborantin extends APILauncherAgent {
 		return this.agents.values();
 	}
 
-	public void launch(){
-		//		this.launchWithFipa();
 
-		//		launchWithDarx(7777, 7001);
-		//								launchWithoutThreads(100);
-		launchWithoutThreads();
-		this.start();
-	}
 
 
 

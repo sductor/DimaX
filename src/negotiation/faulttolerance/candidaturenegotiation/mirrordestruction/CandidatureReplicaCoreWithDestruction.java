@@ -2,18 +2,22 @@ package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
 import negotiation.faulttolerance.ReplicationCandidature;
-import negotiation.faulttolerance.experimentation.SocialOptimisation;
+import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 
 public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 	private static final long serialVersionUID = 1735540071994141334L;
 
-	String socialWelfare;
+	private final ReplicationSocialOptimisation myOptimiser;
 
 	public CandidatureReplicaCoreWithDestruction(String socialWelfare) {
-		this.socialWelfare=socialWelfare;
+		myOptimiser = new ReplicationSocialOptimisation(this, socialWelfare);
 	}
 
 	/**
@@ -55,11 +59,22 @@ public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 		}
 		c2.addAll(destructionContract);
 		destructionContract.clear();
-		
+
 		if (creation)
 			return super.getAllocationPreference(s, c1, c2);
 		else{
-			return SocialOptimisation.getSocialPreference(socialWelfare, c1, c2);
+			try {
+				int pref = myOptimiser.getSocialPreference(c1, c2);
+				logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, ReplicationSocialOptimisation.log_socialWelfareOrdering);
+				return pref;
+			}catch(RuntimeException e){
+				String log = "pref of \n"+c1+"\n"+c2;
+				for (ReplicationCandidature r : c1)
+					for (AgentIdentifier id : r.getAllParticipants())
+						log+="\n spec of "+id+" : "+r.getSpecificationOf(id);
+							getMyAgent().signalException(log);
+							throw e;
+			}
 		}
 	}
 

@@ -27,7 +27,7 @@ public interface AbstractContractTransition<ActionSpec extends AbstractActionSpe
 	//Attention retourne l'état tel quel si l'agent n'est pas concerné
 	public <State extends ActionSpec> State computeResultingState(final State s);
 	
-	public ActionSpec computeResultingState(AgentIdentifier id);
+	public ActionSpec computeResultingState(AgentIdentifier id);//doit associer comme time a l'action spec le time du contract
 
 	//
 	// public void setAccepted(AgentIdentifier id);
@@ -43,6 +43,8 @@ public interface AbstractContractTransition<ActionSpec extends AbstractActionSpe
 	public boolean hasReachedExpirationTime();
 
 	public boolean willReachExpirationTime(long t);
+
+	public long getCreationTime();
 
 	// public ContractTransition<ActionSpec> clone();
 }

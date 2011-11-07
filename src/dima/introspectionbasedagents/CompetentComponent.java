@@ -11,6 +11,9 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 
+
+	public void setActive(boolean active);
+	
 	//
 	// Hook
 	//
@@ -116,13 +119,13 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	 */
 
 
-	public Boolean logException(String text, Throwable e);
+	public Boolean signalException(String text, Throwable e);
 
-	public Boolean logException(String text, String details, Throwable e);
+//	public Boolean logException(String text, String details, Throwable e);
+//
+//	public Boolean logException(String text, String details);
 
-	public Boolean logException(String text, String details);
-
-	public Boolean logException(String text);
+	public Boolean signalException(String text);
 
 	public Boolean logMonologue(String text, String details);
 
@@ -137,5 +140,6 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	public Boolean logWarning(String text);
 
 	public void addLogKey(String key, boolean toString, boolean toFile);
+
 
 }

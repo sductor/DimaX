@@ -23,6 +23,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
+import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 
 /**
  * Negotiation, as a protocol, provide : * the involved roles * the method to
@@ -65,6 +66,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			this.getMyAgent().getIdentifier());
 
 	public static final String log_negotiationStep="negotiation step for log";
+	public static final String log_contractDataBaseManipulation="manipulation of contracts database";
 	//
 	// Constructor
 	//
@@ -72,7 +74,6 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	public NegotiationProtocol(
 			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a) throws UnrespectedCompetenceSyntaxException {
 		super(a);
-		addLogKey(log_negotiationStep, false, false);
 	}
 
 	//
@@ -103,7 +104,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			}
 		else
 			throw new RuntimeException(
-					"impossible!! v��rifier le fault service!!");
+					"impossible!! vérifier le fault service!!");
 
 	}
 
@@ -243,11 +244,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				//
 
 				for (final Contract contract : selectedContracts.getContractsAcceptedBy(this.getMyAgent().getIdentifier()))
-					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier()) 
-							&& getContracts().getConsensualContracts().contains(contract)){// Initiator Answering
-						this.requestContract(contract);
-					}else{
-						// Participant Answering
+					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier())) {// if im initiator
+						if (getContracts().getConsensualContracts().contains(contract))//if the contract is consensual 
+							this.requestContract(contract);
+					}else{// else : im participant 						
 						this.acceptContract(contract);
 					}
 				for (final Contract contract : selectedContracts.getRejectedContracts())
@@ -303,7 +303,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	// @role(NegotiationParticipant.class)
 	protected void rejectContract(final Contract contract) {
-		getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+getMyAgent().getMyCurrentState(),log_negotiationStep);
+//		getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+getMyAgent().getMyCurrentState(),log_negotiationStep);
 		this.contracts
 		.addRejection(this.getMyAgent().getIdentifier(), contract);
 		this.notify(contract);
@@ -366,11 +366,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.Propose, protocol = NegotiationProtocol.class)
 	void receiveProposal(final SimpleContractEnvellope delta) {
+		updateInformations(delta.getMyContract());
 		delta.getMyContract().setSpecification(this.getMyAgent().getMySpecif(delta.getMyContract()));
-		for (AgentIdentifier id : delta.getMyContract().getAllParticipants()){
-			if (!id.equals(getIdentifier()) && delta.getMyContract().computeResultingState(id)!=null)
-				getMyAgent().getMyInformation().add(delta.getMyContract().computeResultingState(id));
-		}
 		this.cleanContracts();
 		final Contract c = delta.getMyContract();
 		if (!(this.getMyAgent() instanceof NegotiatingHost)
@@ -385,7 +382,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				String spec = "";
 				for (AgentIdentifier id : c.getAllParticipants())
 					spec+="\n"+c.getSpecificationOf(id);
-						getMyAgent().logMonologue("I've received proposal "+c+" spec :"+spec,log_negotiationStep);
+//						getMyAgent().logMonologue("I've received proposal "+c+" spec :"+spec,log_negotiationStep);
 						// try {
 						this.contracts.addContract(c);
 			}
@@ -395,6 +392,27 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		// e);
 		// }
 		// receivedContract.add(c.getIdentifier());
+	}
+
+	private void updateInformations(final Contract delta) {
+		for (AgentIdentifier id : delta.getAllParticipants()){
+			if (!id.equals(getIdentifier()) && delta.getSpecificationOf(id)!=null){
+				Boolean contractIsOutOfDate = null;
+
+				try {
+					contractIsOutOfDate = getMyAgent().getMyInformation()
+							.getInformation(delta.getSpecificationOf(id).getClass(),id).isNewerThan(delta.getSpecificationOf(id));
+					if (contractIsOutOfDate){
+						delta.setSpecification(
+								(ActionSpec) getMyAgent().getMyInformation().getInformation(delta.getSpecificationOf(id).getClass(),id));
+					}
+				} catch (NoInformationAvailableException e) {
+					contractIsOutOfDate = false;
+				}
+
+				getMyAgent().getMyInformation().add(delta.getSpecificationOf(id));//fait le test a l'intérieur;
+			}
+		}
 	}
 
 	/*
@@ -421,6 +439,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.AcceptProposal, protocol = NegotiationProtocol.class)
 	void receiveAccept(final SimpleContractAnswer delta) {
+		//		updateInformations(delta.getMyContract());
 		this.cleanContracts();
 
 		final AgentIdentifier id = delta.getSender();
@@ -434,7 +453,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				this.getMyAgent().execute(this.getContracts().getContract(c));
 				this.contracts.remove(this.getContracts().getContract(c));
 			} catch (UnknownContractException e) {
-				logException("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",e);
+				signalException("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",e);
 			}
 
 		} else 
@@ -473,6 +492,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.RejectProposal, protocol = NegotiationProtocol.class)
 	void receiveReject(final SimpleContractAnswer delta) {
+		//		updateInformations(delta.getMyContract());
 		this.cleanContracts();
 		final AgentIdentifier id = delta.getSender();
 		final ContractIdentifier c = delta.getIdentifier();
@@ -539,7 +559,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 							this.getMyAgent().getMyCurrentState(), contract))
 						throw new RuntimeException(
 								"what the !!!!!!\n bad contract "
-										+ contract
+										+getContracts().statusOf(contract)
 										+ "\nnew state "
 										+ this.getMyAgent()
 										.getMyResultingState(contract));
@@ -548,9 +568,16 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 						this.getMyAgent().execute(contract);
 						this.contracts.remove(contract);
 						// alreadyExecuted.add(c);
+
+						//updating
+						for (AgentIdentifier id : contract.getAllParticipants()){
+							if (!id.equals(getIdentifier())){
+								getMyAgent().getMyInformation().add(contract.computeResultingState(id));
+							}
+						}
 					}
 				} else {
-					getMyAgent().logException("I can not execute a contract i have not accepted!!"+ c);
+					getMyAgent().signalException("I can not execute a contract i have not accepted!!"+ c);
 					sendMessage(c.getParticipants(), new ShowYourPocket(getIdentifier(),"receiveRequest"));
 				}
 	}
@@ -595,7 +622,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	}
 
 	private void faceAnUnknownContract(UnknownContractException e) {
-		this.logException("facing unknonw contract!!!!! " + e.getId()
+		this.signalException("facing unknonw contract!!!!! " + e.getId()
 				+ " lost contracts are : " + this.losts, e);
 		this.sendMessage(e.getId().getParticipants(), new ShowYourPocket(
 				this.getIdentifier(), "facing an unknown contract"));

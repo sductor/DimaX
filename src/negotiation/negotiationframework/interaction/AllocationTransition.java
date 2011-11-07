@@ -13,19 +13,24 @@ import dima.basicagentcomponents.AgentIdentifier;
 public class AllocationTransition<
 Contract extends AbstractContractTransition<ActionSpec>, 
 ActionSpec extends AbstractActionSpecification>
-		extends HashSet<Contract> implements AbstractContractTransition<ActionSpec> {
-
-	/**
-	 *
-	 */
+		extends HashSet<Contract> 
+implements 
+AbstractContractTransition<ActionSpec>,
+Collection<Contract> {
 	private static final long serialVersionUID = 652785940825256771L;
+
+	//
+	// Fields
+	//
+
 	private final AgentIdentifier analyser;
 	private final long validityTime;
 	private final Date creationTime = new Date();
 
-	/*
-	 *
-	 */
+
+	//
+	// Constructor
+	//
 
 	public AllocationTransition(final AgentIdentifier analyser,
 			final long validityTime) {
@@ -48,20 +53,32 @@ ActionSpec extends AbstractActionSpecification>
 		for (final Contract c : cs)
 			this.add(c);
 	}
-
+	
 	//
-	// Methods
+	// Accessors
 	//
 
-	public AllocationTransition<Contract, ActionSpec> getNewTransition(
-			final Contract c) {
-		final AllocationTransition<Contract, ActionSpec> result = 
-				new AllocationTransition<Contract, ActionSpec>(
-				this.analyser, this.validityTime, this);
-		result.add(c);
-		return result;
+
+	@Override
+	public long getCreationTime() {
+		return this.creationTime.getTime();
 	}
 
+	@Override
+	public long getUptime() {
+		return new Date().getTime() - this.creationTime.getTime();
+	}
+
+	@Override
+	public boolean hasReachedExpirationTime() {
+		return this.getUptime() > this.validityTime;
+	}
+
+	@Override
+	public boolean willReachExpirationTime(final long t) {
+		return this.getUptime() + t > this.validityTime;
+	}
+	
 	/*
 	 *
 	 */
@@ -119,37 +136,43 @@ ActionSpec extends AbstractActionSpecification>
 	}
 
 
-	@Override
-	public <State extends AgentState> State computeResultingState(State s,
-			AgentIdentifier id) {
-		throw new RuntimeException("You should not use this!");
+	//
+	// Methods
+	//
+
+	public AllocationTransition<Contract, ActionSpec> getNewTransition(
+			final Contract c) {
+		final AllocationTransition<Contract, ActionSpec> result = 
+				new AllocationTransition<Contract, ActionSpec>(
+				this.analyser, this.validityTime, this);
+		result.add(c);
+		return result;
 	}
 
 	/*
 	 *
 	 */
 
+
+	/*
+	 *
+	 */
+
 	@Override
-	public AllocationTransition<Contract, ActionSpec> clone() {
+	public ActionSpec getSpecificationOf(AgentIdentifier id) {
 		throw new RuntimeException("You should not use this!");
-		// AllocationTransition<Contract, ActionSpec> result = () super.clone();
-
 	}
 
 	@Override
-	public long getUptime() {
-		return new Date().getTime() - this.creationTime.getTime();
+	public <State extends ActionSpec> State computeResultingState(State s) {
+		throw new RuntimeException("You should not use this!");
 	}
 
 	@Override
-	public boolean hasReachedExpirationTime() {
-		return this.getUptime() > this.validityTime;
+	public ActionSpec computeResultingState(AgentIdentifier id) {
+		throw new RuntimeException("You should not use this!");
 	}
 
-	@Override
-	public boolean willReachExpirationTime(final long t) {
-		return this.getUptime() + t > this.validityTime;
-	}
 }
 // @Override
 // public void setAccepted(AgentIdentifier id) {

@@ -3,9 +3,13 @@ package negotiation.faulttolerance.experimentation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -44,6 +48,7 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
@@ -192,11 +197,38 @@ public class ReplicationLaborantin extends Laborantin {
 	// Behaviors
 	//
 
+	HashSet<ReplicationAgentResult> states;
+	private boolean analyseOptimal(){
+		Comparator<ReplicationAgentResult> reliaComp = new Comparator<ReplicationAgentResult>() {
+			@Override
+			public int compare(ReplicationAgentResult o1,
+					ReplicationAgentResult o2) {
+				return o1.disponibility.compareTo(o2.disponibility);
+			}
+		};
+		
+		LinkedList<ReplicationAgentResult> reliaStates = new LinkedList<ReplicationAgentResult>();		
+		reliaStates.addAll(states);
+		
+		Collections.sort(reliaStates, reliaComp);
+		
+		ReplicationAgentResult prev = reliaStates.removeFirst();
+		
+		while(!reliaStates.isEmpty()){
+			if (prev.criticity>reliaStates.removeFirst().criticity)
+				return false;
+		}
+		return true;
+	}
+	
 	@MessageHandler
 	@NotificationEnvelope
 	public final void receiveReplicaInfo(
 			final NotificationMessage<ReplicationAgentResult> n) {
 		this.updateInfo(n.getNotification());
+		states.remove(
+				n.getNotification());
+		states.add(n.getNotification());
 	}
 
 	@MessageHandler
@@ -218,7 +250,7 @@ public class ReplicationLaborantin extends Laborantin {
 	@Override
 	protected void instanciate(ExperimentationParameters par)
 			throws IfailedException, CompetenceException {
-
+		states = new HashSet<ReplicationAgentResult>();
 		final ReplicationExperimentationParameters p = (ReplicationExperimentationParameters) par;
 
 		this.myStatusObserver = new StatusObserver();
@@ -425,7 +457,7 @@ public class ReplicationLaborantin extends Laborantin {
 			select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else if (this.getSimulationParameters()._hostSelection
 				.equals(ReplicationExperimentationParameters.key4AllocSelect))
-			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, true);
+			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else
 			throw new RuntimeException(
 					"Static parameters est mal conf : agentSelection = "
@@ -590,6 +622,8 @@ public class ReplicationLaborantin extends Laborantin {
 
 		if (this.iObserveStatus())
 			this.myStatusObserver.writeStatusResult();
+		logWarning("OOOOOOOOOKKKKKKKKKKKK?????????"+analyseOptimal());
+		
 	}
 
 	//

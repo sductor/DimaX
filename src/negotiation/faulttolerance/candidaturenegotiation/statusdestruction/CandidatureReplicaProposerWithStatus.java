@@ -3,7 +3,9 @@ package negotiation.faulttolerance.candidaturenegotiation.statusdestruction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import dima.introspectionbasedagents.NotReadyException;
 
@@ -26,10 +28,10 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 
 
 	@Override
-	public Collection<ReplicationCandidature> getNextContractsToPropose()
+	public Set<ReplicationCandidature> getNextContractsToPropose()
 			throws NotReadyException {
 
-		final Collection<ReplicationCandidature> candidatures = new ArrayList<ReplicationCandidature>();
+		final Set<ReplicationCandidature> candidatures = new HashSet<ReplicationCandidature>();
 
 		if (this.stateStatusIs(this.getMyAgent().getMyCurrentState(),
 				AgentStateStatus.Wastefull)) {

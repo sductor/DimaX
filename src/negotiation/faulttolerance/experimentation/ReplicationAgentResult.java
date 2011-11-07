@@ -18,9 +18,9 @@ public class ReplicationAgentResult implements ExperimentationResults {
 
 	final AgentIdentifier myAgentIdentifier;
 
-	final double criticity;
-	final double disponibility;
-	final double reliability;
+	final Double criticity;
+	final Double disponibility;
+	final Double reliability;
 
 	public void setiAmDead(final boolean iAmDead) {
 		this.iAmDead = iAmDead;

@@ -79,12 +79,14 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 
 		//		System.out.flush();
 		if (registeredMethods!=null){//C'EST MOOOOOOOOOOOOOOOOOOCCCCCCCCCCCCCCCHHHHHHHHHHHHEEEEEEEEEEEEEEEEEEEEEE!!!!!!!!!!!!!!	
+			MethodHandler msave=null ;
 			try {
 				for (MethodHandler m : registeredMethods.get(key)){
+					msave=m;
 					m.execute(notification);
 				}
 			} catch (Throwable e) {
-				throw new RuntimeException("devrait etre plus propre!!!",e);
+				throw new RuntimeException("error executing "+msave+"\n ---> NB : exception runtime suivante a ignorer seule la cause est pertinente",e);
 			}
 		}
 		return super.notify(notification,key);

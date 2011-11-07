@@ -83,7 +83,7 @@ SimpleObservationService implements OpinionService {
 			get(myInfoType).
 			getGlobalOpinion();
 		} catch (Exception e) {
-			getMyAgent().logException("requesting "+myInfoType,e);
+			getMyAgent().signalException("requesting "+myInfoType,e);
 			throw new NoInformationAvailableException();
 		}
 	}

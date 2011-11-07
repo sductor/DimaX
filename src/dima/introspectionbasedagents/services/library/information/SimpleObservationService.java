@@ -3,6 +3,8 @@ package dima.introspectionbasedagents.services.library.information;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
@@ -26,7 +28,7 @@ ObservationService {
 	private static final long serialVersionUID = -1698180517104590922L;
 
 
-	private final ArrayList<AgentIdentifier> knownAgents = new ArrayList<AgentIdentifier>();
+	private final Set<AgentIdentifier> knownAgents = new HashSet<AgentIdentifier>();
 	protected HashMap<Class<? extends Information>, InformationDataBase<? extends Information>> infos =
 		new HashMap<Class<? extends Information>, InformationDataBase<? extends Information>>();
 
@@ -41,7 +43,7 @@ ObservationService {
 	 */
 
 	@Override
-	public ArrayList<AgentIdentifier> getKnownAgents() {
+	public Set<AgentIdentifier> getKnownAgents() {
 		return this.knownAgents;
 	}
 
@@ -71,7 +73,7 @@ ObservationService {
 			Class<Info> informationType, AgentIdentifier agentId)
 	throws NoInformationAvailableException {
 		if (this.infos.get(informationType)==null){
-			System.err.println("classe : "+informationType+" "+infos);
+//			System.err.println("classe : "+informationType+" "+infos);
 			throw new NoInformationAvailableException();
 		}
 

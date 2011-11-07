@@ -51,7 +51,7 @@ public class LogException extends LogNotification {
 	@Override
 	public String generateLogToWrite() {
 		return "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!EXCEPTION ** FROM AGENT " + getCaller() 
-				//				+ (this.e == null ? "" : this.e ) 
+								+ (this.e == null ? "" : this.e ) 
 				+" On Host" + this.host + "(" + this.date.toString()
 				+ " - " + this.date.getTime() + "):\n" + this.text;
 	}

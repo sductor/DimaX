@@ -153,6 +153,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean isActive() {
 		return active;
 	}
+	@Override
 	public void setActive( boolean active) {
 		this.active=active;
 	}
@@ -176,7 +177,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	@Override
 	public final void proactivityTerminate() {
 		//		logMonologue("my job is done! cleaning... ");
-
 		super.proactivityTerminate();
 	}
 
@@ -230,7 +230,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					compMethodToTest, compSignature, compargs,
 					this, agMethodToExecute, agSignature, agargs);
 		} catch (final Exception e) {
-			this.logException("Impossible to add the hook", e);
+			this.signalException("Impossible to add the hook", e);
 			return false;
 		}
 	}
@@ -257,7 +257,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					MethodHandler.getCurrentlyExecutedMethod(nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
-			this.logException("Impossible to add the hook", e);
+			this.signalException("Impossible to add the hook", e);
 			return false;
 		}
 	}
@@ -274,7 +274,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					MethodHandler.getCurrentlyExecutedMethod(nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
-			this.logException("Impossible to add the hook", e);
+			this.signalException("Impossible to add the hook", e);
 			return false;
 		}
 	}
@@ -290,7 +290,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					e.compMethodToTest, e.compSignature, e.compargs,
 					this, e.agMethodToExecute, e.agSignature, e.agargs);
 		} catch (final Exception e2) {
-			this.logException("Impossible to add the hook", e);
+			this.signalException("Impossible to add the hook", e);
 			return false;
 		}
 	}
@@ -399,24 +399,25 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	private final LogService log;
 
 
-	@Override
-	public Boolean logException(final String text, final Throwable e) {
-		return this.log.logException(text, e);
-	}
 
 	@Override
-	public Boolean logException(final String text, final String details, final Throwable e) {
-		return this.log.logException(text, details, e);
+	public Boolean signalException(final String text, final Throwable e) {
+		return this.log.signalException(text, e);
 	}
 
-	@Override
-	public Boolean logException(final String text, final String details) {
-		return this.log.logException(text, details);
-	}
+//	@Override
+//	public Boolean logException(final String text, final String details, final Throwable e) {
+//		return this.log.logException(text, details, e);
+//	}
+//
+//	@Override
+//	public Boolean logException(final String text, final String details) {
+//		return this.log.logException(text, details);
+//	}
 
 	@Override
-	public Boolean logException(final String text) {
-		return this.log.logException(text);
+	public Boolean signalException(final String text) {
+		return this.log.signalException(text);
 	}
 
 	@Override

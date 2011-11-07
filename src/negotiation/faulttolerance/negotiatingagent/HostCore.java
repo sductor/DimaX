@@ -4,10 +4,11 @@ import java.util.Collection;
 import java.util.Date;
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
-import negotiation.faulttolerance.experimentation.SocialOptimisation;
+import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
+import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.library.replication.ReplicationHandler;
@@ -26,15 +27,18 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	private static final long serialVersionUID = -179565544489478368L;
 
 	private final boolean iWanToNegotiate;
-	private final String socialWelfare;
+	private final ReplicationSocialOptimisation myOptimiser;
+	
 	//
 	// Constructor
 	//
 
 	public HostCore(final boolean mirrorNegotiating, String socialWelfare) {
 		this.iWanToNegotiate = mirrorNegotiating;
-		this.socialWelfare= socialWelfare;
+		myOptimiser = new ReplicationSocialOptimisation(this, socialWelfare);
+		
 	}
+	
 
 	//
 	// Methods
@@ -44,13 +48,12 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	public int getAllocationPreference(final HostState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-		return SocialOptimisation.getSocialPreference(socialWelfare, c1, c2);
+		int pref = myOptimiser.getSocialPreference(c1, c2);
+		logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, ReplicationSocialOptimisation.log_socialWelfareOrdering);
+		return pref;
 	}
 
-	@Override
-	public Boolean respectRights(final HostState s) {
-		return !s.ImSurcharged();
-	}
+
 
 	@Override
 	public void execute(final ReplicationCandidature c) {

@@ -23,4 +23,8 @@ ReplicationCandidature {
 	public ReplicationCandidature getMinContract() {
 		return minContract;
 	}
+	
+	public String toString(){
+		return super.toString()+" in order to create : "+minContract.getAgentInitialState();
+	}
 }

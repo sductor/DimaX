@@ -152,7 +152,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 			lowerThreshold = ReplicationExperimentationProtocol.alpha_low * ((mean + min)/2);
 			higherThreshold = ReplicationExperimentationProtocol.alpha_high * ((mean + max)/2);
 		} catch (Exception e) {
-			getMyAgent().logException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"+getMyAgent().getMyInformation(), e);
+			getMyAgent().signalException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"+getMyAgent().getMyInformation(), e);
 			throw new RuntimeException();
 		}
 	}

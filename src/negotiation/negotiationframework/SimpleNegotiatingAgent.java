@@ -2,6 +2,7 @@ package negotiation.negotiationframework;
 
 import java.util.Date;
 
+import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
@@ -16,6 +17,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
+import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
@@ -59,11 +61,13 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		this.selectionCore.setMyAgent(this); 
 		protocol = new NegotiationProtocol<ActionSpec, PersonalState, Contract>(this);
 
+		
 		this.myProposerCore = proposerCore;
 		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
 		.setMyAgent(this);
+		
 	}
-
+	
 	public SimpleNegotiatingAgent(
 			final AgentIdentifier id,
 			final Date horloge,
@@ -82,6 +86,13 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		this.myProposerCore = proposerCore;
 		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
 		.setMyAgent(this);
+	}
+
+	@ProactivityInitialisation
+	public void initialisation(){
+		addLogKey(ReplicationSocialOptimisation.log_socialWelfareOrdering, false, false);
+		addLogKey(NegotiationProtocol.log_negotiationStep, false, true);
+//		addLogKey(NegotiationProtocol.log_contractDataBaseManipulation, false, false);
 	}
 
 	//

@@ -118,7 +118,11 @@ ActionSpec extends AbstractActionSpecification> implements
 	public long getUptime() {
 		return new Date().getTime() - this.creationTime.getTime();
 	}
-
+	@Override
+	public long getCreationTime() {
+		return this.creationTime.getTime();
+	}
+	
 	@Override
 	public boolean hasReachedExpirationTime() {
 		return this.getUptime() > this.validityTime;

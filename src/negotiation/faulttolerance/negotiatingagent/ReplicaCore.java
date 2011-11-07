@@ -37,10 +37,6 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 		return this.getAllocationReliabilityPreference(s, c1, c2);
 	}
 
-	@Override
-	public Boolean respectRights(final ReplicaState s) {
-		return !s.getMyReplicas().isEmpty();
-	}
 
 
 	@Override
@@ -100,7 +96,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	@Override
 	public boolean IWantToNegotiate(final ReplicaState s) {
 		if (((NegotiatingReplica) this.getMyAgent()).IReplicate())
-			if (!s.getMyReplicaIdentifiers().containsAll(
+			if (!s.getMyResourceIdentifiers().containsAll(
 					this.getMyAgent().getMyInformation().getKnownAgents()))
 				return true;
 			else

@@ -3,6 +3,7 @@ package negotiation.faulttolerance.experimentation;
 import java.io.File;
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationResults;
+import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.distribution.DistributionParameters;
 import dimaxx.tools.distribution.ZeroOneSymbolicValue;
@@ -41,10 +42,7 @@ ExperimentationParameters {
 	final static String key4rouletteWheelSelect = "roolette wheel select";
 	final static String key4AllocSelect = "alloc select";
 
-	public final String _socialWelfare="leximin";
-	final static String key4leximinSocialWelfare="leximin";
-	final static String key4NashSocialWelfare="nash";
-	final static String key4UtilitaristSocialWelfare="utilitarist";
+	public final String _socialWelfare=AllocationSocialWelfares.key4leximinSocialWelfare;
 
 	//
 	// Constructor

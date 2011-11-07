@@ -81,7 +81,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 				if (!((ContractIdentifier)
 						that).contractCreation.equals(this.contractCreation))
 					throw new
-					RuntimeException("un agent a envoyé deux prop dans la mm session!!\n"+this+"\n"+that);
+					RuntimeException("un agent a envoyé deux prop dans la mm session!!\n"+this+that);
 				else
 					return true;
 		return false;

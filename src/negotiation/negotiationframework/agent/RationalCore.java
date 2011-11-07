@@ -32,7 +32,6 @@ Contract extends AbstractContractTransition<ActionSpec>>
 
 	public  Double evaluatePreference(PersonalState s1);
 	
-	public Boolean respectRights(PersonalState s);
 
 	/*
 	 *

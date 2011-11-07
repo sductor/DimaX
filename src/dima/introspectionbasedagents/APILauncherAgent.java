@@ -76,7 +76,7 @@ public abstract class APILauncherAgent extends BasicCompetentAgent{
 
 		final DimaXDeploymentScript script = new DimaXDeploymentScript(f);//contient le chemin vers le fichier xml
 		if (script.getAllHosts().isEmpty())
-			this.logException("no machines!!!");
+			this.signalException("no machines!!!");
 		else {
 
 			script.launchNameServer();
@@ -87,7 +87,7 @@ public abstract class APILauncherAgent extends BasicCompetentAgent{
 	protected void launchWithDarx(final File f, Collection<HostIdentifier> machines) throws JDOMException, IOException {
 		final DimaXDeploymentScript script = new DimaXDeploymentScript(f);//contient le chemin vers le fichier xml
 		if (script.getAllHosts().isEmpty())
-			this.logException("no machines!!!");
+			this.signalException("no machines!!!");
 		else {
 			Iterator<HostIdentifier> machinesIt = machines.iterator();
 			for (final BasicCommunicatingAgent ag : this.getAgents()){
@@ -104,7 +104,7 @@ public abstract class APILauncherAgent extends BasicCompetentAgent{
 	protected void launchWithDarx(final File f, final HashMap<AgentIdentifier, HostIdentifier> locations) throws JDOMException, IOException {
 		final DimaXDeploymentScript script = new DimaXDeploymentScript(f);
 		if (!script.getAllHostsIdentifier().containsAll(locations.values()))
-			this.logException("some machines are unknown!");
+			this.signalException("some machines are unknown!");
 		else {
 
 			script.launchNameServer();
@@ -148,8 +148,7 @@ public abstract class APILauncherAgent extends BasicCompetentAgent{
 		this.wwait(1000);
 		StartSimulationMessage m = new StartSimulationMessage();
 		for (BasicCompetentAgent ag : getAgents()){
-			if (LogService.toFiles)
-				ag.addObserver(this.getIdentifier(), LogService.logKey);
+			ag.addObserver(this.getIdentifier(), LogService.logNotificationKey);
 			ag.start();
 			//			logMonologue("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! sended to "+ag.getIdentifier());
 		}

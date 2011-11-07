@@ -2,6 +2,9 @@ package negotiation.negotiationframework.interaction.candidatureprotocol;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
@@ -24,14 +27,14 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 	private static final long serialVersionUID = -5315491050460219982L;
 
 	@Override
-	public Collection<ReplicationCandidature> getNextContractsToPropose()
+	public Set<ReplicationCandidature> getNextContractsToPropose()
 			throws NotReadyException {
 
-		final Collection<ReplicationCandidature> candidatures = new ArrayList<ReplicationCandidature>();
+		final Set<ReplicationCandidature> candidatures = new HashSet<ReplicationCandidature>();
 
 		for (final AgentIdentifier id : this.getMyAgent().getMyInformation().getKnownAgents()){
 			if (id instanceof ResourceIdentifier
-					&& !this.getMyAgent().getMyCurrentState().getMyReplicaIdentifiers()
+					&& !this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
 					.contains(id))
 				candidatures.add( 
 						new ReplicationCandidature(

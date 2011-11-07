@@ -1,0 +1,77 @@
+package negotiation.faulttolerance.experimentation;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
+
+import negotiation.faulttolerance.ReplicationCandidature;
+import negotiation.faulttolerance.ReplicationSpecification;
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.negotiationframework.AllocationSocialWelfares;
+
+public class ReplicationSocialOptimisation extends AllocationSocialWelfares<ReplicationSpecification, ReplicationCandidature>{
+
+
+
+	public ReplicationSocialOptimisation(CompetentComponent myAgent, String socialWelfare) {
+		super(myAgent, socialWelfare);
+	}
+
+	/*
+	 * 
+	 */
+
+	public static Double getReliability(Double dispo, Double criti) {
+		if (dispo / criti > 10)
+			System.out.println("aargh " + dispo + " " + criti);
+		return dispo / criti;
+	}
+
+
+	protected Collection<ReplicationSpecification> getResultingAllocation(
+			Map<AgentIdentifier, ReplicationSpecification> initialStates,
+			Collection<ReplicationCandidature> alloc){
+		Collection<ReplicationSpecification> res = super.getResultingAllocation(initialStates,alloc);
+		Iterator<ReplicationSpecification> itState = res.iterator();
+		while (itState.hasNext()){
+			if (!(itState.next() instanceof ReplicaState))
+				itState.remove();
+		}
+		return res;
+	}
+
+
+	@Override
+	public Comparator<ReplicationSpecification> getComparator() {
+		return new Comparator<ReplicationSpecification>() {
+			@Override
+			public int compare(final ReplicationSpecification r1,
+					final ReplicationSpecification r2) {
+				ReplicaState o1 = (ReplicaState) r1;
+				ReplicaState o2 = (ReplicaState) r2;
+
+				return Double.compare(
+						o1.getMyReliability(), 
+						o2.getMyReliability());
+			}
+		};
+	}
+
+	@Override
+	public UtilitaristEvaluator<ReplicationSpecification> getUtilitaristEvaluator() {
+		return new UtilitaristEvaluator<ReplicationSpecification>() {
+			@Override
+			public Double getUtilityValue(ReplicationSpecification o) {
+				ReplicaState s = (ReplicaState) o;
+				return s.getMyReliability();
+			}
+		};
+	}
+
+}

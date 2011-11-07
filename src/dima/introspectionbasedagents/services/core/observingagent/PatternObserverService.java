@@ -8,6 +8,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
@@ -197,7 +198,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		else if (m.getContent().equals(ObservationProtocol.DontObserve))
 			this.registeredObservers.remove(key, m.getSender());
 		else
-			this.getMyAgent().logException("unappropriate message");
+			this.getMyAgent().signalException("unappropriate message");
 
 		//				getMyAgent().logMonologue(
 		//						" : I've registered observer:'" + m.getSender() + "'\n"
@@ -232,7 +233,11 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		this.autoSendOfNotifications();
 		this.notificationsToSend.clear();
 	}
-
+	
+	@ProactivityFinalisation
+	public void terminate(){
+		autoSendOfNotifications();
+	}
 	//
 	// Primitives
 	//

@@ -2,6 +2,7 @@ package dima.introspectionbasedagents.services.library.information;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -16,7 +17,7 @@ public interface ObservationService extends AgentCompetence<BasicCompetentAgent>
 	// Acquaintance
 	//
 
-	public Collection<AgentIdentifier> getKnownAgents();
+	public Set<AgentIdentifier> getKnownAgents();
 
 	public void add(AgentIdentifier agentId);
 

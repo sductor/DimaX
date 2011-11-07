@@ -2,6 +2,8 @@ package negotiation.negotiationframework.interaction.consensualnegotiation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import negotiation.negotiationframework.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
@@ -28,9 +30,9 @@ ActionSpec, PersonalState, Contract>  {
 	}
 
 	@Override
-	public Collection<Contract> getNextContractsToPropose()
+	public Set<Contract> getNextContractsToPropose()
 			throws NotReadyException {
-		return new ArrayList<Contract>();
+		return new HashSet<Contract>();
 	}
 
 }

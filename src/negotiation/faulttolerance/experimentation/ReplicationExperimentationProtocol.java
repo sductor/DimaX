@@ -121,8 +121,8 @@ public class ReplicationExperimentationProtocol implements
 
 	// public static final int nbAgents =1;
 	// public static final int nbHosts = 2;
-	public static final int nbAgents = 5;
-	public static final int nbHosts = 2;
+	public static final int nbAgents = 3;
+	public static final int nbHosts = 3;
 //	public static final int nbAgents = 50;
 //	public static final int nbHosts = 70;
 //	public static final int nbAgents = 100;
@@ -137,8 +137,8 @@ public class ReplicationExperimentationProtocol implements
 
 	public static final Double knownHostsPercent = 1.;
 
-	public static final Double hostMaxProc = 1.;
-	public static final Double hostMaxMem = 1.;
+	public static final Double hostMaxProc = .5;
+	public static final Double hostMaxMem = .5;
 	
 	//
 	// Negotiation Tickers

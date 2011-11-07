@@ -3,13 +3,11 @@ package negotiation.faulttolerance;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import negotiation.SocialWelfares;
-import negotiation.SocialWelfares.UtilitaristEvaluator;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.negotiationframework.interaction.Allocation;
+import negotiation.negotiationframework.AllocationSocialWelfares;
 import negotiation.negotiationframework.interaction.MatchingCandidature;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -110,14 +108,14 @@ MatchingCandidature<ReplicationSpecification> {
 					+ "\n --> fromState " + fromState);
 		} else {
 			ReplicaState result = new ReplicaState(fromState, 
-					getResourceInitialState());
+					getResourceInitialState(), getCreationTime());
 			//on cree n nouveau state a partir de r
-			HostState h = new HostState(getResourceInitialState(), result);
+			HostState h = new HostState(getResourceInitialState(), result, getCreationTime());
 			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
 			result = new ReplicaState(result, 
-					getResourceInitialState());
+					getResourceInitialState(), getCreationTime());
 			//on remet ce nouveau state dans r
-			result = new ReplicaState(result, h);
+			result = new ReplicaState(result, h, getCreationTime());
 			return result;
 		}
 
@@ -135,7 +133,7 @@ MatchingCandidature<ReplicationSpecification> {
 			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
 			//								"hostcore:getmyresultingstate"));
 			throw new RuntimeException(
-					"oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"
+					fromState.getMyAgentIdentifier()+" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"
 							+ getAgent()
 							+ "\n ----> current state"
 							+ this); 
@@ -145,19 +143,19 @@ MatchingCandidature<ReplicationSpecification> {
 			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
 			//								"hostcore:getmyresultingstate"));
 			throw new RuntimeException(
-					"ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT " + getAgent()
+					fromState.getMyAgentIdentifier()+" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT " + getAgent()
 					+ "\n ----> current state" + this);
 		} else {
 			HostState h = 
 					new HostState(fromState, 
-							getAgentInitialState());
+							getAgentInitialState(), getCreationTime());
 			//on cree n nouveau state a partir de h
-			ReplicaState r1 = new ReplicaState(getAgentInitialState(), h);
+			ReplicaState r1 = new ReplicaState(getAgentInitialState(), h, getCreationTime());
 			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
 			h = new HostState(h, 
-					getAgentInitialState());
+					getAgentInitialState(), getCreationTime());
 			//on remet ce nouveau state dans h
-			h = new HostState(h, r1);
+			h = new HostState(h, r1, getCreationTime());
 
 
 			//			System.out.print(fromState+"\n to "+h+" \n to ");

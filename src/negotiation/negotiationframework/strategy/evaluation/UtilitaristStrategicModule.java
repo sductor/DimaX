@@ -44,7 +44,7 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 											global.getMaxInformationDynamicity()));
 			}
 		} catch (Exception e) {
-			getMyAgent().logException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}
@@ -63,7 +63,7 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 			//		new Double(nbUnknown * getMyAgent().getMyInformation().getSystemDispersion() * ageMoyen)  / (ids.size() * (ids.size() - nbUnknown));
 
 		} catch (Exception e) {
-			getMyAgent().logException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}
@@ -83,7 +83,7 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 			return getMyAgent().Iaccept((PersonalState)getMyAgent().getMyInformation().getOpinion(getMyInfoType(), id).getRepresentativeElement(),c) ;
 
 		} catch (Exception e) {
-			getMyAgent().logException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}
@@ -100,7 +100,7 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 					getMyAgent().getMyResultingState((PersonalState)getMyAgent().getMyInformation().getOpinion(getMyInfoType(), id).getRepresentativeElement(), c));
 
 		} catch (Exception e) {
-			getMyAgent().logException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}

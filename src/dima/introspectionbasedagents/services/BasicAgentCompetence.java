@@ -7,6 +7,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.NotReadyException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -8166804401339182512L;
@@ -129,23 +130,23 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	 */
 
 	@Override
-	public Boolean logException(final String text, final Throwable e) {
-		return this.myAgent.logException(text, e);
+	public Boolean signalException(final String text, final Throwable e) {
+		return this.myAgent.signalException(text, e);
 	}
 
-	@Override
-	public Boolean logException(final String text, final String details, final Throwable e) {
-		return this.myAgent.logException(text, details, e);
-	}
+//	@Override
+//	public Boolean logException(final String text, final String details, final Throwable e) {
+//		return this.myAgent.logException(text, details, e);
+//	}
+//
+//	@Override
+//	public Boolean logException(final String text, final String details) {
+//		return this.myAgent.logException(text, details);
+//	}
 
 	@Override
-	public Boolean logException(final String text, final String details) {
-		return this.myAgent.logException(text, details);
-	}
-
-	@Override
-	public Boolean logException(final String text) {
-		return this.myAgent.logException(text);
+	public Boolean signalException(final String text) {
+		return this.myAgent.signalException(text);
 	}
 
 	@Override

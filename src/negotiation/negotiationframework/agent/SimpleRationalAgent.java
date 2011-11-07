@@ -100,11 +100,23 @@ extends BasicCompetentAgent {
 
 			return (PersonalState) myInformation.getInformation(myStateType, getIdentifier());
 		} catch (NoInformationAvailableException e) {
-			logException("impossible!!!! ",e);//+myInformation.getInformation(myStateType),e);
+			signalException("impossible!!!! ",e);//+myInformation.getInformation(myStateType),e);
 			throw new RuntimeException();
 		}
 	}
-
+	
+	public Collection<ActionSpec> getMyResources(){
+		Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
+		for (AgentIdentifier id : getMyCurrentState().getMyResourceIdentifiers()){
+			try {
+				myResources.add((ActionSpec) getMyInformation().getInformation(getMyCurrentState().getMyResourcesClass(), id));
+			} catch (NoInformationAvailableException e) {
+				throw new RuntimeException("uuuuuhh impossible!!",e);
+			}
+		}
+		return myResources;
+	}
+	
 	public void setNewState(PersonalState s) {
 				logMonologue("NEW STATE !!!!!! "+s);
 		this.getMyInformation().add(s);
@@ -267,7 +279,7 @@ extends BasicCompetentAgent {
 	 */
 
 	public Boolean respectMyRights(final PersonalState s) {
-		return this.myCore.respectRights(s);
+		return s.isValid();
 	}
 
 	public Boolean respectMyRights(final Contract c) {

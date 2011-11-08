@@ -115,6 +115,15 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * Creation date: (07/05/00 00:24:58)
 	 * @param param Gdima.kernel.AgentAddress
 	 */
+	public void desactivateWithFipa() {
+		AgentManagementSystem.getDIMAams().removeAquaintance(this);
+
+	}
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (07/05/00 00:24:58)
+	 * @param param Gdima.kernel.AgentAddress
+	 */
 	public void activateWithComet() {
 		final AgentEngine engine = new AgentEngine(this);
 		this.com = new CometCommunicationComponent();
@@ -163,6 +172,12 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
+
+	public void removeAquaintance(
+			BasicCommunicatingAgent ag) {
+		this.aquaintances.remove(ag.getId().toString());		
+	}
+	
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (31/03/00 12:45:29)

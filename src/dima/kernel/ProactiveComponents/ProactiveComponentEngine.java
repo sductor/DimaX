@@ -56,6 +56,7 @@ implements Runnable {
 	public void run() {
 		this.proactivity.startUp();
 //		this.thread.interrupt();
+		System.out.println("yo");
 		this.proactivity=null;
 		this.thread = null;
 	}

@@ -33,27 +33,28 @@ ActionSpec extends AbstractActionSpecification> {
 				&& !unacceptedContracts.isEmpty() && n.getContractsAcceptedBy(myAgent.getIdentifier()).isEmpty()){
 			//The state of the host is stable and there is rejected contract : 
 			//we try to find if there is destruction that could loccally improve the system
-			for (ActionSpec state : myAgent.getMyResources()){
+			for (ActionSpec stateToDestroy : myAgent.getMyResources()){
+				myAgent.logMonologue("should i destroy? "+stateToDestroy);
 				for (Contract c : unacceptedContracts){
-
+					myAgent.logMonologue("analysing contract "+c);
 					Collection<Contract> testingAllocation = new ArrayList<Contract>();
-					Contract destContract = generateDestructionContract(state,c);
+					Contract destContract = generateDestructionContract(stateToDestroy,c);
 					destContract.setSpecification(myAgent.getMySpecif(destContract));
-					destContract.setSpecification(state);
+					destContract.setSpecification(stateToDestroy);
 					testingAllocation.add(c);
 					testingAllocation.add(destContract);
 
-					if (upgradingContracts.containsKey(state.getMyAgentIdentifier())){
+					if (upgradingContracts.containsKey(stateToDestroy.getMyAgentIdentifier())){
 						Collection<Contract> alreadyMadeContract = new ArrayList<Contract>();
-						alreadyMadeContract.add(upgradingContracts.get(state.getMyAgentIdentifier()));
+						alreadyMadeContract.add(upgradingContracts.get(stateToDestroy.getMyAgentIdentifier()));
 						if (myAgent.getMyAllocationPreferenceComparator().compare(
 								testingAllocation, 
 								alreadyMadeContract)>0){
-							upgradingContracts.put(state.getMyAgentIdentifier(), destContract);
+							upgradingContracts.put(stateToDestroy.getMyAgentIdentifier(), destContract);
 							toPutOnWait.add(c);						
 						}
 					} else if (myAgent.getMyAllocationPreferenceComparator().compare(testingAllocation, emptycontract)>0){
-						upgradingContracts.put(state.getMyAgentIdentifier(), destContract);
+						upgradingContracts.put(stateToDestroy.getMyAgentIdentifier(), destContract);
 						toPutOnWait.add(c);				
 					}
 				}

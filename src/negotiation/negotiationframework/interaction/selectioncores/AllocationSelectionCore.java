@@ -27,9 +27,15 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 		if (allocations.isEmpty())
 			return new ArrayList<Contract>();
 		else {
-			return Collections.max(
-					allocations, 
-					this.getMyAgent().getMyAllocationPreferenceComparator(currentState));
+			try {
+				return Collections.max(
+						allocations, 
+						this.getMyAgent().getMyAllocationPreferenceComparator(currentState));
+			} catch (RuntimeException e) {
+				this.getMyAgent().signalException(
+						"my state "+currentState+", contracts "+contractsToExplore);
+				throw e;
+			}
 		}
 	}
 
@@ -64,7 +70,7 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 		}
 
 		cleanContracts(currentState,result);
-//		logMonologue("allocations générée for "+getMyAgent().getMyCurrentState()+" from "+contractToAggregate+"\n : "+result);
+		//		logMonologue("allocations générée for "+getMyAgent().getMyCurrentState()+" from "+contractToAggregate+"\n : "+result);
 		return result;
 	}
 

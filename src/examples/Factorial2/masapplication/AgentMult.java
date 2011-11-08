@@ -33,6 +33,18 @@ public class AgentMult extends BasicCommunicatingAgent {
 		this.sendMessage(this.myFact, m);
 	}
 
+
+	@Override
+	public void proactivityTerminate(){
+		this.desactivateWithFipa();
+//		System.exit(1);
+	}
+	
+	@Override
+	public void finalize(){
+		System.out.println("so long and thanks for all the fish");
+	}
+	
 	@Override
 	public void step() {
 		this.readAllMessages();

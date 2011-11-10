@@ -1,5 +1,8 @@
 package examples.Factorial2.apis;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;

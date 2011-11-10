@@ -107,17 +107,19 @@ Contract extends AbstractContractTransition<ActionSpec>>{
 			for (AgentIdentifier id : c.getAllParticipants())
 				if (result.containsKey(id)){
 					if (c.getSpecificationOf(id).isNewerThan(result.get(id))){//rmplacing a fresher state	
-//						System.out.println("remplacing a fresher state");
-						result.put(id,c.getSpecificationOf(id));
-						for (Contract cOld : allContract){
-							if (cOld.getAllParticipants().contains(id))
-								cOld.setSpecification(c.getSpecificationOf(id));
-						}						
+						//						System.out.println("remplacing a fresher state");
+						result.put(id,c.getSpecificationOf(id));					
 					}
 				} else {//adding state not present in result
 					result.put(id,c.getSpecificationOf(id));
 				}
 		}		
+
+		//updating each contract with the freshest state
+		for (Contract cOld : allContract){
+			for (AgentIdentifier id : cOld.getAllParticipants())
+				cOld.setSpecification(result.get(id));
+		}	
 		return result;			
 	}
 

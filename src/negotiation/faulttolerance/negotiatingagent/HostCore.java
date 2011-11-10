@@ -28,7 +28,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 	private final boolean iWanToNegotiate;
 	private final ReplicationSocialOptimisation myOptimiser;
-	
+
 	//
 	// Constructor
 	//
@@ -36,9 +36,9 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	public HostCore(final boolean mirrorNegotiating, String socialWelfare) {
 		this.iWanToNegotiate = mirrorNegotiating;
 		myOptimiser = new ReplicationSocialOptimisation(this, socialWelfare);
-		
+
 	}
-	
+
 
 	//
 	// Methods
@@ -48,6 +48,12 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	public int getAllocationPreference(final HostState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
+		for (ReplicationCandidature c : c1){
+			c.setSpecification(s);
+		}
+		for (ReplicationCandidature c : c2){
+			c.setSpecification(s);
+		}
 		int pref = myOptimiser.getSocialPreference(c1, c2);
 		logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, ReplicationSocialOptimisation.log_socialWelfareOrdering);
 		return pref;

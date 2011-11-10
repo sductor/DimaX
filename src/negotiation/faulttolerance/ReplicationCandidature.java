@@ -11,6 +11,7 @@ import negotiation.negotiationframework.AllocationSocialWelfares;
 import negotiation.negotiationframework.interaction.MatchingCandidature;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class ReplicationCandidature extends
 MatchingCandidature<ReplicationSpecification> {

@@ -23,6 +23,7 @@ ActionSpec extends AbstractActionSpecification> {
 	public Collection<Contract> generateUpgradingContracts(
 			SimpleNegotiatingAgent<ActionSpec, ?, Contract> myAgent,
 			final ContractTrunk<Contract> n) {
+//		myAgent.logMonologue("entering upgrading contract myState is "+myAgent.getMyCurrentState());
 		Collection<Contract> unacceptedContracts = n.getRejectedContracts();
 		Collection<Contract> toPutOnWait = new ArrayList<Contract>();
 		Map<AgentIdentifier,Contract> upgradingContracts = 
@@ -34,16 +35,16 @@ ActionSpec extends AbstractActionSpecification> {
 			//The state of the host is stable and there is rejected contract : 
 			//we try to find if there is destruction that could loccally improve the system
 			for (ActionSpec stateToDestroy : myAgent.getMyResources()){
-				myAgent.logMonologue("should i destroy? "+stateToDestroy);
+//				myAgent.logMonologue("should i destroy? "+stateToDestroy);
 				for (Contract c : unacceptedContracts){
-					myAgent.logMonologue("analysing contract "+c);
+//					myAgent.logMonologue("analysing contract "+c);
 					Collection<Contract> testingAllocation = new ArrayList<Contract>();
 					Contract destContract = generateDestructionContract(stateToDestroy,c);
 					destContract.setSpecification(myAgent.getMySpecif(destContract));
 					destContract.setSpecification(stateToDestroy);
 					testingAllocation.add(c);
 					testingAllocation.add(destContract);
-
+//					myAgent.logMonologue(" upgrading contract myState is "+myAgent.getMyCurrentState());
 					if (upgradingContracts.containsKey(stateToDestroy.getMyAgentIdentifier())){
 						Collection<Contract> alreadyMadeContract = new ArrayList<Contract>();
 						alreadyMadeContract.add(upgradingContracts.get(stateToDestroy.getMyAgentIdentifier()));

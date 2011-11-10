@@ -306,6 +306,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public synchronized static void write(final String text) {
 		System.out.println(text);
 	}
+
 	//	public synchronized static void write(final Object component,
 	//			final String text) {
 	//		System.out.println(component+"on ("+Darx.getMyURL()+" "+Darx.getMyPortNb()+")  >>> "+text); //("+component.getClass()+")\n

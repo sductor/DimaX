@@ -176,10 +176,10 @@ public abstract class Laborantin extends APILauncherAgent {
 				this.remainingHost.remove(r.getId());
 			else
 				this.remainingAgent.remove(r.getId());
-//			this.logMonologue(r.getId()
-//					+" has finished!, " +
-//					"\n * remaining agents "+this.remainingAgent.size()+
-//					"\n * remaining hosts "+this.remainingHost.size());
+			this.logMonologue(r.getId()
+					+" has finished!, " +
+					"\n * remaining agents "+this.remainingAgent.size()+
+					"\n * remaining hosts "+this.remainingHost.size());
 		}
 	}
 

@@ -121,8 +121,8 @@ public class ReplicationExperimentationProtocol implements
 
 	// public static final int nbAgents =1;
 	// public static final int nbHosts = 2;
-	public static final int nbAgents = 15;
-	public static final int nbHosts = 15;
+	public static final int nbAgents = 3;
+	public static final int nbHosts = 3;
 //	public static final int nbAgents = 50;
 //	public static final int nbHosts = 70;
 //	public static final int nbAgents = 100;

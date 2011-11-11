@@ -45,7 +45,7 @@ public class ReplicationExperimentationProtocol implements
 //		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
 //				simuToLaunch);
 
-		usedProtocol = ReplicationExperimentationParameters.key4statusProto;//key4CentralisedstatusProto;//key4mirrorProto;//
+		usedProtocol = ReplicationExperimentationParameters.key4mirrorProto;//key4statusProto;//key4CentralisedstatusProto;//
 		agentSelection = ReplicationExperimentationParameters.key4greedySelect;//key4rouletteWheelSelect;//
 		hostSelection = ReplicationExperimentationParameters.key4greedySelect;
 		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
@@ -115,7 +115,7 @@ public class ReplicationExperimentationProtocol implements
 	//
 
 	public static final long _simulationTime = (long) (60000 * 0.25);
-	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 10;
+	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 5;
 	// public static final long _simulationTime = (long) (60000*7);
 	// public static final long _state_snapshot_frequency=_simulationTime/4;
 

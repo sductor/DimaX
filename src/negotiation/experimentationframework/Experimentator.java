@@ -13,9 +13,11 @@ import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
+import dima.kernel.communicatingAgent.OntologyBasedAgent;
 import dimaxx.server.HostIdentifier;
 
 
@@ -79,11 +81,11 @@ public class Experimentator extends BasicCompetentAgent{
 	//Executed initially then called by collect result
 	@ProactivityInitialisation
 	public boolean launchSimulation() throws CompetenceException{
-		this.logMonologue("Available Memory :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory());
+		this.logMonologue("Available Memory :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
 		if (this.awaitingAnswer==0){
 			this.setAlive(false);
-			this.logMonologue(myProtocol.getDescription());
-			this.logMonologue("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!");
+			this.logMonologue(myProtocol.getDescription(),LogService.onBoth);
+			this.logMonologue("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 			System.exit(1);
 		} else if (!this.simuToLaunch.isEmpty()){
 			try {
@@ -102,15 +104,15 @@ public class Experimentator extends BasicCompetentAgent{
 	@MessageHandler
 	@NotificationEnvelope
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
-		System.out.println(n.getSender()+" is finished");
+		logMonologue(n.getSender()+" is finished",LogService.onBoth);
 		this.launchedSimu.get(n.getSender()).kill(machines);
 		this.launchedSimu.remove(n.getSender());
 		this.awaitingAnswer--;
 		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
-				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024));
+				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		System.gc();
 		this.logMonologue("... After GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
-				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024));
+				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		this.launchSimulation();
 	}
 

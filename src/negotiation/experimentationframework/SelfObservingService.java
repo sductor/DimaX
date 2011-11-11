@@ -32,7 +32,7 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	@StepComposant(ticker=ReplicationExperimentationProtocol._simulationTime)
 	@Transient
 	public boolean endSimulation(){
-		//		this.logMonologue("this is the end my friend");
+		this.logMonologue("this is the end my friend");
 		if (!this.hasSendedEnd){
 			getMyAgent().setAlive(false);
 			this.notifyMyState();

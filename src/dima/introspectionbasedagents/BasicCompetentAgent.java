@@ -396,7 +396,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 */
 
 	@Competence()
-	private final LogService log;
+	protected final LogService log;
 
 
 

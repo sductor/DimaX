@@ -56,6 +56,10 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public static final String logNotificationKey = "log official key!!";
 	public Map<String, Boolean> keysToScreen=new HashMap<String, Boolean>();
 	public Map<String, Boolean> keysToFiles=new HashMap<String, Boolean>();
+	
+	public static final String onScreen = "print on screen";
+	public static final String onFile = "print on file";
+	public static final String onBoth = "print on screen and on file";
 
 	//Order or the log to be written to screen
 	public  boolean commtoScreen = false;
@@ -70,6 +74,9 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	public LogService(Agent myComponent) throws UnrespectedCompetenceSyntaxException {
 		setMyAgent(myComponent);
+		addLogKey(onScreen,true,false);
+		addLogKey(onFile,false,true);
+		addLogKey(onBoth,true,true);
 	}
 
 	//

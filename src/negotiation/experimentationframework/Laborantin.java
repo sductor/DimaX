@@ -23,7 +23,7 @@ import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
-
+import static dima.introspectionbasedagents.services.core.loggingactivity.LogService.*;
 /**
  * Laborantin manage the execution of an experience moddelled with its simulation parameters
  * it collects the results and write them
@@ -56,7 +56,7 @@ public abstract class Laborantin extends APILauncherAgent {
 		super("Laborantin_of_"+p.getName());
 		this.p = p;
 		this.p.initiateParameters();
-		this.logMonologue("Launching : \n"+this.p);
+		this.logMonologue("Launching : \n"+this.p,onBoth);
 		System.err.println("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
 				this.getSimulationParameters().getName());//agents.values());
 		locations=machines;
@@ -75,14 +75,14 @@ public abstract class Laborantin extends APILauncherAgent {
 		setObservation();
 		//		if (true)
 		//			throw new RuntimeException();
-			launch();
+		launch();
 		//		throw new RuntimeException();
 		this.start();
 	}
 
-//	@ProactivityInitialisation
+	//	@ProactivityInitialisation
 	public void launch(){
-//				this.launchWithFipa();
+		//				this.launchWithFipa();
 
 		//		launchWithDarx(7777, 7001);
 		//								launchWithoutThreads(100);
@@ -131,17 +131,17 @@ public abstract class Laborantin extends APILauncherAgent {
 			throws IfailedException, CompetenceException;
 
 	abstract protected void setObservation();
-	
+
 	protected abstract void updateAgentInfo(ExperimentationResults notification);
 
 	protected abstract void updateHostInfo(ExperimentationResults notification);
 
-	
+
 	protected abstract void writeResult();
 
 	//free the used machines
 	void kill(MachineNetwork machines) {
-		logMonologue("my job is done! cleaning my lab bench...");
+		logMonologue("my job is done! cleaning my lab bench...",onBoth);
 		for (final BasicCommunicatingAgent ag : this.getAgents()){
 			ag.setAlive(false);
 		}
@@ -188,28 +188,33 @@ public abstract class Laborantin extends APILauncherAgent {
 	@Transient
 	public boolean endSimulation(){
 		if (this.remainingAgent.size()<=0){
-			this.logMonologue("Every agent has finished!!");
+			this.logMonologue("Every agent has finished!!",onBoth);
 			if (this.remainingHost.size()<=0){
-				this.logMonologue("I've finished!!");
+				this.logMonologue("I've finished!!",onBoth);
 				this.writeResult();
 				this.wwait(10000);
 				//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
 				//					HostDisponibilityTrunk.remove(h);
 				this.notify(new SimulationEndedMessage());
+				this.observer.autoSendOfNotifications();
 				return true;
 			} else if (!this.endRequestSended){
-				this.logMonologue("all agents lost! ending ..");
-				for (final ResourceIdentifier r : this.getSimulationParameters().getHostsIdentifier())
+				this.logMonologue("all agents lost! ending ..",onBoth);
+				for (final ResourceIdentifier r : this.getSimulationParameters().getHostsIdentifier()){
 					this.sendMessage(r, new SimulationEndedMessage());
-						this.endRequestSended=true;
-						return false;
+				}
+				this.endRequestSended=true;
+				this.observer.autoSendOfNotifications();
+				return false;
 			} else
 				return false;
 		} else if (this.getUptime()>10*p.getMaxSimulationTime())
 			throw new RuntimeException("i should have end!!!!(rem ag, rem host)="
-		+this.remainingAgent+","+this.remainingHost);
-		else
+					+this.remainingAgent+","+this.remainingHost);
+		else{
+			this.observer.autoSendOfNotifications();
 			return false;
+		}
 	}
 
 	//

@@ -1,5 +1,7 @@
 package dima.introspectionbasedagents.services.core.loggingactivity;
 
+import java.io.Serializable;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 

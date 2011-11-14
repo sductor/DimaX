@@ -196,7 +196,8 @@ public abstract class Laborantin extends APILauncherAgent {
 				//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
 				//					HostDisponibilityTrunk.remove(h);
 				this.notify(new SimulationEndedMessage());
-				this.observer.autoSendOfNotifications();
+				this.sendNotificationNow();
+				this.logMonologue("notifications Sended", onBoth);
 				return true;
 			} else if (!this.endRequestSended){
 				this.logMonologue("all agents lost! ending ..",onBoth);
@@ -204,7 +205,6 @@ public abstract class Laborantin extends APILauncherAgent {
 					this.sendMessage(r, new SimulationEndedMessage());
 				}
 				this.endRequestSended=true;
-				this.observer.autoSendOfNotifications();
 				return false;
 			} else
 				return false;

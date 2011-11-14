@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basiccommunicationcomponents.Message;
 
 /**
  * This is the basic class for all log notification
@@ -11,7 +12,7 @@ import dima.basicagentcomponents.AgentIdentifier;
  * @author Ductor Sylvain
  *
  */
-public abstract class LogNotification implements Serializable{
+public abstract class LogNotification extends Message{
 	private static final long serialVersionUID = 2651499802673480005L;
 
 	

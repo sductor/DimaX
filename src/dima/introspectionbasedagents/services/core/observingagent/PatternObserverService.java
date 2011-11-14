@@ -16,6 +16,8 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 /**
  * This is the service that provide pattern observing Ductor Sylvain
@@ -33,7 +35,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		public static final String Observe = "Observe this agent";
 		public static final String DontObserve = "Observe this agent";
 		public static final String Notify = "Notification";
-//		public ObservationProtocol(final CommunicatingCompetentComponent com) {super(com);}
+		//		public ObservationProtocol(final CommunicatingCompetentComponent com) {super(com);}
 	}
 
 	public static final int notificationExpirationTime= 3000;
@@ -43,11 +45,11 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	//
 
 	private final Collection<NotificationMessage<?>> notificationsToSend =
-		new ArrayList<NotificationMessage<?>>();
+			new ArrayList<NotificationMessage<?>>();
 	public final HashedHashSet<String, AgentIdentifier> registeredObservers =
-		new HashedHashSet<String, AgentIdentifier>();
+			new HashedHashSet<String, AgentIdentifier>();
 	private final Collection<AgentIdentifier> observerBlackList =
-		new ArrayList<AgentIdentifier>();
+			new ArrayList<AgentIdentifier>();
 
 	//
 	// Constructors
@@ -65,7 +67,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	private  boolean iGiveObservation(final AgentIdentifier observer) {
 		return !this.observerBlackList.contains(observer);
 	}
-	
+
 	public Collection<AgentIdentifier> getObserver(String key){
 		return registeredObservers.get(key);
 	}
@@ -111,6 +113,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	 */
 	@Override
 	public <Notification extends Serializable> Boolean notify(final Notification notification, final String key) {
+		if (notification==null) System.err.print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhh"+key);
 		return this.notificationsToSend.add(
 				new NotificationMessage<Notification>(key, notification));
 	}
@@ -191,7 +194,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 			performative = Performative.Request,
 			protocol = ObservationProtocol.class,
 			attachementSignature = {String.class })
-			public void registrationOfNewObserver(final FipaACLMessage m) {
+	public void registrationOfNewObserver(final FipaACLMessage m) {
 		final String key = (String) m.getArgs()[0];
 		if (m.getContent().equals(ObservationProtocol.Observe))
 			this.registeredObservers.add(key, m.getSender());
@@ -208,24 +211,22 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 
 	@StepComposant()//ticker=250)//@Transient(ticker=500)
 	public void autoSendOfNotifications() {
-		final Collection<NotificationMessage<?>> sendedNotif=new ArrayList<NotificationMessage<?>>();
-		if (!this.registeredObservers.isEmpty())
+		final Collection<NotificationMessage<?>> sendedNotif=
+				new ArrayList<NotificationMessage<?>>();
+		if (!this.registeredObservers.isEmpty()){
 			for (final NotificationMessage<?> n : this.notificationsToSend){
-//				if (getIdentifier().toString().equals("fault agent of simu_0"))
-//					logMonologue("registered obs : "+registeredObservers
-//							+"\n sending "+n+"\n to "+this.registeredObservers
-//							.get(n.getKey()));
 				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey()))
-					if (this.iGiveObservation(obs))
-						//						n.setReceiver(obs);
-						this.sendMessage(obs,n);
-				//						NotificationMessage<?> c = n;AgentIdentifier r = n.getReceiver();
-				//						System.out.println("i've sended "+n+" to "+n.getReceiver());
-				//						logMonologue("i've sended "+n+" to "+n.getReceiver());//+" from "+n.getSender());
-				//						AgentIdentifier r = n.getReceiver();//n.getSender();
-				sendedNotif.add(n);
+					if (this.iGiveObservation(obs)){
+						n.setReceiver(obs);
+						sendedNotif.add(n);
+					}
+
 			}
-		this.notificationsToSend.removeAll(sendedNotif);
+		}
+		for (NotificationMessage n : sendedNotif){
+			this.sendMessage(n.getReceiver(),n);
+			this.notificationsToSend.remove(n);
+		}
 	}
 
 	@StepComposant(ticker=PatternObserverService.notificationExpirationTime)
@@ -233,7 +234,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		this.autoSendOfNotifications();
 		this.notificationsToSend.clear();
 	}
-	
+
 	@ProactivityFinalisation
 	public void terminate(){
 		autoSendOfNotifications();
@@ -247,3 +248,15 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		return "Pattern Observer of " + this.getMyAgent().getIdentifier();
 	}
 }
+
+
+
+
+//
+//logMonologue("registered obs : "+registeredObservers
+//		+"\n sending "+n+"\n to "+this.registeredObservers
+//		.get(n.getKey()),LogService.onScreen);
+//						NotificationMessage<?> c = n;AgentIdentifier r = n.getReceiver();
+//						System.out.println("i've sended "+n+" to "+n.getReceiver());
+//						logMonologue("i've sended "+n+" to "+n.getReceiver());//+" from "+n.getSender());
+//						AgentIdentifier r = n.getReceiver();//n.getSender();

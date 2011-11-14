@@ -19,8 +19,11 @@ import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnknownCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogNotification;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverService;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
@@ -40,7 +43,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	private BasicCompetenceShell myShell;
 	private Date creation;
 
-	
+
 	//
 	// Constructor
 	//
@@ -301,7 +304,8 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 */
 
 	@Competence()
-	public final PatternObserverWithHookservice observer;
+	public
+	final PatternObserverWithHookservice observer;
 
 	/**/
 
@@ -396,7 +400,8 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 */
 
 	@Competence()
-	protected final LogService log;
+	public
+	final LogService log;
 
 
 
@@ -405,15 +410,15 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.log.signalException(text, e);
 	}
 
-//	@Override
-//	public Boolean logException(final String text, final String details, final Throwable e) {
-//		return this.log.logException(text, details, e);
-//	}
-//
-//	@Override
-//	public Boolean logException(final String text, final String details) {
-//		return this.log.logException(text, details);
-//	}
+	//	@Override
+	//	public Boolean logException(final String text, final String details, final Throwable e) {
+	//		return this.log.logException(text, details, e);
+	//	}
+	//
+	//	@Override
+	//	public Boolean logException(final String text, final String details) {
+	//		return this.log.logException(text, details);
+	//	}
 
 	@Override
 	public Boolean signalException(final String text) {
@@ -449,21 +454,22 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public Boolean logWarning(final String text) {
 		return this.log.logWarning(text);
 	}
-	
+
 	@Override
 	public void addLogKey(String key, boolean toString, boolean toFile) {
 		this.log.addLogKey(key, toString, toFile);
 	}
-	
+
 	/*
 	 * Message 
 	 */
-	
+
 	@Override
 	public void sendMessage(final AgentIdentifier agentId, final Message am) {
 		super.sendMessage(agentId, am);
 		this.log.logCommunication(am, MessageStatus.MessageSended);
 	}
+
 
 	@Override
 	public void receive(final Message m) {

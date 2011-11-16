@@ -76,7 +76,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	//
 
 	@Override
-	public void step(){
+	public final void step(){
 		this.parseMails();
 		super.step();
 	}

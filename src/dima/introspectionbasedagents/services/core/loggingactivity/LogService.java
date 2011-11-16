@@ -53,13 +53,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	// Fields
 	//
 
-	public static final String logNotificationKey = "log official key!!";
+	public static final String logNotificationKey = "log notification for the writer";
 	public Map<String, Boolean> keysToScreen=new HashMap<String, Boolean>();
 	public Map<String, Boolean> keysToFiles=new HashMap<String, Boolean>();
 	
 	public static final String onScreen = "print on screen";
 	public static final String onFile = "print on file";
 	public static final String onBoth = "print on screen and on file";
+	public static final String onNone = "print on none";
 
 	//Order or the log to be written to screen
 	public  boolean commtoScreen = false;
@@ -77,6 +78,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		addLogKey(onScreen,true,false);
 		addLogKey(onFile,false,true);
 		addLogKey(onBoth,true,true);
+		addLogKey(onNone,false,false);
 	}
 
 	//
@@ -88,7 +90,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		if (keysToScreen.put(key,toScreen)!=null || keysToFiles.put(key, toFile)!=null)
 			logWarning("Already known key! "+key);
 	}
-	
+
+	public void setLogKey(String key, boolean toScreen, boolean toFile) {
+		keysToScreen.put(key,toScreen);
+		keysToFiles.put(key, toFile);
+	}
 	public void setCommtoScreen(boolean commtoScreen) {
 		this.commtoScreen = commtoScreen;
 	}

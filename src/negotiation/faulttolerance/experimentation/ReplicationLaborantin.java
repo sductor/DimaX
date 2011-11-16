@@ -225,10 +225,10 @@ public class ReplicationLaborantin extends Laborantin {
 	@NotificationEnvelope
 	public final void receiveReplicaInfo(
 			final NotificationMessage<ReplicationAgentResult> n) {
-		this.updateInfo(n.getNotification());
 		states.remove(
 				n.getNotification());
 		states.add(n.getNotification());
+		this.updateInfo(n.getNotification());
 	}
 
 	@MessageHandler

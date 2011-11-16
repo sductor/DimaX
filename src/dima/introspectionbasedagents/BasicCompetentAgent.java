@@ -9,6 +9,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
+import dima.introspectionbasedagents.APILauncherModule.StartSimulationMessage;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.Transient;
@@ -169,11 +170,21 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return appliHasStarted;
 	}
 
-	public boolean start(){
+	@MessageHandler()
+	public boolean start(StartSimulationMessage m){
 		this.appliHasStarted=true;
+		this.creation = m.getStartDate();
 		return true;
 	}
+	
+	public boolean launchWith(APILauncherModule api){
+		return api.launch(this);
+	}
 
+	public boolean destroy(APILauncherModule api){
+		return api.destroy(this);
+	}
+	
 	@Override
 	public final void proactivityTerminate() {
 		//		logMonologue("my job is done! cleaning... ");
@@ -345,27 +356,27 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	@Override
 	public void autoObserve(final Class<?> notificationKey) {
-		this.observer.registeredObservers.add(notificationKey.getName(), this.getIdentifier());
+		this.observer.addObserver(this.getIdentifier(), notificationKey.getName());
 	}
 
 	@Override
 	public void addObserver(final AgentIdentifier observerAgent, final Class<?> notificationKey) {
-		this.observer.registeredObservers.add(notificationKey.getName(), observerAgent);
+		this.observer.addObserver(observerAgent, notificationKey.getName());
 	}
 
 	@Override
 	public void addObserver(final AgentIdentifier observerAgent, final String notificationKey) {
-		this.observer.registeredObservers.add(notificationKey, observerAgent);
+		this.observer.addObserver(observerAgent, notificationKey);
 	}
 
 	@Override
 	public void removeObserver(final AgentIdentifier observerAgent, final Class<?> notificationKey) {
-		this.observer.registeredObservers.remove(notificationKey.getName(), observerAgent);
+		this.observer.removeObserver(observerAgent, notificationKey.getName());
 	}
 
 	@Override
 	public void removeObserver(final AgentIdentifier observerAgent, final String notificationKey) {
-		this.observer.registeredObservers.remove(notificationKey, observerAgent);
+		this.observer.removeObserver(observerAgent, notificationKey);
 	}
 
 	@Override
@@ -451,10 +462,14 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 	
 	@Override
-	public void addLogKey(String key, boolean toString, boolean toFile) {
-		this.log.addLogKey(key, toString, toFile);
+	public void addLogKey(String key, boolean toScreen, boolean toFile) {
+		this.log.addLogKey(key, toScreen, toFile);
 	}
-	
+
+	@Override
+	public void setLogKey(String key, boolean toScreen, boolean toFile) {
+		this.log.setLogKey(key, toScreen, toFile);
+	}
 	/*
 	 * Message 
 	 */

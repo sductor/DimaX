@@ -17,9 +17,12 @@ public abstract class ExperimentationParameters
 implements DimaComponentInterface {
 
 //	final AgentIdentifier experimentatorId;
+	
+	
 	final String simulationName = newName();
 	private final File f;
-	
+
+	final AgentIdentifier experimentatorId;
 	public final int nbAgents;
 	public final int nbHosts;
 
@@ -29,10 +32,10 @@ implements DimaComponentInterface {
 
 	public ExperimentationParameters(
 			final File f,
-//			AgentIdentifier experimentatorId,
+			AgentIdentifier experimentatorId,
 			final int nbAgents, final int nbHosts) {
 		this.f = f;
-//		this.experimentatorId=experimentatorId;		
+		this.experimentatorId=experimentatorId;		
 		this.nbAgents = nbAgents;
 		this.nbHosts= nbHosts;
 	}

@@ -183,6 +183,10 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	public void addLogKey(String key, boolean toString, boolean toFile) {
 		this.myAgent.addLogKey(key, toString, toFile);
 	}
+	@Override
+	public void setLogKey(String key, boolean toScreen, boolean toFile) {
+		this.myAgent.setLogKey(key, toScreen, toFile);
+	}
 	/*
 	 * Observation
 	 */

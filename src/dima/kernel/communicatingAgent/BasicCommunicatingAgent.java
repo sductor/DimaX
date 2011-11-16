@@ -105,6 +105,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @param param Gdima.kernel.AgentAddress
 	 */
 	public void activateWithFipa() {
+		AgentManagementSystem.initAMS();
 		final AgentEngine engine = new AgentEngine(this);
 		AgentManagementSystem.getDIMAams().addAquaintance(this);
 		engine.startUp();

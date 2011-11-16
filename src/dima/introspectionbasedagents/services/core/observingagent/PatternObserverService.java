@@ -33,21 +33,22 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		public static final String Observe = "Observe this agent";
 		public static final String DontObserve = "Observe this agent";
 		public static final String Notify = "Notification";
-//		public ObservationProtocol(final CommunicatingCompetentComponent com) {super(com);}
+		//		public ObservationProtocol(final CommunicatingCompetentComponent com) {super(com);}
 	}
 
 	public static final int notificationExpirationTime= 3000;
+	public static final String _logKeyForObservation="log key for observing agents";
 
 	//
 	// Fields
 	//
 
 	private final Collection<NotificationMessage<?>> notificationsToSend =
-		new ArrayList<NotificationMessage<?>>();
-	public final HashedHashSet<String, AgentIdentifier> registeredObservers =
-		new HashedHashSet<String, AgentIdentifier>();
+			new ArrayList<NotificationMessage<?>>();
+	private final HashedHashSet<String, AgentIdentifier> registeredObservers =
+			new HashedHashSet<String, AgentIdentifier>();
 	private final Collection<AgentIdentifier> observerBlackList =
-		new ArrayList<AgentIdentifier>();
+			new ArrayList<AgentIdentifier>();
 
 	//
 	// Constructors
@@ -60,12 +61,13 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 
 	public PatternObserverService(BasicCompetentAgent ag) throws UnrespectedCompetenceSyntaxException {
 		super(ag);
+		ag.addLogKey(PatternObserverService._logKeyForObservation, false, false);
 	}
 
 	private  boolean iGiveObservation(final AgentIdentifier observer) {
 		return !this.observerBlackList.contains(observer);
 	}
-	
+
 	public Collection<AgentIdentifier> getObserver(String key){
 		return registeredObservers.get(key);
 	}
@@ -73,6 +75,30 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	public Collection<String> getKeys(){
 		return registeredObservers.keySet();
 	}
+	
+
+	@Override
+	public void addObserver(final AgentIdentifier observerAgent, final Class<?> notificationKey) {
+		addObserver( observerAgent,notificationKey.getName());
+	}
+
+	@Override
+	public void addObserver(final AgentIdentifier observerAgent, final String notificationKey) {
+		logMonologue("i've registered "+observerAgent+" for "+notificationKey,_logKeyForObservation);
+		registeredObservers.add(notificationKey, observerAgent);
+	}
+
+	@Override
+	public void removeObserver(final AgentIdentifier observerAgent, final Class<?> notificationKey) {
+		removeObserver( observerAgent,notificationKey.getName());
+	}
+
+	@Override
+	public void removeObserver(final AgentIdentifier observerAgent, final String notificationKey) {
+		logMonologue("i've unregistered "+observerAgent+" for "+notificationKey,_logKeyForObservation);
+		registeredObservers.remove(notificationKey, observerAgent);
+	}
+	
 	//
 	// Competences
 	//
@@ -191,13 +217,13 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 			performative = Performative.Request,
 			protocol = ObservationProtocol.class,
 			attachementSignature = {String.class })
-			public void registrationOfNewObserver(final FipaACLMessage m) {
+	public void registrationOfNewObserver(final FipaACLMessage m) {
 		final String key = (String) m.getArgs()[0];
-		if (m.getContent().equals(ObservationProtocol.Observe))
+		if (m.getContent().equals(ObservationProtocol.Observe)){
 			this.registeredObservers.add(key, m.getSender());
-		else if (m.getContent().equals(ObservationProtocol.DontObserve))
+		}else if (m.getContent().equals(ObservationProtocol.DontObserve)){
 			this.registeredObservers.remove(key, m.getSender());
-		else
+	}else
 			this.getMyAgent().signalException("unappropriate message");
 
 		//				getMyAgent().logMonologue(
@@ -211,19 +237,21 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		final Collection<NotificationMessage<?>> sendedNotif=new ArrayList<NotificationMessage<?>>();
 		if (!this.registeredObservers.isEmpty())
 			for (final NotificationMessage<?> n : this.notificationsToSend){
-//				if (getIdentifier().toString().equals("fault agent of simu_0"))
-//					logMonologue("registered obs : "+registeredObservers
-//							+"\n sending "+n+"\n to "+this.registeredObservers
-//							.get(n.getKey()));
-				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey()))
-					if (this.iGiveObservation(obs))
-						//						n.setReceiver(obs);
+				//				if (getIdentifier().toString().equals("fault agent of simu_0"))
+				//					logMonologue("registered obs : "+registeredObservers
+				//							+"\n sending "+n+"\n to "+this.registeredObservers
+				//							.get(n.getKey()));
+				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey())){
+					if (this.iGiveObservation(obs)){
+						n.setReceiver(obs);
 						this.sendMessage(obs,n);
-				//						NotificationMessage<?> c = n;AgentIdentifier r = n.getReceiver();
-				//						System.out.println("i've sended "+n+" to "+n.getReceiver());
-				//						logMonologue("i've sended "+n+" to "+n.getReceiver());//+" from "+n.getSender());
-				//						AgentIdentifier r = n.getReceiver();//n.getSender();
-				sendedNotif.add(n);
+						NotificationMessage<?> c = n;AgentIdentifier r = n.getReceiver();
+//						System.out.println("i've sended "+n+" to "+n.getReceiver());
+						logMonologue("i've sended "+n+" to "+n.getReceiver(),_logKeyForObservation);//+" from "+n.getSender());
+						//						AgentIdentifier r = n.getReceiver();//n.getSender();
+						sendedNotif.add(n);
+					}
+				}
 			}
 		this.notificationsToSend.removeAll(sendedNotif);
 	}
@@ -233,7 +261,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		this.autoSendOfNotifications();
 		this.notificationsToSend.clear();
 	}
-	
+
 	@ProactivityFinalisation
 	public void terminate(){
 		autoSendOfNotifications();

@@ -23,7 +23,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	 *
 	 */
 	private static final long serialVersionUID = -5589071064597300072L;
-	public static AgentManagementSystem DIMAams;
+	public static AgentManagementSystem DIMAams=null;
 	public AgentManagementSystem() {
 		super(new AgentName("DIMAams"));
 		DIMAams =this;
@@ -62,6 +62,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	 * @return Gdima.kernel.aFIPAPlatform.AgentManagementSystem
 	 */
 	public static AgentManagementSystem getDIMAams() {
+		initAMS();
 		return DIMAams;
 	}
 
@@ -107,7 +108,11 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	ams.activate();}
 
 	public static void initAMS()
-	{final AgentManagementSystem ams = new AgentManagementSystem();
-	ams.activate();}
-	
+	{
+		if (DIMAams==null){
+			final AgentManagementSystem ams = new AgentManagementSystem();
+			ams.activate();
+		}
+	}
+
 }

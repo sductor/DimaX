@@ -7,7 +7,7 @@
 		
 	<network>
 		<networkID> remote</networkID>
-		<ssh gate="gate-ia.lip6.fr" dir="Dropbox/Boulot/Experimentation/DimaXx_Branch_SD/" user="ductors" />
+		<ssh gate="gate-ia.lip6.fr" dir="workspace/DimaX_SD/" user="ductors" />
 
 		<group>
 			<groupID> 649</groupID>

@@ -9,6 +9,8 @@ import java.util.Map;
 import negotiation.experimentationframework.MachineNetwork.NotEnoughMachinesException;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -38,8 +40,10 @@ public class Experimentator extends BasicCompetentAgent{
 
 	final ExperimentationProtocol myProtocol;
 	final File f;
+	final APILauncherModule laborantinLauncher;
 	//Integer represent the sum of the number of agent of each simulation that uses the given machine 
 	public final MachineNetwork machines;
+	public static final AgentIdentifier myId = new AgentName("zi experimentator");
 
 	/*
 	 * 
@@ -48,7 +52,7 @@ public class Experimentator extends BasicCompetentAgent{
 	public final LinkedList<ExperimentationParameters> simuToLaunch;
 
 	public final Map<AgentIdentifier, Laborantin> launchedSimu =
-		new HashMap<AgentIdentifier, Laborantin>();
+			new HashMap<AgentIdentifier, Laborantin>();
 	public int awaitingAnswer=-1;
 
 	//
@@ -57,14 +61,15 @@ public class Experimentator extends BasicCompetentAgent{
 
 
 	public Experimentator(final List<HostIdentifier> machines, ExperimentationProtocol myProtocol)
-	throws CompetenceException, IllegalArgumentException, IllegalAccessException {
-		super("zi experimentator");
+			throws CompetenceException, IllegalArgumentException, IllegalAccessException {
+		super(myId);
 		this.machines = new MachineNetwork(machines);
 		this.f = new File(ReplicationExperimentationProtocol.resultPath);
-//		Writing.log(
-//				this.f,
-//				myProtocol.getDescription(),
-//				true, false);
+		laborantinLauncher = new APILauncherModule(this);
+		//		Writing.log(
+		//				this.f,
+		//				myProtocol.getDescription(),
+		//				true, false);
 		this.myProtocol=myProtocol;
 		simuToLaunch = myProtocol.generateSimulation();
 
@@ -91,8 +96,8 @@ public class Experimentator extends BasicCompetentAgent{
 			try {
 				while (!this.simuToLaunch.isEmpty()){
 					Laborantin l = myProtocol.createNewLaborantin(this.simuToLaunch.pop(), machines);
-					l.addObserver(getIdentifier(), SimulationEndedMessage.class.getName());
-					l.activateWithFipa();
+					l.launchWith(laborantinLauncher);
+					laborantinLauncher.start(l);
 					this.launchedSimu.put(l.getId(), l);
 				}
 			} catch (NotEnoughMachinesException e) {}
@@ -101,12 +106,15 @@ public class Experimentator extends BasicCompetentAgent{
 	}
 
 
+
+
 	@MessageHandler
 	@NotificationEnvelope
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
 		logMonologue(n.getSender()+" is finished",LogService.onBoth);
 		this.launchedSimu.get(n.getSender()).kill(machines);
 		this.launchedSimu.remove(n.getSender());
+//		laborantinLauncher.destroy(n.getSender());
 		this.awaitingAnswer--;
 		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
 				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
@@ -121,12 +129,12 @@ public class Experimentator extends BasicCompetentAgent{
 	 */
 	
 	public static void main(final String[] args)
-	throws CompetenceException, IllegalArgumentException, IllegalAccessException{
-		AgentManagementSystem.initAMS();
+			throws CompetenceException, IllegalArgumentException, IllegalAccessException{
 		final List machines = new LinkedList<HostIdentifier>();
 		machines.add(new HostIdentifier("localhost", 7777));
 		Experimentator exp = new Experimentator(machines, new ReplicationExperimentationProtocol());
-		exp.activateWithFipa();
-		exp.start();
+		exp.laborantinLauncher.initNotThreaded();
+		exp.launchWith(exp.laborantinLauncher);
+		exp.laborantinLauncher.start(exp);
 	}
 }

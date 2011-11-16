@@ -3,11 +3,11 @@ package examples.introspectionExamples;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import dima.introspectionbasedagents.APILauncherAgent;
+import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
 
-public class SimpleExampleApi extends APILauncherAgent{
+public class SimpleExampleApi extends APILauncherModule{
 	private static final long serialVersionUID = 2197507938900786081L;
 
 	int nbAgent = 5;

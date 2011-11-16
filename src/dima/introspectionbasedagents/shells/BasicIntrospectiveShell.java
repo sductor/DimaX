@@ -117,12 +117,12 @@ public class BasicIntrospectiveShell extends GimaObject {
 	// Methods
 	//
 	
-	public void proactivityInitialize(){
+	public final void proactivityInitialize(){
 		this.executeBehaviors(ProactivityInitialisation.class);
 
 	}
 
-	public void preActivity(){
+	public final void preActivity(){
 		this.executeBehaviors(PreStepComposant.class);
 
 	}
@@ -133,7 +133,7 @@ public class BasicIntrospectiveShell extends GimaObject {
 	}
 
 	protected final Set<MethodHandler> metToRemove = new HashSet<MethodHandler>();
-	public void postActivity(){
+	public final void postActivity(){
 		this.executeBehaviors(PostStepComposant.class);
 		for (final MethodHandler meth : this.metToRemove)
 			this.myMethods.removeMethod(meth);

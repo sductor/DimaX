@@ -7,9 +7,11 @@ import java.util.LinkedList;
 
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationProtocol;
+import negotiation.experimentationframework.Experimentator;
 import negotiation.experimentationframework.IfailedException;
 import negotiation.experimentationframework.MachineNetwork;
 import negotiation.experimentationframework.MachineNetwork.NotEnoughMachinesException;
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.server.HostIdentifier;
@@ -22,7 +24,6 @@ public class ReplicationExperimentationProtocol implements
 	//
 	// Experimentations
 	// /////////////////////////////////
-
 	@Override
 	public LinkedList<ExperimentationParameters> generateSimulation() {
 		String usedProtocol, agentSelection, hostSelection;
@@ -57,7 +58,8 @@ public class ReplicationExperimentationProtocol implements
 	private void addSimus(String usedProtocol, String agentSelection,
 			String hostSelection, File f,
 			LinkedList<ExperimentationParameters> simuToLaunch) {
-		simuToLaunch.add(new ReplicationExperimentationParameters(f,
+		simuToLaunch.add(new ReplicationExperimentationParameters(
+				f,Experimentator.myId,
 				ReplicationExperimentationProtocol.nbAgents,
 				ReplicationExperimentationProtocol.nbHosts, 
 				ReplicationExperimentationProtocol.knownHostsPercent, 

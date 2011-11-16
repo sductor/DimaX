@@ -10,7 +10,7 @@ import org.jdom.JDOMException;
 
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.APILauncherAgent;
+import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -19,6 +19,7 @@ import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.observingagent.PatternObserverService;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
@@ -32,7 +33,7 @@ import static dima.introspectionbasedagents.services.core.loggingactivity.LogSer
  *
  */
 
-public abstract class Laborantin extends APILauncherAgent {
+public abstract class Laborantin extends BasicCompetentAgent {
 
 	//
 	// Fields
@@ -40,6 +41,7 @@ public abstract class Laborantin extends APILauncherAgent {
 
 	private final ExperimentationParameters p;
 	protected Date simulationInit = new Date();
+	final APILauncherModule expLauncher;
 
 	private HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
@@ -55,11 +57,20 @@ public abstract class Laborantin extends APILauncherAgent {
 			throws CompetenceException, IfailedException{
 		super("Laborantin_of_"+p.getName());
 		this.p = p;
+		locations=machines;
+		expLauncher = new APILauncherModule(this);
+		expLauncher.initNotThreaded();
+		initialisation();
+	}
+
+
+	protected void initialisation() 
+			throws IfailedException, CompetenceException{
+//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
 		this.p.initiateParameters();
 		this.logMonologue("Launching : \n"+this.p,onBoth);
 		System.err.println("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
 				this.getSimulationParameters().getName());//agents.values());
-		locations=machines;
 
 		this.instanciate(p);
 
@@ -71,29 +82,26 @@ public abstract class Laborantin extends APILauncherAgent {
 			}
 		}
 		this.logMonologue("Those are my agents!!!!! :\n"+this.agents);
-		this.agents.put(getIdentifier(), this);
+//		this.agents.put(getIdentifier(), this);
 		setObservation();
+		addObserver(p.experimentatorId, SimulationEndedMessage.class);
 		//		if (true)
-		//			throw new RuntimeException();
-		launch();
+//		//			throw new RuntimeException();
+//				launch();
 		//		throw new RuntimeException();
-		this.start();
+		expLauncher.launch(getAgents());
 	}
 
-	//	@ProactivityInitialisation
-	public void launch(){
-		//				this.launchWithFipa();
-
-		//		launchWithDarx(7777, 7001);
-		//								launchWithoutThreads(100);
-		launchWithoutThreads();
+	@ProactivityInitialisation
+	public void startSimu(){
+		System.err.println("!!!!!!!!!!!!!!!!!!!!!STARTING!!!!!!!!!!!!!!!!!!!!!!!");
+		expLauncher.startAll();
 	}
 
 	//
 	// Implemented
 	//
 
-	@Override
 	public Collection<BasicCompetentAgent> getAgents(){
 		return this.agents.values();
 	}
@@ -150,10 +158,6 @@ public abstract class Laborantin extends APILauncherAgent {
 		this.setAlive(false);
 	}
 
-	public void launchWithDarx(File f) throws JDOMException, IOException{
-		super.launchWithDarx(f, locations);
-	}
-
 	//
 	// Behaviors
 	//
@@ -196,7 +200,8 @@ public abstract class Laborantin extends APILauncherAgent {
 				//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
 				//					HostDisponibilityTrunk.remove(h);
 				this.notify(new SimulationEndedMessage());
-				this.observer.autoSendOfNotifications();
+				this.sendNotificationNow();
+				
 				return true;
 			} else if (!this.endRequestSended){
 				this.logMonologue("all agents lost! ending ..",onBoth);

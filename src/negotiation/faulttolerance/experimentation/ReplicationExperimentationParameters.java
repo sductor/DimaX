@@ -49,12 +49,13 @@ ExperimentationParameters {
 	//
 
 	public ReplicationExperimentationParameters(final File f,
+			AgentIdentifier experimentatorId,
 			final int nbAgents, final int nbHosts, final double k,
 			final Double hostFaultProbabilityMean,
 			final ZeroOneSymbolicValue agentLoadMean,
 			final String usedProtocol, final String agentSelection,
 			final String hostSelection) {
-		super(f, nbAgents, nbHosts);
+		super(f, experimentatorId, nbAgents, nbHosts);
 
 		this.kAccessible = (int) (k * nbHosts);
 		this.hostFaultProbabilityMean = hostFaultProbabilityMean;

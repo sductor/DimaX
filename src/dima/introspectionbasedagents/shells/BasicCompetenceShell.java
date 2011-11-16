@@ -123,7 +123,7 @@ BasicCommunicatingShell {
 
 
 	@Override
-	public void proactivityTerminate(){
+	public final void proactivityTerminate(){
 		super.proactivityTerminate();
 		try {
 

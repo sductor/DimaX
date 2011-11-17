@@ -50,7 +50,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
-
+	Map<AgentIdentifier, HostIdentifier> locations;
+	
 	private final Collection<AgentIdentifier> remainingAgent=new ArrayList<AgentIdentifier>();
 	private final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
 
@@ -94,16 +95,16 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		//		//			throw new RuntimeException();
 		//				launch();
 		//		throw new RuntimeException();
-		api.launch(agents.values(), 
-				generateLocations(
+		locations = generateLocations(
 						api, 
 						agents.keySet(), 
-						ReplicationExperimentationParameters.maxNumberOfAgentPerMachine));
-		wwait(1000);
+						ReplicationExperimentationParameters.maxNumberOfAgentPerMachine);
 	}
 	//
 	@ProactivityInitialisation
 	public void startSimu(){
+		api.launch(agents.values(), locations);
+		wwait(1000);
 		System.err.println("!!!!!!!!!!!!!!!!!!!!!STARTING!!!!!!!!!!!!!!!!!!!!!!!");
 		api.startActivities(agents.values());
 	}

@@ -47,9 +47,9 @@ public class Experimentator extends APIAgent{
 	final ExperimentationProtocol myProtocol;
 	final File f;
 
-//	//Integer represent the sum of the number of agent of each simulation that uses the given machine 
-//	public final MachineNetwork machines;
-	public static final AgentIdentifier myId = new AgentName("zi experimentator");
+	//	//Integer represent the sum of the number of agent of each simulation that uses the given machine 
+	//	public final MachineNetwork machines;
+	public static final AgentIdentifier myId = new AgentName("ziExperimentator");
 
 	/*
 	 * 
@@ -67,7 +67,7 @@ public class Experimentator extends APIAgent{
 
 	public Experimentator(ExperimentationProtocol myProtocol) throws CompetenceException {
 		super(myId);
-//		this.machines = new MachineNetwork(machines);
+		//		this.machines = new MachineNetwork(machines);
 		this.f = new File(ReplicationExperimentationProtocol.resultPath);
 		//		Writing.log(
 		//				this.f,
@@ -141,8 +141,8 @@ public class Experimentator extends APIAgent{
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
 //		exp.initAPI(true);//FIPA
-//				exp.initAPI(false);//SCHEDULED
-				exp.initAPI(7779,7778);//DARX LOCAL
+								exp.initAPI(false);//SCHEDULED
+//				exp.initAPI(7779,7778);//DARX LOCAL
 		exp.launchMySelf();
 	}
 }

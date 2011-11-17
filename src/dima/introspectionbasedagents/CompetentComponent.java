@@ -11,8 +11,6 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 
-
-	public void setActive(boolean active);
 	
 	//
 	// Hook

@@ -513,7 +513,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	private void stopFaultyMethods(MethodHandler m){
-		getMyAgent().setActive(false);
+//		getMyAgent().setActive(false);
 		m.setActive(false);
 		//		if (m.getMyComponent() instanceof AgentCompetence)
 		//			myAgentShell.unload((AgentCompetence) m.getMyComponent());

@@ -75,25 +75,22 @@ public class MethodHandler extends SimpleMethodHandler {
 	 * @throws IllegalArgumentException
 	 */
 	public Object execute(final Object... args) throws Throwable {
-		if (!(caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) caller).isActive()){
-			try {
-				return execute(this.caller, args);
-			} catch (final IllegalAccessException e) {
-				LogService.writeException(this, "Impossible");
-				return null;
-			} catch (final IllegalArgumentException e) {
-				LogService.writeException(this, "wrong arg!! "+args,e);
-				return null;
-			}  catch (final InvocationTargetException e) {
-				// The method has not been invocated
-				//				LogService.writeException(caller,
-				//						"Couldn't invokate method "+
-				//						this,
-				//						e.getCause());
-				throw e.getCause();
-			}
-		} else 
+		try {
+			return execute(this.caller, args);
+		} catch (final IllegalAccessException e) {
+			LogService.writeException(this, "Impossible");
 			return null;
+		} catch (final IllegalArgumentException e) {
+			LogService.writeException(this, "wrong arg!! "+args,e);
+			return null;
+		}  catch (final InvocationTargetException e) {
+			// The method has not been invocated
+			//				LogService.writeException(caller,
+			//						"Couldn't invokate method "+
+			//						this,
+			//						e.getCause());
+			throw e.getCause();
+		}
 	}
 
 	public Object execute() throws Throwable {
@@ -299,7 +296,7 @@ class SimpleMethodHandler extends GimaObject {
 				if (cpt != attachement.length - 1) {
 					LogService.writeException("unappropriate message ("
 							+ cpt + ") :\n" + Arrays.asList(attachement) + ","
-									+ Arrays.asList(attachementSignature));
+							+ Arrays.asList(attachementSignature));
 					return false;
 				} else
 					return true;

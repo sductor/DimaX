@@ -40,7 +40,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	// Fields
 	//
 
-	private boolean active=true;
 	private BasicCompetenceShell myShell;
 	private Date creation;
 
@@ -153,13 +152,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException{
 		myShell.unload(newComp);
 	}
+	
 	@Override
 	public boolean isActive() {
-		return active;
-	}
-	@Override
-	public void setActive( boolean active) {
-		this.active=active;
+		return appliHasStarted;
 	}
 
 	//
@@ -179,20 +175,14 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		this.creation = m.getStartDate();
 		return true;
 	}
-	
+
 	public boolean launchWith(APILauncherModule api){
 		return api.launch(this);
 	}
 
 	public boolean destroyWith(APILauncherModule api){
+		setAlive(false);
 		return api.destroy(this);
-	}
-	
-	@Override
-	public final void proactivityTerminate() {
-		//		logMonologue("my job is done! cleaning... ");
-//		notify(new EndActivityMessage());
-		super.proactivityTerminate();
 	}
 
 
@@ -400,120 +390,120 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	/*
 	 *
 	 */
-	/**/
+	 /**/
 
-	@Override
-	public Boolean addToBlackList(final AgentIdentifier o, final Boolean add) {
-		return this.observer.addToBlackList(o, add);
-	}
+	 @Override
+	 public Boolean addToBlackList(final AgentIdentifier o, final Boolean add) {
+		 return this.observer.addToBlackList(o, add);
+	 }
 
-	/*
-	 * Log
-	 */
+	 /*
+	  * Log
+	  */
 
-	@Competence()
-	public
-	final LogService log;
-
-
-
-	@Override
-	public Boolean signalException(final String text, final Throwable e) {
-		return this.log.signalException(text, e);
-	}
-
-	//	@Override
-	//	public Boolean logException(final String text, final String details, final Throwable e) {
-	//		return this.log.logException(text, details, e);
-	//	}
-	//
-	//	@Override
-	//	public Boolean logException(final String text, final String details) {
-	//		return this.log.logException(text, details);
-	//	}
-
-	@Override
-	public Boolean signalException(final String text) {
-		return this.log.signalException(text);
-	}
-
-	@Override
-	public Boolean logMonologue(final String text, final String details) {
-		return this.log.logMonologue(text, details);
-	}
-
-	@Override
-	public Boolean logMonologue(final String text) {
-		return this.log.logMonologue(text);
-	}
-
-	@Override
-	public Boolean logWarning(final String text, final Throwable e) {
-		return this.log.logWarning(text, e);
-	}
-
-	@Override
-	public Boolean logWarning(final String text, final String details, final Throwable e) {
-		return this.log.logWarning(text, details, e);
-	}
-
-	@Override
-	public Boolean logWarning(final String text, final String details) {
-		return this.log.logWarning(text, details);
-	}
-
-	@Override
-	public Boolean logWarning(final String text) {
-		return this.log.logWarning(text);
-	}
-
-	@Override
-	public void addLogKey(String key, boolean toScreen, boolean toFile) {
-		this.log.addLogKey(key, toScreen, toFile);
-	}
-
-	@Override
-	public void setLogKey(String key, boolean toScreen, boolean toFile) {
-		this.log.setLogKey(key, toScreen, toFile);
-	}
-	
-	/*
-	 * Message 
-	 */
-
-	@Override
-	public void sendMessage(final AgentIdentifier agentId, final Message am) {
-		super.sendMessage(agentId, am);
-		this.log.logCommunication(am, MessageStatus.MessageSended);
-	}
+	 @Competence()
+	 public
+	 final LogService log;
 
 
-	@Override
-	public void receive(final Message m) {
-		super.receive(m);
-		this.log.logCommunication(m, MessageStatus.MessageReceived);
-	}
-	//
-	// Primitive
-	//
 
-	@Override
-	protected BasicCompetenceShell initiateMyShell(){
-		try {
-			return new BasicCompetenceShell(this, this.creation);
-		} catch (Exception e) {
-			throw new RuntimeException(this+" ("+this.getClass()+") can not instanciate the competence shield!", e);
-		}
-	}
+	 @Override
+	 public Boolean signalException(final String text, final Throwable e) {
+		 return this.log.signalException(text, e);
+	 }
 
-	@Override
-	public void finalize(){
-		this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(");
-	}
+	 //	@Override
+	 //	public Boolean logException(final String text, final String details, final Throwable e) {
+	 //		return this.log.logException(text, details, e);
+	 //	}
+	 //
+	 //	@Override
+	 //	public Boolean logException(final String text, final String details) {
+	 //		return this.log.logException(text, details);
+	 //	}
 
-	@Override
-	public String toString(){
-		return this.getIdentifier().toString();
-	}
+	 @Override
+	 public Boolean signalException(final String text) {
+		 return this.log.signalException(text);
+	 }
+
+	 @Override
+	 public Boolean logMonologue(final String text, final String details) {
+		 return this.log.logMonologue(text, details);
+	 }
+
+	 @Override
+	 public Boolean logMonologue(final String text) {
+		 return this.log.logMonologue(text);
+	 }
+
+	 @Override
+	 public Boolean logWarning(final String text, final Throwable e) {
+		 return this.log.logWarning(text, e);
+	 }
+
+	 @Override
+	 public Boolean logWarning(final String text, final String details, final Throwable e) {
+		 return this.log.logWarning(text, details, e);
+	 }
+
+	 @Override
+	 public Boolean logWarning(final String text, final String details) {
+		 return this.log.logWarning(text, details);
+	 }
+
+	 @Override
+	 public Boolean logWarning(final String text) {
+		 return this.log.logWarning(text);
+	 }
+
+	 @Override
+	 public void addLogKey(String key, boolean toScreen, boolean toFile) {
+		 this.log.addLogKey(key, toScreen, toFile);
+	 }
+
+	 @Override
+	 public void setLogKey(String key, boolean toScreen, boolean toFile) {
+		 this.log.setLogKey(key, toScreen, toFile);
+	 }
+
+	 /*
+	  * Message 
+	  */
+
+	 @Override
+	 public void sendMessage(final AgentIdentifier agentId, final Message am) {
+		 super.sendMessage(agentId, am);
+		 this.log.logCommunication(am, MessageStatus.MessageSended);
+	 }
+
+
+	 @Override
+	 public void receive(final Message m) {
+		 super.receive(m);
+		 this.log.logCommunication(m, MessageStatus.MessageReceived);
+	 }
+	 //
+	 // Primitive
+	 //
+
+	 @Override
+	 protected BasicCompetenceShell initiateMyShell(){
+		 try {
+			 return new BasicCompetenceShell(this, this.creation);
+		 } catch (Exception e) {
+			 throw new RuntimeException(this+" ("+this.getClass()+") can not instanciate the competence shield!", e);
+		 }
+	 }
+
+	 @Override
+	 public void finalize(){
+		 this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(");
+	 }
+
+	 @Override
+	 public String toString(){
+		 return this.getIdentifier().toString();
+	 }
 
 }

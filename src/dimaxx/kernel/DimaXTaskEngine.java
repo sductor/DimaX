@@ -27,13 +27,11 @@ public class DimaXTaskEngine extends Thread {
 	@Override
 	public void run() {
 		// Initiate
-		if (this.task.dimaComponent.isAlive()){
-
 			this.task.dimaComponent.proactivityInitialize();
 			Thread.yield();
 
 			// Run
-			while (this.task.dimaComponent.isAlive() && this.task.dimaComponent.isActive())
+			while (this.task.dimaComponent.isAlive())
 				if (this.task.isActive()){//Allows Suspend & Resume
 
 					this.task.dimaComponent.preActivity();
@@ -49,5 +47,4 @@ public class DimaXTaskEngine extends Thread {
 			this.task.terminate();
 			Thread.yield();
 		}
-	}
 }

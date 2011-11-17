@@ -169,7 +169,6 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// @role(NegotiationInitiatorRole.class)
 	@StepComposant(ticker = ReplicationExperimentationProtocol._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
-		if (getMyAgent().hasAppliStarted())
 			//			 this.logMonologue(" Initiating nego  1 : "+!this.getMyProtocol().negotiationAsInitiatorHasStarted()+" 2 : "
 			//			 +this.myCore.IWantToNegotiate(this.getMyCurrentState())
 			//			 +" ");

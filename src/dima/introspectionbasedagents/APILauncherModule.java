@@ -127,8 +127,13 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 	void init() {
 		getMyAgent().launchWith(this);
-		registeredAgent.remove(getMyAgent());
 		startActivity(getMyAgent());
+		registeredAgent.remove(getMyAgent());
+
+		if (myLaunchType.equals(LaunchType.NotThreaded)){
+			scheduler.runApplication();
+			scheduler=null;
+		}
 	}
 
 	boolean launch(BasicCompetentAgent c, HostIdentifier machine){
@@ -163,7 +168,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 		return launch(c, avalaibleHosts.get(pos));
 	}
-	
+
 	boolean destroy(BasicCompetentAgent c){
 		registeredAgent.remove(c.getIdentifier());
 		locations.remove(c);
@@ -206,7 +211,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	public void startApplication(){
 		start(registeredAgent.values());
 	}
-	
+
 	public void startActivities(Collection<BasicCompetentAgent> ags){
 		start(ags);		
 	}
@@ -267,14 +272,10 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 			if (myLaunchType.equals(LaunchType.NotThreaded)){
 				ag.start(m);
 			} else {
+				ag.start(m);
 				getMyAgent().sendMessage(ag.getIdentifier(), m);
 			}
 			//			getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),_logKeyForAPIManagement);
-		}
-
-		if (myLaunchType.equals(LaunchType.NotThreaded)){
-			scheduler.runApplication();
-			scheduler=null;
 		}
 	}
 
@@ -313,67 +314,74 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		/*
 		 * 
 		 */
-
+		Collection<BasicCompetentAgent> toAdd = new ArrayList<BasicCompetentAgent>();
 		private boolean add(final BasicCompetentAgent c){
 			AgentManagementSystem.getDIMAams().addAquaintance(c);
-			return toInitialize.add(c);
+			return toAdd.add(c);
 		}
 
+		Collection<BasicCompetentAgent> toRemove = new ArrayList<BasicCompetentAgent>();
 		private void remove(final BasicCompetentAgent c){
 			AgentManagementSystem.getDIMAams().removeAquaintance(c);
-			toInitialize.remove(c);
-			toExecute.remove(c);
-			toTerminate.remove(c);
+			toRemove.add(c);
 		}
 		/*
 		 * 
 		 */
 
-		private void initialize(){
-			for (final BasicCompetentAgent c : toInitialize){
-				c.proactivityInitialize();
-				toExecute.add(c);
-			}
-			toInitialize.clear();
-		}
-
-		private void execute(){
-			Collections.shuffle(toExecute);
-			for (final BasicCompetentAgent c : toExecute){
-				if (c.isAlive()){
-					if (c.isActive()){
-						c.preActivity();
-						LogService.flush();
-						c.step();
-						LogService.flush();
-						c.postActivity();
-					}
-				} else {
-					toTerminate.add(c);
-				}					
-			}			
-		}
-
-		private void terminate(){
-			for (final BasicCompetentAgent c : toTerminate){
-				c.proactivityTerminate();
-				toExecute.remove(c);
-				AgentManagementSystem.getDIMAams().removeAquaintance(c);
-			}
-			toTerminate.clear();
-		}
-
 		public void runApplication(){
 			int step = 0;
+			//AJOUT DES NOUVEAUX AGENTS
+			toInitialize.addAll(toAdd);
+			toAdd.clear();
 
 			while (!( (toExecute.isEmpty() && toInitialize.isEmpty()) || (nbMaxStep!=-1 && step > nbMaxStep) )){
-				//			LoggerManager.write("\n\n***********SIMULATION : starting step "+step+", nbAgent:"+this.size()+"***********\n\n\n");
+				//LoggerManager.write("\n\n***********SIMULATION : starting step "+step+", nbAgent:"+this.size()+"***********\n\n\n");
+
+
+				//AJOUT DES NOUVEAUX AGENTS
+				toInitialize.addAll(toAdd);
+				toAdd.clear();
+				//RETRAIT DES AGENTS SUPPRIMME
+				toInitialize.removeAll(toRemove);
+				toExecute.removeAll(toRemove);
+				toTerminate.removeAll(toRemove);
+
+
+				//AGENT PRO ACTIVITY INITAILISATION
 				LogService.flush();
-				this.initialize();
+				for (final BasicCompetentAgent c : toInitialize){
+					c.proactivityInitialize();
+					toExecute.add(c);
+				}
+				toInitialize.clear();
+
+				//AGENT STEP ACTIVITIES
 				LogService.flush();
-				this.execute();
+				for (final BasicCompetentAgent c : toExecute){
+					if (c.isAlive()){
+						if (c.isActive()){
+							c.preActivity();
+							LogService.flush();
+							c.step();
+							LogService.flush();
+							c.postActivity();
+						}
+					} else {
+						toTerminate.add(c);
+					}
+				}
+
+				//AGENT PRO ACTIVITY TERMINATION
 				LogService.flush();
-				this.terminate();
+				for (final BasicCompetentAgent c : toTerminate){
+					c.proactivityTerminate();
+					toExecute.remove(c);
+					AgentManagementSystem.getDIMAams().removeAquaintance(c);
+				}
+				toTerminate.clear();
+
+				//LIFE IS GOOD : NEXT STEP
 				step++;
 			}
 

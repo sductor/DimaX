@@ -49,9 +49,9 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	private LaunchType myLaunchType = null;
 
 	//Darx
-	Collection<HostIdentifier> avalaibleHosts = 
+	List<HostIdentifier> avalaibleHosts = 
 			new ArrayList<HostIdentifier>();
-	Iterator<HostIdentifier> avalaibleHostsIterator;
+	int pos=0;
 
 	//No thread
 	private LocalFipaScheduler scheduler = null;
@@ -65,12 +65,11 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	 * @param threaded
 	 * @throws CompetenceException
 	 */
-	public APILauncherModule(boolean threaded) throws CompetenceException {
+	APILauncherModule(boolean threaded) throws CompetenceException {
 		if (threaded)
 			initWithFipa();
 		else 
 			initNotThreaded();	
-		avalaibleHostsIterator = avalaibleHosts.iterator();
 	}
 
 	/**
@@ -79,9 +78,8 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	 * @param server_port
 	 * @throws CompetenceException
 	 */
-	public APILauncherModule(int nameServer_port, int server_port) throws CompetenceException {
+	APILauncherModule(int nameServer_port, int server_port) throws CompetenceException {
 		initLocalDarx(nameServer_port, server_port);	
-		avalaibleHostsIterator = avalaibleHosts.iterator();
 	}
 
 	/**
@@ -91,11 +89,10 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	 * @throws JDOMException
 	 * @throws IOException
 	 */
-	public APILauncherModule(
+	APILauncherModule(
 			File machinesFile) 
 					throws CompetenceException, JDOMException,IOException {
 		initDeployedDarx(machinesFile);
-		avalaibleHostsIterator = avalaibleHosts.iterator();	
 	}
 
 
@@ -128,13 +125,13 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	// Launch method
 	//
 
-	public void init() {
+	void init() {
 		getMyAgent().launchWith(this);
 		registeredAgent.remove(getMyAgent());
 		startActivity(getMyAgent());
 	}
 
-	public boolean launch(BasicCompetentAgent c, HostIdentifier machine){
+	boolean launch(BasicCompetentAgent c, HostIdentifier machine){
 		if (!getAvalaibleHosts().contains(machine))
 			throw new RuntimeException("i can not use this machine "+machine+" available machines are "+getAvalaibleHosts());
 
@@ -160,13 +157,14 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		return true;
 	}
 
-	public boolean launch(BasicCompetentAgent c){
-		if (!avalaibleHostsIterator.hasNext())
-			avalaibleHostsIterator = avalaibleHosts.iterator();
+	boolean launch(BasicCompetentAgent c){
+		if (pos==avalaibleHosts.size())
+			pos=0;
 
-		return launch(c, avalaibleHostsIterator.next());
+		return launch(c, avalaibleHosts.get(pos));
 	}
-	public boolean destroy(BasicCompetentAgent c){
+	
+	boolean destroy(BasicCompetentAgent c){
 		registeredAgent.remove(c.getIdentifier());
 		locations.remove(c);
 		c.setAlive(false);
@@ -208,6 +206,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	public void startApplication(){
 		start(registeredAgent.values());
 	}
+	
 	public void startActivities(Collection<BasicCompetentAgent> ags){
 		start(ags);		
 	}
@@ -219,7 +218,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	}
 
 	@MessageHandler
-	public void end(NotificationMessage<EndActivityMessage> m){
+	void end(NotificationMessage<EndActivityMessage> m){
 		getMyAgent().logMonologue(m.getSender()+" has ended activity ... nothing to do...");
 	}
 

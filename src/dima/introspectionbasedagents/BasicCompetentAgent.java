@@ -184,9 +184,9 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return api.launch(this);
 	}
 
-//	public boolean destroy(APILauncherModule api){
-//		return api.destroy(this);
-//	}
+	public boolean destroyWith(APILauncherModule api){
+		return api.destroy(this);
+	}
 	
 	@Override
 	public final void proactivityTerminate() {

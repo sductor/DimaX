@@ -188,7 +188,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	void kill() {
 		logMonologue("my job is done! cleaning my lab bench...",onBoth);
 		for (final BasicCompetentAgent ag : agents.values()){
-			api.destroy(ag);
+			ag.destroyWith(api);
 		}
 		this.agents.clear();
 		this.agents=null;

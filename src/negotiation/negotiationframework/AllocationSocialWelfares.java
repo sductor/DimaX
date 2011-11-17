@@ -15,10 +15,11 @@ import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.support.GimaObject;
 
 public abstract class AllocationSocialWelfares<
 ActionSpec extends AbstractActionSpecification,
-Contract extends AbstractContractTransition<ActionSpec>>{
+Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 	public final  String socialWelfare;
 	public final CompetentComponent myAgent;

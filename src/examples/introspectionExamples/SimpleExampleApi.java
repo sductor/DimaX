@@ -3,31 +3,33 @@ package examples.introspectionExamples;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import dima.introspectionbasedagents.APIAgent;
 import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
+import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
 
-public class SimpleExampleApi extends APILauncherModule{
+public class SimpleExampleApi extends APIAgent{
 	private static final long serialVersionUID = 2197507938900786081L;
 
 	int nbAgent = 5;
 	int nbTour = 50;
-	final Collection<BasicCompetentAgent> agents = new ArrayList<BasicCompetentAgent>();
-
+	Collection<BasicCompetentAgent> agents = new ArrayList<BasicCompetentAgent>();
+	
 
 	public SimpleExampleApi()
-	throws CompetenceException {
+			throws CompetenceException {
 		super("simple example agent launcher");
 		for (int i = 0; i < this.nbAgent; i++)
 			agents.add(new SimpleAgent(i, this.nbAgent, this.nbTour));
 		agents.add(new SimpleObserverAgent(this.nbAgent));
 	}
 
-
-
-	@Override
-	public Collection<BasicCompetentAgent> getAgents() {		
-		return agents;
+	@ProactivityInitialisation
+	public void startAppli() {
+		launch(agents);
+		startApplication();
 	}
 
 
@@ -37,8 +39,10 @@ public class SimpleExampleApi extends APILauncherModule{
 	 * @throws MissingCompetenceException
 	 */
 	public static void main(final String[] args) throws CompetenceException {
-		new SimpleExampleApi().launchWithFipa();
-		//		new SimpleExampleApi().launchWithoutThreads(20);
-		//		new SimpleExampleApi().launchWithDarx();
+		final SimpleExampleApi apiAgent = new SimpleExampleApi();
+//		exp.initAPI(true);//FIPA
+//		exp.initAPI(false);//SCHEDULED
+		apiAgent.initAPI(7777,7776);//DARX LOCAL
+		apiAgent.launchMySelf();
 	}
 }

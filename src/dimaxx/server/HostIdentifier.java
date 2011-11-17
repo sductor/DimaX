@@ -1,6 +1,7 @@
 package dimaxx.server;
 
 import dima.basicagentcomponents.AgentName;
+import dimaxx.hostcontrol.LocalHost;
 
 /**
  *
@@ -44,6 +45,13 @@ public class HostIdentifier extends AgentName {
 		return this.portNumber;
 	}
 
+	/*
+	 * 
+	 */
+	
+	public static HostIdentifier getLocalHost(){
+		return new HostIdentifier(LocalHost.getUrl(), LocalHost.port);
+	}
 	/*
 	 *
 	 */

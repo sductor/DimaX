@@ -1,17 +1,23 @@
 package negotiation.experimentationframework;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import negotiation.experimentationframework.MachineNetwork.NotEnoughMachinesException;
+import org.jdom.JDOMException;
+
+import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.APIAgent;
 import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
+import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -31,7 +37,7 @@ import dimaxx.server.HostIdentifier;
  * @author Sylvain Ductor
  *
  */
-public class Experimentator extends BasicCompetentAgent{
+public class Experimentator extends APIAgent{
 	private static final long serialVersionUID = 6985131313855716524L;
 
 	//
@@ -40,9 +46,9 @@ public class Experimentator extends BasicCompetentAgent{
 
 	final ExperimentationProtocol myProtocol;
 	final File f;
-	final APILauncherModule laborantinLauncher;
-	//Integer represent the sum of the number of agent of each simulation that uses the given machine 
-	public final MachineNetwork machines;
+
+//	//Integer represent the sum of the number of agent of each simulation that uses the given machine 
+//	public final MachineNetwork machines;
 	public static final AgentIdentifier myId = new AgentName("zi experimentator");
 
 	/*
@@ -59,13 +65,10 @@ public class Experimentator extends BasicCompetentAgent{
 	// Constructor
 	//
 
-
-	public Experimentator(final List<HostIdentifier> machines, ExperimentationProtocol myProtocol)
-			throws CompetenceException, IllegalArgumentException, IllegalAccessException {
+	public Experimentator(ExperimentationProtocol myProtocol) throws CompetenceException {
 		super(myId);
-		this.machines = new MachineNetwork(machines);
+//		this.machines = new MachineNetwork(machines);
 		this.f = new File(ReplicationExperimentationProtocol.resultPath);
-		laborantinLauncher = new APILauncherModule(this);
 		//		Writing.log(
 		//				this.f,
 		//				myProtocol.getDescription(),
@@ -73,7 +76,7 @@ public class Experimentator extends BasicCompetentAgent{
 		this.myProtocol=myProtocol;
 		simuToLaunch = myProtocol.generateSimulation();
 
-		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription()+" will use :"+machines);
+		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription());//+" will use :"+getApi().getAvalaibleHosts());
 	}
 
 	//
@@ -82,25 +85,31 @@ public class Experimentator extends BasicCompetentAgent{
 
 
 
-
 	//Executed initially then called by collect result
 	@ProactivityInitialisation
 	public boolean launchSimulation() throws CompetenceException{
-		this.logMonologue("Available Memory :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
+		this.logMonologue("Launching simulations --> Available Memory :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
 		if (this.awaitingAnswer==0){
+			System.out.println("1");
+			this.logMonologue("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 			this.setAlive(false);
 			this.logMonologue(myProtocol.getDescription(),LogService.onBoth);
-			this.logMonologue("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 			System.exit(1);
 		} else if (!this.simuToLaunch.isEmpty()){
-			try {
-				while (!this.simuToLaunch.isEmpty()){
-					Laborantin l = myProtocol.createNewLaborantin(this.simuToLaunch.pop(), machines);
-					l.launchWith(laborantinLauncher);
-					laborantinLauncher.start(l);
-					this.launchedSimu.put(l.getId(), l);
-				}
-			} catch (NotEnoughMachinesException e) {}
+			this.logMonologue("launching new exp",LogService.onBoth);
+			ExperimentationParameters nextSimu = null;
+			try {				
+				//				while (!this.simuToLaunch.isEmpty()){
+				nextSimu = this.simuToLaunch.pop();
+				Laborantin l = myProtocol.createNewLaborantin(nextSimu, getApi());
+				launch(l);
+				startActivity(l);
+				this.launchedSimu.put(l.getId(), l);
+				//				}
+			} catch (NotEnoughMachinesException e) {
+				this.simuToLaunch.add(nextSimu);
+				this.logMonologue("aaaaaaaaarrrrrrrrrrrrrrrrggggggghhhhhhhhhh",LogService.onBoth);
+			}
 		}
 		return true;
 	}
@@ -112,9 +121,9 @@ public class Experimentator extends BasicCompetentAgent{
 	@NotificationEnvelope
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
 		logMonologue(n.getSender()+" is finished",LogService.onBoth);
-		this.launchedSimu.get(n.getSender()).kill(machines);
+		this.launchedSimu.get(n.getSender()).kill();
 		this.launchedSimu.remove(n.getSender());
-//		laborantinLauncher.destroy(n.getSender());
+		//		laborantinLauncher.destroy(n.getSender());
 		this.awaitingAnswer--;
 		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
 				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
@@ -127,14 +136,17 @@ public class Experimentator extends BasicCompetentAgent{
 	/*
 	 * 
 	 */
-	
+
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException{
-		final List machines = new LinkedList<HostIdentifier>();
-		machines.add(new HostIdentifier("localhost", 7777));
-		Experimentator exp = new Experimentator(machines, new ReplicationExperimentationProtocol());
-		exp.laborantinLauncher.initNotThreaded();
-		exp.launchWith(exp.laborantinLauncher);
-		exp.laborantinLauncher.start(exp);
+		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
+//		exp.initAPI(true);//FIPA
+				exp.initAPI(false);//SCHEDULED
+//				exp.initAPI(7779,7778);//DARX LOCAL
+		exp.launchMySelf();
 	}
 }
+
+
+//		final List machines = new LinkedList<HostIdentifier>();
+//		machines.add(new HostIdentifier("localhost", 7777));

@@ -154,14 +154,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	// Communication
 
 	public Boolean logCommunication(Message am, MessageStatus s){
-		if (!(am instanceof LogNotification) || 
-				(!(am instanceof NotificationMessage) && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
-			LogNotification log = new LogCommunication(getIdentifier(), am, s);
-			if (commtoScreen )
-				System.out.println(log.generateLogToScreen());
-			if (commtoFiles)
-				return this.notify(log,logNotificationKey);
-		}
+//		if (!(am instanceof LogNotification) || 
+//				(!(am instanceof NotificationMessage) && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
+//			LogNotification log = new LogCommunication(getIdentifier(), am, s);
+//			if (commtoScreen )
+//				System.out.println(log.generateLogToScreen());
+//			if (commtoFiles)
+//				return this.notify(log,logNotificationKey);
+//		}
 		return true;
 	}
 	//EXCEPTION

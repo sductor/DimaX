@@ -42,9 +42,4 @@ public class MachineNetwork extends HashMap<HostIdentifier,Integer> {
 		}
 	}
 
-	//
-	// Subclass
-	//
-
-	public class NotEnoughMachinesException extends Exception{}
 }

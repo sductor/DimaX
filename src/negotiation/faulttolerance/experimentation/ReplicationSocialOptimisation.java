@@ -12,6 +12,7 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
 
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
+import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 
@@ -68,8 +69,30 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 		return new UtilitaristEvaluator<ReplicationSpecification>() {
 			@Override
 			public Double getUtilityValue(ReplicationSpecification o) {
-				ReplicaState s = (ReplicaState) o;
-				return s.getMyReliability();
+				if (o instanceof ReplicaState){
+					ReplicaState s = (ReplicaState) o;
+					return s.getMyReliability();
+				} else if (o instanceof HostState){
+					HostState s = (HostState) o;
+					Collection<ReplicaState> states = s.getMyAgentsCollec();
+					Double result;
+					if (socialWelfare==key4leximinSocialWelfare){
+						result = Double.POSITIVE_INFINITY;
+						for (ReplicaState r : states)
+							result = Math.min(result, r.getMyReliability());
+					} else if  (socialWelfare==key4NashSocialWelfare){
+						result = 1.;
+						for (ReplicaState r : states)
+							result *= r.getMyReliability();						
+					}else if  (socialWelfare==key4UtilitaristSocialWelfare){
+						result = 0.;
+						for (ReplicaState r : states)
+							result += r.getMyReliability();						
+					} else 
+						throw new RuntimeException("wtf! socialWelfare="+socialWelfare);
+					return result;
+				} else 
+					throw new RuntimeException("wtf!");
 			}
 		};
 	}

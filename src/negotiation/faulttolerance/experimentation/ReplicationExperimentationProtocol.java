@@ -9,9 +9,9 @@ import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.experimentationframework.Experimentator;
 import negotiation.experimentationframework.IfailedException;
-import negotiation.experimentationframework.MachineNetwork;
-import negotiation.experimentationframework.MachineNetwork.NotEnoughMachinesException;
+import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.server.HostIdentifier;
@@ -33,20 +33,20 @@ public class ReplicationExperimentationProtocol implements
 				new LinkedList<ExperimentationParameters>();
 
 		// /
-
-//		usedProtocol = ReplicationExperimentationParameters.key4mirrorProto;
-//		agentSelection = ReplicationExperimentationParameters.key4greedySelect;
-//		hostSelection = ReplicationExperimentationParameters.key4greedySelect;
-//		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
-//				simuToLaunch);
 //
-//		usedProtocol = ReplicationExperimentationParameters.key4CentralisedstatusProto;
-//		agentSelection = ReplicationExperimentationParameters.key4greedySelect;
-//		hostSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
-//		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
-//				simuToLaunch);
+		usedProtocol = ReplicationExperimentationParameters.key4mirrorProto;
+		agentSelection = ReplicationExperimentationParameters.key4greedySelect;
+		hostSelection = ReplicationExperimentationParameters.key4greedySelect;
+		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
+				simuToLaunch);
+////
+		usedProtocol = ReplicationExperimentationParameters.key4CentralisedstatusProto;
+		agentSelection = ReplicationExperimentationParameters.key4greedySelect;
+		hostSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
+		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
+				simuToLaunch);
 
-		usedProtocol = ReplicationExperimentationParameters.key4mirrorProto;//key4statusProto;//key4CentralisedstatusProto;//
+		usedProtocol = ReplicationExperimentationParameters.key4statusProto;//key4mirrorProto;//key4CentralisedstatusProto;//
 		agentSelection = ReplicationExperimentationParameters.key4greedySelect;//key4rouletteWheelSelect;//
 		hostSelection = ReplicationExperimentationParameters.key4greedySelect;
 		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
@@ -68,44 +68,24 @@ public class ReplicationExperimentationProtocol implements
 				usedProtocol, 
 				agentSelection,
 				hostSelection));
-//		simuToLaunch.add(new ReplicationExperimentationParameters(f,
-//				ReplicationExperimentationProtocol.nbAgents,
-//				ReplicationExperimentationProtocol.nbHosts, 0, .2,
-//				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-//				hostSelection));
-//
-//		simuToLaunch.add(new ReplicationExperimentationParameters(f,
-//				ReplicationExperimentationProtocol.nbAgents,
-//				ReplicationExperimentationProtocol.nbHosts, 1, .4,
-//				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-//				hostSelection));
-//		simuToLaunch.add(new ReplicationExperimentationParameters(f,
-//				ReplicationExperimentationProtocol.nbAgents,
-//				ReplicationExperimentationProtocol.nbHosts, 0, .4,
-//				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-//				hostSelection));
-//
-//		simuToLaunch.add(new ReplicationExperimentationParameters(f,
-//				ReplicationExperimentationProtocol.nbAgents,
-//				ReplicationExperimentationProtocol.nbHosts, 1, .6,
-//				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-//				hostSelection));
-//		simuToLaunch.add(new ReplicationExperimentationParameters(f,
-//				ReplicationExperimentationProtocol.nbAgents,
-//				ReplicationExperimentationProtocol.nbHosts, 0, .6,
-//				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-//				hostSelection));
-//
-//		simuToLaunch.add(new ReplicationExperimentationParameters(f,
-//				ReplicationExperimentationProtocol.nbAgents,
-//				ReplicationExperimentationProtocol.nbHosts, 1, .8,
-//				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-//				hostSelection));
-//		simuToLaunch.add(new ReplicationExperimentationParameters(f,
-//				ReplicationExperimentationProtocol.nbAgents,
-//				ReplicationExperimentationProtocol.nbHosts, 0, .8,
-//				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-//				hostSelection));
+
+		simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
+				ReplicationExperimentationProtocol.nbAgents,
+				ReplicationExperimentationProtocol.nbHosts, 1, .4,
+				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
+				hostSelection));
+
+		simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
+				ReplicationExperimentationProtocol.nbAgents,
+				ReplicationExperimentationProtocol.nbHosts, 1, .6,
+				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
+				hostSelection));
+
+		simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
+				ReplicationExperimentationProtocol.nbAgents,
+				ReplicationExperimentationProtocol.nbHosts, 1, .8,
+				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
+				hostSelection));
 	}
 
 	//
@@ -258,16 +238,14 @@ public class ReplicationExperimentationProtocol implements
 
 	@Override
 	public ReplicationLaborantin createNewLaborantin(
-			ExperimentationParameters para, MachineNetwork machines)
+			ExperimentationParameters para, APILauncherModule api)
 			throws NotEnoughMachinesException, CompetenceException {
 		ReplicationLaborantin l = null;
 		final ReplicationExperimentationParameters p = (ReplicationExperimentationParameters) para;
 		boolean erreur = true;
 		while (erreur)
 			try {
-				l = new ReplicationLaborantin(p, machines.reserveMachine(this,
-						ReplicationExperimentationProtocol.nbAgents
-								+ ReplicationExperimentationProtocol.nbHosts));
+				l = new ReplicationLaborantin(p, api);
 				erreur = false;
 			} catch (final IfailedException e) {
 				LogService.writeException(

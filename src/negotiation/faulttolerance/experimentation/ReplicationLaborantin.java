@@ -43,6 +43,7 @@ import negotiation.negotiationframework.interaction.selectioncores.AllocationSel
 import negotiation.negotiationframework.interaction.selectioncores.GreedyBasicSelectionCore;
 import negotiation.negotiationframework.interaction.selectioncores.GreedyRouletteWheelSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -56,6 +57,7 @@ import dima.introspectionbasedagents.services.library.information.ObservationSer
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.support.GimaObject;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
@@ -118,10 +120,9 @@ public class ReplicationLaborantin extends Laborantin {
 	// Constructor
 	//
 
-	public ReplicationLaborantin(final ReplicationExperimentationParameters p,
-			Collection<HostIdentifier> machines)
-					throws CompetenceException, IfailedException {
-		super(p, machines);
+	public ReplicationLaborantin(final ReplicationExperimentationParameters p,APILauncherModule api)
+					throws CompetenceException, IfailedException, NotEnoughMachinesException {
+		super(p, api);
 
 	}
 
@@ -516,7 +517,7 @@ public class ReplicationLaborantin extends Laborantin {
 		HashedHashSet<AgentIdentifier, AgentIdentifier> opinionsLog = 
 				new HashedHashSet<AgentIdentifier, AgentIdentifier>();
 
-		for (BasicCompetentAgent ag : getAgents()){
+		for (BasicCompetentAgent ag : agents.values()){
 			if (ag instanceof NegotiatingReplica){
 				ag.addObserver(this.getIdentifier(), ReplicationAgentResult.class);
 				observedRepResultLog.add(ag.getIdentifier());
@@ -731,7 +732,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 	}
 
-	public class StatusQuantityTrunk {
+	public class StatusQuantityTrunk extends GimaObject {
 
 		int nbAgentLost = 0;
 

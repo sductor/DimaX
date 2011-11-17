@@ -2,7 +2,9 @@ package dima.introspectionbasedagents.shells;
 
 import java.util.Date;
 
-public class Ticker {
+import dima.support.GimaObject;
+
+public class Ticker extends GimaObject{
 
 	private final long timeToWait;
 	private final Date creation;

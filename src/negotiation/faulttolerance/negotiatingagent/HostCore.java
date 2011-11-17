@@ -130,7 +130,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 	@Override
 	public Double evaluatePreference(HostState s1) {
-		throw new RuntimeException("I'm not an utility based agent");
+		return myOptimiser.getUtilitaristEvaluator().getUtilityValue(s1);
 	}
 
 }

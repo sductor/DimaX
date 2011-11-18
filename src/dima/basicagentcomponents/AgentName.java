@@ -71,7 +71,7 @@ public int hashCode() {
 	// Insert code to generate a hash code for the receiver here.
 	// This implementation forwards the message to super.  You may replace or supplement this.
 	// NOTE: if two objects are equal (equals(Object) returns true) they must have the same hash code
-	return super.hashCode();
+	return this.toString().hashCode();
 }
 /**
  * setId method comment.

@@ -109,6 +109,8 @@ Tests wheter a proactive object has reached it goal or
 				this.preActivity();
 				this.step();
 				this.postActivity();
+			} else {
+				tryToResumeActivity();
 			}
 		}
 	}
@@ -148,6 +150,14 @@ Tests wheter a proactive object has reached it goal or
 
 	@Override
 	public abstract void step();
+	
+	
+	
+	/**
+	 * This method attempt to resume activity when the agent is not active
+	 */
+	public void tryToResumeActivity(){}
+	
 	/**
 	 * Returns a String that represents the value of this object.
 	 * @return a string representation of the receiver

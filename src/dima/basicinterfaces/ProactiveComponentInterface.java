@@ -73,6 +73,11 @@ public interface ProactiveComponentInterface extends ActiveComponentInterface{
 	 *************************/
 
 	/**
+	 * This method attempt to resume activity when the agent is not active
+	 */
+	public void tryToResumeActivity();
+	
+	/**
 	 * This is the method containing the termination condition of a
 	 * ProactiveComponent
 	 *

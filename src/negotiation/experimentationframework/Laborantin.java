@@ -240,6 +240,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 				this.notify(new SimulationEndedMessage());
 				this.sendNotificationNow();
 				//				this.logMonologue("notifications Sended", onBoth);
+				 kill();
 				return true;
 			} else if (!this.endRequestSended){
 				this.logMonologue("all agents lost! ending ..",onBoth);

@@ -182,7 +182,8 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 			AgentManagementSystem.getDIMAams().removeAquaintance(c);
 			break;
 		case DarX:
-			throw new RuntimeException();
+			c.desactivateWithDarx();
+			break;
 			//			if (locations!=null){
 			//				c.activateWithDarx(locations.get(c).getUrl(), locations.get(c).getPort());
 			//			} else {
@@ -366,7 +367,8 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 							c.step();
 							LogService.flush();
 							c.postActivity();
-						}
+						} else 
+							c.tryToResumeActivity();
 					} else {
 						toTerminate.add(c);
 					}

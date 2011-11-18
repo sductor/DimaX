@@ -10,6 +10,7 @@ import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.library.replication.ReplicationHandler;
 
@@ -76,15 +77,15 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 		if (c.isMatchingCreation()) {
 			ReplicationHandler.replicate(c.getAgent());
 			this.observe(c.getAgent(), SimpleObservationService.informationObservationKey);
-			System.out.println(c.getResource() + " " + new Date().toString()
-					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue( "  ->I have replicated " + c.getAgent());
+//			System.out.println(c.getResource() + " " + new Date().toString()
+//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+			logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onNone);
 		} else {
 			ReplicationHandler.killReplica(c.getAgent());
 			this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
-			System.out.println(c.getResource() + " " + new Date().toString()
-					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue( "  ->I have killed " + c.getAgent());
+//			System.out.println(c.getResource() + " " + new Date().toString()
+//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+			logMonologue( "  ->I have killed " + c.getAgent(),LogService.onNone);
 		}
 
 		this.getMyAgent().setNewState(
@@ -110,8 +111,8 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			ag.addObserver(this.getMyAgent().getIdentifier(), 
 					SimpleObservationService.informationObservationKey);
 			ReplicationHandler.replicate(c.getAgent());
-			System.out.println(c.getResource() + "  ->I have initially replicated "
-					+ c.getAgent());
+			logMonologue(c.getResource() + "  ->I have initially replicated "
+					+ c.getAgent(),LogService.onNone);
 		} else
 			throw new RuntimeException();
 	}

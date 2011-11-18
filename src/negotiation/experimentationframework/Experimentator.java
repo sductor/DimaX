@@ -121,15 +121,16 @@ public class Experimentator extends APIAgent{
 	@NotificationEnvelope
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
 		logMonologue(n.getSender()+" is finished",LogService.onBoth);
-		this.launchedSimu.get(n.getSender()).kill();
+//		this.launchedSimu.get(n.getSender()).kill();
 		this.launchedSimu.remove(n.getSender());
 		//		laborantinLauncher.destroy(n.getSender());
 		this.awaitingAnswer--;
 		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
-				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
+				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		System.gc();
-		this.logMonologue("... After GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
-				+" free (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
+		this.logMonologue("--> Available Memory After GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
+				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
+		this.logWarning("--------------> Used Memory (MO) : "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000),LogService.onBoth);
 		this.launchSimulation();
 	}
 
@@ -141,8 +142,8 @@ public class Experimentator extends APIAgent{
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
 //		exp.initAPI(true);//FIPA
-								exp.initAPI(false);//SCHEDULED
-//				exp.initAPI(7779,7778);//DARX LOCAL
+//								exp.initAPI(false);//SCHEDULED
+				exp.initAPI(7779,7778);//DARX LOCAL
 		exp.launchMySelf();
 	}
 }

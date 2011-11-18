@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
@@ -308,7 +309,7 @@ SimpleObservationService implements OpinionService {
 		//
 		//
 
-		private class EnrichedInfo implements Comparable<EnrichedInfo>{
+		private class EnrichedInfo implements Comparable<EnrichedInfo>, DimaComponentInterface{
 			private static final long serialVersionUID = 6659167432850630911L;
 
 			private Long infoDynamicity = Long.MAX_VALUE;

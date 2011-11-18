@@ -113,8 +113,8 @@ public class ReplicationExperimentationProtocol implements
 	// public static final int nbHosts = 30;
 	// public static final int nbAgents =100;
 	// public static final int nbHosts = 20;
-	// public static final int nbAgents =2000;
-	// public static final int nbHosts = 600;
+//	 public static final int nbAgents =200;
+//	 public static final int nbHosts = 100;
 	public static final int nbSimuPerMAchine = 1;
 
 	public static final Double knownHostsPercent = 1.;

@@ -3,6 +3,7 @@ package dima.introspectionbasedagents;
 import java.util.Date;
 import java.util.Map;
 
+import dima.basicagentcomponents.AgentAddress;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
@@ -15,7 +16,7 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	 */
 	private static final long serialVersionUID = -7910893993695270592L;
 	private BasicCommunicatingShell myShell;
-	private final Date creation;
+	protected Date creation;
 
 	public BasicIntrospectedCommunicatingAgent() {
 		super();
@@ -27,12 +28,12 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 		this.creation = new Date();
 	}
 
-	public BasicIntrospectedCommunicatingAgent(final Map<?, ?> mp, final AgentIdentifier newId) {
+	public BasicIntrospectedCommunicatingAgent(final Map<String, AgentAddress> mp, final AgentIdentifier newId) {
 		super(mp, newId);
 		this.creation = new Date();
 	}
 
-	public BasicIntrospectedCommunicatingAgent(final Map<?, ?> mp) {
+	public BasicIntrospectedCommunicatingAgent(final Map<String, AgentAddress> mp) {
 		super(mp);
 		this.creation = new Date();
 	}
@@ -56,12 +57,12 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 		this.creation = horloge;
 	}
 
-	public BasicIntrospectedCommunicatingAgent(final Map<?, ?> mp, final AgentIdentifier newId, final Date horloge) {
+	public BasicIntrospectedCommunicatingAgent(final Map<String, AgentAddress> mp, final AgentIdentifier newId, final Date horloge) {
 		super(mp, newId);
 		this.creation = horloge;
 	}
 
-	public BasicIntrospectedCommunicatingAgent(final Map<?, ?> mp, final Date horloge) {
+	public BasicIntrospectedCommunicatingAgent(final Map<String, AgentAddress> mp, final Date horloge) {
 		super(mp);
 		this.creation = horloge;
 	}

@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 
 import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.ContractTransition;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CompetentComponent;
@@ -108,6 +110,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 			for (AgentIdentifier id : c.getAllParticipants())
 				if (result.containsKey(id)){
 					if (c.getSpecificationOf(id).isNewerThan(result.get(id))){//rmplacing a fresher state	
+
 						//						System.out.println("remplacing a fresher state");
 						result.put(id,c.getSpecificationOf(id));					
 					}
@@ -118,8 +121,9 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 		//updating each contract with the freshest state
 		for (Contract cOld : allContract){
-			for (AgentIdentifier id : cOld.getAllParticipants())
-				cOld.setSpecification(result.get(id));
+			for (AgentIdentifier id : cOld.getAllParticipants()){
+					cOld.setSpecification(result.get(id));
+			}
 		}	
 		return result;			
 	}

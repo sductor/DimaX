@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
 
@@ -29,7 +31,7 @@ ActionSpec extends AbstractActionSpecification> implements
 	protected final List<AgentIdentifier> actors;
 	protected final List<Object> args; // functionnal properties
 
-	private final HashMap<AgentIdentifier, ActionSpec> specs = new HashMap<AgentIdentifier, ActionSpec>(); // non
+	private final Map<AgentIdentifier, ActionSpec> specs = new Hashtable<AgentIdentifier, ActionSpec>(); // non
 																											// functionnal
 																											// properties
 
@@ -94,6 +96,9 @@ ActionSpec extends AbstractActionSpecification> implements
 
 	@Override
 	public void setSpecification(final ActionSpec s) {
+		if (s==null){
+			throw new RuntimeException("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+		}
 		if (this.actors.contains(s.getMyAgentIdentifier()))
 			this.specs.put(s.getMyAgentIdentifier(), s);
 		else

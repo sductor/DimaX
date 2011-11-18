@@ -22,7 +22,9 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	 */
 	private static final long serialVersionUID = -7518760102401713109L;
 	Component dimaComponent;
-	Boolean active = false;
+
+	//This activity is at darx level, it is different of the internal activity status of the agent
+	Boolean dimaxTaskActive = false;
 
 
 	/** this field controls the activation of replicas */
@@ -48,8 +50,8 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 		return this.leader;
 	}
 
-	public Boolean isActive() {
-		return this.active;
+	public Boolean dimaxTaskIsActive() {
+		return this.dimaxTaskActive;
 		//		&& (this.isLeader() ||
 		//		this.getHandle().getReplicationPolicy().getReplicationType().equals(ReplicationStrategy.ACTIVE_STRATEGY));
 	}
@@ -67,12 +69,12 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 
 
 	public void activateTask(final int port) throws RemoteException {
-			this.activateTask(LocalHost.getUrl(), port);
+		this.activateTask(LocalHost.getUrl(), port);
 	}
 
 
-	public void setActive(final Boolean active) {
-		this.active = active;
+	public void setdimaxTaskActive(final Boolean active) {
+		this.dimaxTaskActive = active;
 	}
 
 
@@ -86,14 +88,12 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	@Override
 	public void start() {
 
-		this.active = true;
-		if (this.isActive()){
-			LogService.write(this, "Starting "+this.getTaskName());
-			if (this.thread == null)
-				this.thread = new DimaXTaskEngine(this);
+		setdimaxTaskActive(true);
+		LogService.write(this, "Starting "+this.getTaskName());
+		if (this.thread == null)
+			this.thread = new DimaXTaskEngine(this);
 
-			this.thread.start();
-		}
+		this.thread.start();
 	}
 
 
@@ -105,7 +105,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	@Override
 	public void suspend() {
 		LogService.write(this, "Suspending "+ this.getTaskName());
-		this.active = false;
+		setdimaxTaskActive(false);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	@Override
 	public void resume() {
 		LogService.write(this, "Resuming "+ this.getTaskName());
-		this.active = true;
+		setdimaxTaskActive(true);
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	@Override
 	public void terminate() {
 		this.dimaComponent.proactivityTerminate();
-		this.setActive(false);
+		setdimaxTaskActive(false);
 	}
 
 	/*

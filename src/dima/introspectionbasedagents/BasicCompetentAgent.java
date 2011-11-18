@@ -1,11 +1,13 @@
 package dima.introspectionbasedagents;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
@@ -41,7 +43,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	//
 
 	private BasicCompetenceShell myShell;
-	private Date creation;
 
 
 	//
@@ -51,28 +52,12 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	public BasicCompetentAgent(final AgentIdentifier newId)  throws CompetenceException {
 		super(newId);
-		this.creation = new Date();
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-	}
-
-	public BasicCompetentAgent(final Map<?, ?> mp, final AgentIdentifier newId)  throws CompetenceException {
-		super(mp, newId);
-		this.creation = new Date();
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-	}
-
-	public BasicCompetentAgent(final Map<?, ?> mp)  throws CompetenceException  {
-		super(mp);
-		this.creation = new Date();
 		log= new LogService(this);
 		observer=	new PatternObserverWithHookservice(this);
 	}
 
 	public BasicCompetentAgent(final String newId) throws CompetenceException {
 		super(newId);
-		this.creation = new Date();
 		log= new LogService(this);
 		observer=	new PatternObserverWithHookservice(this);
 	}
@@ -82,29 +67,14 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 */
 
 	public BasicCompetentAgent(final AgentIdentifier newId, final Date horloge)  throws CompetenceException {
-		super(newId);
-		this.creation = horloge;
+		super(newId, horloge);
 		log= new LogService(this);
 		observer=	new PatternObserverWithHookservice(this);
 	}
 
-	public BasicCompetentAgent(final Map<?, ?> mp, final AgentIdentifier newId, final Date horloge)  throws CompetenceException {
-		super(mp, newId);
-		this.creation = horloge;
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-	}
-
-	public BasicCompetentAgent(final Map<?, ?> mp, final Date horloge)  throws CompetenceException  {
-		super(mp);
-		this.creation = horloge;
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-	}
 
 	public BasicCompetentAgent(final String newId, final Date horloge) throws CompetenceException {
-		super(newId);
-		this.creation = horloge;
+		super(newId, horloge);
 		log= new LogService(this);
 		observer=	new PatternObserverWithHookservice(this);
 	}
@@ -169,7 +139,20 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return appliHasStarted;
 	}
 
-	@MessageHandler()
+
+	public void tryToResumeActivity(){
+		Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
+		while (getMailBox().hasMail()){
+			AbstractMessage m = getMailBox().readMail();
+			if (m instanceof StartActivityMessage)
+				start((StartActivityMessage)m);
+			else
+				messages.add(m);
+		}
+		for (AbstractMessage m : messages)
+			getMailBox().writeMail(m);
+	}
+	
 	public boolean start(StartActivityMessage m){
 		this.appliHasStarted=true;
 		this.creation = m.getStartDate();

@@ -13,7 +13,7 @@ ExperimentationParameters {
 	private static final long serialVersionUID = -7191963637040889163L;
 
 
-	public static int maxNumberOfAgentPerMachine=100;
+	public static int maxNumberOfAgentPerMachine=3000;
 	//
 	// Fields
 	//

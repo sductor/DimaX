@@ -31,10 +31,10 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 *
 	 */
 	private static final long serialVersionUID = -8436736742806220406L;
-	protected Map aquaintances;
+	protected Map<String, AgentAddress> aquaintances;
 	private AbstractMailBox mailBox;
 
-	private dima.basiccommunicationcomponents.CommunicationComponent com;
+	private CommunicationComponent com;
 	/**
 	 * CommunicationBehavior constructor comment.
 	 */
@@ -69,7 +69,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @param param Gdima.kernel.AgentAddress
 	 * @param mp java.util.Map
 	 */
-	public BasicCommunicatingAgent(final Map mp) {
+	public BasicCommunicatingAgent(final Map<String, AgentAddress> mp) {
 		super();
 		this.initialize();
 		this.aquaintances = mp;
@@ -81,7 +81,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @param param Gdima.kernel.AgentAddress
 	 * @param mp java.util.Map
 	 */
-	public BasicCommunicatingAgent(final Map mp, final AgentIdentifier newId) {
+	public BasicCommunicatingAgent(final Map<String, AgentAddress> mp, final AgentIdentifier newId) {
 		super(newId);
 		this.initialize();
 		this.aquaintances = mp;
@@ -133,10 +133,9 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 
 
 
-
+		DimaXTask<BasicCommunicatingAgent> darxEngine;
 	public void activateWithDarx(final int PortNb)
 	{
-		DimaXTask<BasicCommunicatingAgent> darxEngine;
 
 		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
 		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
@@ -150,7 +149,6 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 
 	public void activateWithDarx(final String url,final int PortNb)
 	{
-		DimaXTask<BasicCommunicatingAgent> darxEngine;
 
 		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
 		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
@@ -161,18 +159,23 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		}
 	}
 
-	public void activateWithMonitor(final String url,final int PortNb, final Class<? extends AgentMonitor>... monitors) throws UninstanciableMonitorException
-	{
-		MonitoredTask<BasicCommunicatingAgent> darxEngine;
-
-		darxEngine = new  MonitoredTask<BasicCommunicatingAgent>(this, monitors);
-		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
-		try	{
-			darxEngine.activateTask(url,PortNb);
-		}  catch (final java.rmi.RemoteException e){
-			LogService.writeException(this,"Error during Activation : ",e);
-		}
+	public void desactivateWithDarx(){
+		darxEngine.terminateTask();
 	}
+	
+	
+//	public void activateWithMonitor(final String url,final int PortNb, final Class<? extends AgentMonitor>... monitors) throws UninstanciableMonitorException
+//	{
+//		MonitoredTask<BasicCommunicatingAgent> darxEngine;
+//
+//		darxEngine = new  MonitoredTask<BasicCommunicatingAgent>(this, monitors);
+//		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
+//		try	{
+//			darxEngine.activateTask(url,PortNb);
+//		}  catch (final java.rmi.RemoteException e){
+//			LogService.writeException(this,"Error during Activation : ",e);
+//		}
+//	}
 
 	public void removeAquaintance(
 			BasicCommunicatingAgent ag) {
@@ -202,11 +205,11 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * Creation date: (31/03/00 12:45:29)
 	 * @return java.util.Vector
 	 */
-	public void addAquaintances(final Vector l) {
+	public void addAquaintances(final Vector<AgentAddress> l) {
 		//System.out.println("Aquaintance " + ad.getId() + " " + ad);
 		AgentAddress ag;
 		for (int i = 0; i < l.size(); i++) {
-			ag = (AgentAddress) l.get(i);
+			ag = l.get(i);
 			this.addAquaintance(ag);
 		}
 	}
@@ -231,7 +234,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * Creation date: (02/04/2003 15:25:50)
 	 * @return java.util.Map
 	 */
-	public java.util.Map getAquaintances() {
+	public Map<String, AgentAddress> getAquaintances() {
 		return this.aquaintances;
 	}
 	/**
@@ -290,7 +293,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * Creation date: (27/04/00 10:54:27)
 	 */
 	public void initialize() {
-		this.aquaintances = new HashMap();
+		this.aquaintances = new HashMap<String, AgentAddress>();
 		this.aquaintances.clear();
 		this.mailBox = new SimpleMailBox();
 	}
@@ -416,12 +419,11 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @param am Gdima.competences.communication.AbstractMessage
 	 */
 
-	public void sendMessage(final Collection agents, final Message am) {
-		final Iterator iter = agents.iterator();
+	public void sendMessage(final Collection<AgentAddress> agents, final Message am) {
+		final Iterator<AgentAddress> iter = agents.iterator();
 		am.setSender(this.getIdentifier());
 		while (iter.hasNext())
-			this.sendMessage(((AgentAddress) iter.next
-					()).getId(), am);
+			this.sendMessage((iter.next()).getId(), am);
 	}
 
 	/**
@@ -429,7 +431,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * Creation date: (02/04/2003 15:25:50)
 	 * @param newAquaintances java.util.Map
 	 */
-	void setAquaintances(final java.util.Map newAquaintances) {
+	void setAquaintances(final Map<String, AgentAddress> newAquaintances) {
 		this.aquaintances = newAquaintances;
 	}
 	/**

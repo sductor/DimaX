@@ -20,6 +20,7 @@ import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
 
@@ -126,11 +127,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 
 	@ProactivityFinalisation
 	public void showInfo() {
-			System.out.println("\n***********\n terminating with this state : "
-					+ this.getMyCurrentState());
-
 		this.logMonologue("terminating with this state : "
-				+ this.getMyCurrentState());
+				+ this.getMyCurrentState(), LogService.onNone);
 	}
 
 	//

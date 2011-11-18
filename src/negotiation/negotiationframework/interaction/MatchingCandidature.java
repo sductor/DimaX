@@ -63,10 +63,10 @@ ActionSpec extends AbstractActionSpecification>
 	@Override
 	public String toString() {
 		return this.getIdentifier() + " -> ("
-				+ (this.creation ? "create" : "destruct") + ")";
-		// +",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
-		// +"\n  * agent specif : "+(actionSpec.getActionAgent()!=null)
-		// +"\n  * host specif : "+(actionSpec.getActionHost()!=null)
+				+ (this.creation ? "create" : "destruct") + ")"
+//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
+		+"\n  -----> agent specif : "+getAgent()+", "+getSpecificationOf(getAgent())
+		+"\n  -----> host specif : "+getResource()+", "+getSpecificationOf(getResource());
 	}
 }
 

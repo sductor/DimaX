@@ -54,7 +54,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 				"From AMS : Message lost! \n"+m
 				+"\n sender : "+m.getSender()
 				+"\n receiver -------> "+m.getReceiver() 
-				+ " address does not exit\n  ams known adress are ->"+this.aquaintances);
+				+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
 	}
 	/**
 	 * Insert the method's description here.
@@ -100,7 +100,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 		//wwait(200);
 	}
 	public void unregister(final AgentIdentifier name) {
-		this.aquaintances.remove(name);
+		this.aquaintances.remove(name.toString());
 	}
 
 	public static void main(final String args[])

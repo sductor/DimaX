@@ -103,10 +103,8 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	}
 	
 	@Override
-	public final void proactivityTerminate() {
+	public final  void proactivityTerminate() {
 		myShell.proactivityTerminate();
-		if (AgentManagementSystem.getDIMAams()!=null) 
-			AgentManagementSystem.getDIMAams().unregister(getIdentifier());
 		this.myShell=null;
 		Thread.yield();
 	}

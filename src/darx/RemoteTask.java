@@ -134,7 +134,7 @@ public class RemoteTask implements Serializable {
 		try {
 			this.handle.deliverAsyncMessage(msg);
 		} catch (final RemoteException e) {
-			Logger.exception(this, "Asynchronous message not delivered", e);
+			Logger.exception(this, "Asynchronous message not delivered "+msg.getContents(), e);
 			try {
 				Logger.exception(this, "Trying emission once more...");
 				// Take a nap

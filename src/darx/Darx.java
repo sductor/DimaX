@@ -308,6 +308,7 @@ public class Darx extends UnicastRemoteObject implements DarxServer {
 		} catch (final NotBoundException e) {
 			System.out.println("Error : " + new_rep_info.textifyDarxName()
 					+ " is not bound ?!?!");
+			e.printStackTrace();
 		}
 		final RemoteTask remote = new RemoteTask(new_rep_info, handle);
 		task.setHandle(remote);

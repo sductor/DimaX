@@ -481,6 +481,7 @@ public class TaskShell extends UnicastRemoteObject implements TaskShellHandle {
 		} catch (final NotBoundException e) {
 			System.out.println("Internal error : replicant does not exist "
 					+ this.info.textifyDarxPath());
+			e.printStackTrace();
 		}
 		// Terminate the task execution
 		this.terminateTask();

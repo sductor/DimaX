@@ -14,6 +14,7 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.APILauncherModule.StartActivityMessage;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -32,7 +33,9 @@ import dima.introspectionbasedagents.services.core.observingagent.PatternObserve
 import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
 import dima.introspectionbasedagents.shells.MethodHandler;
+import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
+import dimaxx.server.HostIdentifier;
 
 public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent{
 
@@ -153,21 +156,28 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 			getMailBox().writeMail(m);
 	}
 	
+	@MessageHandler
 	public boolean start(StartActivityMessage m){
 		this.appliHasStarted=true;
 		this.creation = m.getStartDate();
 		return true;
 	}
 
+	APILauncherModule myApi;
 	public boolean launchWith(APILauncherModule api){
+		myApi=api;
 		return api.launch(this);
 	}
 
-	public boolean destroyWith(APILauncherModule api){
-		setAlive(false);
-		return api.destroy(this);
+	public boolean launchWith(APILauncherModule api, HostIdentifier h){
+		myApi=api;
+		return api.launch(this,h);
 	}
-
+	
+	@ProactivityFinalisation
+	public void unegistration() {
+		myApi.destroy(this);
+	}
 
 	//
 	// Competence

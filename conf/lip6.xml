@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes"?><!DOCTYPE park SYSTEM "park.dtd">
 <park>
 	<nameServer>
-		<host ip="thefugitivekind.lip6.fr" port="7777"/>
+		<host ip="thefugitivekind" port="7777"/>
 		<ssh gate="gate-ia.lip6.fr" user="ductors" />
 	</nameServer>
 		
@@ -51,6 +51,13 @@
 			<host ip="tikenjah.lip6.fr" port="7003" />
 			<host ip="alister.lip6.fr" port="7003" />
 		</group>
+		<group>
+			<groupID>652</groupID>
+			<host ip="nirvana" port="7003"/>
+			<host ip="thefugitivekind" port="7003"/>
+			<host ip="tikenjah" port="7003" />
+			<host ip="alister" port="7003" />
+		</group>
 	</network>
 	
 	<activatedNetworks>
@@ -58,7 +65,7 @@
 	</activatedNetworks>
 		
 	<activatedGroups>
-		<groupID> 651</groupID>
+		<groupID> 652</groupID>
 	</activatedGroups>
 		
 </park>

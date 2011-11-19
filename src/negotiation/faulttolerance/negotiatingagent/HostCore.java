@@ -79,13 +79,13 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			this.observe(c.getAgent(), SimpleObservationService.informationObservationKey);
 //			System.out.println(c.getResource() + " " + new Date().toString()
 //					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onNone);
+			logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 		} else {
 			ReplicationHandler.killReplica(c.getAgent());
 			this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
 //			System.out.println(c.getResource() + " " + new Date().toString()
 //					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue( "  ->I have killed " + c.getAgent(),LogService.onNone);
+			logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 		}
 
 		this.getMyAgent().setNewState(
@@ -112,7 +112,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 					SimpleObservationService.informationObservationKey);
 			ReplicationHandler.replicate(c.getAgent());
 			logMonologue(c.getResource() + "  ->I have initially replicated "
-					+ c.getAgent(),LogService.onNone);
+					+ c.getAgent(),LogService.onBoth);
 		} else
 			throw new RuntimeException();
 	}

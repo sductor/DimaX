@@ -60,6 +60,7 @@ public class HostsPark {
 	public HostsPark(final File machineFile) throws JDOMException,
 	IOException {
 		this.parseXML(machineFile);
+		System.out.println("NameServer is : "+nameServer);
 		System.out.println("Known hosts are : "+this.getHosts());
 	}
 
@@ -67,6 +68,7 @@ public class HostsPark {
 	public HostsPark(final String listeMachines) throws JDOMException, IOException {
 		final File machineFile = new File(LocalHost.getConfDir()+listeMachines);
 		this.parseXML(machineFile);
+		System.out.println("NameServer is : "+nameServer);
 		System.out.println("Known hosts are : "+this.getHosts());
 	}
 
@@ -119,13 +121,12 @@ public class HostsPark {
 	/**
 	 * @return The set of host and the name server
 	 */
-	public Collection<HostIdentifier> getAllHostsIdentifier() {
+	public Collection<HostIdentifier> getDarxServersIdentifier() {
 		final ArrayList<HostIdentifier> hosts = new ArrayList<HostIdentifier>();
 
 		for (final RemoteHostExecutor h : this.getHosts())
 			hosts.add(h.generateHostIdentifier());
 
-		hosts.add(this.getNameServer().generateHostIdentifier());
 		return hosts;
 	}
 	/*

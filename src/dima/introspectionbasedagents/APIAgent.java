@@ -53,9 +53,15 @@ public class APIAgent extends BasicCompetentAgent {
 		api.setMyAgent(this);
 	}
 
+	public  void initAPI(String machinesFile) 
+			throws JDOMException,IOException, CompetenceException {
+		api = new APILauncherModule(machinesFile);
+		api.setMyAgent(this);
+	}
 	public  void initAPI(File machinesFile) 
 			throws JDOMException,IOException, CompetenceException {
 		api = new APILauncherModule(machinesFile);
+		api.setMyAgent(this);
 	}
 
 	/*
@@ -66,16 +72,18 @@ public class APIAgent extends BasicCompetentAgent {
 		api.init();
 	}
 
-	public void launch(Collection<BasicCompetentAgent> ags, Map<AgentIdentifier, HostIdentifier> locations) {
-		api.launch(ags,locations);
+	public static void launch(APILauncherModule api, Collection<BasicCompetentAgent> ags, Map<AgentIdentifier, HostIdentifier> locations) {
+		for (final BasicCompetentAgent c : ags)
+			c.launchWith(api, locations.get(c.getIdentifier()));
 	}
 
-	public void launch(Collection<BasicCompetentAgent> ags) {
-		api.launch(ags);
+	public static void launch(APILauncherModule api, Collection<BasicCompetentAgent> ags) {
+		for (final BasicCompetentAgent c : ags)
+			c.launchWith(api);
 	}
-	
-	public boolean launch(BasicCompetentAgent c) {
-		return api.launch(c);
+
+	public static void startActivities(APILauncherModule api, Collection<BasicCompetentAgent> ags){
+		api.start(ags);		
 	}
 
 	/*

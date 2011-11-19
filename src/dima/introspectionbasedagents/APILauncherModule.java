@@ -90,9 +90,16 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	 * @throws IOException
 	 */
 	APILauncherModule(
+			String machinesFile) 
+					throws CompetenceException, JDOMException,IOException {
+		DimaXDeploymentScript machines = new DimaXDeploymentScript(machinesFile);
+		initDeployedDarx(machines);
+	}
+	APILauncherModule(
 			File machinesFile) 
 					throws CompetenceException, JDOMException,IOException {
-		initDeployedDarx(machinesFile);
+		DimaXDeploymentScript machines = new DimaXDeploymentScript(machinesFile);
+		initDeployedDarx(machines);
 	}
 
 
@@ -172,7 +179,6 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	boolean destroy(BasicCompetentAgent c){
 		registeredAgent.remove(c.getIdentifier());
 		locations.remove(c);
-		c.setAlive(false);
 
 		switch (myLaunchType) {
 		case NotThreaded:
@@ -182,7 +188,6 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 			AgentManagementSystem.getDIMAams().removeAquaintance(c);
 			break;
 		case DarX:
-			c.desactivateWithDarx();
 			break;
 			//			if (locations!=null){
 			//				c.activateWithDarx(locations.get(c).getUrl(), locations.get(c).getPort());
@@ -199,25 +204,12 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		return true;
 	}
 
-	public void launch(Collection<BasicCompetentAgent> ags, Map<AgentIdentifier, HostIdentifier> locations){
-		for (final BasicCompetentAgent c : ags)
-			launch(c, locations.get(c.getIdentifier()));
-	}
 
-	public void launch(Collection<BasicCompetentAgent> ags){
-		for (final BasicCompetentAgent c : ags)
-			launch(c);
-	}
-
-	public void startApplication(){
+	void startApplication(){
 		start(registeredAgent.values());
 	}
 
-	public void startActivities(Collection<BasicCompetentAgent> ags){
-		start(ags);		
-	}
-
-	public void startActivity(BasicCompetentAgent ag){
+	void startActivity(BasicCompetentAgent ag){
 		Collection<BasicCompetentAgent> ags= new ArrayList<BasicCompetentAgent>();
 		ags.add(ag);
 		start(ags);
@@ -248,17 +240,16 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 	//routine
 	private void initDeployedDarx(
-			final File machinesFile)
+			final DimaXDeploymentScript machines)
 					throws JDOMException, IOException {
 		myLaunchType = LaunchType.DarX;
-		DimaXDeploymentScript machines = new DimaXDeploymentScript(machinesFile);
 		if (machines.getAllHosts().isEmpty())
 			getMyAgent().signalException("no machines!!!");
 		else {
 			machines.launchNameServer();
 			machines.launchAllDarXServer();
 		}		
-		avalaibleHosts.addAll(machines.getAllHostsIdentifier());
+		avalaibleHosts.addAll(machines.getDarxServersIdentifier());
 	}	
 
 	private void initNotThreaded(){
@@ -267,7 +258,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		avalaibleHosts.add(HostIdentifier.getLocalHost());
 	}
 
-	private void start(Collection<BasicCompetentAgent> ags){
+	void start(Collection<BasicCompetentAgent> ags){
 		StartActivityMessage m = new StartActivityMessage();
 		for (BasicCompetentAgent ag : ags){
 			if (myLaunchType.equals(LaunchType.NotThreaded)){

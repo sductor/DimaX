@@ -158,10 +158,6 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
-
-	public void desactivateWithDarx(){
-		darxEngine.terminateTask();
-	}
 	
 	
 //	public void activateWithMonitor(final String url,final int PortNb, final Class<? extends AgentMonitor>... monitors) throws UninstanciableMonitorException

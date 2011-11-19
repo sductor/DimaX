@@ -103,10 +103,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	//
 	@ProactivityInitialisation
 	public void startSimu(){
-		api.launch(agents.values(), locations);
+//		System.out.println(agents);
+//		System.out.println(api.getAvalaibleHosts());
+		APIAgent.launch(api,agents.values(), locations);
 		wwait(1000);
 		System.err.println("!!!!!!!!!!!!!!!!!!!!!STARTING!!!!!!!!!!!!!!!!!!!!!!!");
-		api.startActivities(agents.values());
+		APIAgent.startActivities(api, agents.values());
 	}
 
 	//
@@ -185,17 +187,6 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	protected abstract void writeResult();
 
-	//free the used machines
-	void kill() {
-		logMonologue("my job is done! cleaning my lab bench...",onBoth);
-		for (final BasicCompetentAgent ag : agents.values()){
-			ag.destroyWith(api);
-		}
-		this.agents.clear();
-		this.agents=null;
-		this.setAlive(false);
-	}
-
 	//
 	// Behaviors
 	//
@@ -240,7 +231,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 				this.notify(new SimulationEndedMessage());
 				this.sendNotificationNow();
 				//				this.logMonologue("notifications Sended", onBoth);
-				 kill();
+
+				logMonologue("my job is done! cleaning my lab bench...",onBoth);
+				this.agents.clear();
+				this.agents=null;
+				this.setAlive(false);
+				
 				return true;
 			} else if (!this.endRequestSended){
 				this.logMonologue("all agents lost! ending ..",onBoth);

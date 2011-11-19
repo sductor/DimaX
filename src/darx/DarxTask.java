@@ -172,6 +172,7 @@ public class DarxTask implements Serializable, Cloneable {
 			this.handle = this.server.startTask(this);
 		} catch (final NotBoundException e) {
 			System.out.println("Error : " + server_path + " is not bound ?!?!");
+			e.printStackTrace();
 		}
 		return this.handle;
 	}
@@ -243,6 +244,7 @@ public class DarxTask implements Serializable, Cloneable {
 		} catch (final Exception e) {
 			System.out.println("Exception raised: couldn't terminate: "
 					+ this.name);
+			e.printStackTrace();
 		}
 		this.handle = null;
 	}

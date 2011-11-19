@@ -87,6 +87,7 @@ public class NetworkShutdownHook extends Thread{
 			System.exit(-1);
 		}
 		new NetworkShutdownHook(new HostsPark(args[0])).destroyAllMachines();;
+		System.exit(-1);
 	}
 
 	//

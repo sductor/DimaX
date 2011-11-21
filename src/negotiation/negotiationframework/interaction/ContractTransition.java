@@ -13,7 +13,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 
 public abstract class ContractTransition<
 ActionSpec extends AbstractActionSpecification> implements
-		AbstractContractTransition<ActionSpec> {
+AbstractContractTransition<ActionSpec> {
 
 	//
 	// Fields
@@ -32,8 +32,8 @@ ActionSpec extends AbstractActionSpecification> implements
 	protected final List<Object> args; // functionnal properties
 
 	private final Map<AgentIdentifier, ActionSpec> specs = new Hashtable<AgentIdentifier, ActionSpec>(); // non
-																											// functionnal
-																											// properties
+	// functionnal
+	// properties
 
 	//
 	// Constructor
@@ -127,7 +127,7 @@ ActionSpec extends AbstractActionSpecification> implements
 	public long getCreationTime() {
 		return this.creationTime.getTime();
 	}
-	
+
 	@Override
 	public boolean hasReachedExpirationTime() {
 		return this.getUptime() > this.validityTime;
@@ -137,16 +137,20 @@ ActionSpec extends AbstractActionSpecification> implements
 	public boolean willReachExpirationTime(final long t) {
 		return this.getUptime() + t > this.validityTime;
 	}
-	
+
 	/*
 	 * 
 	 */
 
 	@Override
 	public ActionSpec getSpecificationOf(AgentIdentifier id){
-		return specs.get(id);
+		if (specs.containsKey(id))
+			return specs.get(id);
+		else 
+			throw new RuntimeException("unappropriate specification set");
+
 	}
-	
+
 
 	//
 	// Primitive

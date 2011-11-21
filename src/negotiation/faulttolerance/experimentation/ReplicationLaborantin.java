@@ -348,7 +348,7 @@ public class ReplicationLaborantin extends Laborantin {
 						new ReplicationCandidature(
 								(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
 								ag.getIdentifier(), 
-								true);
+								true,true);
 				c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
 //				c.setSpecification((ReplicationSpecification) firstReplicatedOnHost.getMySpecif(c));
 				while (!firstReplicatedOnHost
@@ -364,7 +364,7 @@ public class ReplicationLaborantin extends Laborantin {
 				c = new ReplicationCandidature(
 						(ResourceIdentifier) firstReplicatedOnHost
 						.getIdentifier(),
-						ag.getIdentifier(), true);
+						ag.getIdentifier(), true,true);
 				c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
 				c.setSpecification((ReplicationSpecification) firstReplicatedOnHost
 						.getMySpecif(c));

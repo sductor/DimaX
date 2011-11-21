@@ -72,6 +72,18 @@ public class APIAgent extends BasicCompetentAgent {
 		api.init();
 	}
 
+	public void launch(Collection<BasicCompetentAgent> ags, Map<AgentIdentifier, HostIdentifier> locations) {
+		for (final BasicCompetentAgent c : ags)
+			c.launchWith(api, locations.get(c.getIdentifier()));
+	}
+
+	public  void launch(Collection<BasicCompetentAgent> ags) {
+		for (final BasicCompetentAgent c : ags)
+			c.launchWith(api);
+	}
+	
+	//
+
 	public static void launch(APILauncherModule api, Collection<BasicCompetentAgent> ags, Map<AgentIdentifier, HostIdentifier> locations) {
 		for (final BasicCompetentAgent c : ags)
 			c.launchWith(api, locations.get(c.getIdentifier()));
@@ -81,11 +93,6 @@ public class APIAgent extends BasicCompetentAgent {
 		for (final BasicCompetentAgent c : ags)
 			c.launchWith(api);
 	}
-
-	public static void startActivities(APILauncherModule api, Collection<BasicCompetentAgent> ags){
-		api.start(ags);		
-	}
-
 	/*
 	 * 
 	 */
@@ -98,4 +105,22 @@ public class APIAgent extends BasicCompetentAgent {
 		api.startActivity(ag);
 	}
 
+
+	public void startActivities(Collection<BasicCompetentAgent> ags){
+		api.start(ags);		
+	}
+
+	//
+
+	public static void startActivities(APILauncherModule api, Collection<BasicCompetentAgent> ags){
+		api.start(ags);		
+	}
+	
+	public static void startActivity(APILauncherModule api, BasicCompetentAgent ag){
+		api.startActivity(ag);		
+	}
+
+	public static void startActivities(APILauncherModule api) {
+		api.startApplication();
+	}
 }

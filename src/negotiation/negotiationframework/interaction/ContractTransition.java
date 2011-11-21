@@ -144,10 +144,7 @@ AbstractContractTransition<ActionSpec> {
 
 	@Override
 	public ActionSpec getSpecificationOf(AgentIdentifier id){
-		if (specs.containsKey(id))
 			return specs.get(id);
-		else 
-			throw new RuntimeException("unappropriate specification set");
 
 	}
 

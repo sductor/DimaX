@@ -26,13 +26,13 @@ MatchingCandidature<ReplicationSpecification> {
 	// Constructors
 	//
 
-	public ReplicationCandidature(final ResourceIdentifier r,
-			final AgentIdentifier a, final boolean creation) {
-		super(creation ? a : r, a, r,
-				ReplicationExperimentationProtocol._contractExpirationTime);
-		this.setCreation(creation);
-
-	}
+//	public ReplicationCandidature(final ResourceIdentifier r,
+//			final AgentIdentifier a, final boolean creation) {
+//		super(creation ? a : r, a, r,
+//				ReplicationExperimentationProtocol._contractExpirationTime);
+//		this.setCreation(creation);
+//
+//	}
 
 	public ReplicationCandidature(final ResourceIdentifier r,
 			final AgentIdentifier a, final boolean creation, boolean isAgentCreator) {

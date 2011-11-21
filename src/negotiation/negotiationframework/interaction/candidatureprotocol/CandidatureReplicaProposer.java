@@ -40,7 +40,7 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 						new ReplicationCandidature(
 								(ResourceIdentifier) id, 
 								this.getMyAgent().getIdentifier(),
-								true));
+								true,true));
 		}
 
 		return candidatures;

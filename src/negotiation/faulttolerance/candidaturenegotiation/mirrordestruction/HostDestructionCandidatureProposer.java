@@ -56,7 +56,7 @@ ReplicationCandidature>  {
 				return new ReplicationDestructionCandidature(
 						(ResourceIdentifier) getMyAgent().getIdentifier(), 
 						state.getMyAgentIdentifier(),
-						c);
+						c,false);
 			}
 		};
 		contractsToPropose.addAll(myDealExpl.generateUpgradingContracts(getMyAgent(), n.getAnswers()));

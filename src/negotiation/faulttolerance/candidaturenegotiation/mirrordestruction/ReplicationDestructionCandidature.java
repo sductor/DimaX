@@ -14,8 +14,8 @@ ReplicationCandidature {
 	public ReplicationDestructionCandidature(
 			ResourceIdentifier r,
 			AgentIdentifier a, 
-			ReplicationCandidature minContract) {
-		super(r, a, false);
+			ReplicationCandidature minContract, boolean agentCreator) {
+		super(r, a, false, agentCreator);
 		this.minContract = minContract;
 	}
 

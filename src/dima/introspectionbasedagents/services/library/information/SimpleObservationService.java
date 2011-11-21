@@ -185,7 +185,7 @@ ObservationService {
 
 
 		protected Collection<AgentIdentifier> getAgents(){
-			return this.keySet();
+			return new ArrayList<AgentIdentifier>(this.keySet());
 		}
 
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import dima.introspectionbasedagents.APIAgent;
+
 import negotiation.dcopframework.algo.*;
 import negotiation.dcopframework.algo.korig.AlgoKOptOriginal;
 import negotiation.dcopframework.algo.topt.AlgoKOptAPO;
@@ -18,7 +20,7 @@ import negotiation.dcopframework.dcop.Variable;
 import negotiation.dcopframework.dimaxinterface.Stats;
 
 
-public class DCOPApplication extends Application {
+public class DCOPApplication extends APIAgent {
 	private static final long serialVersionUID = 380092569934615212L;
 
 	public Graph g;

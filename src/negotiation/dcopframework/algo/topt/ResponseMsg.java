@@ -1,8 +1,8 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 
-public class ResponseMsg extends Message {
+public class ResponseMsg extends DCOPMessage {
 	int id;
 	TreeNode node;
 	int attempt;

@@ -2,11 +2,11 @@ package negotiation.dcopframework.algo.topt;
 
 import java.util.ArrayList;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Variable;
 
-public class LocalConstraintMsg extends Message {
+public class LocalConstraintMsg extends DCOPMessage {
 	int id;
 	int domain;
 	int ttl;

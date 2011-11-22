@@ -14,7 +14,7 @@ public class Channel implements InChannel, OutChannel {
 	
 	private final  boolean ownerSend;
 	
-	LinkedList<Message> receivedMessages;
+	LinkedList<DCOPMessage> receivedMessages;
 
 	// --------------------------------------------------------------------------
 	// new channel with sender `sr` and receiver `r` using `selector`
@@ -57,19 +57,19 @@ public class Channel implements InChannel, OutChannel {
 	//
 	
 	@Override
-	public void send(Message msg) {
+	public void send(DCOPMessage msg) {
 		msg.setSender(getSender());
-		owner.sendMessage(new AgentName(neighbor), msg);	
+		owner.sendMessage(new AgentName(neighbor.toString()), msg);	
 		
 	}
 
 	@Override
-	public Message receive() {
+	public DCOPMessage receive() {
 		return receivedMessages.pop();
 	}
 
 	@Override
-	public Message receive(int n) {
+	public DCOPMessage receive(int n) {
 		//Toujours utilisé avec 1!!!!
 		return receivedMessages.pop();
 	}
@@ -78,7 +78,7 @@ public class Channel implements InChannel, OutChannel {
 	// Primitive
 	//
 
-	public void addMessage(Message msg){
+	public void addMessage(DCOPMessage msg){
 		receivedMessages.add(msg);
 	}
 	

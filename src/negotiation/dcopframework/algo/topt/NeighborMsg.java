@@ -1,10 +1,10 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Variable;
 
-public class NeighborMsg extends Message {
+public class NeighborMsg extends DCOPMessage {
 	int id;
 	int ttl;
 	int[] neighbors;

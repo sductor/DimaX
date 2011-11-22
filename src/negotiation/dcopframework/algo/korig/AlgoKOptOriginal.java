@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import negotiation.dcopframework.daj.Channel;
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework. dcop.Constraint;
 import negotiation.dcopframework.dcop.Graph;
 import negotiation.dcopframework.dcop.Helper;
@@ -28,7 +28,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 	HashSet<Integer> commitInfoSet;
 	int commitInfoCounter = 0;
 
-	ArrayList<Message> buffer;
+	ArrayList<DCOPMessage> buffer;
 
 	int state;
 
@@ -47,7 +47,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 	private void init() {
 		if (self.id == 0)
 			System.out.println("STARTOVER");
-		buffer = new ArrayList<Message>();
+		buffer = new ArrayList<DCOPMessage>();
 		localInfoMap = new HashMap<Integer, LocalInfo>();
 		gainInfoMap = new HashMap<Integer, GainInfo>();
 		commitInfoMap = new HashMap<Integer, CommitInfo>();
@@ -77,7 +77,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 		sync = 0;
 	}
 
-	private void processMsg(Message msg) {
+	private void processMsg(DCOPMessage msg) {
 		if (msg instanceof KorigLocalMsg) {
 			KorigLocalMsg lmsg = (KorigLocalMsg) msg;
 			if (!localInfoSet.contains(lmsg.id)) {
@@ -139,7 +139,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 
 				done = false;
 
-				Message msg = in(index).receive(1);
+				DCOPMessage msg = in(index).receive(1);
 				if (msg == null)
 					continue;
 
@@ -172,10 +172,10 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 				}
 			} else {
 				if (!buffer.isEmpty()) {
-					ArrayList<Message> tmp = new ArrayList<Message>();
+					ArrayList<DCOPMessage> tmp = new ArrayList<DCOPMessage>();
 					tmp.addAll(buffer);
 					buffer.clear();
-					for (Message msg : tmp)
+					for (DCOPMessage msg : tmp)
 						processMsg(msg);
 				}
 
@@ -317,7 +317,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 	}
 }
 
-class KorigValueMsg extends Message {
+class KorigValueMsg extends DCOPMessage {
 	int id;
 	int value;
 
@@ -331,7 +331,7 @@ class KorigValueMsg extends Message {
 	}
 }
 
-class KorigLocalMsg extends Message {
+class KorigLocalMsg extends DCOPMessage {
 	int id;
 	HashMap<Integer, LocalInfo> map;
 
@@ -351,7 +351,7 @@ class KorigLocalMsg extends Message {
 	}
 }
 
-class KorigGainMsg extends Message {
+class KorigGainMsg extends DCOPMessage {
 	int id;
 	HashMap<Integer, GainInfo> map;
 
@@ -371,7 +371,7 @@ class KorigGainMsg extends Message {
 	}
 }
 
-class KorigCommitMsg extends Message {
+class KorigCommitMsg extends DCOPMessage {
 	int id;
 	HashMap<Integer, CommitInfo> map;
 

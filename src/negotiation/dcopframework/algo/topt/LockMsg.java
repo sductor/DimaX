@@ -1,8 +1,8 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 
-public class LockMsg extends Message {
+public class LockMsg extends DCOPMessage {
 	int gid;
 	int val;
 	int attempt;

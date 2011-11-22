@@ -3,7 +3,7 @@ package negotiation.dcopframework.algo;
 import java.util.HashSet;
 
 import negotiation.dcopframework.daj.Channel;
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.daj.Program;
 import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Helper;
@@ -38,7 +38,7 @@ public class AlgoMGM1 extends BasicAlgorithm {
 			if (index != -1) {
 				done = false;
 				int sender = ((Channel) in(index)).getSender();
-				Message msg = in(index).receive();
+				DCOPMessage msg = in(index).receive();
 
 				if (msg instanceof MGM1ValueMsg) {
 					MGM1ValueMsg vmsg = (MGM1ValueMsg) msg;
@@ -153,7 +153,7 @@ public class AlgoMGM1 extends BasicAlgorithm {
 	}	
 }
 
-class MGM1ValueMsg extends Message {
+class MGM1ValueMsg extends DCOPMessage {
 	int value;
 
 	public MGM1ValueMsg(int v) {
@@ -167,7 +167,7 @@ class MGM1ValueMsg extends Message {
 	}
 }
 
-class MGM1LockMsg extends Message {
+class MGM1LockMsg extends DCOPMessage {
 	boolean lock;
 
 	public MGM1LockMsg(boolean l) {
@@ -181,7 +181,7 @@ class MGM1LockMsg extends Message {
 	}
 }
 
-class MGM1ResponseMsg extends Message {
+class MGM1ResponseMsg extends DCOPMessage {
 	boolean accept;
 
 	public MGM1ResponseMsg(boolean a) {

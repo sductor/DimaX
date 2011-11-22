@@ -73,8 +73,8 @@ public class Node extends BasicCompetentAgent {
 
 	
 	public void receiveMessage(Object msg){
-		if (msg instanceof Message)
-			((Channel) in.getChannel(((Message) msg).getSender())).addMessage((Message) msg); 
+		if (msg instanceof DCOPMessage)
+			((Channel) in.getChannel(((DCOPMessage) msg).getSenderAsInt())).addMessage((DCOPMessage) msg); 
 		else
 			LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
 	}

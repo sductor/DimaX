@@ -12,11 +12,11 @@ public interface InChannel {
 	// --------------------------------------------------------------------------
 	// receive message from channel; block thread if channel is empty
 	// --------------------------------------------------------------------------
-	public Message receive();
+	public DCOPMessage receive();
 
 	// --------------------------------------------------------------------------
 	// receive message from channel; do not block but poll at most `n` times
 	// if then no message is found, return null
 	// --------------------------------------------------------------------------
-	public Message receive(int n);
+	public DCOPMessage receive(int n);
 }

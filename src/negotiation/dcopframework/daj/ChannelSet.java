@@ -57,13 +57,13 @@ public class ChannelSet {
 	// --------------------------------------------------------------------------
 	// broadcast `message` to all channels in set
 	// --------------------------------------------------------------------------
-	public void send(Message message) {
+	public void send(DCOPMessage message) {
 		for (int i = 0; i < setNum; i++) {
 			set[i].send(message);
 		}
 	}
 	
-	public void broadcast(Message message) {
+	public void broadcast(DCOPMessage message) {
 		for (int i = 0; i < setNum; i++) {
 			set[i].send(message);
 		}

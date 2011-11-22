@@ -1,8 +1,8 @@
 package negotiation.dcopframework.algo;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 
-public class TerminateMessage extends Message {
+public class TerminateMessage extends DCOPMessage {
 	
 	public TerminateMessage(){
 		super();

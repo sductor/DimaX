@@ -1,9 +1,9 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.dcop.Variable;
 
-public class ValueMsg extends Message {
+public class ValueMsg extends DCOPMessage {
 	int id;
 	int value;
 	int ttl;

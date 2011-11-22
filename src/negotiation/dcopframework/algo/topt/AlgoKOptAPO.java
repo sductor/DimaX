@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import negotiation.dcopframework.daj.Channel;
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Helper;
 import negotiation.dcopframework.dcop.Variable;
@@ -88,7 +88,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 
 				done = false;
 
-				Message msg = in(index).receive(1);
+				DCOPMessage msg = in(index).receive(1);
 				if (msg == null)
 					yield();
 

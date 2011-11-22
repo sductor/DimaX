@@ -1,8 +1,8 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 
-public class CommitMsg extends Message {
+public class CommitMsg extends DCOPMessage {
 	int gid;
 	int attempt;
 	TreeNode node;

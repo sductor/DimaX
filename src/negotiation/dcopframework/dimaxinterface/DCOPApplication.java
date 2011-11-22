@@ -10,7 +10,7 @@ import negotiation.dcopframework.algo.*;
 import negotiation.dcopframework.algo.korig.AlgoKOptOriginal;
 import negotiation.dcopframework.algo.topt.AlgoKOptAPO;
 import negotiation.dcopframework.algo.topt.AlgoTOptAPO;
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.daj.Node;
 import negotiation.dcopframework.daj.Program;
 import negotiation.dcopframework.dcop.Constraint;
@@ -55,7 +55,7 @@ public class DCOPApplication extends APIAgent {
 	
 	public ArrayList<Stats> allstats;
 	
-	public void floatingMessage(Message msg) {
+	public void floatingMessage(DCOPMessage msg) {
 		numberMessages++;
 		sizeofMessages += msg.getSize();
 	}

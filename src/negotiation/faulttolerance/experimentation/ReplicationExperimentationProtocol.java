@@ -2,6 +2,8 @@ package negotiation.faulttolerance.experimentation;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -10,6 +12,7 @@ import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.experimentationframework.Experimentator;
 import negotiation.experimentationframework.IfailedException;
 import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
+import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -19,73 +22,100 @@ import dimaxx.tools.distribution.ZeroOneSymbolicValue;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
 
 public class ReplicationExperimentationProtocol implements
-		ExperimentationProtocol {
+ExperimentationProtocol {
 
-	//
-	// Experimentations
-	// /////////////////////////////////
-	@Override
+
+
+
+
+	public Collection<ReplicationExperimentationParameters> varyProtocol(Collection<ReplicationExperimentationParameters> exps){
+		Collection<ReplicationExperimentationParameters> result=new ArrayList<ReplicationExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : exps){
+			ReplicationExperimentationParameters n1 =  p.clone();
+			n1._usedProtocol=ReplicationExperimentationParameters.key4mirrorProto;
+			n1._agentSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
+			n1._hostSelection = ReplicationExperimentationParameters.key4AllocSelect;
+			result.add(n1);
+			ReplicationExperimentationParameters n2 = p.clone();
+			n2._usedProtocol=ReplicationExperimentationParameters.key4CentralisedstatusProto;
+			n2._agentSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
+			n2._hostSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
+			result.add(n2);
+			ReplicationExperimentationParameters n3 =  p.clone();
+			n3._usedProtocol=ReplicationExperimentationParameters.key4statusProto;		
+			n2._agentSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;//key4rouletteWheelSelect;//
+			n2._hostSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
+			result.add(n3);
+		}
+		return result;
+	}
+
+	public Collection<ReplicationExperimentationParameters> varyOptimizers(Collection<ReplicationExperimentationParameters> exps){
+		Collection<ReplicationExperimentationParameters> result=new ArrayList<ReplicationExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : exps){
+			ReplicationExperimentationParameters n1 = (ReplicationExperimentationParameters) p.clone();
+			n1._socialWelfare=AllocationSocialWelfares.key4leximinSocialWelfare;
+			result.add(n1);
+			ReplicationExperimentationParameters n2 = (ReplicationExperimentationParameters) p.clone();
+			n2._socialWelfare=AllocationSocialWelfares.key4NashSocialWelfare;
+			result.add(n2);
+			ReplicationExperimentationParameters n3 = (ReplicationExperimentationParameters) p.clone();
+			n3._socialWelfare=AllocationSocialWelfares.key4UtilitaristSocialWelfare;
+			result.add(n3);
+		}
+		return result;
+	}
+
+	public Collection<ReplicationExperimentationParameters> varyHostDispo(Collection<ReplicationExperimentationParameters> exps){
+		Collection<ReplicationExperimentationParameters> result=new ArrayList<ReplicationExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : exps){
+			for (ZeroOneSymbolicValue v : ZeroOneSymbolicValue.values()){
+				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
+				n.hostFaultProbabilityMean=v.getNumericValue();
+			}				
+		}	
+		return result;	
+	}
+
+	public Collection<ReplicationExperimentationParameters> varyAgentLoad(Collection<ReplicationExperimentationParameters> exps){
+		Collection<ReplicationExperimentationParameters> result=new ArrayList<ReplicationExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : exps){
+			for (ZeroOneSymbolicValue v : ZeroOneSymbolicValue.values()){
+				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
+				n.agentLoadMean=v;
+			}				
+		}	
+		return result;		
+	}
+
+	public Collection<ReplicationExperimentationParameters> varyAccessibleHost(Collection<ReplicationExperimentationParameters> exps){
+		Collection<ReplicationExperimentationParameters> result=new ArrayList<ReplicationExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : exps){
+			for (ZeroOneSymbolicValue v : ZeroOneSymbolicValue.values()){
+				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
+				n.kAccessible=v.getNumericValue();
+			}				
+		}	
+		return result;		
+	}
+
 	public LinkedList<ExperimentationParameters> generateSimulation() {
 		String usedProtocol, agentSelection, hostSelection;
 		final File f = new File(ReplicationExperimentationProtocol.resultPath);
-//		f.mkdirs();
-		final LinkedList<ExperimentationParameters> simuToLaunch = 
-				new LinkedList<ExperimentationParameters>();
-
-		// /
-//
-		usedProtocol = ReplicationExperimentationParameters.key4mirrorProto;
-		agentSelection = ReplicationExperimentationParameters.key4greedySelect;
-		hostSelection = ReplicationExperimentationParameters.key4greedySelect;
-		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
-				simuToLaunch);
-////
-		usedProtocol = ReplicationExperimentationParameters.key4CentralisedstatusProto;
-		agentSelection = ReplicationExperimentationParameters.key4greedySelect;
-		hostSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
-		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
-				simuToLaunch);
-
-		usedProtocol = ReplicationExperimentationParameters.key4statusProto;//key4mirrorProto;//key4CentralisedstatusProto;//
-		agentSelection = ReplicationExperimentationParameters.key4greedySelect;//key4rouletteWheelSelect;//
-		hostSelection = ReplicationExperimentationParameters.key4greedySelect;
-		this.addSimus(usedProtocol, agentSelection, hostSelection, f,
-				simuToLaunch);
-
-		return simuToLaunch;
-	}
-
-	private void addSimus(String usedProtocol, String agentSelection,
-			String hostSelection, File f,
-			LinkedList<ExperimentationParameters> simuToLaunch) {
+		//		f.mkdirs();
+		final LinkedList<ReplicationExperimentationParameters> simuToLaunch = 
+				new LinkedList<ReplicationExperimentationParameters>();
 		simuToLaunch.add(new ReplicationExperimentationParameters(
 				f,Experimentator.myId,
 				ReplicationExperimentationProtocol.nbAgents,
 				ReplicationExperimentationProtocol.nbHosts, 
-				ReplicationExperimentationProtocol.knownHostsPercent, 
+				1., 
 				0.2,
 				ZeroOneSymbolicValue.Faible, 
-				usedProtocol, 
-				agentSelection,
-				hostSelection));
-
-		simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
-				ReplicationExperimentationProtocol.nbAgents,
-				ReplicationExperimentationProtocol.nbHosts, 1, .4,
-				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-				hostSelection));
-
-		simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
-				ReplicationExperimentationProtocol.nbAgents,
-				ReplicationExperimentationProtocol.nbHosts, 1, .6,
-				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-				hostSelection));
-
-		simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
-				ReplicationExperimentationProtocol.nbAgents,
-				ReplicationExperimentationProtocol.nbHosts, 1, .8,
-				ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
-				hostSelection));
+				ReplicationExperimentationParameters.key4mirrorProto, 
+				ReplicationExperimentationParameters.key4greedySelect,
+				ReplicationExperimentationParameters.key4greedySelect));
+		return new LinkedList<ExperimentationParameters>(varyHostDispo(varyOptimizers(varyAccessibleHost(varyAgentLoad(simuToLaunch)))));
 	}
 
 	//
@@ -96,32 +126,31 @@ public class ReplicationExperimentationProtocol implements
 	// Simulation Configuration
 	//
 
-	public static final long _simulationTime = (long) (60000 * 0.25);
+	public static final long _simulationTime = (long) (60000 );
 	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 5;
 	// public static final long _simulationTime = (long) (60000*7);
 	// public static final long _state_snapshot_frequency=_simulationTime/4;
 
 	// public static final int nbAgents =1;
 	// public static final int nbHosts = 2;
-	public static final int nbAgents = 3;
-	public static final int nbHosts = 3;
-//	public static final int nbAgents = 50;
-//	public static final int nbHosts = 70;
-//	public static final int nbAgents = 100;
-//	public static final int nbHosts = 60;
+	//	public static final int nbAgents = 3;
+	//	public static final int nbHosts = 3;
+	//	public static final int nbAgents = 50;
+	//	public static final int nbHosts = 70;
+	public static final int nbAgents = 100;
+	public static final int nbHosts = 60;
 	// public static final int nbAgents =100;
 	// public static final int nbHosts = 30;
 	// public static final int nbAgents =100;
 	// public static final int nbHosts = 20;
-//	 public static final int nbAgents =200;
-//	 public static final int nbHosts = 100;
-	public static final int nbSimuPerMAchine = 1;
+	//	 public static final int nbAgents =200;
+	//	 public static final int nbHosts = 100;
 
-	public static final Double knownHostsPercent = 1.;
+//	public static final Double knownHostsPercent = 1.;
 
-	public static final Double hostMaxProc = 5.;
-	public static final Double hostMaxMem = 5.;
-	
+	public static final Double hostMaxProc = 1.;
+	public static final Double hostMaxMem = 1.;
+
 	//
 	// Negotiation Tickers
 	//
@@ -129,7 +158,7 @@ public class ReplicationExperimentationProtocol implements
 	public static final long _timeToCollect = -1;//500;//
 
 	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
-																	//
+	//
 	// public static final long _initiator_analysisFrequency = (long)
 	// (_timeToCollect*2);
 
@@ -141,7 +170,7 @@ public class ReplicationExperimentationProtocol implements
 
 	public static final String reliabilityObservationKey = "reliabilityNotif4quantile";
 	public static final long _reliabilityObservationFrequency = 250;//10 * ReplicationExperimentationProtocol._timeToCollect;// (long)
-																														// (0.25*_contractExpirationTime);
+	// (0.25*_contractExpirationTime);
 	public static final int firstTercile = 33;// percent
 	public static final int lastTercile = 66;// percent
 	public static final double alpha_low = 1;
@@ -155,15 +184,15 @@ public class ReplicationExperimentationProtocol implements
 	public static final double _criticityVariationProba = 20. / 100.;// 20%
 	public static final double _criticityVariationAmplitude = 30. / 100.;// 10%
 	public static final Long _criticity_update_frequency = null;// (long)
-		
+
 	//
 	//
 	//
 
 	public static final String _agentPrefKey_Relia="onlyRelia";
 	public static final String _agentPrefKey_loadNRelia="firstLoadSecondRelia";
-	
-	
+
+
 	// (1.5*_contractExpirationTime);
 
 	// public static final double _dispoMax = 0.7;
@@ -199,13 +228,14 @@ public class ReplicationExperimentationProtocol implements
 	 *
 	 */
 
-	public static final DispersionSymbolicValue hostDisponibilityDispersion = DispersionSymbolicValue.Nul;
+	public static final String resultPath = LogService.getMyPath()+"result_"			
+			+ ReplicationExperimentationProtocol.nbAgents + "agents_"
+			+ ReplicationExperimentationProtocol.nbHosts + "hosts_"
+			+ ReplicationExperimentationProtocol._simulationTime / 60000
+			+ "mins";
+	
 
-	public static final ZeroOneSymbolicValue agentCriticityMean = ZeroOneSymbolicValue.Moyen;
-	public static final DispersionSymbolicValue agentCriticityDispersion = DispersionSymbolicValue.Fort;
-
-	public static final DispersionSymbolicValue agentLoadDispersion = DispersionSymbolicValue.Nul;
-
+	public static final int nbSimuPerMAchine = 2;
 	@Override
 	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
 		return ReplicationExperimentationProtocol.nbSimuPerMAchine
@@ -217,20 +247,7 @@ public class ReplicationExperimentationProtocol implements
 		return 1;
 	}
 
-	public static final String resultPath = LogService.getMyPath()+"result_"			
-			+ ReplicationExperimentationProtocol.nbAgents + "agents_"
-			+ ReplicationExperimentationProtocol.nbHosts + "hosts_"
-			+ ReplicationExperimentationProtocol._simulationTime / 60000
-			+ "mins";
 
-	//
-	//
-	//
-
-	// public static void main(final String[] args) throws
-	// IllegalArgumentException, IllegalAccessException{
-	// System.out.println(StaticParameters.write());
-	// }
 
 	//
 	// Primitive
@@ -239,7 +256,7 @@ public class ReplicationExperimentationProtocol implements
 	@Override
 	public ReplicationLaborantin createNewLaborantin(
 			ExperimentationParameters para, APILauncherModule api)
-			throws NotEnoughMachinesException, CompetenceException {
+					throws NotEnoughMachinesException, CompetenceException {
 		ReplicationLaborantin l = null;
 		final ReplicationExperimentationParameters p = (ReplicationExperimentationParameters) para;
 		boolean erreur = true;
@@ -250,7 +267,7 @@ public class ReplicationExperimentationProtocol implements
 			} catch (final IfailedException e) {
 				LogService.writeException(
 						"retrying to launch simu " + p.getName()
-								+ " failure caused by : ", e.e);
+						+ " failure caused by : ", e.e);
 				erreur = true;
 			}
 
@@ -267,11 +284,90 @@ public class ReplicationExperimentationProtocol implements
 				result += f.getName() + " : "
 						+ f.get(ReplicationExperimentationProtocol.class)
 						+ "\n";
-			result += "**************";
-			return result;
+					result += "**************";
+					return result;
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 }
+
+
+
+//
+//
+//
+
+// public static void main(final String[] args) throws
+// IllegalArgumentException, IllegalAccessException{
+// System.out.println(StaticParameters.write());
+// }
+
+//
+////
+//// Experimentations
+//// /////////////////////////////////
+//@Override
+//public LinkedList<ExperimentationParameters> generateSimulation() {
+//	String usedProtocol, agentSelection, hostSelection;
+//	final File f = new File(ReplicationExperimentationProtocol.resultPath);
+////	f.mkdirs();
+//	final LinkedList<ExperimentationParameters> simuToLaunch = 
+//			new LinkedList<ExperimentationParameters>();
+//
+//	// /
+////
+//	usedProtocol = ReplicationExperimentationParameters.key4mirrorProto;
+//	agentSelection = ReplicationExperimentationParameters.key4greedySelect;
+//	hostSelection = ReplicationExperimentationParameters.key4greedySelect;
+//	this.addSimus(usedProtocol, agentSelection, hostSelection, f,
+//			simuToLaunch);
+//////
+//	usedProtocol = ReplicationExperimentationParameters.key4CentralisedstatusProto;
+//	agentSelection = ReplicationExperimentationParameters.key4greedySelect;
+//	hostSelection = ReplicationExperimentationParameters.key4rouletteWheelSelect;
+//	this.addSimus(usedProtocol, agentSelection, hostSelection, f,
+//			simuToLaunch);
+//
+//	usedProtocol = ReplicationExperimentationParameters.key4statusProto;//key4mirrorProto;//key4CentralisedstatusProto;//
+//	agentSelection = ReplicationExperimentationParameters.key4greedySelect;//key4rouletteWheelSelect;//
+//	hostSelection = ReplicationExperimentationParameters.key4greedySelect;
+//	this.addSimus(usedProtocol, agentSelection, hostSelection, f,
+//			simuToLaunch);
+//
+//	return simuToLaunch;
+//}
+//
+//private void addSimus(String usedProtocol, String agentSelection,
+//		String hostSelection, File f,
+//		LinkedList<ExperimentationParameters> simuToLaunch) {
+//	simuToLaunch.add(new ReplicationExperimentationParameters(
+//			f,Experimentator.myId,
+//			ReplicationExperimentationProtocol.nbAgents,
+//			ReplicationExperimentationProtocol.nbHosts, 
+//			ReplicationExperimentationProtocol.knownHostsPercent, 
+//			0.2,
+//			ZeroOneSymbolicValue.Faible, 
+//			usedProtocol, 
+//			agentSelection,
+//			hostSelection));
+//
+//	simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
+//			ReplicationExperimentationProtocol.nbAgents,
+//			ReplicationExperimentationProtocol.nbHosts, 1, .4,
+//			ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
+//			hostSelection));
+//
+//	simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
+//			ReplicationExperimentationProtocol.nbAgents,
+//			ReplicationExperimentationProtocol.nbHosts, 1, .6,
+//			ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
+//			hostSelection));
+//
+//	simuToLaunch.add(new ReplicationExperimentationParameters(f,Experimentator.myId,
+//			ReplicationExperimentationProtocol.nbAgents,
+//			ReplicationExperimentationProtocol.nbHosts, 1, .8,
+//			ZeroOneSymbolicValue.Faible, usedProtocol, agentSelection,
+//			hostSelection));
+//}

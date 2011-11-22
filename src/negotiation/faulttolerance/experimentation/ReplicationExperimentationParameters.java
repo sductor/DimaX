@@ -7,6 +7,7 @@ import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.distribution.DistributionParameters;
 import dimaxx.tools.distribution.ZeroOneSymbolicValue;
+import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
 
 public class ReplicationExperimentationParameters extends
 ExperimentationParameters {
@@ -18,10 +19,16 @@ ExperimentationParameters {
 	// Fields
 	//
 
-	public final double kAccessible;
+	public double kAccessible;
 
-	public final Double hostFaultProbabilityMean;
-	public final ZeroOneSymbolicValue agentLoadMean;
+	public final ZeroOneSymbolicValue agentCriticityMean = ZeroOneSymbolicValue.Moyen;
+	public final DispersionSymbolicValue agentCriticityDispersion = DispersionSymbolicValue.Fort;
+	
+	public Double hostFaultProbabilityMean;
+	public final DispersionSymbolicValue hostDisponibilityDispersion = DispersionSymbolicValue.Moyen;	
+	
+	public  ZeroOneSymbolicValue agentLoadMean;
+	public final DispersionSymbolicValue agentLoadDispersion = DispersionSymbolicValue.Moyen;
 
 	/*
 	 *
@@ -31,19 +38,19 @@ ExperimentationParameters {
 	DistributionParameters<AgentIdentifier> agentProcessor;
 	DistributionParameters<AgentIdentifier> agentMemory;
 
-	public final String _usedProtocol;
+	public String _usedProtocol;
 	final static String key4mirrorProto = "mirror protocol";
 	final static String key4CentralisedstatusProto = "Centralised status protocol";
 	final static String key4statusProto = "status protocol";
 	final static String key4multiLatProto = "multi lateral protocol";
 
-	public final String _agentSelection;
-	public final String _hostSelection;
+	public  String _agentSelection;
+	public  String _hostSelection;
 	final static String key4greedySelect = "greedy select";
 	final static String key4rouletteWheelSelect = "roolette wheel select";
 	final static String key4AllocSelect = "alloc select";
 
-	public final String _socialWelfare=AllocationSocialWelfares.key4leximinSocialWelfare;
+	public String _socialWelfare=AllocationSocialWelfares.key4leximinSocialWelfare;
 
 	//
 	// Constructor
@@ -116,6 +123,21 @@ ExperimentationParameters {
 	// Methods
 	//
 
+	public ReplicationExperimentationParameters clone(){
+		return new ReplicationExperimentationParameters(
+				getF(), 
+				experimentatorId, 
+				maxNumberOfAgentPerMachine, 
+				maxNumberOfAgentPerMachine, 
+				kAccessible, 
+				hostFaultProbabilityMean, 
+				agentLoadMean,
+				_usedProtocol, 
+				_agentSelection, 
+				_hostSelection);
+		
+	}
+	
 	@Override
 	public void initiate() {
 		/*
@@ -124,14 +146,14 @@ ExperimentationParameters {
 
 		this.agentCriticity = new DistributionParameters<AgentIdentifier>(
 				this.getReplicasIdentifier(),
-				ReplicationExperimentationProtocol.agentCriticityMean,
-				ReplicationExperimentationProtocol.agentCriticityDispersion);
+				agentCriticityMean,
+				agentCriticityDispersion);
 		this.agentProcessor = new DistributionParameters<AgentIdentifier>(
 				this.getReplicasIdentifier(), this.agentLoadMean,
-				ReplicationExperimentationProtocol.agentLoadDispersion);
+				agentLoadDispersion);
 		this.agentMemory = new DistributionParameters<AgentIdentifier>(
 				this.getReplicasIdentifier(), this.agentLoadMean,
-				ReplicationExperimentationProtocol.agentLoadDispersion);
+				agentLoadDispersion);
 
 	}
 

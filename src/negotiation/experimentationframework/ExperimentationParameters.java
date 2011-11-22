@@ -22,7 +22,7 @@ implements DimaComponentInterface {
 	final String simulationName = newName();
 	private final File f;
 
-	final AgentIdentifier experimentatorId;
+	protected final AgentIdentifier experimentatorId;
 	public final int nbAgents;
 	public final int nbHosts;
 

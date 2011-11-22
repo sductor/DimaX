@@ -9,7 +9,7 @@ import negotiation.dcopframework.daj.Message;
 import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Helper;
 import negotiation.dcopframework.dcop.Variable;
-import negotiation.dcopframework.dimaxinterface.Stats;
+import negotiation.dcopframework.exec.Stats;
 import negotiation.dcopframework.algo.LockingBasicAlgorithm;
 import negotiation.dcopframework.algo.TerminateMessage;
 

@@ -8,7 +8,7 @@ import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Graph;
 import negotiation.dcopframework.dcop.Helper;
 import negotiation.dcopframework.dcop.Variable;
-import negotiation.dcopframework.dimaxinterface.Stats;
+import negotiation.dcopframework.exec.Stats;
 
 public abstract class BasicAlgorithm extends Program {
 

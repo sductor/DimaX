@@ -294,7 +294,7 @@ public class ReplicationLaborantin extends Laborantin {
 		final DistributionParameters<ResourceIdentifier> fault = new DistributionParameters<ResourceIdentifier>(
 				this.getSimulationParameters().getHostsIdentifier(),
 				this.getSimulationParameters().hostFaultProbabilityMean,
-				ReplicationExperimentationProtocol.hostDisponibilityDispersion);
+				this.getSimulationParameters().hostDisponibilityDispersion);
 
 		for (int i = 0; i < this.getSimulationParameters().nbHosts; i++) {
 			final SimpleRationalAgent host = this.constructHost(this

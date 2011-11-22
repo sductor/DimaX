@@ -27,7 +27,6 @@ public interface ExperimentationProtocol extends DimaComponentInterface{
 		
 	public int getMaxNumberOfAgentPerMachine(HostIdentifier id);
 	
-	public int getNumberOfMachinePerSimulation();
 	
 	/*
 	 * Primitive

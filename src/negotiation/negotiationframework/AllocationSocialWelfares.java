@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
@@ -32,9 +33,6 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 	public final static String log_socialWelfareOrdering="social welfare ordering";
 
-	public final static String key4leximinSocialWelfare="leximin";
-	public final static String key4NashSocialWelfare="nash";
-	public final static String key4UtilitaristSocialWelfare="utilitarist";
 
 	//
 	//
@@ -71,14 +69,14 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 
 
-		if (socialWelfare.equals(key4leximinSocialWelfare)){
+		if (socialWelfare.equals(ReplicationExperimentationProtocol.key4leximinSocialWelfare)){
 			myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,log_socialWelfareOrdering);
 			int pref = leximinWelfare(s1, s2, getComparator());
 			myAgent.logMonologue("result is " +pref,log_socialWelfareOrdering);
 			return pref;
-		} else if (socialWelfare.equals(key4NashSocialWelfare)){
+		} else if (socialWelfare.equals(ReplicationExperimentationProtocol.key4NashSocialWelfare)){
 			return nashWelfare(s1, s2, getUtilitaristEvaluator());
-		} else if (socialWelfare.equals(key4UtilitaristSocialWelfare)){
+		} else if (socialWelfare.equals(ReplicationExperimentationProtocol.key4UtilitaristSocialWelfare)){
 			return utilitaristWelfare(s1, s2, getUtilitaristEvaluator());
 		} else {
 			throw new RuntimeException("impossible key for social welfare is : "+socialWelfare);

@@ -11,6 +11,7 @@ import java.util.Set;
 
 
 import negotiation.faulttolerance.ReplicationSpecification;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.agent.SimpleAgentState;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
@@ -37,7 +38,8 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	// Take all fields
 	public HostState(final ResourceIdentifier myAgent, double lambda) {
 		this(myAgent,
-				new HashSet<ReplicaState>(), lambda, ReplicationExperimentationProtocol.hostMaxProc, 0., ReplicationExperimentationProtocol.hostMaxMem, 0.,
+				new HashSet<ReplicaState>(), lambda, 
+				ReplicationExperimentationParameters.hostMaxProc, 0., ReplicationExperimentationParameters.hostMaxMem, 0.,
 				false, new Date().getTime());
 	}
 

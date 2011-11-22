@@ -161,7 +161,7 @@ extends BasicCompetentAgent {
 	
 
 	public PersonalState getMyResultingState(final Contract c) {
-		return (PersonalState) c.computeResultingState(this.getIdentifier());
+		return (PersonalState) c.computeResultingState(getMyCurrentState());
 	}
 	
 

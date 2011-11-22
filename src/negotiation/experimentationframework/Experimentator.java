@@ -44,7 +44,7 @@ public class Experimentator extends APIAgent{
 	// Accessors
 	//
 
-	final ExperimentationProtocol myProtocol;
+	static ExperimentationProtocol myProtocol;
 	final File f;
 
 	//	//Integer represent the sum of the number of agent of each simulation that uses the given machine 
@@ -73,22 +73,26 @@ public class Experimentator extends APIAgent{
 		//				this.f,
 		//				myProtocol.getDescription(),
 		//				true, false);
-		this.myProtocol=myProtocol;
+		Experimentator.myProtocol=myProtocol;
 		simuToLaunch = myProtocol.generateSimulation();
-
-		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription());//+" will use :"+getApi().getAvalaibleHosts());
-
-		this.logMonologue("Simulation to launch are "+this.simuToLaunch, LogService.onBoth);
-	}
+}
 
 	//
 	// Methods
 	//	
 
 
+	@ProactivityInitialisation
+	public void initialise() throws CompetenceException{		
+		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription());//+" will use :"+getApi().getAvalaibleHosts());
+		this.logMonologue("Generated "+simuToLaunch.size()+" simus of "
+		+ReplicationExperimentationProtocol._simulationTime/60000+
+		"mins  on "+getApi().getAvalaibleHosts().size()+" machine, "+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine", LogService.onBoth);
+	
+		launchSimulation();
+	}
 
 	//Executed initially then called by collect result
-	@ProactivityInitialisation
 	public boolean launchSimulation() throws CompetenceException{
 		this.logMonologue("Launching simulations --> Available Memory :"
 				+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
@@ -144,10 +148,10 @@ public class Experimentator extends APIAgent{
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
-		exp.initAPI(true);//FIPA	
-		//								exp.initAPI(false);//SCHEDULED
-		//				exp.initAPI(7779,7778);//DARX LOCAL
-		//		exp.initAPI("lip6.xml");//DARX Deployed
+//		exp.initAPI(true);//FIPA	
+//										exp.initAPI(false);//SCHEDULED
+						exp.initAPI(7779,7778);//DARX LOCAL
+//				exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();
 	}
 }

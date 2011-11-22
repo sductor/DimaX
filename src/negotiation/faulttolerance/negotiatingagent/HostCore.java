@@ -64,6 +64,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 	@Override
 	public void execute(final ReplicationCandidature c) {
+		assert getMyAgent().respectMyRights(c);
 		//		logMonologue(
 		//				"executing "+c+" from state "
 		//		+this.getMyAgent().getMyCurrentState()
@@ -77,14 +78,14 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 		if (c.isMatchingCreation()) {
 			ReplicationHandler.replicate(c.getAgent());
 			this.observe(c.getAgent(), SimpleObservationService.informationObservationKey);
-//			System.out.println(c.getResource() + " " + new Date().toString()
-//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+			//			System.out.println(c.getResource() + " " + new Date().toString()
+			//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
 			logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 		} else {
 			ReplicationHandler.killReplica(c.getAgent());
 			this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
-//			System.out.println(c.getResource() + " " + new Date().toString()
-//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+			//			System.out.println(c.getResource() + " " + new Date().toString()
+			//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
 			logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 		}
 
@@ -97,6 +98,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	public void executeFirstRep(
 			final ReplicationCandidature c,
 			final SimpleRationalAgent ag) {	
+		assert getMyAgent().respectMyRights(c);
 
 		this.getMyAgent().setNewState(
 				c.computeResultingState(
@@ -115,6 +117,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 					+ c.getAgent(),LogService.onBoth);
 		} else
 			throw new RuntimeException();
+
 	}
 
 	@Override

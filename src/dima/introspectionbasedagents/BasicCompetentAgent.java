@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import com.ibm.icu.text.DateFormat;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
@@ -160,6 +162,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean start(StartActivityMessage m){
 		this.appliHasStarted=true;
 		this.creation = m.getStartDate();
+		logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString());
 		return true;
 	}
 

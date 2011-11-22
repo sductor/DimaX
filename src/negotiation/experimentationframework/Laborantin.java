@@ -98,7 +98,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		locations = generateLocations(
 						api, 
 						agents.keySet(), 
-						ReplicationExperimentationParameters.maxNumberOfAgentPerMachine);
+						Experimentator.myProtocol.getMaxNumberOfAgentPerMachine(null));
 	}
 	//
 	@ProactivityInitialisation

@@ -10,7 +10,9 @@ import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.experimentation.ReplicationAgentResult;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
+import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -179,19 +181,19 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		super.setNewState(s);
 	}
 	
-	@StepComposant(ticker = ReplicationExperimentationProtocol._reliabilityObservationFrequency)
+	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
 	public void notifyMyReliability4Status() {
 		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
 		if (this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
 			this.notify(
 					this.getMyCurrentState().getMyReliability(),
-					ReplicationExperimentationProtocol.reliabilityObservationKey);
+					ReplicationLaborantin.reliabilityObservationKey);
 	}
 
 	// @StepComposant(ticker=StaticParameters._criticity_update_frequency)
 	public void updateMyCriticity() {
 		final Random r = new Random();
-		if (r.nextDouble() <= ReplicationExperimentationProtocol._criticityVariationProba) {// On
+		if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
 																							// met
 																							// a
 																							// jour
@@ -199,11 +201,11 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final Double newCriticity = Math
 					.min(1.,
 							Math.max(
-									ReplicationExperimentationProtocol._criticityMin,
+									ReplicationExperimentationParameters._criticityMin,
 									this.getMyCurrentState().getMyCriticity()
 											+ signe
 											* r.nextDouble()
-											* ReplicationExperimentationProtocol._criticityVariationAmplitude));
+											* ReplicationExperimentationParameters._criticityVariationAmplitude));
 			
 			this.setNewState(
 					new ReplicaState(

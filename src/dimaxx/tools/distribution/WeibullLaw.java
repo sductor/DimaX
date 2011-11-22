@@ -3,6 +3,7 @@ package dimaxx.tools.distribution;
 import java.util.Date;
 import java.util.Random;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 
 
@@ -49,9 +50,9 @@ public class WeibullLaw {
 
 		public static void main(final String[] args) throws InterruptedException{
 			final Date t = new Date();
-			final double theta = ReplicationExperimentationProtocol._theta;
-			final long timeScale = ReplicationExperimentationProtocol._timeScale;
-			final double k = ReplicationExperimentationProtocol._kValue;
+			final double theta = ReplicationExperimentationParameters._theta;
+			final long timeScale = ReplicationExperimentationParameters._timeScale;
+			final double k = ReplicationExperimentationParameters._kValue;
 			//			double lambda = 0.5;
 			while(true){
 				final long uptime = new Date().getTime() - t.getTime();
@@ -61,7 +62,7 @@ public class WeibullLaw {
 	//			for (double k = 0; k < 3 ; lambda+=0.5)
 	//				System.out.println("lambda="+lambda+",uptime="+uptime+" : "+eventOccur(uptime/timeScale, k, lambda, theta)+"  -> "+getWeibullLaw(uptime/timeScale, lambda, k, theta));
 	//			System.out.println("***************");
-				Thread.sleep(ReplicationExperimentationProtocol._host_maxFaultfrequency);
+				Thread.sleep(ReplicationExperimentationParameters._host_maxFaultfrequency);
 			}
 		}
 }

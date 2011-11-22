@@ -73,6 +73,7 @@ public class ReplicationLaborantin extends Laborantin {
 	// ///////////////////////////////////////////
 
 	public final static String simulationResultStateObservationKey = "observe the state!";
+	public static final String reliabilityObservationKey = "reliabilityNotif4quantile";
 
 	HostDisponibilityComputer dispos;
 
@@ -121,7 +122,7 @@ public class ReplicationLaborantin extends Laborantin {
 	//
 
 	public ReplicationLaborantin(final ReplicationExperimentationParameters p,APILauncherModule api)
-					throws CompetenceException, IfailedException, NotEnoughMachinesException {
+			throws CompetenceException, IfailedException, NotEnoughMachinesException {
 		super(p, api);
 
 	}
@@ -207,21 +208,21 @@ public class ReplicationLaborantin extends Laborantin {
 				return o1.disponibility.compareTo(o2.disponibility);
 			}
 		};
-		
+
 		LinkedList<ReplicationAgentResult> reliaStates = new LinkedList<ReplicationAgentResult>();		
 		reliaStates.addAll(states);
-		
+
 		Collections.sort(reliaStates, reliaComp);
-		
+
 		ReplicationAgentResult prev = reliaStates.removeFirst();
-		
+
 		while(!reliaStates.isEmpty()){
 			if (prev.criticity>reliaStates.removeFirst().criticity)
 				return false;
 		}
 		return true;
 	}
-	
+
 	@MessageHandler
 	@NotificationEnvelope
 	public final void receiveReplicaInfo(
@@ -256,9 +257,9 @@ public class ReplicationLaborantin extends Laborantin {
 
 		this.myStatusObserver = new StatusObserver();
 		if (p._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4CentralisedstatusProto)
+				.equals(ReplicationExperimentationProtocol.key4CentralisedstatusProto)
 				|| p._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4statusProto))
+				.equals(ReplicationExperimentationProtocol.key4statusProto))
 			this.myStatusObserver.setActive(true);
 		else
 			this.myStatusObserver.setActive(false);
@@ -342,7 +343,7 @@ public class ReplicationLaborantin extends Laborantin {
 				Iterator<ResourceIdentifier> itHost = this.getSimulationParameters().getHostsIdentifier().iterator();
 				if (!itHost.hasNext())
 					throw new RuntimeException("no host? impossible!");
-				
+
 				SimpleRationalAgent firstReplicatedOnHost = this.getAgent(itHost.next());
 				ReplicationCandidature c = 
 						new ReplicationCandidature(
@@ -350,24 +351,24 @@ public class ReplicationLaborantin extends Laborantin {
 								ag.getIdentifier(), 
 								true,true);
 				c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
-//				c.setSpecification((ReplicationSpecification) firstReplicatedOnHost.getMySpecif(c));
+				c.setSpecification((ReplicationSpecification) firstReplicatedOnHost.getMySpecif(c));
+				
+				
 				while (!firstReplicatedOnHost
 						.respectMyRights(c.computeResultingState((HostState) firstReplicatedOnHost.getMySpecif(c)))) {
 					if (!itHost.hasNext()){
 						throw new IfailedException("can not create at least one rep for each agent\n"+this.getSimulationParameters().getHostsIdentifier());
 					}else {
 						firstReplicatedOnHost = this.getAgent(itHost.next());
-//						c.setSpecification((ReplicationSpecification) firstReplicatedOnHost.getMySpecif(c));
+						c = new ReplicationCandidature(
+								(ResourceIdentifier) firstReplicatedOnHost
+								.getIdentifier(),
+								ag.getIdentifier(), true,true);
+						c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
+						c.setSpecification((ReplicationSpecification) firstReplicatedOnHost
+								.getMySpecif(c));
 					}
 				}
-
-				c = new ReplicationCandidature(
-						(ResourceIdentifier) firstReplicatedOnHost
-						.getIdentifier(),
-						ag.getIdentifier(), true,true);
-				c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
-				c.setSpecification((ReplicationSpecification) firstReplicatedOnHost
-						.getMySpecif(c));
 
 				((ReplicaCore) ag.myCore).executeFirstRep(c,firstReplicatedOnHost);
 				((HostCore) firstReplicatedOnHost.myCore).executeFirstRep(c, ag);
@@ -386,13 +387,13 @@ public class ReplicationLaborantin extends Laborantin {
 					throws CompetenceException {
 		AbstractSelectionCore select;
 		if (this.getSimulationParameters()._agentSelection
-				.equals(ReplicationExperimentationParameters.key4greedySelect))
+				.equals(ReplicationExperimentationProtocol.key4greedySelect))
 			select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else if (this.getSimulationParameters()._agentSelection
-				.equals(ReplicationExperimentationParameters.key4rouletteWheelSelect))
+				.equals(ReplicationExperimentationProtocol.key4rouletteWheelSelect))
 			select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else if (this.getSimulationParameters()._agentSelection
-				.equals(ReplicationExperimentationParameters.key4AllocSelect))
+				.equals(ReplicationExperimentationProtocol.key4AllocSelect))
 			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else
 			throw new RuntimeException(
@@ -404,13 +405,13 @@ public class ReplicationLaborantin extends Laborantin {
 		ObservationService informations;
 
 		if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4mirrorProto)) {
+				.equals(ReplicationExperimentationProtocol.key4mirrorProto)) {
 			core = new CandidatureReplicaCoreWithDestruction(getSimulationParameters()._socialWelfare);
 			proposer = new CandidatureReplicaProposer();
 			informations = new SimpleObservationService();
 
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4CentralisedstatusProto)){
+				.equals(ReplicationExperimentationProtocol.key4CentralisedstatusProto)){
 			core = new CandidatureReplicaCoreWithStatus();
 			proposer = new CandidatureReplicaProposerWithStatus();
 			informations = new SimpleOpinionService();
@@ -419,14 +420,14 @@ public class ReplicationLaborantin extends Laborantin {
 				throw new RuntimeException("unappropriate laborantin!");
 
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4statusProto)) {
+				.equals(ReplicationExperimentationProtocol.key4statusProto)) {
 			core = new CandidatureReplicaCoreWithStatus();
 			proposer = new CandidatureReplicaProposerWithStatus();
 			Map<AgentIdentifier, Class<? extends Information>> registration = new HashMap<AgentIdentifier, Class<? extends Information>>();
 			informations = new SimpleOpinionService();
 
 		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4multiLatProto)) {
+				.equals(ReplicationExperimentationProtocol.key4multiLatProto)) {
 			throw new RuntimeException("unimplemented!");
 
 		} else
@@ -435,7 +436,7 @@ public class ReplicationLaborantin extends Laborantin {
 							+ this.getSimulationParameters()._usedProtocol);
 
 		NegotiatingReplica rep = new NegotiatingReplica(replica, this.simulationInit, Math.min(
-				ReplicationExperimentationProtocol._criticityMin
+				ReplicationExperimentationParameters._criticityMin
 				+ agentCriticity.get(replica), 1),
 				agentProcessor.get(replica), agentMemory.get(replica), core,
 				select, proposer, informations);
@@ -450,14 +451,14 @@ public class ReplicationLaborantin extends Laborantin {
 			DistributionParameters<ResourceIdentifier> fault)
 					throws CompetenceException {
 		AbstractSelectionCore select;
-		if (this.getSimulationParameters()._hostSelection
-				.equals(ReplicationExperimentationParameters.key4greedySelect))
+		if (this.getSimulationParameters().get_hostSelection()
+				.equals(ReplicationExperimentationProtocol.key4greedySelect))
 			select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else if (this.getSimulationParameters()._hostSelection
-				.equals(ReplicationExperimentationParameters.key4rouletteWheelSelect))
+		else if (this.getSimulationParameters().get_hostSelection()
+				.equals(ReplicationExperimentationProtocol.key4rouletteWheelSelect))
 			select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else if (this.getSimulationParameters()._hostSelection
-				.equals(ReplicationExperimentationParameters.key4AllocSelect))
+		else if (this.getSimulationParameters().get_hostSelection()
+				.equals(ReplicationExperimentationProtocol.key4AllocSelect))
 			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else
 			throw new RuntimeException(
@@ -468,12 +469,12 @@ public class ReplicationLaborantin extends Laborantin {
 		AbstractProposerCore proposer;
 		ObservationService informations;
 		if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4mirrorProto)) {
+				.equals(ReplicationExperimentationProtocol.key4mirrorProto)) {
 			core = new HostCore(true,getSimulationParameters()._socialWelfare);
 			proposer = new HostDestructionCandidatureProposer();
 			informations = new SimpleObservationService();
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4CentralisedstatusProto)) {
+				.equals(ReplicationExperimentationProtocol.key4CentralisedstatusProto)) {
 			if (!this.iObserveStatus())
 				throw new RuntimeException("unappropriate laborantin!"
 						+ this.myStatusObserver);
@@ -482,13 +483,13 @@ public class ReplicationLaborantin extends Laborantin {
 			informations = new SimpleObservationService();
 
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4statusProto)) {
+				.equals(ReplicationExperimentationProtocol.key4statusProto)) {
 			core = new HostCore(false,getSimulationParameters()._socialWelfare);
 			proposer = new InactiveProposerCore();
 			informations = new SimpleOpinionService();
 
 		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationParameters.key4multiLatProto)) {
+				.equals(ReplicationExperimentationProtocol.key4multiLatProto)) {
 			throw new RuntimeException("unimplemented!");
 
 		} else
@@ -523,15 +524,15 @@ public class ReplicationLaborantin extends Laborantin {
 				observedRepResultLog.add(ag.getIdentifier());
 				if (this.iObserveStatus()){
 					this.addObserver(ag.getIdentifier(),
-							ReplicationExperimentationProtocol.reliabilityObservationKey);
+							ReplicationLaborantin.reliabilityObservationKey);
 					reliabilityStatusLog.add(ag.getIdentifier());
 				}
 				if (this.getSimulationParameters()._usedProtocol.equals(
-						ReplicationExperimentationParameters.key4CentralisedstatusProto)){
+						ReplicationExperimentationProtocol.key4CentralisedstatusProto)){
 					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
 					opinionsLog.add(ag.getId(), getId());
 				} else if (this.getSimulationParameters()._usedProtocol.equals(
-						ReplicationExperimentationParameters.key4statusProto)) {
+						ReplicationExperimentationProtocol.key4statusProto)) {
 					for (AgentIdentifier h : 
 						((NegotiatingReplica)ag).getMyInformation().getKnownAgents()){
 						this.getAgent(h).addObserver(ag.getId(), 
@@ -573,7 +574,7 @@ public class ReplicationLaborantin extends Laborantin {
 	// 0);
 	private int getNumberOfKnownHosts() {
 		// return numberOfKnownHosts.nextValue();
-		return (int) this.getSimulationParameters().kAccessible;
+		return (int) this.getSimulationParameters().getkAccessible();
 	}
 
 	/*
@@ -624,7 +625,7 @@ public class ReplicationLaborantin extends Laborantin {
 		if (this.iObserveStatus())
 			this.myStatusObserver.writeStatusResult();
 		logWarning("OOOOOOOOOKKKKKKKKKKKK?????????"+analyseOptimal());
-		
+
 	}
 
 	//
@@ -664,7 +665,7 @@ public class ReplicationLaborantin extends Laborantin {
 		//
 
 		@MessageHandler
-		@NotificationEnvelope(ReplicationExperimentationProtocol.reliabilityObservationKey)
+		@NotificationEnvelope(ReplicationLaborantin.reliabilityObservationKey)
 		public void updateAgent4StatusObservation(
 				final NotificationMessage<Double> n) {
 			// System.out.println("yoopppppppppppppppppppppppphooooooooooiiiiiiiiiiiiiiii");

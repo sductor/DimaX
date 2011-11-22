@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
@@ -41,7 +42,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 		final List<ResourceIdentifier> hosts = new ArrayList<ResourceIdentifier>();
 		hosts.addAll(HostDisponibilityComputer.getHosts(this.getMyAgent().myInformationService));
 		Collections.shuffle(hosts);
-		int nbMax = (int) (hosts.size() * ReplicationExperimentationProtocol._host_maxSimultaneousFailure);
+		int nbMax = (int) (hosts.size() * ReplicationExperimentationParameters._host_maxSimultaneousFailure);
 		for (final ResourceIdentifier h : hosts) {
 			final FaultStatusMessage sentence = HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h);
 

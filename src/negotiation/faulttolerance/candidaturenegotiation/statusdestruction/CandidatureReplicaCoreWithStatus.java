@@ -6,6 +6,7 @@ import dima.introspectionbasedagents.services.library.information.OpinionService
 import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
 
 import negotiation.faulttolerance.ReplicationCandidature;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
@@ -149,8 +150,8 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 			min = o.getMinElement().getMyReliability();
 			max = o.getMaxElement().getMyReliability();
 
-			lowerThreshold = ReplicationExperimentationProtocol.alpha_low * ((mean + min)/2);
-			higherThreshold = ReplicationExperimentationProtocol.alpha_high * ((mean + max)/2);
+			lowerThreshold = ReplicationExperimentationParameters.alpha_low * ((mean + min)/2);
+			higherThreshold = ReplicationExperimentationParameters.alpha_high * ((mean + max)/2);
 		} catch (Exception e) {
 			getMyAgent().signalException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"+getMyAgent().getMyInformation(), e);
 			throw new RuntimeException();

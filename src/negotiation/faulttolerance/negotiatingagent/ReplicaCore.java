@@ -41,6 +41,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 	@Override
 	public void execute(final ReplicationCandidature c) {
+		assert getMyAgent().respectMyRights(c);
 //		logMonologue(
 //				"executing "+c+" from state "
 //		+this.getMyAgent().getMyCurrentState()
@@ -71,6 +72,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	// pas! =(
 	public void executeFirstRep(final ReplicationCandidature c,
 			final SimpleRationalAgent host) {
+		assert getMyAgent().respectMyRights(c);
 
 		//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState());
 		if (c.isMatchingCreation()) {

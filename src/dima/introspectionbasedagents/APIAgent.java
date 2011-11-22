@@ -39,6 +39,10 @@ public class APIAgent extends BasicCompetentAgent {
 		return api;
 	}
 	
+	public void setApi(APILauncherModule api) {
+		this.api = api;
+	}
+	
 	/*
 	 * 
 	 */

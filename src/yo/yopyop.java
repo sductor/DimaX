@@ -1,6 +1,6 @@
 package yo;
 
-import negotiation.dcopframework.exec.DCOPApplication;
+import negotiation.dcopframework.dimaxinterface.DCOPApplication;
 
 public class yopyop {
 

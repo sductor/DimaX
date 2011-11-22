@@ -35,7 +35,7 @@ public class Node extends BasicCompetentAgent {
 	// create node with `prog` to execute in network `net`
 	// --------------------------------------------------------------------------
 	public Node(String name, Program prog) {
-		super(name);
+		super(((BasicAlgorithm) prog).getID().t);
 		program = prog;
 		program.setNode(this);
 		switches = 0;
@@ -67,7 +67,7 @@ public class Node extends BasicCompetentAgent {
 			Assertion.fail("InterruptedException");
 		}
 		// decrease priority to make sure applet thread gets updates
-		setPriority(getPriority() - 1);
+//		setPriority(getPriority() - 1);
 		program.main();
 	}
 

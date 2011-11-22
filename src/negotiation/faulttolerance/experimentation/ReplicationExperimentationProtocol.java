@@ -72,6 +72,7 @@ ExperimentationProtocol {
 			for (ZeroOneSymbolicValue v : ZeroOneSymbolicValue.values()){
 				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
 				n.hostFaultProbabilityMean=v.getNumericValue();
+				result.add(n);
 			}				
 		}	
 		return result;	
@@ -83,6 +84,7 @@ ExperimentationProtocol {
 			for (ZeroOneSymbolicValue v : ZeroOneSymbolicValue.values()){
 				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
 				n.agentLoadMean=v;
+				result.add(n);
 			}				
 		}	
 		return result;		
@@ -94,6 +96,7 @@ ExperimentationProtocol {
 			for (ZeroOneSymbolicValue v : ZeroOneSymbolicValue.values()){
 				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
 				n.kAccessible=v.getNumericValue();
+				result.add(n);
 			}				
 		}	
 		return result;		
@@ -115,7 +118,7 @@ ExperimentationProtocol {
 				ReplicationExperimentationParameters.key4mirrorProto, 
 				ReplicationExperimentationParameters.key4greedySelect,
 				ReplicationExperimentationParameters.key4greedySelect));
-		return new LinkedList<ExperimentationParameters>(varyHostDispo(varyOptimizers(varyAccessibleHost(varyAgentLoad(simuToLaunch)))));
+		return new LinkedList<ExperimentationParameters>(varyProtocol(varyHostDispo(varyOptimizers(varyAccessibleHost(varyAgentLoad(simuToLaunch))))));
 	}
 
 	//

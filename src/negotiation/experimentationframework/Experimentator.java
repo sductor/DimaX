@@ -77,6 +77,8 @@ public class Experimentator extends APIAgent{
 		simuToLaunch = myProtocol.generateSimulation();
 
 		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription());//+" will use :"+getApi().getAvalaibleHosts());
+
+		this.logMonologue("Simulation to launch are "+this.simuToLaunch, LogService.onBoth);
 	}
 
 	//
@@ -88,7 +90,8 @@ public class Experimentator extends APIAgent{
 	//Executed initially then called by collect result
 	@ProactivityInitialisation
 	public boolean launchSimulation() throws CompetenceException{
-		this.logMonologue("Launching simulations --> Available Memory :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
+		this.logMonologue("Launching simulations --> Available Memory :"
+				+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
 		if (this.awaitingAnswer==0){
 			System.out.println("1");
 			this.logMonologue("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
@@ -121,7 +124,7 @@ public class Experimentator extends APIAgent{
 	@NotificationEnvelope
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
 		logMonologue(n.getSender()+" is finished",LogService.onBoth);
-//		this.launchedSimu.get(n.getSender()).kill();
+		//		this.launchedSimu.get(n.getSender()).kill();
 		this.launchedSimu.remove(n.getSender());
 		//		laborantinLauncher.destroy(n.getSender());
 		this.awaitingAnswer--;
@@ -141,10 +144,10 @@ public class Experimentator extends APIAgent{
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
-//		exp.initAPI(true);//FIPA
-//								exp.initAPI(false);//SCHEDULED
-				exp.initAPI(7779,7778);//DARX LOCAL
-//		exp.initAPI("lip6.xml");//DARX Deployed
+		exp.initAPI(true);//FIPA	
+		//								exp.initAPI(false);//SCHEDULED
+		//				exp.initAPI(7779,7778);//DARX LOCAL
+		//		exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();
 	}
 }

@@ -7,11 +7,13 @@
 // ----------------------------------------------------------------------------
 package negotiation.dcopframework.daj;
 
-public class Message {
+import dima.basiccommunicationcomponents.AbstractMessage;
+
+public class Message extends dima.basiccommunicationcomponents.Message{
 
 	Integer sender;
 	
-	public int getSender(){
+	public AgentIdentifier getSender(){
 		return sender;
 	}
 	

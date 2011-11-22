@@ -2,7 +2,7 @@ package negotiation.dcopframework.dcop;
 
 import java.util.Random;
 
-import negotiation.dcopframework.exec.DCOPApplication;
+import negotiation.dcopframework.dimaxinterface.DCOPApplication;
 
 
 public class Helper {

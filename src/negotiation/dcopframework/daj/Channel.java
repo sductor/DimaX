@@ -2,6 +2,8 @@ package negotiation.dcopframework.daj;
 
 import java.util.LinkedList;
 
+import dima.basicagentcomponents.AgentName;
+
 public class Channel implements InChannel, OutChannel {
 
 	private Node owner;
@@ -57,7 +59,7 @@ public class Channel implements InChannel, OutChannel {
 	@Override
 	public void send(Message msg) {
 		msg.setSender(getSender());
-		owner.getMyDarxNode().sendAsyncMessage(neighbor, msg);	
+		owner.sendMessage(new AgentName(neighbor), msg);	
 		
 	}
 

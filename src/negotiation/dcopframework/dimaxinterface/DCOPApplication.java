@@ -1,4 +1,4 @@
-package negotiation.dcopframework.exec;
+package negotiation.dcopframework.dimaxinterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +17,6 @@ import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Graph;
 import negotiation.dcopframework.dcop.Helper;
 import negotiation.dcopframework.dcop.Variable;
-import negotiation.dcopframework.dimaxinterface.Stats;
 
 
 public class DCOPApplication extends APIAgent {
@@ -63,7 +62,7 @@ public class DCOPApplication extends APIAgent {
 
 	public DCOPApplication(String filename, int r, int cycles, 
 			int kort, Algorithm a, boolean isWin, boolean s, int ws) {
-		super("DCOP Application", 2 * radius, 2 * radius);
+		super("DCOP Application");
 
 		numberMessages = 0;
 		sizeofMessages = 0;

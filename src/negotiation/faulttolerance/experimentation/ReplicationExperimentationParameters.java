@@ -242,19 +242,19 @@ ExperimentationParameters {
 				agentLoadDispersion);
 	}
 
-	public static ReplicationExperimentationParameters getEmpty(File f) {
+	public static ReplicationExperimentationParameters getGeneric(File f) {
 		return new ReplicationExperimentationParameters(
 				f,
 				Experimentator.myId,
 				nbAgents,
 				nbHosts, 
 				1., 
-				0.2,
-				0.2, 
+				0.6,
+				0.3, 
 				ReplicationExperimentationProtocol.key4mirrorProto, 
 				ReplicationExperimentationProtocol.key4leximinSocialWelfare,
-				ReplicationExperimentationProtocol.key4greedySelect,
-				ReplicationExperimentationProtocol.key4greedySelect);
+				ReplicationExperimentationProtocol.key4rouletteWheelSelect,
+				ReplicationExperimentationProtocol.key4rouletteWheelSelect);
 	}
 
 	public String get_hostSelection() {

@@ -72,8 +72,20 @@ ExperimentationProtocol {
 		//		f.mkdirs();
 		final LinkedList<ReplicationExperimentationParameters> simuToLaunch = 
 				new LinkedList<ReplicationExperimentationParameters>();
-		simuToLaunch.add(ReplicationExperimentationParameters.getEmpty(f));
-		return new LinkedList<ExperimentationParameters>(varyProtocol(varyHostDispo(varyOptimizers(varyAccessibleHost(varyAgentLoad(simuToLaunch))))));
+		simuToLaunch.add(ReplicationExperimentationParameters.getGeneric(f));
+		return 
+				new LinkedList<ExperimentationParameters>(
+//						varyProtocol(
+								varyHostDispo(
+										varyOptimizers(
+//												varyAccessibleHost(
+														varyAgentLoad(simuToLaunch)
+														)
+//												)
+//										)
+								)
+						)
+						;
 	}
 
 	/*
@@ -147,7 +159,7 @@ ExperimentationProtocol {
 		}
 		return result;		
 	}
-	
+
 	private Collection<ReplicationExperimentationParameters> varyAgentLoad(Collection<ReplicationExperimentationParameters> exps){
 		Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (ReplicationExperimentationParameters p : exps){
@@ -159,7 +171,7 @@ ExperimentationProtocol {
 		}	
 		return result;		
 	}
-	
+
 	//
 	// Configuration statique
 	// /////////////////////////////////
@@ -184,7 +196,7 @@ ExperimentationProtocol {
 	// Distribution
 	//
 
-	public static final int nbSimuPerMAchine = 2;
+	public static final int nbSimuPerMAchine = 1;
 	@Override
 	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
 		return ReplicationExperimentationProtocol.nbSimuPerMAchine

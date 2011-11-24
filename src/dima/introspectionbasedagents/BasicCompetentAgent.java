@@ -48,6 +48,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	//
 
 	private BasicCompetenceShell myShell;
+	public static int nbCompetentAgent=0;
 
 
 	//
@@ -59,30 +60,34 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		super(newId);
 		log= new LogService(this);
 		observer=	new PatternObserverWithHookservice(this);
+		nbCompetentAgent++;
 	}
 
 	public BasicCompetentAgent(final String newId) throws CompetenceException {
 		super(newId);
 		log= new LogService(this);
 		observer=	new PatternObserverWithHookservice(this);
+		nbCompetentAgent++;
 	}
 
-	/*
-	 *
-	 */
-
-	public BasicCompetentAgent(final AgentIdentifier newId, final Date horloge)  throws CompetenceException {
-		super(newId, horloge);
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-	}
-
-
-	public BasicCompetentAgent(final String newId, final Date horloge) throws CompetenceException {
-		super(newId, horloge);
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-	}
+//	/*
+//	 *
+//	 */
+//
+//	public BasicCompetentAgent(final AgentIdentifier newId, final Date horloge)  throws CompetenceException {
+//		super(newId, horloge);
+//		log= new LogService(this);
+//		observer=	new PatternObserverWithHookservice(this);
+//		nbCompetentAgent++;
+//	}
+//
+//
+//	public BasicCompetentAgent(final String newId, final Date horloge) throws CompetenceException {
+//		super(newId, horloge);
+//		log= new LogService(this);
+//		observer=	new PatternObserverWithHookservice(this);
+//		nbCompetentAgent++;
+//	}
 
 	//
 	// Accessors
@@ -113,10 +118,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public long getUptime() {
 		return new Date().getTime()-this.creation.getTime();
 	}
-
-	public void resetUptime(){
-		this.creation = new Date();
-	}
+//
+//	public void resetUptime(){
+//		this.creation = new Date();
+//	}
 
 	public void load(BasicAgentCompetence<CompetentComponent> newComp) 
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{

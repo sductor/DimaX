@@ -248,7 +248,7 @@ ExperimentationParameters {
 				Experimentator.myId,
 				ReplicationExperimentationProtocol.nbAgents,
 				ReplicationExperimentationProtocol.nbHosts, 
-				1., 
+				0.3, 
 				0.6,
 				0.3, 
 				ReplicationExperimentationProtocol.key4mirrorProto, 

@@ -110,24 +110,24 @@ ExperimentationProtocol {
 		simuToLaunch.add(ReplicationExperimentationParameters.getGeneric(f));
 		return 
 				new LinkedList<ExperimentationParameters>(
-						varyAgentSelection(
-//								varyHostSelection(	
-										//						varyProtocol(
-//										varyHostDispo(
-//												varyOptimizers(
-														//												varyAccessibleHost(
-//														varyAgentLoad(
-																simuToLaunch
-																)
-//														)
-														//												)
-														//										)
-//												)
-//										)
-//								)
-						);
+												varyAgentSelection(
+						//								varyHostSelection(	
+//						varyProtocol(
+								//										varyHostDispo(
+//								varyOptimizers(
+										//												varyAccessibleHost(
+										//														varyAgentLoad(
+										simuToLaunch
+										)
+										//														)
+//																						)
+										//										)
+										//												)
+										//										)
+										//								)
+								);
 	}
-	
+
 
 	/*
 	 * 

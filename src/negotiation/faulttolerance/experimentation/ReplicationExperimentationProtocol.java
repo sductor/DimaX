@@ -31,9 +31,9 @@ ExperimentationProtocol {
 	// /////////////////////////////////
 
 
-	public static final int nbAgents = 3;
-	public static final int nbHosts = 3;
-	
+	public static final int nbAgents = 70;
+	public static final int nbHosts = 30;
+
 	//
 	// Simulation Configuration
 	//
@@ -54,14 +54,14 @@ ExperimentationProtocol {
 	// Distribution
 	//
 
-	public static final int nbSimuPerMAchine = 1;
+	public static final double nbSimuPerMAchine = 0.5;
 	@Override
 	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
-		return ReplicationExperimentationProtocol.nbSimuPerMAchine
+		return (int) ReplicationExperimentationProtocol.nbSimuPerMAchine
 				* (nbAgents + nbHosts)+1;
 	}
 
-	
+
 	/**
 	 * Clés statiques
 	 */
@@ -110,18 +110,24 @@ ExperimentationProtocol {
 		simuToLaunch.add(ReplicationExperimentationParameters.getGeneric(f));
 		return 
 				new LinkedList<ExperimentationParameters>(
-//						varyProtocol(
-								varyHostDispo(
-										varyOptimizers(
-//												varyAccessibleHost(
-														varyAgentLoad(simuToLaunch)
-														)
+						varyAgentSelection(
+//								varyHostSelection(	
+										//						varyProtocol(
+//										varyHostDispo(
+//												varyOptimizers(
+														//												varyAccessibleHost(
+//														varyAgentLoad(
+																simuToLaunch
+																)
+//														)
+														//												)
+														//										)
 //												)
 //										)
-								)
-						)
-						;
+//								)
+						);
 	}
+	
 
 	/*
 	 * 

@@ -38,8 +38,8 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 	// Construtor
 	//
 
-	public BasicCommunicatingMethodTrunk(final Date creation) {
-		super(creation);
+	public BasicCommunicatingMethodTrunk() {
+		super();
 	}
 
 	//

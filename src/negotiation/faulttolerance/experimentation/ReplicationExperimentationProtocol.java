@@ -26,7 +26,42 @@ import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
 public class ReplicationExperimentationProtocol implements
 ExperimentationProtocol {
 
+	//
+	// Configuration statique
+	// /////////////////////////////////
 
+
+	public static final int nbAgents = 3;
+	public static final int nbHosts = 3;
+	
+	//
+	// Simulation Configuration
+	//
+
+	public static final long _simulationTime = (long) (60000 *0.5);
+	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 10;
+
+	//
+	// Negotiation Tickers
+	//
+
+	public static final long _timeToCollect = -1;//500;//
+	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
+	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
+	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
+
+	//
+	// Distribution
+	//
+
+	public static final int nbSimuPerMAchine = 1;
+	@Override
+	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
+		return ReplicationExperimentationProtocol.nbSimuPerMAchine
+				* (nbAgents + nbHosts)+1;
+	}
+
+	
 	/**
 	 * Clés statiques
 	 */
@@ -57,7 +92,7 @@ ExperimentationProtocol {
 
 	Collection<String> protos = Arrays.asList(new String[]{key4mirrorProto,key4CentralisedstatusProto,key4statusProto});
 	Collection<String> welfare = Arrays.asList(new String[]{key4leximinSocialWelfare,key4NashSocialWelfare,key4UtilitaristSocialWelfare});
-	Collection<String> select = Arrays.asList(new String[]{key4UtilitaristSocialWelfare,key4rouletteWheelSelect,key4AllocSelect});
+	Collection<String> select = Arrays.asList(new String[]{key4greedySelect,key4rouletteWheelSelect});//,key4AllocSelect
 	Collection<String> agentPref = Arrays.asList(new String[]{key4agentKey_Relia,key4agentKey_loadNRelia});
 	Collection<Double> doubleParameters = Arrays.asList(new Double[]{0.1,0.3,0.6,1.});
 	Collection<ZeroOneSymbolicValue> loadVariation = Arrays.asList(ZeroOneSymbolicValue.values());
@@ -172,44 +207,13 @@ ExperimentationProtocol {
 		return result;		
 	}
 
-	//
-	// Configuration statique
-	// /////////////////////////////////
-
-	//
-	// Simulation Configuration
-	//
-
-	public static final long _simulationTime = (long) (60000 );
-	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 5;
-
-	//
-	// Negotiation Tickers
-	//
-
-	public static final long _timeToCollect = -1;//500;//
-	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
-	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
-	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
-
-	//
-	// Distribution
-	//
-
-	public static final int nbSimuPerMAchine = 1;
-	@Override
-	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
-		return ReplicationExperimentationProtocol.nbSimuPerMAchine
-				* (ReplicationExperimentationParameters.nbAgents + ReplicationExperimentationParameters.nbHosts);
-	}
-
 	/*
 	 *
 	 */
 
 	public static final String resultPath = LogService.getMyPath()+"result_"			
-			+ ReplicationExperimentationParameters.nbAgents + "agents_"
-			+ ReplicationExperimentationParameters.nbHosts + "hosts_"
+			+ nbAgents + "agents_"
+			+ nbHosts + "hosts_"
 			+ ReplicationExperimentationProtocol._simulationTime / 60000
 			+ "mins";
 

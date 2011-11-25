@@ -1,17 +1,28 @@
 package negotiation.experimentationframework;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PostStepComposant;
+import dima.introspectionbasedagents.annotations.PreStepComposant;
+import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.Ticker;
 
 public abstract class SelfObservingService
 extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	private static final long serialVersionUID = 496384107474313690L;
 
-	
+	ActivityLog l = new ActivityLog();
+
 	public SelfObservingService() {
 		super();
 	}
@@ -25,30 +36,42 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	@StepComposant(ticker=ReplicationExperimentationProtocol._state_snapshot_frequency)
 	public void notifyMyState(){
-		this.notify(this.generateMyResults());
+		l.add(this.generateMyResults());
+		if (!getMyAgent().isAlive())//La vie est arrêté dans une step methode
+			l.getResults().getLast().setLastInfo();
+		//		this.notify(this.generateMyResults());
 	}
 
-	private boolean hasSendedEnd=false;
-	@StepComposant(ticker=ReplicationExperimentationProtocol._simulationTime)
-	@Transient
-	public boolean endSimulation(){
-		this.logMonologue("this is the end my friend");
-		if (!this.hasSendedEnd){
-			getMyAgent().setAlive(false);
-			this.notifyMyState();
-			getMyAgent().observer.autoSendOfNotifications();
-			this.hasSendedEnd=true;
-		}
-		return true;
-
+	@ProactivityFinalisation()
+	public void endSimulation(){
+		this.logMonologue("this is the end my friend",LogService.onBoth);
+		notify(l);
+		getMyAgent().sendNotificationNow();
 	}
 
 	@MessageHandler
 	public void simulationEndORder(final SimulationEndedMessage s){
 		if (getMyAgent().isAlive()){
 			getMyAgent().setAlive(false);
-			this.endSimulation();
 		}
+	}
+
+	//
+	// Public class
+	//
+
+	public class ActivityLog extends Message {
+
+		LinkedList<ExperimentationResults> results =
+				new LinkedList<ExperimentationResults>();
+
+		public LinkedList<ExperimentationResults> getResults() {
+			return results;
+		}
+
+		public void add(ExperimentationResults generateMyResults) {
+			results.add(generateMyResults);
+		}		
 	}
 }
 

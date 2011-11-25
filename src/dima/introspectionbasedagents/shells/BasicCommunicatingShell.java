@@ -26,16 +26,16 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	//
 
 	public BasicCommunicatingShell(
-			final MailBoxBasedCommunicatingComponentInterface myComponent, final Date horloge) {
-		super(myComponent, new BasicCommunicatingMethodTrunk(horloge));
+			final MailBoxBasedCommunicatingComponentInterface myComponent) {
+		super(myComponent, new BasicCommunicatingMethodTrunk());
 		this.mailBox=myComponent.getMailBox();
 	}
 
 
 	public BasicCommunicatingShell(
-			final DimaComponentInterface myComponent, final Date horloge,
+			final DimaComponentInterface myComponent, 
 			final AbstractMailBox mailBox) {
-		super(myComponent, new BasicCommunicatingMethodTrunk(horloge));
+		super(myComponent, new BasicCommunicatingMethodTrunk());
 		this.mailBox=mailBox;
 	}
 
@@ -44,17 +44,17 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	 */
 
 	public BasicCommunicatingShell(
-			final MailBoxBasedCommunicatingComponentInterface myComponent, final Date horloge,
+			final MailBoxBasedCommunicatingComponentInterface myComponent,
 			final SimpleExceptionHandler exceptionHandler) {
-		super(myComponent, new BasicCommunicatingMethodTrunk(horloge), exceptionHandler);
+		super(myComponent, new BasicCommunicatingMethodTrunk(), exceptionHandler);
 		this.mailBox=myComponent.getMailBox();
 	}
 
 	public BasicCommunicatingShell(
-			final DimaComponentInterface myComponent, final Date horloge,
+			final DimaComponentInterface myComponent,
 			final AbstractMailBox mailBox,
 			final SimpleExceptionHandler exceptionHandler) {
-		super(myComponent, new BasicCommunicatingMethodTrunk(horloge), exceptionHandler);
+		super(myComponent, new BasicCommunicatingMethodTrunk(), exceptionHandler);
 		this.mailBox=mailBox;
 	}
 
@@ -76,9 +76,9 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	//
 
 	@Override
-	public final void step(){
+	public final void step(Date creation){
 		this.parseMails();
-		super.step();
+		super.step(creation);
 	}
 
 	//

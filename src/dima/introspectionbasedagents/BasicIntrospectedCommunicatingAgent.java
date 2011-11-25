@@ -81,30 +81,30 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	@Override
 	public final void proactivityInitialize() {
 		this.myShell =initiateMyShell();
-		myShell.proactivityInitialize();
+		myShell.proactivityInitialize(creation);
 		Thread.yield();
 	}
 
 	@Override
 	public final void preActivity() {
-		myShell.preActivity();
+		myShell.preActivity(creation);
 			Thread.yield();
 	}
 
 	@Override
 	public final void step() {
-			this.myShell.step();
+			this.myShell.step(creation);
 	}
 
 	@Override
 	public final void postActivity(){
-		this.myShell.postActivity();
+		this.myShell.postActivity(creation);
 			Thread.yield();
 	}
 	
 	@Override
 	public final  void proactivityTerminate() {
-		myShell.proactivityTerminate();
+		myShell.proactivityTerminate(creation);
 		this.myShell=null;
 		Thread.yield();
 	}
@@ -114,7 +114,7 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	//
 	
 	protected BasicCommunicatingShell initiateMyShell(){
-		return  new BasicCommunicatingShell(this,this.creation);
+		return  new BasicCommunicatingShell(this);
 	}
 	
 	

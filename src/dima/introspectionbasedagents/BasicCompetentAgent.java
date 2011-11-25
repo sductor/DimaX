@@ -167,7 +167,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean start(StartActivityMessage m){
 		this.appliHasStarted=true;
 		this.creation = m.getStartDate();
-		logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString());
+		logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
 		return true;
 	}
 
@@ -433,19 +433,19 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		 return this.log.logMonologue(text, details);
 	 }
 
+//	 @Override
+//	 public Boolean logMonologue(final String text) {
+//		 return this.log.logMonologue(text);
+//	 }
+//
+//	 @Override
+//	 public Boolean logWarning(final String text, final Throwable e) {
+//		 return this.log.logWarning(text, e);
+//	 }
+//
 	 @Override
-	 public Boolean logMonologue(final String text) {
-		 return this.log.logMonologue(text);
-	 }
-
-	 @Override
-	 public Boolean logWarning(final String text, final Throwable e) {
-		 return this.log.logWarning(text, e);
-	 }
-
-	 @Override
-	 public Boolean logWarning(final String text, final String details, final Throwable e) {
-		 return this.log.logWarning(text, details, e);
+	 public Boolean logWarning(final String text, final Throwable e, final String details) {
+		 return this.log.logWarning(text, e, details);
 	 }
 
 	 @Override
@@ -453,10 +453,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		 return this.log.logWarning(text, details);
 	 }
 
-	 @Override
-	 public Boolean logWarning(final String text) {
-		 return this.log.logWarning(text);
-	 }
+//	 @Override
+//	 public Boolean logWarning(final String text) {
+//		 return this.log.logWarning(text);
+//	 }
 
 	 @Override
 	 public void addLogKey(String key, boolean toScreen, boolean toFile) {
@@ -499,7 +499,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	 @Override
 	 public void finalize(){
-		 this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(");
+		 this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(",LogService.onBoth);
 	 }
 
 	 @Override

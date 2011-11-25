@@ -22,6 +22,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelope
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 
@@ -138,7 +139,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				if (!this.contracts.getContractsRejectedBy(
 						this.getMyAgent().getIdentifier()).contains(c)) {
 					this.logWarning("contract expired!!!! =( "
-							+ this.contracts.statusOf(c));
+							+ this.contracts.statusOf(c),LogService.onBoth);
 					this.contracts.addRejection(this.getMyAgent()
 							.getIdentifier(), c);
 					this.sendCancel(c.getIdentifier());

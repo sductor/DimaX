@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+
 
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
@@ -73,7 +75,7 @@ extends GreedyBasicSelectionCore<ActionSpec, PersonalState, Contract> {
 			while (r>contractsValues.get(currentContract))// && currentContract<contracts.size()-1)
 				currentContract++;
 			} catch (Exception e) {
-				logMonologue(r+" "+contractsValues);
+				signalException(r+" "+contractsValues);
 			}
 		}
 

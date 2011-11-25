@@ -90,7 +90,7 @@ public class APIAgent extends BasicCompetentAgent {
 
 	public static void launch(APILauncherModule api, Collection<BasicCompetentAgent> ags, Map<AgentIdentifier, HostIdentifier> locations) {
 		for (final BasicCompetentAgent c : ags){
-			assert locations.containsKey(c.getIdentifier()) : "agent : "+c+"\n id :"+c.getIdentifier()+"\n locations : "+locations;
+//			assert locations.containsKey(c.getIdentifier()) : "id :"+c.getIdentifier()+"\n locations : "+locations;
 			c.launchWith(api, locations.get(c.getIdentifier()));
 		}
 	}

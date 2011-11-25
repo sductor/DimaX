@@ -117,25 +117,27 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	 */
 
 
+	public Boolean logMonologue(String text, String logKey);
+	
+	public Boolean logWarning(String text, Throwable e, String logKey);
+
+	public Boolean logWarning(String text, String logKey);
+
 	public Boolean signalException(String text, Throwable e);
+	
+	public Boolean signalException(String text);
 
 //	public Boolean logException(String text, String details, Throwable e);
 //
 //	public Boolean logException(String text, String details);
 
-	public Boolean signalException(String text);
 
-	public Boolean logMonologue(String text, String details);
+//	public Boolean logMonologue(String text);
 
-	public Boolean logMonologue(String text);
+//	public Boolean logWarning(String text, Throwable e);
 
-	public Boolean logWarning(String text, Throwable e);
 
-	public Boolean logWarning(String text, String details, Throwable e);
-
-	public Boolean logWarning(String text, String details);
-
-	public Boolean logWarning(String text);
+//	public Boolean logWarning(String text);
 
 	public void addLogKey(String key, boolean toScreen, boolean toFile);
 

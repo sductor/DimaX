@@ -7,12 +7,10 @@ import dima.support.GimaObject;
 public class Ticker extends GimaObject{
 
 	private final long timeToWait;
-	private final Date creation;
 	private int lastStepExecution = 0;
 
-	public Ticker(final long timeToWait, final Date creation) {
+	public Ticker(final long timeToWait) {
 		this.timeToWait = timeToWait;
-		this.creation = creation;
 	}
 
 	/*
@@ -20,27 +18,34 @@ public class Ticker extends GimaObject{
 	 * elle retourne true
 	 */
 
-	public boolean isReady() {
-		final long elapsedTime =
-			new Date().getTime() - this.creation.getTime();
+	public boolean isReady(Date creation) {
 		if (this.timeToWait==0)
 			return true;
-		else
-			if (elapsedTime/this.timeToWait>this.lastStepExecution) {
-				this.lastStepExecution = (int) (elapsedTime/this.timeToWait);
+		else {
+			int stepNumber = Ticker.getStepNumber(creation, timeToWait);
+			if (stepNumber>this.lastStepExecution) {
+				this.lastStepExecution=stepNumber;
 				return true;
 			} else
 				return false;
+		}
+	}
+	
+	public static int getStepNumber(Date creation, long cycleTime){
+		final long elapsedTime =
+			new Date().getTime() - creation.getTime();		
+		return (int) (elapsedTime/cycleTime);
 	}
 
 
 	public static void main(final String[] args) throws InterruptedException {
-		final Ticker t  = new Ticker(2000, new Date());
-		System.out.println(t.creation);
+		Date creation=new Date();
+		final Ticker t  = new Ticker(2000);
+		System.out.println(creation);
 
 		while(true){
 			Thread.sleep(567);
-			System.out.println(new Date()+" t is ready?"+t.isReady());
+			System.out.println(new Date()+" t is ready?"+t.isReady(creation));
 		}
 	}
 }

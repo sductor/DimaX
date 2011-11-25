@@ -34,7 +34,6 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 *
 	 */
 	private static final long serialVersionUID = 9112902710722635207L;
-	private final Date creation;
 
 	private final Collection<MethodHandler> methods = new ArrayList<MethodHandler>();
 
@@ -48,9 +47,8 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	// Constructor
 	//
 
-	public BasicIntrospectedMethodsTrunk(final Date creation) {
+	public BasicIntrospectedMethodsTrunk() {
 		super();
-		this.creation = creation;
 		this.status = new SimpleAgentStatus();
 	}
 
@@ -130,9 +128,9 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 * @see dima.introspectionBasedAgent.shells.IntrospedMethodsTrunk#executeStepMethod(dima.introspectionBasedAgent.tools.MethodHandler)
 	 */
 	@Override
-	public boolean executeStepMethod(final MethodHandler mt)
+	public boolean executeStepMethod(final MethodHandler mt, Date creation)
 	throws IllegalArgumentException, Throwable {
-		if (this.isReady(mt)){
+		if (this.isReady(mt, creation)){
 			this.status.setCurrentlyExecutedAgent(mt.getMyComponent());	
 			this.status.setCurrentlyExecutedMethod(mt);
 			final Object resultat = mt.execute(null);
@@ -212,9 +210,9 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 			return true;
 	}
 
-	private boolean isReady(final MethodHandler m){
+	private boolean isReady(final MethodHandler m, Date creation){
 		try{
-			return this.tickers.get(m).isReady();
+			return this.tickers.get(m).isReady(creation);
 		} catch (final NullPointerException e){
 			return true;
 		}
@@ -223,7 +221,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	private void addTicker(final MethodHandler mt, final long ticker) {
 		this.tickers.put(
 				mt,
-				new Ticker(ticker, this.creation));
+				new Ticker(ticker));
 	}
 
 	protected boolean toRemove(

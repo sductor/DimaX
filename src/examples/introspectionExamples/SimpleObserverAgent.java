@@ -6,6 +6,7 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 
@@ -26,7 +27,7 @@ public class SimpleObserverAgent extends BasicCompetentAgent {
 	public Boolean register(){
 		for (int i=0; i<this.nbAgent; i++){
 			this.observe(SimpleAgent.getsimpleId(i), SimpleMessage.class);
-			this.logMonologue("observing "+SimpleAgent.getsimpleId(i));
+			this.logMonologue("observing "+SimpleAgent.getsimpleId(i),LogService.onScreen);
 		}return true;
 	}
 
@@ -34,7 +35,7 @@ public class SimpleObserverAgent extends BasicCompetentAgent {
 	@NotificationEnvelope()
 	public void simpleObserverStep(final NotificationMessage<SimpleMessage> m) {
 		this.logMonologue(
-				"YOOOO!!(1) =) I've received :\n" + m);
+				"YOOOO!!(1) =) I've received :\n" + m,LogService.onScreen);
 	}
 
 }

@@ -8,6 +8,7 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 public class SimpleAgent extends BasicCompetentAgent {
@@ -41,7 +42,7 @@ public class SimpleAgent extends BasicCompetentAgent {
 		this.nbTour = nbTour;
 		if (this.nbAgent < 2)
 			this.logMonologue(
-					"JE SUIS TOUT SEUL!! Ca va pas le faire!!!");
+					"JE SUIS TOUT SEUL!! Ca va pas le faire!!!",LogService.onScreen);
 		else
 			this.sayAliveToPeer.setMyPeer(this.getMyAlivePeer());
 	}
@@ -88,8 +89,8 @@ public class SimpleAgent extends BasicCompetentAgent {
 		if (this.myId == 0) {
 			final SimpleMessage m = new SimpleMessage();
 			this.sendMessage(SimpleAgent.getsimpleId(1), m);
-			this.logMonologue("First message sended:\n" + m);
-			this.logMonologue("notifying "+m);
+			this.logMonologue("First message sended:\n" + m,LogService.onScreen);
+			this.logMonologue("notifying "+m,LogService.onScreen);
 			this.notify(m);
 		} else
 			this.sayAlive.setActive(false);
@@ -102,18 +103,18 @@ public class SimpleAgent extends BasicCompetentAgent {
 		this.logMonologue(
 				"=> I've received :"
 				+ m +  "\n        next agent : "
-				+ SimpleAgent.getsimpleId((this.myId + 1) % this.nbAgent));
+				+ SimpleAgent.getsimpleId((this.myId + 1) % this.nbAgent),LogService.onScreen);
 
 		if (this.myId == 0) {
 			this.nbTour--;
 			if (this.nbTour == 0) {
 				this.logMonologue(
-						"AGENT 0 : Experiment Over!");
+						"AGENT 0 : Experiment Over!",LogService.onScreen);
 				System.exit(1);// this will exit all the JVMs
 				return;
 			} else {
 				m.incrementeTour();
-				this.logMonologue("notifying "+m);
+				this.logMonologue("notifying "+m,LogService.onScreen);
 				this.notify(m);
 			}
 		}

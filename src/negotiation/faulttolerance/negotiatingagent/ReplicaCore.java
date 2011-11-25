@@ -7,6 +7,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
 public  class ReplicaCore
@@ -52,12 +53,12 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 			this.observe(c.getResource(), SimpleObservationService.informationObservationKey);
 //			System.out.println(c.getAgent()+  " " + new Date().toString()
 //					+ "  -> i have been replicated by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue("  -> i have been replicated by "+c.getResource());
+			logMonologue("  -> i have been replicated by "+c.getResource(),LogService.onNone);
 		} else {
 			this.stopObservation(c.getResource(), SimpleObservationService.informationObservationKey);
 //			System.out.println(c.getAgent()+  " " + new Date().toString()
 //					+ "  -> i have been killed by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue("  -> i have been killed by "+c.getResource());
+			logMonologue("  -> i have been killed by "+c.getResource(),LogService.onNone);
 		}
 		
 		this.getMyAgent().setNewState(

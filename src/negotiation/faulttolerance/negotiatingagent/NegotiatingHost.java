@@ -44,8 +44,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		protected ExperimentationResults generateMyResults() {
 			return new ReplicationHostResult(
 					NegotiatingHost.this.getMyCurrentState(),
-					NegotiatingHost.this.getCreationTime(),
-					!NegotiatingHost.this.isAlive());
+					NegotiatingHost.this.getCreationTime());
 		}
 	};
 
@@ -76,20 +75,6 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	// Constructor
 	//
 
-	public NegotiatingHost(
-			final ResourceIdentifier id,
-			final Date horloge,
-			final double lambda,
-			final HostCore myRationality,
-			final AbstractSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
-			final AbstractProposerCore<
-			SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
-			ReplicationSpecification, HostState, ReplicationCandidature> 	proposerCore,
-			ObservationService myInformation, 
-			final HostDisponibilityComputer myDispoInfo)
-			throws CompetenceException {
-		super(id, horloge, new HostState(id, lambda), myRationality, participantCore, proposerCore, myInformation);
-	}
 
 	public NegotiatingHost(
 			final ResourceIdentifier id,

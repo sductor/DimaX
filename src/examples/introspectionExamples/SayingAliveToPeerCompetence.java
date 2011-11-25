@@ -9,6 +9,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class SayingAliveToPeerCompetence extends BasicAgentCommunicatingCompetence<BasicCompetentAgent> {
 
@@ -42,14 +43,14 @@ public class SayingAliveToPeerCompetence extends BasicAgentCommunicatingCompeten
 
 	@StepComposant(ticker=1000)
 	public void sayAlive() {
-		this.getMyAgent().logMonologue("I'M STILL ALIVE");
+		this.getMyAgent().logMonologue("I'M STILL ALIVE",LogService.onScreen);
 		this.sayAliveToPeer();
 	}
 
 	@MessageHandler()
 	@FipaACLEnvelope(performative=Performative.Inform, protocol=SayingAliveProtocol.class )
 	public void receiveAliveMessage(final FipaACLMessage m){
-		this.logMonologue("**YOOOO! (2) =D ----------> "+m.getSender()+" IS STILL ALIVE");
+		this.logMonologue("**YOOOO! (2) =D ----------> "+m.getSender()+" IS STILL ALIVE",LogService.onScreen);
 	}
 
 	/*

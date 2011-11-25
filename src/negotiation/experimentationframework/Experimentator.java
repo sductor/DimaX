@@ -84,11 +84,10 @@ public class Experimentator extends APIAgent{
 
 	@ProactivityInitialisation
 	public void initialise() throws CompetenceException{		
-		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription());//+" will use :"+getApi().getAvalaibleHosts());
+		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
 		this.logMonologue("Generated "+simuToLaunch.size()+" simus of "
 		+ReplicationExperimentationProtocol._simulationTime/60000+
 		"mins  on "+getApi().getAvalaibleHosts().size()+" machine, "+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine", LogService.onBoth);
-	
 		launchSimulation();
 	}
 
@@ -96,6 +95,8 @@ public class Experimentator extends APIAgent{
 	public boolean launchSimulation() throws CompetenceException{
 		this.logMonologue("Launching simulations --> Available Memory :"
 				+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
+		this.logWarning("--------------> Used Memory (MO) : "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000),LogService.onBoth);
+		
 		if (this.awaitingAnswer==0){
 			System.out.println("1");
 			this.logMonologue("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
@@ -137,7 +138,6 @@ public class Experimentator extends APIAgent{
 		System.gc();
 		this.logMonologue("--> Available Memory After GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
 				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
-		this.logWarning("--------------> Used Memory (MO) : "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000),LogService.onBoth);
 		this.launchSimulation();
 	}
 
@@ -148,8 +148,8 @@ public class Experimentator extends APIAgent{
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
-		exp.initAPI(true);//FIPA	
-//										exp.initAPI(false);//SCHEDULED
+//		exp.initAPI(true);//FIPA	
+										exp.initAPI(false);//SCHEDULED
 //						exp.initAPI(7779,7778);//DARX LOCAL
 //				exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();

@@ -178,7 +178,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 	boolean destroy(BasicCompetentAgent c){
 		registeredAgent.remove(c.getIdentifier());
-		locations.remove(c);
+		locations.remove(c.getIdentifier());
 
 		switch (myLaunchType) {
 		case NotThreaded:
@@ -217,7 +217,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 	@MessageHandler
 	void end(NotificationMessage<EndActivityMessage> m){
-		getMyAgent().logMonologue(m.getSender()+" has ended activity ... nothing to do...");
+		getMyAgent().logMonologue(m.getSender()+" has ended activity ... nothing to do...",LogService.onBoth);
 	}
 
 	//

@@ -49,7 +49,7 @@ BasicCommunicatingShell {
 			final AbstractMailBox mailbox,
 			final LogService exceptionHandler) 
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
-		super(myComponent, horloge, mailbox, exceptionHandler);
+		super(myComponent, mailbox, exceptionHandler);
 		getExceptionHandler().setMyAgentShell(this);
 		
 		myMainComponent = myComponent;
@@ -66,7 +66,7 @@ BasicCommunicatingShell {
 			final Agent myComponent, final Date horloge,
 			final AbstractMailBox mailbox) 
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
-		super(myComponent, horloge, mailbox, new LogService(myComponent));
+		super(myComponent, mailbox, new LogService(myComponent));
 		for (AgentCompetence<Agent> comp : getNativeCompetences(myMainComponent)){
 			load(comp);
 		}
@@ -123,8 +123,8 @@ BasicCommunicatingShell {
 
 
 	@Override
-	public final void proactivityTerminate(){
-		super.proactivityTerminate();
+	public final void proactivityTerminate(Date creation){
+		super.proactivityTerminate(creation);
 		try {
 
 			for (final AgentCompetence<? extends CompetentComponent> competence : getNativeCompetences(myMainComponent))

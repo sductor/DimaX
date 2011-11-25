@@ -2,6 +2,7 @@ package negotiation.negotiationframework;
 
 import java.util.Date;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
 import negotiation.negotiationframework.agent.RationalCore;
@@ -18,6 +19,8 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
@@ -68,26 +71,6 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		.setMyAgent(this);
 		
 	}
-	
-	public SimpleNegotiatingAgent(
-			final AgentIdentifier id,
-			final Date horloge,
-			final PersonalState myInitialState,
-			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
-			final AbstractProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
-			ObservationService myInformation)
-					throws CompetenceException {
-		super(id, horloge, myInitialState, myRationality, myInformation);
-
-		this.selectionCore = selectionCore;
-		this.selectionCore.setMyAgent(this);
-		protocol = new NegotiationProtocol<ActionSpec, PersonalState, Contract>(this);
-
-		this.myProposerCore = proposerCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
-		.setMyAgent(this);
-	}
 
 	@ProactivityInitialisation
 	public void initialisation(){
@@ -113,7 +96,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "
 				+ m.getCallingMethod() + ")";
 		pockets += "\n" + this.getMyProtocol();
-		this.logMonologue(pockets);
+		this.logMonologue(pockets,LogService.onFile);
 	}
 
 	//
@@ -124,7 +107,17 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		return this.selectionCore.select(cs);
 	}
 
-
+	//
+	// Behavior
+	//
+	
+	@StepComposant(ticker=ReplicationExperimentationProtocol._simulationTime)
+	@Transient
+	public boolean end(){
+		setAlive(false);
+		return true;
+	}
+	
 	@ProactivityFinalisation
 	public void showInfo() {
 		this.logMonologue("terminating with this state : "

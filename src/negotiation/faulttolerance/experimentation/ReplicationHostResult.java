@@ -24,14 +24,14 @@ public class ReplicationHostResult implements ExperimentationResults {
 	boolean lastInfo;
 
 	public ReplicationHostResult(final HostState s,
-			final Date agentCreationTime, final boolean last) {
+			final Date agentCreationTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
 		this.charge = s.getMyCharge();
 		// this.lambda = s.lambda;
 		this.isFaulty = s.isFaulty();
 		this.id = s.getMyAgentIdentifier();
-		this.lastInfo = last;
+		this.lastInfo = false;
 	}
 
 	@Override
@@ -45,12 +45,18 @@ public class ReplicationHostResult implements ExperimentationResults {
 	}
 
 	@Override
-	public boolean hasDied() {
+	public boolean isLastInfo() {
 		return this.lastInfo;
 	}
 
 	@Override
 	public boolean isHost() {
 		return true;
+	}
+
+	@Override
+	public void setLastInfo() {
+		lastInfo=true;
+		
 	}
 }

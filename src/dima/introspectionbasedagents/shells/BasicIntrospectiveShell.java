@@ -60,9 +60,9 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 */
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent, final Date horloge) {
+			final DimaComponentInterface myComponent) {
 		super();
-		this.myMethods = new BasicIntrospectedMethodsTrunk(horloge);
+		this.myMethods = new BasicIntrospectedMethodsTrunk();
 		this.exceptionHandler  = new SimpleExceptionHandler();
 
 		this.myMethods.load(myComponent);
@@ -72,7 +72,7 @@ public class BasicIntrospectiveShell extends GimaObject {
 			final DimaComponentInterface myComponent, final Date horloge,
 			final SimpleExceptionHandler exceptionHandler) {
 		super();
-		this.myMethods = new BasicIntrospectedMethodsTrunk(horloge);
+		this.myMethods = new BasicIntrospectedMethodsTrunk();
 		this.exceptionHandler = exceptionHandler;
 
 		this.myMethods.load(myComponent);
@@ -117,31 +117,31 @@ public class BasicIntrospectiveShell extends GimaObject {
 	// Methods
 	//
 	
-	public final void proactivityInitialize(){
-		this.executeBehaviors(ProactivityInitialisation.class);
+	public final void proactivityInitialize(Date creation){
+		this.executeBehaviors(ProactivityInitialisation.class, creation);
 
 	}
 
-	public final void preActivity(){
-		this.executeBehaviors(PreStepComposant.class);
+	public final void preActivity(Date creation){
+		this.executeBehaviors(PreStepComposant.class, creation);
 
 	}
 
-	public void step(){
-		this.executeBehaviors(StepComposant.class);
+	public void step(Date creation){
+		this.executeBehaviors(StepComposant.class, creation);
 
 	}
 
 	protected final Set<MethodHandler> metToRemove = new HashSet<MethodHandler>();
-	public final void postActivity(){
-		this.executeBehaviors(PostStepComposant.class);
+	public final void postActivity(Date creation){
+		this.executeBehaviors(PostStepComposant.class, creation);
 		for (final MethodHandler meth : this.metToRemove)
 			this.myMethods.removeMethod(meth);
 		this.metToRemove.clear();
 	}
 
-	public void proactivityTerminate(){
-		this.executeBehaviors(ProactivityFinalisation.class);
+	public void proactivityTerminate(Date creation){
+		this.executeBehaviors(ProactivityFinalisation.class, creation);
 
 	}
 
@@ -156,11 +156,11 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 * @param myComponent
 	 *            the agent to execute
 	 */
-	protected void executeBehaviors(Class<? extends Annotation> annotation) {
+	protected void executeBehaviors(Class<? extends Annotation> annotation, Date creation) {
 		for (final MethodHandler mt : this.myMethods.getMethods()){
 			if (mt.isAnnotationPresent(annotation))
 				try {
-					final boolean toRemove = this.myMethods.executeStepMethod(mt);
+					final boolean toRemove = this.myMethods.executeStepMethod(mt, creation);
 					if (toRemove)
 						this.metToRemove.add(mt);
 				} catch (final Throwable e) {

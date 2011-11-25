@@ -10,6 +10,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 /**
  * Service used by the agent to be concious of the system state
@@ -82,7 +83,7 @@ public abstract class FaultObservationService extends
 			myState.setFaulty(true);
 			this.logMonologue("I've failed!! =( Those replicas are dead : "
 					+ ((HostState) this.getMyAgent().getMyCurrentState())
-							.getMyAgents());
+							.getMyAgents(),LogService.onBoth);
 			//
 			this.getMyAgent().getMyProtocol().stop();
 			this.resetMyState();
@@ -92,7 +93,7 @@ public abstract class FaultObservationService extends
 			if (this.getMyAgent().getMyCurrentState()
 					.setLost(f.getHost(), true))
 				this.logMonologue("I've lost a replica :" + f.getHost()
-						+ " !! =(");
+						+ " !! =(",LogService.onBoth);
 			this.getMyAgent().getMyProtocol().setLost(f.getHost());
 		}
 	}
@@ -111,7 +112,7 @@ public abstract class FaultObservationService extends
 						"nnnnnnnooooooooooooonnnnnnnnnnnnnnn!!!!!!!!!! :\n" + f
 								+ "\n" + this.getMyAgent().getMyCurrentState());
 			myState.setFaulty(false);
-			this.logMonologue("I'm repaired!! =)");
+			this.logMonologue("I'm repaired!! =)",LogService.onBoth);
 			//
 			this.resetMyState();
 			this.resetMyUptime();

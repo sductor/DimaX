@@ -26,6 +26,7 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
@@ -64,8 +65,6 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 				myInfo = new ReplicationAgentResult(
 						NegotiatingReplica.this.getMyCurrentState(),
 						NegotiatingReplica.this.getCreationTime());
-			if (!NegotiatingReplica.this.isAlive())
-				myInfo.setiAmDead(true);
 			return myInfo;
 		}
 	};
@@ -101,7 +100,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 				super.faultObservation(m);
 				if (NegotiatingReplica.this.getMyCurrentState().getMyReplicas()
 						.isEmpty()) {
-					this.logMonologue("this is the end my friend");
+					this.logMonologue("this is the end my friend",LogService.onBoth);
 					NegotiatingReplica.this.mySelfObservationService
 							.endSimulation();
 				}
@@ -113,21 +112,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	// Constructor
 	//
 
-	public NegotiatingReplica(
-			final AgentIdentifier id,
-			final Date horloge,
-			final Double criticity,
-			final Double procCharge,
-			final Double memCharge,
-			final RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> myRationality,
-			final AbstractSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
-			final AbstractProposerCore<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
-			ObservationService myInformation)
-			throws CompetenceException {
-		super(id, horloge, null, myRationality, participantCore, proposerCore, myInformation);
-		myStateType = ReplicaState.class;
-		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>()));
-	}
+
 
 	public NegotiatingReplica(
 			final AgentIdentifier id,

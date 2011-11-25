@@ -11,6 +11,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
@@ -55,23 +56,6 @@ extends BasicCompetentAgent {
 		}
 	}
 
-	public SimpleRationalAgent(
-			final AgentIdentifier id,
-			final Date horloge,
-			final PersonalState myInitialState,
-			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			ObservationService myInformation)
-					throws CompetenceException {
-		super(id, horloge);
-		this.myCore = myRationality;
-		this.myCore.setMyAgent(this);
-		this.myInformation = myInformation;
-		this.myInformation.setMyAgent(this);
-		if (myInitialState!=null) {
-			myStateType = myInitialState.getClass();
-			setNewState(myInitialState);
-		}
-	}
 
 	//
 	// Accessor
@@ -118,7 +102,7 @@ extends BasicCompetentAgent {
 	}
 	
 	public void setNewState(PersonalState s) {
-				logMonologue("NEW STATE !!!!!! "+s);
+				logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");

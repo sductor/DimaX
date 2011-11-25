@@ -11,6 +11,7 @@ import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLaborantin> {
 	private static final long serialVersionUID = -5136934098832050285L;
@@ -50,7 +51,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 				// Execution de la sentence!! muahaha!!!
 				HostDisponibilityComputer.setFaulty(this.getMyAgent().myInformationService, sentence);
 				this.logMonologue("executing this sentence : " + sentence
-						+ " (" + this.i + ")");
+						+ " (" + this.i + ")",LogService.onBoth);
 				// Déclaration public
 				for (final AgentIdentifier id : this.everybody)
 					this.getMyAgent().sendMessage(id, sentence);

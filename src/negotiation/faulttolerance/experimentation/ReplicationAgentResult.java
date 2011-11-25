@@ -22,11 +22,11 @@ public class ReplicationAgentResult implements ExperimentationResults {
 	final Double disponibility;
 	final Double reliability;
 
-	public void setiAmDead(final boolean iAmDead) {
-		this.iAmDead = iAmDead;
-	}
+//	public void setiAmDead(final boolean iAmDead) {
+//		this.iAmDead = iAmDead;
+//	}
 
-	boolean iAmDead;
+	boolean lastInfo;
 
 	final AgentStateStatus status;
 
@@ -38,7 +38,7 @@ public class ReplicationAgentResult implements ExperimentationResults {
 		this.criticity = s.getMyCriticity();
 		this.disponibility = s.getMyDisponibility();
 		this.reliability = s.getMyReliability();
-		this.iAmDead = s.getMyDisponibility() == 0;
+		this.lastInfo = s.getMyDisponibility() == 0;
 		this.status = status;
 	}
 
@@ -50,7 +50,7 @@ public class ReplicationAgentResult implements ExperimentationResults {
 		this.criticity = s.getMyCriticity();
 		this.disponibility = s.getMyDisponibility();
 		this.reliability = s.getMyReliability();
-		this.iAmDead = s.getMyDisponibility() == 0;
+		this.lastInfo = s.getMyDisponibility() == 0;
 		this.status = null;
 	}
 
@@ -71,8 +71,8 @@ public class ReplicationAgentResult implements ExperimentationResults {
 		return this.reliability;
 	}
 
-	public boolean isiAmDead() {
-		return this.iAmDead;
+	public boolean isLastInfo() {
+		return this.lastInfo;
 	}
 
 	@Override
@@ -85,13 +85,14 @@ public class ReplicationAgentResult implements ExperimentationResults {
 	}
 
 	@Override
-	public boolean hasDied() {
-		return this.iAmDead;
+	public boolean isHost() {
+		return false;
 	}
 
 	@Override
-	public boolean isHost() {
-		return false;
+	public void setLastInfo() {
+		lastInfo=true;
+		
 	}
 
 }

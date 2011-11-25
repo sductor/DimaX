@@ -19,7 +19,7 @@ ExperimentationParameters {
 	 * Variables
 	 */
 
-	private int kAccessible;
+	public int kAccessible;
 
 
 
@@ -33,7 +33,7 @@ ExperimentationParameters {
 
 	public  String _agentSelection;
 
-	private  String _hostSelection;
+	public  String _hostSelection;
 
 	public String _socialWelfare;
 
@@ -41,8 +41,6 @@ ExperimentationParameters {
 	 * Constantes
 	 */
 
-	public static final int nbAgents = 10;
-	public static final int nbHosts = 6;
 
 	public static final Double hostMaxProc = 2.;
 	public static final Double hostMaxMem = 2.;
@@ -140,7 +138,8 @@ ExperimentationParameters {
 			this.agentLoadMean.equals(that.agentLoadMean) &&
 			this._usedProtocol.equals(that._usedProtocol) &&
 			this._socialWelfare.equals(that._socialWelfare) &&
-			this._agentSelection.equals(that._socialWelfare);
+			this._agentSelection.equals(that._agentSelection) &&
+			this._hostSelection.equals(that._hostSelection);
 		} else 
 			return false;
 	}
@@ -152,7 +151,8 @@ ExperimentationParameters {
 					+8*agentLoadMean.hashCode()
 					+16*this._usedProtocol.hashCode()
 					+32*this._socialWelfare.hashCode()
-					+64*this._agentSelection.hashCode();
+					+64*this._agentSelection.hashCode()
+					+128*this._hostSelection.hashCode();
 	}
 	//
 	// Accessors
@@ -163,9 +163,9 @@ ExperimentationParameters {
 	}
 	
 	public void set_hostSelection(String hostSelection) {
-		if (_usedProtocol.equals(ReplicationExperimentationProtocol.key4mirrorProto))
-			this._hostSelection = ReplicationExperimentationProtocol.key4AllocSelect;
-		else
+//		if (_usedProtocol.equals(ReplicationExperimentationProtocol.key4mirrorProto))
+//			this._hostSelection = ReplicationExperimentationProtocol.key4AllocSelect;
+//		else
 			this._hostSelection = hostSelection;
 	}
 
@@ -246,8 +246,8 @@ ExperimentationParameters {
 		return new ReplicationExperimentationParameters(
 				f,
 				Experimentator.myId,
-				nbAgents,
-				nbHosts, 
+				ReplicationExperimentationProtocol.nbAgents,
+				ReplicationExperimentationProtocol.nbHosts, 
 				1., 
 				0.6,
 				0.3, 

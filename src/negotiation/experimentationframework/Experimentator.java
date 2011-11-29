@@ -59,7 +59,7 @@ public class Experimentator extends APIAgent{
 
 	public final Map<AgentIdentifier, Laborantin> launchedSimu =
 			new HashMap<AgentIdentifier, Laborantin>();
-	public int awaitingAnswer=-1;
+	public int awaitingAnswer;
 
 	//
 	// Constructor
@@ -75,6 +75,7 @@ public class Experimentator extends APIAgent{
 		//				true, false);
 		Experimentator.myProtocol=myProtocol;
 		simuToLaunch = myProtocol.generateSimulation();
+		awaitingAnswer=simuToLaunch.size();
 }
 
 	//
@@ -148,8 +149,8 @@ public class Experimentator extends APIAgent{
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
-//		exp.initAPI(true);//FIPA	
-										exp.initAPI(false);//SCHEDULED
+//										exp.initAPI(false);//SCHEDULED
+		exp.initAPI(true);//FIPA	
 //						exp.initAPI(7779,7778);//DARX LOCAL
 //				exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();

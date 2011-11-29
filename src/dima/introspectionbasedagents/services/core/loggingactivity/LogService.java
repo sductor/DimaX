@@ -67,7 +67,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public  boolean activateExceptoScreen = true;
 	public  boolean activateMonotoScreen = true;
 	//Order or the log to be written in specific files
-	public boolean activateMonoToFiles = false;
+	public boolean activateMonoToFiles = true;
 	public boolean activateCommtoFiles = false;
 	public  boolean activateExceptoFile = true;
 	//
@@ -434,9 +434,10 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//	private  File myInfoLogFile;
 	private static  File myAllLogFile;
 
-	protected static void setLogConfiguration() {
-		myPath =(getDimaXDir()+"log/"+(new Date()).toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
+	protected static void setLogConfiguration() {		
 		if (!logSetted){
+			myPath =(getDimaXDir()+"log/"+(new Date()).toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
+
 			new File(getMyPath()).mkdirs();	
 
 			//		myInfoLogFile = new File(getMyPath() + "__INFO.log");

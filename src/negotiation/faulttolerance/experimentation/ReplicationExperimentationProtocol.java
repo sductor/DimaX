@@ -5,9 +5,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationProtocol;
@@ -31,14 +34,14 @@ ExperimentationProtocol {
 	// /////////////////////////////////
 
 
-	public static final int nbAgents = 70;
-	public static final int nbHosts = 30;
+	public static final int nbAgents = 30;
+	public static final int nbHosts = 20;
 
 	//
 	// Simulation Configuration
 	//
 
-	public static final long _simulationTime = (long) (60000 *0.5);
+	public static final long _simulationTime = (long) (60000 *1);
 	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 10;
 
 	//
@@ -54,7 +57,7 @@ ExperimentationProtocol {
 	// Distribution
 	//
 
-	public static final double nbSimuPerMAchine = 0.5;
+	public static final double nbSimuPerMAchine = 1;
 	@Override
 	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
 		return (int) ReplicationExperimentationProtocol.nbSimuPerMAchine
@@ -101,31 +104,49 @@ ExperimentationProtocol {
 	// Methods : Génération de simulation
 	//
 
+
+	static boolean  varyAgentSelection=false;
+	static boolean varyHostSelection=false;
+	static boolean varyProtocol=true;
+	static boolean varyHostDispo=true;
+	static boolean  varyOptimizers=false;
+	static boolean varyAccessibleHost=true;
+	static boolean varyAgentLoad=true;
+
 	public LinkedList<ExperimentationParameters> generateSimulation() {
 		String usedProtocol, agentSelection, hostSelection;
 		final File f = new File(ReplicationExperimentationProtocol.resultPath);
 		//		f.mkdirs();
-		final LinkedList<ReplicationExperimentationParameters> simuToLaunch = 
+		Collection<ReplicationExperimentationParameters> simuToLaunch = 
 				new LinkedList<ReplicationExperimentationParameters>();
 		simuToLaunch.add(ReplicationExperimentationParameters.getGeneric(f));
-		return 
-				new LinkedList<ExperimentationParameters>(
-												varyAgentSelection(
-						//								varyHostSelection(	
-//						varyProtocol(
-								//										varyHostDispo(
-//								varyOptimizers(
-										//												varyAccessibleHost(
-										//														varyAgentLoad(
-										simuToLaunch
-										)
-										//														)
-//																						)
-										//										)
-										//												)
-										//										)
-										//								)
-								);
+		if (varyAgentSelection)
+			simuToLaunch = varyAgentSelection(simuToLaunch);
+		if (varyHostSelection)
+			simuToLaunch = varyHostSelection(simuToLaunch);
+		if (varyProtocol)
+			simuToLaunch = varyProtocol(simuToLaunch);
+		if (varyHostDispo)
+			simuToLaunch = varyHostDispo(simuToLaunch);
+		if (varyAgentLoad)
+			simuToLaunch = varyAgentLoad(simuToLaunch);
+		if (varyOptimizers)
+			simuToLaunch = varyOptimizers(simuToLaunch);
+		if (varyAccessibleHost)
+			simuToLaunch = varyAccessibleHost(simuToLaunch);
+
+		Comparator<ExperimentationParameters> comp = new Comparator<ExperimentationParameters>() {
+
+			@Override
+			public int compare(ExperimentationParameters o1,
+					ExperimentationParameters o2) {
+				return o1.getSimulationName().compareTo(o2.getSimulationName());
+			}
+		};
+
+		LinkedList<ExperimentationParameters> simus = new LinkedList<ExperimentationParameters>(simuToLaunch);
+		Collections.sort(simus,comp);
+		return simus;
 	}
 
 
@@ -217,20 +238,32 @@ ExperimentationProtocol {
 	 *
 	 */
 
-	public static final String resultPath = LogService.getMyPath()+"result_"			
+	public static final String resultPath;
+	
+	static { 
+		resultPath=LogService.getMyPath()+"result_"			
 			+ nbAgents + "agents_"
 			+ nbHosts + "hosts_"
 			+ ReplicationExperimentationProtocol._simulationTime / 60000
-			+ "mins";
+			+ "mins"
+			+ (varyAgentSelection==true?"varyAgentSelection":"")
+			+ (varyHostSelection?"varyHostSelection":"")
+			+ (varyProtocol?"varyProtocol":"")
+			+ (varyHostDispo?"varyHostDispo":"")
+			+ (varyHostSelection?"varyHostSelection":"")
+			+ (varyOptimizers?"varyOptimizers":"")
+			+ (varyAccessibleHost?"varyAccessibleHost":"")
+			+ (varyAgentLoad?"varyAgentLoad":"");
+	}
 
-	//
-	// Primitive
-	// /////////////////////////////////
+				//
+				// Primitive
+				// /////////////////////////////////
 
-	@Override
-	public ReplicationLaborantin createNewLaborantin(
-			ExperimentationParameters para, APILauncherModule api)
-					throws NotEnoughMachinesException, CompetenceException {
+				@Override
+				public ReplicationLaborantin createNewLaborantin(
+						ExperimentationParameters para, APILauncherModule api)
+								throws NotEnoughMachinesException, CompetenceException {
 		ReplicationLaborantin l = null;
 		final ReplicationExperimentationParameters p = (ReplicationExperimentationParameters) para;
 		boolean erreur = true;

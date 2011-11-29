@@ -19,7 +19,7 @@ implements DimaComponentInterface {
 //	final AgentIdentifier experimentatorId;
 	
 	
-	final String simulationName = newName();
+	private final String simulationName = newName();
 	private final File f;
 
 	protected final AgentIdentifier experimentatorId;
@@ -67,7 +67,7 @@ implements DimaComponentInterface {
 	}
 
 	public String getName() {
-		return this.simulationName;
+		return this.getSimulationName();
 	}
 
 	//
@@ -88,10 +88,10 @@ implements DimaComponentInterface {
 
 		for (int i=0; i<this.nbAgents; i++)
 			this.replicasIdentifier.add(//new AgentName("_--simu="+p.toString()+"--_DomainAgent_"+i));
-					new AgentName("#"+this.simulationName+"#DomainAgent_"+i));
+					new AgentName("#"+this.getSimulationName()+"#DomainAgent_"+i));
 		for (int i=0; i<this.nbHosts; i++)
 			this.hostsIdentifier.add(//new ResourceIdentifier("_--simu="+p.toString()+"--_HostManager_"+i,77));
-					new ResourceIdentifier("#"+this.simulationName+"#HostManager_"+i,77));
+					new ResourceIdentifier("#"+this.getSimulationName()+"#HostManager_"+i,77));
 	}
 
 	
@@ -131,5 +131,9 @@ implements DimaComponentInterface {
 
 	public File getF() {
 		return f;
+	}
+
+	public String getSimulationName() {
+		return simulationName;
 	}
 }

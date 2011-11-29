@@ -162,13 +162,13 @@ extends BasicCompetentAgent {
 	 * Rationality
 	 */
 
-	public boolean Iaccept(final Contract c) {
-		return this.Iaccept(this.getMyCurrentState(), c);
-	}
-
-	public boolean Iaccept(final Collection<Contract> c) {
-		return this.Iaccept(this.getMyCurrentState(), c);
-	}
+//	public boolean Iaccept(final Contract c) {
+//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
+//	}
+//
+//	public boolean Iaccept(final Collection<Contract> c) {
+//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
+//	}
 
 	public boolean Iaccept(final PersonalState s, final Contract c) {
 		final Collection<Contract> a = new ArrayList<Contract>();

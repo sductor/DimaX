@@ -2,7 +2,7 @@ package negotiation.experimentationframework;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
+//import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,8 +149,8 @@ public class Experimentator extends APIAgent{
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
-//										exp.initAPI(false);//SCHEDULED
-		exp.initAPI(true);//FIPA	
+										exp.initAPI(false);//SCHEDULED
+//		exp.initAPI(true);//FIPA	
 //						exp.initAPI(7779,7778);//DARX LOCAL
 //				exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();

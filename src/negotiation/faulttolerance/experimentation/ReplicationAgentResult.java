@@ -92,7 +92,6 @@ public class ReplicationAgentResult implements ExperimentationResults {
 	@Override
 	public void setLastInfo() {
 		lastInfo=true;
-		
 	}
 
 }

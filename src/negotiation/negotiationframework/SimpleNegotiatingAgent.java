@@ -120,8 +120,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	
 	@ProactivityFinalisation
 	public void showInfo() {
-		this.logMonologue("terminating with this state : "
-				+ this.getMyCurrentState(), LogService.onScreen);
+//		this.logMonologue("terminating with this state : "
+//				+ this.getMyCurrentState(), LogService.onScreen);
 	}
 
 	//

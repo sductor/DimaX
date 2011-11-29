@@ -34,17 +34,15 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	protected abstract ExperimentationResults generateMyResults();
 
-	@StepComposant(ticker=ReplicationExperimentationProtocol._state_snapshot_frequency)
+	@PostStepComposant(ticker=ReplicationExperimentationProtocol._state_snapshot_frequency)
 	public void notifyMyState(){
 		l.add(this.generateMyResults());
-		if (!getMyAgent().isAlive())//La vie est arrêté dans une step methode
-			l.getResults().getLast().setLastInfo();
-		//		this.notify(this.generateMyResults());
 	}
 
 	@ProactivityFinalisation()
 	public void endSimulation(){
 		this.logMonologue("this is the end my friend",LogService.onBoth);
+		l.getResults().getLast().setLastInfo();
 		notify(l);
 		getMyAgent().sendNotificationNow();
 	}

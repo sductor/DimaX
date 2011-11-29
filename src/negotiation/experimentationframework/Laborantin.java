@@ -207,11 +207,13 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			updateHostInfo(r);
 		else
 			updateAgentInfo(r);
+		
 		if (r.isLastInfo()){
 			if (r.isHost())
 				this.remainingHost.remove(r.getId());
 			else
 				this.remainingAgent.remove(r.getId());
+			
 			this.logMonologue(r.getId()
 					+" has finished!, " +
 					"\n * remaining agents "+this.remainingAgent.size()+
@@ -223,8 +225,20 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	@StepComposant()
 	@Transient
 	public boolean endSimulation(){
-		if (this.remainingAgent.size()<=0){
-			this.logMonologue("Every agent has finished!!",onBoth);
+		 if (this.getUptime()>4*p.getMaxSimulationTime() && (this.remainingAgent.size()>0 || this.remainingHost.size()>0)){
+			signalException("i should have end!!!!(rem ag, rem host)="
+					+this.remainingAgent+","+this.remainingHost);
+			for (final AgentIdentifier r : remainingHost){
+				this.sendMessage(r, new SimulationEndedMessage());
+			}
+			for (final AgentIdentifier r : remainingAgent){
+				this.sendMessage(r, new SimulationEndedMessage());
+			}
+			remainingAgent.clear();
+			remainingHost.clear();
+			return false;
+		} else if (this.remainingAgent.size()<=0){
+//			this.logMonologue("Every agent has finished!!",onBoth);
 			if (this.remainingHost.size()<=0){
 				this.logMonologue("I've finished!!",onBoth);
 				this.writeResult();
@@ -250,10 +264,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 				return false;
 			} else
 				return false;
-		} else if (this.getUptime()>10*p.getMaxSimulationTime())
-			throw new RuntimeException("i should have end!!!!(rem ag, rem host)="
-					+this.remainingAgent+","+this.remainingHost);
-		else{
+		} else{
 			this.observer.autoSendOfNotifications();
 			return false;
 		}

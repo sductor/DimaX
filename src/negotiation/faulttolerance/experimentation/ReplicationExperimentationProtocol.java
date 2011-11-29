@@ -34,14 +34,14 @@ ExperimentationProtocol {
 	// /////////////////////////////////
 
 
-	public static final int nbAgents = 30;
-	public static final int nbHosts = 20;
+	public static final int nbAgents = 15;
+	public static final int nbHosts = 10;
 
 	//
 	// Simulation Configuration
 	//
 
-	public static final long _simulationTime = (long) (60000 *1);
+	public static final long _simulationTime = (long) (60000 * 0.25);
 	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 10;
 
 	//

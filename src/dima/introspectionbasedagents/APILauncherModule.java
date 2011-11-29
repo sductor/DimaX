@@ -267,7 +267,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 				ag.start(m);
 				getMyAgent().sendMessage(ag.getIdentifier(), m);
 			}
-			//			getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),_logKeyForAPIManagement);
+						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
 		}
 	}
 

@@ -62,6 +62,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public static final String onBoth = "print on screen and on file";
 	public static final String onNone = "print on none";
 
+	public static final String darxKey = "print from darx!!!";
+
 	//Order or the log to be written to screen
 	public  boolean activateCommtoScreen = false;
 	public  boolean activateExceptoScreen = true;
@@ -80,6 +82,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		addLogKey(onFile,false,true);
 		addLogKey(onBoth,true,true);
 		addLogKey(onNone,false,false);
+		addLogKey(darxKey,false,true);
 	}
 	static {
 		setLogConfiguration();
@@ -318,7 +321,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 
 	public static void write(final Object caller, final String text) {
-		System.out.println("\n" + caller + " SAY >>>> \n" + text);
+		System.out.println(caller + " SAY >>>> \n" + text);
 	}
 	public synchronized static void write(final String text) {
 		System.out.println(text);

@@ -8,6 +8,7 @@ import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.CommunicatingComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.ProactiveComponentInterface;
+import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.hostcontrol.LocalHost;
 
@@ -89,7 +90,10 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	public void start() {
 
 		setdimaxTaskActive(true);
-		LogService.write(this, "Starting "+this.getTaskName());
+		if (dimaComponent instanceof CompetentComponent)
+			((CompetentComponent) dimaComponent).logMonologue("Starting "+this.getTaskName(), LogService.darxKey);
+		else 
+			LogService.write(this, "Starting "+this.getTaskName());
 		if (this.thread == null)
 			this.thread = new DimaXTaskEngine(this);
 
@@ -104,6 +108,9 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	 */
 	@Override
 	public void suspend() {
+		if (dimaComponent instanceof CompetentComponent)
+			((CompetentComponent) dimaComponent).logMonologue("Suspending "+this.getTaskName(), LogService.darxKey);
+		else 
 		LogService.write(this, "Suspending "+ this.getTaskName());
 		setdimaxTaskActive(false);
 	}
@@ -116,6 +123,9 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	 */
 	@Override
 	public void resume() {
+		if (dimaComponent instanceof CompetentComponent)
+			((CompetentComponent) dimaComponent).logMonologue("Resuming "+this.getTaskName(), LogService.darxKey);
+		else 
 		LogService.write(this, "Resuming "+ this.getTaskName());
 		setdimaxTaskActive(true);
 	}
@@ -146,10 +156,20 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 		if (this.dimaComponent instanceof CommunicatingComponentInterface){
 			if (msg instanceof Message)
 				((CommunicatingComponentInterface) this.dimaComponent).receive((Message) msg);
-			else
+			else{
+
+				if (dimaComponent instanceof CompetentComponent)
+					((CompetentComponent) dimaComponent).signalException(msg+" is not a message : can not be added to mail box!");
+				else 
 				LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
-		} else
+			}
+		} else {
+
+			if (dimaComponent instanceof CompetentComponent)
+				((CompetentComponent) dimaComponent).signalException(this.dimaComponent+" does not communicate!");
+			else 
 			LogService.writeException(this, this.dimaComponent+" does not communicate!");
+		}
 
 	}
 

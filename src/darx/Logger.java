@@ -14,7 +14,7 @@ public class Logger {
 	 * @param text
 	 */
 	public static void fromDARX(final String text) {
-		System.out.println("\nDARX says >>>> " + text);
+		System.out.println("DARX says >>>> " + text);
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
-	Map<AgentIdentifier, HostIdentifier> locations;
+	Map<BasicCompetentAgent, HostIdentifier> locations;
 
 	private final Collection<AgentIdentifier> remainingAgent=new ArrayList<AgentIdentifier>();
 	private final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
@@ -107,7 +108,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	public void startSimu(){
 		//		System.out.println(agents);
 		//		System.out.println(api.getAvalaibleHosts());
-		APIAgent.launch(api,agents.values(), locations);
+		APIAgent.launch(api,locations);
 		wwait(1000);
 		System.err.println("!!!!!!!!!!!!!!!!!!!!!STARTING!!!!!!!!!!!!!!!!!!!!!!!");
 		APIAgent.startActivities(api, agents.values());
@@ -117,12 +118,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	// Implemented
 	//
 
-	public Map<AgentIdentifier, HostIdentifier> generateLocations(
+	public Map<BasicCompetentAgent, HostIdentifier> generateLocations(
 			APILauncherModule api, 
 			Collection<BasicCompetentAgent> collection, 
 			int nbMaxAgent) throws NotEnoughMachinesException{
-		Map<AgentIdentifier, HostIdentifier> result = new HashMap<AgentIdentifier, HostIdentifier>();
-		Map<HostIdentifier, Integer> hostsLoad = new HashMap<HostIdentifier, Integer>();
+		Map<BasicCompetentAgent, HostIdentifier> result = new Hashtable<BasicCompetentAgent, HostIdentifier>();
+		Map<HostIdentifier, Integer> hostsLoad = new Hashtable<HostIdentifier, Integer>();
 
 		for (HostIdentifier h : api.getAvalaibleHosts()){
 			if (api.getAgentsRunningOn(h).size()<nbMaxAgent)
@@ -136,17 +137,23 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		for (BasicCompetentAgent id : collection){
 			if (hosts.isEmpty())
 				throw new NotEnoughMachinesException();
+			else {
+				if (!itHosts.hasNext())
+					itHosts = hosts.iterator();
 
-			if (!itHosts.hasNext())
-				itHosts = hosts.iterator();
-			HostIdentifier host = itHosts.next();
+				HostIdentifier host = itHosts.next();
 
-			if (hostsLoad.get(host)>nbMaxAgent){
-				itHosts.remove();
-			} else {
+				while (hostsLoad.get(host)>nbMaxAgent){
+					itHosts.remove();
+					if (itHosts.hasNext())
+						host = itHosts.next();
+					else
+						throw new NotEnoughMachinesException();
+				}
+
 				assert host!=null:
 					"wtfffffffffffffffffffffffffffffffff";
-				result.put(id.getIdentifier(), host);
+				result.put(id, host);
 				hostsLoad.put(host, new Integer(hostsLoad.get(host)+1));
 			}
 		}
@@ -209,17 +216,17 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			updateHostInfo(r);
 		else
 			updateAgentInfo(r);
-		
+
 		if (r.isLastInfo()){
 			if (r.isHost())
 				this.remainingHost.remove(r.getId());
 			else
 				this.remainingAgent.remove(r.getId());
-			
+
 			this.logMonologue(r.getId()
 					+" has finished!, " +
 					"\n * remaining agents "+this.remainingAgent.size()+
-					"\n * remaining hosts "+this.remainingHost.size(),LogService.onScreen);
+					"\n * remaining hosts "+this.remainingHost.size(),LogService.onFile);
 		}
 	}
 
@@ -227,7 +234,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	@StepComposant()
 	@Transient
 	public boolean endSimulation(){
-		 if (this.getUptime()>4*p.getMaxSimulationTime() && (this.remainingAgent.size()>0 || this.remainingHost.size()>0)){
+		if (this.getUptime()>4*p.getMaxSimulationTime() && (this.remainingAgent.size()>0 || this.remainingHost.size()>0)){
 			signalException("i should have end!!!!(rem ag, rem host)="
 					+this.remainingAgent+","+this.remainingHost);
 			for (final AgentIdentifier r : remainingHost){
@@ -240,7 +247,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			remainingHost.clear();
 			return false;
 		} else if (this.remainingAgent.size()<=0){
-//			this.logMonologue("Every agent has finished!!",onBoth);
+			//			this.logMonologue("Every agent has finished!!",onBoth);
 			if (this.remainingHost.size()<=0){
 				this.logMonologue("I've finished!!",onBoth);
 				this.writeResult();

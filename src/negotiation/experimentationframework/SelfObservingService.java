@@ -41,7 +41,7 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	@ProactivityFinalisation()
 	public void endSimulation(){
-		this.logMonologue("this is the end my friend",LogService.onBoth);
+		this.logMonologue("this is the end my friend",LogService.onFile);
 		l.getResults().getLast().setLastInfo();
 		notify(l);
 		getMyAgent().sendNotificationNow();

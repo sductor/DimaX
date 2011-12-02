@@ -42,7 +42,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 	private Map<AgentIdentifier, BasicCompetentAgent> registeredAgent = 
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
-	private Map<AgentIdentifier, HostIdentifier> locations = 
+	Map<AgentIdentifier, HostIdentifier> locations = 
 			new HashMap<AgentIdentifier, HostIdentifier>();
 
 	//Launch
@@ -147,11 +147,9 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		if (!getAvalaibleHosts().contains(machine))
 			throw new RuntimeException("i can not use this machine "+machine+" available machines are "+getAvalaibleHosts());
 
-		registeredAgent.put(c.getIdentifier(), c);
 		c.addObserver(this.getIdentifier(), LogService.logNotificationKey);
 		c.addObserver(this.getIdentifier(), EndActivityMessage.class);
 
-		locations.put(c.getIdentifier(), machine);
 
 		switch (myLaunchType) {
 		case NotThreaded:
@@ -166,6 +164,10 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		default:
 			break;
 		}
+		
+		registeredAgent.put(c.getIdentifier(), c);
+		locations.put(c.getIdentifier(), machine);
+		
 		return true;
 	}
 
@@ -177,8 +179,10 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	}
 
 	boolean destroy(BasicCompetentAgent c){
-		registeredAgent.remove(c.getIdentifier());
-		locations.remove(c.getIdentifier());
+		boolean removed1 = registeredAgent.remove(c.getIdentifier())!=null;
+		boolean removed2 =  locations.remove(c.getIdentifier())!=null;
+		
+		assert removed1 && removed2;		
 
 		switch (myLaunchType) {
 		case NotThreaded:
@@ -267,7 +271,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 				ag.start(m);
 				getMyAgent().sendMessage(ag.getIdentifier(), m);
 			}
-//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
+			//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
 		}
 	}
 

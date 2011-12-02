@@ -13,7 +13,7 @@ import dima.introspectionbasedagents.services.CompetenceException;
 public class SimpleExampleApi extends APIAgent{
 	private static final long serialVersionUID = 2197507938900786081L;
 
-	int nbAgent = 5;
+	int nbAgent = 2;
 	int nbTour = 50;
 	Collection<BasicCompetentAgent> agents = new ArrayList<BasicCompetentAgent>();
 	
@@ -40,9 +40,10 @@ public class SimpleExampleApi extends APIAgent{
 	 */
 	public static void main(final String[] args) throws CompetenceException {
 		final SimpleExampleApi apiAgent = new SimpleExampleApi();
-//		exp.initAPI(true);//FIPA
 //		exp.initAPI(false);//SCHEDULED
+//		exp.initAPI(true);//FIPA
 		apiAgent.initAPI(7777,7776);//DARX LOCAL
+//		exp.initAPI("lip6.xml");//DARX Deployed
 		apiAgent.launchMySelf();
 	}
 }

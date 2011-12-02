@@ -497,10 +497,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		 }
 	 }
 
-	 @Override
-	 public void finalize(){
-		 this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(",LogService.onBoth);
-	 }
+//	 @Override
+//	 public void finalize(){
+//		 this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(",LogService.onBoth);
+//	 }
 
 	 @Override
 	 public String toString(){

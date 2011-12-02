@@ -145,7 +145,7 @@ MatchingCandidature<ReplicationSpecification> {
 			//								"hostcore:getmyresultingstate"));
 			throw new RuntimeException(
 					fromState.getMyAgentIdentifier()+" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT " + getAgent()
-					+ "\n ----> current state" +fromState+"\n current contract"+ this);
+					+ "\n ----> current state" +fromState+"\n current contract"+ this+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(getAgent()));
 		} else {
 			HostState h = 
 					new HostState(fromState, 

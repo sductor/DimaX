@@ -44,7 +44,7 @@ public class Experimentator extends APIAgent{
 	// Accessors
 	//
 
-	static ExperimentationProtocol myProtocol;
+	ExperimentationProtocol myProtocol;
 	final File f;
 
 	//	//Integer represent the sum of the number of agent of each simulation that uses the given machine 
@@ -73,7 +73,7 @@ public class Experimentator extends APIAgent{
 		//				this.f,
 		//				myProtocol.getDescription(),
 		//				true, false);
-		Experimentator.myProtocol=myProtocol;
+		this.myProtocol=myProtocol;
 		simuToLaunch = myProtocol.generateSimulation();
 		awaitingAnswer=simuToLaunch.size();
 }
@@ -88,7 +88,8 @@ public class Experimentator extends APIAgent{
 		this.logMonologue("Experimentator created for:\n"+myProtocol.getDescription(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
 		this.logMonologue("Generated "+simuToLaunch.size()+" simus of "
 		+ReplicationExperimentationProtocol._simulationTime/60000+
-		"mins  on "+getApi().getAvalaibleHosts().size()+" machine, "+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine", LogService.onBoth);
+		"mins  on "+getApi().getAvalaibleHosts().size()+" machine"//+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine"
+		,LogService.onBoth);
 		launchSimulation();
 	}
 
@@ -99,12 +100,15 @@ public class Experimentator extends APIAgent{
 		this.logWarning("--------------> Used Memory (MO) : "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000),LogService.onBoth);
 		
 		if (this.awaitingAnswer==0){
+			//Toute les expériences sont faites!!
 			System.out.println("1");
 			this.logMonologue("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 			this.setAlive(false);
 			this.logMonologue(myProtocol.getDescription(),LogService.onBoth);
 			System.exit(1);
 		} else if (!this.simuToLaunch.isEmpty()){
+			//On lance de nouvelles expériences!
+			
 			this.logMonologue("launching new exp",LogService.onBoth);
 			ExperimentationParameters nextSimu = null;
 			try {				
@@ -115,6 +119,7 @@ public class Experimentator extends APIAgent{
 				startActivity(l);
 				this.launchedSimu.put(l.getId(), l);
 				//				}
+//				launchSimulation();
 			} catch (NotEnoughMachinesException e) {
 				this.simuToLaunch.add(nextSimu);
 				this.logMonologue("aaaaaaaaarrrrrrrrrrrrrrrrggggggghhhhhhhhhh",LogService.onBoth);
@@ -150,8 +155,8 @@ public class Experimentator extends APIAgent{
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
 //										exp.initAPI(false);//SCHEDULED
-		exp.initAPI(true);//FIPA	
-//						exp.initAPI(7779,7778);//DARX LOCAL
+//		exp.initAPI(true);//FIPA	
+						exp.initAPI(7779,7778);//DARX LOCAL
 //				exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();
 	}

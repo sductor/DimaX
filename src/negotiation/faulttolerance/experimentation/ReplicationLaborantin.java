@@ -122,9 +122,9 @@ public class ReplicationLaborantin extends Laborantin {
 	// Constructor
 	//
 
-	public ReplicationLaborantin(final ReplicationExperimentationParameters p,APILauncherModule api)
+	public ReplicationLaborantin(final ReplicationExperimentationParameters p,APILauncherModule api, int numberOfAgentPerMAchine)
 			throws CompetenceException, IfailedException, NotEnoughMachinesException {
-		super(p, api);
+		super(p, api, numberOfAgentPerMAchine);
 
 	}
 

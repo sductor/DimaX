@@ -41,8 +41,8 @@ ExperimentationProtocol {
 	// Simulation Configuration
 	//
 
-	public static final long _simulationTime = (long) (60000 * 0.25);
-	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 10;
+	public static final long _simulationTime = (long) (60000 * 1);
+	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 5;
 
 	//
 	// Negotiation Tickers
@@ -52,18 +52,6 @@ ExperimentationProtocol {
 	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
-
-	//
-	// Distribution
-	//
-
-	public static final double nbSimuPerMAchine = 1;
-	@Override
-	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
-		return (int) ReplicationExperimentationProtocol.nbSimuPerMAchine
-				* (nbAgents + nbHosts)+1;
-	}
-
 
 	/**
 	 * Clés statiques
@@ -98,7 +86,7 @@ ExperimentationProtocol {
 	Collection<String> select = Arrays.asList(new String[]{key4greedySelect,key4rouletteWheelSelect});//,key4AllocSelect
 	Collection<String> agentPref = Arrays.asList(new String[]{key4agentKey_Relia,key4agentKey_loadNRelia});
 	Collection<Double> doubleParameters = Arrays.asList(new Double[]{0.1,0.3,0.6,1.});
-	Collection<ZeroOneSymbolicValue> loadVariation = Arrays.asList(ZeroOneSymbolicValue.values());
+	Collection<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{DispersionSymbolicValue.Nul,DispersionSymbolicValue.Moyen});//,DispersionSymbolicValue.Max
 
 	//
 	// Methods : Génération de simulation
@@ -112,7 +100,9 @@ ExperimentationProtocol {
 	static boolean  varyOptimizers=false;
 	static boolean varyAccessibleHost=true;
 	static boolean varyAgentLoad=true;
-
+	static boolean varyHostFaultDispersion=false;
+	static boolean varyAgentLoadDispersion=false;
+	
 	public LinkedList<ExperimentationParameters> generateSimulation() {
 		String usedProtocol, agentSelection, hostSelection;
 		final File f = new File(ReplicationExperimentationProtocol.resultPath);
@@ -134,6 +124,10 @@ ExperimentationProtocol {
 			simuToLaunch = varyOptimizers(simuToLaunch);
 		if (varyAccessibleHost)
 			simuToLaunch = varyAccessibleHost(simuToLaunch);
+		if (varyHostFaultDispersion)
+			simuToLaunch = varyHostFaultDispersion(simuToLaunch);
+		if (varyAgentLoadDispersion)
+			simuToLaunch = varyAgentLoadDispersion(simuToLaunch);
 
 		Comparator<ExperimentationParameters> comp = new Comparator<ExperimentationParameters>() {
 
@@ -149,6 +143,21 @@ ExperimentationProtocol {
 		return simus;
 	}
 
+	
+
+	//
+	// Distribution
+	//
+
+	 final Integer maxNumberOfAgentPerMachine  =getMaxNumberOfAgentPerMachine(null)  ;
+	 final double nbSimuPerMAchine = 1;
+	@Override
+	public Integer getMaxNumberOfAgentPerMachine(HostIdentifier id) {
+		return new Integer((int) nbSimuPerMAchine* (nbAgents + nbHosts)+1);
+	}
+//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
+//		return new Integer(10);
+//	}
 
 	/*
 	 * 
@@ -221,7 +230,6 @@ ExperimentationProtocol {
 		}
 		return result;		
 	}
-
 	private Collection<ReplicationExperimentationParameters> varyAgentLoad(Collection<ReplicationExperimentationParameters> exps){
 		Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (ReplicationExperimentationParameters p : exps){
@@ -233,7 +241,30 @@ ExperimentationProtocol {
 		}	
 		return result;		
 	}
+	private Collection<ReplicationExperimentationParameters> varyHostFaultDispersion(Collection<ReplicationExperimentationParameters> exps){
+		Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : exps){
+			for (DispersionSymbolicValue v : dispersion){
+				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
+				n.hostDisponibilityDispersion=v;
+				result.add(n);
+			}				
+		}	
+		return result;		
+	}
 
+	private Collection<ReplicationExperimentationParameters> varyAgentLoadDispersion(Collection<ReplicationExperimentationParameters> exps){
+		Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : exps){
+			for (DispersionSymbolicValue v : dispersion){
+				ReplicationExperimentationParameters n = (ReplicationExperimentationParameters) p.clone();
+				n.agentLoadDispersion=v;
+				result.add(n);
+			}				
+		}	
+		return result;		
+	}
+	
 	/*
 	 *
 	 */
@@ -269,7 +300,7 @@ ExperimentationProtocol {
 		boolean erreur = true;
 		while (erreur)
 			try {
-				l = new ReplicationLaborantin(p, api);
+				l = new ReplicationLaborantin(p, api,getMaxNumberOfAgentPerMachine(null));
 				erreur = false;
 			} catch (final IfailedException e) {
 				LogService.writeException(

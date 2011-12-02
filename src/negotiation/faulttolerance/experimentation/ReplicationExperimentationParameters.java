@@ -24,10 +24,10 @@ ExperimentationParameters {
 
 
 	public Double hostFaultProbabilityMean;
-	public final DispersionSymbolicValue hostDisponibilityDispersion = DispersionSymbolicValue.Moyen;	
+	public  DispersionSymbolicValue hostDisponibilityDispersion;	
 
 	public  Double agentLoadMean;
-	public final DispersionSymbolicValue agentLoadDispersion = DispersionSymbolicValue.Moyen;
+	public DispersionSymbolicValue agentLoadDispersion;
 
 	public String _usedProtocol;
 
@@ -114,7 +114,9 @@ ExperimentationParameters {
 			AgentIdentifier experimentatorId,
 			final int nbAgents, final int nbHosts, final double k,
 			final Double hostFaultProbabilityMean,
+			final DispersionSymbolicValue hostFaultProbabilityDispersion,
 			final Double agentLoadMean,
+			final DispersionSymbolicValue agentLoadDispersion,
 			final String usedProtocol, 
 			final String socialWelfare,
 			final String agentSelection, 
@@ -122,14 +124,33 @@ ExperimentationParameters {
 		super(f, experimentatorId, nbAgents, nbHosts);
 		setkAccessible(k);
 		this.hostFaultProbabilityMean = hostFaultProbabilityMean;
+		this.hostDisponibilityDispersion=hostFaultProbabilityDispersion;
 		this.agentLoadMean = agentLoadMean;
+		this.agentLoadDispersion=agentLoadDispersion;
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;
 		this._agentSelection = agentSelection;
 		set_hostSelection(hostSelection);
 
 	}
-
+	
+	public static ReplicationExperimentationParameters getGeneric(File f) {
+		return new ReplicationExperimentationParameters(
+				f,
+				Experimentator.myId,
+				ReplicationExperimentationProtocol.nbAgents,
+				ReplicationExperimentationProtocol.nbHosts, 
+				1, 
+				0.6,
+				DispersionSymbolicValue.Nul,
+				0.3, 
+				DispersionSymbolicValue.Nul,
+				ReplicationExperimentationProtocol.key4mirrorProto, 
+				ReplicationExperimentationProtocol.key4leximinSocialWelfare,
+				ReplicationExperimentationProtocol.key4rouletteWheelSelect,
+				ReplicationExperimentationProtocol.key4rouletteWheelSelect);
+	}
+	
 	public boolean equals(Object o){
 		if (o instanceof ReplicationExperimentationParameters){
 			ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
@@ -220,7 +241,9 @@ ExperimentationParameters {
 				nbHosts, 
 				getkAccessible(), 
 				hostFaultProbabilityMean, 
+				hostDisponibilityDispersion,
 				agentLoadMean,
+				agentLoadDispersion,
 				_usedProtocol, 
 				_socialWelfare,
 				_agentSelection, 
@@ -242,20 +265,7 @@ ExperimentationParameters {
 				agentLoadDispersion);
 	}
 
-	public static ReplicationExperimentationParameters getGeneric(File f) {
-		return new ReplicationExperimentationParameters(
-				f,
-				Experimentator.myId,
-				ReplicationExperimentationProtocol.nbAgents,
-				ReplicationExperimentationProtocol.nbHosts, 
-				0.3, 
-				0.6,
-				0.3, 
-				ReplicationExperimentationProtocol.key4mirrorProto, 
-				ReplicationExperimentationProtocol.key4leximinSocialWelfare,
-				ReplicationExperimentationProtocol.key4rouletteWheelSelect,
-				ReplicationExperimentationProtocol.key4rouletteWheelSelect);
-	}
+
 
 	public String get_hostSelection() {
 		return _hostSelection;

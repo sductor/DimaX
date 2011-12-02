@@ -47,6 +47,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	//
 
 	private final ExperimentationParameters p;
+	int numberOfAgentPerMAchine;
 
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
@@ -61,11 +62,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	// Constructor
 	//
 
-	public Laborantin(final ExperimentationParameters p, APILauncherModule api)
+	public Laborantin(final ExperimentationParameters p, APILauncherModule api, int numberOfAgentPerMAchine)
 			throws CompetenceException, IfailedException, NotEnoughMachinesException{
 		super("Laborantin_of_"+p.getName());
 		this.p = p;
 		this.api=api;
+		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;
 		initialisation();		
 	}
 
@@ -98,7 +100,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		locations = generateLocations(
 				api, 
 				agents.values(), 
-				Experimentator.myProtocol.getMaxNumberOfAgentPerMachine(null));
+				numberOfAgentPerMAchine);
 	}
 	//
 	@ProactivityInitialisation

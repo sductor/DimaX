@@ -62,11 +62,8 @@
 		
 		<group>
 		<groupID>lip6mini</groupID>
-		<host ip="17hippies" port="7003" />
-<host ip="achille" port="7003" />
-<host ip="jason" port="7003" />
-<host ip="abigor" port="7003" />
-<host ip="mukta" port="7003" />
+		<host ip="hotchip" port="7003" />
+<host ip="alister" port="7003" />
 		</group>
 		
 		<group>
@@ -76,10 +73,8 @@
 <host ip="jason" port="7003" />
 <host ip="abigor" port="7003" />
 <host ip="mukta" port="7003" />
-<host ip="alister" port="7003" />
 <host ip="epoisses" port="7003" />
 <host ip="grimmy" port="7003" />
-<host ip="hotchip" port="7003" />
 <host ip="koryo" port="7003" />
 <host ip="recife" port="7003" />
 <host ip="blackdog" port="7003" />

@@ -155,8 +155,8 @@ public class Experimentator extends APIAgent{
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
 //										exp.initAPI(false);//SCHEDULED
-		exp.initAPI(true);//FIPA	
-//						exp.initAPI(7779,7778);//DARX LOCAL
+//		exp.initAPI(true);//FIPA	
+						exp.initAPI(7779,7778);//DARX LOCAL
 //				exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();
 	}

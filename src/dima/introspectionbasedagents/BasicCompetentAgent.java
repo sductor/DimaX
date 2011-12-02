@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.LogManager;
 
 import com.ibm.icu.text.DateFormat;
 
@@ -26,6 +27,7 @@ import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnknownCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogNotification;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
@@ -184,6 +186,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	
 	@ProactivityFinalisation
 	public void unegistration() {
+//		logMonologue("I'm out of here!!! >=] on d road again yeaaahh"+myApi, LogService.onBoth);
 		myApi.destroy(this);
 	}
 

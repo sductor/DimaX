@@ -43,6 +43,10 @@ public class APIAgent extends BasicCompetentAgent {
 		this.api = api;
 	}
 	
+	public Map<AgentIdentifier, HostIdentifier> getLocations(){
+		return api.locations;
+	}
+	
 	/*
 	 * 
 	 */
@@ -88,10 +92,9 @@ public class APIAgent extends BasicCompetentAgent {
 	
 	//
 
-	public static void launch(APILauncherModule api, Collection<BasicCompetentAgent> ags, Map<AgentIdentifier, HostIdentifier> locations) {
-		for (final BasicCompetentAgent c : ags){
-//			assert locations.containsKey(c.getIdentifier()) : "id :"+c.getIdentifier()+"\n locations : "+locations;
-			c.launchWith(api, locations.get(c.getIdentifier()));
+	public static void launch(APILauncherModule api, Map<BasicCompetentAgent, HostIdentifier> locations) {
+		for (final BasicCompetentAgent c : locations.keySet()){
+			c.launchWith(api, locations.get(c));
 		}
 	}
 

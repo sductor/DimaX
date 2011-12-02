@@ -109,7 +109,7 @@ public class Experimentator extends APIAgent{
 		} else if (!this.simuToLaunch.isEmpty()){
 			//On lance de nouvelles expériences!
 			
-			this.logMonologue("launching new exp",LogService.onBoth);
+			this.logMonologue("launching new exp"+getLocations(),LogService.onBoth);
 			ExperimentationParameters nextSimu = null;
 			try {				
 				//				while (!this.simuToLaunch.isEmpty()){
@@ -122,7 +122,7 @@ public class Experimentator extends APIAgent{
 //				launchSimulation();
 			} catch (NotEnoughMachinesException e) {
 				this.simuToLaunch.add(nextSimu);
-				this.logMonologue("aaaaaaaaarrrrrrrrrrrrrrrrggggggghhhhhhhhhh",LogService.onBoth);
+				this.logMonologue("aaaaaaaaarrrrrrrrrrrrrrrrggggggghhhhhhhhhh\n"+getLocations(),LogService.onBoth);
 			}
 		}
 		return true;
@@ -154,10 +154,10 @@ public class Experimentator extends APIAgent{
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
-//										exp.initAPI(false);//SCHEDULED
+										exp.initAPI(false);//SCHEDULED
 //		exp.initAPI(true);//FIPA	
 //						exp.initAPI(7779,7778);//DARX LOCAL
-				exp.initAPI("lip6.xml");//DARX Deployed
+//				exp.initAPI("lip6.xml");//DARX Deployed
 		exp.launchMySelf();
 	}
 }

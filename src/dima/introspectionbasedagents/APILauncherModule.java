@@ -189,6 +189,11 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 			scheduler.remove(c);
 			break;
 		case FIPA:
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			AgentManagementSystem.getDIMAams().removeAquaintance(c);
 			break;
 		case DarX:

@@ -34,8 +34,8 @@ ExperimentationProtocol {
 	// /////////////////////////////////
 
 
-	public static final int nbAgents = 18;
-	public static final int nbHosts = 12;
+	public static final int nbAgents = 15;
+	public static final int nbHosts = 10;
 
 	//
 	// Simulation Configuration

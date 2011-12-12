@@ -116,9 +116,9 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 //		if (o.getNotification() instanceof ReplicaState && getMyCurrentState().Ihost(((ReplicaState)o.getNotification()).getMyAgentIdentifier())){
 //			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
 //			HostState h = new HostState(getMyCurrentState(), 
-//					(ReplicaState) o.getNotification());
+//					(ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
 //			//on remet ce nouveau state dans h
-//			h = new HostState(h, (ReplicaState) o.getNotification());
+//			h = new HostState(h, (ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
 //			setNewState(h);
 //		}
 	}

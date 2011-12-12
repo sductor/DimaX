@@ -230,10 +230,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			NotificationMessage<Information> o) {
 //		logMonologue("yophoi");
 //		if (o.getNotification() instanceof HostState 
-//				&& getMyCurrentState().getMyReplicaIdentifiers().contains(
+//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
 //						((HostState) o.getNotification()).getMyAgentIdentifier())){
-//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification());
-//			r = new ReplicaState(r, (HostState) o.getNotification());
+//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
+//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
 //			setNewState(r);
 //		}
 	}

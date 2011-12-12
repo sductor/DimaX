@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jdom.JDOMException;
-import org.w3c.rdf.model.SetModel;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;

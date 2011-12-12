@@ -30,7 +30,7 @@ ObservationService {
 
 	private final Set<AgentIdentifier> knownAgents = new HashSet<AgentIdentifier>();
 	protected HashMap<Class<? extends Information>, InformationDataBase<? extends Information>> infos =
-		new HashMap<Class<? extends Information>, InformationDataBase<? extends Information>>();
+			new HashMap<Class<? extends Information>, InformationDataBase<? extends Information>>();
 
 	public static final String informationObservationKey="informationDiffusion";
 
@@ -71,9 +71,9 @@ ObservationService {
 	@Override
 	public <Info extends Information> Info getInformation(
 			Class<Info> informationType, AgentIdentifier agentId)
-	throws NoInformationAvailableException {
+					throws NoInformationAvailableException {
 		if (this.infos.get(informationType)==null){
-//			System.err.println("classe : "+informationType+" "+infos);
+			//			System.err.println("classe : "+informationType+" "+infos);
 			throw new NoInformationAvailableException();
 		}
 
@@ -117,15 +117,19 @@ ObservationService {
 			this.infos.put(information.getClass(), new InformationDataBase<Information>());
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 			this.add(information.getMyAgentIdentifier());
-		}
-		else if (this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) {//information replacement
-			//			logMonologue("replacing !!!!!!!!!"+this.infos.get(information.getClass()).get(information.getMyAgentIdentifier())+" with "+information);
-			if (information.getCreationTime()>this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
-				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-			else
-				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-		} else //first info for the agent
+		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) { //first info for the agent
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		} else if (information.getCreationTime()>this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime()){ //information replacement//la nouvelle est plus récente que l'ancienne
+			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information); 
+		}
+		//			else if (this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) {//information replacement
+		//				//			logMonologue("replacing !!!!!!!!!"+this.infos.get(information.getClass()).get(information.getMyAgentIdentifier())+" with "+information);
+		//				if (information.getCreationTime()>this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
+		//					((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		//				else
+		//					((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		//			} else //first info for the agent
+		//				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 	}
 
 

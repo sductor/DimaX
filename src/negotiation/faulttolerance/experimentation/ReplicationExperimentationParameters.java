@@ -29,13 +29,6 @@ ExperimentationParameters {
 	public  Double agentLoadMean;
 	public DispersionSymbolicValue agentLoadDispersion;
 
-	public String _usedProtocol;
-
-	public  String _agentSelection;
-
-	public  String _hostSelection;
-
-	public String _socialWelfare;
 
 	/***
 	 * Constantes
@@ -146,7 +139,7 @@ ExperimentationParameters {
 				0.3, 
 				DispersionSymbolicValue.Nul,
 				ReplicationExperimentationProtocol.key4mirrorProto, 
-				ReplicationExperimentationProtocol.key4leximinSocialWelfare,
+				AllocationSocialWelfares.key4leximinSocialWelfare,
 				ReplicationExperimentationProtocol.key4rouletteWheelSelect,
 				ReplicationExperimentationProtocol.key4rouletteWheelSelect);
 	}

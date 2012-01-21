@@ -26,6 +26,11 @@ implements DimaComponentInterface {
 	public final int nbAgents;
 	public final int nbHosts;
 
+	public String _usedProtocol;
+	public  String _agentSelection;
+	public  String _hostSelection;
+	public String _socialWelfare;
+	
 	List<AgentIdentifier> replicasIdentifier  = new ArrayList<AgentIdentifier>();
 	List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>();
 

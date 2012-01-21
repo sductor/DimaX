@@ -76,15 +76,15 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 					HostState s = (HostState) o;
 					Collection<ReplicaState> states = s.getMyAgentsCollec();
 					Double result;
-					if (socialWelfare.equals(ReplicationExperimentationProtocol.key4leximinSocialWelfare)){
+					if (socialWelfare.equals(AllocationSocialWelfares.key4leximinSocialWelfare)){
 						result = Double.POSITIVE_INFINITY;
 						for (ReplicaState r : states)
 							result = Math.min(result, r.getMyReliability());
-					} else if  (socialWelfare.equals(ReplicationExperimentationProtocol.key4NashSocialWelfare)){
+					} else if  (socialWelfare.equals(AllocationSocialWelfares.key4NashSocialWelfare)){
 						result = 1.;
 						for (ReplicaState r : states)
 							result *= r.getMyReliability();						
-					}else if  (socialWelfare.equals(ReplicationExperimentationProtocol.key4UtilitaristSocialWelfare)){
+					}else if  (socialWelfare.equals(AllocationSocialWelfares.key4UtilitaristSocialWelfare)){
 						result = 0.;
 						for (ReplicaState r : states)
 							result += r.getMyReliability();						

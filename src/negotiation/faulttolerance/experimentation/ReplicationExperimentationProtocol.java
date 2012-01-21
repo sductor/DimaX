@@ -57,32 +57,31 @@ ExperimentationProtocol {
 	 * Clés statiques
 	 */
 
-	//Optimisations
-	public final static String key4leximinSocialWelfare="leximin";
-	public final static String key4NashSocialWelfare="nash";
-	public final static String key4UtilitaristSocialWelfare="utilitarist";
 
 	//Protocoles
-	public final static String key4mirrorProto = "mirror protocol";
-	public final static String key4CentralisedstatusProto = "Centralised status protocol";
-	public final static String key4statusProto = "status protocol";
-	public final static String key4multiLatProto = "multi lateral protocol";
+	 final static String key4mirrorProto = "mirror protocol";
+	 final static String key4CentralisedstatusProto = "Centralised status protocol";
+	 final static String key4statusProto = "status protocol";
+	 final static String key4multiLatProto = "multi lateral protocol";
 
 	//Selection algorithms
-	public final static String key4greedySelect = "greedy select";
-	public final static String key4rouletteWheelSelect = "roolette wheel select";
-	public final static String key4AllocSelect = "alloc select";
+	 final static String key4greedySelect = "greedy select";
+	 final static String key4rouletteWheelSelect = "roolette wheel select";
+	 final static String key4AllocSelect = "alloc select";
 
 	//pref
-	public static final String key4agentKey_Relia="onlyRelia";
-	public static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
+	 static final String key4agentKey_Relia="onlyRelia";
+	 static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
 
 	//
 	// Set of values
 	//
 
 	Collection<String> protos = Arrays.asList(new String[]{key4mirrorProto,key4CentralisedstatusProto,key4statusProto});
-	Collection<String> welfare = Arrays.asList(new String[]{key4leximinSocialWelfare,key4NashSocialWelfare,key4UtilitaristSocialWelfare});
+	Collection<String> welfare = Arrays.asList(new String[]{
+			AllocationSocialWelfares.key4leximinSocialWelfare,
+			AllocationSocialWelfares.key4NashSocialWelfare,
+			AllocationSocialWelfares.key4UtilitaristSocialWelfare});
 	Collection<String> select = Arrays.asList(new String[]{key4greedySelect,key4rouletteWheelSelect});//,key4AllocSelect
 	Collection<String> agentPref = Arrays.asList(new String[]{key4agentKey_Relia,key4agentKey_loadNRelia});
 	Collection<Double> doubleParameters = Arrays.asList(new Double[]{0.1,0.3,0.6,1.});

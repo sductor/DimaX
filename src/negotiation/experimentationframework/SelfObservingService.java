@@ -1,21 +1,15 @@
 package negotiation.experimentationframework;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
-import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
-import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.Ticker;
 
 public abstract class SelfObservingService
 extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
@@ -36,22 +30,21 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	@PostStepComposant(ticker=ReplicationExperimentationProtocol._state_snapshot_frequency)
 	public void notifyMyState(){
-		l.add(this.generateMyResults());
+		this.l.add(this.generateMyResults());
 	}
 
 	@ProactivityFinalisation()
 	public void endSimulation(){
 		this.logMonologue("this is the end my friend",LogService.onFile);
-		l.getResults().getLast().setLastInfo();
-		notify(l);
-		getMyAgent().sendNotificationNow();
+		this.l.getResults().getLast().setLastInfo();
+		this.notify(this.l);
+		this.getMyAgent().sendNotificationNow();
 	}
 
 	@MessageHandler
 	public void simulationEndORder(final SimulationEndedMessage s){
-		if (getMyAgent().isAlive()){
-			getMyAgent().setAlive(false);
-		}
+		if (this.getMyAgent().isAlive())
+			this.getMyAgent().setAlive(false);
 	}
 
 	//
@@ -60,16 +53,20 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	public class ActivityLog extends Message {
 
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = -1828186933572497512L;
 		LinkedList<ExperimentationResults> results =
 				new LinkedList<ExperimentationResults>();
 
 		public LinkedList<ExperimentationResults> getResults() {
-			return results;
+			return this.results;
 		}
 
-		public void add(ExperimentationResults generateMyResults) {
-			results.add(generateMyResults);
-		}		
+		public void add(final ExperimentationResults generateMyResults) {
+			this.results.add(generateMyResults);
+		}
 	}
 }
 

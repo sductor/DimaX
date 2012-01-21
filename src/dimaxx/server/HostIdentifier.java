@@ -46,9 +46,9 @@ public class HostIdentifier extends AgentName {
 	}
 
 	/*
-	 * 
+	 *
 	 */
-	
+
 	public static HostIdentifier getLocalHost(){
 		return new HostIdentifier(LocalHost.getUrl(), LocalHost.port);
 	}

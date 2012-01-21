@@ -6,7 +6,6 @@ import java.util.Map;
 import dima.basicagentcomponents.AgentAddress;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
-import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent{
@@ -71,7 +70,7 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 		super(newId);
 		this.creation = horloge;
 	}
-	
+
 
 	//
 	// Proactivity
@@ -80,42 +79,42 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 
 	@Override
 	public final void proactivityInitialize() {
-		this.myShell =initiateMyShell();
-		myShell.proactivityInitialize(creation);
+		this.myShell =this.initiateMyShell();
+		this.myShell.proactivityInitialize(this.creation);
 		Thread.yield();
 	}
 
 	@Override
 	public final void preActivity() {
-		myShell.preActivity(creation);
+		this.myShell.preActivity(this.creation);
 			Thread.yield();
 	}
 
 	@Override
 	public final void step() {
-			this.myShell.step(creation);
+			this.myShell.step(this.creation);
 	}
 
 	@Override
 	public final void postActivity(){
-		this.myShell.postActivity(creation);
+		this.myShell.postActivity(this.creation);
 			Thread.yield();
 	}
-	
+
 	@Override
 	public final  void proactivityTerminate() {
-		myShell.proactivityTerminate(creation);
+		this.myShell.proactivityTerminate(this.creation);
 		this.myShell=null;
 		Thread.yield();
 	}
-	
+
 	//
 	// Primitive
 	//
-	
+
 	protected BasicCommunicatingShell initiateMyShell(){
 		return  new BasicCommunicatingShell(this);
 	}
-	
-	
+
+
 }

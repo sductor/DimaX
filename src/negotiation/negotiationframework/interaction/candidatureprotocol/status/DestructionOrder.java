@@ -11,22 +11,27 @@ import dima.basicagentcomponents.AgentIdentifier;
 public class DestructionOrder extends ReplicationCandidature {
 
 	private static final long serialVersionUID = -8818199856795063080L;
-	
+
 	public class DestructionOrderIdentifier extends ContractIdentifier {
 
-		public DestructionOrderIdentifier(AgentIdentifier intiator, Date date,
-				long validityTime, AgentIdentifier... participants) {
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 7345192467418934461L;
+
+		public DestructionOrderIdentifier(final AgentIdentifier intiator, final Date date,
+				final long validityTime, final AgentIdentifier... participants) {
 			super(intiator, date, validityTime, participants);
 		}
 
-		public DestructionOrderIdentifier(AgentIdentifier intiator, Date date,
-				long validityTime, Collection<AgentIdentifier> participants) {
+		public DestructionOrderIdentifier(final AgentIdentifier intiator, final Date date,
+				final long validityTime, final Collection<AgentIdentifier> participants) {
 			super(intiator, date, validityTime, participants);
 		}
-		
+
 	}
 
-	public DestructionOrder(final ResourceIdentifier r, final AgentIdentifier a, boolean isAgentInit) {
+	public DestructionOrder(final ResourceIdentifier r, final AgentIdentifier a, final boolean isAgentInit) {
 		super(r, a, false, isAgentInit);
 	}
 
@@ -35,7 +40,7 @@ public class DestructionOrder extends ReplicationCandidature {
 		return new DestructionOrderIdentifier(this.creator, this.creationTime,
 				this.validityTime, this.actors);
 	}
-	
+
 	@Override
 	public AgentIdentifier getInitiator() {
 		return this.getAgent();

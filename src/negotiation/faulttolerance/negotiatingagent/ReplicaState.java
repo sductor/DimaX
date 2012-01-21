@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
@@ -30,7 +29,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 
 	/*
-	 * 
+	 *
 	 */
 
 	private final Double myCriticity;
@@ -38,7 +37,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	private final Double myMemCharge;
 
 	/*
-	 * 
+	 *
 	 */
 
 	private Set<HostState> myReplicas=null;
@@ -51,7 +50,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	// initial
 	//	protected ReplicaState(
 	//			final AgentIdentifier myAgent,
-	//			final Double myCriticity, 
+	//			final Double myCriticity,
 	//			final Double myProcCharge,
 	//			final Double myMemCharge) {
 	//		super(myAgent);
@@ -64,23 +63,23 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 	protected ReplicaState(
 			final AgentIdentifier myAgent,
-			final Double myCriticity, 
+			final Double myCriticity,
 			final Double myProcCharge,
 			final Double myMemCharge,
-			Set<HostState> myReps) {
+			final Set<HostState> myReps) {
 		super(myAgent);
 		this.myCriticity = myCriticity;
 		this.myProcCharge = myProcCharge;
 		this.myMemCharge = myMemCharge;
 		this.myReplicas = myReps;
-		myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
+		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
 	}
 
 	// Clone with modification of replicas
 	public ReplicaState(
-			final ReplicaState init, 
+			final ReplicaState init,
 			final HostState newRep,
-			Long creationTime) {
+			final Long creationTime) {
 		super(init.getMyAgentIdentifier(), creationTime);
 		this.myCriticity = init.getMyCriticity();
 		this.myProcCharge = init.getMyProcCharge();
@@ -94,17 +93,17 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		else
 			this.myReplicas.add(newRep);
 		//
-		myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
+		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
 	}
 
 	// private universal constructor
 	private ReplicaState(
 			final AgentIdentifier myAgent,
-			final Double myCriticity, 
+			final Double myCriticity,
 			final Double myProcCharge,
 			final Double myMemCharge,
 			final Double dispo,
-			Long creationTime) {
+			final Long creationTime) {
 		super(myAgent, creationTime);
 		this.myReplicas = null;
 		this.myCriticity = myCriticity;
@@ -116,7 +115,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	//
 	// Accessors
 	//
-	
+
 	//pas propre!!! camarche uniquement pcq le h ne change pas de lambda
 //	public boolean update(HostState h){
 //		if (myReplicas.contains(h)){
@@ -125,7 +124,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 //			//adding new h
 //			return 	myReplicas.add(h);
 //		} else
-//			throw new RuntimeException();		
+//			throw new RuntimeException();
 //	}
 
 	public Double getMyReliability(){
@@ -136,7 +135,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 
 	public Double getMyDisponibility() {
-		return myDisponibility;
+		return this.myDisponibility;
 	}
 
 	public Double getMyCriticity() {
@@ -152,22 +151,22 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	}
 
 	/*
-	 * 
+	 *
 	 */
 	public Set<HostState> getMyReplicas() {
 		//		if (myReplicas==null)
 		//			return new ArrayList<HostState>();
 		//		else
-		return myReplicas;
+		return this.myReplicas;
 	}
+	@Override
 	public Collection<ResourceIdentifier> getMyResourceIdentifiers() {
 		//		if (myReplicas==null)
 		//			return new ArrayList<HostState>();
 		//		else
-		Collection<ResourceIdentifier> result = new ArrayList();
-		for (HostState h : myReplicas){
+		final Collection<ResourceIdentifier> result = new ArrayList();
+		for (final HostState h : this.myReplicas)
 			result.add(h.getMyAgentIdentifier());
-		}
 		return result;
 	}
 
@@ -175,9 +174,9 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	public Class<? extends Information> getMyResourcesClass() {
 		return HostState.class;
 	}
-	
+
 	/*
-	 * 
+	 *
 	 */
 
 	public ResourceIdentifier getOneReplica() {
@@ -195,11 +194,11 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 	@Override
 	public boolean isValid() {
-		return !getMyReplicas().isEmpty();
+		return !this.getMyReplicas().isEmpty();
 	}
-	
+
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
@@ -208,25 +207,25 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			return this.myReplicas.remove(h);
 		else
 			throw new RuntimeException("impossible!!");
-	}	
+	}
 
 	/*
 	 * Opinion
 	 */
 
 	@Override
-	public int compareTo(Information o) {
+	public int compareTo(final Information o) {
 		if (o instanceof ReplicaState) {
-			ReplicaState e = (ReplicaState) o;
+			final ReplicaState e = (ReplicaState) o;
 			return this.getMyReliability().compareTo(e.getMyReliability());
 		} else
 			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
 	}
 
 	@Override
-	public Double getNumericValue(Information o) {	
+	public Double getNumericValue(final Information o) {
 		if (o instanceof ReplicaState) {
-			ReplicaState e = (ReplicaState) o;
+			final ReplicaState e = (ReplicaState) o;
 			return e.getMyReliability();
 		} else
 			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
@@ -234,24 +233,24 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 	@Override
 	public AbstractCompensativeAggregation<Information> fuse(
-			Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
+			final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
 		throw new RuntimeException("should not be called!");
 	}
 
 	@Override
 	public Information getRepresentativeElement(
-			Collection<? extends Information> elems) {
-		LightAverageDoubleAggregation 
-		meanCrit = new LightAverageDoubleAggregation(), 
-		meanDisp = new LightAverageDoubleAggregation(), 
+			final Collection<? extends Information> elems) {
+		final LightAverageDoubleAggregation
+		meanCrit = new LightAverageDoubleAggregation(),
+		meanDisp = new LightAverageDoubleAggregation(),
 		meanMem = new LightAverageDoubleAggregation(),
 		meanProc = new LightAverageDoubleAggregation();
 
-		for (Information o : elems)
+		for (final Information o : elems)
 			if (o instanceof ReplicaState) {
 				//				if (!((ReplicaState) o).getMyCriticity().equals(Double.NaN))
 				//					throw new RuntimeException();
-				ReplicaState e = (ReplicaState) o;
+				final ReplicaState e = (ReplicaState) o;
 				meanCrit.add(e.getMyCriticity());
 				meanDisp.add(e.getMyDisponibility());
 				meanMem.add(e.getMyMemCharge());
@@ -259,27 +258,27 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			} else
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
 
-		ReplicaState rep = new ReplicaState(
+		final ReplicaState rep = new ReplicaState(
 				NegotiationStaticParameters.globaLAgentIdentifer,
-				meanCrit.getRepresentativeElement(), 
-				meanProc.getRepresentativeElement(), 
+				meanCrit.getRepresentativeElement(),
+				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
-				meanDisp.getRepresentativeElement(), getCreationTime());
+				meanDisp.getRepresentativeElement(), this.getCreationTime());
 		return rep;
 	}
 
 	@Override
 	public Information getRepresentativeElement(
-			Map<? extends Information, Double> elems) {
-		LightWeightedAverageDoubleAggregation 
-		meanCrit = new LightWeightedAverageDoubleAggregation(), 
-		meanDisp = new LightWeightedAverageDoubleAggregation(), 
+			final Map<? extends Information, Double> elems) {
+		final LightWeightedAverageDoubleAggregation
+		meanCrit = new LightWeightedAverageDoubleAggregation(),
+		meanDisp = new LightWeightedAverageDoubleAggregation(),
 		meanMem = new LightWeightedAverageDoubleAggregation(),
 		meanProc = new LightWeightedAverageDoubleAggregation();
 
-		for (Information o : elems.keySet())
+		for (final Information o : elems.keySet())
 			if (o instanceof ReplicaState) {
-				ReplicaState e = (ReplicaState) o;
+				final ReplicaState e = (ReplicaState) o;
 				meanCrit.add(e.getMyCriticity(),elems.get(e));
 				meanDisp.add(e.getMyDisponibility(),elems.get(e));
 				meanMem.add(e.getMyMemCharge(),elems.get(e));
@@ -287,12 +286,12 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			} else
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
 
-		ReplicaState rep = new ReplicaState(
+		final ReplicaState rep = new ReplicaState(
 				NegotiationStaticParameters.globaLAgentIdentifer,
-				meanCrit.getRepresentativeElement(), 
-				meanProc.getRepresentativeElement(), 
+				meanCrit.getRepresentativeElement(),
+				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
-				meanDisp.getRepresentativeElement(), getCreationTime());
+				meanDisp.getRepresentativeElement(), this.getCreationTime());
 		return rep;
 	}
 
@@ -318,11 +317,11 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	@Override
 	public String toString() {
 		return "\nAGENT=" + this.getMyAgentIdentifier()
-				+ "\n * my criticity " + this.getMyCriticity() 
-				+ "\n * dispo "+ this.getMyDisponibility() 
+				+ "\n * my criticity " + this.getMyCriticity()
+				+ "\n * dispo "+ this.getMyDisponibility()
 				+ "\n * charge "+ this.getMyProcCharge() + " " + this.getMyMemCharge()
-				+ "\n * relia " + this.getMyReliability() 
-				+ "\n * replicas "+(myReplicas==null?"empty":this.getMyResourceIdentifiers())
+				+ "\n * relia " + this.getMyReliability()
+				+ "\n * replicas "+(this.myReplicas==null?"empty":this.getMyResourceIdentifiers())
 				+ "\n * creation time "+ this.getCreationTime();
 		// +"\n status "+this.getMyStateStatus();
 	}

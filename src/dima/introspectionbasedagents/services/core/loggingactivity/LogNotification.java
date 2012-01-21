@@ -1,6 +1,5 @@
 package dima.introspectionbasedagents.services.core.loggingactivity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -15,11 +14,11 @@ import dima.basiccommunicationcomponents.Message;
 public abstract class LogNotification extends Message{
 	private static final long serialVersionUID = 2651499802673480005L;
 
-	
+
 	protected Date date = new Date();
-	protected String caller;	
-	
-	protected LogNotification(AgentIdentifier caller) {
+	protected String caller;
+
+	protected LogNotification(final AgentIdentifier caller) {
 		super();
 		this.caller = caller.toString();
 	}
@@ -33,6 +32,6 @@ public abstract class LogNotification extends Message{
 	public abstract String generateLogToWrite();
 
 	public String getCaller() {
-		return caller;
+		return this.caller;
 	}
 }

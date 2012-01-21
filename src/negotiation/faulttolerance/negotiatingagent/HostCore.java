@@ -1,14 +1,13 @@
 package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.Collection;
-import java.util.Date;
+
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
-import negotiation.faulttolerance.negotiatingagent.HostState;
+import negotiation.negotiationframework.AllocationSocialWelfares;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
-import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
@@ -17,9 +16,9 @@ import dima.introspectionbasedagents.services.library.replication.ReplicationHan
 /**
  * This class contains the core evaluation, decision and execution methods of an
  * host
- * 
+ *
  * @author Sylvain Ductor
- * 
+ *
  * @param <Contract>
  */
 public class HostCore
@@ -34,9 +33,9 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	// Constructor
 	//
 
-	public HostCore(final boolean mirrorNegotiating, String socialWelfare) {
+	public HostCore(final boolean mirrorNegotiating, final String socialWelfare) {
 		this.iWanToNegotiate = mirrorNegotiating;
-		myOptimiser = new ReplicationSocialOptimisation(this, socialWelfare);
+		this.myOptimiser = new ReplicationSocialOptimisation(this, socialWelfare);
 
 	}
 
@@ -49,14 +48,12 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	public int getAllocationPreference(final HostState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-		for (ReplicationCandidature c : c1){
+		for (final ReplicationCandidature c : c1)
 			c.setSpecification(s);
-		}
-		for (ReplicationCandidature c : c2){
+		for (final ReplicationCandidature c : c2)
 			c.setSpecification(s);
-		}
-		int pref = myOptimiser.getSocialPreference(c1, c2);
-		logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, ReplicationSocialOptimisation.log_socialWelfareOrdering);
+		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
+		this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
 		return pref;
 	}
 
@@ -64,7 +61,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 	@Override
 	public void execute(final ReplicationCandidature c) {
-		assert getMyAgent().respectMyRights(c);
+		assert this.getMyAgent().respectMyRights(c);
 		//		logMonologue(
 		//				"executing "+c+" from state "
 		//		+this.getMyAgent().getMyCurrentState()
@@ -72,7 +69,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 		//						this.getMyAgent().getMyCurrentState()));
 
 		/*
-		 * 
+		 *
 		 */
 
 		if (c.isMatchingCreation()) {
@@ -80,13 +77,13 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			this.observe(c.getAgent(), SimpleObservationService.informationObservationKey);
 			//			System.out.println(c.getResource() + " " + new Date().toString()
 			//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
+			this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 		} else {
 			ReplicationHandler.killReplica(c.getAgent());
 			this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
 			//			System.out.println(c.getResource() + " " + new Date().toString()
 			//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+			this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 		}
 
 		this.getMyAgent().setNewState(
@@ -97,8 +94,8 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 	public void executeFirstRep(
 			final ReplicationCandidature c,
-			final SimpleRationalAgent ag) {	
-		assert getMyAgent().respectMyRights(c);
+			final SimpleRationalAgent ag) {
+		assert this.getMyAgent().respectMyRights(c);
 
 		this.getMyAgent().setNewState(
 				c.computeResultingState(
@@ -106,14 +103,14 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 		this.getMyAgent().getMyInformation().add(c.getAgentResultingState());
 
 		/*
-		 * 
+		 *
 		 */
 
 		if (c.isMatchingCreation()) {
-			ag.addObserver(this.getMyAgent().getIdentifier(), 
+			ag.addObserver(this.getMyAgent().getIdentifier(),
 					SimpleObservationService.informationObservationKey);
 			ReplicationHandler.replicate(c.getAgent());
-			logMonologue(c.getResource() + "  ->I have initially replicated "
+			this.logMonologue(c.getResource() + "  ->I have initially replicated "
 					+ c.getAgent(),LogService.onBoth);
 		} else
 			throw new RuntimeException();
@@ -133,8 +130,8 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	}
 
 	@Override
-	public Double evaluatePreference(HostState s1) {
-		return myOptimiser.getUtilitaristEvaluator().getUtilityValue(s1);
+	public Double evaluatePreference(final HostState s1) {
+		return this.myOptimiser.getUtilitaristEvaluator().getUtilityValue(s1);
 	}
 
 }

@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,40 +14,35 @@ import org.jdom.JDOMException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
-import dima.kernel.ProactiveComponents.ProactiveComponent;
-import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 import dima.support.GimaObject;
 import dimaxx.deployment.DimaXDeploymentScript;
 import dimaxx.deployment.DimaXLocalLaunchScript;
 import dimaxx.hostcontrol.LocalHost;
-import dimaxx.hostcontrol.RemoteHostExecutor;
 import dimaxx.server.HostIdentifier;
 
 public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	private static final long serialVersionUID = 7241441256737644000L;
 
-	public enum LaunchType { NotThreaded, FIPA, DarX } 
+	public enum LaunchType { NotThreaded, FIPA, DarX }
 
 	public static final String _logKeyForAPIManagement = "log key for api start";
 
 
-	private Map<AgentIdentifier, BasicCompetentAgent> registeredAgent = 
+	private final Map<AgentIdentifier, BasicCompetentAgent> registeredAgent =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
-	Map<AgentIdentifier, HostIdentifier> locations = 
+	Map<AgentIdentifier, HostIdentifier> locations =
 			new HashMap<AgentIdentifier, HostIdentifier>();
 
 	//Launch
 	private LaunchType myLaunchType = null;
 
 	//Darx
-	List<HostIdentifier> avalaibleHosts = 
+	List<HostIdentifier> avalaibleHosts =
 			new ArrayList<HostIdentifier>();
 	int pos=0;
 
@@ -65,11 +58,11 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	 * @param threaded
 	 * @throws CompetenceException
 	 */
-	APILauncherModule(boolean threaded) throws CompetenceException {
+	APILauncherModule(final boolean threaded) throws CompetenceException {
 		if (threaded)
-			initWithFipa();
-		else 
-			initNotThreaded();	
+			this.initWithFipa();
+		else
+			this.initNotThreaded();
 	}
 
 	/**
@@ -78,8 +71,8 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	 * @param server_port
 	 * @throws CompetenceException
 	 */
-	APILauncherModule(int nameServer_port, int server_port) throws CompetenceException {
-		initLocalDarx(nameServer_port, server_port);	
+	APILauncherModule(final int nameServer_port, final int server_port) throws CompetenceException {
+		this.initLocalDarx(nameServer_port, server_port);
 	}
 
 	/**
@@ -90,23 +83,23 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	 * @throws IOException
 	 */
 	APILauncherModule(
-			String machinesFile) 
+			final String machinesFile)
 					throws CompetenceException, JDOMException,IOException {
-		DimaXDeploymentScript machines = new DimaXDeploymentScript(machinesFile);
-		initDeployedDarx(machines);
+		final DimaXDeploymentScript machines = new DimaXDeploymentScript(machinesFile);
+		this.initDeployedDarx(machines);
 	}
 	APILauncherModule(
-			File machinesFile) 
+			final File machinesFile)
 					throws CompetenceException, JDOMException,IOException {
-		DimaXDeploymentScript machines = new DimaXDeploymentScript(machinesFile);
-		initDeployedDarx(machines);
+		final DimaXDeploymentScript machines = new DimaXDeploymentScript(machinesFile);
+		this.initDeployedDarx(machines);
 	}
 
 
 	//	@Override
 	//	public void setMyAgent(BasicCompetentAgent ag){
 	//		super.setMyAgent(ag);
-	//		//		getMyAgent().addLogKey(_logKeyForAPIManagement, false, false);		
+	//		//		getMyAgent().addLogKey(_logKeyForAPIManagement, false, false);
 	//	}
 
 	//
@@ -115,16 +108,15 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 
 	public Collection<HostIdentifier> getAvalaibleHosts() {
-		return avalaibleHosts;
-	}	
+		return this.avalaibleHosts;
+	}
 
-	public Collection<AgentIdentifier> getAgentsRunningOn(HostIdentifier h){
-		Collection<AgentIdentifier> result =
+	public Collection<AgentIdentifier> getAgentsRunningOn(final HostIdentifier h){
+		final Collection<AgentIdentifier> result =
 				new ArrayList<AgentIdentifier>();
-		for (AgentIdentifier a : locations.keySet()){
-			if (locations.get(a).equals(h))
+		for (final AgentIdentifier a : this.locations.keySet())
+			if (this.locations.get(a).equals(h))
 				result.add(a);
-		}
 		return result;
 	}
 
@@ -133,27 +125,27 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	//
 
 	void init() {
-		getMyAgent().launchWith(this);
-		startActivity(getMyAgent());
-		registeredAgent.remove(getMyAgent());
+		this.getMyAgent().launchWith(this);
+		this.startActivity(this.getMyAgent());
+		this.registeredAgent.remove(this.getMyAgent());
 
-		if (myLaunchType.equals(LaunchType.NotThreaded)){
-			scheduler.runApplication();
-			scheduler=null;
+		if (this.myLaunchType.equals(LaunchType.NotThreaded)){
+			this.scheduler.runApplication();
+			this.scheduler=null;
 		}
 	}
 
-	boolean launch(BasicCompetentAgent c, HostIdentifier machine){
-		if (!getAvalaibleHosts().contains(machine))
-			throw new RuntimeException("i can not use this machine "+machine+" available machines are "+getAvalaibleHosts());
+	boolean launch(final BasicCompetentAgent c, final HostIdentifier machine){
+		if (!this.getAvalaibleHosts().contains(machine))
+			throw new RuntimeException("i can not use this machine "+machine+" available machines are "+this.getAvalaibleHosts());
 
 		c.addObserver(this.getIdentifier(), LogService.logNotificationKey);
 		c.addObserver(this.getIdentifier(), EndActivityMessage.class);
 
 
-		switch (myLaunchType) {
+		switch (this.myLaunchType) {
 		case NotThreaded:
-			scheduler.add(c);
+			this.scheduler.add(c);
 			break;
 		case FIPA:
 			c.activateWithFipa();
@@ -164,34 +156,34 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		default:
 			break;
 		}
-		
-		registeredAgent.put(c.getIdentifier(), c);
-		locations.put(c.getIdentifier(), machine);
-		
+
+		this.registeredAgent.put(c.getIdentifier(), c);
+		this.locations.put(c.getIdentifier(), machine);
+
 		return true;
 	}
 
-	boolean launch(BasicCompetentAgent c){
-		if (pos==avalaibleHosts.size())
-			pos=0;
+	boolean launch(final BasicCompetentAgent c){
+		if (this.pos==this.avalaibleHosts.size())
+			this.pos=0;
 
-		return launch(c, avalaibleHosts.get(pos));
+		return this.launch(c, this.avalaibleHosts.get(this.pos));
 	}
 
-	boolean destroy(BasicCompetentAgent c){
-		boolean removed1 = registeredAgent.remove(c.getIdentifier())!=null;
-		boolean removed2 =  locations.remove(c.getIdentifier())!=null;
-		
-		assert removed1 && removed2;		
+	boolean destroy(final BasicCompetentAgent c){
+		final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
+		final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
 
-		switch (myLaunchType) {
+		assert removed1 && removed2;
+
+		switch (this.myLaunchType) {
 		case NotThreaded:
-			scheduler.remove(c);
+			this.scheduler.remove(c);
 			break;
 		case FIPA:
 			try {
 				Thread.sleep(500);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				e.printStackTrace();
 			}
 			AgentManagementSystem.getDIMAams().removeAquaintance(c);
@@ -215,18 +207,18 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 
 	void startApplication(){
-		start(registeredAgent.values());
+		this.start(this.registeredAgent.values());
 	}
 
-	void startActivity(BasicCompetentAgent ag){
-		Collection<BasicCompetentAgent> ags= new ArrayList<BasicCompetentAgent>();
+	void startActivity(final BasicCompetentAgent ag){
+		final Collection<BasicCompetentAgent> ags= new ArrayList<BasicCompetentAgent>();
 		ags.add(ag);
-		start(ags);
+		this.start(ags);
 	}
 
 	@MessageHandler
-	void end(NotificationMessage<EndActivityMessage> m){
-		getMyAgent().logMonologue(m.getSender()+" has ended activity ... nothing to do...",LogService.onBoth);
+	void end(final NotificationMessage<EndActivityMessage> m){
+		this.getMyAgent().logMonologue(m.getSender()+" has ended activity ... nothing to do...",LogService.onBoth);
 	}
 
 	//
@@ -234,16 +226,16 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	//
 
 	private void initWithFipa(){
-		myLaunchType = LaunchType.FIPA;
+		this.myLaunchType = LaunchType.FIPA;
 		AgentManagementSystem.initAMS();
-		avalaibleHosts.add(HostIdentifier.getLocalHost());
+		this.avalaibleHosts.add(HostIdentifier.getLocalHost());
 	}
 
 	private void initLocalDarx(final int nameServer_port, final int server_port)  {
-		myLaunchType = LaunchType.DarX;
-		DimaXLocalLaunchScript darxLaunch = new DimaXLocalLaunchScript();
+		this.myLaunchType = LaunchType.DarX;
+		final DimaXLocalLaunchScript darxLaunch = new DimaXLocalLaunchScript();
 		darxLaunch.launchDARX(nameServer_port, server_port);
-		avalaibleHosts.add(new HostIdentifier(LocalHost.getUrl(), server_port));
+		this.avalaibleHosts.add(new HostIdentifier(LocalHost.getUrl(), server_port));
 	}
 
 
@@ -251,33 +243,32 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 	private void initDeployedDarx(
 			final DimaXDeploymentScript machines)
 					throws JDOMException, IOException {
-		myLaunchType = LaunchType.DarX;
+		this.myLaunchType = LaunchType.DarX;
 		if (machines.getAllHosts().isEmpty())
-			getMyAgent().signalException("no machines!!!");
+			this.getMyAgent().signalException("no machines!!!");
 		else {
 			machines.launchNameServer();
 			machines.launchAllDarXServer();
-		}		
-		avalaibleHosts.addAll(machines.getDarxServersIdentifier());
-	}	
-
-	private void initNotThreaded(){
-		myLaunchType = LaunchType.NotThreaded;
-		scheduler = new LocalFipaScheduler();
-		avalaibleHosts.add(HostIdentifier.getLocalHost());
+		}
+		this.avalaibleHosts.addAll(machines.getDarxServersIdentifier());
 	}
 
-	void start(Collection<BasicCompetentAgent> ags){
-		StartActivityMessage m = new StartActivityMessage();
-		for (BasicCompetentAgent ag : ags){
-			if (myLaunchType.equals(LaunchType.NotThreaded)){
+	private void initNotThreaded(){
+		this.myLaunchType = LaunchType.NotThreaded;
+		this.scheduler = new LocalFipaScheduler();
+		this.avalaibleHosts.add(HostIdentifier.getLocalHost());
+	}
+
+	void start(final Collection<BasicCompetentAgent> ags){
+		final StartActivityMessage m = new StartActivityMessage();
+		for (final BasicCompetentAgent ag : ags)
+			if (this.myLaunchType.equals(LaunchType.NotThreaded))
 				ag.start(m);
-			} else {
+			else {
 				ag.start(m);
-				getMyAgent().sendMessage(ag.getIdentifier(), m);
+				this.getMyAgent().sendMessage(ag.getIdentifier(), m);
 			}
 			//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
-		}
 	}
 
 
@@ -300,66 +291,66 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 
 		/*
-		 * 
+		 *
 		 */
 		private LocalFipaScheduler() {
 			super();
 			this.nbMaxStep = -1;
 		}
 
-		private LocalFipaScheduler(int nbMaxStep) {
+		private LocalFipaScheduler(final int nbMaxStep) {
 			super();
 			this.nbMaxStep = nbMaxStep;
 		}
 
 		/*
-		 * 
+		 *
 		 */
 		Collection<BasicCompetentAgent> toAdd = new ArrayList<BasicCompetentAgent>();
 		private boolean add(final BasicCompetentAgent c){
 			AgentManagementSystem.getDIMAams().addAquaintance(c);
-			return toAdd.add(c);
+			return this.toAdd.add(c);
 		}
 
 		Collection<BasicCompetentAgent> toRemove = new ArrayList<BasicCompetentAgent>();
 		private void remove(final BasicCompetentAgent c){
 			AgentManagementSystem.getDIMAams().removeAquaintance(c);
-			toRemove.add(c);
+			this.toRemove.add(c);
 		}
 		/*
-		 * 
+		 *
 		 */
 
 		public void runApplication(){
 			int step = 0;
 			//AJOUT DES NOUVEAUX AGENTS
-			toInitialize.addAll(toAdd);
-			toAdd.clear();
+			this.toInitialize.addAll(this.toAdd);
+			this.toAdd.clear();
 
-			while (!( (toExecute.isEmpty() && toInitialize.isEmpty()) || (nbMaxStep!=-1 && step > nbMaxStep) )){
+			while (!( (this.toExecute.isEmpty() && this.toInitialize.isEmpty()) || (this.nbMaxStep!=-1 && step > this.nbMaxStep) )){
 				//LoggerManager.write("\n\n***********SIMULATION : starting step "+step+", nbAgent:"+this.size()+"***********\n\n\n");
 
 
 				//AJOUT DES NOUVEAUX AGENTS
-				toInitialize.addAll(toAdd);
-				toAdd.clear();
+				this.toInitialize.addAll(this.toAdd);
+				this.toAdd.clear();
 				//RETRAIT DES AGENTS SUPPRIMME
-				toInitialize.removeAll(toRemove);
-				toExecute.removeAll(toRemove);
-				toTerminate.removeAll(toRemove);
+				this.toInitialize.removeAll(this.toRemove);
+				this.toExecute.removeAll(this.toRemove);
+				this.toTerminate.removeAll(this.toRemove);
 
 
 				//AGENT PRO ACTIVITY INITAILISATION
 				LogService.flush();
-				for (final BasicCompetentAgent c : toInitialize){
+				for (final BasicCompetentAgent c : this.toInitialize){
 					c.proactivityInitialize();
-					toExecute.add(c);
+					this.toExecute.add(c);
 				}
-				toInitialize.clear();
+				this.toInitialize.clear();
 
 				//AGENT STEP ACTIVITIES
 				LogService.flush();
-				for (final BasicCompetentAgent c : toExecute){
+				for (final BasicCompetentAgent c : this.toExecute)
 					if (c.isAlive()){
 						if (c.isActive()){
 							c.preActivity();
@@ -367,21 +358,19 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 							c.step();
 							LogService.flush();
 							c.postActivity();
-						} else 
+						} else
 							c.tryToResumeActivity();
-					} else {
-						toTerminate.add(c);
-					}
-				}
+					} else
+						this.toTerminate.add(c);
 
 				//AGENT PRO ACTIVITY TERMINATION
 				LogService.flush();
-				for (final BasicCompetentAgent c : toTerminate){
+				for (final BasicCompetentAgent c : this.toTerminate){
 					c.proactivityTerminate();
-					toExecute.remove(c);
+					this.toExecute.remove(c);
 					AgentManagementSystem.getDIMAams().removeAquaintance(c);
 				}
-				toTerminate.clear();
+				this.toTerminate.clear();
 
 				//LIFE IS GOOD : NEXT STEP
 				step++;
@@ -404,7 +393,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		private final Date startDate = new Date();
 
 		public Date getStartDate() {
-			return startDate;
+			return this.startDate;
 		}
 	}
 
@@ -414,7 +403,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		private final Date endDate = new Date();
 
 		public Date getEndDate() {
-			return endDate;
+			return this.endDate;
 		}
 	}
 }
@@ -422,7 +411,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 
 //
 //private void initDeployedDarx(
-//		final File machinesFile, 
+//		final File machinesFile,
 //		final HashMap<AgentIdentifier, HostIdentifier> locations)
 //		throws JDOMException, IOException {
 //	myLaunchType = LaunchType.DarXDeployed;
@@ -433,15 +422,15 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 //		machines.launchNameServer();
 //		machines.launchAllDarXServer();
 //	}
-//	
+//
 //	//
-//	
+//
 //	this.locations = locations;
-//}	
+//}
 
 //
 //public APILauncherModule(File machinesFile,
-//		HashMap<AgentIdentifier, HostIdentifier> locations) 
+//		HashMap<AgentIdentifier, HostIdentifier> locations)
 //				throws CompetenceException, JDOMException,IOException{
 //	initDeployedDarx(machinesFile, locations);
 //}
@@ -489,7 +478,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 //	}
 
 /*
- * 
+ *
 // */
 //
 //protected void launchWithoutThreads(final int n) {
@@ -516,7 +505,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 //
 //
 ///*
-// * 
+// *
 // */
 //
 //protected void launchWithDarxLocally(final int nameServer_port, final int server_port)  {
@@ -527,7 +516,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 //}
 //
 ///*
-// * 
+// *
 // */
 //
 //protected void startDeployedDarx(final File f) throws JDOMException, IOException{
@@ -538,6 +527,6 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 //
 //		script.launchNameServer();
 //		script.launchAllDarXServer();
-//	}	
+//	}
 //}
 //

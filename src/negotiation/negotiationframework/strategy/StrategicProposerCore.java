@@ -12,8 +12,8 @@ import dima.introspectionbasedagents.services.library.information.NoInformationA
 
 public class StrategicProposerCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
-Contract extends AbstractContractTransition<ActionSpec>>	
+PersonalState extends ActionSpec,
+Contract extends AbstractContractTransition<ActionSpec>>
 extends	BasicAgentCompetence<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>
 implements AbstractProposerCore<
 StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>,
@@ -24,7 +24,7 @@ ActionSpec, PersonalState, Contract> {
 	//
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -497374728643432838L;
 

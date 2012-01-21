@@ -1,8 +1,5 @@
 package negotiation.negotiationframework.interaction.candidatureprotocol;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,16 +29,15 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 
 		final Set<ReplicationCandidature> candidatures = new HashSet<ReplicationCandidature>();
 
-		for (final AgentIdentifier id : this.getMyAgent().getMyInformation().getKnownAgents()){
+		for (final AgentIdentifier id : this.getMyAgent().getMyInformation().getKnownAgents())
 			if (id instanceof ResourceIdentifier
 					&& !this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
 					.contains(id))
-				candidatures.add( 
+				candidatures.add(
 						new ReplicationCandidature(
-								(ResourceIdentifier) id, 
+								(ResourceIdentifier) id,
 								this.getMyAgent().getIdentifier(),
 								true,true));
-		}
 
 		return candidatures;
 	}

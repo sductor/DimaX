@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-
 
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationResults;
@@ -27,11 +25,11 @@ import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.Candi
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
-import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
 import negotiation.faulttolerance.negotiatingagent.HostState;
+import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
 import negotiation.faulttolerance.negotiatingagent.NegotiatingReplica;
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
@@ -50,14 +48,13 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 import dima.support.GimaObject;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
@@ -122,7 +119,7 @@ public class ReplicationLaborantin extends Laborantin {
 	// Constructor
 	//
 
-	public ReplicationLaborantin(final ReplicationExperimentationParameters p,APILauncherModule api, int numberOfAgentPerMAchine)
+	public ReplicationLaborantin(final ReplicationExperimentationParameters p,final APILauncherModule api, final int numberOfAgentPerMAchine)
 			throws CompetenceException, IfailedException, NotEnoughMachinesException {
 		super(p, api, numberOfAgentPerMAchine);
 
@@ -143,7 +140,7 @@ public class ReplicationLaborantin extends Laborantin {
 	}
 
 	@Override
-	public SimpleRationalAgent getAgent(AgentIdentifier id) {
+	public SimpleRationalAgent getAgent(final AgentIdentifier id) {
 		return (SimpleRationalAgent) super.getAgent(id);
 	}
 
@@ -183,8 +180,8 @@ public class ReplicationLaborantin extends Laborantin {
 		this.updateAnHostValue(h, i);
 
 		if (h.isLastInfo())
-			for (i = this.getSimulationParameters().getTimeStep(h) + 1; 
-					i < this.getSimulationParameters().numberOfTimePoints(); 
+			for (i = this.getSimulationParameters().getTimeStep(h) + 1;
+					i < this.getSimulationParameters().numberOfTimePoints();
 					i++)
 				this.updateAnHostValue(h, i);
 	}
@@ -203,25 +200,24 @@ public class ReplicationLaborantin extends Laborantin {
 
 	HashSet<ReplicationAgentResult> states;
 	private boolean analyseOptimal(){
-		Comparator<ReplicationAgentResult> reliaComp = new Comparator<ReplicationAgentResult>() {
+		final Comparator<ReplicationAgentResult> reliaComp = new Comparator<ReplicationAgentResult>() {
 			@Override
-			public int compare(ReplicationAgentResult o1,
-					ReplicationAgentResult o2) {
+			public int compare(final ReplicationAgentResult o1,
+					final ReplicationAgentResult o2) {
 				return o1.disponibility.compareTo(o2.disponibility);
 			}
 		};
 
-		LinkedList<ReplicationAgentResult> reliaStates = new LinkedList<ReplicationAgentResult>();		
-		reliaStates.addAll(states);
+		final LinkedList<ReplicationAgentResult> reliaStates = new LinkedList<ReplicationAgentResult>();
+		reliaStates.addAll(this.states);
 
 		Collections.sort(reliaStates, reliaComp);
 
-		ReplicationAgentResult prev = reliaStates.removeFirst();
+		final ReplicationAgentResult prev = reliaStates.removeFirst();
 
-		while(!reliaStates.isEmpty()){
+		while(!reliaStates.isEmpty())
 			if (prev.criticity>reliaStates.removeFirst().criticity)
 				return false;
-		}
 		return true;
 	}
 
@@ -230,9 +226,9 @@ public class ReplicationLaborantin extends Laborantin {
 	public final void receiveReplicaInfo(
 			final NotificationMessage<ReplicationAgentResult> n) {
 		assert 1<0;
-		states.remove(
+		this.states.remove(
 				n.getNotification());
-		states.add(n.getNotification());
+		this.states.add(n.getNotification());
 		this.updateInfo(n.getNotification());
 	}
 
@@ -247,13 +243,13 @@ public class ReplicationLaborantin extends Laborantin {
 
 	@MessageHandler
 	@NotificationEnvelope
-	public final void receiveResult(NotificationMessage<ActivityLog> l){
-		LinkedList<ExperimentationResults> results =
+	public final void receiveResult(final NotificationMessage<ActivityLog> l){
+		final LinkedList<ExperimentationResults> results =
 				l.getNotification().getResults();
-		for (ExperimentationResults r : results)
-			updateInfo(r);
+		for (final ExperimentationResults r : results)
+			this.updateInfo(r);
 				if (results.getLast() instanceof ReplicationAgentResult)
-					states.add((ReplicationAgentResult) results.getLast());
+					this.states.add((ReplicationAgentResult) results.getLast());
 
 	}
 	//
@@ -265,9 +261,9 @@ public class ReplicationLaborantin extends Laborantin {
 	 */
 
 	@Override
-	protected void instanciate(ExperimentationParameters par)
+	protected void instanciate(final ExperimentationParameters par)
 			throws IfailedException, CompetenceException {
-		states = new HashSet<ReplicationAgentResult>();
+		this.states = new HashSet<ReplicationAgentResult>();
 		final ReplicationExperimentationParameters p = (ReplicationExperimentationParameters) par;
 
 		this.myStatusObserver = new StatusObserver();
@@ -323,7 +319,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 		this.myFaultService = new FaultTriggeringService(this
 				.getSimulationParameters().getName(),  everyone);
-		this.logMonologue("Those are my dispos!!!!! :\n" + myInformationService.show(HostState.class),LogService.onFile);
+		this.logMonologue("Those are my dispos!!!!! :\n" + this.myInformationService.show(HostState.class),LogService.onFile);
 
 		/*
 		 * Agent instanciation
@@ -334,7 +330,7 @@ public class ReplicationLaborantin extends Laborantin {
 			/* Adding acquaintance for host within latence */
 			final Collection<HostIdentifier> hostsIKnow = new ArrayList<HostIdentifier>();
 			Collections.shuffle(this.getSimulationParameters().getHostsIdentifier());
-			for (int j = 0; 
+			for (int j = 0;
 					j < Math.min(Math.max(2, this.getNumberOfKnownHosts()), this
 							.getSimulationParameters().getHostsIdentifier()
 							.size()); j++)
@@ -355,25 +351,25 @@ public class ReplicationLaborantin extends Laborantin {
 			 */
 
 			try {
-				Iterator<ResourceIdentifier> itHost = this.getSimulationParameters().getHostsIdentifier().iterator();
+				final Iterator<ResourceIdentifier> itHost = this.getSimulationParameters().getHostsIdentifier().iterator();
 				if (!itHost.hasNext())
 					throw new RuntimeException("no host? impossible!");
 
 				SimpleRationalAgent firstReplicatedOnHost = this.getAgent(itHost.next());
-				ReplicationCandidature c = 
+				ReplicationCandidature c =
 						new ReplicationCandidature(
 								(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
-								ag.getIdentifier(), 
+								ag.getIdentifier(),
 								true,true);
 				c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
 				c.setSpecification((ReplicationSpecification) firstReplicatedOnHost.getMySpecif(c));
 
 
 				while (!firstReplicatedOnHost
-						.respectMyRights(c.computeResultingState((HostState) firstReplicatedOnHost.getMySpecif(c)))) {
-					if (!itHost.hasNext()){
+						.respectMyRights(c.computeResultingState((HostState) firstReplicatedOnHost.getMySpecif(c))))
+					if (!itHost.hasNext())
 						throw new IfailedException("can not create at least one rep for each agent\n"+this.getSimulationParameters().getHostsIdentifier());
-					}else {
+					else {
 						firstReplicatedOnHost = this.getAgent(itHost.next());
 						c = new ReplicationCandidature(
 								(ResourceIdentifier) firstReplicatedOnHost
@@ -383,7 +379,6 @@ public class ReplicationLaborantin extends Laborantin {
 						c.setSpecification((ReplicationSpecification) firstReplicatedOnHost
 								.getMySpecif(c));
 					}
-				}
 
 				((ReplicaCore) ag.myCore).executeFirstRep(c,firstReplicatedOnHost);
 				((HostCore) firstReplicatedOnHost.myCore).executeFirstRep(c, ag);
@@ -395,7 +390,7 @@ public class ReplicationLaborantin extends Laborantin {
 	}
 
 	protected NegotiatingReplica constructAgent(final AgentIdentifier replica,
-			Collection<HostIdentifier> hostsIKnow,
+			final Collection<HostIdentifier> hostsIKnow,
 			final DistributionParameters<AgentIdentifier> agentCriticity,
 			final DistributionParameters<AgentIdentifier> agentProcessor,
 			final DistributionParameters<AgentIdentifier> agentMemory)
@@ -421,7 +416,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 		if (this.getSimulationParameters()._usedProtocol
 				.equals(ReplicationExperimentationProtocol.key4mirrorProto)) {
-			core = new CandidatureReplicaCoreWithDestruction(getSimulationParameters()._socialWelfare);
+			core = new CandidatureReplicaCoreWithDestruction(this.getSimulationParameters()._socialWelfare);
 			proposer = new CandidatureReplicaProposer();
 			informations = new SimpleObservationService();
 
@@ -438,19 +433,18 @@ public class ReplicationLaborantin extends Laborantin {
 				.equals(ReplicationExperimentationProtocol.key4statusProto)) {
 			core = new CandidatureReplicaCoreWithStatus();
 			proposer = new CandidatureReplicaProposerWithStatus();
-			Map<AgentIdentifier, Class<? extends Information>> registration = new HashMap<AgentIdentifier, Class<? extends Information>>();
+			final Map<AgentIdentifier, Class<? extends Information>> registration = new HashMap<AgentIdentifier, Class<? extends Information>>();
 			informations = new SimpleOpinionService();
 
 		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationProtocol.key4multiLatProto)) {
+				.equals(ReplicationExperimentationProtocol.key4multiLatProto))
 			throw new RuntimeException("unimplemented!");
-
-		} else
+		else
 			throw new RuntimeException(
 					"Static parameters est mal conf : _usedProtocol = "
 							+ this.getSimulationParameters()._usedProtocol);
 
-		NegotiatingReplica rep = new NegotiatingReplica(replica, Math.min(
+		final NegotiatingReplica rep = new NegotiatingReplica(replica, Math.min(
 				ReplicationExperimentationParameters._criticityMin
 				+ agentCriticity.get(replica), 1),
 				agentProcessor.get(replica), agentMemory.get(replica), core,
@@ -463,7 +457,7 @@ public class ReplicationLaborantin extends Laborantin {
 	}
 
 	protected NegotiatingHost constructHost(final ResourceIdentifier host,
-			DistributionParameters<ResourceIdentifier> fault)
+			final DistributionParameters<ResourceIdentifier> fault)
 					throws CompetenceException {
 		AbstractSelectionCore select;
 		if (this.getSimulationParameters().get_hostSelection()
@@ -485,7 +479,7 @@ public class ReplicationLaborantin extends Laborantin {
 		ObservationService informations;
 		if (this.getSimulationParameters()._usedProtocol
 				.equals(ReplicationExperimentationProtocol.key4mirrorProto)) {
-			core = new HostCore(true,getSimulationParameters()._socialWelfare);
+			core = new HostCore(true,this.getSimulationParameters()._socialWelfare);
 			proposer = new HostDestructionCandidatureProposer();
 			informations = new SimpleObservationService();
 		} else if (this.getSimulationParameters()._usedProtocol
@@ -493,26 +487,25 @@ public class ReplicationLaborantin extends Laborantin {
 			if (!this.iObserveStatus())
 				throw new RuntimeException("unappropriate laborantin!"
 						+ this.myStatusObserver);
-			core = new HostCore(false,getSimulationParameters()._socialWelfare);
+			core = new HostCore(false,this.getSimulationParameters()._socialWelfare);
 			proposer = new InactiveProposerCore();
 			informations = new SimpleObservationService();
 
 		} else if (this.getSimulationParameters()._usedProtocol
 				.equals(ReplicationExperimentationProtocol.key4statusProto)) {
-			core = new HostCore(false,getSimulationParameters()._socialWelfare);
+			core = new HostCore(false,this.getSimulationParameters()._socialWelfare);
 			proposer = new InactiveProposerCore();
 			informations = new SimpleOpinionService();
 
 		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ReplicationExperimentationProtocol.key4multiLatProto)) {
+				.equals(ReplicationExperimentationProtocol.key4multiLatProto))
 			throw new RuntimeException("unimplemented!");
-
-		} else
+		else
 			throw new RuntimeException(
 					"Static parameters est mal conf : _usedProtocol = "
 							+ this.getSimulationParameters()._usedProtocol);
 
-		NegotiatingHost hostAg = new NegotiatingHost(host, fault.get(host),
+		final NegotiatingHost hostAg = new NegotiatingHost(host, fault.get(host),
 				core, select, proposer, informations, this.dispos);
 
 		return hostAg;
@@ -524,16 +517,16 @@ public class ReplicationLaborantin extends Laborantin {
 
 	@Override
 	protected void setObservation(){
-		Collection<AgentIdentifier> observedHostResultLog  = 
+		final Collection<AgentIdentifier> observedHostResultLog  =
 				new ArrayList<AgentIdentifier>();
-		Collection<AgentIdentifier> observedRepResultLog  = 
+		final Collection<AgentIdentifier> observedRepResultLog  =
 				new ArrayList<AgentIdentifier>();
-		Collection<AgentIdentifier> reliabilityStatusLog  = 
+		final Collection<AgentIdentifier> reliabilityStatusLog  =
 				new ArrayList<AgentIdentifier>();
-		HashedHashSet<AgentIdentifier, AgentIdentifier> opinionsLog = 
+		final HashedHashSet<AgentIdentifier, AgentIdentifier> opinionsLog =
 				new HashedHashSet<AgentIdentifier, AgentIdentifier>();
 
-		for (BasicCompetentAgent ag : agents.values()){
+		for (final BasicCompetentAgent ag : this.agents.values())
 			if (ag instanceof NegotiatingReplica){
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
 				observedRepResultLog.add(ag.getIdentifier());
@@ -545,36 +538,32 @@ public class ReplicationLaborantin extends Laborantin {
 				if (this.getSimulationParameters()._usedProtocol.equals(
 						ReplicationExperimentationProtocol.key4CentralisedstatusProto)){
 					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
-					opinionsLog.add(ag.getId(), getId());
+					opinionsLog.add(ag.getId(), this.getId());
 				} else if (this.getSimulationParameters()._usedProtocol.equals(
-						ReplicationExperimentationProtocol.key4statusProto)) {
-					for (AgentIdentifier h : 
+						ReplicationExperimentationProtocol.key4statusProto))
+					for (final AgentIdentifier h :
 						((NegotiatingReplica)ag).getMyInformation().getKnownAgents()){
-						this.getAgent(h).addObserver(ag.getId(), 
+						this.getAgent(h).addObserver(ag.getId(),
 								SimpleOpinionService.opinionObservationKey);
 						opinionsLog.add(ag.getId(), h);
 					}
-				}
 			}else if (ag instanceof NegotiatingHost){
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
 				observedHostResultLog.add(ag.getIdentifier());
 				// this.myFaultService.addObserver(h.getId(), FaultEvent.class);
 				// this.myFaultService.addObserver(h.getId(), RepairEvent.class)
-			} else if (ag instanceof ReplicationLaborantin){
-				logMonologue("C'est moi!!!!!!!!!! =D",LogService.onFile);
-			} else 
+			} else if (ag instanceof ReplicationLaborantin)
+				this.logMonologue("C'est moi!!!!!!!!!! =D",LogService.onFile);
+			else
 				throw new RuntimeException("impossible");
-
-		}
 
 		String mono = "Setting observation :"
 				+"\n * I observe results of "+observedHostResultLog
 				+"\n * I observe results of      "+observedRepResultLog
 				+"\n * I observe reliability of  "+reliabilityStatusLog;
-		for (AgentIdentifier id : opinionsLog.keySet()){
+		for (final AgentIdentifier id : opinionsLog.keySet())
 			mono += "\n * "+id+" observe opinon of "+opinionsLog.get(id);
-		}
-		logMonologue(mono,LogService.onFile);
+		this.logMonologue(mono,LogService.onFile);
 	}
 
 
@@ -589,7 +578,7 @@ public class ReplicationLaborantin extends Laborantin {
 	// 0);
 	private int getNumberOfKnownHosts() {
 		// return numberOfKnownHosts.nextValue();
-		return (int) this.getSimulationParameters().getkAccessible();
+		return this.getSimulationParameters().getkAccessible();
 	}
 
 	/*
@@ -639,7 +628,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 		if (this.iObserveStatus())
 			this.myStatusObserver.writeStatusResult();
-		logWarning("OOOOOOOOOKKKKKKKKKKKK?????????"+analyseOptimal(),LogService.onBoth);
+		this.logWarning("OOOOOOOOOKKKKKKKKKKKK?????????"+this.analyseOptimal(),LogService.onBoth);
 
 	}
 
@@ -656,7 +645,7 @@ public class ReplicationLaborantin extends Laborantin {
 		//
 
 		/* Quantile */
-		StatusQuantityTrunk[] statusEvolution = 
+		StatusQuantityTrunk[] statusEvolution =
 				new StatusQuantityTrunk[ReplicationLaborantin.this
 				                        .getSimulationParameters().numberOfTimePoints()];
 
@@ -667,7 +656,7 @@ public class ReplicationLaborantin extends Laborantin {
 		//
 
 		public StatusObserver() {
-			this.statusEvolution = 
+			this.statusEvolution =
 					new StatusQuantityTrunk[ReplicationLaborantin.this
 					                        .getSimulationParameters().numberOfTimePoints()];
 			for (int i = 0; i < ReplicationLaborantin.this
@@ -711,7 +700,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 		protected synchronized void writeStatusResult() {
 
-			String result = 
+			String result =
 					"t (seconds in percent); lost; fragile; " +
 							"thrifty (empty); thrifty; thrifty (full); wastefull; =\n";
 			for (int i = 0; i < ReplicationLaborantin.this
@@ -749,6 +738,11 @@ public class ReplicationLaborantin extends Laborantin {
 	}
 
 	public class StatusQuantityTrunk extends GimaObject {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 3740320075407434400L;
 
 		int nbAgentLost = 0;
 

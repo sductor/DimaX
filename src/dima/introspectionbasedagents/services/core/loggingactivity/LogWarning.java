@@ -1,7 +1,6 @@
 package dima.introspectionbasedagents.services.core.loggingactivity;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dimaxx.hostcontrol.LocalHost;
 
 public class LogWarning extends LogException {
 	private static final long serialVersionUID = -2335142989408051767L;
@@ -21,7 +20,7 @@ public class LogWarning extends LogException {
 
 	@Override
 	public String generateLogToScreen() {
-		return "**** NEW WARNING FROM AGENT " + getCaller() + " :" + "\n"
+		return "**** NEW WARNING FROM AGENT " + this.getCaller() + " :" + "\n"
 		+ (this.e == null ? "" : this.e) + "** On Host" + this.host
 		+ "(" + this.date.toString() + " - " + this.date.getTime()
 		+ "):\n" + this.text;

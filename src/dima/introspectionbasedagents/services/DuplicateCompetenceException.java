@@ -2,7 +2,7 @@ package dima.introspectionbasedagents.services;
 
 public class DuplicateCompetenceException extends CompetenceException  {
 
-	public DuplicateCompetenceException(String string) {
+	public DuplicateCompetenceException(final String string) {
 		super(string);
 	}
 

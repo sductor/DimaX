@@ -27,12 +27,12 @@ public class MethodHandler extends SimpleMethodHandler {
 	// Constructor
 	//
 
-	public void setActive(boolean isActive) {
+	public void setActive(final boolean isActive) {
 		this.isActive = isActive;
 	}
 
 
-	public MethodHandler(final DimaComponentInterface caller, Method mt)//, final Object[] args)
+	public MethodHandler(final DimaComponentInterface caller, final Method mt)//, final Object[] args)
 			throws SecurityException, IllegalArgumentException{
 		super(mt);
 		this.caller = caller;
@@ -44,7 +44,7 @@ public class MethodHandler extends SimpleMethodHandler {
 		super(caller.getClass().getMethod(methodName, signature==null?SimpleMethodHandler.getSignature(args):signature));
 		this.caller = caller;
 		this.args = args;
-		if (!checkSignature(this.getParameterTypes(), args))
+		if (!SimpleMethodHandler.checkSignature(this.getParameterTypes(), args))
 			throw new IllegalArgumentException();
 	}
 
@@ -53,12 +53,12 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 
 	public DimaComponentInterface getMyComponent() {
-		return caller;
+		return this.caller;
 	}
 
 	//
 	// Methods
-	//		
+	//
 
 	/**
 	 * Execute the method mt of agent ag with arguments args Update the
@@ -76,7 +76,7 @@ public class MethodHandler extends SimpleMethodHandler {
 	 */
 	public Object execute(final Object... args) throws Throwable {
 		try {
-			return execute(this.caller, args);
+			return this.execute(this.caller, args);
 		} catch (final IllegalAccessException e) {
 			LogService.writeException(this, "Impossible");
 			return null;
@@ -94,9 +94,9 @@ public class MethodHandler extends SimpleMethodHandler {
 	}
 
 	public Object execute() throws Throwable {
-		if (!(caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) caller).isActive()){
+		if (!(this.caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) this.caller).isActive())
 			try {
-				return execute(this.caller, this.args);
+				return this.execute(this.caller, this.args);
 			} catch (final IllegalAccessException e) {
 				LogService.writeException(this, "Impossible");
 				return null;
@@ -111,7 +111,7 @@ public class MethodHandler extends SimpleMethodHandler {
 				//						e.getCause());
 				throw e.getCause();
 			}
-		} else 
+		else
 			return null;
 	}
 
@@ -120,12 +120,12 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 
 	private Object execute(final Object myComponent, final Object[] args) throws IllegalArgumentException, InvocationTargetException, IllegalAccessException {
-		if (isActive){
+		if (this.isActive){
 			final Method m = this.getMethod();
 			if (!m.isAccessible())
 				m.setAccessible(true);
 			return m.invoke(myComponent, args);
-		} else 
+		} else
 			return null;
 	}
 }

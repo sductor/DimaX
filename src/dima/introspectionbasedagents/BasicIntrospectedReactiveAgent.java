@@ -55,38 +55,38 @@ public abstract class BasicIntrospectedReactiveAgent extends BasicReactiveAgent 
 
 	@Override
 	public void proactivityInitialize() {
-		this.myShell =initiateMyShell();
-		myShell.proactivityInitialize(creation);
+		this.myShell =this.initiateMyShell();
+		this.myShell.proactivityInitialize(this.creation);
 		Thread.yield();
 	}
 
 	@Override
 	public void preActivity() {
-		myShell.preActivity(creation);
+		this.myShell.preActivity(this.creation);
 			Thread.yield();
 	}
 
 	@Override
 	public final void step() {
-			this.myShell.step(creation);
+			this.myShell.step(this.creation);
 	}
 
 	@Override
 	public void postActivity(){
-		this.myShell.postActivity(creation);
+		this.myShell.postActivity(this.creation);
 			Thread.yield();
 	}
-	
+
 	@Override
 	public void proactivityTerminate() {
-		myShell.proactivityTerminate(creation);
+		this.myShell.proactivityTerminate(this.creation);
 		Thread.yield();
 	}
-	
+
 	//
 	// Primitive
 	//
-	
+
 	protected BasicIntrospectiveShell initiateMyShell(){
 		return  new BasicIntrospectiveShell(this);
 	}

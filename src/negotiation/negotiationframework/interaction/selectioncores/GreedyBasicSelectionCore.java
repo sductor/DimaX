@@ -10,7 +10,7 @@ import negotiation.negotiationframework.interaction.AbstractContractTransition;
 
 public class GreedyBasicSelectionCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
+PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 	private static final long serialVersionUID = 438513006322441185L;
@@ -43,9 +43,9 @@ extends AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 				// &&
 				final Contract currentContract = this.popNextContract(contractsToExplore);
 				toValidate.add(currentContract);
-				currentState = 
+				currentState =
 					this.getMyAgent().getMyResultingState(
-						currentState, 
+						currentState,
 						currentContract);
 
 				if (contractsToExplore.isEmpty())

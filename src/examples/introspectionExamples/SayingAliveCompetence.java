@@ -11,6 +11,11 @@ public class SayingAliveCompetence extends BasicAgentCompetence<BasicCompetentAg
 //		super(ag);
 //	}
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 4157925952163775051L;
+
 	@StepComposant(ticker=1000)
 	public void sayAlive() {
 		this.getMyAgent().logMonologue("I'M STILL ALIVE",LogService.onScreen);

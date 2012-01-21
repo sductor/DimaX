@@ -4,41 +4,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
-import java.util.logging.LogManager;
-
-import com.ibm.icu.text.DateFormat;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.APILauncherModule.StartActivityMessage;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
-import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
-import dima.introspectionbasedagents.services.UnknownCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogNotification;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.services.core.observingagent.PatternObserverService;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
-import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
-import dima.introspectionbasedagents.shells.MethodHandler;
-import dima.kernel.FIPAPlatform.AgentManagementSystem;
-import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 import dimaxx.server.HostIdentifier;
 
 public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent{
@@ -60,16 +44,16 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	public BasicCompetentAgent(final AgentIdentifier newId)  throws CompetenceException {
 		super(newId);
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-		nbCompetentAgent++;
+		this.log= new LogService(this);
+		this.observer=	new PatternObserverWithHookservice(this);
+		BasicCompetentAgent.nbCompetentAgent++;
 	}
 
 	public BasicCompetentAgent(final String newId) throws CompetenceException {
 		super(newId);
-		log= new LogService(this);
-		observer=	new PatternObserverWithHookservice(this);
-		nbCompetentAgent++;
+		this.log= new LogService(this);
+		this.observer=	new PatternObserverWithHookservice(this);
+		BasicCompetentAgent.nbCompetentAgent++;
 	}
 
 //	/*
@@ -125,19 +109,19 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 //		this.creation = new Date();
 //	}
 
-	public void load(BasicAgentCompetence<CompetentComponent> newComp) 
+	public void load(final BasicAgentCompetence<CompetentComponent> newComp)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
-		myShell.load(newComp);
+		this.myShell.load(newComp);
 	}
 
-	public void unload(BasicAgentCompetence<CompetentComponent> newComp) 
+	public void unload(final BasicAgentCompetence<CompetentComponent> newComp)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException{
-		myShell.unload(newComp);
+		this.myShell.unload(newComp);
 	}
-	
+
 	@Override
 	public boolean isActive() {
-		return appliHasStarted;
+		return this.appliHasStarted;
 	}
 
 	//
@@ -148,46 +132,47 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	private boolean appliHasStarted=false;
 
 	public boolean hasAppliStarted() {
-		return appliHasStarted;
+		return this.appliHasStarted;
 	}
 
 
+	@Override
 	public void tryToResumeActivity(){
-		Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
-		while (getMailBox().hasMail()){
-			AbstractMessage m = getMailBox().readMail();
+		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
+		while (this.getMailBox().hasMail()){
+			final AbstractMessage m = this.getMailBox().readMail();
 			if (m instanceof StartActivityMessage)
-				start((StartActivityMessage)m);
+				this.start((StartActivityMessage)m);
 			else
 				messages.add(m);
 		}
-		for (AbstractMessage m : messages)
-			getMailBox().writeMail(m);
+		for (final AbstractMessage m : messages)
+			this.getMailBox().writeMail(m);
 	}
-	
+
 	@MessageHandler
-	public boolean start(StartActivityMessage m){
+	public boolean start(final StartActivityMessage m){
 		this.appliHasStarted=true;
 		this.creation = m.getStartDate();
-		logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
+		this.logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
 		return true;
 	}
 
 	APILauncherModule myApi;
-	public boolean launchWith(APILauncherModule api){
-		myApi=api;
+	public boolean launchWith(final APILauncherModule api){
+		this.myApi=api;
 		return api.launch(this);
 	}
 
-	public boolean launchWith(APILauncherModule api, HostIdentifier h){
-		myApi=api;
+	public boolean launchWith(final APILauncherModule api, final HostIdentifier h){
+		this.myApi=api;
 		return api.launch(this,h);
 	}
-	
+
 	@ProactivityFinalisation
 	public void unegistration() {
 //		logMonologue("I'm out of here!!! >=] on d road again yeaaahh"+myApi, LogService.onBoth);
-		myApi.destroy(this);
+		this.myApi.destroy(this);
 	}
 
 	//
@@ -263,7 +248,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					methodComponent,
-					MethodHandler.getCurrentlyExecutedMethod(nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);
@@ -280,7 +265,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					this,
-					MethodHandler.getCurrentlyExecutedMethod(nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);
@@ -289,11 +274,11 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
-	public boolean whenIsReady(NotReadyException e){
+	public boolean whenIsReady(final NotReadyException e){
 		try {
 			return this.myShell.addHook(e.comp,
 					e.compMethodToTest, e.compSignature, e.compargs,
@@ -379,15 +364,16 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	@Override
-	public Boolean isObserved(Class<?> notificationKey) {
+	public Boolean isObserved(final Class<?> notificationKey) {
 		return this.observer.isObserved(notificationKey);
 	}
 
 	@Override
-	public Collection<AgentIdentifier> getObservers(Class<?> notificationKey) {
+	public Collection<AgentIdentifier> getObservers(final Class<?> notificationKey) {
 		return this.observer.getObservers(notificationKey);
 	}
 
+	@Override
 	public void sendNotificationNow(){
 		this.observer.autoSendOfNotifications();
 	}
@@ -462,17 +448,17 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 //	 }
 
 	 @Override
-	 public void addLogKey(String key, boolean toScreen, boolean toFile) {
+	 public void addLogKey(final String key, final boolean toScreen, final boolean toFile) {
 		 this.log.addLogKey(key, toScreen, toFile);
 	 }
 
 	 @Override
-	 public void setLogKey(String key, boolean toScreen, boolean toFile) {
+	 public void setLogKey(final String key, final boolean toScreen, final boolean toFile) {
 		 this.log.setLogKey(key, toScreen, toFile);
 	 }
 
 	 /*
-	  * Message 
+	  * Message
 	  */
 
 	 @Override
@@ -495,7 +481,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 protected BasicCompetenceShell initiateMyShell(){
 		 try {
 			 return new BasicCompetenceShell(this, this.creation);
-		 } catch (Exception e) {
+		 } catch (final Exception e) {
 			 throw new RuntimeException(this+" ("+this.getClass()+") can not instanciate the competence shield!", e);
 		 }
 	 }

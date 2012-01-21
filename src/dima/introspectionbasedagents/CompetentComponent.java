@@ -7,11 +7,10 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.introspectionbasedagents.services.AgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 
-	
+
 	//
 	// Hook
 	//
@@ -55,12 +54,12 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	public boolean retryWhen(AgentCompetence comp,
 			String methodToTest, ActiveComponentInterface methodComponent, Object[] testArgs, Object[] methodsArgs);
 	/*
-	 * 
+	 *
 	 */
 
 
 	public boolean whenIsReady(NotReadyException e);
-	
+
 	//
 	// Competence
 	//
@@ -89,7 +88,7 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 			String notificationToObserve);
 
 	public void autoObserve(final Class<?> notificationKey);
-	
+
 	public void addObserver(final AgentIdentifier observerAgent, final Class<?> notificationKey);
 
 	public void addObserver(final AgentIdentifier observerAgent, final String notificationKey);
@@ -99,17 +98,17 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	public void removeObserver(final AgentIdentifier observerAgent, final String notificationKey);
 
 	/**/
-	
+
 	public Boolean isObserved(final Class<?> notificationKey);
-	
+
 	public Collection<AgentIdentifier> getObservers(final Class<?> notificationKey);
-	
+
 	/**/
 
 	public Boolean addToBlackList(AgentIdentifier o, Boolean add) ;
-	
+
 	/**/
-	
+
 	public void sendNotificationNow();
 
 	/*
@@ -118,13 +117,13 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 
 
 	public Boolean logMonologue(String text, String logKey);
-	
+
 	public Boolean logWarning(String text, Throwable e, String logKey);
 
 	public Boolean logWarning(String text, String logKey);
 
 	public Boolean signalException(String text, Throwable e);
-	
+
 	public Boolean signalException(String text);
 
 //	public Boolean logException(String text, String details, Throwable e);

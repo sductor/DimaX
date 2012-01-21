@@ -25,10 +25,10 @@ public class Protocol<Agent extends CommunicatingCompetentComponent> extends Bas
 		Class<? extends ProtocolRole> value();
 	}
 
-	
+
 	public Protocol() {
 	}
-	
+
 //	public void sendMessage(AgentIdentifier id, AbstractMessageInterface m){
 //		this.com.sendMessage(id, m);
 //	}
@@ -43,7 +43,7 @@ public class Protocol<Agent extends CommunicatingCompetentComponent> extends Bas
 	// Generic error routine
 	//
 
-	public Protocol(Agent a) throws UnrespectedCompetenceSyntaxException {
+	public Protocol(final Agent a) throws UnrespectedCompetenceSyntaxException {
 		super(a);
 	}
 

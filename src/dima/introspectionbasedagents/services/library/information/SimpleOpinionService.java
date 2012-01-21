@@ -5,16 +5,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import negotiation.negotiationframework.NegotiationStaticParameters;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.FunctionalDispersionAgregator;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
-import negotiation.negotiationframework.NegotiationStaticParameters;
 
 public class SimpleOpinionService extends
 SimpleObservationService implements OpinionService {
@@ -26,7 +27,7 @@ SimpleObservationService implements OpinionService {
 
 	Map<AgentIdentifier,Class<? extends Information>> agentToRegister=
 		new HashMap<AgentIdentifier, Class<? extends Information>>();
-	protected HashMap<Class<? extends Information>, OpinionDataBase<?>> everyoneOpinion = 
+	protected HashMap<Class<? extends Information>, OpinionDataBase<?>> everyoneOpinion =
 		new HashMap<Class<? extends Information>, OpinionDataBase<?>>();
 
 	public static final String opinionObservationKey="opinionDiffusion";
@@ -36,7 +37,7 @@ SimpleObservationService implements OpinionService {
 	//
 
 	@Override
-	public void add(Information information) {
+	public void add(final Information information) {
 		if (information instanceof Opinion) {
 			if (!this.everyoneOpinion.containsKey(information.getClass()))
 				this.everyoneOpinion.put(information.getClass(),
@@ -56,7 +57,7 @@ SimpleObservationService implements OpinionService {
 	}
 
 
-	public String getOpinionObservationKey(Class<? extends Information> info){
+	public String getOpinionObservationKey(final Class<? extends Information> info){
 		return "opiniondiffusion"+info;
 	}
 
@@ -67,24 +68,24 @@ SimpleObservationService implements OpinionService {
 
 	@Override
 	public <Info extends Information> Opinion<Info> getOpinion(
-			Class<Info> informationType, 
-			AgentIdentifier agentId)  throws NoInformationAvailableException{
+			final Class<Info> informationType,
+			final AgentIdentifier agentId)  throws NoInformationAvailableException{
 		try {
-			return (Opinion<Info>) everyoneOpinion.get(informationType).getOpinion(agentId);
-		} catch (Exception e) {
+			return (Opinion<Info>) this.everyoneOpinion.get(informationType).getOpinion(agentId);
+		} catch (final Exception e) {
 			throw new NoInformationAvailableException();
 		}
 	}
 
 
 	@Override
-	public <Info extends Information> Opinion<Info> getGlobalOpinion(Class<Info> myInfoType) throws NoInformationAvailableException {
+	public <Info extends Information> Opinion<Info> getGlobalOpinion(final Class<Info> myInfoType) throws NoInformationAvailableException {
 		try {
-			return (Opinion<Info>) everyoneOpinion.
+			return (Opinion<Info>) this.everyoneOpinion.
 			get(myInfoType).
 			getGlobalOpinion();
-		} catch (Exception e) {
-			getMyAgent().signalException("requesting "+myInfoType,e);
+		} catch (final Exception e) {
+			this.getMyAgent().signalException("requesting "+myInfoType,e);
 			throw new NoInformationAvailableException();
 		}
 	}
@@ -101,17 +102,17 @@ SimpleObservationService implements OpinionService {
 
 	@StepComposant()
 	public void broadcastMyOpinions() {
-		for (OpinionDataBase<?> op : everyoneOpinion.values())
+		for (final OpinionDataBase<?> op : this.everyoneOpinion.values())
 			if (op.hasSignficantChange()){
-				notify(op.getGlobalOpinion(), opinionObservationKey);//+op.informationType);
+				this.notify(op.getGlobalOpinion(), SimpleOpinionService.opinionObservationKey);//+op.informationType);
 				op.significantchange=false;
 			}
 	}
 
 	@MessageHandler
-	@NotificationEnvelope(opinionObservationKey)
+	@NotificationEnvelope(SimpleOpinionService.opinionObservationKey)
 	public <Info extends Information> void receiveOpinion(
-			NotificationMessage<Opinion<?>> o) {
+			final NotificationMessage<Opinion<?>> o) {
 		this.add(o.getNotification());
 	}
 
@@ -122,17 +123,17 @@ SimpleObservationService implements OpinionService {
 
 	protected <Info extends Information> boolean isStillValid(
 			final Info id) {
-		long maxInfo = everyoneOpinion.get(id.getClass()).getGlobalOpinion().getMaxInformationDynamicity();
+		final long maxInfo = this.everyoneOpinion.get(id.getClass()).getGlobalOpinion().getMaxInformationDynamicity();
 		return id.getUptime() - new Date().getTime() <= maxInfo;
-	}	
+	}
 
 	//
 	// Subclasses
 	//
 
 	/*
-	 * 
-	 * 
+	 *
+	 *
 	 */
 
 
@@ -154,7 +155,7 @@ SimpleObservationService implements OpinionService {
 		protected Long minDynamicty = Long.MAX_VALUE;
 		protected Long maxDynamicity = Long.MIN_VALUE;
 		//
-		Map<AgentIdentifier, EnrichedInfo> sytemDynamicities = 
+		Map<AgentIdentifier, EnrichedInfo> sytemDynamicities =
 			new HashMap<AgentIdentifier, EnrichedInfo>();
 
 		//
@@ -170,12 +171,12 @@ SimpleObservationService implements OpinionService {
 		//
 
 		@Override
-		public Info add(Info o) {
-			addDynamicities(o);
-			Info result = super.add(o);
+		public Info add(final Info o) {
+			this.addDynamicities(o);
+			final Info result = super.add(o);
 
-			meanInfo = 	(Info) o.getRepresentativeElement(values());
-			dispersion = FunctionalDispersionAgregator.getEcartType(o, values());
+			this.meanInfo = 	(Info) o.getRepresentativeElement(this.values());
+			this.dispersion = FunctionalDispersionAgregator.getEcartType(o, this.values());
 
 			return result;
 		}
@@ -184,11 +185,11 @@ SimpleObservationService implements OpinionService {
 		@SuppressWarnings("unchecked")
 		public Info remove(final Object i) {
 			if (i instanceof AgentIdentifier) {
-				Info result = super.remove(i);
-				removeDynamicities(result);
+				final Info result = super.remove(i);
+				this.removeDynamicities(result);
 
-				meanInfo = 	(Info) result.getRepresentativeElement(values());
-				dispersion = FunctionalDispersionAgregator.getEcartType(result, values());
+				this.meanInfo = 	(Info) result.getRepresentativeElement(this.values());
+				this.dispersion = FunctionalDispersionAgregator.getEcartType(result, this.values());
 
 				return result;
 
@@ -202,11 +203,11 @@ SimpleObservationService implements OpinionService {
 		 */
 
 		protected long getMaxInformationDynamicity() {
-			return maxDynamicity;
+			return this.maxDynamicity;
 		}
 
 		protected long getMinInformationDynamicity() {
-			return minDynamicty;
+			return this.minDynamicty;
 		}
 
 		protected void clean() {
@@ -220,86 +221,86 @@ SimpleObservationService implements OpinionService {
 		 */
 
 		protected Info getMeanInfo() {
-			return meanInfo;
+			return this.meanInfo;
 		}
 
 		protected double getGlobalInformationDeviation() {
-			return dispersion;
+			return this.dispersion;
 
 		}
 
 		private Info getRichestAgent() {
-			return maxState;
+			return this.maxState;
 		}
 
 		private Info getPoorestAgent() {
-			return minState;
+			return this.minState;
 		}
 
 		//
 		// Primitives
 		//
 
-		protected void addDynamicities(Info info){
-			if (sytemDynamicities.containsKey(info.getMyAgentIdentifier())) 
-				sytemDynamicities.get(info.getMyAgentIdentifier()).update(info);
+		protected void addDynamicities(final Info info){
+			if (this.sytemDynamicities.containsKey(info.getMyAgentIdentifier()))
+				this.sytemDynamicities.get(info.getMyAgentIdentifier()).update(info);
 			else
-				sytemDynamicities.put(info.getMyAgentIdentifier(), new EnrichedInfo(info));
+				this.sytemDynamicities.put(info.getMyAgentIdentifier(), new EnrichedInfo(info));
 
-			updateDyn(sytemDynamicities.get(info.getMyAgentIdentifier()));
-			updateMinMax(info);
+			this.updateDyn(this.sytemDynamicities.get(info.getMyAgentIdentifier()));
+			this.updateMinMax(info);
 		}
 
-		protected void removeDynamicities(Info info){
-			EnrichedInfo dyn = sytemDynamicities.remove(info.getMyAgentIdentifier());
+		protected void removeDynamicities(final Info info){
+			final EnrichedInfo dyn = this.sytemDynamicities.remove(info.getMyAgentIdentifier());
 
 			if (dyn==null)
 				throw new RuntimeException("removing unknown info??");
 
-			updateDyn(dyn);
-			updateMinMax(info);
+			this.updateDyn(dyn);
+			this.updateMinMax(info);
 		}
 
-		private void updateDyn(EnrichedInfo dyn) {
+		private void updateDyn(final EnrichedInfo dyn) {
 
-			if (dyn.getLastInfoDynamicity()< minDynamicty)
-				minDynamicty = dyn.getLastInfoDynamicity();
+			if (dyn.getLastInfoDynamicity()< this.minDynamicty)
+				this.minDynamicty = dyn.getLastInfoDynamicity();
 
-			if(dyn.getLastInfoDynamicity()> maxDynamicity)
-				maxDynamicity = dyn.getLastInfoDynamicity();
+			if(dyn.getLastInfoDynamicity()> this.maxDynamicity)
+				this.maxDynamicity = dyn.getLastInfoDynamicity();
 
-			if (dyn.getLastInfoDynamicity().equals(maxDynamicity) || dyn.getLastInfoDynamicity().equals(minDynamicty)){
-				maxDynamicity = Long.MIN_VALUE;
-				minDynamicty = Long.MAX_VALUE;
-				for (EnrichedInfo e : sytemDynamicities.values()){
-					if (e.getLastInfoDynamicity()<minDynamicty)
-						minDynamicty = e.getLastInfoDynamicity();
-					if (e.getLastInfoDynamicity()>maxDynamicity)
-						maxDynamicity = e.getLastInfoDynamicity();
+			if (dyn.getLastInfoDynamicity().equals(this.maxDynamicity) || dyn.getLastInfoDynamicity().equals(this.minDynamicty)){
+				this.maxDynamicity = Long.MIN_VALUE;
+				this.minDynamicty = Long.MAX_VALUE;
+				for (final EnrichedInfo e : this.sytemDynamicities.values()){
+					if (e.getLastInfoDynamicity()<this.minDynamicty)
+						this.minDynamicty = e.getLastInfoDynamicity();
+					if (e.getLastInfoDynamicity()>this.maxDynamicity)
+						this.maxDynamicity = e.getLastInfoDynamicity();
 				}
 			}
 		}
 
-		private void updateMinMax(Info o) {
+		private void updateMinMax(final Info o) {
 
-			if (minState==null || o.getNumericValue(o)< o.getNumericValue(minState))
-				minState = o;
+			if (this.minState==null || o.getNumericValue(o)< o.getNumericValue(this.minState))
+				this.minState = o;
 
-			if(maxState== null || o.getNumericValue(o)> o.getNumericValue(maxState))
-				maxState = o;
+			if(this.maxState== null || o.getNumericValue(o)> o.getNumericValue(this.maxState))
+				this.maxState = o;
 
-			if (o.getNumericValue(o).equals(o.getNumericValue(maxState)) 
-					|| o.getNumericValue(o).equals(o.getNumericValue(minState))){
+			if (o.getNumericValue(o).equals(o.getNumericValue(this.maxState))
+					|| o.getNumericValue(o).equals(o.getNumericValue(this.minState))){
 				Double maxStateUtil = Double.MIN_VALUE;
 				Double minStateUtil = Double.MAX_VALUE;
-				for (Info e : values()){
+				for (final Info e : this.values()){
 					if (o.getNumericValue(e)<minStateUtil){
-						minState = e;
-						minStateUtil = o.getNumericValue(minState);
+						this.minState = e;
+						minStateUtil = o.getNumericValue(this.minState);
 					}
 					if (o.getNumericValue(e)>maxStateUtil){
-						maxState = e;
-						maxStateUtil = o.getNumericValue(maxState);
+						this.maxState = e;
+						maxStateUtil = o.getNumericValue(this.maxState);
 					}
 				}
 			}
@@ -314,11 +315,11 @@ SimpleObservationService implements OpinionService {
 
 			private Long infoDynamicity = Long.MAX_VALUE;
 			private long uptime;
-			private AgentIdentifier id;
+			private final AgentIdentifier id;
 
 			public EnrichedInfo(final Information myInfo) {
-				uptime = myInfo.getUptime();
-				id = myInfo.getMyAgentIdentifier();
+				this.uptime = myInfo.getUptime();
+				this.id = myInfo.getMyAgentIdentifier();
 			}
 
 			public Long getLastInfoDynamicity() {
@@ -326,18 +327,18 @@ SimpleObservationService implements OpinionService {
 			}
 
 			public Long update(final Information s) {
-				if (!s.getMyAgentIdentifier().equals(id))
+				if (!s.getMyAgentIdentifier().equals(this.id))
 					throw new RuntimeException("arghhhhh!");
 
-				Long previous = infoDynamicity;
-				this.infoDynamicity = s.getUptime() - uptime;
-				uptime = s.getUptime();
+				final Long previous = this.infoDynamicity;
+				this.infoDynamicity = s.getUptime() - this.uptime;
+				this.uptime = s.getUptime();
 
 				return previous;
 			}
 
 			@Override
-			public int compareTo(EnrichedInfo that) {
+			public int compareTo(final EnrichedInfo that) {
 				return this.infoDynamicity.compareTo(that.infoDynamicity);
 			}
 
@@ -356,12 +357,17 @@ SimpleObservationService implements OpinionService {
 	}
 
 	/*
-	 * 
-	 * 
+	 *
+	 *
 	 */
 
 	class OpinionDataBase<Info extends Information> extends
 	InformationDataBase<Opinion<Info>> {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 4600199302176545678L;
 
 		boolean significantchange=false;
 
@@ -371,10 +377,10 @@ SimpleObservationService implements OpinionService {
 		//
 		protected Long minDynamicty = Long.MAX_VALUE;
 		protected Long maxDynamicity = Long.MIN_VALUE;
-		//	
-		Map<AgentIdentifier, Long> sytemMinDynamicities = 
+		//
+		Map<AgentIdentifier, Long> sytemMinDynamicities =
 			new HashMap<AgentIdentifier, Long>();
-		Map<AgentIdentifier, Long> sytemMaxDynamicities = 
+		Map<AgentIdentifier, Long> sytemMaxDynamicities =
 			new HashMap<AgentIdentifier, Long>();
 
 		LightWeightedAverageDoubleAggregation opinionDispersion = new LightWeightedAverageDoubleAggregation();
@@ -386,26 +392,26 @@ SimpleObservationService implements OpinionService {
 		//
 
 
-		public OpinionDataBase(Class<Info> informationType) {
+		public OpinionDataBase(final Class<Info> informationType) {
 			this.informationType=informationType;
 		}
 
 		protected boolean hasSignficantChange() {
-			return significantchange;
+			return this.significantchange;
 		}
 
 		//
 		// Methods
 		//
 
-		Opinion<Info> getOpinion(AgentIdentifier agentId){
+		Opinion<Info> getOpinion(final AgentIdentifier agentId){
 			try {
-				((AnalysedInformationDataBase) getInformation(informationType)).clean();
+				((AnalysedInformationDataBase) SimpleOpinionService.this.getInformation(this.informationType)).clean();
 				return new SimpleOpinion<Info>(
-						getIdentifier(), agentId,
-						getInformation(informationType, agentId));
+						SimpleOpinionService.this.getIdentifier(), agentId,
+						SimpleOpinionService.this.getInformation(this.informationType, agentId));
 			} catch (final NoInformationAvailableException e) {
-				return getGlobalOpinion();
+				return this.getGlobalOpinion();
 			}
 		}
 
@@ -415,32 +421,32 @@ SimpleObservationService implements OpinionService {
 
 			//updating the personal opinion
 			try {
-				this.add(getPersonalOpinion(NegotiationStaticParameters.globaLAgentIdentifer));
-			} catch (NoInformationAvailableException e) {
+				this.add(this.getPersonalOpinion(NegotiationStaticParameters.globaLAgentIdentifer));
+			} catch (final NoInformationAvailableException e) {
 				//Do nothing
 			}
 
 			//generating opinion
 			return new SimpleOpinion<Info>(
-					getIdentifier(),
+					SimpleOpinionService.this.getIdentifier(),
 					NegotiationStaticParameters.globaLAgentIdentifer,
-					getAgents(),
-					getMinInformationDynamicity(),
-					getMaxInformationDynamicity(),
-					getMeanInfo(),
-					getGlobalInformationDeviation(),
-					getPoorestAgent(),
-					getRichestAgent(),
-					size());
+					this.getAgents(),
+					this.getMinInformationDynamicity(),
+					this.getMaxInformationDynamicity(),
+					this.getMeanInfo(),
+					this.getGlobalInformationDeviation(),
+					this.getPoorestAgent(),
+					this.getRichestAgent(),
+					this.size());
 		}
 
 
 		Opinion<Info> getPersonalOpinion(
-				AgentIdentifier representantdelinformation) throws NoInformationAvailableException {
-			final AnalysedInformationDataBase myOp4thisInfo = (AnalysedInformationDataBase) getInformation(informationType);
-			final SimpleOpinion<Info> myOwnOpinion = 
+				final AgentIdentifier representantdelinformation) throws NoInformationAvailableException {
+			final AnalysedInformationDataBase myOp4thisInfo = (AnalysedInformationDataBase) SimpleOpinionService.this.getInformation(this.informationType);
+			final SimpleOpinion<Info> myOwnOpinion =
 				new SimpleOpinion<Info>(
-						getIdentifier(), 
+						SimpleOpinionService.this.getIdentifier(),
 						representantdelinformation,
 						myOp4thisInfo.getAgents(),
 						myOp4thisInfo.getMinInformationDynamicity(),
@@ -454,13 +460,13 @@ SimpleObservationService implements OpinionService {
 		}
 
 		@Override
-		public Opinion<Info> add(Opinion<Info> o) {
-			addDynamicities(o);
-			updateMinMax(o);
-			Opinion<Info> result = super.add(o);
-			meanInfo = 	(Opinion<Info>) o.fuse(values());
-			opinionDispersion.add(o.getOpinionDispersion(), new Double(o.getNumberOfAggregatedElements()));
-			significantchange=true;
+		public Opinion<Info> add(final Opinion<Info> o) {
+			this.addDynamicities(o);
+			this.updateMinMax(o);
+			final Opinion<Info> result = super.add(o);
+			this.meanInfo = 	(Opinion<Info>) o.fuse(this.values());
+			this.opinionDispersion.add(o.getOpinionDispersion(), new Double(o.getNumberOfAggregatedElements()));
+			this.significantchange=true;
 			return result;
 		}
 
@@ -468,12 +474,12 @@ SimpleObservationService implements OpinionService {
 		@SuppressWarnings("unchecked")
 		public Opinion<Info> remove(final Object obj) {
 			if (obj instanceof AgentIdentifier){
-				Opinion<Info> o = super.remove(obj);
-				removeDynamicities(o);
-				updateMinMax(o);
-				meanInfo = (Opinion<Info>)	o.fuse(values());
-				opinionDispersion.remove(o.getOpinionDispersion(), new Double(o.getNumberOfAggregatedElements()));
-				significantchange=true;
+				final Opinion<Info> o = super.remove(obj);
+				this.removeDynamicities(o);
+				this.updateMinMax(o);
+				this.meanInfo = (Opinion<Info>)	o.fuse(this.values());
+				this.opinionDispersion.remove(o.getOpinionDispersion(), new Double(o.getNumberOfAggregatedElements()));
+				this.significantchange=true;
 
 				return  o;
 			} else
@@ -485,11 +491,11 @@ SimpleObservationService implements OpinionService {
 		 */
 
 		protected long getMaxInformationDynamicity() {
-			return maxDynamicity;
+			return this.maxDynamicity;
 		}
 
 		protected long getMinInformationDynamicity() {
-			return minDynamicty;
+			return this.minDynamicty;
 		}
 
 		protected void clean() {
@@ -503,80 +509,78 @@ SimpleObservationService implements OpinionService {
 		 */
 
 		protected Info getMeanInfo() {
-			return meanInfo.getRepresentativeElement();
+			return this.meanInfo.getRepresentativeElement();
 		}
 
 		protected double getGlobalInformationDeviation() {
-			return opinionDispersion.getRepresentativeElement();
+			return this.opinionDispersion.getRepresentativeElement();
 		}
 
 		private Info getRichestAgent() {
-			return maxState.getRepresentativeElement();
+			return this.maxState.getRepresentativeElement();
 		}
 
 		private Info getPoorestAgent() {
-			return minState.getRepresentativeElement();
+			return this.minState.getRepresentativeElement();
 		}
 
 		/*
-		 * 
+		 *
 		 */
 
-		protected void addDynamicities(Opinion<Info> info){
-			Long previousMin = sytemMinDynamicities.put(info.getCreator(),info.getMinInformationDynamicity());
-			Long previousMax = sytemMaxDynamicities.put(info.getCreator(),info.getMaxInformationDynamicity());
+		protected void addDynamicities(final Opinion<Info> info){
+			final Long previousMin = this.sytemMinDynamicities.put(info.getCreator(),info.getMinInformationDynamicity());
+			final Long previousMax = this.sytemMaxDynamicities.put(info.getCreator(),info.getMaxInformationDynamicity());
 
-			updateDyn(info, previousMin, previousMax);
+			this.updateDyn(info, previousMin, previousMax);
 		}
-		protected void removeDynamicities(Opinion<Info> info){
-			Long previousMin = sytemMinDynamicities.remove(info.getCreator());
-			Long previousMax = sytemMaxDynamicities.remove(info.getCreator());
+		protected void removeDynamicities(final Opinion<Info> info){
+			final Long previousMin = this.sytemMinDynamicities.remove(info.getCreator());
+			final Long previousMax = this.sytemMaxDynamicities.remove(info.getCreator());
 
-			updateDyn(info, previousMin, previousMax);
+			this.updateDyn(info, previousMin, previousMax);
 		}
 
-		private void updateDyn(Opinion<Info> info, Long previousMin, Long previousMax) {
-			if (info.getMinInformationDynamicity()< minDynamicty)
-				minDynamicty = info.getMinInformationDynamicity();	
-			else if (previousMin==null || previousMin.equals(minDynamicty)){
-				minDynamicty = Long.MAX_VALUE;
-				for (Long e : sytemMinDynamicities.values()){
-					if (e<minDynamicty)
-						minDynamicty = e;
-				}	
+		private void updateDyn(final Opinion<Info> info, final Long previousMin, final Long previousMax) {
+			if (info.getMinInformationDynamicity()< this.minDynamicty)
+				this.minDynamicty = info.getMinInformationDynamicity();
+			else if (previousMin==null || previousMin.equals(this.minDynamicty)){
+				this.minDynamicty = Long.MAX_VALUE;
+				for (final Long e : this.sytemMinDynamicities.values())
+					if (e<this.minDynamicty)
+						this.minDynamicty = e;
 			}
 
-			if (info.getMaxInformationDynamicity()> maxDynamicity)
-				maxDynamicity = info.getMaxInformationDynamicity();	
-			else if (previousMax==null || previousMax.equals(maxDynamicity)){
-				maxDynamicity = Long.MIN_VALUE;
-				for (Long e : sytemMaxDynamicities.values()){
-					if (e<maxDynamicity)
-						maxDynamicity = e;
-				}
+			if (info.getMaxInformationDynamicity()> this.maxDynamicity)
+				this.maxDynamicity = info.getMaxInformationDynamicity();
+			else if (previousMax==null || previousMax.equals(this.maxDynamicity)){
+				this.maxDynamicity = Long.MIN_VALUE;
+				for (final Long e : this.sytemMaxDynamicities.values())
+					if (e<this.maxDynamicity)
+						this.maxDynamicity = e;
 			}
 		}
 
-		private void updateMinMax(Opinion<Info> o) {
+		private void updateMinMax(final Opinion<Info> o) {
 
-			if (minState == null || o.getNumericValue(o.getRepresentativeElement())< o.getNumericValue(minState.getRepresentativeElement()))
-				minState = o;
+			if (this.minState == null || o.getNumericValue(o.getRepresentativeElement())< o.getNumericValue(this.minState.getRepresentativeElement()))
+				this.minState = o;
 
-			if(maxState == null || o.getNumericValue(o.getRepresentativeElement())> o.getNumericValue(maxState.getRepresentativeElement()))
-				maxState = o;
+			if(this.maxState == null || o.getNumericValue(o.getRepresentativeElement())> o.getNumericValue(this.maxState.getRepresentativeElement()))
+				this.maxState = o;
 
-			if (o.getNumericValue(o.getRepresentativeElement()).equals(o.getNumericValue(maxState.getRepresentativeElement())) 
-					|| o.getNumericValue(o.getRepresentativeElement()).equals(o.getNumericValue(minState.getRepresentativeElement()))){
+			if (o.getNumericValue(o.getRepresentativeElement()).equals(o.getNumericValue(this.maxState.getRepresentativeElement()))
+					|| o.getNumericValue(o.getRepresentativeElement()).equals(o.getNumericValue(this.minState.getRepresentativeElement()))){
 				Double maxStateUtil = Double.MIN_VALUE;
 				Double minStateUtil = Double.MAX_VALUE;
-				for (Opinion<Info> e : values()){
+				for (final Opinion<Info> e : this.values()){
 					if (o.getNumericValue(e.getRepresentativeElement())<minStateUtil){
-						minState = e;
-						minStateUtil = o.getNumericValue(minState.getRepresentativeElement());
+						this.minState = e;
+						minStateUtil = o.getNumericValue(this.minState.getRepresentativeElement());
 					}
 					if (o.getNumericValue(e.getRepresentativeElement())>maxStateUtil){
-						maxState = e;
-						maxStateUtil = o.getNumericValue(maxState.getRepresentativeElement());
+						this.maxState = e;
+						maxStateUtil = o.getNumericValue(this.maxState.getRepresentativeElement());
 					}
 				}
 			}
@@ -608,33 +612,33 @@ SimpleObservationService implements OpinionService {
 			private final InformedState maxState;
 
 			/*
-			 * 
+			 *
 			 */
 			public SimpleOpinion(
 					final AgentIdentifier creator,
-					final AgentIdentifier id, 
+					final AgentIdentifier id,
 					final InformedState agentExactState) {
 				this.id = id;
 				this.isCertain = true;
 				this.creator = creator;
-				aggregatedAgents = new ArrayList<AgentIdentifier>();
-				aggregatedAgents.add(id);
+				this.aggregatedAgents = new ArrayList<AgentIdentifier>();
+				this.aggregatedAgents.add(id);
 				this.representativeState = agentExactState;
 				this.informationNumber = 1;
 				this.statesDeviation = 0.;
 				//
-				this.minInformationDynamicity = getMinInformationDynamicity();
-				this.maxInformationDynamicity = getMaxInformationDynamicity();
-				this.minState = getMinElement();
-				this.maxState = getMaxElement();
+				this.minInformationDynamicity = this.getMinInformationDynamicity();
+				this.maxInformationDynamicity = this.getMaxInformationDynamicity();
+				this.minState = this.getMinElement();
+				this.maxState = this.getMaxElement();
 				this.creationTime = new Date().getTime();
 
 			}
 
 			public SimpleOpinion(
 					final AgentIdentifier creator,
-					final AgentIdentifier id, 
-					Collection<AgentIdentifier> aggregatedAgents,
+					final AgentIdentifier id,
+					final Collection<AgentIdentifier> aggregatedAgents,
 					final long minInformationDynamicity,
 					final long maxInformationDynamicity,
 					final InformedState meanState,
@@ -681,7 +685,7 @@ SimpleObservationService implements OpinionService {
 			}
 
 			/*
-			 * 
+			 *
 			 */
 
 			@Override
@@ -695,7 +699,7 @@ SimpleObservationService implements OpinionService {
 			}
 
 			/*
-			 * 
+			 *
 			 */
 
 			@Override
@@ -710,7 +714,7 @@ SimpleObservationService implements OpinionService {
 
 			@Override
 			public Long getCreationTime() {
-				return getCreationTime();
+				return this.getCreationTime();
 			}
 
 			@Override
@@ -719,7 +723,7 @@ SimpleObservationService implements OpinionService {
 			}
 
 			@Override
-			public boolean equals(Object o) {
+			public boolean equals(final Object o) {
 				if (o instanceof Opinion)
 					return ((Opinion) o).getCreator().equals(this.getCreator());
 				else
@@ -733,7 +737,7 @@ SimpleObservationService implements OpinionService {
 
 			@Override
 			public Collection<AgentIdentifier> getAggregatedAgents() {
-				return aggregatedAgents;
+				return this.aggregatedAgents;
 			}
 
 			@Override
@@ -747,24 +751,24 @@ SimpleObservationService implements OpinionService {
 			}
 
 			/*
-			 * 
+			 *
 			 */
 
 			@Override
 			public AbstractCompensativeAggregation<Information> fuse(
-					Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
+					final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
 				boolean fCertain=true;
 				int fInfosNumber=0;
 				Long fMinDyn=Long.MAX_VALUE;
 				Long fMaxDyn=Long.MIN_VALUE;
-				LightWeightedAverageDoubleAggregation fDisp = new LightWeightedAverageDoubleAggregation();
-				Collection<AgentIdentifier> fAgentsID = new ArrayList<AgentIdentifier>();
-				Map<InformedState,Double> fallRepStates = new HashMap<InformedState, Double>();
+				final LightWeightedAverageDoubleAggregation fDisp = new LightWeightedAverageDoubleAggregation();
+				final Collection<AgentIdentifier> fAgentsID = new ArrayList<AgentIdentifier>();
+				final Map<InformedState,Double> fallRepStates = new HashMap<InformedState, Double>();
 				InformedState fminState=null, fmaxState=null;
 
-				for (AbstractCompensativeAggregation<? extends Information> av : averages)
+				for (final AbstractCompensativeAggregation<? extends Information> av : averages)
 					if (av instanceof Opinion) {
-						Opinion<InformedState> a = (Opinion) av;
+						final Opinion<InformedState> a = (Opinion) av;
 						fCertain = fCertain && a.isCertain();
 						fInfosNumber+=a.getNumberOfAggregatedElements();
 						fMinDyn = Math.min(fMinDyn, a.getMinInformationDynamicity());
@@ -772,49 +776,49 @@ SimpleObservationService implements OpinionService {
 						fDisp.add(a.getOpinionDispersion(), a.getNumberOfAggregatedElements());
 						fAgentsID.addAll(a.getAggregatedAgents());
 						fallRepStates.put(a.getRepresentativeElement(),new Double(a.getNumberOfAggregatedElements()));
-						if (fminState==null || getNumericValue(fminState)>getNumericValue(a.getMinElement()))
+						if (fminState==null || this.getNumericValue(fminState)>this.getNumericValue(a.getMinElement()))
 							fminState= a.getMinElement();
-						if (fmaxState==null || getNumericValue(fmaxState)<getNumericValue(a.getMaxElement()))
+						if (fmaxState==null || this.getNumericValue(fmaxState)<this.getNumericValue(a.getMaxElement()))
 							fmaxState= a.getMaxElement();
 
 					}
 
 				return new SimpleOpinion(
-						getCreator(), 
-						getIdentifier(), 
+						this.getCreator(),
+						SimpleOpinionService.this.getIdentifier(),
 						fAgentsID,
 						fMinDyn,
-						fMaxDyn, 
-						getRepresentativeElement(fallRepStates), 
-						fDisp.getRepresentativeElement(), fminState, fmaxState, 
-						fInfosNumber);			
+						fMaxDyn,
+						this.getRepresentativeElement(fallRepStates),
+						fDisp.getRepresentativeElement(), fminState, fmaxState,
+						fInfosNumber);
 
 			}
 
 			/*
-			 * 
+			 *
 			 */
 
 			@Override
-			public int compareTo(Information o) {
-				return getRepresentativeElement().compareTo(o);
+			public int compareTo(final Information o) {
+				return this.getRepresentativeElement().compareTo(o);
 			}
 
 			@Override
-			public Double getNumericValue(Information e) {
-				return getRepresentativeElement().getNumericValue(e);
-			}
-
-			@Override
-			public Information getRepresentativeElement(
-					Collection<? extends Information> elems) {
-				return getRepresentativeElement().getRepresentativeElement(elems);
+			public Double getNumericValue(final Information e) {
+				return this.getRepresentativeElement().getNumericValue(e);
 			}
 
 			@Override
 			public Information getRepresentativeElement(
-					Map<? extends Information, Double> elems) {
-				return getRepresentativeElement().getRepresentativeElement(elems);
+					final Collection<? extends Information> elems) {
+				return this.getRepresentativeElement().getRepresentativeElement(elems);
+			}
+
+			@Override
+			public Information getRepresentativeElement(
+					final Map<? extends Information, Double> elems) {
+				return this.getRepresentativeElement().getRepresentativeElement(elems);
 			}
 			//
 			// Primitives
@@ -822,9 +826,9 @@ SimpleObservationService implements OpinionService {
 
 			@Override
 			public String toString(){
-				return "Opinion of "+creator+" about "+aggregatedAgents
-				+"\n * representative state is "+getRepresentativeElement()
-				+"\n * dispersion is "+getGlobalInformationDeviation();
+				return "Opinion of "+this.creator+" about "+this.aggregatedAgents
+				+"\n * representative state is "+this.getRepresentativeElement()
+				+"\n * dispersion is "+OpinionDataBase.this.getGlobalInformationDeviation();
 			}
 
 		}
@@ -845,10 +849,10 @@ SimpleObservationService implements OpinionService {
 //			getMyAgent().logException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!", e);
 //			throw new RuntimeException();
 //		}
-//			
+//
 //		}
 //	}
-//	
+//
 //	//
 //	// Behavior
 //	//
@@ -861,7 +865,7 @@ SimpleObservationService implements OpinionService {
 //	public void broadcastMyState() {
 //		try {
 //			if (hasSignficantChange()){
-//				
+//
 //			}
 //			significantchange=false;
 //		} catch (Exception e) {
@@ -876,11 +880,11 @@ SimpleObservationService implements OpinionService {
 //			NotificationMessage<Information> o) {
 //		this.add(o.getNotification());
 //	}
-//	
+//
 //	private boolean hasSignficantChange() {
 //		return significantchange;
 //	}
-//	
+//
 //		protected void collectInformation(Class<Information> informationType,
 //				boolean isOpinion) {
 //			final int popPercent = new Random()
@@ -913,7 +917,7 @@ SimpleObservationService implements OpinionService {
 //		public PersonalState getMyCurrentState() {
 //			return this.myEnrichedState.getMyInfo();
 //		}
-//	
+//
 //		@Override
 //		public void setNewState(final PersonalState s) {
 //			if (this.myEnrichedState == null)
@@ -1029,7 +1033,7 @@ SimpleObservationService implements OpinionService {
 
 //Information result = null;
 //if (this.containsKey(o.getMyAgentIdentifier())) {
-//	result = (EnrichedInfo<Information>) 
+//	result = (EnrichedInfo<Information>)
 //	this.get(o.getMyAgentIdentifier());
 //	this.systemDynamicity.remove(((EnrichedInfo<Information>)  result).getLastInfoDynamicity());
 //	this.myInfoAgregator.remove(o);

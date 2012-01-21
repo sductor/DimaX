@@ -62,7 +62,7 @@ public class NotificationEnvelopeClass implements Envelope {
 	public boolean equals(final Object o){
 
 		if (o instanceof NotificationEnvelopeClass){
-			NotificationEnvelopeClass that = (NotificationEnvelopeClass) o;
+			final NotificationEnvelopeClass that = (NotificationEnvelopeClass) o;
 //			try {// attempting key are classes
 //				Class<?> thisClass = Class.forName(this.key);
 //				Class<?> thatClass = Class.forName(that.key);

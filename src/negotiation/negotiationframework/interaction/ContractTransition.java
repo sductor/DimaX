@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ AbstractContractTransition<ActionSpec> {
 	//
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -3237282341034282940L;
 	protected final AgentIdentifier creator;
@@ -39,8 +38,8 @@ AbstractContractTransition<ActionSpec> {
 	// Constructor
 	//
 
-	public ContractTransition(AgentIdentifier creator, String name,
-			List<AgentIdentifier> actors, List<Object> args,
+	public ContractTransition(final AgentIdentifier creator, final String name,
+			final List<AgentIdentifier> actors, final List<Object> args,
 			final long validityTime) {
 		super();
 		this.actors = actors;
@@ -50,8 +49,8 @@ AbstractContractTransition<ActionSpec> {
 		this.validityTime = validityTime;
 	}
 
-	public ContractTransition(AgentIdentifier creator, String name,
-			AgentIdentifier[] actors, Object[] args, long validityTime) {
+	public ContractTransition(final AgentIdentifier creator, final String name,
+			final AgentIdentifier[] actors, final Object[] args, final long validityTime) {
 		super();
 		this.actors = Arrays.asList(actors);
 		this.creator = creator;
@@ -96,9 +95,8 @@ AbstractContractTransition<ActionSpec> {
 
 	@Override
 	public void setSpecification(final ActionSpec s) {
-		if (s==null){
+		if (s==null)
 			throw new RuntimeException("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-		}
 		if (this.actors.contains(s.getMyAgentIdentifier()))
 			this.specs.put(s.getMyAgentIdentifier(), s);
 		else
@@ -139,12 +137,12 @@ AbstractContractTransition<ActionSpec> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
-	public ActionSpec getSpecificationOf(AgentIdentifier id){
-			return specs.get(id);
+	public ActionSpec getSpecificationOf(final AgentIdentifier id){
+			return this.specs.get(id);
 
 	}
 

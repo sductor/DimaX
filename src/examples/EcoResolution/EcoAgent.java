@@ -54,7 +54,7 @@ public  abstract class EcoAgent extends BasicReactiveAgent{
 
 	public void becomeSatisfied()
 	{
-		this.changeStateTo(SATISFIED);
+		this.changeStateTo(EcoAgent.SATISFIED);
 		this.informDependantsOfSatisfaction();
 	}
 //*********** Default methods to be redefined or called in concrete subclasses
@@ -133,12 +133,12 @@ public  void step()
 		{
 			if ( !this.canEscapeWithConstraint( constraint))
 			{
-				this.changeStateTo( AGGRESSION_ESCAPE);
+				this.changeStateTo( EcoAgent.AGGRESSION_ESCAPE);
 				this.doEscapeAggressionWithConstraint( place);
 			}
 			this.doEscapeActionWithConstraint( place);
-			if ( this.goalAgent == place) this.changeStateTo( SATISFIED);
-			else this.changeStateTo( TRY_SATISFACTION);
+			if ( this.goalAgent == place) this.changeStateTo( EcoAgent.SATISFIED);
+			else this.changeStateTo( EcoAgent.TRY_SATISFACTION);
 		}
 	}
 	public void trySatisfaction()
@@ -147,7 +147,7 @@ public  void step()
 
 		if ( !this.canSatisfyOnPlace(place))
 		{
-			this.changeStateTo(AGGRESSION_SATISFACTION);
+			this.changeStateTo(EcoAgent.AGGRESSION_SATISFACTION);
 			this.doSatisfactionAggressionOnPlace(place);
 		}
 		this.doSatisfactionActionOnPlace(place);

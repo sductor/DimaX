@@ -2,69 +2,61 @@ package negotiation.negotiationframework.interaction.candidatureprotocol.mirror;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
-
-import negotiation.faulttolerance.candidaturenegotiation.mirrordestruction.ReplicationDestructionCandidature;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.MatchingCandidature;
 import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
+import dima.basicagentcomponents.AgentIdentifier;
 
 public abstract class UpgradingExplorator<
-Contract extends AbstractContractTransition<ActionSpec>, 
+Contract extends AbstractContractTransition<ActionSpec>,
 ActionSpec extends AbstractActionSpecification> {
 
 	public Collection<Contract> generateUpgradingContracts(
-			SimpleNegotiatingAgent<ActionSpec, ?, Contract> myAgent,
+			final SimpleNegotiatingAgent<ActionSpec, ?, Contract> myAgent,
 			final ContractTrunk<Contract> n) {
 //		myAgent.logMonologue("entering upgrading contract myState is "+myAgent.getMyCurrentState());
-		Collection<Contract> unacceptedContracts = n.getRejectedContracts();
-		Collection<Contract> toPutOnWait = new ArrayList<Contract>();
-		Map<AgentIdentifier,Contract> upgradingContracts = 
+		final Collection<Contract> unacceptedContracts = n.getRejectedContracts();
+		final Collection<Contract> toPutOnWait = new ArrayList<Contract>();
+		final Map<AgentIdentifier,Contract> upgradingContracts =
 				new HashMap<AgentIdentifier,Contract>();
-		Collection<Contract> emptycontract = new ArrayList<Contract>();
+		final Collection<Contract> emptycontract = new ArrayList<Contract>();
 
 		if (!myAgent.getMyProtocol().negotiationAsInitiatorHasStarted()
-				&& !unacceptedContracts.isEmpty() && n.getContractsAcceptedBy(myAgent.getIdentifier()).isEmpty()){
-			//The state of the host is stable and there is rejected contract : 
+				&& !unacceptedContracts.isEmpty() && n.getContractsAcceptedBy(myAgent.getIdentifier()).isEmpty())
+			//The state of the host is stable and there is rejected contract :
 			//we try to find if there is destruction that could loccally improve the system
-			for (ActionSpec stateToDestroy : myAgent.getMyResources()){
-//				myAgent.logMonologue("should i destroy? "+stateToDestroy);
-				for (Contract c : unacceptedContracts){
+			for (final ActionSpec stateToDestroy : myAgent.getMyResources())
+				//				myAgent.logMonologue("should i destroy? "+stateToDestroy);
+				for (final Contract c : unacceptedContracts){
 //					myAgent.logMonologue("analysing contract "+c);
-					Collection<Contract> testingAllocation = new ArrayList<Contract>();
-					Contract destContract = generateDestructionContract(stateToDestroy,c);
+					final Collection<Contract> testingAllocation = new ArrayList<Contract>();
+					final Contract destContract = this.generateDestructionContract(stateToDestroy,c);
 					destContract.setSpecification(myAgent.getMySpecif(destContract));
 					destContract.setSpecification(stateToDestroy);
 					testingAllocation.add(c);
 					testingAllocation.add(destContract);
 //					myAgent.logMonologue(" upgrading contract myState is "+myAgent.getMyCurrentState());
 					if (upgradingContracts.containsKey(stateToDestroy.getMyAgentIdentifier())){
-						Collection<Contract> alreadyMadeContract = new ArrayList<Contract>();
+						final Collection<Contract> alreadyMadeContract = new ArrayList<Contract>();
 						alreadyMadeContract.add(upgradingContracts.get(stateToDestroy.getMyAgentIdentifier()));
 						if (myAgent.getMyAllocationPreferenceComparator().compare(
-								testingAllocation, 
+								testingAllocation,
 								alreadyMadeContract)>0){
 							upgradingContracts.put(stateToDestroy.getMyAgentIdentifier(), destContract);
-							toPutOnWait.add(c);						
+							toPutOnWait.add(c);
 						}
 					} else if (myAgent.getMyAllocationPreferenceComparator().compare(testingAllocation, emptycontract)>0){
 						upgradingContracts.put(stateToDestroy.getMyAgentIdentifier(), destContract);
-						toPutOnWait.add(c);				
+						toPutOnWait.add(c);
 					}
 				}
-			}
-		}
 
-		for (Contract c : toPutOnWait){
+		for (final Contract c : toPutOnWait)
 			n.removeRejection(myAgent.getIdentifier(), c);
-		}
 		return upgradingContracts.values();
 	}
 
@@ -73,15 +65,15 @@ ActionSpec extends AbstractActionSpecification> {
 
 
 
-//	
-//	Contract minRefused =  
+//
+//	Contract minRefused =
 //			Collections.min(
-//					unacceptedContracts, 
+//					unacceptedContracts,
 //					myAgent().getMyPreferenceComparator());
 ////	Collection<ReplicationCandidature> toPutOnWait = new ArrayList<ReplicationCandidature>();
 //	boolean iLLProposeDestruction = false;
 ////	for (ReplicationCandidature c : unacceptedContracts){
-//		Iterator<ReplicaState> itAg = 
+//		Iterator<ReplicaState> itAg =
 //				this.getMyAgent().
 //				getMyCurrentState().getMyAgents();
 //
@@ -89,7 +81,7 @@ ActionSpec extends AbstractActionSpecification> {
 //			ReplicaState agToKill = itAg.next();
 //			if (agToKill.getMyReliability() > minRefused.getAgentInitialState().getMyReliability()){
 //				ReplicationDestructionCandidature replicationDestructionCandidature = new ReplicationDestructionCandidature(
-//						(ResourceIdentifier) this.getMyAgent().getIdentifier(), 
+//						(ResourceIdentifier) this.getMyAgent().getIdentifier(),
 //						agToKill.getMyAgentIdentifier(),
 //						minRefused);
 //				iLLProposeDestruction=true;

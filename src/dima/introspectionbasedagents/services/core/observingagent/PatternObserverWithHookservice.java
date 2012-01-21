@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -18,6 +19,11 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 
 
 public class PatternObserverWithHookservice extends PatternObserverService {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 3707890491351281107L;
 
 	@Documented
 	@Retention(RetentionPolicy.RUNTIME)
@@ -41,33 +47,28 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 	//
 
 	public PatternObserverWithHookservice(
-			BasicCompetentAgent ag) throws UnrespectedCompetenceSyntaxException {
+			final BasicCompetentAgent ag) throws UnrespectedCompetenceSyntaxException {
 		super(ag);
 	}
 
-	public static void registerEventMethod(BasicCompetentAgent ag, PatternObserverWithHookservice me) 
+	public static void registerEventMethod(final BasicCompetentAgent ag, final PatternObserverWithHookservice me)
 			throws UnrespectedCompetenceSyntaxException{
 
 		me.registeredMethods =
 				new HashedHashSet<String, MethodHandler>();
-		for (Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(ag.getClass())){
-			if (m.isAnnotationPresent(EventHookedMethod.class)){
-				if (checkEventHookedMethodValidity(m)){
+		for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(ag.getClass()))
+			if (m.isAnnotationPresent(EventHookedMethod.class))
+				if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m))
 					me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(ag, m));
-				}else
+				else
 					throw new  UnrespectedCompetenceSyntaxException(me.toString());
-			}
-		}
-		for (AgentCompetence<?> comp : BasicCompetenceShell.getNativeCompetences(ag)){
-			for (Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(comp.getClass())){
-				if (m.isAnnotationPresent(EventHookedMethod.class)){
-					if (checkEventHookedMethodValidity(m)){
+		for (final AgentCompetence<?> comp : BasicCompetenceShell.getNativeCompetences(ag))
+			for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(comp.getClass()))
+				if (m.isAnnotationPresent(EventHookedMethod.class))
+					if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m))
 						me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(comp, m));
-					}else
+					else
 						throw new  UnrespectedCompetenceSyntaxException(me.toString());
-				}
-			}
-		}
 	}
 
 	//
@@ -78,14 +79,14 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 	public <Notification extends Serializable> Boolean notify(final Notification notification, final String key) {
 
 		//		System.out.flush();
-		if (registeredMethods!=null){//C'EST MOOOOOOOOOOOOOOOOOOCCCCCCCCCCCCCCCHHHHHHHHHHHHEEEEEEEEEEEEEEEEEEEEEE!!!!!!!!!!!!!!	
+		if (this.registeredMethods!=null){//C'EST MOOOOOOOOOOOOOOOOOOCCCCCCCCCCCCCCCHHHHHHHHHHHHEEEEEEEEEEEEEEEEEEEEEE!!!!!!!!!!!!!!
 			MethodHandler msave=null ;
 			try {
-				for (MethodHandler m : registeredMethods.get(key)){
+				for (final MethodHandler m : this.registeredMethods.get(key)){
 					msave=m;
 					m.execute(notification);
 				}
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				throw new RuntimeException("error executing "+msave+"\n ---> NB : exception runtime suivante a ignorer seule la cause est pertinente",e);
 			}
 		}
@@ -96,14 +97,14 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 	// Primitives
 	//
 
-	public static boolean checkEventHookedMethodValidity(Method mt){
+	public static boolean checkEventHookedMethodValidity(final Method mt){
 		if (mt.isAnnotationPresent(EventHookedMethod.class)){
-			Class<? extends Serializable> keyclass = mt.getAnnotation(EventHookedMethod.class).value();
+			final Class<? extends Serializable> keyclass = mt.getAnnotation(EventHookedMethod.class).value();
 			if ((mt.getParameterTypes().length == 1
 					&& keyclass.isAssignableFrom(
-							mt.getParameterTypes()[0]))) {
+							mt.getParameterTypes()[0])))
 				return true;
-			} else {
+			else {
 				LogService.writeException(
 						mt,
 						"Wrong parameters type for message parser method " + mt

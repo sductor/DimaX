@@ -1,7 +1,5 @@
 package negotiation.negotiationframework.interaction.consensualnegotiation;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,8 +11,8 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public class InactiveProposerCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
-Contract extends AbstractContractTransition<ActionSpec>>	
+PersonalState extends ActionSpec,
+Contract extends AbstractContractTransition<ActionSpec>>
 extends	BasicAgentCompetence<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>
 implements AbstractProposerCore<
 StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>,

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;

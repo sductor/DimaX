@@ -1,16 +1,12 @@
 package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.IllAnswer;
@@ -18,7 +14,6 @@ import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.U
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 
 public class HostDestructionCandidatureProposer
@@ -27,13 +22,13 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ReplicationSpecification, HostState,
 implements
 AbstractProposerCore<
 SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
-ReplicationSpecification, 
-HostState, 
+ReplicationSpecification,
+HostState,
 ReplicationCandidature>  {
 	private static final long serialVersionUID = -7851541913056925444L;
 
 
-	private Collection<ReplicationCandidature> contractsToPropose = new HashSet<ReplicationCandidature>();
+	private final Collection<ReplicationCandidature> contractsToPropose = new HashSet<ReplicationCandidature>();
 
 
 	//
@@ -43,23 +38,23 @@ ReplicationCandidature>  {
 	@EventHookedMethod(IllAnswer.class)
 	public void receiveFullNotification(final IllAnswer<ReplicationCandidature> n) {
 		//		if (!getMyAgent().getMyProtocol().negotiationAsInitiatorHasStarted()
-		//				&& !n.getAnswers().getRejectedContracts().isEmpty() 
+		//				&& !n.getAnswers().getRejectedContracts().isEmpty()
 		//				&& n.getAnswers().getContractsAcceptedBy(getIdentifier()).isEmpty()){
 		//		//The state of the host is stable and there is rejected contract : we try to find if there is destruction that could loccally improve the system
 
-		UpgradingExplorator<ReplicationCandidature, ReplicationSpecification> myDealExpl = 
+		final UpgradingExplorator<ReplicationCandidature, ReplicationSpecification> myDealExpl =
 				new UpgradingExplorator<ReplicationCandidature, ReplicationSpecification>() {
 			@Override
 			protected ReplicationCandidature generateDestructionContract(
-					ReplicationSpecification state,
-					ReplicationCandidature c) {
+					final ReplicationSpecification state,
+					final ReplicationCandidature c) {
 				return new ReplicationDestructionCandidature(
-						(ResourceIdentifier) getMyAgent().getIdentifier(), 
+						(ResourceIdentifier) HostDestructionCandidatureProposer.this.getMyAgent().getIdentifier(),
 						state.getMyAgentIdentifier(),
 						c,false);
 			}
 		};
-		contractsToPropose.addAll(myDealExpl.generateUpgradingContracts(getMyAgent(), n.getAnswers()));
+		this.contractsToPropose.addAll(myDealExpl.generateUpgradingContracts(this.getMyAgent(), n.getAnswers()));
 		//		}
 	}
 
@@ -69,10 +64,10 @@ ReplicationCandidature>  {
 	@Override
 	public Set<? extends ReplicationCandidature> getNextContractsToPropose()
 			throws NotReadyException {
-		Set<ReplicationCandidature> result = new HashSet<ReplicationCandidature>();
-		result.addAll(contractsToPropose);
-		contractsToPropose.clear();
-		return result;		
+		final Set<ReplicationCandidature> result = new HashSet<ReplicationCandidature>();
+		result.addAll(this.contractsToPropose);
+		this.contractsToPropose.clear();
+		return result;
 	}
 }
 
@@ -84,17 +79,17 @@ ReplicationCandidature>  {
 //Collection<ReplicationCandidature> unacceptedContracts = n.getAnswers().getRejectedContracts();
 //
 //if (!getMyAgent().getMyProtocol().negotiationAsInitiatorHasStarted()
-//		&& !unacceptedContracts.isEmpty() 
+//		&& !unacceptedContracts.isEmpty()
 //		&& n.getAnswers().getContractsAcceptedBy(getIdentifier()).isEmpty()){
 //	//The state of the host is stable and there is rejected contract : we try to find if there is destruction that could loccally improve the system
-//	ReplicationCandidature minRefused =  
+//	ReplicationCandidature minRefused =
 //			Collections.min(
-//					unacceptedContracts, 
+//					unacceptedContracts,
 //					this.getMyAgent().getMyPreferenceComparator());
 ////	Collection<ReplicationCandidature> toPutOnWait = new ArrayList<ReplicationCandidature>();
 //	boolean iLLProposeDestruction = false;
 ////	for (ReplicationCandidature c : unacceptedContracts){
-//		Iterator<ReplicaState> itAg = 
+//		Iterator<ReplicaState> itAg =
 //				this.getMyAgent().
 //				getMyCurrentState().getMyAgents();
 //
@@ -102,7 +97,7 @@ ReplicationCandidature>  {
 //			ReplicaState agToKill = itAg.next();
 //			if (agToKill.getMyReliability() > minRefused.getAgentInitialState().getMyReliability()){
 //				ReplicationDestructionCandidature replicationDestructionCandidature = new ReplicationDestructionCandidature(
-//						(ResourceIdentifier) this.getMyAgent().getIdentifier(), 
+//						(ResourceIdentifier) this.getMyAgent().getIdentifier(),
 //						agToKill.getMyAgentIdentifier(),
 //						minRefused);
 //				iLLProposeDestruction=true;
@@ -166,7 +161,7 @@ ReplicationCandidature>  {
 //	@Override
 //	public Collection<ReplicationCandidature> getNextContractsToPropose()
 //			throws NotReadyException {
-//		final Collection<ReplicationCandidature> result = 
+//		final Collection<ReplicationCandidature> result =
 //				new ArrayList<ReplicationCandidature>();
 //		if (this.iMFull) {
 ////			 this.logMonologue("fulll (2)!");
@@ -177,7 +172,7 @@ ReplicationCandidature>  {
 //				minCandidatedReliability = Math.min(minCandidatedReliability, c
 //						.getAgentResultingState().getMyReliability());
 //			}
-//			Iterator<AgentIdentifier> itAg = 
+//			Iterator<AgentIdentifier> itAg =
 //					(((NegotiatingHost) this.getMyAgent()).
 //							getMyCurrentState().getMyAgents());
 //			while (itAg.hasNext()){

@@ -8,14 +8,14 @@ public class NegotiationStaticParameters {
 	public static final AgentIdentifier globaLAgentIdentifer = new AgentName(
 			"global agent");
 
-	
+
 
 
 //	public final String _agentSelection;
 //	public final String _hostSelection;
 //	final static String key4greedySelect = "greedy select";
 //	final static String key4allocSelect = "alloc select";
-	
+
 	//
 	// Opinion
 	//

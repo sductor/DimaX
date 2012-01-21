@@ -7,7 +7,6 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.NotReadyException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -8166804401339182512L;
@@ -17,17 +16,17 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	//
 
 	Agent myAgent;
-	
+
 	boolean active=true;
-	
+
 	//
 	// Constructors
 	//
 
-	public BasicAgentCompetence(Agent ag) throws UnrespectedCompetenceSyntaxException{
-		setMyAgent(ag);
+	public BasicAgentCompetence(final Agent ag) throws UnrespectedCompetenceSyntaxException{
+		this.setMyAgent(ag);
 	}
-	
+
 	public BasicAgentCompetence(){
 	}
 
@@ -39,7 +38,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	public AgentIdentifier getIdentifier(){
 		return this.getMyAgent().getIdentifier();
 	}
-	
+
 	@Override
 	public void setMyAgent(final Agent ag) throws UnrespectedCompetenceSyntaxException {
 		this.myAgent=ag;
@@ -52,11 +51,11 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 
 	@Override
 	public boolean isActive() {
-		return active;
+		return this.active;
 	}
-	
+
 	@Override
-	public void setActive(boolean active) {
+	public void setActive(final boolean active) {
 		this.active = active;
 	}
 	@Override
@@ -67,19 +66,19 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	//
 	// Methods
 	//
-	
+
 	/*
 	 * Hook
 	 */
 
 	@Override
-	public boolean retryWhen(AgentCompetence comp, String methodToTest,
-			ActiveComponentInterface methodComponent, Object[] testArgs,
-			Object[] methodsArgs) {
-		return myAgent.retryWhen(comp, methodToTest, methodComponent, testArgs,
+	public boolean retryWhen(final AgentCompetence comp, final String methodToTest,
+			final ActiveComponentInterface methodComponent, final Object[] testArgs,
+			final Object[] methodsArgs) {
+		return this.myAgent.retryWhen(comp, methodToTest, methodComponent, testArgs,
 				methodsArgs);
 	}
-	
+
 	@Override
 	public boolean when(final AgentCompetence comp, final String compMethodToTest,
 			final Class<?>[] compSignature, final Object[] compargs,
@@ -121,10 +120,10 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public boolean whenIsReady(NotReadyException e) {
+	public boolean whenIsReady(final NotReadyException e) {
 		return this.myAgent.whenIsReady(e);
 	}
-	
+
 	/*
 	 * loggage
 	 */
@@ -180,17 +179,17 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 //	}
 
 	@Override
-	public void addLogKey(String key, boolean toString, boolean toFile) {
+	public void addLogKey(final String key, final boolean toString, final boolean toFile) {
 		this.myAgent.addLogKey(key, toString, toFile);
 	}
 	@Override
-	public void setLogKey(String key, boolean toScreen, boolean toFile) {
+	public void setLogKey(final String key, final boolean toScreen, final boolean toFile) {
 		this.myAgent.setLogKey(key, toScreen, toFile);
 	}
 	/*
 	 * Observation
 	 */
-	
+
 	@Override
 	public <Notification extends Serializable> Boolean notify(final Notification notification, final String key) {
 		return this.myAgent.notify(notification, key);
@@ -227,49 +226,50 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public void autoObserve(Class<?> notificationKey) {
-		myAgent.autoObserve(notificationKey);
+	public void autoObserve(final Class<?> notificationKey) {
+		this.myAgent.autoObserve(notificationKey);
 	}
 
 	@Override
-	public void addObserver(AgentIdentifier observerAgent,
-			Class<?> notificationKey) {
-		myAgent.addObserver(observerAgent, notificationKey);
+	public void addObserver(final AgentIdentifier observerAgent,
+			final Class<?> notificationKey) {
+		this.myAgent.addObserver(observerAgent, notificationKey);
 	}
 
 	@Override
-	public void addObserver(AgentIdentifier observerAgent,
-			String notificationKey) {
-		myAgent.addObserver(observerAgent, notificationKey);
+	public void addObserver(final AgentIdentifier observerAgent,
+			final String notificationKey) {
+		this.myAgent.addObserver(observerAgent, notificationKey);
 	}
 
 	@Override
-	public void removeObserver(AgentIdentifier observerAgent,
-			Class<?> notificationKey) {
-		myAgent.removeObserver(observerAgent, notificationKey);
+	public void removeObserver(final AgentIdentifier observerAgent,
+			final Class<?> notificationKey) {
+		this.myAgent.removeObserver(observerAgent, notificationKey);
 	}
 
 	@Override
-	public void removeObserver(AgentIdentifier observerAgent,
-			String notificationKey) {
-		myAgent.removeObserver(observerAgent, notificationKey);
+	public void removeObserver(final AgentIdentifier observerAgent,
+			final String notificationKey) {
+		this.myAgent.removeObserver(observerAgent, notificationKey);
 	}
 
+	@Override
 	public void sendNotificationNow(){
-		myAgent.sendNotificationNow();
+		this.myAgent.sendNotificationNow();
 	}
 	/*
-	 * 
+	 *
 	 */
-	
+
 	@Override
-	public Boolean isObserved(Class<?> notificationKey) {
-		return myAgent.isObserved(notificationKey);
+	public Boolean isObserved(final Class<?> notificationKey) {
+		return this.myAgent.isObserved(notificationKey);
 	}
 
 	@Override
-	public Collection<AgentIdentifier> getObservers(Class<?> notificationKey) {
-		return myAgent.getObservers(notificationKey);
+	public Collection<AgentIdentifier> getObservers(final Class<?> notificationKey) {
+		return this.myAgent.getObservers(notificationKey);
 	}
 
 

@@ -56,7 +56,7 @@ public class ReplicationHostResult implements ExperimentationResults {
 
 	@Override
 	public void setLastInfo() {
-		lastInfo=true;
-		
+		this.lastInfo=true;
+
 	}
 }

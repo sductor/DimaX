@@ -1,10 +1,9 @@
 package dima.introspectionbasedagents.shells;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.AbstractMessageInterface;
 import dima.basicinterfaces.DimaComponentInterface;
@@ -75,26 +74,26 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 	public Collection<MethodHandler> parseMail(final AbstractMessage m)
 	throws UnHandledMessageException, IllegalArgumentException, Throwable{
 
-		Collection<MethodHandler> toRemove = new ArrayList<MethodHandler>();
-		getStatus().setCurrentlyReadedMail(m);
+		final Collection<MethodHandler> toRemove = new ArrayList<MethodHandler>();
+		this.getStatus().setCurrentlyReadedMail(m);
 		final Collection<MethodHandler> mts = this.getMethod(m);
 
-		for (MethodHandler mt : mts){
+		for (final MethodHandler mt : mts){
 
-			getStatus().setCurrentlyExecutedAgent(mt.getMyComponent());	
-			getStatus().setCurrentlyExecutedMethod(mt);
+			this.getStatus().setCurrentlyExecutedAgent(mt.getMyComponent());
+			this.getStatus().setCurrentlyExecutedMethod(mt);
 
 			if (mt.isAnnotationPresent(MessageHandler.class)){
 				final Object resultat = mt.execute(new Object[]{m});
 
 				if (this.toRemove(mt, resultat))
 					toRemove.add(mt);
-			} 			
+			}
 
 			else if (mt.isAnnotationPresent(MessageCollectionHandler.class)){
 				this.collectedMessage.add(mt, m);
 
-				Object resultat = mt.execute(
+				final Object resultat = mt.execute(
 						new Object[]{this.collectedMessage.get(mt)});
 
 				if (resultat != null && resultat.equals(new Boolean(true)))
@@ -102,14 +101,11 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 
 				if (this.toRemove(mt, resultat))
 					toRemove.add(mt);
-			} 
-
-			else {
+			} else
 				LogService.writeException(mt.getMyComponent(), "Impossible : mauvais annotation pour "+mt);
-			}
 
-			getStatus().resetCurrentlyExecutedMethod();
-			getStatus().resetCurrentlyExecutedAgent();			
+			this.getStatus().resetCurrentlyExecutedMethod();
+			this.getStatus().resetCurrentlyExecutedAgent();
 		}
 
 		return toRemove;
@@ -125,7 +121,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<MethodHandler> getRelevantMethods(DimaComponentInterface a){
+	protected Collection<MethodHandler> getRelevantMethods(final DimaComponentInterface a){
 		final Collection<MethodHandler> r =
 			this.getMethods(a, MessageCollectionHandler.class,MessageHandler.class);
 		r.addAll(super.getRelevantMethods(a));
@@ -146,13 +142,12 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 			//				if (((IdentifiedComponentInterface) getMyComponent()).getIdentifier().toString().equals("OBSERVER"))
 			//					LoggerManager.write(getMyComponent(), "envellope "+e+" added !");
 
-			for (MethodHandler mtAlrea : messageMethods.get(e)){
+			for (final MethodHandler mtAlrea : this.messageMethods.get(e))
 				if (mtAlrea.getMyComponent().equals(mt.getMyComponent()))
 					throw new RuntimeException(mt.getMyComponent()+" : "+
 							"Duplicate methods for parsing fipa message : " + e
 							+ "\n --> " + mt + "\n -->  AND "
 							+ this.messageMethods.get(e) + ")");
-			}
 
 			this.messageMethods.add(e, mt);
 
@@ -177,7 +172,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 				return true;
 		} else if (mt.isAnnotationPresent(MessageCollectionHandler.class)){
 			if (mt.getParameterTypes().length == 1
-					&& 
+					&&
 					AbstractMessage.class.isAssignableFrom(mt.getGenericClassOfFirstArgument())
 					&&
 					(mt.getReturnType().equals(boolean.class) || mt.getReturnType().equals(Boolean.class)))
@@ -203,7 +198,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 	private Collection<MethodHandler> getMethod(final AbstractMessage mess)
 	throws UnHandledMessageException{
 		// Generation de l'envellope
-		Envelope e = getEnvellopeOfMessage(mess);
+		Envelope e = BasicCommunicatingMethodTrunk.getEnvellopeOfMessage(mess);
 
 		/*
 		 * Dans le cas ou l'envellope est une classe envellope, si elle n'est

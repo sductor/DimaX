@@ -1,6 +1,5 @@
 package dima.introspectionbasedagents.shells;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import dima.basiccommunicationcomponents.AbstractMessage;
@@ -10,7 +9,7 @@ import dima.introspectionbasedagents.shells.BasicCommunicatingMethodTrunk.UnHand
 public interface CommunicationMethodsTrunk extends IntrospectedMethodsTrunk {
 
 	//Return the methods to be removed
-	public abstract Collection<MethodHandler> parseMail(AbstractMessage m) 
+	public abstract Collection<MethodHandler> parseMail(AbstractMessage m)
 	throws UnHandledMessageException,IllegalArgumentException, Throwable;
 
 	Collection<Envelope> getHandledEnvellope();

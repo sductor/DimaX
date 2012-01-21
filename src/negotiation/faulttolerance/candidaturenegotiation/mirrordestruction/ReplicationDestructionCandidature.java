@@ -1,30 +1,34 @@
 package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
 
-import dima.basicagentcomponents.AgentIdentifier;
-
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import dima.basicagentcomponents.AgentIdentifier;
 
 public class ReplicationDestructionCandidature extends
 ReplicationCandidature {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -8125870770061452392L;
 	private final ReplicationCandidature minContract;
-	
+
 
 	public ReplicationDestructionCandidature(
-			ResourceIdentifier r,
-			AgentIdentifier a, 
-			ReplicationCandidature minContract, boolean agentCreator) {
+			final ResourceIdentifier r,
+			final AgentIdentifier a,
+			final ReplicationCandidature minContract, final boolean agentCreator) {
 		super(r, a, false, agentCreator);
 		this.minContract = minContract;
 	}
 
 
 	public ReplicationCandidature getMinContract() {
-		return minContract;
+		return this.minContract;
 	}
-	
+
+	@Override
 	public String toString(){
-		return super.toString()+" in order to create : "+minContract.getAgentInitialState();
+		return super.toString()+" in order to create : "+this.minContract.getAgentInitialState();
 	}
 }

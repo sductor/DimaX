@@ -5,9 +5,9 @@ import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.Protocol;
+import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
-import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
@@ -19,12 +19,17 @@ public class SayingAliveToPeerCompetence extends BasicAgentCommunicatingCompeten
 
 	public class SayingAliveProtocol extends Protocol<BasicCompetentAgent>{
 
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 6620352657422762931L;
+
 //		public SayingAliveProtocol(BasicCompetentAgent a) {
 //			super(a);
 //		}
-		
+
 	}
-	
+
 //	public SayingAliveToPeerCompetence(final BasicCompetentAgent ag) {
 //		super(ag);
 //	}
@@ -58,7 +63,7 @@ public class SayingAliveToPeerCompetence extends BasicAgentCommunicatingCompeten
 	 */
 
 	public void sayAliveToPeer(){
-		FipaACLMessage m = new FipaACLMessage(Performative.Inform, "I'm alive! =)", SayingAliveProtocol.class);
+		final FipaACLMessage m = new FipaACLMessage(Performative.Inform, "I'm alive! =)", SayingAliveProtocol.class);
 		if (this.myPeer!=null)
 			this.sendMessage(this.myPeer, m);
 	}

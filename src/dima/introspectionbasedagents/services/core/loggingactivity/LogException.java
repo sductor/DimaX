@@ -1,7 +1,5 @@
 package dima.introspectionbasedagents.services.core.loggingactivity;
 
-import java.util.Date;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.hostcontrol.LocalHost;
 
@@ -41,8 +39,8 @@ public class LogException extends LogNotification {
 
 	@Override
 	public String generateLogToScreen() {
-		return "**** NEW EXCEPTION FROM AGENT " + getCaller() + " :" + "\n"
-				//		+ (this.e == null ? "" : this.e ) 
+		return "**** NEW EXCEPTION FROM AGENT " + this.getCaller() + " :" + "\n"
+				//		+ (this.e == null ? "" : this.e )
 				+ "** On Host" + this.host
 				+ "(" + this.date.toString() + " - " + this.date.getTime()
 				+ "):\n" + this.text;
@@ -50,8 +48,8 @@ public class LogException extends LogNotification {
 
 	@Override
 	public String generateLogToWrite() {
-		return "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!EXCEPTION ** FROM AGENT " + getCaller() 
-								+ (this.e == null ? "" : this.e ) 
+		return "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!EXCEPTION ** FROM AGENT " + this.getCaller()
+								+ (this.e == null ? "" : this.e )
 				+" On Host" + this.host + "(" + this.date.toString()
 				+ " - " + this.date.getTime() + "):\n" + this.text;
 	}

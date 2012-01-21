@@ -11,13 +11,13 @@ public class BasicAgentCommunicatingCompetence<Agent extends CompetentComponent 
 	private static final long serialVersionUID = -7270812729505868349L;
 
 
-	public BasicAgentCommunicatingCompetence(Agent ag) throws UnrespectedCompetenceSyntaxException {
-		setMyAgent(ag);
+	public BasicAgentCommunicatingCompetence(final Agent ag) throws UnrespectedCompetenceSyntaxException {
+		this.setMyAgent(ag);
 	}
-	
+
 	public BasicAgentCommunicatingCompetence() {
 	}
-	
+
 	protected void sendMessage(final AgentIdentifier id, final Message m ){
 		this.getMyAgent().sendMessage(id, m);
 	}

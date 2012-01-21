@@ -1,14 +1,15 @@
 package negotiation.faulttolerance.experimentation;
 
 import java.io.File;
+
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.Experimentator;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.distribution.DistributionParameters;
-import dimaxx.tools.distribution.ZeroOneSymbolicValue;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
+import dimaxx.tools.distribution.ZeroOneSymbolicValue;
 
 public class ReplicationExperimentationParameters extends
 ExperimentationParameters {
@@ -24,7 +25,7 @@ ExperimentationParameters {
 
 
 	public Double hostFaultProbabilityMean;
-	public  DispersionSymbolicValue hostDisponibilityDispersion;	
+	public  DispersionSymbolicValue hostDisponibilityDispersion;
 
 	public  Double agentLoadMean;
 	public DispersionSymbolicValue agentLoadDispersion;
@@ -51,16 +52,16 @@ ExperimentationParameters {
 	 * * lambda haut => weibull bas weibull bas => eventOccur haut lambda = prob
 	 * de panne disp = 1 - lambda (useStaticDispo = true) disp = weibull
 	 * (useStaticDispo = false)
-	 * 
-	 * 
+	 *
+	 *
 	 * **
-	 * 
+	 *
 	 * k bas => eventOccur tot et pour tout le monde
 	 */
 
 	public static final long _host_maxFaultfrequency = 500;//10 * ReplicationExperimentationProtocol._timeToCollect;// 2*_simulationTime;//
 	public static final double _host_maxSimultaneousFailure = 1;// 0.25;
-	public static final long _timeScale = 10 * _host_maxFaultfrequency;
+	public static final long _timeScale = 10 * ReplicationExperimentationParameters._host_maxFaultfrequency;
 	public static final double _kValue = 7;
 	public static final double _lambdaRepair = 1;
 	public static final double _kRepair = .001;
@@ -104,18 +105,18 @@ ExperimentationParameters {
 	//
 
 	private ReplicationExperimentationParameters(final File f,
-			AgentIdentifier experimentatorId,
+			final AgentIdentifier experimentatorId,
 			final int nbAgents, final int nbHosts, final double k,
 			final Double hostFaultProbabilityMean,
 			final DispersionSymbolicValue hostFaultProbabilityDispersion,
 			final Double agentLoadMean,
 			final DispersionSymbolicValue agentLoadDispersion,
-			final String usedProtocol, 
+			final String usedProtocol,
 			final String socialWelfare,
-			final String agentSelection, 
+			final String agentSelection,
 			final String hostSelection) {
 		super(f, experimentatorId, nbAgents, nbHosts);
-		setkAccessible(k);
+		this.setkAccessible(k);
 		this.hostFaultProbabilityMean = hostFaultProbabilityMean;
 		this.hostDisponibilityDispersion=hostFaultProbabilityDispersion;
 		this.agentLoadMean = agentLoadMean;
@@ -123,30 +124,31 @@ ExperimentationParameters {
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;
 		this._agentSelection = agentSelection;
-		set_hostSelection(hostSelection);
+		this.set_hostSelection(hostSelection);
 
 	}
-	
-	public static ReplicationExperimentationParameters getGeneric(File f) {
+
+	public static ReplicationExperimentationParameters getGeneric(final File f) {
 		return new ReplicationExperimentationParameters(
 				f,
 				Experimentator.myId,
 				ReplicationExperimentationProtocol.nbAgents,
-				ReplicationExperimentationProtocol.nbHosts, 
-				1, 
+				ReplicationExperimentationProtocol.nbHosts,
+				1,
 				0.6,
 				DispersionSymbolicValue.Nul,
-				0.3, 
+				0.3,
 				DispersionSymbolicValue.Nul,
-				ReplicationExperimentationProtocol.key4mirrorProto, 
+				ReplicationExperimentationProtocol.key4mirrorProto,
 				AllocationSocialWelfares.key4leximinSocialWelfare,
 				ReplicationExperimentationProtocol.key4rouletteWheelSelect,
 				ReplicationExperimentationProtocol.key4rouletteWheelSelect);
 	}
-	
-	public boolean equals(Object o){
+
+	@Override
+	public boolean equals(final Object o){
 		if (o instanceof ReplicationExperimentationParameters){
-			ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
+			final ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
 			return this.getkAccessible()==that.getkAccessible() &&
 			this.hostFaultProbabilityMean.equals( that.hostFaultProbabilityMean) &&
 			this.agentLoadMean.equals(that.agentLoadMean) &&
@@ -154,15 +156,16 @@ ExperimentationParameters {
 			this._socialWelfare.equals(that._socialWelfare) &&
 			this._agentSelection.equals(that._agentSelection) &&
 			this._hostSelection.equals(that._hostSelection);
-		} else 
+		} else
 			return false;
 	}
-	
+
+	@Override
 	public int hashCode(){
-			return 
+			return
 					2*this.getkAccessible()
 					+4*this.hostFaultProbabilityMean.hashCode()
-					+8*agentLoadMean.hashCode()
+					+8*this.agentLoadMean.hashCode()
 					+16*this._usedProtocol.hashCode()
 					+32*this._socialWelfare.hashCode()
 					+64*this._agentSelection.hashCode()
@@ -173,10 +176,10 @@ ExperimentationParameters {
 	//
 
 	public void setkAccessible(final double k) {
-		this.kAccessible =(int) (k * nbHosts);
+		this.kAccessible =(int) (k * this.nbHosts);
 	}
-	
-	public void set_hostSelection(String hostSelection) {
+
+	public void set_hostSelection(final String hostSelection) {
 //		if (_usedProtocol.equals(ReplicationExperimentationProtocol.key4mirrorProto))
 //			this._hostSelection = ReplicationExperimentationProtocol.key4AllocSelect;
 //		else
@@ -196,7 +199,7 @@ ExperimentationParameters {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
@@ -226,21 +229,22 @@ ExperimentationParameters {
 	// Methods
 	//
 
+	@Override
 	public ReplicationExperimentationParameters clone(){
 		return new ReplicationExperimentationParameters(
-				getF(), 
-				experimentatorId, 
-				nbAgents, 
-				nbHosts, 
-				getkAccessible(), 
-				hostFaultProbabilityMean, 
-				hostDisponibilityDispersion,
-				agentLoadMean,
-				agentLoadDispersion,
-				_usedProtocol, 
-				_socialWelfare,
-				_agentSelection, 
-				get_hostSelection());
+				this.getF(),
+				this.experimentatorId,
+				this.nbAgents,
+				this.nbHosts,
+				this.getkAccessible(),
+				this.hostFaultProbabilityMean,
+				this.hostDisponibilityDispersion,
+				this.agentLoadMean,
+				this.agentLoadDispersion,
+				this._usedProtocol,
+				this._socialWelfare,
+				this._agentSelection,
+				this.get_hostSelection());
 
 	}
 
@@ -248,27 +252,27 @@ ExperimentationParameters {
 	public void initiate() {
 		this.agentCriticity = new DistributionParameters<AgentIdentifier>(
 				this.getReplicasIdentifier(),
-				agentCriticityMean,
-				agentCriticityDispersion);
+				this.agentCriticityMean,
+				this.agentCriticityDispersion);
 		this.agentProcessor = new DistributionParameters<AgentIdentifier>(
 				this.getReplicasIdentifier(), this.agentLoadMean,
-				agentLoadDispersion);
+				this.agentLoadDispersion);
 		this.agentMemory = new DistributionParameters<AgentIdentifier>(
 				this.getReplicasIdentifier(), this.agentLoadMean,
-				agentLoadDispersion);
+				this.agentLoadDispersion);
 	}
 
 
 
 	public String get_hostSelection() {
-		return _hostSelection;
+		return this._hostSelection;
 	}
 
 	public int getkAccessible() {
-		return kAccessible;
+		return this.kAccessible;
 	}
 
-	public void setkAccessible(int kAccessible) {
+	public void setkAccessible(final int kAccessible) {
 		this.kAccessible = kAccessible;
 	}
 

@@ -1,6 +1,7 @@
 package negotiation.negotiationframework.agent;
 
 import java.util.Date;
+
 import dima.basicagentcomponents.AgentIdentifier;
 
 public abstract class SimpleAgentState implements AgentState {
@@ -48,7 +49,7 @@ public abstract class SimpleAgentState implements AgentState {
 	}
 
 	@Override
-	public boolean isNewerThan(AgentState that) {
+	public boolean isNewerThan(final AgentState that) {
 		return this.creationTime> ((SimpleAgentState)that).creationTime;
 	}
 }

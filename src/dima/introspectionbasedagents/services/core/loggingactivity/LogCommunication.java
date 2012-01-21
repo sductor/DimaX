@@ -1,7 +1,5 @@
 package dima.introspectionbasedagents.services.core.loggingactivity;
 
-import java.io.Serializable;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 
@@ -44,7 +42,7 @@ public class LogCommunication extends LogNotification {
 	@Override
 	public String generateLogToScreen() {
 		final String result = "*** On " + this.date + " ("
-		+ this.date.getTime() + "):\n" + " * " + getCaller()
+		+ this.date.getTime() + "):\n" + " * " + this.getCaller()
 		+ " :\n * New Message " + this.status + " *\n"
 		+ this.m.toString();
 		return result;
@@ -53,7 +51,7 @@ public class LogCommunication extends LogNotification {
 	@Override
 	public String generateLogToWrite() {
 		final String result = "*** On " + this.date + " ("
-		+ this.date.getTime() + "):\n" + " * " + getCaller()
+		+ this.date.getTime() + "):\n" + " * " + this.getCaller()
 		+ " :\n * New Message " + this.status + " *\n"
 		+ this.m.toString();
 		return result;

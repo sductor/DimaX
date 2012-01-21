@@ -3,7 +3,6 @@ package negotiation.negotiationframework.agent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
@@ -18,7 +17,7 @@ import dima.introspectionbasedagents.services.library.information.SimpleObservat
 
 public class SimpleRationalAgent<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
+PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicCompetentAgent {
 	private static final long serialVersionUID = -6248384713199838544L;
@@ -43,7 +42,7 @@ extends BasicCompetentAgent {
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
 			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			ObservationService myInformation)
+			final ObservationService myInformation)
 					throws CompetenceException {
 		super(id);
 		this.myCore = myRationality;
@@ -51,8 +50,8 @@ extends BasicCompetentAgent {
 		this.myInformation = myInformation;
 		this.myInformation.setMyAgent(this);
 		if (myInitialState!=null) {
-			myStateType = myInitialState.getClass();
-			setNewState(myInitialState);
+			this.myStateType = myInitialState.getClass();
+			this.setNewState(myInitialState);
 		}
 	}
 
@@ -82,31 +81,30 @@ extends BasicCompetentAgent {
 //			if(!((PersonalState) myInformation.getInformation(myStateType, getIdentifier())).equals(s))
 //				logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh2222222222222222222222222"+s+"******************"+((PersonalState) myInformation.getInformation(myStateType, getIdentifier())));
 
-			return (PersonalState) myInformation.getInformation(myStateType, getIdentifier());
-		} catch (NoInformationAvailableException e) {
-			signalException("impossible!!!! ",e);//+myInformation.getInformation(myStateType),e);
+			return (PersonalState) this.myInformation.getInformation(this.myStateType, this.getIdentifier());
+		} catch (final NoInformationAvailableException e) {
+			this.signalException("impossible!!!! ",e);//+myInformation.getInformation(myStateType),e);
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public Collection<ActionSpec> getMyResources(){
-		Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
-		for (AgentIdentifier id : getMyCurrentState().getMyResourceIdentifiers()){
+		final Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
+		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers())
 			try {
-				myResources.add((ActionSpec) getMyInformation().getInformation(getMyCurrentState().getMyResourcesClass(), id));
-			} catch (NoInformationAvailableException e) {
+				myResources.add((ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id));
+			} catch (final NoInformationAvailableException e) {
 				throw new RuntimeException("uuuuuhh impossible!!",e);
 			}
-		}
 		return myResources;
 	}
-	
-	public void setNewState(PersonalState s) {
-				logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
+
+	public void setNewState(final PersonalState s) {
+				this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-		notify(this.getMyInformation().getMyInformation(myStateType), SimpleObservationService.informationObservationKey);
+		this.notify(this.getMyInformation().getMyInformation(this.myStateType), SimpleObservationService.informationObservationKey);
 	}
 
 
@@ -124,30 +122,30 @@ extends BasicCompetentAgent {
 	 */
 
 
-	public ActionSpec getMySpecif(final PersonalState s, Contract c){
-		return myCore.getMySpecif(s, c);
+	public ActionSpec getMySpecif(final PersonalState s, final Contract c){
+		return this.myCore.getMySpecif(s, c);
 	}
 
-	public ActionSpec getMySpecif(Contract c){
-		return myCore.getMySpecif(this.getMyCurrentState(), c);
+	public ActionSpec getMySpecif(final Contract c){
+		return this.myCore.getMySpecif(this.getMyCurrentState(), c);
 	}
-	
+
 	public PersonalState getMyResultingState(final PersonalState s, final Contract c) {
 		return c.computeResultingState(s);
 	}
 
 	public PersonalState getMyResultingState(final PersonalState s, final Collection<Contract> cs) {
 		PersonalState result = s;
-		for (Contract c : cs)
+		for (final Contract c : cs)
 			result = c.computeResultingState(result);
 		return result;
 	}
-	
+
 
 	public PersonalState getMyResultingState(final Contract c) {
-		return (PersonalState) c.computeResultingState(getMyCurrentState());
+		return c.computeResultingState(this.getMyCurrentState());
 	}
-	
+
 
 
 	/*
@@ -250,11 +248,11 @@ extends BasicCompetentAgent {
 		return myComparator;
 	}
 
-	public  Double evaluatePreference(Contract c){
-		return evaluatePreference(getMyResultingState(c));
+	public  Double evaluatePreference(final Contract c){
+		return this.evaluatePreference(this.getMyResultingState(c));
 	}
 
-	public  Double evaluatePreference(PersonalState s1){
+	public  Double evaluatePreference(final PersonalState s1){
 		return this.myCore.evaluatePreference(s1);
 	}
 

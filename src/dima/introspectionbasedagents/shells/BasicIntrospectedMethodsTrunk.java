@@ -1,7 +1,6 @@
 package dima.introspectionbasedagents.shells;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +41,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 
 	/** Allow to obtain up to date information about what is being executed **/
 	private final SimpleAgentStatus status;
-	
+
 	//
 	// Constructor
 	//
@@ -63,7 +62,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	public SimpleAgentStatus getStatus() {
 		return this.status;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see dima.introspectionBasedAgent.shells.IntrospedMethodsTrunk#getMethods()
 	 */
@@ -73,10 +72,10 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	}
 
 	protected boolean isStepMethod(final MethodHandler mt) {
-		return 
+		return
 		mt.isAnnotationPresent(ProactivityInitialisation.class)
 		|| mt.isAnnotationPresent(PreStepComposant.class)
-		|| mt.isAnnotationPresent(StepComposant.class) 
+		|| mt.isAnnotationPresent(StepComposant.class)
 		|| mt.isAnnotationPresent(PostStepComposant.class)
 		|| mt.isAnnotationPresent(ProactivityFinalisation.class);
 	}
@@ -84,7 +83,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	/**
 	 * Return the list of methods of object o that have annotation c
 	 */
-	protected Collection<MethodHandler> getMethods(DimaComponentInterface o, final Class<? extends Annotation>... a){
+	protected Collection<MethodHandler> getMethods(final DimaComponentInterface o, final Class<? extends Annotation>... a){
 
 		final Collection<MethodHandler> annotatedMethods = new ArrayList<MethodHandler>();
 		for (final Method mt : IntrospectionStaticPrimitivesLibrary.getAllMethods(o.getClass()))
@@ -113,7 +112,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 * @see dima.introspectionBasedAgent.shells.IntrospedMethodsTrunk#init()
 	 */
 	@Override
-	public void load(DimaComponentInterface a) {
+	public void load(final DimaComponentInterface a) {
 		for (final MethodHandler mt : this.getRelevantMethods(a))
 			if (!this.checkMethodValidity(mt))
 				LogService.writeException(
@@ -128,10 +127,10 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 * @see dima.introspectionBasedAgent.shells.IntrospedMethodsTrunk#executeStepMethod(dima.introspectionBasedAgent.tools.MethodHandler)
 	 */
 	@Override
-	public boolean executeStepMethod(final MethodHandler mt, Date creation)
+	public boolean executeStepMethod(final MethodHandler mt, final Date creation)
 	throws IllegalArgumentException, Throwable {
 		if (this.isReady(mt, creation)){
-			this.status.setCurrentlyExecutedAgent(mt.getMyComponent());	
+			this.status.setCurrentlyExecutedAgent(mt.getMyComponent());
 			this.status.setCurrentlyExecutedMethod(mt);
 			final Object resultat = mt.execute(null);
 			this.status.resetCurrentlyExecutedMethod();
@@ -146,9 +145,9 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 */
 
 	@SuppressWarnings("unchecked")
-	protected Collection<MethodHandler> getRelevantMethods(DimaComponentInterface o){
+	protected Collection<MethodHandler> getRelevantMethods(final DimaComponentInterface o){
 		return this.getMethods(o,
-				ProactivityInitialisation.class, 
+				ProactivityInitialisation.class,
 				PreStepComposant.class,StepComposant.class,PostStepComposant.class,
 				ProactivityFinalisation.class);
 	}
@@ -158,9 +157,9 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	}
 
 	protected void addMethod(final MethodHandler mt) {
-		if (mt.isAnnotationPresent(ProactivityInitialisation.class)){
+		if (mt.isAnnotationPresent(ProactivityInitialisation.class))
 			this.methods.add(mt);
-		}else if (mt.isAnnotationPresent(PreStepComposant.class)){
+		else if (mt.isAnnotationPresent(PreStepComposant.class)){
 			this.methods.add(mt);
 			if (mt.getAnnotation(PreStepComposant.class).ticker() != -1)
 				this.addTicker(mt, mt.getAnnotation(PreStepComposant.class).ticker());
@@ -172,9 +171,8 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 			this.methods.add(mt);
 			if (mt.getAnnotation(PostStepComposant.class).ticker() != -1)
 				this.addTicker(mt, mt.getAnnotation(PostStepComposant.class).ticker());
-		}else if (mt.isAnnotationPresent(ProactivityFinalisation.class)){
+		}else if (mt.isAnnotationPresent(ProactivityFinalisation.class))
 			this.methods.add(mt);
-		}
 	}
 
 	//
@@ -184,7 +182,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	private boolean checkStepMethodValidity(final MethodHandler mt) {
 		if (mt.isAnnotationPresent(ProactivityInitialisation.class)
 				|| mt.isAnnotationPresent(PreStepComposant.class)
-				|| mt.isAnnotationPresent(StepComposant.class) 
+				|| mt.isAnnotationPresent(StepComposant.class)
 				|| mt.isAnnotationPresent(PostStepComposant.class)
 				|| mt.isAnnotationPresent(ProactivityFinalisation.class)){
 			if (mt.getParameterTypes().length > 0) {
@@ -210,7 +208,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 			return true;
 	}
 
-	private boolean isReady(final MethodHandler m, Date creation){
+	private boolean isReady(final MethodHandler m, final Date creation){
 		try{
 			return this.tickers.get(m).isReady(creation);
 		} catch (final NullPointerException e){

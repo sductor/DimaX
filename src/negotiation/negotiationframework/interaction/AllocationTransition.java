@@ -5,16 +5,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import negotiation.negotiationframework.agent.AgentState;
-
-
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class AllocationTransition<
-Contract extends AbstractContractTransition<ActionSpec>, 
+Contract extends AbstractContractTransition<ActionSpec>,
 ActionSpec extends AbstractActionSpecification>
-		extends HashSet<Contract> 
-implements 
+		extends HashSet<Contract>
+implements
 AbstractContractTransition<ActionSpec>,
 Collection<Contract> {
 	private static final long serialVersionUID = 652785940825256771L;
@@ -47,13 +44,13 @@ Collection<Contract> {
 	}
 
 	public AllocationTransition(final AgentIdentifier analyser,
-			final long validityTime, Collection<Contract> cs) {
+			final long validityTime, final Collection<Contract> cs) {
 		this.analyser = analyser;
 		this.validityTime = validityTime;
 		for (final Contract c : cs)
 			this.add(c);
 	}
-	
+
 	//
 	// Accessors
 	//
@@ -78,7 +75,7 @@ Collection<Contract> {
 	public boolean willReachExpirationTime(final long t) {
 		return this.getUptime() + t > this.validityTime;
 	}
-	
+
 	/*
 	 *
 	 */
@@ -112,7 +109,7 @@ Collection<Contract> {
 		return result;
 	}
 
-	public Collection<Contract> getAssociatedActions(AgentIdentifier id) {
+	public Collection<Contract> getAssociatedActions(final AgentIdentifier id) {
 		final Collection<Contract> result = new ArrayList<Contract>();
 		for (final Contract c : this)
 			if (c.getAllParticipants().contains(id))
@@ -142,7 +139,7 @@ Collection<Contract> {
 
 	public AllocationTransition<Contract, ActionSpec> getNewTransition(
 			final Contract c) {
-		final AllocationTransition<Contract, ActionSpec> result = 
+		final AllocationTransition<Contract, ActionSpec> result =
 				new AllocationTransition<Contract, ActionSpec>(
 				this.analyser, this.validityTime, this);
 		result.add(c);
@@ -159,17 +156,17 @@ Collection<Contract> {
 	 */
 
 	@Override
-	public ActionSpec getSpecificationOf(AgentIdentifier id) {
+	public ActionSpec getSpecificationOf(final AgentIdentifier id) {
 		throw new RuntimeException("You should not use this!");
 	}
 
 	@Override
-	public <State extends ActionSpec> State computeResultingState(State s) {
+	public <State extends ActionSpec> State computeResultingState(final State s) {
 		throw new RuntimeException("You should not use this!");
 	}
 
 	@Override
-	public ActionSpec computeResultingState(AgentIdentifier id) {
+	public ActionSpec computeResultingState(final AgentIdentifier id) {
 		throw new RuntimeException("You should not use this!");
 	}
 

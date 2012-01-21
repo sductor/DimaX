@@ -101,7 +101,7 @@ public class DQLTranslator
 			ret = ((Element) c.get(0)).getTextTrim();
 	}
 	if(ret != null)
-		ret = tokenToKIF(ret);
+		ret = DQLTranslator.tokenToKIF(ret);
 	return ret;
     }
 
@@ -127,14 +127,14 @@ public class DQLTranslator
 		    final Symbol s = lit.getRelation();
 		    final String pkg = s.getPackage();
 		    final String name = s.getName();
-                    kif = kif + "(" + tokenToKIF(pkg+name) + " ";
+                    kif = kif + "(" + DQLTranslator.tokenToKIF(pkg+name) + " ";
 		    final List args = lit.getArgs();
 		    final Iterator k = args.iterator();
 		    while(k.hasNext()) {
 			final jtp.fol.Symbol trm = (jtp.fol.Symbol) k.next();
 			final String tpkg = trm.getPackage();
 			final String tname = trm.getName();
-			kif = kif + tokenToKIF(tpkg+tname) + " ";
+			kif = kif + DQLTranslator.tokenToKIF(tpkg+tname) + " ";
 		    }
 		    kif = kif + ")";
 		}

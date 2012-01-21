@@ -11,7 +11,7 @@ import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.ProactiveComponentInterface;
 
 public class DimaXCommunicationComponent
-<Component extends ProactiveComponentInterface & IdentifiedComponentInterface & CommunicatingComponentInterface> 
+<Component extends ProactiveComponentInterface & IdentifiedComponentInterface & CommunicatingComponentInterface>
 extends CommunicationComponent {
 
     /**

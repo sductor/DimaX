@@ -2,9 +2,9 @@ package negotiation.negotiationframework;
 
 /**
  * The root exception class for all the exception of this package
- * 
+ *
  * @author Sylvain Ductor
- * 
+ *
  */
 public class NegotiationException extends Exception {
 

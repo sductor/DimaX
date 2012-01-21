@@ -6,7 +6,6 @@ import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.ontologies.ClassEnveloppe;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.support.GimaObject;
 
 
@@ -113,14 +112,14 @@ public class SimpleExceptionHandler extends GimaObject{
 		+"\n has raised an EXCEPTION";
 
 	}
-	
+
 //	protected boolean handleNotReadyException(
 //			final DimaComponentInterface dimaComponentInterface,Throwable e){
 //		if (e instanceof NotReadyException) {
 //			NotReadyException nre = (NotReadyException) e;
 //			dimaComponentInterface.wh
 //		}
-//		else 
+//		else
 //			return false;
 //	}
 }

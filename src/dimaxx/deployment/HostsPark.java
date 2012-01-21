@@ -15,10 +15,10 @@ import org.jdom.input.SAXBuilder;
 
 import com.jcraft.jsch.JSchException;
 
-import dimaxx.hostcontrol.LocalHost;
-import dimaxx.hostcontrol.RemoteHostExecutor;
 import dimaxx.hostcontrol.Executor.ErrorOnProcessExecutionException;
 import dimaxx.hostcontrol.Executor.WrongOSException;
+import dimaxx.hostcontrol.LocalHost;
+import dimaxx.hostcontrol.RemoteHostExecutor;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
@@ -60,7 +60,7 @@ public class HostsPark {
 	public HostsPark(final File machineFile) throws JDOMException,
 	IOException {
 		this.parseXML(machineFile);
-		System.out.println("NameServer is : "+nameServer);
+		System.out.println("NameServer is : "+this.nameServer);
 		System.out.println("Known hosts are : "+this.getHosts());
 	}
 
@@ -68,7 +68,7 @@ public class HostsPark {
 	public HostsPark(final String listeMachines) throws JDOMException, IOException {
 		final File machineFile = new File(LocalHost.getConfDir()+listeMachines);
 		this.parseXML(machineFile);
-		System.out.println("NameServer is : "+nameServer);
+		System.out.println("NameServer is : "+this.nameServer);
 		System.out.println("Known hosts are : "+this.getHosts());
 	}
 

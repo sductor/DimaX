@@ -42,7 +42,7 @@ public class OceanAPI extends Frame
 		this.ivjBExit = null;
 		this.ivjContentsPane = null;
 		this.ivjLabel1 = null;
-		ivjMer1 = this.getMer1();
+		OceanAPI.ivjMer1 = this.getMer1();
 		this.ivjTNumber = null;
 		this.initialize();
 	}
@@ -52,7 +52,7 @@ public class OceanAPI extends Frame
 		this.ivjBExit = null;
 		this.ivjContentsPane = null;
 		this.ivjLabel1 = null;
-		ivjMer1 = this.getMer1();
+		OceanAPI.ivjMer1 = this.getMer1();
 		this.ivjTNumber = null;
 	}
 	@Override
@@ -166,25 +166,25 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 		return this.ivjLabel1;
 	}
 	private Sea getMer1() {
-		if(ivjMer1 == null)
+		if(OceanAPI.ivjMer1 == null)
 			try {
-				ivjMer1 = new Sea();
-				ivjMer1.setName("Mer1");
-				ivjMer1.setLayout(null);
-				ivjMer1.setBackground(Color.cyan);
-				ivjMer1.setBounds(17, 110, 340, 276);
+				OceanAPI.ivjMer1 = new Sea();
+				OceanAPI.ivjMer1.setName("Mer1");
+				OceanAPI.ivjMer1.setLayout(null);
+				OceanAPI.ivjMer1.setBackground(Color.cyan);
+				OceanAPI.ivjMer1.setBounds(17, 110, 340, 276);
 			}
 			catch(final Throwable ivjExc) {
 				this.handleException(ivjExc);
 			}
-		return ivjMer1;
+		return OceanAPI.ivjMer1;
 	}
 	public int getnumbreOfSharks() {
 		return this.numbreOfSharks;
 	}
 	public static Sea getSea() {
 
-		return ivjMer1;
+		return OceanAPI.ivjMer1;
 	}
 	private TextField getTNumber() {
 		if(this.ivjTNumber == null)

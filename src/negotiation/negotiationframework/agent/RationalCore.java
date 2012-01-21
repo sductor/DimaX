@@ -8,7 +8,7 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface RationalCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
+PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 		extends
 		AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
@@ -31,7 +31,7 @@ Contract extends AbstractContractTransition<ActionSpec>>
 			Collection<Contract> c1, Collection<Contract> c2);
 
 	public  Double evaluatePreference(PersonalState s1);
-	
+
 
 	/*
 	 *
@@ -54,7 +54,7 @@ Contract extends AbstractContractTransition<ActionSpec>>
 // s2);
 
 /**
- * 
+ *
  * @param a
  *            : a given state
  * @return true if the agent constraints are respected on a

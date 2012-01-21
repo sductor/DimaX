@@ -1,6 +1,5 @@
 package dimaxx.kernel;
 
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 
@@ -40,7 +39,7 @@ public class DimaXTaskEngine extends Thread {
 					this.task.dimaComponent.postActivity();
 					Thread.yield();
 				} else {
-					task.dimaComponent.tryToResumeActivity();
+					this.task.dimaComponent.tryToResumeActivity();
 					Thread.yield();
 				}
 			// Terminate

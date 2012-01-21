@@ -55,7 +55,7 @@ class EcoTile extends EcoAgent {
 			this.place.locked = false;
 			this.move( (EcoPlace) constraint);
 			if ( b) {
-				this.changeStateTo(TRY_SATISFACTION);
+				this.changeStateTo(EcoAgent.TRY_SATISFACTION);
 				final EcoNPuzzle etq = this.place.owner;
 				etq.satisfied = false;
 			} else if ( this.isSatisfied())

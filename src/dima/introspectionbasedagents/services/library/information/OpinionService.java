@@ -24,10 +24,10 @@ extends ObservationService{
 	//
 	// public <Info extends Information> void receiveOpinion(Opinion<Info> o);
 
-	
-	
+
+
 	/*
-	 * 	
+	 *
 	 */
 
 	public interface Opinion<Info extends Information> extends Information, AbstractCompensativeAggregation<Info>, AbstractMinMaxAggregation<Info> {
@@ -35,11 +35,11 @@ extends ObservationService{
 		public AgentIdentifier getCreator();
 
 		public Collection<AgentIdentifier> getAggregatedAgents();
-		
+
 		public boolean isCertain();
 
 		/*
-		 * 
+		 *
 		 */
 
 		/**
@@ -48,7 +48,7 @@ extends ObservationService{
 		public Double getOpinionDispersion();
 
 		/*
-		 * 
+		 *
 		 */
 
 		/**

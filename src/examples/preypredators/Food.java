@@ -29,8 +29,8 @@ public Food() {
 		boolean pasPlace = true;
 		while (pasPlace) {
 			final java.util.Random r = new java.util.Random();
-			final int laValeurX = r.nextInt(grid.getTailleGrille());
-			final int laValeurY = r.nextInt(grid.getTailleGrille());
+			final int laValeurX = r.nextInt(Actor.grid.getTailleGrille());
+			final int laValeurY = r.nextInt(Actor.grid.getTailleGrille());
 			synchronized (Actor.Tableau) {
 			if (Actor.Tableau[laValeurX][laValeurY]==null) {
 				this.dessinerProie(laValeurX,laValeurY);

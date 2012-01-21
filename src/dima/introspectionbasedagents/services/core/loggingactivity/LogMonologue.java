@@ -19,7 +19,7 @@ public class LogMonologue extends LogNotification {
 
 	@Override
 	public String generateLogToScreen() {
-		return "**** NEW MONOLOGUE FROM AGENT " + getCaller() + " :" + "\n"
+		return "**** NEW MONOLOGUE FROM AGENT " + this.getCaller() + " :" + "\n"
 		+ "** On Host" + this.host + "(" + this.date.toString() + " - "
 		+ this.date.getTime() + "):\n" + this.text;
 	}

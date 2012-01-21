@@ -16,8 +16,6 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 /**
  * This is the service that provide pattern observing Ductor Sylvain
@@ -61,7 +59,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	//
 
 
-	public PatternObserverService(BasicCompetentAgent ag) throws UnrespectedCompetenceSyntaxException {
+	public PatternObserverService(final BasicCompetentAgent ag) throws UnrespectedCompetenceSyntaxException {
 		super(ag);
 		ag.addLogKey(PatternObserverService._logKeyForObservation, false, false);
 	}
@@ -70,37 +68,37 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 		return !this.observerBlackList.contains(observer);
 	}
 
-	public Collection<AgentIdentifier> getObserver(String key){
-		return registeredObservers.get(key);
+	public Collection<AgentIdentifier> getObserver(final String key){
+		return this.registeredObservers.get(key);
 	}
 
 	public Collection<String> getKeys(){
-		return registeredObservers.keySet();
+		return this.registeredObservers.keySet();
 	}
-	
+
 
 	@Override
 	public void addObserver(final AgentIdentifier observerAgent, final Class<?> notificationKey) {
-		addObserver( observerAgent,notificationKey.getName());
+		this.addObserver( observerAgent,notificationKey.getName());
 	}
 
 	@Override
 	public void addObserver(final AgentIdentifier observerAgent, final String notificationKey) {
-		logMonologue("i've registered "+observerAgent+" for "+notificationKey,_logKeyForObservation);
-		registeredObservers.add(notificationKey, observerAgent);
+		this.logMonologue("i've registered "+observerAgent+" for "+notificationKey,PatternObserverService._logKeyForObservation);
+		this.registeredObservers.add(notificationKey, observerAgent);
 	}
 
 	@Override
 	public void removeObserver(final AgentIdentifier observerAgent, final Class<?> notificationKey) {
-		removeObserver( observerAgent,notificationKey.getName());
+		this.removeObserver( observerAgent,notificationKey.getName());
 	}
 
 	@Override
 	public void removeObserver(final AgentIdentifier observerAgent, final String notificationKey) {
-		logMonologue("i've unregistered "+observerAgent+" for "+notificationKey,_logKeyForObservation);
-		registeredObservers.remove(notificationKey, observerAgent);
+		this.logMonologue("i've unregistered "+observerAgent+" for "+notificationKey,PatternObserverService._logKeyForObservation);
+		this.registeredObservers.remove(notificationKey, observerAgent);
 	}
-	
+
 	//
 	// Competences
 	//
@@ -222,11 +220,11 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 			attachementSignature = {String.class })
 	public void registrationOfNewObserver(final FipaACLMessage m) {
 		final String key = (String) m.getArgs()[0];
-		if (m.getContent().equals(ObservationProtocol.Observe)){
+		if (m.getContent().equals(ObservationProtocol.Observe))
 			this.registeredObservers.add(key, m.getSender());
-		}else if (m.getContent().equals(ObservationProtocol.DontObserve)){
+		else if (m.getContent().equals(ObservationProtocol.DontObserve))
 			this.registeredObservers.remove(key, m.getSender());
-	}else
+		else
 			this.getMyAgent().signalException("unappropriate message");
 
 		//				getMyAgent().logMonologue(
@@ -239,19 +237,16 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	public void autoSendOfNotifications() {
 		final Collection<NotificationMessage<?>> sendedNotif=
 				new ArrayList<NotificationMessage<?>>();
-		if (!this.registeredObservers.isEmpty()){
-			for (final NotificationMessage<?> n : this.notificationsToSend){
+		if (!this.registeredObservers.isEmpty())
+			for (final NotificationMessage<?> n : this.notificationsToSend)
 				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey()))
 					if (this.iGiveObservation(obs)){
 						n.setReceiver(obs);
 						sendedNotif.add(n);
 					}
-
-			}
-		}
-		for (NotificationMessage n : sendedNotif){
+		for (final NotificationMessage n : sendedNotif){
 			this.sendMessage(n.getReceiver(),n);
-			logMonologue("i've sended "+n+" to "+n.getReceiver(),_logKeyForObservation);
+			this.logMonologue("i've sended "+n+" to "+n.getReceiver(),PatternObserverService._logKeyForObservation);
 			this.notificationsToSend.remove(n);
 		}
 	}
@@ -264,7 +259,7 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 
 	@ProactivityFinalisation
 	public void terminate(){
-		autoSendOfNotifications();
+		this.autoSendOfNotifications();
 	}
 	//
 	// Primitives

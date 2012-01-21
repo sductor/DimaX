@@ -206,10 +206,10 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 	}
 
 	public void removeRejection(final AgentIdentifier id, final Contract c) {
-		rejectedContracts.get(id).remove(c);
+		this.rejectedContracts.get(id).remove(c);
 		this.waitContracts.add(c);
 	}
-	
+
 	//
 	// Primitive
 	//

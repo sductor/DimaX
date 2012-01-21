@@ -1,7 +1,6 @@
 package dima.introspectionbasedagents.shells;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -16,7 +15,6 @@ import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.AgentCompetence;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -37,7 +35,7 @@ BasicCommunicatingShell {
 	//
 
 	Agent myMainComponent;
-	Collection<Class<? extends AgentCompetence<Agent>>> loadedCompetence = 
+	Collection<Class<? extends AgentCompetence<Agent>>> loadedCompetence =
 			new ArrayList<Class<? extends AgentCompetence<Agent>>>();
 
 	//
@@ -47,37 +45,35 @@ BasicCommunicatingShell {
 	public BasicCompetenceShell(
 			final Agent myComponent, final Date horloge,
 			final AbstractMailBox mailbox,
-			final LogService exceptionHandler) 
+			final LogService exceptionHandler)
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		super(myComponent, mailbox, exceptionHandler);
-		getExceptionHandler().setMyAgentShell(this);
-		
-		myMainComponent = myComponent;
-		for (AgentCompetence<Agent> comp : getNativeCompetences(myMainComponent)){
-			load(comp);
-		}
-				if (myMainComponent instanceof BasicCompetentAgent) {
-					BasicCompetentAgent agent = (BasicCompetentAgent) myMainComponent;
+		this.getExceptionHandler().setMyAgentShell(this);
+
+		this.myMainComponent = myComponent;
+		for (final AgentCompetence<Agent> comp : BasicCompetenceShell.getNativeCompetences(this.myMainComponent))
+			this.load(comp);
+				if (this.myMainComponent instanceof BasicCompetentAgent) {
+					final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
 					PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
-		
+
 				}
 	}
 	public BasicCompetenceShell(
 			final Agent myComponent, final Date horloge,
-			final AbstractMailBox mailbox) 
+			final AbstractMailBox mailbox)
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		super(myComponent, mailbox, new LogService(myComponent));
-		for (AgentCompetence<Agent> comp : getNativeCompetences(myMainComponent)){
-			load(comp);
-		}
-				if (myMainComponent instanceof BasicCompetentAgent) {
-					BasicCompetentAgent agent = (BasicCompetentAgent) myMainComponent;
+		for (final AgentCompetence<Agent> comp : BasicCompetenceShell.getNativeCompetences(this.myMainComponent))
+			this.load(comp);
+				if (this.myMainComponent instanceof BasicCompetentAgent) {
+					final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
 					PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
-		
+
 				}
 	}
 
-	public BasicCompetenceShell(final Agent myComponent, final Date horloge) 
+	public BasicCompetenceShell(final Agent myComponent, final Date horloge)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException {
 		this(myComponent, horloge, myComponent.getMailBox(), new LogService(myComponent));
 	}
@@ -92,7 +88,7 @@ BasicCommunicatingShell {
 		return (LogService<Agent>) super.getExceptionHandler();
 	}
 	@SuppressWarnings("unchecked")
-	public void load(AgentCompetence<Agent> competence)
+	public void load(final AgentCompetence<Agent> competence)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		if (competence==null){
 			LogService.writeException(this,
@@ -101,18 +97,18 @@ BasicCommunicatingShell {
 			throw new UnInstanciedCompetenceException(competence.toString());
 		}
 
-		for (Class<? extends AgentCompetence<Agent>> compAlre : loadedCompetence)
-			if (compAlre.isAssignableFrom(competence.getClass()) 
+		for (final Class<? extends AgentCompetence<Agent>> compAlre : this.loadedCompetence)
+			if (compAlre.isAssignableFrom(competence.getClass())
 					|| competence.getClass().isAssignableFrom(compAlre))
 				throw new DuplicateCompetenceException(competence+" & "+compAlre);
 
 				//OK
-				loadedCompetence.add((Class<? extends AgentCompetence<Agent>>) competence.getClass());
-				competence.setMyAgent(myMainComponent);
+				this.loadedCompetence.add((Class<? extends AgentCompetence<Agent>>) competence.getClass());
+				competence.setMyAgent(this.myMainComponent);
 				this.getMyMethods().load(competence);
 	}
 
-	public void unload(AgentCompetence<Agent> newComp) {
+	public void unload(final AgentCompetence<Agent> newComp) {
 		throw new RuntimeException("todo : parcout des méthodes de 'getMyMethods()' " +
 				"et suppression de tous les méthod handler dont le caller est newComp + suppression de loadedCompetence" +
 				"attention a mise a jour des hook; restriction au comp non native (attribut)??+ passage de l'etat de l'agent a faulty");
@@ -123,14 +119,14 @@ BasicCommunicatingShell {
 
 
 	@Override
-	public final void proactivityTerminate(Date creation){
+	public final void proactivityTerminate(final Date creation){
 		super.proactivityTerminate(creation);
 		try {
 
-			for (final AgentCompetence<? extends CompetentComponent> competence : getNativeCompetences(myMainComponent))
+			for (final AgentCompetence<? extends CompetentComponent> competence : BasicCompetenceShell.getNativeCompetences(this.myMainComponent))
 				competence.die();
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LogService.writeException(this,"proactivityTerminate : Impossible!!");
 		}
 
@@ -204,12 +200,12 @@ BasicCommunicatingShell {
 	//
 
 	@SuppressWarnings("unchecked")
-	public static <SAgent extends CompetentComponent> Collection<AgentCompetence<SAgent>> getNativeCompetences(SAgent mainComponent) 
+	public static <SAgent extends CompetentComponent> Collection<AgentCompetence<SAgent>> getNativeCompetences(final SAgent mainComponent)
 			throws UnrespectedCompetenceSyntaxException {
-		Collection<AgentCompetence<SAgent>> result = new ArrayList<AgentCompetence<SAgent>>();
+		final Collection<AgentCompetence<SAgent>> result = new ArrayList<AgentCompetence<SAgent>>();
 
 		for (final Field comp : IntrospectionStaticPrimitivesLibrary.getAllFields(mainComponent.getClass()))
-			if (fieldIsACompetence(comp)){
+			if (BasicCompetenceShell.fieldIsACompetence(comp)){
 				//Important code a remettre
 				//				if (!Modifier.isFinal(comp.getModifiers())){
 				//					LoggerManager.writeWarning(this,
@@ -217,8 +213,8 @@ BasicCommunicatingShell {
 				//					throw new UnInstanciableCompetenceException(comp.getName());
 				//	}
 
-				AgentCompetence<SAgent>myComp=null;						
-				try {							
+				AgentCompetence<SAgent>myComp=null;
+				try {
 					myComp = (AgentCompetence<SAgent>)comp.get(mainComponent);
 				} catch (final Exception e) {
 					LogService.writeException(mainComponent,
@@ -234,7 +230,7 @@ BasicCommunicatingShell {
 		return result;
 	}
 
-	private static boolean fieldIsACompetence (final Field comp) 
+	private static boolean fieldIsACompetence (final Field comp)
 			throws UnrespectedCompetenceSyntaxException{
 
 		//		System.out.println("------------testing "+comp);

@@ -5,30 +5,28 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.ContractTransition;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CompetentComponent;
-import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.support.GimaObject;
 
 public abstract class AllocationSocialWelfares<
 ActionSpec extends AbstractActionSpecification,
 Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5135268337671313960L;
 	public final  String socialWelfare;
 	public final CompetentComponent myAgent;
 
 	/*
-	 * 
+	 *
 	 */
 	//Optimisations
 	public final static String key4leximinSocialWelfare="leximin";
@@ -42,7 +40,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	//
 	//
 
-	public AllocationSocialWelfares(CompetentComponent myAgent, String socialWelfare){
+	public AllocationSocialWelfares(final CompetentComponent myAgent, final String socialWelfare){
 		this.socialWelfare=socialWelfare;
 		this.myAgent = myAgent;
 	}
@@ -56,39 +54,36 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 			final Collection<Contract> c2) {
 
 
-		Collection<ActionSpec> temp1 = 
-				getResultingAllocation(getInitialStates(c1, c2), c1);
-		Collection<ActionSpec> temp2 = 
-				getResultingAllocation(getInitialStates(c1, c2), c2);
+		final Collection<ActionSpec> temp1 =
+				this.getResultingAllocation(this.getInitialStates(c1, c2), c1);
+		final Collection<ActionSpec> temp2 =
+				this.getResultingAllocation(this.getInitialStates(c1, c2), c2);
 
-		Collection<ActionSpec> s1 = new ArrayList<ActionSpec>();
-		Collection<ActionSpec> s2 = new ArrayList<ActionSpec>();
+		final Collection<ActionSpec> s1 = new ArrayList<ActionSpec>();
+		final Collection<ActionSpec> s2 = new ArrayList<ActionSpec>();
 
-		for (ActionSpec s : temp1){
+		for (final ActionSpec s : temp1)
 			s1.add(s);
-		}
-		for (ActionSpec s : temp2){
+		for (final ActionSpec s : temp2)
 			s2.add(s);
-		}
 
 
 
-		if (socialWelfare.equals(key4leximinSocialWelfare)){
-			myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,log_socialWelfareOrdering);
-			int pref = leximinWelfare(s1, s2, getComparator());
-			myAgent.logMonologue("result is " +pref,log_socialWelfareOrdering);
+		if (this.socialWelfare.equals(AllocationSocialWelfares.key4leximinSocialWelfare)){
+			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
+			final int pref = this.leximinWelfare(s1, s2, this.getComparator());
+			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
 			return pref;
-		} else if (socialWelfare.equals(key4NashSocialWelfare)){
-			return nashWelfare(s1, s2, getUtilitaristEvaluator());
-		} else if (socialWelfare.equals(key4UtilitaristSocialWelfare)){
-			return utilitaristWelfare(s1, s2, getUtilitaristEvaluator());
-		} else {
-			throw new RuntimeException("impossible key for social welfare is : "+socialWelfare);
-		}
+		} else if (this.socialWelfare.equals(AllocationSocialWelfares.key4NashSocialWelfare))
+			return this.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
+		else if (this.socialWelfare.equals(AllocationSocialWelfares.key4UtilitaristSocialWelfare))
+			return this.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
+		else
+			throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
 	}
 
 	//
-	// Abstract Method 
+	// Abstract Method
 	//
 
 	public abstract Comparator<ActionSpec> getComparator();
@@ -101,49 +96,42 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 
 	private	Map<AgentIdentifier, ActionSpec> getInitialStates(
-			Collection<Contract> a1,
-			Collection<Contract> a2){
-		Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
-		Collection<Contract> allContract = new ArrayList<Contract>();
+			final Collection<Contract> a1,
+			final Collection<Contract> a2){
+		final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
+		final Collection<Contract> allContract = new ArrayList<Contract>();
 		allContract.addAll(a1);
 		allContract.addAll(a2);
 
-		for (Contract c : allContract){
-			for (AgentIdentifier id : c.getAllParticipants())
+		for (final Contract c : allContract)
+			for (final AgentIdentifier id : c.getAllParticipants())
 				if (result.containsKey(id)){
-					if (c.getSpecificationOf(id).isNewerThan(result.get(id))){//rmplacing a fresher state	
-
+					if (c.getSpecificationOf(id).isNewerThan(result.get(id)))
 						//						System.out.println("remplacing a fresher state");
-						result.put(id,c.getSpecificationOf(id));					
-					}
-				} else {//adding state not present in result
+						result.put(id,c.getSpecificationOf(id));
+				} else
 					result.put(id,c.getSpecificationOf(id));
-				}
-		}		
 
 		//updating each contract with the freshest state
-		for (Contract cOld : allContract){
-			for (AgentIdentifier id : cOld.getAllParticipants()){
-					cOld.setSpecification(result.get(id));
-			}
-		}	
-		return result;			
+		for (final Contract cOld : allContract)
+			for (final AgentIdentifier id : cOld.getAllParticipants())
+				cOld.setSpecification(result.get(id));
+		return result;
 	}
 
 
 	protected Collection<ActionSpec> getResultingAllocation(
-			Map<AgentIdentifier, ActionSpec> initialStates,
-			Collection<Contract> alloc){
-		Map<AgentIdentifier, ActionSpec> meAsMap =
+			final Map<AgentIdentifier, ActionSpec> initialStates,
+			final Collection<Contract> alloc){
+		final Map<AgentIdentifier, ActionSpec> meAsMap =
 				new HashMap<AgentIdentifier, ActionSpec>();
 		meAsMap.putAll(initialStates);
 
-		for (Contract c : alloc){
-			for (AgentIdentifier id : c.getAllParticipants())
+		for (final Contract c : alloc)
+			for (final AgentIdentifier id : c.getAllParticipants())
 				meAsMap.put(id, c.computeResultingState(meAsMap.get(id)));
-		}
 
-		return meAsMap.values();		
+		return meAsMap.values();
 	}
 
 	//
@@ -152,20 +140,20 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 
 	public  <State> int minWelfare(
-			Collection<State> a1,
-			Collection<State> a2,
-			Comparator<State> comp){
+			final Collection<State> a1,
+			final Collection<State> a2,
+			final Comparator<State> comp){
 		return comp.compare(Collections.min(a1,comp),Collections.min(a2,comp));
 	}
 
 	public  <State> int leximinWelfare(
-			Collection<State> a1,
-			Collection<State> a2,
-			Comparator<State> comp){
+			final Collection<State> a1,
+			final Collection<State> a2,
+			final Comparator<State> comp){
 
-		final LinkedList<State> alloc1 = 
-				new LinkedList<State>(); 
-		final LinkedList<State> alloc2 = 
+		final LinkedList<State> alloc1 =
+				new LinkedList<State>();
+		final LinkedList<State> alloc2 =
 				new LinkedList<State>();
 
 		alloc1.addAll(a1);
@@ -173,12 +161,12 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 		Collections.sort(alloc1, comp);
 		Collections.sort(alloc2, comp);
-		myAgent.logMonologue("s1 is "+alloc1+"\n s2 is "+alloc2,log_socialWelfareOrdering );
+		this.myAgent.logMonologue("s1 is "+alloc1+"\n s2 is "+alloc2,AllocationSocialWelfares.log_socialWelfareOrdering );
 
 		while (!alloc1.isEmpty() && !alloc2.isEmpty()) {
-			final State minc1 = 
-					alloc1.pop(); 
-			final State 	minc2 = 
+			final State minc1 =
+					alloc1.pop();
+			final State 	minc2 =
 					alloc2.pop();
 			if (comp.compare(minc1,minc2)!=0)
 				return comp.compare(minc1,minc2);
@@ -186,12 +174,12 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 		if (alloc1.isEmpty() && alloc2.isEmpty())
 			return 0;
-		else 
+		else
 			throw new RuntimeException("the allocs did not have the same size!!\n"+a1+"\n"+a2);
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 
@@ -200,30 +188,26 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	}
 
 	public  <State> int utilitaristWelfare(
-			Collection<State> a1,
-			Collection<State> a2,
-			UtilitaristEvaluator<State> u){
+			final Collection<State> a1,
+			final Collection<State> a2,
+			final UtilitaristEvaluator<State> u){
 		Double nash1 = 0.,nash2 = 0.;
-		for (State a : a1){
+		for (final State a : a1)
 			nash1+=u.getUtilityValue(a);
-		}
-		for (State a : a2){
+		for (final State a : a2)
 			nash2+=u.getUtilityValue(a);
-		}
 		return nash1.compareTo(nash2);
 	}
 
 	public  <State> int nashWelfare(
-			Collection<State> a1,
-			Collection<State> a2,
-			UtilitaristEvaluator<State> u){
+			final Collection<State> a1,
+			final Collection<State> a2,
+			final UtilitaristEvaluator<State> u){
 		Double nash1 = 1.,nash2 = 1.;
-		for (State a : a1){
+		for (final State a : a1)
 			nash1*=u.getUtilityValue(a);
-		}
-		for (State a : a2){
+		for (final State a : a2)
 			nash2*=u.getUtilityValue(a);
-		}
 		return nash1.compareTo(nash2);
 	}
 
@@ -296,5 +280,5 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 //	}
 //
 //	System.err.println("\n\n\n\n**********************\n\n");
-//	return meAsMap.values();	
+//	return meAsMap.values();
 //}

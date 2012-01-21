@@ -1,8 +1,5 @@
 package negotiation.faulttolerance.negotiatingagent;
 
-import java.util.Date;
-
-
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.SelfObservingService;
 import negotiation.faulttolerance.ReplicationCandidature;
@@ -17,11 +14,11 @@ import negotiation.negotiationframework.interaction.selectioncores.AbstractSelec
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
 public class NegotiatingHost
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
@@ -36,7 +33,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	SelfObservingService mySelfObservationService = new SelfObservingService() {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = -6008018665463786541L;
 
@@ -53,7 +50,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	FaultObservationService myFaultAwareService = new FaultObservationService() {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = -5530153574167669156L;
 
@@ -84,7 +81,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final AbstractProposerCore<
 			SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
 			ReplicationSpecification, HostState, ReplicationCandidature> 	proposerCore,
-			ObservationService myInformation, 
+			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
 			throws CompetenceException {
 		super(id, new HostState(id, lambda), myRationality, participantCore, proposerCore, myInformation);
@@ -111,18 +108,18 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	@MessageHandler
 	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
 	public <Info extends Information> void receiveInformation(
-			NotificationMessage<Information> o) {
+			final NotificationMessage<Information> o) {
 //		logMonologue("yophoi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //		if (o.getNotification() instanceof ReplicaState && getMyCurrentState().Ihost(((ReplicaState)o.getNotification()).getMyAgentIdentifier())){
 //			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
-//			HostState h = new HostState(getMyCurrentState(), 
+//			HostState h = new HostState(getMyCurrentState(),
 //					(ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
 //			//on remet ce nouveau state dans h
 //			h = new HostState(h, (ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
 //			setNewState(h);
 //		}
 	}
-	
+
 //	public Double getReliability(final AgentIdentifier id)
 //			throws NoInformationAvailableException {
 //		return getMyInformation()

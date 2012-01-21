@@ -19,14 +19,14 @@ public interface AbstractContractTransition<ActionSpec extends AbstractActionSpe
 	public Collection<AgentIdentifier> getAllInvolved();
 
 	public void setSpecification(ActionSpec s);
-	
+
 
 
 	ActionSpec getSpecificationOf(AgentIdentifier id);
-	
+
 	//Attention retourne l'état tel quel si l'agent n'est pas concerné
 	public <State extends ActionSpec> State computeResultingState(final State s);
-	
+
 	public ActionSpec computeResultingState(AgentIdentifier id);//doit associer comme time a l'action spec le time du contract
 
 	//

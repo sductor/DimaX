@@ -1,9 +1,9 @@
 package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.Collection;
+
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -42,7 +42,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 	@Override
 	public void execute(final ReplicationCandidature c) {
-		assert getMyAgent().respectMyRights(c);
+		assert this.getMyAgent().respectMyRights(c);
 //		logMonologue(
 //				"executing "+c+" from state "
 //		+this.getMyAgent().getMyCurrentState()
@@ -53,19 +53,19 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 			this.observe(c.getResource(), SimpleObservationService.informationObservationKey);
 //			System.out.println(c.getAgent()+  " " + new Date().toString()
 //					+ "  -> i have been replicated by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue("  -> i have been replicated by "+c.getResource(),LogService.onNone);
+			this.logMonologue("  -> i have been replicated by "+c.getResource(),LogService.onNone);
 		} else {
 			this.stopObservation(c.getResource(), SimpleObservationService.informationObservationKey);
 //			System.out.println(c.getAgent()+  " " + new Date().toString()
 //					+ "  -> i have been killed by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
-			logMonologue("  -> i have been killed by "+c.getResource(),LogService.onNone);
+			this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onNone);
 		}
-		
+
 		this.getMyAgent().setNewState(
 				c.computeResultingState(
 						this.getMyAgent().getMyCurrentState()));
 		this.getMyAgent().getMyInformation().add(c.getResourceResultingState());
-		
+
 	}
 
 	// N��c��ssit�� de faire une fonction a part car celle ci est appell�� avant
@@ -73,15 +73,14 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	// pas! =(
 	public void executeFirstRep(final ReplicationCandidature c,
 			final SimpleRationalAgent host) {
-		assert getMyAgent().respectMyRights(c);
+		assert this.getMyAgent().respectMyRights(c);
 
 		//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState());
-		if (c.isMatchingCreation()) {
+		if (c.isMatchingCreation())
 			host.addObserver(c.getResource(), SimpleObservationService.informationObservationKey);
-		} else {
+		else
 			host.removeObserver(c.getResource(),SimpleObservationService.informationObservationKey);
-		}
-		
+
 		this.getMyAgent().setNewState(
 				c.computeResultingState(
 						this.getMyAgent().getMyCurrentState()));
@@ -180,7 +179,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	}
 
 	@Override
-	public Double evaluatePreference(ReplicaState s1) {
+	public Double evaluatePreference(final ReplicaState s1) {
 		return s1.getMyReliability();
 	}
 }

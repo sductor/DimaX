@@ -36,16 +36,16 @@ public class DQLRequest
     }
     public static String abbreviate(final String res)
     {
-	String ret = abbreviate(res, "dql", dqlns);
-	ret = abbreviate(ret, "var", varns);
-	ret = abbreviate(ret, "rdf", rdfns);
-	ret = abbreviate(ret, "rdfs", rdfsns);
-	return abbreviate(ret, "daml", damlns);
+	String ret = DQLRequest.abbreviate(res, "dql", DQLRequest.dqlns);
+	ret = DQLRequest.abbreviate(ret, "var", DQLRequest.varns);
+	ret = DQLRequest.abbreviate(ret, "rdf", DQLRequest.rdfns);
+	ret = DQLRequest.abbreviate(ret, "rdfs", DQLRequest.rdfsns);
+	return DQLRequest.abbreviate(ret, "daml", DQLRequest.damlns);
     }
     public static String abbreviate(final String res, final String kburl)
     {
-	final String ret = abbreviate(res);
-	return kburl.equals("") ? ret : abbreviate(ret, "tkb", kburl);
+	final String ret = DQLRequest.abbreviate(res);
+	return kburl.equals("") ? ret : DQLRequest.abbreviate(ret, "tkb", kburl);
     }
 
     public static String unabbreviate(final String res, final String pfx, String url)
@@ -60,16 +60,16 @@ public class DQLRequest
     }
     public static String unabbreviate(final String res)
     {
-	String ret = unabbreviate(res, "dql", dqlns);
-	ret = unabbreviate(ret, "var", varns);
-	ret = unabbreviate(ret, "rdf", rdfns);
-	ret = unabbreviate(ret, "rdfs", rdfsns);
-	return unabbreviate(ret, "daml", damlns);
+	String ret = DQLRequest.unabbreviate(res, "dql", DQLRequest.dqlns);
+	ret = DQLRequest.unabbreviate(ret, "var", DQLRequest.varns);
+	ret = DQLRequest.unabbreviate(ret, "rdf", DQLRequest.rdfns);
+	ret = DQLRequest.unabbreviate(ret, "rdfs", DQLRequest.rdfsns);
+	return DQLRequest.unabbreviate(ret, "daml", DQLRequest.damlns);
     }
     public static String unabbreviate(final String res, final String kburl)
     {
-	final String ret = unabbreviate(res);
-	return kburl.equals("") ? ret : unabbreviate(ret, "tkb", kburl);
+	final String ret = DQLRequest.unabbreviate(res);
+	return kburl.equals("") ? ret : DQLRequest.unabbreviate(ret, "tkb", kburl);
     }
 
     public static String getResourceNamespace(final String url)

@@ -1,17 +1,11 @@
 package negotiation.faulttolerance;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.negotiationframework.AllocationSocialWelfares;
 import negotiation.negotiationframework.interaction.MatchingCandidature;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class ReplicationCandidature extends
 MatchingCandidature<ReplicationSpecification> {
@@ -35,88 +29,88 @@ MatchingCandidature<ReplicationSpecification> {
 //	}
 
 	public ReplicationCandidature(final ResourceIdentifier r,
-			final AgentIdentifier a, final boolean creation, boolean isAgentCreator) {
+			final AgentIdentifier a, final boolean creation, final boolean isAgentCreator) {
 		super(isAgentCreator ? a : r, a, r,
 				ReplicationExperimentationProtocol._contractExpirationTime);
 		this.setCreation(creation);
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
-	public <State extends ReplicationSpecification>  State computeResultingState(State s) {
-		if (s instanceof ReplicaState){
-			return (State) getAgentResultingState((ReplicaState)s);
-		} else if (s instanceof HostState){
-			return (State) getResourceResultingState((HostState) s);
-		} else
+	public <State extends ReplicationSpecification>  State computeResultingState(final State s) {
+		if (s instanceof ReplicaState)
+			return (State) this.getAgentResultingState((ReplicaState)s);
+		else if (s instanceof HostState)
+			return (State) this.getResourceResultingState((HostState) s);
+		else
 			throw new RuntimeException("arrrggghhhh!!!!"+s);
 	}
 	@Override
-	public ReplicationSpecification computeResultingState(AgentIdentifier id) {		
-		return computeResultingState(this.getSpecificationOf(id));
+	public ReplicationSpecification computeResultingState(final AgentIdentifier id) {
+		return this.computeResultingState(this.getSpecificationOf(id));
 	}
 
 	public ReplicaState getAgentResultingState(){
-		return (ReplicaState) computeResultingState(getAgent());
+		return (ReplicaState) this.computeResultingState(this.getAgent());
 	}
 
 	public HostState getResourceResultingState(){
-		return (HostState) computeResultingState(getResource());
+		return (HostState) this.computeResultingState(this.getResource());
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public ReplicaState getAgentInitialState(){
-		return (ReplicaState) this.getSpecificationOf(getAgent());
+		return (ReplicaState) this.getSpecificationOf(this.getAgent());
 	}
 	public HostState getResourceInitialState(){
-		return (HostState) this.getSpecificationOf(getResource());
+		return (HostState) this.getSpecificationOf(this.getResource());
 	}
 
 	private ReplicaState getAgentResultingState(final ReplicaState fromState) {
 
-		if (getSpecificationOf(getResource()) == null)
+		if (this.getSpecificationOf(this.getResource()) == null)
 			throw new RuntimeException("wtf? " + this);
-		else if (!fromState.getMyAgentIdentifier().equals(getAgent()))
+		else if (!fromState.getMyAgentIdentifier().equals(this.getAgent()))
 			return fromState;
-		else if (fromState.getMyReplicas().contains(getSpecificationOf(getResource())) && creation == true){
+		else if (fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) && this.creation == true)
 			// logException("aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED"+id);
 			//				this.getMyAgent().sendMessage(
 			//						id,
 			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
 			//								"replicacore:getmyresultingstate"));
 			throw new RuntimeException(
-					"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + getResource()
+					"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()
 					+ "\n ----> current state"
 					//						+ this.getMyAgent().getMyCurrentState()
 					+ "\n --> fromState " + fromState);
 			// return this;
-		} else if (!fromState.getMyReplicas().contains(getSpecificationOf(getResource())) && creation == false) {	
+		else if (!fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) && this.creation == false)
 			// logException("aaaahhhhhhhhhhhhhhhhh  =(  CAN NOT DESTRUCT"+id);
 			//			this.getMyAgent().sendMessage(
 			//					id,
 			//					new ShowYourPocket(this.getMyAgent().getIdentifier(),
 			//							"replicacore:getmyresultingstate"));
 			throw new RuntimeException(
-					"aaaahhhhhhhhhhhhhhhhh  =(  CAN NOT DESTRUCT" + getResource()
+					"aaaahhhhhhhhhhhhhhhhh  =(  CAN NOT DESTRUCT" + this.getResource()
 					//					+ "\n ----> current state"
 					//					+ this.getMyAgent().getMyCurrentState()
 					+ "\n --> fromState " + fromState);
-		} else {
-			ReplicaState result = new ReplicaState(fromState, 
-					getResourceInitialState(), getCreationTime());
+		else {
+			ReplicaState result = new ReplicaState(fromState,
+					this.getResourceInitialState(), this.getCreationTime());
 			//on cree n nouveau state a partir de r
-			HostState h = new HostState(getResourceInitialState(), result, getCreationTime());
+			final HostState h = new HostState(this.getResourceInitialState(), result, this.getCreationTime());
 			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
-			result = new ReplicaState(result, 
-					getResourceInitialState(), getCreationTime());
+			result = new ReplicaState(result,
+					this.getResourceInitialState(), this.getCreationTime());
 			//on remet ce nouveau state dans r
-			result = new ReplicaState(result, h, getCreationTime());
+			result = new ReplicaState(result, h, this.getCreationTime());
 			return result;
 		}
 
@@ -124,39 +118,39 @@ MatchingCandidature<ReplicationSpecification> {
 
 	private HostState getResourceResultingState(final HostState fromState) {
 
-		if (getSpecificationOf(this.getAgent()) == null)
+		if (this.getSpecificationOf(this.getAgent()) == null)
 			throw new NullPointerException();
-		else if (!fromState.getMyAgentIdentifier().equals(getResource()))
+		else if (!fromState.getMyAgentIdentifier().equals(this.getResource()))
 			return fromState;
-		else if (fromState.Ihost(getAgent()) && creation == true) {	
+		else if (fromState.Ihost(this.getAgent()) && this.creation == true)
 			//				this.getMyAgent().sendMessage(
 			//						replica.getMyAgentIdentifier(),
 			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
 			//								"hostcore:getmyresultingstate"));
 			throw new RuntimeException(
 					fromState.getMyAgentIdentifier()+" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"
-							+ getAgent()
+							+ this.getAgent()
 							+ "\n ----> current state"
-							+ this); 
-		} else if (!fromState.Ihost(getAgent()) && creation == false) {	
+							+ this);
+		else if (!fromState.Ihost(this.getAgent()) && this.creation == false)
 			//				this.getMyAgent().sendMessage(
 			//						replica.getMyAgentIdentifier(),
 			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
 			//								"hostcore:getmyresultingstate"));
 			throw new RuntimeException(
-					fromState.getMyAgentIdentifier()+" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT " + getAgent()
-					+ "\n ----> current state" +fromState+"\n current contract"+ this+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(getAgent()));
-		} else {
-			HostState h = 
-					new HostState(fromState, 
-							getAgentInitialState(), getCreationTime());
+					fromState.getMyAgentIdentifier()+" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT " + this.getAgent()
+					+ "\n ----> current state" +fromState+"\n current contract"+ this+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent()));
+		else {
+			HostState h =
+					new HostState(fromState,
+							this.getAgentInitialState(), this.getCreationTime());
 			//on cree n nouveau state a partir de h
-			ReplicaState r1 = new ReplicaState(getAgentInitialState(), h, getCreationTime());
+			final ReplicaState r1 = new ReplicaState(this.getAgentInitialState(), h, this.getCreationTime());
 			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
-			h = new HostState(h, 
-					getAgentInitialState(), getCreationTime());
+			h = new HostState(h,
+					this.getAgentInitialState(), this.getCreationTime());
 			//on remet ce nouveau state dans h
-			h = new HostState(h, r1, getCreationTime());
+			h = new HostState(h, r1, this.getCreationTime());
 
 
 			//			System.out.print(fromState+"\n to "+h+" \n to ");

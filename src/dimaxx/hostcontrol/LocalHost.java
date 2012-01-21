@@ -34,6 +34,6 @@ public class LocalHost {
 	}
 
 	public static String getConfDir() {
-		return getDir()+"conf/";
+		return LocalHost.getDir()+"conf/";
 	}
 }

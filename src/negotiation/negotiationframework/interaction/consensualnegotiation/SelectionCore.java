@@ -7,7 +7,7 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface SelectionCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
+PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends	AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
 

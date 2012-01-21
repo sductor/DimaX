@@ -2,15 +2,13 @@ package negotiation.faulttolerance.candidaturenegotiation.statusdestruction;
 
 import java.util.Collection;
 
-import dima.introspectionbasedagents.services.library.information.OpinionService;
-import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
-
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
+import dima.introspectionbasedagents.services.library.information.OpinionService;
+import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
 
 public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private static final long serialVersionUID = -3882932472033817195L;
@@ -63,7 +61,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 
 	@Override
 	public boolean IWantToNegotiate(final ReplicaState s) {
-		updateThreshold();
+		this.updateThreshold();
 //		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
 //				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
 //						.getStatus(s).equals(AgentStateStatus.Wastefull))));
@@ -85,14 +83,14 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	 */
 
 	public AgentStateStatus getStatus(final ReplicaState s) {
-		boolean empty = this.getMyAgent().getMyCurrentState()
+		final boolean empty = this.getMyAgent().getMyCurrentState()
 		.getMyReplicas().size() <= 1;
-		boolean full = this.getMyAgent().getMyCurrentState()
+		final boolean full = this.getMyAgent().getMyCurrentState()
 		.getMyReplicas().size() == this.getMyAgent().getMyInformation()
 		.getKnownAgents().size();
-		boolean fragile = this.getMyAgent().getMyCurrentState()
+		final boolean fragile = this.getMyAgent().getMyCurrentState()
 		.getMyReliability() <= this.getLowerThreshold();
-		boolean wastefull = this.getMyAgent().getMyCurrentState()
+		final boolean wastefull = this.getMyAgent().getMyCurrentState()
 		.getMyReliability() > this.getHigherThreshold();
 
 		if (wastefull && fragile)
@@ -143,17 +141,17 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 
 	private void updateThreshold(){
 		try {
-			Opinion<ReplicaState> o = ((OpinionService) getMyAgent().getMyInformation()).getGlobalOpinion(ReplicaState.class);
+			final Opinion<ReplicaState> o = ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(ReplicaState.class);
 //		System.out.println("updating status opinion is : "+o);
 			Double mean, min, max;
 			mean = o.getRepresentativeElement().getMyReliability();
 			min = o.getMinElement().getMyReliability();
 			max = o.getMaxElement().getMyReliability();
 
-			lowerThreshold = ReplicationExperimentationParameters.alpha_low * ((mean + min)/2);
-			higherThreshold = ReplicationExperimentationParameters.alpha_high * ((mean + max)/2);
-		} catch (Exception e) {
-			getMyAgent().signalException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"+getMyAgent().getMyInformation(), e);
+			this.lowerThreshold = ReplicationExperimentationParameters.alpha_low * ((mean + min)/2);
+			this.higherThreshold = ReplicationExperimentationParameters.alpha_high * ((mean + max)/2);
+		} catch (final Exception e) {
+			this.getMyAgent().signalException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"+this.getMyAgent().getMyInformation(), e);
 			throw new RuntimeException();
 		}
 	}

@@ -11,7 +11,6 @@ import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
 import dima.introspectionbasedagents.ontologies.MessageWithProtocol;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.MethodHandler;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 //message type order :content java
@@ -141,7 +140,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 	/**
 	 * @return the validity time of the communication
 	 */
-	protected Date getReplyBy() {		
+	protected Date getReplyBy() {
 		return this.replyBy;
 	}
 
@@ -225,7 +224,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 	public String description() {
 		return "\n *Performative:" + this.performative + "\n *Protocol:"
 		+ this.protocol.getSimpleName() + "\n *signature:"
-		+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))			
+		+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
 //		+ Arrays.asList(this.getArgs())==null?
 //				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
 				;
@@ -244,14 +243,14 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 	public void setAttachement(final Object[] attachement,
 			final Class<?>[] attachementSignature) {
-		if (MethodHandler.checkSignature(attachementSignature, attachement)) {
+		if (SimpleMethodHandler.checkSignature(attachementSignature, attachement)) {
 			this.setArgs(attachement);
 			this.attachementSignature = attachementSignature;
 		} else
 			LogService.writeException(this, "Unappropriate attachement");
 	}
 	public void setAttachement(final Object[] attachement) {
-		final Class<?>[] attachementSignature = MethodHandler.getSignature(attachement);
+		final Class<?>[] attachementSignature = SimpleMethodHandler.getSignature(attachement);
 		this.setArgs(attachement);
 		this.attachementSignature = attachementSignature;
 	}

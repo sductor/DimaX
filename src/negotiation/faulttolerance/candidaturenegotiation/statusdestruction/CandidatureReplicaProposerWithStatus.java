@@ -1,23 +1,21 @@
 package negotiation.faulttolerance.candidaturenegotiation.statusdestruction;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import dima.introspectionbasedagents.NotReadyException;
-
 import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.ReplicationSpecification;
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.HostState;
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.candidatureprotocol.CandidatureReplicaProposer;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
+import dima.introspectionbasedagents.NotReadyException;
 
 public class CandidatureReplicaProposerWithStatus extends CandidatureReplicaProposer
 implements
@@ -45,11 +43,11 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 
 			while (this.stateStatusIs(nextState, AgentStateStatus.Wastefull)
 					&& !replicas.isEmpty()){
-				
-				ReplicationCandidature destructionCandidature = 
-						new DestructionOrder(						
+
+				final ReplicationCandidature destructionCandidature =
+						new DestructionOrder(
 						replicas.remove(0).getMyAgentIdentifier(), this.getMyAgent().getIdentifier(),true);
-				HostState host = this.getMyAgent().getMyInformation()
+				final HostState host = this.getMyAgent().getMyInformation()
 						.getInformation(
 								HostState.class,
 								destructionCandidature.getResource());

@@ -4,19 +4,19 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 
 public class NotReadyException extends Exception {
 	private static final long serialVersionUID = -804054179327698565L;
-	
+
 	final AgentCompetence comp;
-	final String compMethodToTest;  
-	final Class<?>[] compSignature; 
+	final String compMethodToTest;
+	final Class<?>[] compSignature;
 	final Object[] compargs;
-	final String agMethodToExecute;  
-	final Class<?>[] agSignature; 
+	final String agMethodToExecute;
+	final Class<?>[] agSignature;
 	final Object[] agargs;
 
 	public NotReadyException(){
 		this(null,null,null,null,null,null,null);
 	}
-	
+
 	public NotReadyException(
 			final AgentCompetence comp,
 			final String compMethodToTest, final String agMethodToExecute){
@@ -44,9 +44,9 @@ public class NotReadyException extends Exception {
 		this(comp, compMethodToTest, null, compargs, agMethodToExecute, null, new Object[]{});
 	}
 
-	public NotReadyException(AgentCompetence comp, String compMethodToTest,
-			Class<?>[] compSignature, Object[] compargs,
-			String agMethodToExecute, Class<?>[] agSignature, Object[] agargs) {
+	public NotReadyException(final AgentCompetence comp, final String compMethodToTest,
+			final Class<?>[] compSignature, final Object[] compargs,
+			final String agMethodToExecute, final Class<?>[] agSignature, final Object[] agargs) {
 		super();
 		this.comp = comp;
 		this.compMethodToTest = compMethodToTest;
@@ -57,7 +57,7 @@ public class NotReadyException extends Exception {
 		this.agargs = agargs;
 	}
 
-	
-	
+
+
 }
 

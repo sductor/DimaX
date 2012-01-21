@@ -38,7 +38,7 @@ class EcoBlank extends EcoTile {
 			final boolean b = this.isSatisfied();//on regarde si le palet etait satisfied
 			this.move( (EcoPlace) ea);
 			if ( b)
-				this.state =  TRY_SATISFACTION;
+				this.state =  EcoAgent.TRY_SATISFACTION;
 	}
 	@Override
 	public  void  doEscapeAggressionWithConstraint( final EcoAgent constraint) {}

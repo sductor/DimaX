@@ -34,7 +34,7 @@ public class SimpleAgent extends BasicCompetentAgent {
 	 *
 	 */
 
-	public SimpleAgent(final int id, final int nbA, final int nbTour) 
+	public SimpleAgent(final int id, final int nbA, final int nbTour)
 	throws CompetenceException {
 		super(SimpleAgent.getsimpleId(id));
 		this.myId = id;

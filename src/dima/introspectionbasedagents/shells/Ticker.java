@@ -6,6 +6,10 @@ import dima.support.GimaObject;
 
 public class Ticker extends GimaObject{
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 2889277826081776124L;
 	private final long timeToWait;
 	private int lastStepExecution = 0;
 
@@ -18,11 +22,11 @@ public class Ticker extends GimaObject{
 	 * elle retourne true
 	 */
 
-	public boolean isReady(Date creation) {
+	public boolean isReady(final Date creation) {
 		if (this.timeToWait==0)
 			return true;
 		else {
-			int stepNumber = Ticker.getStepNumber(creation, timeToWait);
+			final int stepNumber = Ticker.getStepNumber(creation, this.timeToWait);
 			if (stepNumber>this.lastStepExecution) {
 				this.lastStepExecution=stepNumber;
 				return true;
@@ -30,16 +34,16 @@ public class Ticker extends GimaObject{
 				return false;
 		}
 	}
-	
-	public static int getStepNumber(Date creation, long cycleTime){
+
+	public static int getStepNumber(final Date creation, final long cycleTime){
 		final long elapsedTime =
-			new Date().getTime() - creation.getTime();		
+			new Date().getTime() - creation.getTime();
 		return (int) (elapsedTime/cycleTime);
 	}
 
 
 	public static void main(final String[] args) throws InterruptedException {
-		Date creation=new Date();
+		final Date creation=new Date();
 		final Ticker t  = new Ticker(2000);
 		System.out.println(creation);
 

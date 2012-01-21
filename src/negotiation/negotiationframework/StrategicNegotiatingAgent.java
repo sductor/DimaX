@@ -17,7 +17,7 @@ import dima.introspectionbasedagents.services.library.information.SimpleOpinionS
 
 public abstract class StrategicNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
+PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 		extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> {
 
@@ -26,7 +26,7 @@ Contract extends AbstractContractTransition<ActionSpec>>
 	//
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private final Collection<String> knownActions;
@@ -38,16 +38,16 @@ Contract extends AbstractContractTransition<ActionSpec>>
 	//
 
 	public StrategicNegotiatingAgent(
-			AgentIdentifier id,
-			Date horloge,
-			PersonalState myInitialState,
-			RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
-			StrategicProposerCore<ActionSpec, PersonalState, Contract> myProposerCore,
-			ObservationService myInformation,
-			Collection<String> knownActions,
-			AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
-			AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator)
+			final AgentIdentifier id,
+			final Date horloge,
+			final PersonalState myInitialState,
+			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
+			final AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final StrategicProposerCore<ActionSpec, PersonalState, Contract> myProposerCore,
+			final ObservationService myInformation,
+			final Collection<String> knownActions,
+			final AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
+			final AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator)
 			throws CompetenceException {
 		super(id, myInitialState, myRationality, selectionCore, myProposerCore, myInformation);
 		this.knownActions = knownActions;
@@ -56,15 +56,15 @@ Contract extends AbstractContractTransition<ActionSpec>>
 	}
 
 	public StrategicNegotiatingAgent(
-			AgentIdentifier id,
-			PersonalState myInitialState,
-			RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
-			StrategicProposerCore<ActionSpec, PersonalState, Contract> myProposerCore,
-			ObservationService myInformation,
-			Collection<String> knownActions,
-			AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
-			AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator)
+			final AgentIdentifier id,
+			final PersonalState myInitialState,
+			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
+			final AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final StrategicProposerCore<ActionSpec, PersonalState, Contract> myProposerCore,
+			final ObservationService myInformation,
+			final Collection<String> knownActions,
+			final AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
+			final AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator)
 			throws CompetenceException {
 		super(id, myInitialState, myRationality, selectionCore, myProposerCore, myInformation);
 		this.knownActions = knownActions;

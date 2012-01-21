@@ -53,7 +53,7 @@ public abstract class FaultObservationService extends
 	public Double getDisponibility(final Collection<ResourceIdentifier> hosts) {
 		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),hosts);
 	}
-	
+
 	//
 	// Abstract methods
 	//

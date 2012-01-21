@@ -8,14 +8,14 @@ import negotiation.negotiationframework.interaction.AbstractContractTransition;
 
 public class GreedyRandomSelectionCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
+PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends GreedyBasicSelectionCore<ActionSpec, PersonalState, Contract>  {
 
-	
 
-	public GreedyRandomSelectionCore(boolean fuseInitiatorNparticipant,
-			boolean considerOnWait) {
+
+	public GreedyRandomSelectionCore(final boolean fuseInitiatorNparticipant,
+			final boolean considerOnWait) {
 		super(fuseInitiatorNparticipant, considerOnWait);
 	}
 

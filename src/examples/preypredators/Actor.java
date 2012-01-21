@@ -46,14 +46,14 @@ public class Actor extends BasicCommunicatingAgent {
  */
 public Actor() {
 	//super();
-	final Dimension d = grid.getSize();
-	this.xoff = d.width / grid.getTailleGrille();
-	this.yoff = d.height / grid.getTailleGrille();
+	final Dimension d = Actor.grid.getSize();
+	this.xoff = d.width / Actor.grid.getTailleGrille();
+	this.yoff = d.height / Actor.grid.getTailleGrille();
 	this.xoffqua = 3 * this.xoff / 4;
 	this.yoffqua = 3 * this.yoff / 4;
 	this.xoffmid = this.xoff / 2;
 	this.yoffmid = this.yoff / 2;
-	this.ressources = Actor.aleatoire(NbMaxRessources);
+	this.ressources = Actor.aleatoire(Actor.NbMaxRessources);
 }
 	static public int aleatoire(final int num){
 	return (int) ( Math.random() * (num-1));
@@ -70,7 +70,7 @@ public Actor() {
 			return this.d;
 		}
 		public Grid getGrille() {
-			return grid;
+			return Actor.grid;
 		}
 		public int getPosX() {
 		return this.posX;
@@ -146,8 +146,8 @@ public java.util.Vector Scan(final int quisuisje) {
 	boolean bool = true;
 	//synchronized (Acteur.Tableau) {
 	for (int i = 1;i < this.vue + 1 & bool; i++) {
-		for (int j = this.max(x - i, 0); j < this.min(x + i + 1, grid.getTailleGrille()); j++)
-			for (int k = this.max(y - i, 0); k < this.min(y + i + 1, grid.getTailleGrille()); k++)
+		for (int j = this.max(x - i, 0); j < this.min(x + i + 1, Actor.grid.getTailleGrille()); j++)
+			for (int k = this.max(y - i, 0); k < this.min(y + i + 1, Actor.grid.getTailleGrille()); k++)
 				//System.out.println("This : "+this+" i : "+i+" j : "+j+" k : "+k);
 				if (ennemi == 1) {
 					final Predator pred = (Predator) Actor.Tableau[j][k];

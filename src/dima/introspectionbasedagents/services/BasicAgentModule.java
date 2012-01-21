@@ -12,7 +12,7 @@ public class BasicAgentModule<Agent extends CompetentComponent> implements DimaC
 	//
 
 	Agent myAgent;
-	
+
 	//
 	// Constructors
 	//
@@ -32,7 +32,7 @@ public class BasicAgentModule<Agent extends CompetentComponent> implements DimaC
 	public AgentIdentifier getIdentifier(){
 		return this.getMyAgent().getIdentifier();
 	}
-	
+
 	public void setMyAgent(final Agent ag) {
 		this.myAgent=ag;
 	}

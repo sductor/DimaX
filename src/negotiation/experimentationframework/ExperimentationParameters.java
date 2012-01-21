@@ -7,7 +7,6 @@ import java.util.List;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.basicinterfaces.DimaComponentInterface;
@@ -17,9 +16,13 @@ public abstract class ExperimentationParameters
 implements DimaComponentInterface {
 
 //	final AgentIdentifier experimentatorId;
-	
-	
-	private final String simulationName = newName();
+
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -1735965270944987539L;
+	private final String simulationName = ExperimentationParameters.newName();
 	private final File f;
 
 	protected final AgentIdentifier experimentatorId;
@@ -30,17 +33,17 @@ implements DimaComponentInterface {
 	public  String _agentSelection;
 	public  String _hostSelection;
 	public String _socialWelfare;
-	
+
 	List<AgentIdentifier> replicasIdentifier  = new ArrayList<AgentIdentifier>();
 	List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>();
 
 
 	public ExperimentationParameters(
 			final File f,
-			AgentIdentifier experimentatorId,
+			final AgentIdentifier experimentatorId,
 			final int nbAgents, final int nbHosts) {
 		this.f = f;
-		this.experimentatorId=experimentatorId;		
+		this.experimentatorId=experimentatorId;
 		this.nbAgents = nbAgents;
 		this.nbHosts= nbHosts;
 	}
@@ -62,7 +65,7 @@ implements DimaComponentInterface {
 	public int getNbAgentsNHosts() {
 		return this.nbAgents+this.nbHosts;
 	}
-	
+
 	public List<AgentIdentifier> getReplicasIdentifier() {
 		return this.replicasIdentifier;
 	}
@@ -80,10 +83,10 @@ implements DimaComponentInterface {
 	//
 
 	public void initiate(){}
-	
+
 	public final void initiateParameters(){
-		initiateAgentsAndHosts();
-		initiate();
+		this.initiateAgentsAndHosts();
+		this.initiate();
 	}
 
 	private void initiateAgentsAndHosts(){
@@ -99,16 +102,16 @@ implements DimaComponentInterface {
 					new ResourceIdentifier("#"+this.getSimulationName()+"#HostManager_"+i,77));
 	}
 
-	
+
 	/*
-	 * 
+	 *
 	 */
-	
+
 
 	public abstract int numberOfTimePoints();
 
 	public abstract int getTimeStep(final ExperimentationResults ag);
-	
+
 	public abstract Long geTime(final int i);
 
 	//
@@ -117,8 +120,8 @@ implements DimaComponentInterface {
 
 	private static int id = -1;
 	private static String newName(){
-		id++;
-		return "simu_"+id;
+		ExperimentationParameters.id++;
+		return "simu_"+ExperimentationParameters.id;
 	}
 	@Override
 	public String toString(){
@@ -135,10 +138,10 @@ implements DimaComponentInterface {
 	}
 
 	public File getF() {
-		return f;
+		return this.f;
 	}
 
 	public String getSimulationName() {
-		return simulationName;
+		return this.simulationName;
 	}
 }

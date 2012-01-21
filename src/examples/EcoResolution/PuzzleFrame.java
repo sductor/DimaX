@@ -101,7 +101,7 @@ public class PuzzleFrame extends Frame {
 	PuzzleFrame( final N_Puzzle_Applet a,final String titre, final int t) {
 		super( titre);
 		this.parent = a;
-		TAILLE_DEFAUT = t;
+		PuzzleFrame.TAILLE_DEFAUT = t;
 			//{{INIT_CONTROLS
 		this.setLayout(new BorderLayout(1,2));
 		this.setVisible(false);
@@ -176,7 +176,7 @@ public class PuzzleFrame extends Frame {
 		//}}
 		//{{INIT_MENUS
 		//}}
-		 this.taquin = new EcoNPuzzle( this,  TAILLE_DEFAUT);//creation d'une instance d'EcoNPuzzle
+		 this.taquin = new EcoNPuzzle( this,  PuzzleFrame.TAILLE_DEFAUT);//creation d'une instance d'EcoNPuzzle
 		//liee a la fenetre de l'application
 		this.puzzlePanel.add( this.taquin.support);
 		//les boutons et la boite a cocher

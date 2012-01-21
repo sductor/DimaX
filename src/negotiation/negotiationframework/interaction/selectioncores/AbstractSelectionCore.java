@@ -16,16 +16,16 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  * Selection Cores must extenbds this class to be coherent with the roles. They
  * must implements the methods select(..) and use the primitives
  * validateContract and dismissContract to inform of the decisions
- * 
+ *
  * @author Sylvain Ductor
- * 
+ *
  * @param <PersonalState>
  * @param <Contract>
  * @param <ActionSpec>
  */
 public abstract class AbstractSelectionCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec, 
+PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>
@@ -51,7 +51,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 
 	@Override
 	public ContractTrunk<Contract> select(final ContractTrunk<Contract> given) {
-		this.returned = 
+		this.returned =
 				new ContractTrunk<Contract>(
 						this.getMyAgent().getIdentifier());
 		this.given = given;
@@ -90,7 +90,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	protected void select(final List<Contract> initiatorContractToExplore,
 			final List<Contract> participantContractToExplore,
 			final List<Contract> initiatorOnWaitContract,
-			final List<Contract> participantAlreadyAccepted, 
+			final List<Contract> participantAlreadyAccepted,
 			final List<Contract> rejected) {
 
 		// Verification de la consistance
@@ -119,7 +119,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 			final List<Contract> contractsToExplore = new ArrayList<Contract>();
 			contractsToExplore.addAll(initiatorContractToExplore);
 			contractsToExplore.addAll(participantContractToExplore);
-			if (considerOnWait)
+			if (this.considerOnWait)
 				contractsToExplore.addAll(initiatorOnWaitContract);
 
 			toValidate = this.selection(currentState, contractsToExplore);
@@ -128,7 +128,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 			toValidate.addAll(this.selection(currentState,
 					participantContractToExplore));
 
-			if (considerOnWait)
+			if (this.considerOnWait)
 				initiatorContractToExplore.addAll(initiatorOnWaitContract);
 			toValidate.addAll(
 					this.selection(currentState,
@@ -165,9 +165,9 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 		for (final Contract c : rejected) {
 			this.returned.addContract(c);
 			this.returned.addRejection(this.getMyAgent().getIdentifier(), c);
-		}		
+		}
 
-		this.notify(new IllAnswer<Contract>(returned));
+		this.notify(new IllAnswer<Contract>(this.returned));
 	}
 
 	//	private void checkImFull(final Collection<Contract> rejected) {

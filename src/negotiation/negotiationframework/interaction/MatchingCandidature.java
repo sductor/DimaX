@@ -17,7 +17,7 @@ ActionSpec extends AbstractActionSpecification>
 	 *
 	 */
 
-	public MatchingCandidature(AgentIdentifier intiator,
+	public MatchingCandidature(final AgentIdentifier intiator,
 			final AgentIdentifier a, final ResourceIdentifier r,
 			final long validityTime) {
 		super(intiator, "matching", new AgentIdentifier[] { a, r },
@@ -52,7 +52,7 @@ ActionSpec extends AbstractActionSpecification>
 		return this.creation;
 	}
 
-	public void setCreation(Boolean creation) {
+	public void setCreation(final Boolean creation) {
 		this.creation = creation;
 	}
 
@@ -65,8 +65,8 @@ ActionSpec extends AbstractActionSpecification>
 		return this.getIdentifier() + " -> ("
 				+ (this.creation ? "create" : "destruct") + ")"
 //		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
-		+"\n  -----> agent specif : "+getAgent()+", "+getSpecificationOf(getAgent())
-		+"\n  -----> host specif : "+getResource()+", "+getSpecificationOf(getResource());
+		+"\n  -----> agent specif : "+this.getAgent()+", "+this.getSpecificationOf(this.getAgent())
+		+"\n  -----> host specif : "+this.getResource()+", "+this.getSpecificationOf(this.getResource());
 	}
 }
 

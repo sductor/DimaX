@@ -8,7 +8,7 @@ public class FaultStatusMessage extends Message {
 
 	final ResourceIdentifier r;
 
-	public FaultStatusMessage(ResourceIdentifier r) {
+	public FaultStatusMessage(final ResourceIdentifier r) {
 		super();
 		this.r = r;
 	}

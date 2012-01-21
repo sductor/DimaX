@@ -33,7 +33,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 
 
 	public BasicCommunicatingShell(
-			final DimaComponentInterface myComponent, 
+			final DimaComponentInterface myComponent,
 			final AbstractMailBox mailBox) {
 		super(myComponent, new BasicCommunicatingMethodTrunk());
 		this.mailBox=mailBox;
@@ -76,7 +76,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	//
 
 	@Override
-	public final void step(Date creation){
+	public final void step(final Date creation){
 		this.parseMails();
 		super.step(creation);
 	}
@@ -99,7 +99,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 			//			parseJavaMessage(mess);
 			try {
 				final Collection<MethodHandler> mts = this.getMyMethods().parseMail(mess);
-				for (MethodHandler mt : mts)
+				for (final MethodHandler mt : mts)
 					this.metToRemove.add(mt);
 			} catch (final UnHandledMessageException e) {
 				// Unhandled envellope

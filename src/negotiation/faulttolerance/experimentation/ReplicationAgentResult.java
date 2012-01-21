@@ -71,6 +71,7 @@ public class ReplicationAgentResult implements ExperimentationResults {
 		return this.reliability;
 	}
 
+	@Override
 	public boolean isLastInfo() {
 		return this.lastInfo;
 	}
@@ -91,7 +92,7 @@ public class ReplicationAgentResult implements ExperimentationResults {
 
 	@Override
 	public void setLastInfo() {
-		lastInfo=true;
+		this.lastInfo=true;
 	}
 
 }

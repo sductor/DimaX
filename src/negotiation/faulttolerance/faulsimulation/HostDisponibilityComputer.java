@@ -36,9 +36,9 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	// Constructor
 	//
 
-	public HostDisponibilityComputer(ObservationService myAgentInformation,
-			long experienceTime, long timeScale, long eventFrequency,
-			double lambdaRepair) {
+	public HostDisponibilityComputer(final ObservationService myAgentInformation,
+			final long experienceTime, final long timeScale, final long eventFrequency,
+			final double lambdaRepair) {
 		super();
 		//		this.myAgentInformation = myAgentInformation;
 		this.experienceTime = experienceTime;
@@ -53,28 +53,28 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	/*
 	 * Fault evaluation
 	 */
-	
-	public static Double getDisponibility(
-			ObservationService myAgentInformation,
-			final ResourceIdentifier host) {
-		return getDisponibility(
-				getLambda(myAgentInformation,host), 
-				getUptime(myAgentInformation,host));
-	}
-	
 
 	public static Double getDisponibility(
-			ObservationService myAgentInformation,
+			final ObservationService myAgentInformation,
+			final ResourceIdentifier host) {
+		return HostDisponibilityComputer.getDisponibility(
+				HostDisponibilityComputer.getLambda(myAgentInformation,host),
+				HostDisponibilityComputer.getUptime(myAgentInformation,host));
+	}
+
+
+	public static Double getDisponibility(
+			final ObservationService myAgentInformation,
 			final Collection<ResourceIdentifier> hosts) {
 		final Map<ResourceIdentifier, Long> hosts_uptimes = new HashMap<ResourceIdentifier, Long>();
 		final Map<ResourceIdentifier, Double> hosts_lambdas = new HashMap<ResourceIdentifier, Double>();
 
 		for (final ResourceIdentifier h : hosts) {
-			hosts_lambdas.put(h, getLambda(myAgentInformation,h));
-			hosts_uptimes.put(h, getUptime(myAgentInformation,h));
+			hosts_lambdas.put(h, HostDisponibilityComputer.getLambda(myAgentInformation,h));
+			hosts_uptimes.put(h, HostDisponibilityComputer.getUptime(myAgentInformation,h));
 		}
 
-		return getDisponibility(hosts_lambdas, hosts_uptimes);
+		return HostDisponibilityComputer.getDisponibility(hosts_lambdas, hosts_uptimes);
 	}
 	public static Double getDisponibility(
 			final Collection<HostState> hosts) {
@@ -86,26 +86,26 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			hosts_uptimes.put(h.getMyAgentIdentifier(), h.getUptime());
 		}
 
-		return getDisponibility(hosts_lambdas, hosts_uptimes);
+		return HostDisponibilityComputer.getDisponibility(hosts_lambdas, hosts_uptimes);
 	}
-	
+
 	/*
 	 * Fault Triggering
 	 */
-	
+
 	/**
 	 * return null if no event
-	 * 
+	 *
 	 * @param host
 	 * @return
 	 */
 	public static FaultStatusMessage eventOccur(
-			ObservationService myAgentInformation,
+			final ObservationService myAgentInformation,
 			final ResourceIdentifier host) {
 		try {
-			if (eventOccur(
-					getUptime(myAgentInformation,host),
-					getLambda(myAgentInformation,host),
+			if (HostDisponibilityComputer.eventOccur(
+					HostDisponibilityComputer.getUptime(myAgentInformation,host),
+					HostDisponibilityComputer.getLambda(myAgentInformation,host),
 					!myAgentInformation.getInformation(HostState.class,
 							host).isFaulty())) {
 				if (myAgentInformation
@@ -123,8 +123,8 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	}
 
 	public static void setFaulty(
-			ObservationService myAgentInformation,
-			FaultStatusMessage event) {
+			final ObservationService myAgentInformation,
+			final FaultStatusMessage event) {
 		try {
 			if (event instanceof FaultEvent)
 				myAgentInformation.getInformation(HostState.class,
@@ -140,7 +140,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		}
 	}
 
-	public static Collection<? extends ResourceIdentifier> getHosts(ObservationService myAgentInformation) {
+	public static Collection<? extends ResourceIdentifier> getHosts(final ObservationService myAgentInformation) {
 		final Collection<ResourceIdentifier> hostAlive = new ArrayList<ResourceIdentifier>();
 		for (final AgentIdentifier id : myAgentInformation
 				.getKnownAgents())
@@ -152,7 +152,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	// Primitive
 	//
 
-	private static  Double getLambda(ObservationService myAgentInformation, final ResourceIdentifier h) {
+	private static  Double getLambda(final ObservationService myAgentInformation, final ResourceIdentifier h) {
 		try {
 			return myAgentInformation.getInformation(HostState.class, h)
 					.getLambda();
@@ -166,7 +166,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		}
 	}
 
-	private static  Long getCreationtime(ObservationService myAgentInformation, final ResourceIdentifier h) {
+	private static  Long getCreationtime(final ObservationService myAgentInformation, final ResourceIdentifier h) {
 		try {
 			return myAgentInformation.getInformation(HostState.class, h)
 					.getCreationTime();
@@ -177,8 +177,8 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		}
 	}
 
-	private static long getUptime(ObservationService myAgentInformation,final ResourceIdentifier h) {
-		return new Date().getTime() - getCreationtime(myAgentInformation,h);
+	private static long getUptime(final ObservationService myAgentInformation,final ResourceIdentifier h) {
+		return new Date().getTime() - HostDisponibilityComputer.getCreationtime(myAgentInformation,h);
 	}
 
 
@@ -190,7 +190,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		Static, Weibull, Poisson
 	}
 
-	private  static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;// 
+	private  static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
 
 	private  static Double getDisponibility(
 			final Map<ResourceIdentifier, Double> hosts_lambdas,
@@ -200,7 +200,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		else {
 			Double panne = new Double(1);
 			for (final ResourceIdentifier h : hosts_lambdas.keySet())
-				panne *= 1 - getDisponibility(hosts_lambdas.get(h),
+				panne *= 1 - HostDisponibilityComputer.getDisponibility(hosts_lambdas.get(h),
 						hosts_uptimes.get(h));
 
 					return 1 - panne;
@@ -208,7 +208,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	}
 
 	private static Double getDisponibility(final Double lambda, final long uptime) {
-		switch (choosenType) {
+		switch (HostDisponibilityComputer.choosenType) {
 		case Static:
 			return lambda;
 		case Weibull:
@@ -228,7 +228,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 
 	private  static boolean eventOccur(final long uptime, final Double lambda,
 			final boolean triggerAFault) {
-		switch (choosenType) {
+		switch (HostDisponibilityComputer.choosenType) {
 		case Static:
 			final Random rand = new Random();
 			if (triggerAFault)

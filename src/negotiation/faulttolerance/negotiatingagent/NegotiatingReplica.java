@@ -1,6 +1,5 @@
 package negotiation.faulttolerance.negotiatingagent;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -11,10 +10,9 @@ import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.experimentation.ReplicationAgentResult;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
-import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
+import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
@@ -27,12 +25,12 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
 public class NegotiatingReplica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature> {
@@ -48,7 +46,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	SelfObservingService mySelfObservationService = new SelfObservingService() {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 6123670961531677514L;
 
@@ -73,17 +71,17 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	FaultObservationService myFaultAwareService = new FaultObservationService() {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 186751301573671600L;
 
 		@Override
 		protected void resetMyState() {
 			NegotiatingReplica.this.setNewState(
-					new ReplicaState(getIdentifier(), 
-					getMyCurrentState().getMyCriticity(), 
-					getMyCurrentState().getMyProcCharge(), 
-					getMyCurrentState().getMyMemCharge(),
+					new ReplicaState(this.getIdentifier(),
+					NegotiatingReplica.this.getMyCurrentState().getMyCriticity(),
+					NegotiatingReplica.this.getMyCurrentState().getMyProcCharge(),
+					NegotiatingReplica.this.getMyCurrentState().getMyMemCharge(),
 					new HashSet<HostState>()));
 		}
 
@@ -122,10 +120,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> myRationality,
 			final AbstractSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
 			final AbstractProposerCore<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
-			ObservationService myInformation)
+			final ObservationService myInformation)
 			throws CompetenceException {
 		super(id, null, myRationality, participantCore, proposerCore, myInformation);
-		myStateType = ReplicaState.class;
+		this.myStateType = ReplicaState.class;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>()));
 	}
 
@@ -162,10 +160,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	}
 
 	@Override
-	public void setNewState(ReplicaState s) {
+	public void setNewState(final ReplicaState s) {
 		super.setNewState(s);
 	}
-	
+
 	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
 	public void notifyMyReliability4Status() {
 		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
@@ -191,7 +189,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 											+ signe
 											* r.nextDouble()
 											* ReplicationExperimentationParameters._criticityVariationAmplitude));
-			
+
 			this.setNewState(
 					new ReplicaState(
 							this.getIdentifier(),
@@ -223,13 +221,13 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 //		super.execute(c);
 ////		logMonologue("i have been replicated by "+c.getResource());// : \n previous stae : "+previousState+"\n new state : "+getMyCurrentState());
 //	}
-	
+
 	@MessageHandler
 	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
 	public <Info extends Information> void receiveInformation(
-			NotificationMessage<Information> o) {
+			final NotificationMessage<Information> o) {
 //		logMonologue("yophoi");
-//		if (o.getNotification() instanceof HostState 
+//		if (o.getNotification() instanceof HostState
 //				&& getMyCurrentState().getMyResourceIdentifiers().contains(
 //						((HostState) o.getNotification()).getMyAgentIdentifier())){
 //			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
@@ -246,10 +244,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-	public Double getCharge(ResourceIdentifier r)  {
+	public Double getCharge(final ResourceIdentifier r)  {
 		try {
-			return getMyInformation().getInformation(HostState.class, r).getMyCharge();
-		} catch (NoInformationAvailableException e) {
+			return this.getMyInformation().getInformation(HostState.class, r).getMyCharge();
+		} catch (final NoInformationAvailableException e) {
 			throw new RuntimeException("muahahahaha tant pis pour ta gueule!!!!!!!!!!!!!!!!!!!!!!");
 		}
 	}

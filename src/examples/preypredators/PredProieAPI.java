@@ -58,7 +58,7 @@ public PredProieAPI() {
 	this.ivjLabel2 = null;
 	this.ivjLabel3 = null;
 	this.GridSize = 1;
-	ivjGrid1 = getGrid1();
+	PredProieAPI.ivjGrid1 = PredProieAPI.getGrid1();
 	this.ivjTNumberOfPredators = null;
 	this.ivjTNumberOfPreys = null;
 	this.ivjTGridSize = null;
@@ -80,8 +80,8 @@ public PredProieAPI() {
 		final ActionEvent actionEvent1 = null;
 
 		this.GridSize = Integer.parseInt(this.getTTailleGrille().getText());
-		getGrid1().setTailleGrille(this.GridSize);
-		getGrid1().repaint();
+		PredProieAPI.getGrid1().setTailleGrille(this.GridSize);
+		PredProieAPI.getGrid1().repaint();
 
 		this.numberOfPredators = Integer.parseInt(this.getTNombrePred().getText());
 		this.numberOfPreys = Integer.parseInt(this.getTNombreProies().getText());
@@ -95,10 +95,10 @@ public PredProieAPI() {
 				((Predator) this.world.animal.elementAt(i)).isAlive = false;
 			else
 				((Food) this.world.animal.elementAt(i)).isAlive = false;
-		getGrille().setTailleGrille(1);
+		PredProieAPI.getGrille().setTailleGrille(1);
 		this.GridSize = 1;
-		getGrille().repaint();
-		ivjGrid1.setBackground(Color.lightGray);
+		PredProieAPI.getGrille().repaint();
+		PredProieAPI.ivjGrid1.setBackground(Color.lightGray);
 	}
 private void connEtoQuitter(final ActionEvent arg1) {
 		try {
@@ -189,24 +189,24 @@ private Button getBQuitter() {
 		return this.ivjContentsPane;
 	}
 	public static Grid getGrid1() {
-		return ivjGrid1;
+		return PredProieAPI.ivjGrid1;
 	}
 	public static Grid getGrille() {
-		return ivjGrid1;
+		return PredProieAPI.ivjGrid1;
 	}
 	private Grid getGrille1() {
-		if(ivjGrid1 == null)
+		if(PredProieAPI.ivjGrid1 == null)
 			try {
-				ivjGrid1 = new Grid(this.GridSize);
-				ivjGrid1.setName("Grid1");
-				ivjGrid1.setLayout(null);
-				ivjGrid1.setBackground(Color.lightGray);
-				ivjGrid1.setBounds(30, 110, 600, 600);
+				PredProieAPI.ivjGrid1 = new Grid(this.GridSize);
+				PredProieAPI.ivjGrid1.setName("Grid1");
+				PredProieAPI.ivjGrid1.setLayout(null);
+				PredProieAPI.ivjGrid1.setBackground(Color.lightGray);
+				PredProieAPI.ivjGrid1.setBounds(30, 110, 600, 600);
 			}
 			catch(final Throwable ivjExc) {
 				this.handleException(ivjExc);
 			}
-		return ivjGrid1;
+		return PredProieAPI.ivjGrid1;
 	}
 	private Label getLabel1() {
 		if(this.ivjLabel1 == null)

@@ -38,15 +38,15 @@ public class Shark extends BasicReactiveAgent {
 	@Override
 	public  boolean isActive() {
 		final int dist = (int)Math.sqrt(Math.pow(Math.abs(this.getPosX() - 170), 2D) + Math.pow(Math.abs(this.getPosY() - 138), 2D));
-		return dist != bloodSmell / 2;
+		return dist != Shark.bloodSmell / 2;
 	}
 	@Override
 	public void proactivityInitialize() {
 
 		this.setPosX((int)(Math.random() * 340D));
 		this.setPosY((int)(Math.random() * 276D));
-		bloodSmell = water.getBloodSmellArea();
-		final Graphics g = water.getGraphics();
+		Shark.bloodSmell = Shark.water.getBloodSmellArea();
+		final Graphics g = Shark.water.getGraphics();
 		g.setColor(Color.red);
 		g.fillRect(this.getPosX() - 1, this.getPosY() - 1, 3, 3);
 
@@ -55,10 +55,10 @@ public class Shark extends BasicReactiveAgent {
 
 @Override
 public  synchronized void proactivityTerminate() {
-		deadShark++;
-		System.out.println(deadShark);
-		if(deadShark >= 1000) {
-			deadShark = 0;
+		Shark.deadShark++;
+		System.out.println(Shark.deadShark);
+		if(Shark.deadShark >= 1000) {
+			Shark.deadShark = 0;
 			System.gc();
 			System.out.println("*** GC ***");
 		}
@@ -78,10 +78,10 @@ public void step() {
 		final int distX = this.getPosX() - 170;
 		final int distY = this.getPosY() - 138;
 		final int dist = (int)Math.sqrt(Math.pow(Math.abs(distX), 2D) + Math.pow(Math.abs(distY), 2D));
-		final Graphics g = water.getGraphics();
+		final Graphics g = Shark.water.getGraphics();
 		g.setColor(Color.cyan);
 		g.fillRect(this.getPosX() - 1, this.getPosY() - 1, 3, 3);
-		if(dist < bloodSmell / 2)
+		if(dist < Shark.bloodSmell / 2)
 			switch((int)(Math.random() * 2D)) {
 			case 0: // '\0'
 				if(distX < 0)

@@ -1,6 +1,5 @@
 package dima.introspectionbasedagents.shells;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
 
@@ -20,7 +19,7 @@ public interface IntrospectedMethodsTrunk extends DimaComponentInterface{
 	public abstract void load(DimaComponentInterface a);
 
 	public SimpleAgentStatus getStatus() ;
-	
+
 	public abstract boolean executeStepMethod(MethodHandler mt, Date creation)
 			throws IllegalArgumentException,  Throwable;
 

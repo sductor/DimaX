@@ -213,11 +213,15 @@ public class ReplicationLaborantin extends Laborantin {
 
 		Collections.sort(reliaStates, reliaComp);
 
-		final ReplicationAgentResult prev = reliaStates.removeFirst();
+		ReplicationAgentResult prev = reliaStates.removeFirst();
 
-		while(!reliaStates.isEmpty())
-			if (prev.criticity>reliaStates.removeFirst().criticity)
+		while(!reliaStates.isEmpty()){
+			if (prev.getDisponibility()<reliaStates.getFirst().getDisponibility() &&
+					prev.criticity>reliaStates.getFirst().criticity)
 				return false;
+
+			prev = reliaStates.removeFirst();
+		}
 		return true;
 	}
 
@@ -369,7 +373,7 @@ public class ReplicationLaborantin extends Laborantin {
 						.respectMyRights(c.computeResultingState((HostState) firstReplicatedOnHost.getMySpecif(c))))
 					if (!itHost.hasNext())
 						throw new IfailedException("can not create at least one rep for each agent\n"
-					+this.getSimulationParameters().getHostsIdentifier());
+								+this.getSimulationParameters().getHostsIdentifier());
 					else {
 						firstReplicatedOnHost = this.getAgent(itHost.next());
 						c = new ReplicationCandidature(
@@ -564,7 +568,7 @@ public class ReplicationLaborantin extends Laborantin {
 				+"\n * I observe reliability of  "+reliabilityStatusLog;
 		for (final AgentIdentifier id : opinionsLog.keySet())
 			mono += "\n * "+id+" observe opinon of "+opinionsLog.get(id);
-		this.logMonologue(mono,LogService.onFile);
+				this.logMonologue(mono,LogService.onFile);
 	}
 
 

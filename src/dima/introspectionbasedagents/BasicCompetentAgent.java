@@ -23,6 +23,7 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunicat
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
+import dima.introspectionbasedagents.shells.MethodHandler;
 import dimaxx.server.HostIdentifier;
 
 public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent{
@@ -248,7 +249,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					methodComponent,
-					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					MethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);
@@ -265,7 +266,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					this,
-					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					MethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);

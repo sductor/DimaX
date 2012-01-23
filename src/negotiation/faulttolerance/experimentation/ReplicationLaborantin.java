@@ -368,7 +368,8 @@ public class ReplicationLaborantin extends Laborantin {
 				while (!firstReplicatedOnHost
 						.respectMyRights(c.computeResultingState((HostState) firstReplicatedOnHost.getMySpecif(c))))
 					if (!itHost.hasNext())
-						throw new IfailedException("can not create at least one rep for each agent\n"+this.getSimulationParameters().getHostsIdentifier());
+						throw new IfailedException("can not create at least one rep for each agent\n"
+					+this.getSimulationParameters().getHostsIdentifier());
 					else {
 						firstReplicatedOnHost = this.getAgent(itHost.next());
 						c = new ReplicationCandidature(

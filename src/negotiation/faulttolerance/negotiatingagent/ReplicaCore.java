@@ -7,6 +7,7 @@ import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
@@ -75,7 +76,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 			final SimpleRationalAgent host) {
 		assert this.getMyAgent().respectMyRights(c);
 
-		//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState());
+//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
 		if (c.isMatchingCreation())
 			host.addObserver(c.getResource(), SimpleObservationService.informationObservationKey);
 		else

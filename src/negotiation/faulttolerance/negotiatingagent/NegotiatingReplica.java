@@ -159,10 +159,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		return true;
 	}
 
-	@Override
-	public void setNewState(final ReplicaState s) {
-		super.setNewState(s);
-	}
+//	@Override
+//	public void setNewState(final ReplicaState s) {
+//		super.setNewState(s);
+//	}
 
 	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
 	public void notifyMyReliability4Status() {

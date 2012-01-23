@@ -112,14 +112,29 @@ ObservationService {
 		//
 		//		}
 
+//		if (!this.infos.containsKey(information.getClass())){//new information type
+//			this.infos.put(information.getClass(), new InformationDataBase<Information>());
+//			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+//			this.add(information.getMyAgentIdentifier());
+//		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())){
+//			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+//		}else if (information.getCreationTime()>this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
+//		 ((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		
 		if (!this.infos.containsKey(information.getClass())){//new information type
 			this.infos.put(information.getClass(), new InformationDataBase<Information>());
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 			this.add(information.getMyAgentIdentifier());
-		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier()))
+		}
+		else if (this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) {//information replacement
+			//			logMonologue("replacing !!!!!!!!!"+this.infos.get(information.getClass()).get(information.getMyAgentIdentifier())+" with "+information);
+			if (information.getCreationTime()>=this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
+				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+//			else
+//				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		} else //first info for the agent
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-		else if (information.getCreationTime()>this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
-		 ((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		
 	}
 
 

@@ -39,7 +39,7 @@ ExperimentationProtocol {
 	// Simulation Configuration
 	//
 
-	public static final long _simulationTime = (60000 * 1);
+	public static final long _simulationTime = (long) (60000 * 0.25);
 	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 6;
 
 	//

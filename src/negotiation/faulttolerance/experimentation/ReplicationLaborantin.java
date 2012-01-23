@@ -633,7 +633,9 @@ public class ReplicationLaborantin extends Laborantin {
 
 		if (this.iObserveStatus())
 			this.myStatusObserver.writeStatusResult();
-		this.logWarning("OOOOOOOOOKKKKKKKKKKKK?????????"+this.analyseOptimal(),LogService.onBoth);
+		this.logWarning(getIdentifier()+" OOOOOOOOOKKKKKKKKKKKK?????????"+
+			this.analyseOptimal()+" for protocol "+getSimulationParameters()._usedProtocol,
+			LogService.onBoth);
 
 	}
 

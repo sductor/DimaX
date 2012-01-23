@@ -65,8 +65,8 @@ ActionSpec extends AbstractActionSpecification>
 		return this.getIdentifier() + " -> ("
 				+ (this.creation ? "create" : "destruct") + ")"
 //		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
-		+"\n  -----> agent specif : "+this.getAgent()+", "+this.getSpecificationOf(this.getAgent())
-		+"\n  -----> host specif : "+this.getResource()+", "+this.getSpecificationOf(this.getResource());
+		+"\n  -----> agent specif : "+this.getSpecificationOf(this.getAgent())
+		+"\n  -----> host specif : "+this.getSpecificationOf(this.getResource());
 	}
 }
 

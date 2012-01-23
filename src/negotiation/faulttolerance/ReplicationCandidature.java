@@ -130,7 +130,7 @@ MatchingCandidature<ReplicationSpecification> {
 			throw new RuntimeException(
 					fromState.getMyAgentIdentifier()+" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"
 							+ this.getAgent()
-							+ "\n ----> current state"
+							+ "\n ----> contract description :"
 							+ this);
 		else if (!fromState.Ihost(this.getAgent()) && this.creation == false)
 			//				this.getMyAgent().sendMessage(

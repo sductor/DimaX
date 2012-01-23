@@ -43,6 +43,29 @@ public final class LogService<Agent extends CommunicatingCompetentComponent & Ma
 implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -4511578003487049832L;
 
+	
+	/***********************************************************************
+	 * *********************************************************************
+	 *//***********************************************************************
+	 * *********************************************************************
+	 */
+	
+	//Order or the log to be written to screen
+	public  boolean activateCommtoScreen = false;
+	public  boolean activateExceptoScreen = true;
+	public  boolean activateMonotoScreen = true;
+	//Order or the log to be written in specific files
+	public boolean activateMonoToFiles = true;
+	public boolean activateCommtoFiles = false;
+	public  boolean activateExceptoFile = true;
+	
+	/***********************************************************************
+	 * *********************************************************************
+	 *//***********************************************************************
+	 * *********************************************************************
+	 */
+	
+	
 	//
 	// Fields
 	//
@@ -58,14 +81,6 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	public static final String darxKey = "print from darx!!!";
 
-	//Order or the log to be written to screen
-	public  boolean activateCommtoScreen = false;
-	public  boolean activateExceptoScreen = true;
-	public  boolean activateMonotoScreen = true;
-	//Order or the log to be written in specific files
-	public boolean activateMonoToFiles = false;
-	public boolean activateCommtoFiles = false;
-	public  boolean activateExceptoFile = true;
 	//
 	// Constructors
 	//
@@ -89,6 +104,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public void addLogKey(final String key, final boolean toScreen, final boolean toFile){
 		if (this.keysToScreen.put(key,toScreen)!=null || this.keysToFiles.put(key, toFile)!=null)
 			this.logWarning("Already known key! "+key,LogService.onBoth);
+//		else
+//			System.out.println("will log "+key+" on : "+(toScreen?"screen ":" ")+(toFile?"file":""));
 	}
 
 	@Override
@@ -290,22 +307,36 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@NotificationEnvelope(LogService.logNotificationKey)
 	@MessageHandler
 	public void receiveLogNotif(final NotificationMessage<LogNotification> n){
+		final LogNotification log = n.getNotification();
+		
 		if (!LogService.logSetted)
 			LogService.setLogConfiguration();
 
-		final LogNotification log = n.getNotification();
 		if (log instanceof LogMonologue){
 			final File agentFile = new File(LogService.getMyPath()+log.getCaller()+".log");
-			LogService.logOnFile(agentFile,log.generateLogToWrite(),false,false);
-			LogService.logOnFile(LogService.myAllLogFile,log.generateLogToWrite(),false,false);
+			LogService.logOnFile(agentFile,
+					log.generateLogToWrite(),false,false);
+			LogService.logOnFile(LogService.myAllLogFile,
+					log.generateLogToWrite(),false,false);
 		} else if (log instanceof LogCommunication){
-			LogService.logOnFile(LogService.myMessageLogFile,log.generateLogToWrite(),false,false);
-			LogService.logOnFile(LogService.myAllLogFile,log.generateLogToWrite(),false,false);
+			LogService.logOnFile(LogService.myMessageLogFile,
+					log.generateLogToWrite(),false,false);
+			LogService.logOnFile(LogService.myAllLogFile,
+					log.generateLogToWrite(),false,false);
+		} else if (log instanceof LogWarning){
+			final File agentFile = new File(LogService.getMyPath()+log.getCaller()+".log");
+			LogService.logOnFile(agentFile,log.generateLogToWrite(),false,((LogException) log).getException());
+			LogService.logOnFile(LogService.myWarningLogFile,
+					log.generateLogToWrite(),false,((LogException) log).getException());
+			LogService.logOnFile(LogService.myAllLogFile,
+					log.generateLogToWrite(),false,((LogException) log).getException());
 		} else if (log instanceof LogException){
 			final File agentFile = new File(LogService.getMyPath()+log.getCaller()+".log");
 			LogService.logOnFile(agentFile,log.generateLogToWrite(),false,((LogException) log).getException());
-			LogService.logOnFile(LogService.myExceptionLogFile,log.generateLogToWrite(),false,((LogException) log).getException());
-			LogService.logOnFile(LogService.myAllLogFile,log.generateLogToWrite(),false,((LogException) log).getException());
+			LogService.logOnFile(LogService.myExceptionLogFile,
+					log.generateLogToWrite(),false,((LogException) log).getException());
+			LogService.logOnFile(LogService.myAllLogFile,
+					log.generateLogToWrite(),false,((LogException) log).getException());
 		}
 
 	}
@@ -428,6 +459,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	private static String myPath;
 	//myPath = getDimaXDir()+"log/"+getHostIdentifier()+"#"+DimaXServer.getCreationTime()+"/";
 	private static  File myExceptionLogFile;
+	private static  File myWarningLogFile;
 	private static  File myMessageLogFile;
 	//	private  File myInfoLogFile;
 	private static  File myAllLogFile;
@@ -441,6 +473,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			//		myInfoLogFile = new File(getMyPath() + "__INFO.log");
 			LogService.myMessageLogFile = new File(LogService.getMyPath() + "__Messages.log");
 			LogService.myExceptionLogFile = new File(LogService.getMyPath() + "__ERREUR.log");
+			LogService.myWarningLogFile = new File(LogService.getMyPath() + "__WARNING.log");
 			LogService.myAllLogFile = new File(LogService.getMyPath() + "__ALL.log");
 
 			LogService.logSetted=true;

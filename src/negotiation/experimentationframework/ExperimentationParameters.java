@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
@@ -37,6 +36,10 @@ implements DimaComponentInterface {
 	List<AgentIdentifier> replicasIdentifier  = new ArrayList<AgentIdentifier>();
 	List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>();
 
+	
+	//
+	// Constructor
+	//
 
 	public ExperimentationParameters(
 			final File f,
@@ -52,7 +55,6 @@ implements DimaComponentInterface {
 	// Accessors
 	//
 
-	public abstract long getMaxSimulationTime() ;
 
 	public int getNbAgents() {
 		return this.nbAgents;
@@ -74,6 +76,24 @@ implements DimaComponentInterface {
 		return this.hostsIdentifier;
 	}
 
+	public int numberOfTimePoints() {
+		return (int) (ExperimentationProtocol._simulationTime / ExperimentationProtocol._state_snapshot_frequency);
+	}
+
+	public int getTimeStep(final ExperimentationResults ag) {
+		return Math
+				.max(0,
+						(int) (ag.getUptime() / ExperimentationProtocol._state_snapshot_frequency) - 1);
+	}
+
+	public Long geTime(final int i) {
+		return (i + 1)
+				* ExperimentationProtocol._state_snapshot_frequency;
+	}
+
+	public long getMaxSimulationTime() {
+		return ExperimentationProtocol._simulationTime;
+	}
 	public String getName() {
 		return this.getSimulationName();
 	}
@@ -107,12 +127,10 @@ implements DimaComponentInterface {
 	 *
 	 */
 
+	/*
+	 *
+	 */
 
-	public abstract int numberOfTimePoints();
-
-	public abstract int getTimeStep(final ExperimentationResults ag);
-
-	public abstract Long geTime(final int i);
 
 	//
 	// Primitive
@@ -127,7 +145,7 @@ implements DimaComponentInterface {
 	public String toString(){
 		String result ="****************************************************************************************************************************\n";
 		result+= "Simulation with parameters :\n";
-		for (final Field f : ReplicationExperimentationParameters.class.getFields())
+		for (final Field f : this.getClass().getFields())
 			try {
 				result += f.getName()+" : "+f.get(this)+"\n";
 			} catch (final Exception e) {

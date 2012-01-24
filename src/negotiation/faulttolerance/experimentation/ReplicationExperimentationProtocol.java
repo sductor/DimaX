@@ -35,12 +35,6 @@ ExperimentationProtocol {
 	public static final int nbAgents = 15;
 	public static final int nbHosts = 10;
 
-	//
-	// Simulation Configuration
-	//
-
-	public static final long _simulationTime = (long) (1000 * 5);
-	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 20;
 
 	//
 	// Negotiation Tickers
@@ -50,22 +44,6 @@ ExperimentationProtocol {
 	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
-
-	/**
-	 * Clés statiques
-	 */
-
-
-	//Protocoles
-	 final static String key4mirrorProto = "mirror protocol";
-	 final static String key4CentralisedstatusProto = "Centralised status protocol";
-	 final static String key4statusProto = "status protocol";
-	 final static String key4multiLatProto = "multi lateral protocol";
-
-	//Selection algorithms
-	 final static String key4greedySelect = "greedy select";
-	 final static String key4rouletteWheelSelect = "roolette wheel select";
-	 final static String key4AllocSelect = "alloc select";
 
 	//pref
 	 static final String key4agentKey_Relia="onlyRelia";

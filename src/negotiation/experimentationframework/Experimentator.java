@@ -80,7 +80,7 @@ public class Experimentator extends APIAgent{
 	public void initialise() throws CompetenceException{
 		this.logMonologue("Experimentator created for:\n"+this.myProtocol.getDescription(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
 		this.logMonologue("Generated "+this.simuToLaunch.size()+" simus of "
-				+ReplicationExperimentationProtocol._simulationTime/60000+
+				+ExperimentationProtocol._simulationTime/60000+
 				"mins  on "+this.getApi().getAvalaibleHosts().size()+" machine"//+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine"
 				,LogService.onBoth);
 		this.launchSimulation();

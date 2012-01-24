@@ -1,7 +1,7 @@
 package negotiation.faulttolerance.negotiatingagent;
 
 import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.SelfObservingService;
+import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationHostResult;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
@@ -28,7 +28,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 
 	@Competence
-	SelfObservingService mySelfObservationService = new SelfObservingService() {
+	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
 
 		/**
 		 *

@@ -11,13 +11,13 @@ import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
-public abstract class SelfObservingService
+public abstract class ObservingSelfService
 extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	private static final long serialVersionUID = 496384107474313690L;
 
 	ActivityLog l = new ActivityLog();
 
-	public SelfObservingService() {
+	public ObservingSelfService() {
 		super();
 	}
 

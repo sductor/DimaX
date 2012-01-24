@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.Random;
 
 import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.SelfObservingService;
+import negotiation.experimentationframework.ObservingSelfService;
+import negotiation.experimentationframework.ObservingStatusService;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.experimentation.ReplicationAgentResult;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
@@ -41,7 +42,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	public boolean replicate = true;
 
 	@Competence
-	SelfObservingService mySelfObservationService = new SelfObservingService() {
+	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
 
 		/**
 		 *
@@ -168,7 +169,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		if (this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
 			this.notify(
 					this.getMyCurrentState().getMyReliability(),
-					ReplicationLaborantin.reliabilityObservationKey);
+					ObservingStatusService.reliabilityObservationKey);
 	}
 
 	// @StepComposant(ticker=StaticParameters._criticity_update_frequency)

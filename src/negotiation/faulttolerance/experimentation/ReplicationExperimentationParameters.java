@@ -141,8 +141,8 @@ ExperimentationParameters {
 				DispersionSymbolicValue.Nul,
 				ReplicationExperimentationProtocol.key4mirrorProto,
 				AllocationSocialWelfares.key4leximinSocialWelfare,
-				ReplicationExperimentationProtocol.key4rouletteWheelSelect,
-				ReplicationExperimentationProtocol.key4rouletteWheelSelect);
+				ReplicationExperimentationProtocol.key4greedySelect,
+				ReplicationExperimentationProtocol.key4greedySelect);
 	}
 
 	@Override
@@ -198,32 +198,7 @@ ExperimentationParameters {
 		return this.agentMemory;
 	}
 
-	/*
-	 *
-	 */
 
-	@Override
-	public int numberOfTimePoints() {
-		return (int) (ReplicationExperimentationProtocol._simulationTime / ReplicationExperimentationProtocol._state_snapshot_frequency);
-	}
-
-	@Override
-	public int getTimeStep(final ExperimentationResults ag) {
-		return Math
-				.max(0,
-						(int) (ag.getUptime() / ReplicationExperimentationProtocol._state_snapshot_frequency) - 1);
-	}
-
-	@Override
-	public Long geTime(final int i) {
-		return (i + 1)
-				* ReplicationExperimentationProtocol._state_snapshot_frequency;
-	}
-
-	@Override
-	public long getMaxSimulationTime() {
-		return ReplicationExperimentationProtocol._simulationTime;
-	}
 
 	//
 	// Methods

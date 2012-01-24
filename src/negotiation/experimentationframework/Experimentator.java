@@ -69,7 +69,7 @@ public class Experimentator extends APIAgent{
 		this.myProtocol=myProtocol;
 		this.simuToLaunch = myProtocol.generateSimulation();
 		this.awaitingAnswer=this.simuToLaunch.size();
-}
+	}
 
 	//
 	// Methods
@@ -80,9 +80,9 @@ public class Experimentator extends APIAgent{
 	public void initialise() throws CompetenceException{
 		this.logMonologue("Experimentator created for:\n"+this.myProtocol.getDescription(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
 		this.logMonologue("Generated "+this.simuToLaunch.size()+" simus of "
-		+ReplicationExperimentationProtocol._simulationTime/60000+
-		"mins  on "+this.getApi().getAvalaibleHosts().size()+" machine"//+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine"
-		,LogService.onBoth);
+				+ReplicationExperimentationProtocol._simulationTime/60000+
+				"mins  on "+this.getApi().getAvalaibleHosts().size()+" machine"//+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine"
+				,LogService.onBoth);
 		this.launchSimulation();
 	}
 
@@ -112,7 +112,7 @@ public class Experimentator extends APIAgent{
 				this.startActivity(l);
 				this.launchedSimu.put(l.getId(), l);
 				//				}
-//				launchSimulation();
+				//				launchSimulation();
 			} catch (final NotEnoughMachinesException e) {
 				this.simuToLaunch.add(nextSimu);
 				this.logMonologue("aaaaaaaaarrrrrrrrrrrrrrrrggggggghhhhhhhhhh\n"+this.getLocations(),LogService.onBoth);
@@ -141,20 +141,27 @@ public class Experimentator extends APIAgent{
 	}
 
 	/*
-	 *
+	 * MAIN
 	 */
 
-	public static void main(final String[] args)
+	
+	public void run(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
-		final Experimentator exp = new Experimentator(new ReplicationExperimentationProtocol());
-//										exp.initAPI(false);//SCHEDULED
-		exp.initAPI(true);//FIPA
-//						exp.initAPI(7779,7778);//DARX LOCAL
-//				exp.initAPI("lip6.xml");//DARX Deployed
-		exp.launchMySelf();
+		if (args[0].equals("scheduled")){
+			this.initAPI(false);//SCHEDULED
+		} else if  (args[0].equals("fipa")){									
+			this.initAPI(true);//FIPA
+		} else if  (args[0].equals("local")){
+			this.initAPI(7779,7778);//DARX LOCAL
+		} else if  (args[0].equals("deployed")){
+			this.initAPI("lip6.xml");//DARX Deployed
+		} else {
+			throw new RuntimeException("unknonw args");
+		}
+		this.launchMySelf();
 	}
 }
 
 
-//		final List machines = new LinkedList<HostIdentifier>();
-//		machines.add(new HostIdentifier("localhost", 7777));
+	//		final List machines = new LinkedList<HostIdentifier>();
+	//		machines.add(new HostIdentifier("localhost", 7777));

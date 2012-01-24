@@ -2,10 +2,10 @@ package negotiation.faulttolerance.candidaturenegotiation.statusdestruction;
 
 import java.util.Collection;
 
-import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
 import dima.introspectionbasedagents.services.library.information.OpinionService;
 import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;

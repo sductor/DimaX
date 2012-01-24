@@ -1,6 +1,6 @@
 package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
 
-import negotiation.faulttolerance.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 

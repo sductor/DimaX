@@ -3,10 +3,10 @@ package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.faulttolerance.ReplicationCandidature;
 import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
 

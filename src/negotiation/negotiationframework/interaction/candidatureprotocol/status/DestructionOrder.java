@@ -3,7 +3,7 @@ package negotiation.negotiationframework.interaction.candidatureprotocol.status;
 import java.util.Collection;
 import java.util.Date;
 
-import negotiation.faulttolerance.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.interaction.ContractIdentifier;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;

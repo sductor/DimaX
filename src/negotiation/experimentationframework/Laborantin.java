@@ -275,20 +275,20 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			final String entry,
 			final Collection<Double> agent_values, final double significatifPercent, final int totalNumber){
 		String result =
-				entry+" min; "
-						+entry+" firstTercile; "+entry+"  mediane;  "+entry+" lastTercile; "
-						+entry+"  max ; "+entry+" sum ; "+entry+" mean ; percent of agent aggregated=\n";
+				entry+" min;\t "
+						+entry+" firstTercile;\t "+entry+"  mediane;\t  "+entry+" lastTercile;\t "
+						+entry+"  max ;\t "+entry+" sum ;\t "+entry+" mean ;\t percent of agent aggregated=\n";
 		final HeavyDoubleAggregation variable = new HeavyDoubleAggregation();
 		for (final Double d :  agent_values)
 			variable.add(d);
 				if (!variable.isEmpty() && variable.getNumberOfAggregatedElements()>(int) (significatifPercent*totalNumber))
-					result += variable.getMinElement()+"; " +
-							variable.getQuantile(1,3)+"; " +
-							variable.getMediane()+"; " +
-							variable.getQuantile(2,3)+"; " +
-							variable.getMaxElement()+"; " +
-							variable.getSum()+"; " +
-							variable.getRepresentativeElement()+"; " +
+					result += variable.getMinElement()+";\t " +
+							variable.getQuantile(1,3)+";\t " +
+							variable.getMediane()+";\t " +
+							variable.getQuantile(2,3)+";\t " +
+							variable.getMaxElement()+";\t " +
+							variable.getSum()+";\t " +
+							variable.getRepresentativeElement()+";\t " +
 							(double) variable.getNumberOfAggregatedElements()/(double)  totalNumber+"\n";
 				else
 					result += "-;-;-;-;-;-  ("+(double)variable.getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
@@ -299,19 +299,19 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	protected String getQuantileTimeEvolutionObs(final String entry,
 			final HeavyDoubleAggregation[] variable, final double significatifPercent, final int totalNumber){
 		String result =
-				entry+" min; "
-						+entry+" firstTercile; "+entry+"  mediane;  "+entry+" lastTercile; "
-						+entry+"  max ; "+entry+" sum ; "+entry+" mean ; percent of agent aggregated=\n";
+				entry+" min;\t "
+						+entry+" firstTercile;\t "+entry+"  mediane;\t  "+entry+" lastTercile;\t "
+						+entry+"  max ;\t "+entry+" sum ;\t "+entry+" mean ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < this.p.numberOfTimePoints(); i++){
 			result += this.p.geTime(i)/1000.+" ; ";
 			if (!variable[i].isEmpty() && variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber)
 				result +=
-				variable[i].getMinElement()+"; " +
-						variable[i].getQuantile(1,3)+"; " +
-						variable[i].getMediane()+"; " +
-						variable[i].getQuantile(2,3)+"; " +
-						variable[i].getMaxElement()+"; " +
-						variable[i].getSum()+"; " +
+				variable[i].getMinElement()+";\t " +
+						variable[i].getQuantile(1,3)+";\t " +
+						variable[i].getMediane()+";\t " +
+						variable[i].getQuantile(2,3)+";\t " +
+						variable[i].getMaxElement()+";\t " +
+						variable[i].getSum()+";\t " +
 						variable[i].getRepresentativeElement()+"; (" +
 						(double) variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
 			else
@@ -322,20 +322,20 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	protected String getMeanTimeEvolutionObs(final String entry, final LightAverageDoubleAggregation[] variable,
 			final double significatifPercent, final int totalNumber){
-		String result = "t (seconds); "+entry+" ; percent of agent aggregated=\n";
+		String result = "t (seconds);\t "+entry+" ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < this.p.numberOfTimePoints(); i++){
-			result += this.p.geTime(i)/1000.+" ; ";
+			result += this.p.geTime(i)/1000.+" ;\t ";
 			if (variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber)
-				result+=variable[i].getRepresentativeElement()+"; (" +
+				result+=variable[i].getRepresentativeElement()+";\t (" +
 						(double) variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
 			else
-				result += "-; ("+(double)variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
+				result += "-;\t ("+(double)variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
 		}
 		return result;
 	}
 
-	protected Double getAgentPercent(final int n){
-		return (double) n/(double) this.getSimulationParameters().nbAgents*100;
+	protected Double getPercent(final int value, int total){
+		return (double) value/(double) total*100;
 	}
 
 	//

@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import negotiation.faulttolerance.ReplicationCandidature;
-import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.candidatureprotocol.CandidatureReplicaProposer;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;

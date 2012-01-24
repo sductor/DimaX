@@ -1,4 +1,4 @@
-package negotiation.faulttolerance;
+package negotiation.faulttolerance.negotiatingagent;
 
 import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;

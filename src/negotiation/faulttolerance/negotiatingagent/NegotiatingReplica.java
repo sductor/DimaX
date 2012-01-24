@@ -5,8 +5,6 @@ import java.util.Random;
 
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.SelfObservingService;
-import negotiation.faulttolerance.ReplicationCandidature;
-import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.experimentation.ReplicationAgentResult;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;

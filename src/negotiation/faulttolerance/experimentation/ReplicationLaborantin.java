@@ -16,8 +16,6 @@ import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.IfailedException;
 import negotiation.experimentationframework.Laborantin;
 import negotiation.experimentationframework.SelfObservingService.ActivityLog;
-import negotiation.faulttolerance.ReplicationCandidature;
-import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.candidaturenegotiation.mirrordestruction.CandidatureReplicaCoreWithDestruction;
 import negotiation.faulttolerance.candidaturenegotiation.mirrordestruction.HostDestructionCandidatureProposer;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
@@ -30,6 +28,8 @@ import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
 import negotiation.faulttolerance.negotiatingagent.NegotiatingReplica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
@@ -158,9 +158,7 @@ public class ReplicationLaborantin extends Laborantin {
 			for (i = this.getSimulationParameters().getTimeStep(ag) + 1; i < this
 					.getSimulationParameters().numberOfTimePoints(); i++)
 				this.updateAnAgentValue(ag, i);
-	}
-
-	private void updateAnAgentValue(final ReplicationAgentResult ag, final int i) {
+	}private void updateAnAgentValue(final ReplicationAgentResult ag, final int i) {
 		if (i < this.getSimulationParameters().numberOfTimePoints()) {
 			this.agentsReliabilityEvolution[i].add(ag.getReliability());
 			this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
@@ -175,6 +173,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 	@Override
 	public void updateHostInfo(final ExperimentationResults host) {
+		assert 1<0;
 		final ReplicationHostResult h = (ReplicationHostResult) host;
 		int i = this.getSimulationParameters().getTimeStep(h);
 		this.updateAnHostValue(h, i);
@@ -184,9 +183,7 @@ public class ReplicationLaborantin extends Laborantin {
 					i < this.getSimulationParameters().numberOfTimePoints();
 					i++)
 				this.updateAnHostValue(h, i);
-	}
-
-	private void updateAnHostValue(final ReplicationHostResult h, final int i) {
+	}	private void updateAnHostValue(final ReplicationHostResult h, final int i) {
 		/**/
 		if (i < this.getSimulationParameters().numberOfTimePoints()) {
 			this.hostsChargeEvolution[i].add(h.charge);
@@ -198,38 +195,12 @@ public class ReplicationLaborantin extends Laborantin {
 	// Behaviors
 	//
 
-	HashSet<ReplicationAgentResult> states;
-	private boolean analyseOptimal(){
-		final Comparator<ReplicationAgentResult> reliaComp = new Comparator<ReplicationAgentResult>() {
-			@Override
-			public int compare(final ReplicationAgentResult o1,
-					final ReplicationAgentResult o2) {
-				return o1.disponibility.compareTo(o2.disponibility);
-			}
-		};
-
-		final LinkedList<ReplicationAgentResult> reliaStates = new LinkedList<ReplicationAgentResult>();
-		reliaStates.addAll(this.states);
-
-		Collections.sort(reliaStates, reliaComp);
-
-		ReplicationAgentResult prev = reliaStates.removeFirst();
-
-		while(!reliaStates.isEmpty()){
-			if (prev.getDisponibility()<reliaStates.getFirst().getDisponibility() &&
-					prev.criticity>reliaStates.getFirst().criticity)
-				return false;
-
-			prev = reliaStates.removeFirst();
-		}
-		return true;
-	}
 
 	@MessageHandler
 	@NotificationEnvelope
 	public final void receiveReplicaInfo(
 			final NotificationMessage<ReplicationAgentResult> n) {
-		assert 1<0;
+		assert 1<0:"not used anymore : replaced by void receiveResult(final NotificationMessage<ActivityLog> l)";
 		this.states.remove(
 				n.getNotification());
 		this.states.add(n.getNotification());
@@ -240,7 +211,7 @@ public class ReplicationLaborantin extends Laborantin {
 	@NotificationEnvelope
 	public final void receiveHostInfo(
 			final NotificationMessage<ReplicationHostResult> n) {
-		assert 1<0;
+		assert 1<0:"not used anymore : replaced by void receiveResult(final NotificationMessage<ActivityLog> l)";
 		this.updateInfo(n.getNotification());
 
 	}
@@ -638,6 +609,32 @@ public class ReplicationLaborantin extends Laborantin {
 			LogService.onBoth);
 
 	}
+	HashSet<ReplicationAgentResult> states;
+	private boolean analyseOptimal(){
+		final Comparator<ReplicationAgentResult> reliaComp = new Comparator<ReplicationAgentResult>() {
+			@Override
+			public int compare(final ReplicationAgentResult o1,
+					final ReplicationAgentResult o2) {
+				return o1.disponibility.compareTo(o2.disponibility);
+			}
+		};
+
+		final LinkedList<ReplicationAgentResult> reliaStates = new LinkedList<ReplicationAgentResult>();
+		reliaStates.addAll(this.states);
+
+		Collections.sort(reliaStates, reliaComp);
+
+		ReplicationAgentResult prev = reliaStates.removeFirst();
+
+		while(!reliaStates.isEmpty()){
+			if (prev.getDisponibility()<reliaStates.getFirst().getDisponibility() &&
+					prev.criticity>reliaStates.getFirst().criticity)
+				return false;
+
+			prev = reliaStates.removeFirst();
+		}
+		return true;
+	}
 
 	//
 	// Status Observation
@@ -708,31 +705,31 @@ public class ReplicationLaborantin extends Laborantin {
 		protected synchronized void writeStatusResult() {
 
 			String result =
-					"t (seconds in percent); lost; fragile; " +
-							"thrifty (empty); thrifty; thrifty (full); wastefull; =\n";
+					"t (seconds in percent);\t lost;\t fragile;\t " +
+							"thrifty (empty);\t thrifty;\t thrifty (full);\t wastefull;\t =\n";
 			for (int i = 0; i < ReplicationLaborantin.this
 					.getSimulationParameters().numberOfTimePoints(); i++)
 				result += ReplicationLaborantin.this.getSimulationParameters()
 				.geTime(i)
 				/ 1000.
-				+ " ; "
+				+ " ;\t "
 				+ ReplicationLaborantin.this
-				.getAgentPercent(this.statusEvolution[i].nbAgentLost)
-				+ "; "
+				.getPercent(this.statusEvolution[i].nbAgentLost,ReplicationLaborantin.this.getSimulationParameters().nbAgents)
+				+ ";\t "
 				+ ReplicationLaborantin.this
-				.getAgentPercent(this.statusEvolution[i].nbAgentFragile)
-				+ "; "
+				.getPercent(this.statusEvolution[i].nbAgentFragile,ReplicationLaborantin.this.getSimulationParameters().nbAgents)
+				+ ";\t "
 				+ ReplicationLaborantin.this
-				.getAgentPercent(this.statusEvolution[i].nbAgentEmpty)
-				+ "; "
+				.getPercent(this.statusEvolution[i].nbAgentEmpty,ReplicationLaborantin.this.getSimulationParameters().nbAgents)
+				+ ";\t "
 				+ ReplicationLaborantin.this
-				.getAgentPercent(this.statusEvolution[i].nbAgentThrifty)
-				+ "; "
+				.getPercent(this.statusEvolution[i].nbAgentThrifty,ReplicationLaborantin.this.getSimulationParameters().nbAgents)
+				+ ";\t "
 				+ ReplicationLaborantin.this
-				.getAgentPercent(this.statusEvolution[i].nbAgentFull)
-				+ "; "
+				.getPercent(this.statusEvolution[i].nbAgentFull,ReplicationLaborantin.this.getSimulationParameters().nbAgents)
+				+ ";\t "
 				+ ReplicationLaborantin.this
-				.getAgentPercent(this.statusEvolution[i].nbAgentWastefull)
+				.getPercent(this.statusEvolution[i].nbAgentWastefull,ReplicationLaborantin.this.getSimulationParameters().nbAgents)
 				+ " ("
 				+ this.statusEvolution[i].getTotal()
 				/ ReplicationLaborantin.this.getSimulationParameters().nbAgents

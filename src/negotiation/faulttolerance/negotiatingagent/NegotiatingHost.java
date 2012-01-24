@@ -2,8 +2,6 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.SelfObservingService;
-import negotiation.faulttolerance.ReplicationCandidature;
-import negotiation.faulttolerance.ReplicationSpecification;
 import negotiation.faulttolerance.experimentation.ReplicationHostResult;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;

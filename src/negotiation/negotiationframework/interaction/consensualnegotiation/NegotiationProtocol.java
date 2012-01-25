@@ -170,35 +170,35 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// @role(NegotiationInitiatorRole.class)
 	@StepComposant(ticker = ReplicationExperimentationProtocol._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
-			//			 this.logMonologue(" Initiating nego  1 : "+!this.getMyProtocol().negotiationAsInitiatorHasStarted()+" 2 : "
-			//			 +this.myCore.IWantToNegotiate(this.getMyCurrentState())
-			//			 +" ");
-			//			 if (((ReplicaState)getMyCurrentState()).getMyStateStatus()
-			//			 .equals(AgentStateStatus.Fragile))
-			//			 logMonologue("yooooo!");
-			//			 logMonologue("already nego? "+!myInitiatorRole2.negotiationHasStarted()
-			//			 +"\n should nego? "+myCore.IWantToNegotiate()
-			//			 +"\n myState "+getMyCurrentState());
-			if (!this.negotiationAsInitiatorHasStarted()
-					&& this.getMyAgent().myCore.IWantToNegotiate(this.getMyAgent().getMyCurrentState()))
-				try {
-					final Collection<? extends Contract> cs = this.getMyAgent().getMyProposerCore()
-							.getNextContractsToPropose();
-					for (final Contract c : cs)
-						c.setSpecification(this.getMyAgent().getMyCurrentState());
+		//			 this.logMonologue(" Initiating nego  1 : "+!this.getMyProtocol().negotiationAsInitiatorHasStarted()+" 2 : "
+		//			 +this.myCore.IWantToNegotiate(this.getMyCurrentState())
+		//			 +" ");
+		//			 if (((ReplicaState)getMyCurrentState()).getMyStateStatus()
+		//			 .equals(AgentStateStatus.Fragile))
+		//			 logMonologue("yooooo!");
+		//			 logMonologue("already nego? "+!myInitiatorRole2.negotiationHasStarted()
+		//			 +"\n should nego? "+myCore.IWantToNegotiate()
+		//			 +"\n myState "+getMyCurrentState());
+		if (!this.negotiationAsInitiatorHasStarted()
+				&& this.getMyAgent().myCore.IWantToNegotiate(this.getMyAgent().getMyCurrentState()))
+			try {
+				final Collection<? extends Contract> cs = this.getMyAgent().getMyProposerCore()
+						.getNextContractsToPropose();
+				for (final Contract c : cs)
+					c.setSpecification(this.getMyAgent().getMyCurrentState());
 
 
-							this.propose(cs);
-							// if (!cs.isEmpty())
-							// this.logMonologue(" I'm proposing those contracts : "+cs);//+"\n my state :\n"+
-							// //
-							// else{
-							// //
-							// logException("I dont propose :\n -----> "+getKnownAgents()
-							// // +"\n -----> "+((ReplicaState)
-							// getMyCurrentState()).getMyReplicas());
-							// }
-				} catch (final NotReadyException e) {}
+						this.propose(cs);
+						// if (!cs.isEmpty())
+						// this.logMonologue(" I'm proposing those contracts : "+cs);//+"\n my state :\n"+
+						// //
+						// else{
+						// //
+						// logException("I dont propose :\n -----> "+getKnownAgents()
+						// // +"\n -----> "+((ReplicaState)
+						// getMyCurrentState()).getMyReplicas());
+						// }
+			} catch (final NotReadyException e) {}
 	}
 
 	/*
@@ -252,9 +252,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				for (final Contract contract : selectedContracts.getRejectedContracts())
 					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier()))
 						this.cancelContract(contract);
-					else
-						// Participant Answering
-						this.rejectContract(contract);
+						else
+							// Participant Answering
+							this.rejectContract(contract);
 			}
 	}
 
@@ -301,7 +301,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	// @role(NegotiationParticipant.class)
 	protected void rejectContract(final Contract contract) {
-//		getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+getMyAgent().getMyCurrentState(),log_negotiationStep);
+		//		getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+getMyAgent().getMyCurrentState(),log_negotiationStep);
 		this.contracts
 		.addRejection(this.getMyAgent().getIdentifier(), contract);
 		this.notify(contract);
@@ -370,7 +370,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final Contract c = delta.getMyContract();
 		if (!(this.getMyAgent() instanceof NegotiatingHost)
 				|| !((NegotiatingHost) this.getMyAgent()).isFaulty())
-		 if (c instanceof DestructionOrder){
+			if (c instanceof DestructionOrder){
 				this.logMonologue("I've received destruction order "+c,NegotiationProtocol.log_negotiationStep);
 				//				acceptContract(c);
 				this.getMyAgent().execute(c);
@@ -380,7 +380,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				String spec = "";
 				for (final AgentIdentifier id : c.getAllParticipants())
 					spec+="\n"+c.getSpecificationOf(id);
-//						getMyAgent().logMonologue("I've received proposal "+c+" spec :"+spec,log_negotiationStep);
+						//						getMyAgent().logMonologue("I've received proposal "+c+" spec :"+spec,log_negotiationStep);
 						// try {
 						this.contracts.addContract(c);
 			}
@@ -461,8 +461,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 						&& !c.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect))
 					throw new RuntimeException("aaaaaaaaarrrgh" + "i should now "
 							+ c + "!!!!!\n" + this.losts);
-					// do nothing : probleme avec losts : contract identifier mal
-					// reconnu???
+				// do nothing : probleme avec losts : contract identifier mal
+				// reconnu???
 				else {
 					Contract contract;
 					try {

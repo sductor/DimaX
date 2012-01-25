@@ -46,8 +46,8 @@ ExperimentationProtocol {
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 
 	//pref
-	 static final String key4agentKey_Relia="onlyRelia";
-	 static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
+	static final String key4agentKey_Relia="onlyRelia";
+	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
 
 	//
 	// Set of values
@@ -125,15 +125,15 @@ ExperimentationProtocol {
 	// Distribution
 	//
 
-	 final Integer maxNumberOfAgentPerMachine  =this.getMaxNumberOfAgentPerMachine(null)  ;
-	 final double nbSimuPerMAchine = 1;
+	final Integer maxNumberOfAgentPerMachine  =this.getMaxNumberOfAgentPerMachine(null)  ;
+	final double nbSimuPerMAchine = 1;
 	@Override
 	public Integer getMaxNumberOfAgentPerMachine(final HostIdentifier id) {
 		return new Integer((int) this.nbSimuPerMAchine* (ReplicationExperimentationProtocol.nbAgents + ReplicationExperimentationProtocol.nbHosts)+1);
 	}
-//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
-//		return new Integer(10);
-//	}
+	//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
+	//		return new Integer(10);
+	//	}
 
 	/*
 	 *
@@ -240,28 +240,28 @@ ExperimentationProtocol {
 
 	static {
 		resultPath=LogService.getMyPath()+"result_"
-			+ ReplicationExperimentationProtocol.nbAgents + "agents_"
-			+ ReplicationExperimentationProtocol.nbHosts + "hosts_"
-			+ ReplicationExperimentationProtocol._simulationTime / 60000
-			+ "mins"
-			+ (ReplicationExperimentationProtocol.varyAgentSelection==true?"varyAgentSelection":"")
-			+ (ReplicationExperimentationProtocol.varyHostSelection?"varyHostSelection":"")
-			+ (ReplicationExperimentationProtocol.varyProtocol?"varyProtocol":"")
-			+ (ReplicationExperimentationProtocol.varyHostDispo?"varyHostDispo":"")
-			+ (ReplicationExperimentationProtocol.varyHostSelection?"varyHostSelection":"")
-			+ (ReplicationExperimentationProtocol.varyOptimizers?"varyOptimizers":"")
-			+ (ReplicationExperimentationProtocol.varyAccessibleHost?"varyAccessibleHost":"")
-			+ (ReplicationExperimentationProtocol.varyAgentLoad?"varyAgentLoad":"");
+				+ ReplicationExperimentationProtocol.nbAgents + "agents_"
+				+ ReplicationExperimentationProtocol.nbHosts + "hosts_"
+				+ ExperimentationProtocol._simulationTime / 60000
+				+ "mins"
+				+ (ReplicationExperimentationProtocol.varyAgentSelection==true?"varyAgentSelection":"")
+				+ (ReplicationExperimentationProtocol.varyHostSelection?"varyHostSelection":"")
+				+ (ReplicationExperimentationProtocol.varyProtocol?"varyProtocol":"")
+				+ (ReplicationExperimentationProtocol.varyHostDispo?"varyHostDispo":"")
+				+ (ReplicationExperimentationProtocol.varyHostSelection?"varyHostSelection":"")
+				+ (ReplicationExperimentationProtocol.varyOptimizers?"varyOptimizers":"")
+				+ (ReplicationExperimentationProtocol.varyAccessibleHost?"varyAccessibleHost":"")
+				+ (ReplicationExperimentationProtocol.varyAgentLoad?"varyAgentLoad":"");
 	}
 
-				//
-				// Primitive
-				// /////////////////////////////////
+	//
+	// Primitive
+	// /////////////////////////////////
 
-				@Override
-				public ReplicationLaborantin createNewLaborantin(
-						final ExperimentationParameters para, final APILauncherModule api)
-								throws NotEnoughMachinesException, CompetenceException {
+	@Override
+	public ReplicationLaborantin createNewLaborantin(
+			final ExperimentationParameters para, final APILauncherModule api)
+					throws NotEnoughMachinesException, CompetenceException {
 		ReplicationLaborantin l = null;
 		final ReplicationExperimentationParameters p = (ReplicationExperimentationParameters) para;
 		boolean erreur = true;

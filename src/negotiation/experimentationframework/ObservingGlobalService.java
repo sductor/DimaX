@@ -6,35 +6,35 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import negotiation.experimentationframework.ObservingSelfService.ActivityLog;
-import negotiation.faulttolerance.experimentation.ReplicationAgentResult;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.faulttolerance.experimentation.ReplicationHostResult;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
+import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
 import negotiation.faulttolerance.negotiatingagent.NegotiatingReplica;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
-public abstract class ObservingGlobalService 
+public abstract class ObservingGlobalService
 extends BasicAgentCompetence<Laborantin>{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2893635425783775245L;
 	private final ExperimentationParameters p;
-	protected HashSet<ReplicationAgentResult> finalStates = new HashSet();
+	protected HashSet<ReplicationResultAgent> finalStates = new HashSet();
 
-	public ObservingGlobalService(Laborantin ag, ExperimentationParameters p)
+	public ObservingGlobalService(final Laborantin ag, final ExperimentationParameters p)
 			throws UnrespectedCompetenceSyntaxException {
 		super(ag);
 		this.p = p;
@@ -45,7 +45,7 @@ extends BasicAgentCompetence<Laborantin>{
 	//
 
 	protected ExperimentationParameters getSimulationParameters() {
-		return p;
+		return this.p;
 	}
 
 	//
@@ -78,14 +78,14 @@ extends BasicAgentCompetence<Laborantin>{
 		//Use to print at the end of the method the observation graph
 
 		//Activating status observation
-		if (p._usedProtocol.equals(ReplicationExperimentationProtocol.key4CentralisedstatusProto)
-				|| p._usedProtocol.equals(ReplicationExperimentationProtocol.key4statusProto))
-			getMyAgent().myStatusObserver.setActive(true);
+		if (this.p._usedProtocol.equals(ExperimentationProtocol.key4CentralisedstatusProto)
+				|| this.p._usedProtocol.equals(ExperimentationProtocol.key4statusProto))
+			this.getMyAgent().myStatusObserver.setActive(true);
 		else
-			getMyAgent().myStatusObserver.setActive(false);
+			this.getMyAgent().myStatusObserver.setActive(false);
 
 
-		for (final BasicCompetentAgent ag : getMyAgent().agents.values()){
+		for (final BasicCompetentAgent ag : this.getMyAgent().agents.values())
 			//Observation about agent
 			if (ag instanceof NegotiatingReplica){
 				//Observation de l'évolution des états de l'agent
@@ -93,25 +93,23 @@ extends BasicAgentCompetence<Laborantin>{
 				observedRepResultLog.add(ag.getIdentifier());
 
 				//
-				if (p._usedProtocol.equals(ReplicationExperimentationProtocol.key4CentralisedstatusProto)){
+				if (this.p._usedProtocol.equals(ExperimentationProtocol.key4CentralisedstatusProto)){
 					//I aggregate agents reliability
 					ag.addObserver(this.getIdentifier(), ObservingStatusService.reliabilityObservationKey);//this.addObserver(ag.getIdentifier(),ObservingStatusService.reliabilityObservationKey);???
 					reliabilityStatusLog.add(ag.getIdentifier());
 					//I forward my opinion to every agents
 					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
-					opinionsLog.add(ag.getId(), getIdentifier());
-				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.key4statusProto)){
+					opinionsLog.add(ag.getId(), this.getIdentifier());
+				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.key4statusProto))
 					//This agent observe every agents that it knows
 					for (final AgentIdentifier h :	((NegotiatingReplica)ag).getMyInformation().getKnownAgents()){
-						getMyAgent().getAgent(h).addObserver(ag.getId(), SimpleOpinionService.opinionObservationKey);
+						this.getMyAgent().getAgent(h).addObserver(ag.getId(), SimpleOpinionService.opinionObservationKey);
 						opinionsLog.add(ag.getId(), h);
 					}
-				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.key4mirrorProto)){
+				else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.key4mirrorProto)){
 					//no observation
-				}else{
-					throw new RuntimeException("impossible : ");
 				}
-				//Observation about host
+				else throw new RuntimeException("impossible : ");
 			}else if (ag instanceof NegotiatingHost){
 				//Observation de l'évolution des états de l'hpte
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
@@ -122,7 +120,6 @@ extends BasicAgentCompetence<Laborantin>{
 				this.logMonologue("C'est moi!!!!!!!!!! =D",LogService.onFile);
 			else
 				throw new RuntimeException("impossible");
-		}
 
 		String mono = "Setting observation :"
 				+"\n * I observe results of "+observedHostResultLog
@@ -148,8 +145,8 @@ extends BasicAgentCompetence<Laborantin>{
 				l.getNotification().getResults();
 		for (final ExperimentationResults r : results)
 			this.updateInfo(r);
-				if (results.getLast() instanceof ReplicationAgentResult)
-					this.finalStates.add((ReplicationAgentResult) results.getLast());
+				if (results.getLast() instanceof ReplicationResultAgent)
+					this.finalStates.add((ReplicationResultAgent) results.getLast());
 
 	}
 
@@ -238,7 +235,7 @@ extends BasicAgentCompetence<Laborantin>{
 		return result;
 	}
 
-	public static  Double getPercent(final int value, int total){
+	public static  Double getPercent(final int value, final int total){
 		return (double) value/(double) total*100;
 	}
 }

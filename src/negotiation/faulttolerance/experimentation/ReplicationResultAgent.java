@@ -22,9 +22,9 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	final Double disponibility;
 	final Double reliability;
 
-//	public void setiAmDead(final boolean iAmDead) {
-//		this.iAmDead = iAmDead;
-//	}
+	//	public void setiAmDead(final boolean iAmDead) {
+	//		this.iAmDead = iAmDead;
+	//	}
 
 	boolean lastInfo;
 

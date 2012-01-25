@@ -72,7 +72,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public void initialisation(){
 		this.addLogKey(AllocationSocialWelfares.log_socialWelfareOrdering, false, false);
 		this.addLogKey(NegotiationProtocol.log_negotiationStep, false, true);
-//		addLogKey(NegotiationProtocol.log_contractDataBaseManipulation, false, false);
+		//		addLogKey(NegotiationProtocol.log_contractDataBaseManipulation, false, false);
 	}
 
 	//
@@ -116,8 +116,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 
 	@ProactivityFinalisation
 	public void showInfo() {
-//		this.logMonologue("terminating with this state : "
-//				+ this.getMyCurrentState(), LogService.onScreen);
+		//		this.logMonologue("terminating with this state : "
+		//				+ this.getMyCurrentState(), LogService.onScreen);
 	}
 
 	//

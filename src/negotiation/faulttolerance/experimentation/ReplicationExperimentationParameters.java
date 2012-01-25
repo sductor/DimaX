@@ -3,7 +3,7 @@ package negotiation.faulttolerance.experimentation;
 import java.io.File;
 
 import negotiation.experimentationframework.ExperimentationParameters;
-import negotiation.experimentationframework.ExperimentationResults;
+import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.experimentationframework.Experimentator;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -139,10 +139,10 @@ ExperimentationParameters {
 				DispersionSymbolicValue.Nul,
 				0.3,
 				DispersionSymbolicValue.Nul,
-				ReplicationExperimentationProtocol.key4mirrorProto,
+				ExperimentationProtocol.key4mirrorProto,
 				AllocationSocialWelfares.key4leximinSocialWelfare,
-				ReplicationExperimentationProtocol.key4greedySelect,
-				ReplicationExperimentationProtocol.key4greedySelect);
+				ExperimentationProtocol.key4greedySelect,
+				ExperimentationProtocol.key4greedySelect);
 	}
 
 	@Override
@@ -150,26 +150,26 @@ ExperimentationParameters {
 		if (o instanceof ReplicationExperimentationParameters){
 			final ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
 			return this.getkAccessible()==that.getkAccessible() &&
-			this.hostFaultProbabilityMean.equals( that.hostFaultProbabilityMean) &&
-			this.agentLoadMean.equals(that.agentLoadMean) &&
-			this._usedProtocol.equals(that._usedProtocol) &&
-			this._socialWelfare.equals(that._socialWelfare) &&
-			this._agentSelection.equals(that._agentSelection) &&
-			this._hostSelection.equals(that._hostSelection);
+					this.hostFaultProbabilityMean.equals( that.hostFaultProbabilityMean) &&
+					this.agentLoadMean.equals(that.agentLoadMean) &&
+					this._usedProtocol.equals(that._usedProtocol) &&
+					this._socialWelfare.equals(that._socialWelfare) &&
+					this._agentSelection.equals(that._agentSelection) &&
+					this._hostSelection.equals(that._hostSelection);
 		} else
 			return false;
 	}
 
 	@Override
 	public int hashCode(){
-			return
-					2*this.getkAccessible()
-					+4*this.hostFaultProbabilityMean.hashCode()
-					+8*this.agentLoadMean.hashCode()
-					+16*this._usedProtocol.hashCode()
-					+32*this._socialWelfare.hashCode()
-					+64*this._agentSelection.hashCode()
-					+128*this._hostSelection.hashCode();
+		return
+				2*this.getkAccessible()
+				+4*this.hostFaultProbabilityMean.hashCode()
+				+8*this.agentLoadMean.hashCode()
+				+16*this._usedProtocol.hashCode()
+				+32*this._socialWelfare.hashCode()
+				+64*this._agentSelection.hashCode()
+				+128*this._hostSelection.hashCode();
 	}
 	//
 	// Accessors
@@ -180,10 +180,10 @@ ExperimentationParameters {
 	}
 
 	public void set_hostSelection(final String hostSelection) {
-//		if (_usedProtocol.equals(ReplicationExperimentationProtocol.key4mirrorProto))
-//			this._hostSelection = ReplicationExperimentationProtocol.key4AllocSelect;
-//		else
-			this._hostSelection = hostSelection;
+		//		if (_usedProtocol.equals(ReplicationExperimentationProtocol.key4mirrorProto))
+		//			this._hostSelection = ReplicationExperimentationProtocol.key4AllocSelect;
+		//		else
+		this._hostSelection = hostSelection;
 	}
 
 	public DistributionParameters<AgentIdentifier> getAgentCriticity() {

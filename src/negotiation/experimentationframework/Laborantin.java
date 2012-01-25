@@ -14,18 +14,13 @@ import dima.introspectionbasedagents.APIAgent;
 import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
 import dimaxx.server.HostIdentifier;
-import dimaxx.tools.aggregator.HeavyDoubleAggregation;
-import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 /**
  * Laborantin manage the execution of an experience moddelled with its simulation parameters
  * it collects the results and write them
@@ -55,17 +50,17 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
 
 	APILauncherModule api;
-	
+
 	//
 	// Competence
 	//
-	
+
 	@Competence
 	public ObservationService myInformationService;
 
 	@Competence
 	protected ObservingStatusService myStatusObserver;
-	
+
 	//
 	// Constructor
 	//
@@ -75,8 +70,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		super("Laborantin_of_"+p.getName());
 		this.p = p;
 		this.api=api;
-		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine; 
-		myStatusObserver= new ObservingStatusService(this, getSimulationParameters());
+		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;
+		this.myStatusObserver= new ObservingStatusService(this, this.getSimulationParameters());
 	}
 
 
@@ -93,22 +88,22 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		for (final AgentIdentifier id : this.agents.keySet())
 			if (id instanceof ResourceIdentifier)
 				this.remainingHost.add(id);
-			else
-				this.remainingAgent.add(id);
-		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
-		//		this.agents.put(getIdentifier(), this);
-		getGlobalObservingService().setObservation();
-		this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
-		//		if (true)
-		//		//			throw new RuntimeException();
-		//				launch();
-		//		throw new RuntimeException();
-		this.locations = this.generateLocations(
-				this.api,
-				this.agents.values(),
-				this.numberOfAgentPerMAchine);
+				else
+					this.remainingAgent.add(id);
+				this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
+				//		this.agents.put(getIdentifier(), this);
+				this.getGlobalObservingService().setObservation();
+				this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
+				//		if (true)
+				//		//			throw new RuntimeException();
+				//				launch();
+				//		throw new RuntimeException();
+				this.locations = this.generateLocations(
+						this.api,
+						this.agents.values(),
+						this.numberOfAgentPerMAchine);
 	}
-	
+
 	protected abstract ObservingGlobalService getGlobalObservingService();
 
 
@@ -139,33 +134,33 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			if (api.getAgentsRunningOn(h).size()<nbMaxAgent)
 				hostsLoad.put(h, api.getAgentsRunningOn(h).size());
 
-		final Collection<HostIdentifier> hosts = new ArrayList<HostIdentifier>();
-		hosts.addAll(hostsLoad.keySet());
-		Iterator<HostIdentifier> itHosts = hosts.iterator();
+				final Collection<HostIdentifier> hosts = new ArrayList<HostIdentifier>();
+				hosts.addAll(hostsLoad.keySet());
+				Iterator<HostIdentifier> itHosts = hosts.iterator();
 
-		for (final BasicCompetentAgent id : collection)
-			if (hosts.isEmpty())
-				throw new NotEnoughMachinesException();
-			else {
-				if (!itHosts.hasNext())
-					itHosts = hosts.iterator();
-
-				HostIdentifier host = itHosts.next();
-
-				while (hostsLoad.get(host)>nbMaxAgent){
-					itHosts.remove();
-					if (itHosts.hasNext())
-						host = itHosts.next();
-					else
+				for (final BasicCompetentAgent id : collection)
+					if (hosts.isEmpty())
 						throw new NotEnoughMachinesException();
-				}
+						else {
+							if (!itHosts.hasNext())
+								itHosts = hosts.iterator();
 
-				assert host!=null:
-					"wtfffffffffffffffffffffffffffffffff";
-				result.put(id, host);
-				hostsLoad.put(host, new Integer(hostsLoad.get(host)+1));
-			}
-		return result;
+							HostIdentifier host = itHosts.next();
+
+							while (hostsLoad.get(host)>nbMaxAgent){
+								itHosts.remove();
+								if (itHosts.hasNext())
+									host = itHosts.next();
+								else
+									throw new NotEnoughMachinesException();
+							}
+
+							assert host!=null:
+								"wtfffffffffffffffffffffffffffffffff";
+							result.put(id, host);
+							hostsLoad.put(host, new Integer(hostsLoad.get(host)+1));
+						}
+				return result;
 	}
 
 
@@ -212,16 +207,16 @@ public abstract class Laborantin extends BasicCompetentAgent {
 					+this.remainingAgent+","+this.remainingHost);
 			for (final AgentIdentifier r : this.remainingHost)
 				this.sendMessage(r, new SimulationEndedMessage());
-			for (final AgentIdentifier r : this.remainingAgent)
-				this.sendMessage(r, new SimulationEndedMessage());
-			this.remainingAgent.clear();
-			this.remainingHost.clear();
-			return false;
+					for (final AgentIdentifier r : this.remainingAgent)
+						this.sendMessage(r, new SimulationEndedMessage());
+							this.remainingAgent.clear();
+							this.remainingHost.clear();
+							return false;
 		} else if (this.remainingAgent.size()<=0){
 			//			this.logMonologue("Every agent has finished!!",onBoth);
 			if (this.remainingHost.size()<=0){
 				this.logMonologue("I've finished!!",LogService.onBoth);
-				getGlobalObservingService().writeResult();
+				this.getGlobalObservingService().writeResult();
 				this.wwait(10000);
 				//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
 				//					HostDisponibilityTrunk.remove(h);
@@ -239,8 +234,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 				this.logMonologue("all agents lost! ending ..",LogService.onBoth);
 				for (final ResourceIdentifier r : this.getSimulationParameters().getHostsIdentifier())
 					this.sendMessage(r, new SimulationEndedMessage());
-				this.endRequestSended=true;
-				return false;
+						this.endRequestSended=true;
+						return false;
 			} else
 				return false;
 		} else{

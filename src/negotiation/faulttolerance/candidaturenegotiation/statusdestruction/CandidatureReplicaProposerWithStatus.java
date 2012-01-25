@@ -46,7 +46,7 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 
 				final ReplicationCandidature destructionCandidature =
 						new DestructionOrder(
-						replicas.remove(0).getMyAgentIdentifier(), this.getMyAgent().getIdentifier(),true);
+								replicas.remove(0).getMyAgentIdentifier(), this.getMyAgent().getIdentifier(),true);
 				final HostState host = this.getMyAgent().getMyInformation()
 						.getInformation(
 								HostState.class,

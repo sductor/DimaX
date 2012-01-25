@@ -142,7 +142,7 @@ AbstractContractTransition<ActionSpec> {
 
 	@Override
 	public ActionSpec getSpecificationOf(final AgentIdentifier id){
-			return this.specs.get(id);
+		return this.specs.get(id);
 
 	}
 

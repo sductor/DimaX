@@ -64,22 +64,22 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 		for (final ActionSpec s : temp1)
 			s1.add(s);
-		for (final ActionSpec s : temp2)
-			s2.add(s);
+				for (final ActionSpec s : temp2)
+					s2.add(s);
 
 
 
-		if (this.socialWelfare.equals(AllocationSocialWelfares.key4leximinSocialWelfare)){
-			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
-			final int pref = this.leximinWelfare(s1, s2, this.getComparator());
-			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
-			return pref;
-		} else if (this.socialWelfare.equals(AllocationSocialWelfares.key4NashSocialWelfare))
-			return this.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
-		else if (this.socialWelfare.equals(AllocationSocialWelfares.key4UtilitaristSocialWelfare))
-			return this.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
-		else
-			throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
+						if (this.socialWelfare.equals(AllocationSocialWelfares.key4leximinSocialWelfare)){
+							this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
+							final int pref = this.leximinWelfare(s1, s2, this.getComparator());
+							this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
+							return pref;
+						} else if (this.socialWelfare.equals(AllocationSocialWelfares.key4NashSocialWelfare))
+							return this.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
+						else if (this.socialWelfare.equals(AllocationSocialWelfares.key4UtilitaristSocialWelfare))
+							return this.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
+						else
+							throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
 	}
 
 	//
@@ -116,7 +116,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		for (final Contract cOld : allContract)
 			for (final AgentIdentifier id : cOld.getAllParticipants())
 				cOld.setSpecification(result.get(id));
-		return result;
+					return result;
 	}
 
 
@@ -131,7 +131,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 			for (final AgentIdentifier id : c.getAllParticipants())
 				meAsMap.put(id, c.computeResultingState(meAsMap.get(id)));
 
-		return meAsMap.values();
+					return meAsMap.values();
 	}
 
 	//
@@ -194,9 +194,9 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		Double nash1 = 0.,nash2 = 0.;
 		for (final State a : a1)
 			nash1+=u.getUtilityValue(a);
-		for (final State a : a2)
-			nash2+=u.getUtilityValue(a);
-		return nash1.compareTo(nash2);
+				for (final State a : a2)
+					nash2+=u.getUtilityValue(a);
+						return nash1.compareTo(nash2);
 	}
 
 	public  <State> int nashWelfare(
@@ -206,9 +206,9 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		Double nash1 = 1.,nash2 = 1.;
 		for (final State a : a1)
 			nash1*=u.getUtilityValue(a);
-		for (final State a : a2)
-			nash2*=u.getUtilityValue(a);
-		return nash1.compareTo(nash2);
+				for (final State a : a2)
+					nash2*=u.getUtilityValue(a);
+						return nash1.compareTo(nash2);
 	}
 
 	//	public  <State> int minDiameter(

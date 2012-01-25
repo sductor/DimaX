@@ -144,24 +144,23 @@ public class Experimentator extends APIAgent{
 	 * MAIN
 	 */
 
-	
+
 	public void run(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
-		if (args[0].equals("scheduled")){
+		if (args[0].equals("scheduled"))
 			this.initAPI(false);//SCHEDULED
-		} else if  (args[0].equals("fipa")){									
+		else if  (args[0].equals("fipa"))
 			this.initAPI(true);//FIPA
-		} else if  (args[0].equals("local")){
+		else if  (args[0].equals("local"))
 			this.initAPI(7779,7778);//DARX LOCAL
-		} else if  (args[0].equals("deployed")){
+		else if  (args[0].equals("deployed"))
 			this.initAPI("lip6.xml");//DARX Deployed
-		} else {
+		else
 			throw new RuntimeException("unknonw args");
-		}
 		this.launchMySelf();
 	}
 }
 
 
-	//		final List machines = new LinkedList<HostIdentifier>();
-	//		machines.add(new HostIdentifier("localhost", 7777));
+//		final List machines = new LinkedList<HostIdentifier>();
+//		machines.add(new HostIdentifier("localhost", 7777));

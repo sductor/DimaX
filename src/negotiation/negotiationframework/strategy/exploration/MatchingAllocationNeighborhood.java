@@ -9,16 +9,15 @@ import java.util.Random;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.ContractTransition;
+import negotiation.negotiationframework.interaction.AllocationTransition;
 import negotiation.negotiationframework.interaction.MatchingCandidature;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dimaxx.tools.mappedcollections.HashedHashList;
 
-public  class MatchingAllocationNeighborhood<ActionSpec extends AbstractActionSpecification> 
+public  class MatchingAllocationNeighborhood<ActionSpec extends AbstractActionSpecification>
 extends BasicAgentModule<StrategicNegotiatingAgent<?, MatchingCandidature<ActionSpec>, ActionSpec>>
 implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionSpec>
 {
@@ -30,7 +29,7 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 	@Override
 	public AllocationTransition<MatchingCandidature<ActionSpec>, ActionSpec> getEmptyContract()
 	{
-		return new AllocationTransition(MatchingAllocationNeighborhood.dummyManager,validityTime);
+		return new AllocationTransition(MatchingAllocationNeighborhood.dummyManager,MatchingAllocationNeighborhood.validityTime);
 	}
 
 	@Override
@@ -52,7 +51,7 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 			c.add(this.getNeighbors(c, knownAgents, knownActions).next());
 		return c;
 	}
-	
+
 
 	/**
 	 * Methode du max tres peu efficace : coûteuse en mémoire
@@ -68,25 +67,24 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 
 		public AllocationNeighbors(final AllocationTransition<MatchingCandidature<ActionSpec>, ActionSpec> contractToExplore,
 				final Collection<AgentIdentifier> knownAgents) {
-			for (AgentIdentifier ag : knownAgents)
+			for (final AgentIdentifier ag : knownAgents)
 				if (ag instanceof ResourceIdentifier){
 					this.knownHosts.add((ResourceIdentifier) ag);
 					knownAgents.remove(ag);
 				}
 
-		//The neighbors are the deals resulting from the add of actions (an action can represent an allocation or a desallocation)
-		//max is thus initialized this way : it contains all the action still possible (the action of contract to explore have already been executed)
+			//The neighbors are the deals resulting from the add of actions (an action can represent an allocation or a desallocation)
+			//max is thus initialized this way : it contains all the action still possible (the action of contract to explore have already been executed)
 			this.min = new HashedHashList<AgentIdentifier, ResourceIdentifier>();
 			for (final AgentIdentifier id : knownAgents)
 				this.min.put(id, new ArrayList<ResourceIdentifier>());
-				
-			for (final AgentIdentifier id : contractToExplore.getAllParticipants()){
-				for (MatchingCandidature<ActionSpec> c : contractToExplore.getAssociatedActions(id))
-				this.min.get(id).add(c.getResource());
-				if (this.min.get(id).containsAll(knownHosts)){
-					this.min.remove(id);
-				}					
-			}
+
+					for (final AgentIdentifier id : contractToExplore.getAllParticipants()){
+						for (final MatchingCandidature<ActionSpec> c : contractToExplore.getAssociatedActions(id))
+							this.min.get(id).add(c.getResource());
+								if (this.min.get(id).containsAll(this.knownHosts))
+									this.min.remove(id);
+					}
 		}
 
 		@Override
@@ -99,26 +97,25 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 			//Selection aléatoir d'un agent et d'un des hôtes vers lequel il peut encore faire une action
 			final Random rand = new Random();
 			final AgentIdentifier replicaToadd = (new ArrayList<AgentIdentifier>(this.min.keySet())).get(rand.nextInt(this.min.size()));
-			
-			
-			final List<ResourceIdentifier> availableHosts = new ArrayList<ResourceIdentifier>(knownHosts);
+
+
+			final List<ResourceIdentifier> availableHosts = new ArrayList<ResourceIdentifier>(this.knownHosts);
 			availableHosts.removeAll(this.min.get(replicaToadd));
-			
+
 			final ResourceIdentifier choosenHost = availableHosts.get(rand.nextInt(availableHosts.size()));
-			final MatchingCandidature<ActionSpec> move = 
-				new MatchingCandidature<ActionSpec>(getMyAgent().getIdentifier(),replicaToadd,	choosenHost,validityTime);
+			final MatchingCandidature<ActionSpec> move =
+					new MatchingCandidature<ActionSpec>(MatchingAllocationNeighborhood.this.getMyAgent().getIdentifier(),replicaToadd,	choosenHost,MatchingAllocationNeighborhood.validityTime);
 			//mis a jour des listes
 			this.min.get(replicaToadd).add(choosenHost);
-			if (this.min.get(replicaToadd).containsAll(knownHosts)){
+			if (this.min.get(replicaToadd).containsAll(this.knownHosts))
 				this.min.remove(replicaToadd);
-			}	
-			last = move;
+			this.last = move;
 			return move;
 		}
 
 		@Override
 		public void remove() {
-			throw new RuntimeException("this iterator is not aimed to be used like this");	
+			throw new RuntimeException("this iterator is not aimed to be used like this");
 		}
 
 	}

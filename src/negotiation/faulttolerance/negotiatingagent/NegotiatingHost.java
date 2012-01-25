@@ -81,7 +81,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			ReplicationSpecification, HostState, ReplicationCandidature> 	proposerCore,
 			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
-			throws CompetenceException {
+					throws CompetenceException {
 		super(id, new HostState(id, lambda), myRationality, participantCore, proposerCore, myInformation);
 	}
 
@@ -97,44 +97,44 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	// Behavior
 	//
 
-//	@MessageHandler
-//	@NotificationEnvelope
-//	public void updateAgentInfo(final NotificationMessage<ReplicaState> r) {
-//		this.getMyInformation().add(r.getNotification());
-//	}
+	//	@MessageHandler
+	//	@NotificationEnvelope
+	//	public void updateAgentInfo(final NotificationMessage<ReplicaState> r) {
+	//		this.getMyInformation().add(r.getNotification());
+	//	}
 
 	@MessageHandler
 	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
 	public <Info extends Information> void receiveInformation(
 			final NotificationMessage<Information> o) {
-//		logMonologue("yophoi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//		if (o.getNotification() instanceof ReplicaState && getMyCurrentState().Ihost(((ReplicaState)o.getNotification()).getMyAgentIdentifier())){
-//			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
-//			HostState h = new HostState(getMyCurrentState(),
-//					(ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
-//			//on remet ce nouveau state dans h
-//			h = new HostState(h, (ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
-//			setNewState(h);
-//		}
+		//		logMonologue("yophoi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		//		if (o.getNotification() instanceof ReplicaState && getMyCurrentState().Ihost(((ReplicaState)o.getNotification()).getMyAgentIdentifier())){
+		//			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
+		//			HostState h = new HostState(getMyCurrentState(),
+		//					(ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
+		//			//on remet ce nouveau state dans h
+		//			h = new HostState(h, (ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
+		//			setNewState(h);
+		//		}
 	}
 
-//	public Double getReliability(final AgentIdentifier id)
-//			throws NoInformationAvailableException {
-//		return getMyInformation()
-//				.getInformation(ReplicaState.class, id).getMyReliability();
-//	}
-//
-//	public Double getMemCharge(final AgentIdentifier id)
-//			throws NoInformationAvailableException {
-//		return getMyInformation()
-//				.getInformation(ReplicaState.class, id).getMyMemCharge();
-//	}
-//
-//	public Double getProcCharge(final AgentIdentifier id)
-//			throws NoInformationAvailableException {
-//		return getMyInformation()
-//				.getInformation(ReplicaState.class, id).getMyProcCharge();
-//	}
+	//	public Double getReliability(final AgentIdentifier id)
+	//			throws NoInformationAvailableException {
+	//		return getMyInformation()
+	//				.getInformation(ReplicaState.class, id).getMyReliability();
+	//	}
+	//
+	//	public Double getMemCharge(final AgentIdentifier id)
+	//			throws NoInformationAvailableException {
+	//		return getMyInformation()
+	//				.getInformation(ReplicaState.class, id).getMyMemCharge();
+	//	}
+	//
+	//	public Double getProcCharge(final AgentIdentifier id)
+	//			throws NoInformationAvailableException {
+	//		return getMyInformation()
+	//				.getInformation(ReplicaState.class, id).getMyProcCharge();
+	//	}
 
 
 	// @Override

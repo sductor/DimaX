@@ -6,7 +6,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
 public interface AbstractContractTransition<ActionSpec extends AbstractActionSpecification>
-		extends DimaComponentInterface {
+extends DimaComponentInterface {
 
 	public ContractIdentifier getIdentifier();
 

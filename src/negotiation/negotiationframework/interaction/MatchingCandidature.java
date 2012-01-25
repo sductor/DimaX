@@ -4,7 +4,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 
 public abstract class MatchingCandidature<
 ActionSpec extends AbstractActionSpecification>
-		extends ContractTransition<ActionSpec> {
+extends ContractTransition<ActionSpec> {
 
 	/**
 	 *
@@ -64,9 +64,9 @@ ActionSpec extends AbstractActionSpecification>
 	public String toString() {
 		return this.getIdentifier() + " -> ("
 				+ (this.creation ? "create" : "destruct") + ")"
-//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
-		+"\n  -----> agent specif : "+this.getSpecificationOf(this.getAgent())
-		+"\n  -----> host specif : "+this.getSpecificationOf(this.getResource());
+				//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
+				+"\n  -----> agent specif : "+this.getSpecificationOf(this.getAgent())
+				+"\n  -----> host specif : "+this.getSpecificationOf(this.getResource());
 	}
 }
 

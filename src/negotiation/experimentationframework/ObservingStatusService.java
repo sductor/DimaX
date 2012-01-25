@@ -1,13 +1,12 @@
 package negotiation.experimentationframework;
 
-import negotiation.faulttolerance.experimentation.ReplicationAgentResult;
-import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
+import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.support.GimaObject;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 
@@ -15,7 +14,7 @@ public class ObservingStatusService extends
 BasicAgentCommunicatingCompetence<Laborantin> {
 	private static final long serialVersionUID = 5142247796368825154L;
 
-	
+
 
 	public static final String reliabilityObservationKey = "reliabilityNotif4quantile";
 
@@ -32,7 +31,7 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 	// Constructor
 	//
 
-	public ObservingStatusService(Laborantin ag, ExperimentationParameters p)
+	public ObservingStatusService(final Laborantin ag, final ExperimentationParameters p)
 			throws UnrespectedCompetenceSyntaxException {
 		super(ag);
 		this.p = p;
@@ -42,17 +41,17 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 				.getSimulationParameters().numberOfTimePoints(); i++)
 			this.statusEvolution[i] = new StatusQuantityTrunk();
 	}
-	
+
 	//
 	// Accessors
 	//
 
 	public boolean iObserveStatus() {
-		return isActive();
+		return this.isActive();
 	}
-	
+
 	protected ExperimentationParameters getSimulationParameters() {
-		return p;
+		return this.p;
 	}
 
 	//
@@ -60,16 +59,16 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 	//
 
 
-	public void incr(ReplicationAgentResult ag, int i) {
-		statusEvolution[i].incr(ag);		
+	public void incr(final ReplicationResultAgent ag, final int i) {
+		this.statusEvolution[i].incr(ag);
 	}
-	
+
 	//
 	// Behaviors
 	//
 
 	@MessageHandler
-	@NotificationEnvelope(reliabilityObservationKey)
+	@NotificationEnvelope(ObservingStatusService.reliabilityObservationKey)
 	public void updateAgent4StatusObservation(
 			final NotificationMessage<Double> n) {
 		// System.out.println("yoopppppppppppppppppppppppphooooooooooiiiiiiiiiiiiiiii");
@@ -146,10 +145,10 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 		int nbAgentWastefull = 0;
 		int nbAgentEmpty = 0;
 
-		public void incr(final ReplicationAgentResult s) {
+		public void incr(final ReplicationResultAgent s) {
 			if (s.isLastInfo())
-				nbAgentLost++;
-			else 
+				this.nbAgentLost++;
+			else
 				switch (s.getStatus()) {
 				case Fragile:
 					this.nbAgentFragile++;

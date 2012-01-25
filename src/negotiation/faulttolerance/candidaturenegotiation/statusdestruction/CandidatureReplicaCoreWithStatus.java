@@ -62,17 +62,17 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	@Override
 	public boolean IWantToNegotiate(final ReplicaState s) {
 		this.updateThreshold();
-//		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
-//				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
-//						.getStatus(s).equals(AgentStateStatus.Wastefull))));
+		//		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
+		//				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
+		//						.getStatus(s).equals(AgentStateStatus.Wastefull))));
 		return super.IWantToNegotiate(s)
-		&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
-				.getStatus(s).equals(AgentStateStatus.Wastefull));
+				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
+						.getStatus(s).equals(AgentStateStatus.Wastefull));
 	}
 
 	public AgentStateStatus getMyStatus() {
-//		if (this.getStatus(this.getMyAgent().getMyCurrentState()).equals(AgentStateStatus.Wastefull))
-//			logException("yooooooohoooooo!");
+		//		if (this.getStatus(this.getMyAgent().getMyCurrentState()).equals(AgentStateStatus.Wastefull))
+		//			logException("yooooooohoooooo!");
 		return this.getStatus(this.getMyAgent().getMyCurrentState());
 	}
 
@@ -84,36 +84,36 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 
 	public AgentStateStatus getStatus(final ReplicaState s) {
 		final boolean empty = this.getMyAgent().getMyCurrentState()
-		.getMyReplicas().size() <= 1;
+				.getMyReplicas().size() <= 1;
 		final boolean full = this.getMyAgent().getMyCurrentState()
-		.getMyReplicas().size() == this.getMyAgent().getMyInformation()
-		.getKnownAgents().size();
+				.getMyReplicas().size() == this.getMyAgent().getMyInformation()
+				.getKnownAgents().size();
 		final boolean fragile = this.getMyAgent().getMyCurrentState()
-		.getMyReliability() <= this.getLowerThreshold();
+				.getMyReliability() <= this.getLowerThreshold();
 		final boolean wastefull = this.getMyAgent().getMyCurrentState()
-		.getMyReliability() > this.getHigherThreshold();
+				.getMyReliability() > this.getHigherThreshold();
 
-		if (wastefull && fragile)
-			throw new RuntimeException(
-					"impossible! : " +
-					"me: "+this.getMyAgent().getMyCurrentState().getMyReliability()+
-					" low : "+this.getLowerThreshold()
-					+" high "+this.getHigherThreshold()+
-					(this.getMyAgent().getMyCurrentState().getMyReliability() <= this.getLowerThreshold())
-					+" "+(this.getMyAgent().getMyCurrentState().getMyReliability() > this.getHigherThreshold())
-					+wastefull+" "+fragile+" "+(wastefull && fragile));
-		else if (full && !wastefull)
-			return AgentStateStatus.Full;
-		else if (empty && !fragile)
-			return AgentStateStatus.Empty;
-		else if (!wastefull && !fragile)
-			return AgentStateStatus.Thrifty;
-		else if (wastefull && !empty)
-			return AgentStateStatus.Wastefull;
-		else if (fragile && !full)
-			return AgentStateStatus.Fragile;
-		else
-			throw new RuntimeException("impossible!");
+				if (wastefull && fragile)
+					throw new RuntimeException(
+							"impossible! : " +
+									"me: "+this.getMyAgent().getMyCurrentState().getMyReliability()+
+									" low : "+this.getLowerThreshold()
+									+" high "+this.getHigherThreshold()+
+									(this.getMyAgent().getMyCurrentState().getMyReliability() <= this.getLowerThreshold())
+									+" "+(this.getMyAgent().getMyCurrentState().getMyReliability() > this.getHigherThreshold())
+									+wastefull+" "+fragile+" "+(wastefull && fragile));
+				else if (full && !wastefull)
+					return AgentStateStatus.Full;
+				else if (empty && !fragile)
+					return AgentStateStatus.Empty;
+				else if (!wastefull && !fragile)
+					return AgentStateStatus.Thrifty;
+				else if (wastefull && !empty)
+					return AgentStateStatus.Wastefull;
+				else if (fragile && !full)
+					return AgentStateStatus.Fragile;
+				else
+					throw new RuntimeException("impossible!");
 	}
 
 	/*
@@ -142,7 +142,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private void updateThreshold(){
 		try {
 			final Opinion<ReplicaState> o = ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(ReplicaState.class);
-//		System.out.println("updating status opinion is : "+o);
+			//		System.out.println("updating status opinion is : "+o);
 			Double mean, min, max;
 			mean = o.getRepresentativeElement().getMyReliability();
 			min = o.getMinElement().getMyReliability();

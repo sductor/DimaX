@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -219,7 +219,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 							ReplicationExperimentationParameters._kValue, lambda,
 							ReplicationExperimentationParameters._theta);
 		case Poisson:
-			final long nbInterval = ReplicationExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
 			return PoissonLaw.getPoissonLaw(lambda * nbInterval, 1);
 		default:
 			throw new RuntimeException("impossible");
@@ -245,7 +245,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 						ReplicationExperimentationParameters._kRepair,
 						ReplicationExperimentationParameters._lambdaRepair, 0.);
 		case Poisson:
-			final long nbInterval = ReplicationExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
 			if (triggerAFault)
 				return PoissonLaw.eventOccur(lambda * nbInterval, 1);
 			else

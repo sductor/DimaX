@@ -10,15 +10,15 @@ public interface RationalCore<
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
-		extends
-		AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
+extends
+AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 
 	/*
 	 *
 	 */
 
-//	public PersonalState getMyResultingState(PersonalState s, Contract c);
-//
+	//	public PersonalState getMyResultingState(PersonalState s, Contract c);
+	//
 	public ActionSpec getMySpecif(PersonalState s, Contract c);
 
 	public void execute(Contract c);

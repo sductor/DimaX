@@ -116,15 +116,15 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	//
 
 	//pas propre!!! camarche uniquement pcq le h ne change pas de lambda
-//	public boolean update(HostState h){
-//		if (myReplicas.contains(h)){
-//			//removing previous h
-//			myReplicas.remove(h);
-//			//adding new h
-//			return 	myReplicas.add(h);
-//		} else
-//			throw new RuntimeException();
-//	}
+	//	public boolean update(HostState h){
+	//		if (myReplicas.contains(h)){
+	//			//removing previous h
+	//			myReplicas.remove(h);
+	//			//adding new h
+	//			return 	myReplicas.add(h);
+	//		} else
+	//			throw new RuntimeException();
+	//	}
 
 	public Double getMyReliability(){
 		return ReplicationSocialOptimisation.getReliability(
@@ -166,7 +166,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		final Collection<ResourceIdentifier> result = new ArrayList();
 		for (final HostState h : this.myReplicas)
 			result.add(h.getMyAgentIdentifier());
-		return result;
+				return result;
 	}
 
 	@Override

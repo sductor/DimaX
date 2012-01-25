@@ -10,7 +10,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 public class AllocationTransition<
 Contract extends AbstractContractTransition<ActionSpec>,
 ActionSpec extends AbstractActionSpecification>
-		extends HashSet<Contract>
+extends HashSet<Contract>
 implements
 AbstractContractTransition<ActionSpec>,
 Collection<Contract> {
@@ -90,7 +90,7 @@ Collection<Contract> {
 		final Collection<AgentIdentifier> result = new ArrayList<AgentIdentifier>();
 		for (final Contract c : this)
 			result.addAll(c.getAllParticipants());
-		return result;
+				return result;
 	}
 
 	@Override
@@ -114,7 +114,7 @@ Collection<Contract> {
 		for (final Contract c : this)
 			if (c.getAllParticipants().contains(id))
 				result.add(c);
-		return result;
+				return result;
 	}
 
 	/*
@@ -141,7 +141,7 @@ Collection<Contract> {
 			final Contract c) {
 		final AllocationTransition<Contract, ActionSpec> result =
 				new AllocationTransition<Contract, ActionSpec>(
-				this.analyser, this.validityTime, this);
+						this.analyser, this.validityTime, this);
 		result.add(c);
 		return result;
 	}

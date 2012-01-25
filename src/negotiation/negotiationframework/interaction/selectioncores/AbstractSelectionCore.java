@@ -153,7 +153,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 			final Collection<Contract> accepted,
 			final Collection<Contract> rejected) {
 
-//		this.validityVerification(accepted, rejected);
+		//		this.validityVerification(accepted, rejected);
 
 		// ACCEPTATION
 		for (final Contract c : accepted) {

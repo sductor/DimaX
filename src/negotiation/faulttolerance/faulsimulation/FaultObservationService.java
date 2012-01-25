@@ -16,15 +16,15 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
  * Service used by the agent to be concious of the system state
  */
 public abstract class FaultObservationService extends
-		BasicAgentCompetence<SimpleNegotiatingAgent<?, ?, ?>> {
+BasicAgentCompetence<SimpleNegotiatingAgent<?, ?, ?>> {
 	private static final long serialVersionUID = 2339746438446977252L;
 
 	//
 	// Fields
 	//
-//
-//	final ObservationService myAgentInformation;
-//	private final HostDisponibilityComputer myDispoInfo;
+	//
+	//	final ObservationService myAgentInformation;
+	//	private final HostDisponibilityComputer myDispoInfo;
 
 
 	// astuce artificielles pour maintenir le graphe de voisinage par latence
@@ -69,8 +69,8 @@ public abstract class FaultObservationService extends
 	@MessageHandler
 	// @NotificationEnvelope
 	public void faultObservation(final FaultEvent f) {// final
-														// NotificationMessage<FaultEvent>
-														// m) {
+		// NotificationMessage<FaultEvent>
+		// m) {
 		// final FaultEvent f = m.getNotification();
 		// logMonologue("i ve received "+f+" "+f.getHost().equals(this.getIdentifier())+"\n"+getMyCurrentState());
 		if (f.getHost().equals(this.getMyAgent().getIdentifier())) {
@@ -79,11 +79,11 @@ public abstract class FaultObservationService extends
 			if (myState.isFaulty() == true)
 				throw new RuntimeException(
 						"nnnnnnnooooooooooooonnnnnnnnnnnnnnn!!!!!!!!!! :\n" + f
-								+ this.getMyAgent().getMyCurrentState());
+						+ this.getMyAgent().getMyCurrentState());
 			myState.setFaulty(true);
 			this.logMonologue("I've failed!! =( Those replicas are dead : "
 					+ ((HostState) this.getMyAgent().getMyCurrentState())
-							.getMyAgents(),LogService.onBoth);
+					.getMyAgents(),LogService.onBoth);
 			//
 			this.getMyAgent().getMyProtocol().stop();
 			this.resetMyState();
@@ -101,8 +101,8 @@ public abstract class FaultObservationService extends
 	@MessageHandler
 	// @NotificationEnvelope
 	public void repairObservation(final RepairEvent f) {// final
-														// NotificationMessage<RepairEvent>
-														// m) {
+		// NotificationMessage<RepairEvent>
+		// m) {
 		// final RepairEvent f = m.getNotification();
 		if (f.getHost().equals(this.getMyAgent().getIdentifier())) {
 			final HostState myState = (HostState) this.getMyAgent()
@@ -110,7 +110,7 @@ public abstract class FaultObservationService extends
 			if (myState.isFaulty() == false)
 				throw new RuntimeException(
 						"nnnnnnnooooooooooooonnnnnnnnnnnnnnn!!!!!!!!!! :\n" + f
-								+ "\n" + this.getMyAgent().getMyCurrentState());
+						+ "\n" + this.getMyAgent().getMyCurrentState());
 			myState.setFaulty(false);
 			this.logMonologue("I'm repaired!! =)",LogService.onBoth);
 			//

@@ -72,8 +72,8 @@ extends GreedyBasicSelectionCore<ActionSpec, PersonalState, Contract> {
 			final Double r= this.contractsValues.getLast() * this.rand.nextDouble();
 			this.currentContract = 0;
 			try {
-			while (r>this.contractsValues.get(this.currentContract))// && currentContract<contracts.size()-1)
-				this.currentContract++;
+				while (r>this.contractsValues.get(this.currentContract))// && currentContract<contracts.size()-1)
+					this.currentContract++;
 			} catch (final Exception e) {
 				this.signalException(r+" "+this.contractsValues);
 			}

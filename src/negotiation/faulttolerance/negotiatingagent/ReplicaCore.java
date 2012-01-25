@@ -5,7 +5,6 @@ import java.util.Collection;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
@@ -42,21 +41,21 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	@Override
 	public void execute(final ReplicationCandidature c) {
 		assert this.getMyAgent().respectMyRights(c);
-//		logMonologue(
-//				"executing "+c+" from state "
-//		+this.getMyAgent().getMyCurrentState()
-//		+" to state "+c.computeResultingState(
-//						this.getMyAgent().getMyCurrentState()));
+		//		logMonologue(
+		//				"executing "+c+" from state "
+		//		+this.getMyAgent().getMyCurrentState()
+		//		+" to state "+c.computeResultingState(
+		//						this.getMyAgent().getMyCurrentState()));
 
 		if (c.isMatchingCreation()) {
 			this.observe(c.getResource(), SimpleObservationService.informationObservationKey);
-//			System.out.println(c.getAgent()+  " " + new Date().toString()
-//					+ "  -> i have been replicated by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
+			//			System.out.println(c.getAgent()+  " " + new Date().toString()
+			//					+ "  -> i have been replicated by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
 			this.logMonologue("  -> i have been replicated by "+c.getResource(),LogService.onNone);
 		} else {
 			this.stopObservation(c.getResource(), SimpleObservationService.informationObservationKey);
-//			System.out.println(c.getAgent()+  " " + new Date().toString()
-//					+ "  -> i have been killed by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
+			//			System.out.println(c.getAgent()+  " " + new Date().toString()
+			//					+ "  -> i have been killed by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
 			this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onNone);
 		}
 
@@ -74,7 +73,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 			final SimpleRationalAgent host) {
 		assert this.getMyAgent().respectMyRights(c);
 
-//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
+		//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
 		if (c.isMatchingCreation())
 			host.addObserver(c.getResource(), SimpleObservationService.informationObservationKey);
 		else

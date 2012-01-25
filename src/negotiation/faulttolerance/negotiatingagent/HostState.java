@@ -82,16 +82,16 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	//
 
 	//pas propre!!! camarche uniquement pcq le h ne change pas de charge
-//	public boolean update(ReplicaState h){
-//		if (myReplicatedAgents.contains(h)){
-//			//remove previous h :
-//			myReplicatedAgents.remove(h);
-//			//adding new h
-//			return myReplicatedAgents.add(h);
-//			//			return true;
-//		} else
-//			throw new RuntimeException();
-//	}
+	//	public boolean update(ReplicaState h){
+	//		if (myReplicatedAgents.contains(h)){
+	//			//remove previous h :
+	//			myReplicatedAgents.remove(h);
+	//			//adding new h
+	//			return myReplicatedAgents.add(h);
+	//			//			return true;
+	//		} else
+	//			throw new RuntimeException();
+	//	}
 	@Override
 	public ResourceIdentifier getMyAgentIdentifier() {
 		return (ResourceIdentifier) super.getMyAgentIdentifier();
@@ -299,7 +299,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	@Override
 	public String toString() {
 		return "\nHOST="+ this.getMyAgentIdentifier()
-//				+ "\n Date "+ this.getCreationTime()
+				//				+ "\n Date "+ this.getCreationTime()
 				+ "\n --> charge : "+ this.getMyCharge()
 				//				+ "\n * dispo  : "
 				//				+ NegotiatingHost.this.myFaultAwareService

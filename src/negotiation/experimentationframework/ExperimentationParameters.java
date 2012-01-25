@@ -14,7 +14,7 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 public abstract class ExperimentationParameters
 implements DimaComponentInterface {
 
-//	final AgentIdentifier experimentatorId;
+	//	final AgentIdentifier experimentatorId;
 
 
 	/**
@@ -36,7 +36,7 @@ implements DimaComponentInterface {
 	List<AgentIdentifier> replicasIdentifier  = new ArrayList<AgentIdentifier>();
 	List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>();
 
-	
+
 	//
 	// Constructor
 	//
@@ -151,8 +151,8 @@ implements DimaComponentInterface {
 			} catch (final Exception e) {
 				LogService.writeException("immmmmmmmpppppppppoooooooossssssssiiiiiiiiiibbbbllllllllllle",e);
 			}
-			result+="**************";
-			return result;
+		result+="**************";
+		return result;
 	}
 
 	public File getF() {

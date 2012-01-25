@@ -18,13 +18,13 @@ MatchingCandidature<ReplicationSpecification> {
 	// Constructors
 	//
 
-//	public ReplicationCandidature(final ResourceIdentifier r,
-//			final AgentIdentifier a, final boolean creation) {
-//		super(creation ? a : r, a, r,
-//				ReplicationExperimentationProtocol._contractExpirationTime);
-//		this.setCreation(creation);
-//
-//	}
+	//	public ReplicationCandidature(final ResourceIdentifier r,
+	//			final AgentIdentifier a, final boolean creation) {
+	//		super(creation ? a : r, a, r,
+	//				ReplicationExperimentationProtocol._contractExpirationTime);
+	//		this.setCreation(creation);
+	//
+	//	}
 
 	public ReplicationCandidature(final ResourceIdentifier r,
 			final AgentIdentifier a, final boolean creation, final boolean isAgentCreator) {
@@ -87,7 +87,7 @@ MatchingCandidature<ReplicationSpecification> {
 					+ "\n ----> current state"
 					//						+ this.getMyAgent().getMyCurrentState()
 					+ "\n --> fromState " + fromState);
-			// return this;
+		// return this;
 		else if (!fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) && this.creation == false)
 			// logException("aaaahhhhhhhhhhhhhhhhh  =(  CAN NOT DESTRUCT"+id);
 			//			this.getMyAgent().sendMessage(

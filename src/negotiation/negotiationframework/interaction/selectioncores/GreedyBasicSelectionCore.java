@@ -44,9 +44,9 @@ extends AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 				final Contract currentContract = this.popNextContract(contractsToExplore);
 				toValidate.add(currentContract);
 				currentState =
-					this.getMyAgent().getMyResultingState(
-						currentState,
-						currentContract);
+						this.getMyAgent().getMyResultingState(
+								currentState,
+								currentContract);
 
 				if (contractsToExplore.isEmpty())
 					break;
@@ -60,7 +60,7 @@ extends AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 			if (!this.getMyAgent().respectMyRights(currentState))
 				throw new RuntimeException(
 						"what the  (3)!!!!!!\n accepted state : "
-						+ currentState);
+								+ currentState);
 
 		}
 		return toValidate;

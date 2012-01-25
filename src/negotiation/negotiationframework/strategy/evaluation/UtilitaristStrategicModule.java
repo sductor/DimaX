@@ -2,14 +2,14 @@ package negotiation.negotiationframework.strategy.evaluation;
 
 import java.util.Collection;
 
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.BasicAgentModule;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
 import negotiation.negotiationframework.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.BasicAgentModule;
+import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
 
 public class UtilitaristStrategicModule
 <ActionSpec extends AbstractActionSpecification,
@@ -18,19 +18,24 @@ Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicAgentModule<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>
 implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7253845916258288308L;
+
 	public UtilitaristStrategicModule(
-			StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract> ag) {
+			final StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract> ag) {
 		super(ag);
 	}
 
 	@Override
 	public  Float getAgentBelievedStateConfidence(final AgentIdentifier id){
 		try {
-			Opinion<? extends Information> state = getMyAgent().getMyInformation().getOpinion(getMyInfoType(), id);
+			final Opinion<? extends Information> state = this.getMyAgent().getMyInformation().getOpinion(this.getMyInfoType(), id);
 			if (!state.isCertain())
 				return new Float(1 - state.getOpinionDispersion());
 			else {
-				Opinion<? extends Information> global = getMyAgent().getMyInformation().getGlobalOpinion(getMyInfoType());
+				final Opinion<? extends Information> global = this.getMyAgent().getMyInformation().getGlobalOpinion(this.getMyInfoType());
 				if (state.getUptime() <= global.getMinInformationDynamicity())
 					return new Float(1);
 				if (state.getUptime() >= global.getMaxInformationDynamicity())
@@ -43,8 +48,8 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 									(global.getMinInformationDynamicity() -
 											global.getMaxInformationDynamicity()));
 			}
-		} catch (Exception e) {
-			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+		} catch (final Exception e) {
+			this.getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}
@@ -55,35 +60,35 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 			int nbknown=0;
 			Float confTotal=new Float(0);
 			for (final AgentIdentifier id : ids){
-				confTotal+=1 - getAgentBelievedStateConfidence(id);
-				if (getMyAgent().getMyInformation().getOpinion(getMyInfoType(), id).isCertain())
+				confTotal+=1 - this.getAgentBelievedStateConfidence(id);
+				if (this.getMyAgent().getMyInformation().getOpinion(this.getMyInfoType(), id).isCertain())
 					nbknown++;
 			}
 			return new Double(confTotal / (ids.size() * nbknown) );
 			//		new Double(nbUnknown * getMyAgent().getMyInformation().getSystemDispersion() * ageMoyen)  / (ids.size() * (ids.size() - nbUnknown));
 
-		} catch (Exception e) {
-			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+		} catch (final Exception e) {
+			this.getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}
 
 	public Double getStateUtility(final PersonalState s1){
-		return getMyAgent().evaluatePreference(s1);
+		return this.getMyAgent().evaluatePreference(s1);
 	}
 
 	@Override
 	public Double evaluateContractPersonalUtility(final Contract c){
-		return getStateUtility(getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c));
+		return this.getStateUtility(this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), c));
 	}
 
 	@Override
-	public boolean iThinkItwillAccept(AgentIdentifier id, Contract c){
+	public boolean iThinkItwillAccept(final AgentIdentifier id, final Contract c){
 		try {
-			return getMyAgent().Iaccept((PersonalState)getMyAgent().getMyInformation().getOpinion(getMyInfoType(), id).getRepresentativeElement(),c) ;
+			return this.getMyAgent().Iaccept((PersonalState)this.getMyAgent().getMyInformation().getOpinion(this.getMyInfoType(), id).getRepresentativeElement(),c) ;
 
-		} catch (Exception e) {
-			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+		} catch (final Exception e) {
+			this.getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}
@@ -94,18 +99,18 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 	}
 
 	@Override
-	public Double evaluateContractUtility(AgentIdentifier id, Contract c){
+	public Double evaluateContractUtility(final AgentIdentifier id, final Contract c){
 		try {
-			return getStateUtility(
-					getMyAgent().getMyResultingState((PersonalState)getMyAgent().getMyInformation().getOpinion(getMyInfoType(), id).getRepresentativeElement(), c));
+			return this.getStateUtility(
+					this.getMyAgent().getMyResultingState((PersonalState)this.getMyAgent().getMyInformation().getOpinion(this.getMyInfoType(), id).getRepresentativeElement(), c));
 
-		} catch (Exception e) {
-			getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
+		} catch (final Exception e) {
+			this.getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
 			throw new RuntimeException();
 		}
 	}
 
 	private Class<? extends AgentState> getMyInfoType(){
-		return getMyAgent().getMyCurrentState().getClass();
+		return this.getMyAgent().getMyCurrentState().getClass();
 	}
 }

@@ -11,13 +11,13 @@ import dima.introspectionbasedagents.services.library.information.NoInformationA
 
 public interface AbstractStrategicExplorationModule
 <Contract extends AbstractContractTransition<ActionSpec>,
-ActionSpec extends AbstractActionSpecification> 
+ActionSpec extends AbstractActionSpecification>
 extends DimaComponentInterface{//ProposerCore<PersonalState, Action, ActionSpec>{
 
 	Contract getNextContractToPropose(
 			AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
-			final Collection<AgentIdentifier> knownAgents, 
+			final Collection<AgentIdentifier> knownAgents,
 			final Collection<String> knownActions )
-			throws NoInformationAvailableException;
+					throws NoInformationAvailableException;
 
 }

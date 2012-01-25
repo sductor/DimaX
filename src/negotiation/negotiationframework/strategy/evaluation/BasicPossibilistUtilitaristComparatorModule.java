@@ -6,34 +6,34 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 
 public class BasicPossibilistUtilitaristComparatorModule
-<Contract extends AbstractContractTransition<ActionSpec>, 
-ActionSpec extends AbstractActionSpecification> 
+<Contract extends AbstractContractTransition<ActionSpec>,
+ActionSpec extends AbstractActionSpecification>
 implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 	private static final long serialVersionUID = 3571150755873496299L;
-	
+
 	//
 	// Fields
 	//
 
 	final AbstractUtilitaristStrategicCore<Contract,?>  utilitaristCore;
-	
+
 	//
 	// Constructor
 	//
-	
+
 	public BasicPossibilistUtilitaristComparatorModule(
-			AbstractUtilitaristStrategicCore<Contract, ?> utilitaristCore) {
+			final AbstractUtilitaristStrategicCore<Contract, ?> utilitaristCore) {
 		super();
 		this.utilitaristCore = utilitaristCore;
 	}
-	
+
 	//
 	//  Methods
 	//
 
 	@Override
 	public int strategiclyCompare(final Contract c1, final Contract c2)  throws NoInformationAvailableException{
-		return utilitaristCore.iMRiskAdverse()?Double.compare(this.uMoins(c1), this.uMoins(c2)):Double.compare(this.uPlus(c1), this.uPlus(c2));
+		return this.utilitaristCore.iMRiskAdverse()?Double.compare(this.uMoins(c1), this.uMoins(c2)):Double.compare(this.uPlus(c1), this.uPlus(c2));
 	}
 
 	//
@@ -42,9 +42,9 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 
 	protected boolean societyWillAccept(final Contract c) throws NoInformationAvailableException{
 		for (final AgentIdentifier id : c.getAllParticipants())
-			if (!utilitaristCore.iThinkItwillAccept(id, c))
+			if (!this.utilitaristCore.iThinkItwillAccept(id, c))
 				return false;
-		return true;
+				return true;
 	}
 
 	/** societyWillAccept?
@@ -52,13 +52,13 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 	 * 		piNon = confiance dans les infos des agents ET gain pour chaque agent (l'agent le selectionnera)
 	 * :
 	 * 		piOK = confiance dans les infos des agents ET gain pour chaque agent (l'agent le selectionnera)
-	 * 		piNon = 1 		
+	 * 		piNon = 1
 	 **/
 	protected Double getAcceptationConfidence(final Contract c) throws NoInformationAvailableException{
-		final Double result = utilitaristCore.getConfidenceOfInformationAbout(c.getAllParticipants());
+		final Double result = this.utilitaristCore.getConfidenceOfInformationAbout(c.getAllParticipants());
 		for (final AgentIdentifier id : c.getAllParticipants())
-			Math.min(result, utilitaristCore.evaluateContractUtility(id, c));
-		return result;
+			Math.min(result, this.utilitaristCore.evaluateContractUtility(id, c));
+				return result;
 	}
 
 
@@ -74,12 +74,12 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 	 * 		piNon = getAcceptationConfidence
 	 * :
 	 * 		piOK = getAcceptationConfidence
-	 * 		piNon = 1 
+	 * 		piNon = 1
 	 * return Math.max(Math.min(piOK, uOK), Math.min(piNon, uNon));
 	 **/
 	protected Double uPlus(final Contract c) throws NoInformationAvailableException{
 
-		final Double uOK = utilitaristCore.evaluateContractPersonalUtility(c);
+		final Double uOK = this.utilitaristCore.evaluateContractPersonalUtility(c);
 		final Double uNon =  new Double(0);
 
 		final Double piOK, piNon;
@@ -89,10 +89,10 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 			piNon = this.getAcceptationConfidence(c);
 		} else {
 			piOK = this.getAcceptationConfidence(c);
-			piNon = new Double(1);	
-		}	
+			piNon = new Double(1);
+		}
 
-		return Math.max(Math.min(piOK, uOK), Math.min(piNon, uNon));		
+		return Math.max(Math.min(piOK, uOK), Math.min(piNon, uNon));
 	}
 
 	/**
@@ -103,12 +103,12 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 	 * 		piNon = getAcceptationConfidence
 	 * :
 	 * 		piOK = getAcceptationConfidence
-	 * 		piNon = 1 
+	 * 		piNon = 1
 	 * return Math.min(Math.max(1 - piOK, uOK), Math.max(1 - piNon, uNon));
 	 **/
 	protected Double uMoins(final Contract c) throws NoInformationAvailableException{
 
-		final Double uOK = utilitaristCore.evaluateContractPersonalUtility(c);
+		final Double uOK = this.utilitaristCore.evaluateContractPersonalUtility(c);
 		final Double uNon = new Double(0);
 
 		final Double piOK, piNon;
@@ -118,15 +118,15 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 			piNon = this.getAcceptationConfidence(c);
 		} else {
 			piOK = this.getAcceptationConfidence(c);
-			piNon =new Double(1);		
-		}	
+			piNon =new Double(1);
+		}
 
-		return Math.min(Math.max(1 - piOK, uOK), Math.max(1 - piNon, uNon));	
+		return Math.min(Math.max(1 - piOK, uOK), Math.max(1 - piNon, uNon));
 	}
 
 	protected Double uPlusOpt(final Contract c) throws NoInformationAvailableException{
 		Double piOK;
-		final Double uOK = utilitaristCore.evaluateContractPersonalUtility(c);
+		final Double uOK = this.utilitaristCore.evaluateContractPersonalUtility(c);
 
 		if (this.societyWillAccept(c))
 			piOK = new Double(1);
@@ -138,13 +138,13 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 
 	protected Double uMoinsOpt(final Contract c) throws NoInformationAvailableException{
 		Double piNon;
-		final Double uOK = utilitaristCore.evaluateContractPersonalUtility(c);
+		final Double uOK = this.utilitaristCore.evaluateContractPersonalUtility(c);
 		new Double(0);
 
 		if (this.societyWillAccept(c)){
 			piNon = this.getAcceptationConfidence(c);
-			return Math.min(uOK,1 - piNon);//équivalent car 1 - piOK = 0 et uNon = O			
-		} else 			
+			return Math.min(uOK,1 - piNon);//équivalent car 1 - piOK = 0 et uNon = O
+		} else
 			return new Double(0);//équivalent car 1 - piNon = 0 et uNon = O
 	}
 }
@@ -162,11 +162,11 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 //import negotiation.framework.rationalagent.AgentState;
 //import dima.basicagentcomponents.AgentIdentifier;
 //
-//public abstract class OrderedStrategicComparator<State extends AgentState, Contract extends NegotiatedContract<?,?>> 
+//public abstract class OrderedStrategicComparator<State extends AgentState, Contract extends NegotiatedContract<?,?>>
 //extends BeliefHandler<State, Contract, State> implements StrategicComparator<State, Contract> {
 //
 //	/**
-//	 * 
+//	 *
 //	 */
 //	private static final long serialVersionUID = -4464395794997957937L;
 //	PreferenceBasedAgent<State> myAgent;

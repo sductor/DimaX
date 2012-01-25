@@ -19,7 +19,7 @@ public abstract class StrategicNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
-		extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> {
+extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> {
 
 	//
 	// Fields
@@ -48,7 +48,7 @@ Contract extends AbstractContractTransition<ActionSpec>>
 			final Collection<String> knownActions,
 			final AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
 			final AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator)
-			throws CompetenceException {
+					throws CompetenceException {
 		super(id, myInitialState, myRationality, selectionCore, myProposerCore, myInformation);
 		this.knownActions = knownActions;
 		this.myComparator = myComparator;
@@ -65,7 +65,7 @@ Contract extends AbstractContractTransition<ActionSpec>>
 			final Collection<String> knownActions,
 			final AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
 			final AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator)
-			throws CompetenceException {
+					throws CompetenceException {
 		super(id, myInitialState, myRationality, selectionCore, myProposerCore, myInformation);
 		this.knownActions = knownActions;
 		this.myComparator = myComparator;
@@ -98,6 +98,6 @@ Contract extends AbstractContractTransition<ActionSpec>>
 	// Methods
 	//
 
-//	public abstract Double evaluatePreference(PersonalState s1);
+	//	public abstract Double evaluatePreference(PersonalState s1);
 
 }

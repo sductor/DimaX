@@ -18,7 +18,7 @@ ActionSpec extends AbstractActionSpecification> {
 	public Collection<Contract> generateUpgradingContracts(
 			final SimpleNegotiatingAgent<ActionSpec, ?, Contract> myAgent,
 			final ContractTrunk<Contract> n) {
-//		myAgent.logMonologue("entering upgrading contract myState is "+myAgent.getMyCurrentState());
+		//		myAgent.logMonologue("entering upgrading contract myState is "+myAgent.getMyCurrentState());
 		final Collection<Contract> unacceptedContracts = n.getRejectedContracts();
 		final Collection<Contract> toPutOnWait = new ArrayList<Contract>();
 		final Map<AgentIdentifier,Contract> upgradingContracts =
@@ -32,14 +32,14 @@ ActionSpec extends AbstractActionSpecification> {
 			for (final ActionSpec stateToDestroy : myAgent.getMyResources())
 				//				myAgent.logMonologue("should i destroy? "+stateToDestroy);
 				for (final Contract c : unacceptedContracts){
-//					myAgent.logMonologue("analysing contract "+c);
+					//					myAgent.logMonologue("analysing contract "+c);
 					final Collection<Contract> testingAllocation = new ArrayList<Contract>();
 					final Contract destContract = this.generateDestructionContract(stateToDestroy,c);
 					destContract.setSpecification(myAgent.getMySpecif(destContract));
 					destContract.setSpecification(stateToDestroy);
 					testingAllocation.add(c);
 					testingAllocation.add(destContract);
-//					myAgent.logMonologue(" upgrading contract myState is "+myAgent.getMyCurrentState());
+					//					myAgent.logMonologue(" upgrading contract myState is "+myAgent.getMyCurrentState());
 					if (upgradingContracts.containsKey(stateToDestroy.getMyAgentIdentifier())){
 						final Collection<Contract> alreadyMadeContract = new ArrayList<Contract>();
 						alreadyMadeContract.add(upgradingContracts.get(stateToDestroy.getMyAgentIdentifier()));
@@ -57,7 +57,7 @@ ActionSpec extends AbstractActionSpecification> {
 
 		for (final Contract c : toPutOnWait)
 			n.removeRejection(myAgent.getIdentifier(), c);
-		return upgradingContracts.values();
+				return upgradingContracts.values();
 	}
 
 	protected abstract Contract generateDestructionContract(ActionSpec state, Contract c);

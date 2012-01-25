@@ -29,10 +29,10 @@ ActionSpec, PersonalState, Contract> {
 	private static final long serialVersionUID = -497374728643432838L;
 
 	public StrategicProposerCore(
-	// Collection<String> knownActions,
-	// AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
-	// AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator
-	) {
+			// Collection<String> knownActions,
+			// AbstractStrategicEvaluationModule<Contract, ActionSpec> myComparator,
+			// AbstractStrategicExplorationModule<Contract, ActionSpec> myExplorator
+			) {
 		super();
 	}
 

@@ -7,9 +7,8 @@ import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.experimentationframework.ObservingStatusService;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
-import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
+import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -78,10 +77,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		protected void resetMyState() {
 			NegotiatingReplica.this.setNewState(
 					new ReplicaState(this.getIdentifier(),
-					NegotiatingReplica.this.getMyCurrentState().getMyCriticity(),
-					NegotiatingReplica.this.getMyCurrentState().getMyProcCharge(),
-					NegotiatingReplica.this.getMyCurrentState().getMyMemCharge(),
-					new HashSet<HostState>()));
+							NegotiatingReplica.this.getMyCurrentState().getMyCriticity(),
+							NegotiatingReplica.this.getMyCurrentState().getMyProcCharge(),
+							NegotiatingReplica.this.getMyCurrentState().getMyMemCharge(),
+							new HashSet<HostState>()));
 		}
 
 		@Override
@@ -91,15 +90,15 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 		@Override
 		public void faultObservation(final FaultEvent m) {// final
-															// NotificationMessage<FaultEvent>
-															// m) {
+			// NotificationMessage<FaultEvent>
+			// m) {
 			if (NegotiatingReplica.this.isAlive()) {
 				super.faultObservation(m);
 				if (NegotiatingReplica.this.getMyCurrentState().getMyReplicas()
 						.isEmpty()) {
 					this.logMonologue("this is the end my friend",LogService.onBoth);
 					NegotiatingReplica.this.mySelfObservationService
-							.endSimulation();
+					.endSimulation();
 				}
 			}
 		}
@@ -120,7 +119,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final AbstractSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
 			final AbstractProposerCore<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
 			final ObservationService myInformation)
-			throws CompetenceException {
+					throws CompetenceException {
 		super(id, null, myRationality, participantCore, proposerCore, myInformation);
 		this.myStateType = ReplicaState.class;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>()));
@@ -158,10 +157,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		return true;
 	}
 
-//	@Override
-//	public void setNewState(final ReplicaState s) {
-//		super.setNewState(s);
-//	}
+	//	@Override
+	//	public void setNewState(final ReplicaState s) {
+	//		super.setNewState(s);
+	//	}
 
 	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
 	public void notifyMyReliability4Status() {
@@ -176,24 +175,24 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	public void updateMyCriticity() {
 		final Random r = new Random();
 		if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
-																							// met
-																							// a
-																							// jour
+			// met
+			// a
+			// jour
 			final int signe = r.nextBoolean() ? 1 : -1;
 			final Double newCriticity = Math
 					.min(1.,
 							Math.max(
 									ReplicationExperimentationParameters._criticityMin,
 									this.getMyCurrentState().getMyCriticity()
-											+ signe
-											* r.nextDouble()
-											* ReplicationExperimentationParameters._criticityVariationAmplitude));
+									+ signe
+									* r.nextDouble()
+									* ReplicationExperimentationParameters._criticityVariationAmplitude));
 
 			this.setNewState(
 					new ReplicaState(
 							this.getIdentifier(),
-					newCriticity, this.getMyCurrentState().getMyProcCharge(),
-					this.getMyCurrentState().getMyMemCharge(), this
+							newCriticity, this.getMyCurrentState().getMyProcCharge(),
+							this.getMyCurrentState().getMyMemCharge(), this
 							.getMyCurrentState().getMyReplicas()));
 		}
 	}
@@ -202,37 +201,37 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	 *
 	 */
 
-//	@Override
-//	public ContractTrunk<ReplicationCandidature> select(
-//			final ContractTrunk<ReplicationCandidature> cs) {
-//
-//		if (this.myCore instanceof CandidatureReplicaCoreWithMinInfo)
-//			((CandidatureReplicaCoreWithMinInfo) this.myCore)
-//					.setMinKnowRelia(cs);
-//
-//		return super.select(cs);
-//	}
+	//	@Override
+	//	public ContractTrunk<ReplicationCandidature> select(
+	//			final ContractTrunk<ReplicationCandidature> cs) {
+	//
+	//		if (this.myCore instanceof CandidatureReplicaCoreWithMinInfo)
+	//			((CandidatureReplicaCoreWithMinInfo) this.myCore)
+	//					.setMinKnowRelia(cs);
+	//
+	//		return super.select(cs);
+	//	}
 
-//	@Override
-//	public void execute(final ReplicationCandidature c) {
-//		// notify(new ReliabilityUpdate());
-//		ReplicaState previousState = getMyCurrentState();
-//		super.execute(c);
-////		logMonologue("i have been replicated by "+c.getResource());// : \n previous stae : "+previousState+"\n new state : "+getMyCurrentState());
-//	}
+	//	@Override
+	//	public void execute(final ReplicationCandidature c) {
+	//		// notify(new ReliabilityUpdate());
+	//		ReplicaState previousState = getMyCurrentState();
+	//		super.execute(c);
+	////		logMonologue("i have been replicated by "+c.getResource());// : \n previous stae : "+previousState+"\n new state : "+getMyCurrentState());
+	//	}
 
 	@MessageHandler
 	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
 	public <Info extends Information> void receiveInformation(
 			final NotificationMessage<Information> o) {
-//		logMonologue("yophoi");
-//		if (o.getNotification() instanceof HostState
-//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
-//						((HostState) o.getNotification()).getMyAgentIdentifier())){
-//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
-//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
-//			setNewState(r);
-//		}
+		//		logMonologue("yophoi");
+		//		if (o.getNotification() instanceof HostState
+		//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
+		//						((HostState) o.getNotification()).getMyAgentIdentifier())){
+		//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
+		//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
+		//			setNewState(r);
+		//		}
 	}
 
 	// }

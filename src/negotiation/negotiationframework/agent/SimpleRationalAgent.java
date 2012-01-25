@@ -78,8 +78,8 @@ extends BasicCompetentAgent {
 
 	public PersonalState getMyCurrentState() {
 		try {
-//			if(!((PersonalState) myInformation.getInformation(myStateType, getIdentifier())).equals(s))
-//				logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh2222222222222222222222222"+s+"******************"+((PersonalState) myInformation.getInformation(myStateType, getIdentifier())));
+			//			if(!((PersonalState) myInformation.getInformation(myStateType, getIdentifier())).equals(s))
+			//				logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh2222222222222222222222222"+s+"******************"+((PersonalState) myInformation.getInformation(myStateType, getIdentifier())));
 
 			return (PersonalState) this.myInformation.getInformation(this.myStateType, this.getIdentifier());
 		} catch (final NoInformationAvailableException e) {
@@ -100,7 +100,7 @@ extends BasicCompetentAgent {
 	}
 
 	public void setNewState(final PersonalState s) {
-				this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
+		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
@@ -138,7 +138,7 @@ extends BasicCompetentAgent {
 		PersonalState result = s;
 		for (final Contract c : cs)
 			result = c.computeResultingState(result);
-		return result;
+				return result;
 	}
 
 
@@ -160,13 +160,13 @@ extends BasicCompetentAgent {
 	 * Rationality
 	 */
 
-//	public boolean Iaccept(final Contract c) {
-//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
-//	}
-//
-//	public boolean Iaccept(final Collection<Contract> c) {
-//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
-//	}
+	//	public boolean Iaccept(final Contract c) {
+	//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
+	//	}
+	//
+	//	public boolean Iaccept(final Collection<Contract> c) {
+	//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
+	//	}
 
 	public boolean Iaccept(final PersonalState s, final Contract c) {
 		final Collection<Contract> a = new ArrayList<Contract>();

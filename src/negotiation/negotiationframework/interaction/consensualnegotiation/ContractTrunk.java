@@ -15,7 +15,7 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ContractTrunk<Contract extends AbstractContractTransition<?>> implements
-		DimaComponentInterface {
+DimaComponentInterface {
 
 	/**
 	 *
@@ -63,7 +63,7 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final Contract c : this.getAllContracts())
 			if (c.getAllInvolved().contains(id))
 				l.add(c);
-		return l;
+				return l;
 	}
 
 	public List<Contract> getContractsAcceptedBy(final AgentIdentifier id) {
@@ -114,7 +114,7 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final Contract c : this.identifier2contract.values())
 			if (c.getInitiator().equals(this.myAgentIdentifier))
 				l.add(c);
-		return l;
+				return l;
 	}
 
 	public List<Contract> getInitiatorConsensualContracts() {
@@ -122,7 +122,7 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final Contract c : this.consensualContracts)
 			if (c.getInitiator().equals(this.myAgentIdentifier))
 				l.add(c);
-		return l;
+				return l;
 
 	}
 
@@ -131,7 +131,7 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final Contract c : this.waitContracts)
 			if (c.getInitiator().equals(this.myAgentIdentifier))
 				l.add(c);
-		return l;
+				return l;
 
 	}
 
@@ -140,11 +140,11 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final Contract c : this.waitContracts)
 			if (!c.getInitiator().equals(this.myAgentIdentifier)
 					&& !this.acceptedContracts.get(this.myAgentIdentifier)
-							.contains(c)
+					.contains(c)
 					&& !this.rejectedContracts.get(this.myAgentIdentifier)
-							.contains(c))
+					.contains(c))
 				l.add(c);
-		return l;
+				return l;
 	}
 
 	public List<Contract> getParticipantAlreadyAcceptedContracts() {
@@ -152,9 +152,9 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final Contract c : this.getAllContracts())
 			if (!c.getInitiator().equals(this.myAgentIdentifier)
 					&& this.acceptedContracts.get(this.myAgentIdentifier)
-							.contains(c))
+					.contains(c))
 				l.add(c);
-		return l;
+				return l;
 	}
 
 	/*
@@ -165,16 +165,16 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 	 * ajoute automatiquement en wait
 	 */
 	public void addContract(final Contract c) {
-//		if (c instanceof DestructionOrder)
-//			throw new RuntimeException();
+		//		if (c instanceof DestructionOrder)
+		//			throw new RuntimeException();
 		this.identifier2contract.put(c.getIdentifier(), c);
 		this.waitContracts.add(c);
 		this.addAcceptation(c.getInitiator(), c);
 	}
 
 	public void addAcceptation(final AgentIdentifier id, final Contract c) {
-//		if (c instanceof DestructionOrder)
-//			throw new RuntimeException();
+		//		if (c instanceof DestructionOrder)
+		//			throw new RuntimeException();
 		this.acceptedContracts.add(id, c);
 		/**/
 		if (this.isRequestable(c)) {
@@ -184,8 +184,8 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 	}
 
 	public void addRejection(final AgentIdentifier id, final Contract c) {
-//		if (c instanceof DestructionOrder)
-//			throw new RuntimeException();
+		//		if (c instanceof DestructionOrder)
+		//			throw new RuntimeException();
 		if (this.acceptedContracts.get(id).contains(c))
 			if (id.equals(c.getInitiator()))
 				this.acceptedContracts.get(id).remove(c);
@@ -219,7 +219,7 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final AgentIdentifier id : c.getAllParticipants())
 			if (!this.acceptedContracts.get(id).contains(c))
 				return false;
-		return true;
+				return true;
 	}
 
 	// CONSENSUAL IMPLEMENTATION
@@ -227,7 +227,7 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final AgentIdentifier id : c.getAllParticipants())
 			if (this.rejectedContracts.get(id).contains(c))
 				return true;
-		return false;
+				return false;
 	}
 
 	/*
@@ -239,7 +239,7 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 			if (!this.getContractsAcceptedBy(id).contains(c)
 					&& !this.getContractsRejectedBy(id).contains(c))
 				return false;
-		return true;
+				return true;
 	}
 
 	public boolean isEmpty() {
@@ -294,8 +294,8 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		String result = "[Known contracts are : ";
 		for (final Contract c : this.identifier2contract.values())
 			result += this.statusOf(c);
-		result += "]";
-		return result;
+				result += "]";
+				return result;
 	}
 
 	public String statusOf(final Contract c) {
@@ -311,15 +311,15 @@ public class ContractTrunk<Contract extends AbstractContractTransition<?>> imple
 		for (final AgentIdentifier id : c.getAllParticipants())
 			if (this.acceptedContracts.get(id).contains(c))
 				result += id + ";";
-		result += ");";
+				result += ");";
 
-		result += "(rejected:";
-		for (final AgentIdentifier id : c.getAllParticipants())
-			if (this.rejectedContracts.get(id).contains(c))
-				result += id + ";";
-		result += ")*";
+				result += "(rejected:";
+				for (final AgentIdentifier id : c.getAllParticipants())
+					if (this.rejectedContracts.get(id).contains(c))
+						result += id + ";";
+						result += ")*";
 
-		return result;
+						return result;
 	}
 }
 

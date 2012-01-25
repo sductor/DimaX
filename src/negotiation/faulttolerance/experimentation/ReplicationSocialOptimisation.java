@@ -92,7 +92,7 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 							result += r.getMyReliability();
 					} else
 						throw new RuntimeException("wtf! socialWelfare="+ReplicationSocialOptimisation.this.socialWelfare);
-					return result;
+								return result;
 				} else
 					throw new RuntimeException("wtf!");
 			}

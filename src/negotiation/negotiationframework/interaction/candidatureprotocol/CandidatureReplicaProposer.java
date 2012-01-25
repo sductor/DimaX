@@ -39,7 +39,7 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 								this.getMyAgent().getIdentifier(),
 								true,true));
 
-		return candidatures;
+				return candidatures;
 	}
 
 }

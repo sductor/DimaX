@@ -7,7 +7,7 @@ import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.experimentationframework.ObservingStatusService;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
-import negotiation.faulttolerance.experimentation.ReplicationAgentResult;
+import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
@@ -51,15 +51,15 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 		@Override
 		protected ExperimentationResults generateMyResults() {
-			ReplicationAgentResult myInfo;
+			ReplicationResultAgent myInfo;
 			if (NegotiatingReplica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
-				myInfo = new ReplicationAgentResult(
+				myInfo = new ReplicationResultAgent(
 						NegotiatingReplica.this.getMyCurrentState(),
 						NegotiatingReplica.this.getCreationTime(),
 						((CandidatureReplicaCoreWithStatus) NegotiatingReplica.this
 								.getMyCore()).getMyStatus());
 			else
-				myInfo = new ReplicationAgentResult(
+				myInfo = new ReplicationResultAgent(
 						NegotiatingReplica.this.getMyCurrentState(),
 						NegotiatingReplica.this.getCreationTime());
 			return myInfo;

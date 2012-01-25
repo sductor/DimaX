@@ -141,7 +141,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 		@Override
 		public void updateAgentInfo(final ExperimentationResults agent) {
-			final ReplicationAgentResult ag = (ReplicationAgentResult) agent;
+			final ReplicationResultAgent ag = (ReplicationResultAgent) agent;
 			int i = this.getSimulationParameters().getTimeStep(ag);
 			this.updateAnAgentValue(ag, i);
 
@@ -149,7 +149,7 @@ public class ReplicationLaborantin extends Laborantin {
 				for (i = this.getSimulationParameters().getTimeStep(ag) + 1; i < this
 						.getSimulationParameters().numberOfTimePoints(); i++)
 					this.updateAnAgentValue(ag, i);
-		}private void updateAnAgentValue(final ReplicationAgentResult ag, final int i) {
+		}private void updateAnAgentValue(final ReplicationResultAgent ag, final int i) {
 			if (i < this.getSimulationParameters().numberOfTimePoints()) {
 				this.agentsReliabilityEvolution[i].add(ag.getReliability());
 				this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
@@ -164,7 +164,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 		@Override
 		public void updateHostInfo(final ExperimentationResults host) {
-			final ReplicationHostResult h = (ReplicationHostResult) host;
+			final ReplicationResultHost h = (ReplicationResultHost) host;
 			int i = this.getSimulationParameters().getTimeStep(h);
 			this.updateAnHostValue(h, i);
 
@@ -173,7 +173,7 @@ public class ReplicationLaborantin extends Laborantin {
 						i < this.getSimulationParameters().numberOfTimePoints();
 						i++)
 					this.updateAnHostValue(h, i);
-		}private void updateAnHostValue(final ReplicationHostResult h, final int i) {
+		}private void updateAnHostValue(final ReplicationResultHost h, final int i) {
 			/**/
 			if (i < this.getSimulationParameters().numberOfTimePoints()) {
 				this.hostsChargeEvolution[i].add(h.charge);
@@ -235,20 +235,20 @@ public class ReplicationLaborantin extends Laborantin {
 		//
 		
 		private boolean analyseOptimal(){
-			final Comparator<ReplicationAgentResult> reliaComp = new Comparator<ReplicationAgentResult>() {
+			final Comparator<ReplicationResultAgent> reliaComp = new Comparator<ReplicationResultAgent>() {
 				@Override
-				public int compare(final ReplicationAgentResult o1,
-						final ReplicationAgentResult o2) {
+				public int compare(final ReplicationResultAgent o1,
+						final ReplicationResultAgent o2) {
 					return o1.disponibility.compareTo(o2.disponibility);
 				}
 			};
 
-			final LinkedList<ReplicationAgentResult> reliaStates = new LinkedList<ReplicationAgentResult>();
+			final LinkedList<ReplicationResultAgent> reliaStates = new LinkedList<ReplicationResultAgent>();
 			reliaStates.addAll(this.finalStates);
 
 			Collections.sort(reliaStates, reliaComp);
 
-			ReplicationAgentResult prev = reliaStates.removeFirst();
+			ReplicationResultAgent prev = reliaStates.removeFirst();
 
 			while(!reliaStates.isEmpty()){
 				if (prev.getDisponibility()<reliaStates.getFirst().getDisponibility() &&

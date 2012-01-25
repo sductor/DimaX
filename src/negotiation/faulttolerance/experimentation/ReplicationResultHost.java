@@ -7,7 +7,7 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 
-public class ReplicationHostResult implements ExperimentationResults {
+public class ReplicationResultHost implements ExperimentationResults {
 
 	/**
 	 *
@@ -23,7 +23,7 @@ public class ReplicationHostResult implements ExperimentationResults {
 	final boolean isFaulty;
 	boolean lastInfo;
 
-	public ReplicationHostResult(final HostState s,
+	public ReplicationResultHost(final HostState s,
 			final Date agentCreationTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();

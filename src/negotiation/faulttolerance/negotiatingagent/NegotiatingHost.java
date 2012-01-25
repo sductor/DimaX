@@ -2,7 +2,7 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.ObservingSelfService;
-import negotiation.faulttolerance.experimentation.ReplicationHostResult;
+import negotiation.faulttolerance.experimentation.ReplicationResultHost;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -37,7 +37,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 		@Override
 		protected ExperimentationResults generateMyResults() {
-			return new ReplicationHostResult(
+			return new ReplicationResultHost(
 					NegotiatingHost.this.getMyCurrentState(),
 					NegotiatingHost.this.getCreationTime());
 		}

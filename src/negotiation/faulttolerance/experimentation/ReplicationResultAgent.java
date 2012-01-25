@@ -7,7 +7,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
 import dima.basicagentcomponents.AgentIdentifier;
 
-public class ReplicationAgentResult implements ExperimentationResults {
+public class ReplicationResultAgent implements ExperimentationResults {
 
 	/**
 	 *
@@ -30,7 +30,7 @@ public class ReplicationAgentResult implements ExperimentationResults {
 
 	final AgentStateStatus status;
 
-	public ReplicationAgentResult(final ReplicaState s,
+	public ReplicationResultAgent(final ReplicaState s,
 			final Date agentCreationTime, final AgentStateStatus status) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
@@ -42,7 +42,7 @@ public class ReplicationAgentResult implements ExperimentationResults {
 		this.status = status;
 	}
 
-	public ReplicationAgentResult(final ReplicaState s,
+	public ReplicationResultAgent(final ReplicaState s,
 			final Date agentCreationTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();

@@ -19,6 +19,7 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
+import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.mappedcollections.HashedHashSet;
@@ -198,11 +199,15 @@ extends BasicAgentCompetence<Laborantin>{
 	}
 
 	public static  String getQuantileTimeEvolutionObs(final ExperimentationParameters p, final String entry,
-			final HeavyDoubleAggregation[] variable, final double significatifPercent, final int totalNumber){
+			final HeavyAggregation<Double>[] variable, final double significatifPercent, final int totalNumber){
 		String result ="t (seconds);\t "+
 				entry+" min;\t "
-				+entry+" firstTercile;\t "+entry+"  mediane;\t  "+entry+" lastTercile;\t "
-				+entry+"  max ;\t "+entry+" sum ;\t "+entry+" mean ;\t percent of agent aggregated=\n";
+				+entry+" firstTercile;\t "
+				+entry+"  mediane;\t  "
+				+entry+" lastTercile;\t "
+				+entry+"  max ;\t "
+//				+entry+" sum ;\t "
+				+entry+" mean ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < p.numberOfTimePoints(); i++){
 			result += p.geTime(i)/1000.+" ;\t ";
 			if (variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber)//!variable[i].isEmpty() && 
@@ -212,7 +217,7 @@ extends BasicAgentCompetence<Laborantin>{
 						variable[i].getMediane()+";\t " +
 						variable[i].getQuantile(2,3)+";\t " +
 						variable[i].getMaxElement()+";\t " +
-						variable[i].getSum()+";\t " +
+//						variable[i].getSum()+";\t " +
 						variable[i].getRepresentativeElement()+";\t (" +
 						(double) variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
 			else 

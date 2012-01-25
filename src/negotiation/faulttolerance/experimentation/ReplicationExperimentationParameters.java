@@ -104,7 +104,7 @@ ExperimentationParameters {
 	// Constructor
 	//
 
-	private ReplicationExperimentationParameters(final File f,
+	ReplicationExperimentationParameters(final File f,
 			final AgentIdentifier experimentatorId,
 			final int nbAgents, final int nbHosts, final double k,
 			final Double hostFaultProbabilityMean,
@@ -126,23 +126,6 @@ ExperimentationParameters {
 		this._agentSelection = agentSelection;
 		this.set_hostSelection(hostSelection);
 
-	}
-
-	public static ReplicationExperimentationParameters getGeneric(final File f) {
-		return new ReplicationExperimentationParameters(
-				f,
-				Experimentator.myId,
-				ReplicationExperimentationProtocol.nbAgents,
-				ReplicationExperimentationProtocol.nbHosts,
-				1,
-				0.6,
-				DispersionSymbolicValue.Nul,
-				0.3,
-				DispersionSymbolicValue.Nul,
-				ExperimentationProtocol.key4mirrorProto,
-				AllocationSocialWelfares.key4leximinSocialWelfare,
-				ExperimentationProtocol.key4greedySelect,
-				ExperimentationProtocol.key4greedySelect);
 	}
 
 	@Override

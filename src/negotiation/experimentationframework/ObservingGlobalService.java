@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import negotiation.experimentationframework.ObservingSelfService.ActivityLog;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
-import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
-import negotiation.faulttolerance.negotiatingagent.NegotiatingReplica;
+import negotiation.faulttolerance.negotiatingagent.Host;
+import negotiation.faulttolerance.negotiatingagent.Replica;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -87,7 +87,7 @@ extends BasicAgentCompetence<Laborantin>{
 
 		for (final BasicCompetentAgent ag : this.getMyAgent().agents.values())
 			//Observation about agent
-			if (ag instanceof NegotiatingReplica){
+			if (ag instanceof Replica){
 				//Observation de l'évolution des états de l'agent
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
 				observedRepResultLog.add(ag.getIdentifier());
@@ -102,7 +102,7 @@ extends BasicAgentCompetence<Laborantin>{
 					opinionsLog.add(ag.getId(), this.getIdentifier());
 				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.key4statusProto))
 					//This agent observe every agents that it knows
-					for (final AgentIdentifier h :	((NegotiatingReplica)ag).getMyInformation().getKnownAgents()){
+					for (final AgentIdentifier h :	((Replica)ag).getMyInformation().getKnownAgents()){
 						this.getMyAgent().getAgent(h).addObserver(ag.getId(), SimpleOpinionService.opinionObservationKey);
 						opinionsLog.add(ag.getId(), h);
 					}
@@ -110,7 +110,7 @@ extends BasicAgentCompetence<Laborantin>{
 					//no observation
 				}
 				else throw new RuntimeException("impossible : ");
-			}else if (ag instanceof NegotiatingHost){
+			}else if (ag instanceof Host){
 				//Observation de l'évolution des états de l'hpte
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
 				observedHostResultLog.add(ag.getIdentifier());
@@ -205,7 +205,7 @@ extends BasicAgentCompetence<Laborantin>{
 				+entry+"  max ;\t "+entry+" sum ;\t "+entry+" mean ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < p.numberOfTimePoints(); i++){
 			result += p.geTime(i)/1000.+" ;\t ";
-			if (!variable[i].isEmpty() && variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber)
+			if (variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber)//!variable[i].isEmpty() && 
 				result +=
 				variable[i].getMinElement()+";\t " +
 						variable[i].getQuantile(1,3)+";\t " +
@@ -215,7 +215,7 @@ extends BasicAgentCompetence<Laborantin>{
 						variable[i].getSum()+";\t " +
 						variable[i].getRepresentativeElement()+";\t (" +
 						(double) variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
-			else
+			else 
 				result += "-;\t-;\t-;\t-;\t-;\t-;\t  ("+(double)variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
 		}
 		return result;

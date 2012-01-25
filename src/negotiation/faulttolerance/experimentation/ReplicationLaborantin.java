@@ -24,8 +24,8 @@ import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
-import negotiation.faulttolerance.negotiatingagent.NegotiatingReplica;
+import negotiation.faulttolerance.negotiatingagent.Host;
+import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
@@ -50,6 +50,7 @@ import dima.introspectionbasedagents.services.library.information.ObservationSer
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
 import dimaxx.server.HostIdentifier;
+import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
@@ -106,7 +107,7 @@ public class ReplicationLaborantin extends Laborantin {
 		 * Host
 		 */
 		/* Quantile */
-		HeavyDoubleAggregation[] hostsChargeEvolution;
+		HeavyAggregation<Double>[] hostsChargeEvolution;
 		/* Mean */
 		LightAverageDoubleAggregation[] faulty;
 
@@ -344,7 +345,7 @@ public class ReplicationLaborantin extends Laborantin {
 					fault);
 			this.addAgent(host);
 			//			this.setHostObservation(host);
-			this.myInformationService.add(((NegotiatingHost) host).getMyCurrentState());
+			this.myInformationService.add(((Host) host).getMyCurrentState());
 		}
 
 		this.logMonologue("Those are my dispos!!!!! :\n" + this.myInformationService.show(HostState.class),LogService.onFile);
@@ -418,7 +419,7 @@ public class ReplicationLaborantin extends Laborantin {
 		this.logMonologue("Initializing agents done!",LogService.onFile);
 	}
 
-	protected NegotiatingReplica constructAgent(final AgentIdentifier replica,
+	protected Replica constructAgent(final AgentIdentifier replica,
 			final Collection<HostIdentifier> hostsIKnow,
 			final DistributionParameters<AgentIdentifier> agentCriticity,
 			final DistributionParameters<AgentIdentifier> agentProcessor,
@@ -473,7 +474,7 @@ public class ReplicationLaborantin extends Laborantin {
 					"Static parameters est mal conf : _usedProtocol = "
 							+ this.getSimulationParameters()._usedProtocol);
 
-		final NegotiatingReplica rep = new NegotiatingReplica(replica, Math.min(
+		final Replica rep = new Replica(replica, Math.min(
 				ReplicationExperimentationParameters._criticityMin
 				+ agentCriticity.get(replica), 1),
 				agentProcessor.get(replica), agentMemory.get(replica), core,
@@ -485,7 +486,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 	}
 
-	protected NegotiatingHost constructHost(final ResourceIdentifier host,
+	protected Host constructHost(final ResourceIdentifier host,
 			final DistributionParameters<ResourceIdentifier> fault)
 					throws CompetenceException {
 		AbstractSelectionCore select;
@@ -534,7 +535,7 @@ public class ReplicationLaborantin extends Laborantin {
 					"Static parameters est mal conf : _usedProtocol = "
 							+ this.getSimulationParameters()._usedProtocol);
 
-		final NegotiatingHost hostAg = new NegotiatingHost(host, fault.get(host),
+		final Host hostAg = new Host(host, fault.get(host),
 				core, select, proposer, informations, this.dispos);
 
 		return hostAg;

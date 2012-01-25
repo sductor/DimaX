@@ -11,10 +11,10 @@ import dimaxx.server.HostIdentifier;
 public interface ExperimentationProtocol extends DimaComponentInterface{
 
 	//
-	// Simulation Configuration
+	// Simulation Configuration A supprimer d'ici
 	//
 
-	public static final long _simulationTime = (1000 * 5);
+	public static final long _simulationTime = (1000 * 2);
 	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 20;
 
 	/**

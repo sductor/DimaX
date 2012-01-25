@@ -95,7 +95,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 	@Override
 	public boolean IWantToNegotiate(final ReplicaState s) {
-		if (((NegotiatingReplica) this.getMyAgent()).IReplicate())
+		if (((Replica) this.getMyAgent()).IReplicate())
 			if (!s.getMyResourceIdentifiers().containsAll(
 					this.getMyAgent().getMyInformation().getKnownAgents()))
 				return true;

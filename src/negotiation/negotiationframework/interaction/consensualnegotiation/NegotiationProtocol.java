@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.faulttolerance.negotiatingagent.NegotiatingHost;
+import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
@@ -368,8 +368,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		delta.getMyContract().setSpecification(this.getMyAgent().getMySpecif(delta.getMyContract()));
 		this.cleanContracts();
 		final Contract c = delta.getMyContract();
-		if (!(this.getMyAgent() instanceof NegotiatingHost)
-				|| !((NegotiatingHost) this.getMyAgent()).isFaulty())
+		if (!(this.getMyAgent() instanceof Host)
+				|| !((Host) this.getMyAgent()).isFaulty())
 			if (c instanceof DestructionOrder){
 				this.logMonologue("I've received destruction order "+c,NegotiationProtocol.log_negotiationStep);
 				//				acceptContract(c);
@@ -540,8 +540,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.getMyAgent().logMonologue("I'll apply proposal "+c,NegotiationProtocol.log_negotiationStep);//+"\n"+contracts);
 		// try {
 		if (!c.hasReachedExpirationTime())
-			if (!(this.getMyAgent() instanceof NegotiatingHost)
-					|| !((NegotiatingHost) this.getMyAgent()).isFaulty())
+			if (!(this.getMyAgent() instanceof Host)
+					|| !((Host) this.getMyAgent()).isFaulty())
 				if (this.contracts.getContractsAcceptedBy(
 						this.getMyAgent().getIdentifier()).contains(contract)) {
 					if (!this.getMyAgent().respectMyRights(
@@ -576,8 +576,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.cleanContracts();
 		final AgentIdentifier id = m.getSender();
 		final ContractIdentifier c = m.getIdentifier();
-		if (!(this.getMyAgent() instanceof NegotiatingHost)
-				|| !((NegotiatingHost) this.getMyAgent()).isFaulty())
+		if (!(this.getMyAgent() instanceof Host)
+				|| !((Host) this.getMyAgent()).isFaulty())
 			// getMyAgent().logMonologue("I've received cancel "+c);
 			// try {
 			if (id.equals(c.getInitiator()) && !this.losts.contains(c)) {

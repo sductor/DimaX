@@ -11,6 +11,7 @@ import java.util.LinkedList;
 
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationProtocol;
+import negotiation.experimentationframework.Experimentator;
 import negotiation.experimentationframework.IfailedException;
 import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
 import negotiation.negotiationframework.AllocationSocialWelfares;
@@ -22,19 +23,21 @@ import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
 
 public class ReplicationExperimentationProtocol implements
 ExperimentationProtocol {
+	private static final long serialVersionUID = 3221531706912973963L;
 
 	//
 	// Configuration statique
 	// /////////////////////////////////
 
+	//
+	// Simulation Configuration
+	//
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 3221531706912973963L;
+	public static final long _simulationTime = (1000 * 2);
+	public static final long _state_snapshot_frequency = ReplicationExperimentationProtocol._simulationTime / 20;
+
 	public static final int nbAgents = 15;
 	public static final int nbHosts = 10;
-
 
 	//
 	// Negotiation Tickers
@@ -45,9 +48,10 @@ ExperimentationProtocol {
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 
-	//pref
-	static final String key4agentKey_Relia="onlyRelia";
-	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
+	
+	//
+	//  Génération de simulation
+	// /////////////////////////////////
 
 	//
 	// Set of values
@@ -59,14 +63,17 @@ ExperimentationProtocol {
 			AllocationSocialWelfares.key4NashSocialWelfare,
 			AllocationSocialWelfares.key4UtilitaristSocialWelfare});
 	Collection<String> select = Arrays.asList(new String[]{ReplicationExperimentationProtocol.key4greedySelect,ReplicationExperimentationProtocol.key4rouletteWheelSelect});//,key4AllocSelect
-	Collection<String> agentPref = Arrays.asList(new String[]{ReplicationExperimentationProtocol.key4agentKey_Relia,ReplicationExperimentationProtocol.key4agentKey_loadNRelia});
-	Collection<Double> doubleParameters = Arrays.asList(new Double[]{0.1,0.3,0.6,1.});
 	Collection<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{DispersionSymbolicValue.Nul,DispersionSymbolicValue.Moyen});//,DispersionSymbolicValue.Max
+	Collection<Double> doubleParameters = Arrays.asList(new Double[]{0.1,0.3,0.6,1.});
+
+	//pref
+	Collection<String> agentPref = Arrays.asList(new String[]{ReplicationExperimentationProtocol.key4agentKey_Relia,ReplicationExperimentationProtocol.key4agentKey_loadNRelia});		
+	static final String key4agentKey_Relia="onlyRelia";
+	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
 
 	//
-	// Methods : Génération de simulation
+	// Variation configuration
 	//
-
 
 	static boolean  varyAgentSelection=false;
 	static boolean varyHostSelection=false;
@@ -74,10 +81,36 @@ ExperimentationProtocol {
 	static boolean varyHostDispo=true;
 	static boolean  varyOptimizers=false;
 	static boolean varyAccessibleHost=true;
-	static boolean varyAgentLoad=true;
+	static boolean varyAgentLoad=false;
 	static boolean varyHostFaultDispersion=false;
 	static boolean varyAgentLoadDispersion=false;
 
+	//
+	// Default values
+	//
+	
+	static ReplicationExperimentationParameters getDefaultParameters(final File f) {
+		return new ReplicationExperimentationParameters(
+				f,
+				Experimentator.myId,
+				ReplicationExperimentationProtocol.nbAgents,
+				ReplicationExperimentationProtocol.nbHosts,
+				1,
+				0.6,
+				DispersionSymbolicValue.Nul,
+				0.3,
+				DispersionSymbolicValue.Nul,
+				ExperimentationProtocol.key4mirrorProto,
+				AllocationSocialWelfares.key4leximinSocialWelfare,
+				ExperimentationProtocol.key4greedySelect,
+				ExperimentationProtocol.key4greedySelect);
+	}
+
+	
+	//
+	// Primitives
+	//
+	
 	@Override
 	public LinkedList<ExperimentationParameters> generateSimulation() {
 		final String usedProtocol, agentSelection, hostSelection;
@@ -85,7 +118,7 @@ ExperimentationProtocol {
 		//		f.mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new LinkedList<ReplicationExperimentationParameters>();
-		simuToLaunch.add(ReplicationExperimentationParameters.getGeneric(f));
+		simuToLaunch.add(ReplicationExperimentationProtocol.getDefaultParameters(f));
 		if (ReplicationExperimentationProtocol.varyAgentSelection)
 			simuToLaunch = this.varyAgentSelection(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyHostSelection)
@@ -118,22 +151,6 @@ ExperimentationProtocol {
 		Collections.sort(simus,comp);
 		return simus;
 	}
-
-
-
-	//
-	// Distribution
-	//
-
-	final Integer maxNumberOfAgentPerMachine  =this.getMaxNumberOfAgentPerMachine(null)  ;
-	final double nbSimuPerMAchine = 1;
-	@Override
-	public Integer getMaxNumberOfAgentPerMachine(final HostIdentifier id) {
-		return new Integer((int) this.nbSimuPerMAchine* (ReplicationExperimentationProtocol.nbAgents + ReplicationExperimentationProtocol.nbHosts)+1);
-	}
-	//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
-	//		return new Integer(10);
-	//	}
 
 	/*
 	 *
@@ -254,6 +271,23 @@ ExperimentationProtocol {
 				+ (ReplicationExperimentationProtocol.varyAgentLoad?"varyAgentLoad":"");
 	}
 
+
+
+	//
+	// Distribution
+	//
+
+	final Integer maxNumberOfAgentPerMachine  =this.getMaxNumberOfAgentPerMachine(null)  ;
+	final double nbSimuPerMAchine = 1;
+	@Override
+	public Integer getMaxNumberOfAgentPerMachine(final HostIdentifier id) {
+		return new Integer((int) this.nbSimuPerMAchine* (ReplicationExperimentationProtocol.nbAgents + ReplicationExperimentationProtocol.nbHosts)+1);
+	}
+	//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
+	//		return new Integer(10);
+	//	}
+
+	
 	//
 	// Primitive
 	// /////////////////////////////////

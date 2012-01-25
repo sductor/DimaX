@@ -18,7 +18,7 @@ import dima.introspectionbasedagents.services.library.information.ObservationSer
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
-public class NegotiatingHost
+public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
 {
 	private static final long serialVersionUID = -8478683967125467116L;
@@ -38,8 +38,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		@Override
 		protected ExperimentationResults generateMyResults() {
 			return new ReplicationResultHost(
-					NegotiatingHost.this.getMyCurrentState(),
-					NegotiatingHost.this.getCreationTime());
+					Host.this.getMyCurrentState(),
+					Host.this.getCreationTime());
 		}
 	};
 
@@ -54,14 +54,14 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 		@Override
 		protected void resetMyState() {
-			NegotiatingHost.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
-					NegotiatingHost.this.getMyCurrentState().getLambda()));
+			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
+					Host.this.getMyCurrentState().getLambda()));
 			this.resetMyUptime();
 		}
 
 		@Override
 		protected void resetMyUptime() {
-			NegotiatingHost.this.getMyCurrentState().resetUptime();
+			Host.this.getMyCurrentState().resetUptime();
 		}
 
 	};
@@ -71,7 +71,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 
 
-	public NegotiatingHost(
+	public Host(
 			final ResourceIdentifier id,
 			final double lambda,
 			final HostCore myRationality,

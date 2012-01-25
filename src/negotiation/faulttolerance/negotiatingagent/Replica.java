@@ -30,7 +30,7 @@ import dima.introspectionbasedagents.services.library.information.ObservationSer
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
-public class NegotiatingReplica
+public class Replica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 	private static final long serialVersionUID = 4986143017976368579L;
 
@@ -51,16 +51,16 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		@Override
 		protected ExperimentationResults generateMyResults() {
 			ReplicationResultAgent myInfo;
-			if (NegotiatingReplica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
+			if (Replica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
 				myInfo = new ReplicationResultAgent(
-						NegotiatingReplica.this.getMyCurrentState(),
-						NegotiatingReplica.this.getCreationTime(),
-						((CandidatureReplicaCoreWithStatus) NegotiatingReplica.this
+						Replica.this.getMyCurrentState(),
+						Replica.this.getCreationTime(),
+						((CandidatureReplicaCoreWithStatus) Replica.this
 								.getMyCore()).getMyStatus());
 			else
 				myInfo = new ReplicationResultAgent(
-						NegotiatingReplica.this.getMyCurrentState(),
-						NegotiatingReplica.this.getCreationTime());
+						Replica.this.getMyCurrentState(),
+						Replica.this.getCreationTime());
 			return myInfo;
 		}
 	};
@@ -75,29 +75,29 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 		@Override
 		protected void resetMyState() {
-			NegotiatingReplica.this.setNewState(
+			Replica.this.setNewState(
 					new ReplicaState(this.getIdentifier(),
-							NegotiatingReplica.this.getMyCurrentState().getMyCriticity(),
-							NegotiatingReplica.this.getMyCurrentState().getMyProcCharge(),
-							NegotiatingReplica.this.getMyCurrentState().getMyMemCharge(),
+							Replica.this.getMyCurrentState().getMyCriticity(),
+							Replica.this.getMyCurrentState().getMyProcCharge(),
+							Replica.this.getMyCurrentState().getMyMemCharge(),
 							new HashSet<HostState>()));
 		}
 
 		@Override
 		protected void resetMyUptime() {
-			NegotiatingReplica.this.getMyCurrentState().resetUptime();
+			Replica.this.getMyCurrentState().resetUptime();
 		}
 
 		@Override
 		public void faultObservation(final FaultEvent m) {// final
 			// NotificationMessage<FaultEvent>
 			// m) {
-			if (NegotiatingReplica.this.isAlive()) {
+			if (Replica.this.isAlive()) {
 				super.faultObservation(m);
-				if (NegotiatingReplica.this.getMyCurrentState().getMyReplicas()
+				if (Replica.this.getMyCurrentState().getMyReplicas()
 						.isEmpty()) {
 					this.logMonologue("this is the end my friend",LogService.onBoth);
-					NegotiatingReplica.this.mySelfObservationService
+					Replica.this.mySelfObservationService
 					.endSimulation();
 				}
 			}
@@ -110,7 +110,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-	public NegotiatingReplica(
+	public Replica(
 			final AgentIdentifier id,
 			final Double criticity,
 			final Double procCharge,

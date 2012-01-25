@@ -2,7 +2,6 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.Collection;
 
-import negotiation.faulttolerance.experimentation.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;

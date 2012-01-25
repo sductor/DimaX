@@ -1,14 +1,10 @@
-package negotiation.faulttolerance.experimentation;
+package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 
-import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CompetentComponent;

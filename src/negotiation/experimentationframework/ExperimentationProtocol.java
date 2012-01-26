@@ -11,12 +11,30 @@ import dimaxx.server.HostIdentifier;
 public interface ExperimentationProtocol extends DimaComponentInterface{
 
 	//
-	// Simulation Configuration A supprimer d'ici
+	// Configuration statique
+	// /////////////////////////////////
+
+	//
+	// Simulation Configuration
 	//
 
-	public static final long _simulationTime = (1000 * 2);
-	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 20;
 
+	public static final long _simulationTime = (1000 * 5);
+	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 5;
+
+	public static final int nbAgents = 15;
+	public static final int nbHosts = 10;
+
+	//
+	// Negotiation Tickers
+	//
+
+	public static final long _timeToCollect = -1;//500;//
+	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
+	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
+	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
+
+	
 	/**
 	 * Clés statiques
 	 */

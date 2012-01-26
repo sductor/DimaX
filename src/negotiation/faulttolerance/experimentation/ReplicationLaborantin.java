@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 	@Competence
 	protected FaultTriggeringService myFaultService;
-
+	
 	@Competence
 	final ObservingGlobalService myGlobalObservationService = new ObservingGlobalService(this, this.getSimulationParameters()){
 
@@ -117,12 +118,12 @@ public class ReplicationLaborantin extends Laborantin {
 
 		@Override
 		public void initiate() {
-			this.agentsReliabilityEvolution = new HeavyDoubleAggregation[this.getSimulationParameters().numberOfTimePoints()];
-			this.criticite = new LightWeightedAverageDoubleAggregation[this.getSimulationParameters().numberOfTimePoints()];
-			this.hostsChargeEvolution = new HeavyDoubleAggregation[this.getSimulationParameters().numberOfTimePoints()];
-			this.faulty = new LightAverageDoubleAggregation[this.getSimulationParameters().numberOfTimePoints()];
+			this.agentsReliabilityEvolution = new HeavyDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
+			this.criticite = new LightWeightedAverageDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
+			this.hostsChargeEvolution = new HeavyDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
+			this.faulty = new LightAverageDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
 
-			for (int i = 0; i < this.getSimulationParameters().numberOfTimePoints(); i++) {
+			for (int i = 0; i < this.getSimulationParameters().getNumberOfTimePoints(); i++) {
 				this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
 				this.agentsReliabilityEvolution[i] = new HeavyDoubleAggregation();
 				this.criticite[i] = new LightWeightedAverageDoubleAggregation();
@@ -133,19 +134,24 @@ public class ReplicationLaborantin extends Laborantin {
 		//
 		// Methods
 		//
+		
+	
 
 		@Override
 		public void updateAgentInfo(final ExperimentationResults agent) {
 			final ReplicationResultAgent ag = (ReplicationResultAgent) agent;
 			int i = this.getSimulationParameters().getTimeStep(ag);
+		
+			
 			this.updateAnAgentValue(ag, i);
+		
 
 			if (ag.isLastInfo())
 				for (i = this.getSimulationParameters().getTimeStep(ag) + 1; i < this
-						.getSimulationParameters().numberOfTimePoints(); i++)
+						.getSimulationParameters().getNumberOfTimePoints(); i++)
 					this.updateAnAgentValue(ag, i);
 		}private void updateAnAgentValue(final ReplicationResultAgent ag, final int i) {
-			if (i < this.getSimulationParameters().numberOfTimePoints()) {
+			if (i < this.getSimulationParameters().getNumberOfTimePoints()) {
 				this.agentsReliabilityEvolution[i].add(ag.getReliability());
 				this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
 				if (ReplicationLaborantin.this.myStatusObserver.iObserveStatus())
@@ -163,14 +169,15 @@ public class ReplicationLaborantin extends Laborantin {
 			int i = this.getSimulationParameters().getTimeStep(h);
 			this.updateAnHostValue(h, i);
 
+			
 			if (h.isLastInfo())
 				for (i = this.getSimulationParameters().getTimeStep(h) + 1;
-						i < this.getSimulationParameters().numberOfTimePoints();
+						i < this.getSimulationParameters().getNumberOfTimePoints();
 						i++)
 					this.updateAnHostValue(h, i);
 		}private void updateAnHostValue(final ReplicationResultHost h, final int i) {
 			/**/
-			if (i < this.getSimulationParameters().numberOfTimePoints()) {
+			if (i < this.getSimulationParameters().getNumberOfTimePoints()) {
 				this.hostsChargeEvolution[i].add(h.charge);
 				this.faulty[i].add(h.isFaulty ? 0. : 1.);
 			}

@@ -36,9 +36,9 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 		super(ag);
 		this.p = p;
 		this.statusEvolution =
-				new StatusQuantityTrunk[this.getSimulationParameters().numberOfTimePoints()];
+				new StatusQuantityTrunk[this.getSimulationParameters().getNumberOfTimePoints()];
 		for (int i = 0; i < this
-				.getSimulationParameters().numberOfTimePoints(); i++)
+				.getSimulationParameters().getNumberOfTimePoints(); i++)
 			this.statusEvolution[i] = new StatusQuantityTrunk();
 	}
 
@@ -104,7 +104,7 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 				"t (seconds in percent);\t lost;\t fragile;\t " +
 						"thrifty (empty);\t thrifty;\t thrifty (full);\t wastefull;\t =\n";
 		for (int i = 0; i < this
-				.getSimulationParameters().numberOfTimePoints(); i++)
+				.getSimulationParameters().getNumberOfTimePoints(); i++)
 			result += this.getSimulationParameters()
 			.geTime(i)
 			/ 1000.
@@ -146,7 +146,7 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 		int nbAgentEmpty = 0;
 
 		public void incr(final ReplicationResultAgent s) {
-			if (s.isLastInfo())
+			if (s.getDisponibility()==0)
 				this.nbAgentLost++;
 			else
 				switch (s.getStatus()) {

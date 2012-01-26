@@ -16,11 +16,11 @@ import java.util.TreeMap;
  * @param <Element>
  */
 public abstract class HeavyAggregation<Element extends Object> extends
-		TreeMap<Element, Double> implements
-		AbstractCompensativeAggregation<Element>,
-		FunctionnalCompensativeAggregator<Element>, AbstractDispersionAggregation,
-		AbstractMinMaxAggregation<Element>, AbstractQuantileAggregation<Element>,
-		UtilitaristAnalyser<Element> {
+TreeMap<Element, Double> implements
+AbstractCompensativeAggregation<Element>,
+FunctionnalCompensativeAggregator<Element>, AbstractDispersionAggregation,
+AbstractMinMaxAggregation<Element>, AbstractQuantileAggregation<Element>,
+UtilitaristAnalyser<Element> {
 
 	/**
 	 * 
@@ -50,7 +50,10 @@ public abstract class HeavyAggregation<Element extends Object> extends
 	public Double add(Element e) {
 		return this.put(e, 1.);
 	}
-
+	@Override
+	public Double put(Element o, Double weight) {
+		return super.put(o, this.containsKey(o)?weight+get(o):weight);
+	}
 	/*
 	 * 
 	 */
@@ -83,6 +86,16 @@ public abstract class HeavyAggregation<Element extends Object> extends
 	/*
 	 * 
 	 */
+
+	public double getWeightOfAggregatedElements() {
+		double sum=0;
+
+		for (double w : this.values()){
+			sum+=w;
+		}
+
+		return sum;
+	}
 
 	@Override
 	public int getNumberOfAggregatedElements() {

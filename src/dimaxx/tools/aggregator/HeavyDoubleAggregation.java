@@ -29,11 +29,11 @@ public class HeavyDoubleAggregation extends HeavyAggregation<Double> {
 		return super.put(o, weight);
 	}
 
-	@Override
-	public Double remove(Object o) {
-		this.myAverageInfo.remove((Double) o, this.get(o));
-		return super.remove(o);
-	}
+//	@Override
+//	public Double remove(Double o) {
+//		this.myAverageInfo.remove((Double) o, this.get(o));
+//		return super.remove(o);
+//	}
 
 	/*
 	 *

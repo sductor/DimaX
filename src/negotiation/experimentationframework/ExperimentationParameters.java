@@ -76,11 +76,11 @@ implements DimaComponentInterface {
 		return this.hostsIdentifier;
 	}
 
-	public int numberOfTimePoints() {
+	public static int getNumberOfTimePoints() {
 		return (int) (ExperimentationProtocol._simulationTime / ExperimentationProtocol._state_snapshot_frequency);
 	}
 
-	public int getTimeStep(final ExperimentationResults ag) {
+	public static int getTimeStep(final ExperimentationResults ag) {
 		return Math
 				.max(0,
 						(int) (ag.getUptime() / ExperimentationProtocol._state_snapshot_frequency) - 1);

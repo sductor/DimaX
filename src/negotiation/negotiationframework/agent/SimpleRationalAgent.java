@@ -26,6 +26,9 @@ extends BasicCompetentAgent {
 	// Fields
 	//
 
+	//numérotes les états de l'agents pour pouvoir les ordonner
+	public int nextStateCounter=0;
+	
 	@Competence
 	private final ObservationService myInformation;
 
@@ -100,6 +103,7 @@ extends BasicCompetentAgent {
 	}
 
 	public void setNewState(final PersonalState s) {
+		nextStateCounter++;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
 		//		if (!getMyCurrentState().equals(s))

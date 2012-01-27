@@ -80,12 +80,12 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 							Replica.this.getMyCurrentState().getMyCriticity(),
 							Replica.this.getMyCurrentState().getMyProcCharge(),
 							Replica.this.getMyCurrentState().getMyMemCharge(),
-							new HashSet<HostState>()));
+							new HashSet<HostState>(),getMyAgent().nextStateCounter));
 		}
 
 		@Override
 		protected void resetMyUptime() {
-			Replica.this.getMyCurrentState().resetUptime();
+			assert 1<0:"Replica.this.getMyCurrentState().resetUptime()";
 		}
 
 		@Override
@@ -122,7 +122,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 					throws CompetenceException {
 		super(id, null, myRationality, participantCore, proposerCore, myInformation);
 		this.myStateType = ReplicaState.class;
-		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>()));
+		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
 	}
 
 	//
@@ -193,7 +193,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 							this.getIdentifier(),
 							newCriticity, this.getMyCurrentState().getMyProcCharge(),
 							this.getMyCurrentState().getMyMemCharge(), this
-							.getMyCurrentState().getMyReplicas()));
+							.getMyCurrentState().getMyReplicas(),this.nextStateCounter));
 		}
 	}
 

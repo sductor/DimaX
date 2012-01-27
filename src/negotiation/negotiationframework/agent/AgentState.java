@@ -11,7 +11,7 @@ public interface AgentState extends Information {
 	@Override
 	public AgentIdentifier getMyAgentIdentifier();
 
-	void resetUptime();
+//	void resetUptime();
 
 	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers();
 
@@ -23,7 +23,8 @@ public interface AgentState extends Information {
 	// Return true if action had an effect
 	boolean setLost(ResourceIdentifier h, boolean isLost);
 
-	boolean isNewerThan(AgentState that);
+
+	public int getStateCounter();
 }
 
 // public interface SocialState<State extends AgentState> extends

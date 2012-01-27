@@ -95,59 +95,35 @@ ObservationService {
 
 	@Override
 	public void add(final Information information) {
-
-		//		if (getMyAgent() instanceof SimpleRationalAgent) {
-		//			SimpleRationalAgent new_name = (SimpleRationalAgent) getMyAgent();
-		//			if (information.
-		//					getClass().
-		//					equals(new_name.
-		//							myStateType) &&
-		//							information.getMyAgentIdentifier().
-		//							equals(getMyAgent().
-		//									getIdentifier())){
-		//				logException("yoooooooooooooooooo"+information.toString());
-		////				throw new RuntimeException();
-		//				return;
-		//			}
-		//
-		//		}
-
-		//		if (!this.infos.containsKey(information.getClass())){//new information type
-		//			this.infos.put(information.getClass(), new InformationDataBase<Information>());
-		//			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-		//			this.add(information.getMyAgentIdentifier());
-		//		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())){
-		//			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-		//		}else if (information.getCreationTime()>this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
-		//		 ((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-
 		if (!this.infos.containsKey(information.getClass())){//new information type
 			this.infos.put(information.getClass(), new InformationDataBase<Information>());
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 			this.add(information.getMyAgentIdentifier());
-		}
-		else if (this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) {//information replacement
+		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) //first info for the agent
+			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		else { //information replacement
 			//			logMonologue("replacing !!!!!!!!!"+this.infos.get(information.getClass()).get(information.getMyAgentIdentifier())+" with "+information);
-			if (information.getCreationTime()>
-			this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
+			Information knownInfo=this.infos.get(information.getClass()).get(information.getMyAgentIdentifier());
+
+			if (information.isNewerThan(knownInfo)>1){
 				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-			else if (information.getCreationTime().equals(
-					this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())){
-				if (!information.equals(this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())){
+			}else if (information.isNewerThan(knownInfo)<1){
+				//				do nothing
+			} else if (information.isNewerThan(knownInfo)==0){
+				if (!information.equals(knownInfo)){
 					logWarning(
 							"remplacing an information with a different information of the same time :\n"+information+" and :\n "+
-									this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime(), 
-									LogService.onNone);//TODO!!!!!!!!!!!!!!!!!!!!!
+									this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()), 
+									LogService.onBoth);
 					((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-				} 
-				//else do nothing
+				}else{
+					//do nothing
+				}
 			}
-			//			else
-			//				do nothing
-		} else //first info for the agent
-			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+		}
 
 	}
+
 
 
 	@Override
@@ -212,3 +188,32 @@ ObservationService {
 
 	}
 }
+
+
+
+
+
+//		if (getMyAgent() instanceof SimpleRationalAgent) {
+//			SimpleRationalAgent new_name = (SimpleRationalAgent) getMyAgent();
+//			if (information.
+//					getClass().
+//					equals(new_name.
+//							myStateType) &&
+//							information.getMyAgentIdentifier().
+//							equals(getMyAgent().
+//									getIdentifier())){
+//				logException("yoooooooooooooooooo"+information.toString());
+////				throw new RuntimeException();
+//				return;
+//			}
+//
+//		}
+
+//		if (!this.infos.containsKey(information.getClass())){//new information type
+//			this.infos.put(information.getClass(), new InformationDataBase<Information>());
+//			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+//			this.add(information.getMyAgentIdentifier());
+//		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())){
+//			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
+//		}else if (information.getCreationTime()>this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()).getCreationTime())
+//		 ((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);

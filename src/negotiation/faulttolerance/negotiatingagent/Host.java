@@ -55,13 +55,14 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		@Override
 		protected void resetMyState() {
 			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
-					Host.this.getMyCurrentState().getLambda()));
+					Host.this.getMyCurrentState().getLambda(),getMyAgent().nextStateCounter));
 			this.resetMyUptime();
 		}
 
 		@Override
 		protected void resetMyUptime() {
-			Host.this.getMyCurrentState().resetUptime();
+
+			assert 1<0:"Host.this.getMyCurrentState().resetUptime()";
 		}
 
 	};
@@ -82,7 +83,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
-		super(id, new HostState(id, lambda), myRationality, participantCore, proposerCore, myInformation);
+		super(id, new HostState(id, lambda,-1), myRationality, participantCore, proposerCore, myInformation);
 	}
 
 	//

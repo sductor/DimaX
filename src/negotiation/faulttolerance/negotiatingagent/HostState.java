@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.agent.SimpleAgentState;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -32,15 +33,16 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	private  boolean faulty;
 
 	// Take all fields
-	public HostState(final ResourceIdentifier myAgent, final double lambda) {
+	public HostState(final ResourceIdentifier myAgent, final double lambda, int stateNumber) {
 		this(myAgent,
 				new HashSet<ReplicaState>(), lambda,
 				ReplicationExperimentationParameters.hostMaxProc, 0., ReplicationExperimentationParameters.hostMaxMem, 0.,
-				false, new Date().getTime());
+				false, //new Date().getTime(),
+				stateNumber);
 	}
 
 	// take previous state
-	public HostState(final HostState init, final ReplicaState newRep, final Long creationTime) {
+	public HostState(final HostState init, final ReplicaState newRep){//, final Long creationTime) {
 		this(init.getMyAgentIdentifier(),
 				new HashSet<ReplicaState>(),
 				init.getLambda(),
@@ -52,7 +54,8 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 						init.getCurrentMemCharge()
 						+ (init.myReplicatedAgents.contains(newRep) ?
 								-newRep.getMyMemCharge() : newRep.getMyMemCharge()),
-								init.isFaulty(), creationTime);
+								init.isFaulty(),// creationTime,
+								init.getStateCounter()+1);
 
 		this.myReplicatedAgents.addAll(init.myReplicatedAgents);
 		if (this.myReplicatedAgents.contains(newRep))
@@ -66,8 +69,9 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 			final Set<ReplicaState> myReplicatedAgents,
 			final double lambda, final Double procChargeMax,
 			final Double procCurrentCharge, final Double memChargeMax,
-			final Double memCurrentCharge, final boolean faulty, final Long creationTime) {
-		super(myAgent, creationTime);
+			final Double memCurrentCharge, final boolean faulty,// final Long creationTime, 
+			int stateNumber) {
+		super(myAgent, stateNumber);
 		this.myReplicatedAgents = myReplicatedAgents;
 		this.procChargeMax = procChargeMax;
 		this.procCurrentCharge = procCurrentCharge;
@@ -189,14 +193,14 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	// Opinion Handling
 	//
 
-	@Override
-	public int compareTo(final Information o) {
-		if (o instanceof HostState) {
-			final HostState e = (HostState) o;
-			return this.getMyCharge().compareTo(e.getMyCharge());
-		} else
-			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-	}
+//	@Override
+//	public int compareTo(final Information o) {
+//		if (o instanceof HostState) {
+//			final HostState e = (HostState) o;
+//			return this.getMyCharge().compareTo(e.getMyCharge());
+//		} else
+//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+//	}
 
 	@Override
 	public Double getNumericValue(final Information o) {
@@ -242,7 +246,8 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				meanMemMax.getRepresentativeElement(),
 				meanMemCu.getRepresentativeElement(),
 				meanLambda.getRepresentativeElement(),
-				false, this.getCreationTime());
+				false,// this.getCreationTime(),
+				-1);
 	}
 
 	@Override
@@ -274,7 +279,8 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				meanMemMax.getRepresentativeElement(),
 				meanMemCu.getRepresentativeElement(),
 				meanLambda.getRepresentativeElement(),
-				false, this.getCreationTime());
+				false, //this.getCreationTime(),
+				-1);
 	}
 
 	//
@@ -309,6 +315,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				+ "\n --> faulty? : " + this.isFaulty()
 				+"\n --> creation time : "+this.getCreationTime();
 	}
+
 
 
 }

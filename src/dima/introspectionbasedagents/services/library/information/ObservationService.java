@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
+import negotiation.negotiationframework.agent.AgentState;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.AgentCompetence;
@@ -43,13 +45,17 @@ public interface ObservationService extends AgentCompetence<BasicCompetentAgent>
 
 	// public void beInformedOfContractExecution(Contract c);
 
-	public interface Information extends Comparable<Information>, UtilitaristAnalyser<Information>, FunctionnalCompensativeAggregator<Information>  {
+	public interface Information
+	extends //Comparable<K>, 
+	UtilitaristAnalyser<Information>, FunctionnalCompensativeAggregator<Information>  {
 
 		public AgentIdentifier getMyAgentIdentifier();
 
 		public long getUptime();
 
 		public Long getCreationTime();
+
+		int isNewerThan(Information that);
 	}
 
 	public String show(Class<? extends Information> infotype);

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.NegotiationStaticParameters;
+import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.agent.SimpleAgentState;
 import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -64,8 +65,9 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			final Double myCriticity,
 			final Double myProcCharge,
 			final Double myMemCharge,
-			final Set<HostState> myReps) {
-		super(myAgent);
+			final Set<HostState> myReps, 
+			int stateNumber) {
+		super(myAgent,stateNumber);
 		this.myCriticity = myCriticity;
 		this.myProcCharge = myProcCharge;
 		this.myMemCharge = myMemCharge;
@@ -76,9 +78,11 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	// Clone with modification of replicas
 	public ReplicaState(
 			final ReplicaState init,
-			final HostState newRep,
-			final Long creationTime) {
-		super(init.getMyAgentIdentifier(), creationTime);
+			final HostState newRep
+//			,final Long creationTime
+			) {
+		super(init.getMyAgentIdentifier(),// creationTime,
+				init.getStateCounter()+1);
 		this.myCriticity = init.getMyCriticity();
 		this.myProcCharge = init.getMyProcCharge();
 		this.myMemCharge = init.getMyMemCharge();
@@ -94,15 +98,17 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
 	}
 
-	// private universal constructor
+	// private constructor for opinions
 	private ReplicaState(
 			final AgentIdentifier myAgent,
 			final Double myCriticity,
 			final Double myProcCharge,
 			final Double myMemCharge,
 			final Double dispo,
-			final Long creationTime) {
-		super(myAgent, creationTime);
+//			final Long creationTime, 
+			int stateNumber) {
+		super(myAgent,// creationTime,
+				stateNumber);
 		this.myReplicas = null;
 		this.myCriticity = myCriticity;
 		this.myProcCharge = myProcCharge;
@@ -211,14 +217,14 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	 * Opinion
 	 */
 
-	@Override
-	public int compareTo(final Information o) {
-		if (o instanceof ReplicaState) {
-			final ReplicaState e = (ReplicaState) o;
-			return this.getMyReliability().compareTo(e.getMyReliability());
-		} else
-			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-	}
+//	@Override
+//	public int compareTo(final Information<AgentState> o) {
+//		if (o instanceof ReplicaState) {
+//			final ReplicaState e = (ReplicaState) o;
+//			return this.getMyReliability().compareTo(e.getMyReliability());
+//		} else
+//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+//	}
 
 	@Override
 	public Double getNumericValue(final Information o) {
@@ -261,7 +267,8 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				meanCrit.getRepresentativeElement(),
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
-				meanDisp.getRepresentativeElement(), this.getCreationTime());
+				meanDisp.getRepresentativeElement(),// this.getCreationTime(),
+				-1);
 		return rep;
 	}
 
@@ -289,7 +296,8 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				meanCrit.getRepresentativeElement(),
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
-				meanDisp.getRepresentativeElement(), this.getCreationTime());
+				meanDisp.getRepresentativeElement(), //this.getCreationTime(),
+				-1);
 		return rep;
 	}
 
@@ -323,5 +331,4 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				+ "\n * creation time "+ this.getCreationTime();
 		// +"\n status "+this.getMyStateStatus();
 	}
-
 }

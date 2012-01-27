@@ -101,14 +101,18 @@ MatchingCandidature<ReplicationSpecification> {
 					+ "\n --> fromState " + fromState);
 		else {
 			ReplicaState result = new ReplicaState(fromState,
-					this.getResourceInitialState(), this.getCreationTime());
+					this.getResourceInitialState()//, this.getCreationTime()
+					);
 			//on cree n nouveau state a partir de r
-			final HostState h = new HostState(this.getResourceInitialState(), result, this.getCreationTime());
+			final HostState h = new HostState(this.getResourceInitialState(), result//, this.getCreationTime()
+					);
 			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
 			result = new ReplicaState(result,
-					this.getResourceInitialState(), this.getCreationTime());
+					this.getResourceInitialState()//, this.getCreationTime()
+					);
 			//on remet ce nouveau state dans r
-			result = new ReplicaState(result, h, this.getCreationTime());
+			result = new ReplicaState(result, h//, this.getCreationTime()
+					);
 			return result;
 		}
 
@@ -141,14 +145,18 @@ MatchingCandidature<ReplicationSpecification> {
 		else {
 			HostState h =
 					new HostState(fromState,
-							this.getAgentInitialState(), this.getCreationTime());
+							this.getAgentInitialState()//, this.getCreationTime()
+							);
 			//on cree n nouveau state a partir de h
-			final ReplicaState r1 = new ReplicaState(this.getAgentInitialState(), h, this.getCreationTime());
+			final ReplicaState r1 = new ReplicaState(this.getAgentInitialState(), h//, this.getCreationTime()
+					);
 			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
 			h = new HostState(h,
-					this.getAgentInitialState(), this.getCreationTime());
+					this.getAgentInitialState()//, this.getCreationTime()
+					);
 			//on remet ce nouveau state dans h
-			h = new HostState(h, r1, this.getCreationTime());
+			h = new HostState(h, r1//, this.getCreationTime()
+					);
 
 
 			//			System.out.print(fromState+"\n to "+h+" \n to ");

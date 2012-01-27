@@ -393,7 +393,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 				try {
 					contractIsOutOfDate = this.getMyAgent().getMyInformation()
-							.getInformation(delta.getSpecificationOf(id).getClass(),id).isNewerThan(delta.getSpecificationOf(id));
+							.getInformation(delta.getSpecificationOf(id).getClass(),id).isNewerThan(delta.getSpecificationOf(id))>1;
 					if (contractIsOutOfDate)
 						delta.setSpecification(
 								(ActionSpec) this.getMyAgent().getMyInformation().getInformation(delta.getSpecificationOf(id).getClass(),id));

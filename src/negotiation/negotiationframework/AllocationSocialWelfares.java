@@ -106,7 +106,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		for (final Contract c : allContract)
 			for (final AgentIdentifier id : c.getAllParticipants())
 				if (result.containsKey(id)){
-					if (c.getSpecificationOf(id).isNewerThan(result.get(id)))
+					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
 						//						System.out.println("remplacing a fresher state");
 						result.put(id,c.getSpecificationOf(id));
 				} else

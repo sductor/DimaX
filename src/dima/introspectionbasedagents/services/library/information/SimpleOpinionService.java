@@ -799,10 +799,10 @@ SimpleObservationService implements OpinionService {
 			 *
 			 */
 
-			@Override
-			public int compareTo(final Information o) {
-				return this.getRepresentativeElement().compareTo(o);
-			}
+//			@Override
+//			public int compareTo(final Information o) {
+//				return this.getRepresentativeElement().compareTo(o);
+//			}
 
 			@Override
 			public Double getNumericValue(final Information e) {
@@ -829,6 +829,11 @@ SimpleObservationService implements OpinionService {
 				return "Opinion of "+this.creator+" about "+this.aggregatedAgents
 				+"\n * representative state is "+this.getRepresentativeElement()
 				+"\n * dispersion is "+OpinionDataBase.this.getGlobalInformationDeviation();
+			}
+
+			@Override
+			public int isNewerThan(Information that) {
+				return (int) (this.getCreationTime()-that.getCreationTime());
 			}
 
 		}

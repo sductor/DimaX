@@ -250,6 +250,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 			Collections.sort(reliaStates, reliaComp);
 
+			
 			ReplicationResultAgent prev = reliaStates.removeFirst();
 
 			while(!reliaStates.isEmpty()){

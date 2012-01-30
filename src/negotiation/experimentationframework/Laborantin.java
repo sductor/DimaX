@@ -18,6 +18,7 @@ import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
 import dimaxx.server.HostIdentifier;
@@ -75,15 +76,23 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	}
 
 
-	protected void initialisation()
-			throws IfailedException, CompetenceException, NotEnoughMachinesException{
+	protected void initialisation() throws CompetenceException, NotEnoughMachinesException{
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
 		this.p.initiateParameters();
 		this.logMonologue("Launching : \n"+this.p,LogService.onBoth);
 		System.err.println("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
 				this.getSimulationParameters().getName());//agents.values());
 
-		this.instanciate(this.p);
+		boolean iFailed=false;
+		do {
+			iFailed=false;
+			try {
+				this.instanciate(this.p); 
+			} catch (IfailedException e) {
+				iFailed=true;
+				logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
+			}
+		}while(iFailed);
 
 		for (final AgentIdentifier id : this.agents.keySet())
 			if (id instanceof ResourceIdentifier)
@@ -109,7 +118,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	//
 	@ProactivityInitialisation
-	public void startSimu() throws IfailedException, CompetenceException, NotEnoughMachinesException{
+	public void startSimu() throws CompetenceException, NotEnoughMachinesException{
 		this.initialisation();
 		//		System.out.println(agents);
 		//		System.out.println(api.getAvalaibleHosts());

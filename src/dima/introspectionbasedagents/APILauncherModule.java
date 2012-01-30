@@ -174,7 +174,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
 		final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
 
-		assert removed1 && removed2;
+//		assert removed1 && removed2;
 
 		switch (this.myLaunchType) {
 		case NotThreaded:

@@ -22,14 +22,11 @@ ExperimentationParameters {
 
 	public int kAccessible;
 
-
-
 	public Double hostFaultProbabilityMean;
 	public  DispersionSymbolicValue hostDisponibilityDispersion;
 
 	public  Double agentLoadMean;
 	public DispersionSymbolicValue agentLoadDispersion;
-
 
 	/***
 	 * Constantes
@@ -38,6 +35,7 @@ ExperimentationParameters {
 
 	public static final Double hostMaxProc = 2.;
 	public static final Double hostMaxMem = 2.;
+
 
 	/*
 	 * Criticité

@@ -151,7 +151,7 @@ public class Experimentator extends APIAgent{
 			this.initAPI(false);//SCHEDULED
 		else if  (args[0].equals("fipa"))
 			this.initAPI(true);//FIPA
-		else if  (args[0].equals("local"))
+		else if  (args[0].equals("darx"))
 			this.initAPI(7779,7778);//DARX LOCAL
 		else if  (args[0].equals("deployed"))
 			this.initAPI("lip6.xml");//DARX Deployed

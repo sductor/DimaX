@@ -20,7 +20,7 @@ public interface ExperimentationProtocol extends DimaComponentInterface{
 
 
 	public static final long _simulationTime = (1000 * 5);
-	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 5;
+	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 3;
 
 	public static final int nbAgents = 15;
 	public static final int nbHosts = 10;

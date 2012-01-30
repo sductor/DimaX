@@ -34,33 +34,51 @@ ExperimentationProtocol {
 	// Set of values
 	//
 
-	Collection<String> protos = Arrays.asList(new String[]{ReplicationExperimentationProtocol.key4mirrorProto,ReplicationExperimentationProtocol.key4CentralisedstatusProto,ReplicationExperimentationProtocol.key4statusProto});
+	Collection<String> protos = Arrays.asList(new String[]{
+			ReplicationExperimentationProtocol.key4mirrorProto,
+			ReplicationExperimentationProtocol.key4CentralisedstatusProto,
+			ReplicationExperimentationProtocol.key4statusProto});
 	Collection<String> welfare = Arrays.asList(new String[]{
 			AllocationSocialWelfares.key4leximinSocialWelfare,
 			AllocationSocialWelfares.key4NashSocialWelfare,
 			AllocationSocialWelfares.key4UtilitaristSocialWelfare});
-	Collection<String> select = Arrays.asList(new String[]{ReplicationExperimentationProtocol.key4greedySelect,ReplicationExperimentationProtocol.key4rouletteWheelSelect});//,key4AllocSelect
-	Collection<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{DispersionSymbolicValue.Nul,DispersionSymbolicValue.Moyen});//,DispersionSymbolicValue.Max
-	Collection<Double> doubleParameters = Arrays.asList(new Double[]{0.1,0.3,0.6,1.});
+	Collection<String> select = Arrays.asList(new String[]{
+			ReplicationExperimentationProtocol.key4greedySelect,
+			ReplicationExperimentationProtocol.key4rouletteWheelSelect});//,key4AllocSelect
+	Collection<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{
+					DispersionSymbolicValue.Nul,
+					DispersionSymbolicValue.Moyen,
+					DispersionSymbolicValue.Max});
+	Collection<Double> doubleParameters = Arrays.asList(new Double[]{
+			0.1,
+			0.3,
+			0.6,
+			1.});
 
-	//pref
-	Collection<String> agentPref = Arrays.asList(new String[]{ReplicationExperimentationProtocol.key4agentKey_Relia,ReplicationExperimentationProtocol.key4agentKey_loadNRelia});		
-	static final String key4agentKey_Relia="onlyRelia";
-	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
+	//pref TODO : Non imple chez l'agent!!
+//	Collection<String> agentPref = Arrays.asList(new String[]{
+//			ReplicationExperimentationProtocol.key4agentKey_Relia,
+//			ReplicationExperimentationProtocol.key4agentKey_loadNRelia});		
+//	static final String key4agentKey_Relia="onlyRelia";
+//	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
 
 	//
 	// Variation configuration
 	//
 
-	static boolean  varyAgentSelection=false;
-	static boolean varyHostSelection=false;
-	static boolean varyProtocol=true;
-	static boolean varyHostDispo=true;
-	static boolean  varyOptimizers=false;
+	static boolean varyProtocol=false;
+	static boolean  varyOptimizers=true;
+	
 	static boolean varyAccessibleHost=true;
-	static boolean varyAgentLoad=false;
-	static boolean varyHostFaultDispersion=false;
-	static boolean varyAgentLoadDispersion=false;
+	
+	static boolean  varyAgentSelection=true;
+	static boolean varyHostSelection=true;	
+	
+	static boolean varyHostDispo=true;
+	static boolean varyHostFaultDispersion=true;
+	
+	static boolean varyAgentLoad=true;
+	static boolean varyAgentLoadDispersion=true;
 
 	//
 	// Default values

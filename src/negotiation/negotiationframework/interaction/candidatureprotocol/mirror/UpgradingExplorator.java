@@ -10,6 +10,7 @@ import negotiation.negotiationframework.interaction.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public abstract class UpgradingExplorator<
 Contract extends AbstractContractTransition<ActionSpec>,
@@ -29,8 +30,8 @@ ActionSpec extends AbstractActionSpecification> {
 				&& !unacceptedContracts.isEmpty() && n.getContractsAcceptedBy(myAgent.getIdentifier()).isEmpty())
 			//The state of the host is stable and there is rejected contract :
 			//we try to find if there is destruction that could loccally improve the system
-			for (final ActionSpec stateToDestroy : myAgent.getMyResources())
-				//				myAgent.logMonologue("should i destroy? "+stateToDestroy);
+			for (final ActionSpec stateToDestroy : myAgent.getMyResources()){
+//								myAgent.logMonologue("should i destroy? "+stateToDestroy, LogService.onScreen);
 				for (final Contract c : unacceptedContracts){
 					//					myAgent.logMonologue("analysing contract "+c);
 					final Collection<Contract> testingAllocation = new ArrayList<Contract>();
@@ -39,7 +40,7 @@ ActionSpec extends AbstractActionSpecification> {
 					destContract.setSpecification(stateToDestroy);
 					testingAllocation.add(c);
 					testingAllocation.add(destContract);
-					//					myAgent.logMonologue(" upgrading contract myState is "+myAgent.getMyCurrentState());
+//										myAgent.logWarning(" upgrading contract myState is "+myAgent.getMyCurrentState(), LogService.onScreen);
 					if (upgradingContracts.containsKey(stateToDestroy.getMyAgentIdentifier())){
 						final Collection<Contract> alreadyMadeContract = new ArrayList<Contract>();
 						alreadyMadeContract.add(upgradingContracts.get(stateToDestroy.getMyAgentIdentifier()));
@@ -54,6 +55,7 @@ ActionSpec extends AbstractActionSpecification> {
 						toPutOnWait.add(c);
 					}
 				}
+			}
 
 		for (final Contract c : toPutOnWait)
 			n.removeRejection(myAgent.getIdentifier(), c);

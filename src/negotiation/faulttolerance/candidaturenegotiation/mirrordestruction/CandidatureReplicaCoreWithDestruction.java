@@ -9,6 +9,8 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 	private static final long serialVersionUID = 1735540071994141334L;
@@ -39,6 +41,7 @@ public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 	public int getAllocationPreference(final ReplicaState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
+//		this.logMonologue("yopoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", LogService.onBoth);
 		Boolean creation = true;
 		final Collection<ReplicationCandidature> destructionContract=
 				new ArrayList<ReplicationCandidature>();
@@ -61,6 +64,7 @@ public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 			return super.getAllocationPreference(s, c1, c2);
 		else
 			try {
+//				this.logMonologue("receiving desctruction demand", LogService.onBoth);
 				final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 				this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
 				return pref;

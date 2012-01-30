@@ -32,11 +32,6 @@ public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 	// super(ag);
 	// }
 
-	/**
-	 * Compare either a set of creation candidature, or a set of destruction
-	 * candidature, Si creation : compare c1 et c2 par la disponiblité
-	 * résultante, Si destruction compare par load diameter : A REVOIR...
-	 */
 	@Override
 	public int getAllocationPreference(final ReplicaState s,
 			final Collection<ReplicationCandidature> c1,
@@ -64,9 +59,9 @@ public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 			return super.getAllocationPreference(s, c1, c2);
 		else
 			try {
-//				this.logMonologue("receiving desctruction demand", LogService.onBoth);
 				final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 				this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
+//				this.logMonologue("receiving desctruction demand i'll execute "+pref+" for \n "+c1+"\n"+c2, LogService.onBoth);
 				return pref;
 			}catch(final RuntimeException e){
 				String log = "pref of \n"+c1+"\n"+c2;

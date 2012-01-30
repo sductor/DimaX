@@ -284,7 +284,7 @@ ExperimentationProtocol {
 
 	
 	//
-	// Primitive
+	// Creation de laborantin
 	// /////////////////////////////////
 
 	@Override

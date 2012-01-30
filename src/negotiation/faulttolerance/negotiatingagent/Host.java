@@ -104,10 +104,10 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//		this.getMyInformation().add(r.getNotification());
 	//	}
 
-	@MessageHandler
-	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
-	public <Info extends Information> void receiveInformation(
-			final NotificationMessage<Information> o) {
+//	@MessageHandler
+//	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
+//	public <Info extends Information> void receiveInformation(
+//			final NotificationMessage<Information> o) {
 		//		logMonologue("yophoi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		//		if (o.getNotification() instanceof ReplicaState && getMyCurrentState().Ihost(((ReplicaState)o.getNotification()).getMyAgentIdentifier())){
 		//			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
@@ -117,7 +117,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		//			h = new HostState(h, (ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
 		//			setNewState(h);
 		//		}
-	}
+//	}
 
 	//	public Double getReliability(final AgentIdentifier id)
 	//			throws NoInformationAvailableException {

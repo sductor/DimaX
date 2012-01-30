@@ -27,6 +27,13 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 	 *
 	 */
 
+	/**
+	 * 
+	 * @param s etat initial de l'agent
+	 * @param c1 premiere collection de contrat proposé
+	 * @param c2 deuxieme collection de contrat composé
+	 * @return un entier indiquant si l'état résultant de c1 a partir de s est meilleurs que celui réusltant de c2
+	 */
 	public int getAllocationPreference(PersonalState s,
 			Collection<Contract> c1, Collection<Contract> c2);
 

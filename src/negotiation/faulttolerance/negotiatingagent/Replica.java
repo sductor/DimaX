@@ -220,10 +220,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	////		logMonologue("i have been replicated by "+c.getResource());// : \n previous stae : "+previousState+"\n new state : "+getMyCurrentState());
 	//	}
 
-	@MessageHandler
-	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
-	public <Info extends Information> void receiveInformation(
-			final NotificationMessage<Information> o) {
+//	@MessageHandler
+//	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
+//	public <Info extends Information> void receiveInformation(
+//			final NotificationMessage<Information> o) {
 		//		logMonologue("yophoi");
 		//		if (o.getNotification() instanceof HostState
 		//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
@@ -232,7 +232,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
 		//			setNewState(r);
 		//		}
-	}
+//	}
 
 	// }
 	// @Override
@@ -242,13 +242,13 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-	public Double getCharge(final ResourceIdentifier r)  {
-		try {
-			return this.getMyInformation().getInformation(HostState.class, r).getMyCharge();
-		} catch (final NoInformationAvailableException e) {
-			throw new RuntimeException("muahahahaha tant pis pour ta gueule!!!!!!!!!!!!!!!!!!!!!!");
-		}
-	}
+//	public Double getCharge(final ResourceIdentifier r)  {
+//		try {
+//			return this.getMyInformation().getInformation(HostState.class, r).getMyCharge();
+//		} catch (final NoInformationAvailableException e) {
+//			throw new RuntimeException("muahahahaha tant pis pour ta gueule!!!!!!!!!!!!!!!!!!!!!!");
+//		}
+//	}
 }
 
 /*

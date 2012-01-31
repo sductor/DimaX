@@ -8,39 +8,41 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
-public class CandidatureReplicaProposer
+public abstract class CandidatureProposer<
+ActionSpec extends AbstractActionSpecification,
+PersonalState extends ActionSpec,
+Contract extends AbstractContractTransition<ActionSpec>>
 extends
-BasicAgentCompetence
-<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>>
+BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec,PersonalState,Contract>>
 implements
 AbstractProposerCore
-<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
-ReplicationSpecification, ReplicaState, ReplicationCandidature> {
+<SimpleNegotiatingAgent<ActionSpec,PersonalState,Contract>,
+ActionSpec,PersonalState,Contract> {
 	private static final long serialVersionUID = -5315491050460219982L;
 
 	@Override
-	public Set<ReplicationCandidature> getNextContractsToPropose()
+	public Set<Contract> getNextContractsToPropose()
 			throws NotReadyException {
 
-		final Set<ReplicationCandidature> candidatures = new HashSet<ReplicationCandidature>();
+		final Set<Contract> candidatures = new HashSet<Contract>();
 
 		for (final AgentIdentifier id : this.getMyAgent().getMyInformation().getKnownAgents())
 			if (id instanceof ResourceIdentifier
 					&& !this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
 					.contains(id))
-				candidatures.add(
-						new ReplicationCandidature(
-								(ResourceIdentifier) id,
-								this.getMyAgent().getIdentifier(),
-								true,true));
+				candidatures.add(constructCandidature((ResourceIdentifier) id));
 
 				return candidatures;
 	}
+	
+	public abstract Contract constructCandidature(ResourceIdentifier id);
 
 }
 //

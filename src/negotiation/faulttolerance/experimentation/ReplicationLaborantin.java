@@ -23,6 +23,7 @@ import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.Candi
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaProposerWithStatus;
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
+import negotiation.faulttolerance.negotiatingagent.CandidatureReplicaProposer;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.Host;
@@ -33,7 +34,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
-import negotiation.negotiationframework.interaction.candidatureprotocol.CandidatureReplicaProposer;
+import negotiation.negotiationframework.interaction.candidatureprotocol.CandidatureProposer;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
 import negotiation.negotiationframework.interaction.consensualnegotiation.InactiveProposerCore;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;

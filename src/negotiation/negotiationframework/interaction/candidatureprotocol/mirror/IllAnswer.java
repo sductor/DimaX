@@ -1,7 +1,7 @@
 package negotiation.negotiationframework.interaction.candidatureprotocol.mirror;
 
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.basiccommunicationcomponents.Message;
 
 public class IllAnswer<Contract extends AbstractContractTransition<?>> extends Message {

@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.APIAgent;
 import dima.introspectionbasedagents.APILauncherModule;

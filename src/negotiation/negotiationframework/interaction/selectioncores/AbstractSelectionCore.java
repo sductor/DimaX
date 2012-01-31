@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.IllAnswer;
 import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
 import negotiation.negotiationframework.interaction.consensualnegotiation.SelectionCore;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 /**

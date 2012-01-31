@@ -7,7 +7,7 @@ import java.util.List;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;

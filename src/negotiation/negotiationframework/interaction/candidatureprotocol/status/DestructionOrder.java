@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.negotiationframework.interaction.ContractIdentifier;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ContractIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class DestructionOrder extends ReplicationCandidature {

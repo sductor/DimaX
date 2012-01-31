@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 

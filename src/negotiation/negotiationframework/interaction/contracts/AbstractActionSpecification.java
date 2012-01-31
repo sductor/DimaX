@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.interaction;
+package negotiation.negotiationframework.interaction.contracts;
 
 import negotiation.negotiationframework.agent.AgentState;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.ContractIdentifier;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.ContractIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 import dimaxx.tools.mappedcollections.HashedHashSet;

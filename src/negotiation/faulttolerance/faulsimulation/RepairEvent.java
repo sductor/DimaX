@@ -1,6 +1,6 @@
 package negotiation.faulttolerance.faulsimulation;
 
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 
 public class RepairEvent extends FaultStatusMessage {
 	private static final long serialVersionUID = 7479584662585992253L;

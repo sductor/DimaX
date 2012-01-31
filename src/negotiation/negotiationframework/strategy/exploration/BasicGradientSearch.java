@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.AllocationTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AllocationTransition;
 import negotiation.negotiationframework.strategy.evaluation.AbstractStrategicEvaluationModule;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;

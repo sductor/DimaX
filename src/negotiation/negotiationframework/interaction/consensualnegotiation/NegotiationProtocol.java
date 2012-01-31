@@ -7,12 +7,12 @@ import java.util.Iterator;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.ContractIdentifier;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder.DestructionOrderIdentifier;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.ContractIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -369,7 +369,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.cleanContracts();
 		final Contract c = delta.getMyContract();
 		if (!(this.getMyAgent() instanceof Host)
-				|| !((Host) this.getMyAgent()).isFaulty())
+				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
 			if (c instanceof DestructionOrder){
 				this.logMonologue("I've received destruction order "+c,NegotiationProtocol.log_negotiationStep);
 				//				acceptContract(c);
@@ -541,7 +541,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		// try {
 		if (!c.hasReachedExpirationTime())
 			if (!(this.getMyAgent() instanceof Host)
-					|| !((Host) this.getMyAgent()).isFaulty())
+					|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
 				if (this.contracts.getContractsAcceptedBy(
 						this.getMyAgent().getIdentifier()).contains(contract)) {
 					if (!this.getMyAgent().respectMyRights(
@@ -577,7 +577,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final AgentIdentifier id = m.getSender();
 		final ContractIdentifier c = m.getIdentifier();
 		if (!(this.getMyAgent() instanceof Host)
-				|| !((Host) this.getMyAgent()).isFaulty())
+				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
 			// getMyAgent().logMonologue("I've received cancel "+c);
 			// try {
 			if (id.equals(c.getInitiator()) && !this.losts.contains(c)) {

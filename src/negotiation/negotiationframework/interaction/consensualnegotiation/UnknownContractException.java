@@ -1,6 +1,6 @@
 package negotiation.negotiationframework.interaction.consensualnegotiation;
 
-import negotiation.negotiationframework.interaction.ContractIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ContractIdentifier;
 
 public class UnknownContractException extends Exception {
 

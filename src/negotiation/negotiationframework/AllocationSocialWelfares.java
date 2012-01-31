@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.support.GimaObject;

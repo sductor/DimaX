@@ -2,12 +2,16 @@ package negotiation.experimentationframework;
 
 import java.util.LinkedList;
 
+import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
+import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
@@ -47,6 +51,7 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 			this.getMyAgent().setAlive(false);
 	}
 
+	
 	//
 	// Public class
 	//

@@ -92,19 +92,25 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 			final ReplicationCandidature c) {
 		return s;
 	}
-
+	
 	@Override
 	public boolean IWantToNegotiate(final ReplicaState s) {
-		if (((Replica) this.getMyAgent()).IReplicate())
-			if (!s.getMyResourceIdentifiers().containsAll(
-					this.getMyAgent().getMyInformation().getKnownAgents()))
-				return true;
-			else
-				// logMonologue("full!");
-				return false;
-		else
-			return false;
+			return (!s.getMyResourceIdentifiers().containsAll(
+					this.getMyAgent().getMyInformation().getKnownAgents()));
 	}
+	
+//	@Override
+//	public boolean IWantToNegotiate(final ReplicaState s) {
+//		if (((Replica) this.getMyAgent()).IReplicate())
+//			if (!s.getMyResourceIdentifiers().containsAll(
+//					this.getMyAgent().getMyInformation().getKnownAgents()))
+//				return true;
+//			else
+//				// logMonologue("full!");
+//				return false;
+//		else
+//			return false;
+//	}
 
 	//
 	//

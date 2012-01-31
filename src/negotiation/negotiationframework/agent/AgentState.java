@@ -2,7 +2,7 @@ package negotiation.negotiationframework.agent;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 

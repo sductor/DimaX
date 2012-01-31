@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Random;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.negotiationframework.StrategicNegotiatingAgent;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AllocationTransition;
-import negotiation.negotiationframework.interaction.MatchingCandidature;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AllocationTransition;
+import negotiation.negotiationframework.interaction.contracts.MatchingCandidature;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.strategy.StrategicNegotiatingAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.BasicAgentModule;

@@ -1,6 +1,6 @@
 package negotiation.faulttolerance.faulsimulation;
 
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basiccommunicationcomponents.Message;
 
 public class FaultStatusMessage extends Message {

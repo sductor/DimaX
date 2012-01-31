@@ -11,7 +11,7 @@ import java.util.Set;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.agent.SimpleAgentState;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;

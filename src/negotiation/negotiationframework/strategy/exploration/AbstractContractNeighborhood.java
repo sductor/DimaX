@@ -3,9 +3,9 @@ package negotiation.negotiationframework.strategy.exploration;
 import java.util.Collection;
 import java.util.Iterator;
 
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.AllocationTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AllocationTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 

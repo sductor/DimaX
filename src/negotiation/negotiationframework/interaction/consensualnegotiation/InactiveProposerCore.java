@@ -3,9 +3,9 @@ package negotiation.negotiationframework.interaction.consensualnegotiation;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.negotiationframework.StrategicNegotiatingAgent;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.strategy.StrategicNegotiatingAgent;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 

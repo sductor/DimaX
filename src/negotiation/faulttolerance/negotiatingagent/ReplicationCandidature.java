@@ -1,8 +1,8 @@
 package negotiation.faulttolerance.negotiatingagent;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.negotiationframework.interaction.MatchingCandidature;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.MatchingCandidature;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class ReplicationCandidature extends

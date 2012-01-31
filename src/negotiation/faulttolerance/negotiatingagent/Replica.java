@@ -13,8 +13,8 @@ import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.agent.RationalCore;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
@@ -38,7 +38,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	// Fields
 	//
 
-	public boolean replicate = true;
+//	public boolean replicate = true;
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
@@ -129,55 +129,39 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	// Accessors
 	//
 
-	public boolean IReplicate() {
-		return this.replicate;
-	}
-
-	public void setIReplicate(final boolean replicate) {
-		this.replicate = replicate;
-	}
-
-	@StepComposant()
-	@Transient
-	public boolean initialynotifyMyState4Status() {
-		this.notifyMyReliability4Status();
-		return true;
-	}
-
-	@StepComposant()
-	@Transient
-	public boolean setReplication() {
-		if (this.getMyInformation().getKnownAgents().isEmpty())
-			this.replicate = false;
-
-		// logMonologue("agents i know : "+this.getKnownAgents());
-		// if (IReplicate())
-		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
-
-		return true;
-	}
+//	public boolean IReplicate() {
+//		return this.replicate;
+//	}
+//
+//	public void setIReplicate(final boolean replicate) {
+//		this.replicate = replicate;
+//	}
+//
+//	@StepComposant()
+//	@Transient
+//	public boolean setReplication() {
+//		if (this.getMyInformation().getKnownAgents().isEmpty())
+//			this.replicate = false;
+//
+//		// logMonologue("agents i know : "+this.getKnownAgents());
+//		// if (IReplicate())
+//		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
+//
+//		return true;
+//	}
 
 	//	@Override
 	//	public void setNewState(final ReplicaState s) {
 	//		super.setNewState(s);
 	//	}
 
-	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
-	public void notifyMyReliability4Status() {
-		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
-		if (this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
-			this.notify(
-					this.getMyCurrentState().getMyReliability(),
-					ObservingStatusService.reliabilityObservationKey);
-	}
+
 
 	// @StepComposant(ticker=StaticParameters._criticity_update_frequency)
 	public void updateMyCriticity() {
 		final Random r = new Random();
 		if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
-			// met
-			// a
-			// jour
+			// met a jour
 			final int signe = r.nextBoolean() ? 1 : -1;
 			final Double newCriticity = Math
 					.min(1.,

@@ -3,8 +3,8 @@ package negotiation.negotiationframework.interaction.consensualnegotiation;
 import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.AgentCompetence;
 

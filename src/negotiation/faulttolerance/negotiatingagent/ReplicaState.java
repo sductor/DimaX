@@ -12,7 +12,7 @@ import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.NegotiationStaticParameters;
 import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.agent.SimpleAgentState;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;

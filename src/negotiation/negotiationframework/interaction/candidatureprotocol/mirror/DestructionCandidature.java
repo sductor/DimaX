@@ -1,7 +1,7 @@
 package negotiation.negotiationframework.interaction.candidatureprotocol.mirror;
 
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 
 public interface DestructionCandidature<
 Contract extends AbstractContractTransition<ActionSpec>,

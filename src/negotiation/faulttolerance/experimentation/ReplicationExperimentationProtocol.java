@@ -72,7 +72,7 @@ ExperimentationProtocol {
 	static boolean varyAccessibleHost=true;
 	
 	static boolean  varyAgentSelection=true;
-	static boolean varyHostSelection=true;	
+	static boolean varyHostSelection=false;	
 	
 	static boolean varyHostDispo=true;
 	static boolean varyHostFaultDispersion=true;

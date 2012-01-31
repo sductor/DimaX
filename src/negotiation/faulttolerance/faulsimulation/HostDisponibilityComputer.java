@@ -10,7 +10,7 @@ import java.util.Random;
 import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;

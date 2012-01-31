@@ -2,10 +2,10 @@ package negotiation.negotiationframework.strategy.evaluation;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.agent.AgentState;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.strategy.StrategicNegotiatingAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;

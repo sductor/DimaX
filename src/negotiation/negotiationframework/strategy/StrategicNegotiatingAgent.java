@@ -1,13 +1,13 @@
-package negotiation.negotiationframework;
+package negotiation.negotiationframework.strategy;
 
 import java.util.Collection;
 import java.util.Date;
 
+import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.agent.RationalCore;
-import negotiation.negotiationframework.interaction.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
-import negotiation.negotiationframework.strategy.StrategicProposerCore;
 import negotiation.negotiationframework.strategy.evaluation.AbstractStrategicEvaluationModule;
 import negotiation.negotiationframework.strategy.exploration.AbstractStrategicExplorationModule;
 import dima.basicagentcomponents.AgentIdentifier;

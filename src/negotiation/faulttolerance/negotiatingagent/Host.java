@@ -6,8 +6,8 @@ import negotiation.faulttolerance.experimentation.ReplicationResultHost;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -85,14 +85,23 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 					throws CompetenceException {
 		super(id, new HostState(id, lambda,-1), myRationality, participantCore, proposerCore, myInformation);
 	}
+}
+
+
+
+
+
+
+
+
 
 	//
 	// Accessors
 	//
 
-	public boolean isFaulty() {
-		return this.getMyCurrentState().isFaulty();
-	}
+//	public boolean isFaulty() {
+//		return this.getMyCurrentState().isFaulty();
+//	}
 
 	//
 	// Behavior
@@ -148,7 +157,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 
 
-}
+//}
 
 // @Override
 // public void reset() {

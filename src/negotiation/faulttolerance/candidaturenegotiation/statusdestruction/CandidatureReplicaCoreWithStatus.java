@@ -2,11 +2,14 @@ package negotiation.faulttolerance.candidaturenegotiation.statusdestruction;
 
 import java.util.Collection;
 
+import negotiation.experimentationframework.ObservingStatusService;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
+import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.library.information.OpinionService;
 import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
 
@@ -14,6 +17,25 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private static final long serialVersionUID = -3882932472033817195L;
 
 
+	//
+	// Status
+	//
+	
+
+	@StepComposant()
+	@Transient
+	public boolean initialynotifyMyState4Status() {
+		this.notifyMyReliability4Status();
+		return true;
+	}
+	
+	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
+	public void notifyMyReliability4Status() {
+		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
+			this.notify(
+					getMyAgent().getMyCurrentState().getMyReliability(),
+					ObservingStatusService.reliabilityObservationKey);
+	}
 
 	// public CandidatureReplicaCoreWithStatus(
 	// final SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature,

@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.interaction;
+package negotiation.negotiationframework.interaction.contracts;
 
 import dimaxx.server.HostIdentifier;
 

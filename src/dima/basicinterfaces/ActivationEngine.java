@@ -22,7 +22,7 @@ public abstract class ActivationEngine extends GimaObject implements ActivableCo
 	public abstract CommunicationComponentInterface getCommunicationComponent();
 	public abstract void setCommunicationComponent(CommunicationComponentInterface com);
 
-//	final private ProactiveComponentInterface myComponent;
+	//	final private ProactiveComponentInterface myComponent;
 	final private BasicCommunicatingAgent myComponent;
 	CommunicationComponentInterface com;
 
@@ -31,10 +31,10 @@ public abstract class ActivationEngine extends GimaObject implements ActivableCo
 		this.myComponent = myComponent;
 	}
 
-//	public ActivationEngine(ProactiveComponentInterface myComponent) {
-//		super();
-//		this.myComponent = myComponent;
-//	}
+	//	public ActivationEngine(ProactiveComponentInterface myComponent) {
+	//		super();
+	//		this.myComponent = myComponent;
+	//	}
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (07/05/00 00:24:58)

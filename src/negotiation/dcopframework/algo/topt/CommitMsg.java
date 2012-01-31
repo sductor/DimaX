@@ -11,15 +11,15 @@ public class CommitMsg extends Message {
 		super();
 	}
 
-	public CommitMsg(int i, int a, TreeNode n) {
-		gid = i;
-		attempt = a;
-		node = n;
+	public CommitMsg(final int i, final int a, final TreeNode n) {
+		this.gid = i;
+		this.attempt = a;
+		this.node = n;
 	}
 
 	@Override
 	public String getText() {
-		return ("COMMIT ") + gid + "\n";
+		return ("COMMIT ") + this.gid + "\n";
 	}
 
 	@Override

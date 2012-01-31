@@ -21,11 +21,11 @@ public class LocalDarXFactorialAPI2 {
 	public static void main(final String args[]) {
 
 		final int n = 10;
-		final AgentMult M = new AgentMult(getMultName(1), factName);
-		final AgentMult M1 = new AgentMult(getMultName(2), factName);
-		final AgentMult M2 = new AgentMult(getMultName(3), factName);
+		final AgentMult M = new AgentMult(LocalDarXFactorialAPI2.getMultName(1), LocalDarXFactorialAPI2.factName);
+		final AgentMult M1 = new AgentMult(LocalDarXFactorialAPI2.getMultName(2), LocalDarXFactorialAPI2.factName);
+		final AgentMult M2 = new AgentMult(LocalDarXFactorialAPI2.getMultName(3), LocalDarXFactorialAPI2.factName);
 
-		final AgentFact F = new AgentFact(factName, n, M.getId(), M1.getId(), M2.getId());
+		final AgentFact F = new AgentFact(LocalDarXFactorialAPI2.factName, n, M.getId(), M1.getId(), M2.getId());
 
 		new DimaXLocalLaunchScript().launchDARX(7777, 7001, 7002,7003,7004);
 

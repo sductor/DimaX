@@ -10,20 +10,20 @@ import dima.kernel.communicatingAgent.OntologyBasedAgent;
  */
 
 public class KQMLAskAbout extends KQML {
-    /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -4907467282272335139L;
 	public KQMLAskAbout (final String tx, final String rx,
-			 final String msg,
-			 final String irt, final String rw) {
+			final String msg,
+			final String irt, final String rw) {
 
-    super(tx,rx,msg,irt,rw);
-    this.setPerformative("ask-about");
-    }
-    @Override
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("ask-about");
+	}
+	@Override
 	public void processKQML(final OntologyBasedAgent a)
-    {
-    a.processAskAbout(this);
-    }
+	{
+		a.processAskAbout(this);
+	}
 }

@@ -11,7 +11,6 @@ import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
 import dima.introspectionbasedagents.ontologies.MessageWithProtocol;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.MethodHandler;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 //message type order :content java
@@ -22,7 +21,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 	public static class NoneProtocol extends Protocol {
 		private static final long serialVersionUID = -4809105758307131733L;
-//		public NoneProtocol() {	super(null);}
+		//		public NoneProtocol() {	super(null);}
 		public static final String None = "None";
 	}
 
@@ -122,12 +121,12 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 			} else
 				return this.getSender();
 		} else
-		return this.replyto;
+			return this.replyto;
 	}
 
 	public String getConversationId() {
 		return this.performative + "#" + this.content + "#"
-		+ this.attachementSignature;
+				+ this.attachementSignature;
 	}
 
 	public Class<?>[] getAttachementSignature() {
@@ -224,10 +223,10 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 	public String description() {
 		return "\n *Performative:" + this.performative + "\n *Protocol:"
-		+ this.protocol.getSimpleName() + "\n *signature:"
-		+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
-//		+ Arrays.asList(this.getArgs())==null?
-//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
+				+ this.protocol.getSimpleName() + "\n *signature:"
+				+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
+				//		+ Arrays.asList(this.getArgs())==null?
+				//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
 				;
 	}
 
@@ -244,14 +243,14 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 	public void setAttachement(final Object[] attachement,
 			final Class<?>[] attachementSignature) {
-		if (MethodHandler.checkSignature(attachementSignature, attachement)) {
+		if (SimpleMethodHandler.checkSignature(attachementSignature, attachement)) {
 			this.setArgs(attachement);
 			this.attachementSignature = attachementSignature;
 		} else
 			LogService.writeException(this, "Unappropriate attachement");
 	}
 	public void setAttachement(final Object[] attachement) {
-		final Class<?>[] attachementSignature = MethodHandler.getSignature(attachement);
+		final Class<?>[] attachementSignature = SimpleMethodHandler.getSignature(attachement);
 		this.setArgs(attachement);
 		this.attachementSignature = attachementSignature;
 	}
@@ -274,19 +273,19 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		// supplement this.
 		// return super.toString();
 		return "MESSAGE of "+ this.getClass()
-		+ " ("
-		+ this.hashCode()
-		+ ")\n"
-		+ "from    : "
-		+ this.getSender()
-		+ "\n"
-		+ "to      : "
-		+ this.getReceiver()
-		+ "\n" + "type    : " + this.getType() + "\n"
-		+ "content : " + this.getContent()  + "\n"
-		+"args?   : "
-		+ (this.getArgs() != null ? this.getArgs().length != 0 : false)
-		+ "\n" + "details : " + this.description();
+				+ " ("
+				+ this.hashCode()
+				+ ")\n"
+				+ "from    : "
+				+ this.getSender()
+				+ "\n"
+				+ "to      : "
+				+ this.getReceiver()
+				+ "\n" + "type    : " + this.getType() + "\n"
+				+ "content : " + this.getContent()  + "\n"
+				+"args?   : "
+				+ (this.getArgs() != null ? this.getArgs().length != 0 : false)
+				+ "\n" + "details : " + this.description();
 	}
 }
 

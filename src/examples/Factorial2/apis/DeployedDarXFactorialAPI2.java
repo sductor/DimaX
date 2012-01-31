@@ -24,8 +24,8 @@ public class DeployedDarXFactorialAPI2 {
 
 	static int nameNumber = 0;
 	static AgentIdentifier getMultName(){
-		nameNumber++;
-		return new AgentName("M"+nameNumber);
+		DeployedDarXFactorialAPI2.nameNumber++;
+		return new AgentName("M"+DeployedDarXFactorialAPI2.nameNumber);
 	}
 
 	public static void main(final String args[]) throws JDOMException, IOException {
@@ -39,7 +39,7 @@ public class DeployedDarXFactorialAPI2 {
 
 		//Lancement d'un agent mult sur chaque machine
 		for (final RemoteHostExecutor h : machines.getHosts()){
-			final AgentMult m = new AgentMult(getMultName(), factName);
+			final AgentMult m = new AgentMult(DeployedDarXFactorialAPI2.getMultName(), DeployedDarXFactorialAPI2.factName);
 			System.out.println("starting mult on "+h);
 			m.activateWithDarx(h.getUrl(), h.getPort());
 			System.out.println("starting mult name is "+m.getIdentifier());
@@ -47,7 +47,7 @@ public class DeployedDarXFactorialAPI2 {
 		}
 
 
-		final AgentFact F = new AgentFact(factName, n, launchedMults);
+		final AgentFact F = new AgentFact(DeployedDarXFactorialAPI2.factName, n, launchedMults);
 		final RemoteHostExecutor h = machines.getHosts().iterator().next();
 		F.activateWithDarx(h.getUrl(), h.getPort());
 

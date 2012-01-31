@@ -6,12 +6,12 @@ import java.awt.Color;
 public class N_Puzzle_Applet extends Applet
 {
 
-	    /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -3158815161739387207L;
 
-		PuzzleFrame tqFrame;
+	PuzzleFrame tqFrame;
 
 	//{{DECLARE_CONTROLS
 	java.awt.Label label1;
@@ -78,8 +78,8 @@ public class N_Puzzle_Applet extends Applet
 		this.button1.addActionListener(lSymAction);
 		//}}
 	}
-//		public void start() {
-//		tqFrame = new TaquinFrame( this, "N-Puzzle Solving", 4);	}
+	//		public void start() {
+	//		tqFrame = new TaquinFrame( this, "N-Puzzle Solving", 4);	}
 
 	@Override
 	public void stop() {

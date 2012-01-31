@@ -31,12 +31,12 @@ public class RemoteHostExecutor extends SSHExecutor {
 	public void setSSH(final Element ssh){
 		this.user=ssh.getAttributeValue("user")!=null?
 				ssh.getAttributeValue("user"):this.user;
-		this.privateKeyPath=ssh.getAttributeValue("keyPath")!=null?
-				ssh.getAttributeValue("keyPath"):this.privateKeyPath;
-		this.knownHostsPath=ssh.getAttributeValue("knownHostsPath")!=null?
-				ssh.getAttributeValue("knownHostsPath"):this.knownHostsPath;
-		this.dir=ssh.getAttributeValue("dir")!=null?ssh.getAttributeValue("dir"):this.dir;
-		this.gateUrl=ssh.getAttributeValue("dir")!=null?ssh.getAttributeValue("gate"):null;
+				this.privateKeyPath=ssh.getAttributeValue("keyPath")!=null?
+						ssh.getAttributeValue("keyPath"):this.privateKeyPath;
+						this.knownHostsPath=ssh.getAttributeValue("knownHostsPath")!=null?
+								ssh.getAttributeValue("knownHostsPath"):this.knownHostsPath;
+								this.dir=ssh.getAttributeValue("dir")!=null?ssh.getAttributeValue("dir"):this.dir;
+								this.gateUrl=ssh.getAttributeValue("dir")!=null?ssh.getAttributeValue("gate"):null;
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class RemoteHostExecutor extends SSHExecutor {
 	public boolean equal(final Object o){
 		if (o instanceof HostIdentifier)
 			return ((HostIdentifier) o).getUrl().equals(this.getUrl())
-			&&((HostIdentifier) o).getPort().equals(this.getPort());
+					&&((HostIdentifier) o).getPort().equals(this.getPort());
 		else
 			return false;
 	}

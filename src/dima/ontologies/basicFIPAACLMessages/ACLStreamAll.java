@@ -17,9 +17,9 @@ public class ACLStreamAll extends FIPAACLMessage {
 	private static final long serialVersionUID = -3802184024704412541L;
 
 	public ACLStreamAll(final String tx, final String rx,
-			 final String msg,
-			 final String irt, final String rw) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("stream-all");
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("stream-all");
 	}
 }

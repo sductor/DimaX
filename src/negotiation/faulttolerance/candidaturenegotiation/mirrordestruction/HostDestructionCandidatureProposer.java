@@ -14,8 +14,6 @@ import negotiation.negotiationframework.interaction.consensualnegotiation.Abstra
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 
 public class HostDestructionCandidatureProposer
@@ -57,7 +55,7 @@ ReplicationCandidature>  {
 			}
 		};
 		this.contractsToPropose.addAll(myDealExpl.generateUpgradingContracts(this.getMyAgent(), n.getAnswers()));
-		
+
 		//		}
 	}
 

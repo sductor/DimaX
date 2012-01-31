@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.contracts.AllocationTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 

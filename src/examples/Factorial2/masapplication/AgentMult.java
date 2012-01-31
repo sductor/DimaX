@@ -37,14 +37,14 @@ public class AgentMult extends BasicCommunicatingAgent {
 	@Override
 	public void proactivityTerminate(){
 		this.desactivateWithFipa();
-//		System.exit(1);
+		//		System.exit(1);
 	}
-	
+
 	@Override
 	public void finalize(){
 		System.out.println("so long and thanks for all the fish");
 	}
-	
+
 	@Override
 	public void step() {
 		this.readAllMessages();

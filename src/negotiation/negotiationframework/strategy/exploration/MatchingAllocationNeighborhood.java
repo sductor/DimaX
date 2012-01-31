@@ -8,7 +8,6 @@ import java.util.Random;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.contracts.AllocationTransition;
 import negotiation.negotiationframework.interaction.contracts.MatchingCandidature;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.strategy.StrategicNegotiatingAgent;

@@ -36,6 +36,6 @@ public class ClassEnveloppe implements Envelope {
 	@Override
 	public String toString() {
 		return "*CLASS ENVELLOPE* : messages of class: " + this.messageClass + " (hashcode="
-		+ this.hashCode() + ")";
+				+ this.hashCode() + ")";
 	}
 }

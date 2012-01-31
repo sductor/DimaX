@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
+import negotiation.experimentationframework.ExperimentationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
@@ -98,7 +98,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 				+ "),(expired?"
 				+ this.hasReachedExpirationTime()
 				+ ", will expire?"
-				+ this.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect)
+				+ this.willReachExpirationTime(ExperimentationProtocol._timeToCollect)
 				+ ")";
 	}
 

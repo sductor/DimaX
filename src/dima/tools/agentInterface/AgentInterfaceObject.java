@@ -8,15 +8,15 @@ package dima.tools.agentInterface;
 import java.io.Serializable;
 
 abstract public class AgentInterfaceObject extends dima.support.GimaObject implements Serializable {
-/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -5024713839980407037L;
 
-/**
- * InterfaceAgentObject constructor comment.
- */
-public AgentInterfaceObject() {
-	super();
-}
+	/**
+	 * InterfaceAgentObject constructor comment.
+	 */
+	public AgentInterfaceObject() {
+		super();
+	}
 }

@@ -1,10 +1,10 @@
 package dima.basiccommunicationcomponents;
 
 /**
-*
+ *
  * @author: Gerard Rozsavolgyi
-* @version
-*/
+ * @version
+ */
 public class EmptyMailboxException extends CommunicationException {
 
 	/**

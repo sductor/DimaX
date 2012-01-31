@@ -20,7 +20,7 @@ public class IntrospectionStaticPrimitivesLibrary {
 			for (final Field m : c2.getDeclaredFields())
 				if  (Modifier.isPrivate(m.getModifiers()))
 					result.add(m);
-			c2 = c2.getSuperclass();
+					c2 = c2.getSuperclass();
 		}
 
 		AccessibleObject.setAccessible(result.toArray(new Field[0]), true);
@@ -41,7 +41,7 @@ public class IntrospectionStaticPrimitivesLibrary {
 			for (final Field m : c2.getDeclaredFields())
 				if  (Modifier.isProtected(m.getModifiers()) || Modifier.isPrivate(m.getModifiers()))
 					result.add(m);
-			c2 = c2.getSuperclass();
+					c2 = c2.getSuperclass();
 		}
 
 		AccessibleObject.setAccessible(result.toArray(new Field[0]), true);
@@ -59,8 +59,8 @@ public class IntrospectionStaticPrimitivesLibrary {
 		Class<?> c2 = c;
 		while ( DimaComponentInterface.class.isAssignableFrom(c2)) {
 			for (final Field m : c2.getDeclaredFields())
-					result.add(m);
-			c2 = c2.getSuperclass();
+				result.add(m);
+					c2 = c2.getSuperclass();
 		}
 
 		AccessibleObject.setAccessible(result.toArray(new Field[0]), true);
@@ -78,7 +78,7 @@ public class IntrospectionStaticPrimitivesLibrary {
 			for (final Method m : c2.getDeclaredMethods())
 				if  (Modifier.isProtected(m.getModifiers()))
 					result.add(m);
-			c2 = c2.getSuperclass();
+					c2 = c2.getSuperclass();
 		}
 
 		//Ajout des méthodes publique :
@@ -93,12 +93,12 @@ public class IntrospectionStaticPrimitivesLibrary {
 		Class<?> c2 = c;
 		while ( DimaComponentInterface.class.isAssignableFrom(c2)) {
 			for (final Method m : c2.getDeclaredMethods())
-					result.add(m);
-			c2 = c2.getSuperclass();
+				result.add(m);
+					c2 = c2.getSuperclass();
 		}
 
-//		//Ajout des méthodes publique :
-//		result.addAll(Arrays.asList(c.getMethods()));
+		//		//Ajout des méthodes publique :
+		//		result.addAll(Arrays.asList(c.getMethods()));
 
 		return result;
 	}

@@ -26,19 +26,19 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	public static AgentManagementSystem DIMAams=null;
 	public AgentManagementSystem() {
 		super(new AgentName("DIMAams"));
-		DIMAams =this;
+		AgentManagementSystem.DIMAams =this;
 	}
 	public AgentManagementSystem(final AgentIdentifier newId) {
 		super(newId);
-		DIMAams =this;
+		AgentManagementSystem.DIMAams =this;
 	}
 	public AgentManagementSystem(final AgentIdentifier newId, final HashMap al) {
 		super(newId);
-		DIMAams =this;
+		AgentManagementSystem.DIMAams =this;
 	}
 	public AgentManagementSystem(final HashMap al) {
 		super(new AgentName("DIMAams"));
-		DIMAams =this;
+		AgentManagementSystem.DIMAams =this;
 	}
 	/**
 	 * Insert the method's description here.
@@ -48,12 +48,12 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 		final String a = m.getReceiver().toString();
 		AgentAddress ad;
 		if ( this.aquaintances.containsKey(a))
-		{ad = (AgentAddress) this.aquaintances.get(a);
+		{ad = this.aquaintances.get(a);
 		ad.receive(m);}
 		else System.out.println(
 				"From AMS : Message lost! \n"+m+" "+m.getClass()
 				+"\n sender : "+m.getSender()
-				+"\n receiver -------> "+m.getReceiver() 
+				+"\n receiver -------> "+m.getReceiver()
 				+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
 	}
 	/**
@@ -62,8 +62,8 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	 * @return Gdima.kernel.aFIPAPlatform.AgentManagementSystem
 	 */
 	public static AgentManagementSystem getDIMAams() {
-		initAMS();
-		return DIMAams;
+		AgentManagementSystem.initAMS();
+		return AgentManagementSystem.DIMAams;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	 * @param newDIMAams Gdima.kernel.aFIPAPlatform.AgentManagementSystem
 	 */
 	static void setDIMAams(final AgentManagementSystem newDIMAams) {
-		DIMAams = newDIMAams;
+		AgentManagementSystem.DIMAams = newDIMAams;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 
 	public static void initAMS()
 	{
-		if (DIMAams==null){
+		if (AgentManagementSystem.DIMAams==null){
 			final AgentManagementSystem ams = new AgentManagementSystem();
 			ams.activate();
 		}

@@ -6,7 +6,7 @@ package dima.kernel.SimulationTools;
  * to run agents without threads.
  **/
 
- import java.util.Vector;
+import java.util.Vector;
 
 import dima.kernel.ProactiveComponents.ProactiveComponent;
 import dima.kernel.ProactiveComponents.ProactiveComponentsManager;
@@ -21,62 +21,62 @@ public class Simulator extends ProactiveComponentsManager {
 	public int stepNumber = 10;
 
 
-public Simulator() {
-	super();
-}
-
-
-public Simulator(final java.util.Vector pao) {
-	super(pao);
-}
-
-
-public Simulator(final java.util.Vector pao, final int nbPas) {
-	super(pao);
-	this.stepNumber = nbPas;
-}
-/**
- * Insert the method's description here.
- * Creation date: (09/07/2002 11:20:17)
- * @return int
- */
-public int getStepNumber() {
-	return this.stepNumber;
-}
-/**
- * Insert the method's description here.
- * Creation date: (09/07/2002 11:20:17)
- * @param newStepNumber int
- */
-public void setStepNumber(final int newStepNumber) {
-	this.stepNumber = newStepNumber;
-}
-/**
- * Execute
- * all known ProactiveObjects.
- *
- */
-
-@Override
-public void startAll() {
-	final Vector pv = this.getProactiveObjects();
-	for (int i=0; i<pv.size();i++) {
-		final ProactiveComponent pao =(ProactiveComponent)pv.elementAt(i);
-		pao.activate();
+	public Simulator() {
+		super();
 	}
-}
-/**
- * Execute
- * all known ProactiveObjects.
- *
- */
 
-public void startAllWithSimulation() {
-	final Vector pv = this.getProactiveObjects();
-	for (int j=0; j<this.stepNumber; j++)
+
+	public Simulator(final java.util.Vector pao) {
+		super(pao);
+	}
+
+
+	public Simulator(final java.util.Vector pao, final int nbPas) {
+		super(pao);
+		this.stepNumber = nbPas;
+	}
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (09/07/2002 11:20:17)
+	 * @return int
+	 */
+	public int getStepNumber() {
+		return this.stepNumber;
+	}
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (09/07/2002 11:20:17)
+	 * @param newStepNumber int
+	 */
+	public void setStepNumber(final int newStepNumber) {
+		this.stepNumber = newStepNumber;
+	}
+	/**
+	 * Execute
+	 * all known ProactiveObjects.
+	 *
+	 */
+
+	@Override
+	public void startAll() {
+		final Vector pv = this.getProactiveObjects();
 		for (int i=0; i<pv.size();i++) {
 			final ProactiveComponent pao =(ProactiveComponent)pv.elementAt(i);
-			pao.step();
+			pao.activate();
+		}
+	}
+	/**
+	 * Execute
+	 * all known ProactiveObjects.
+	 *
+	 */
+
+	public void startAllWithSimulation() {
+		final Vector pv = this.getProactiveObjects();
+		for (int j=0; j<this.stepNumber; j++)
+			for (int i=0; i<pv.size();i++) {
+				final ProactiveComponent pao =(ProactiveComponent)pv.elementAt(i);
+				pao.step();
 			}
-}
+	}
 }

@@ -11,7 +11,7 @@ package dima.tools.concurrence;
   History:
   Date       Who                What
    1Aug1998  dl               Create public version
-*/
+ */
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -187,311 +187,311 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutSync;
  * <p>[<a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html"> Introduction to this package. </a>]
  * @see LayeredSync
  * @see TimeoutSync
-**/
+ **/
 
 
 public class SyncCollection implements Collection {
-  protected final Collection c_;	   // Backing Collection
-  protected final Sync rd_;  //  sync for read-only methods
-  protected final Sync wr_;  //  sync for mutative methods
+	protected final Collection c_;	   // Backing Collection
+	protected final Sync rd_;  //  sync for read-only methods
+	protected final Sync wr_;  //  sync for mutative methods
 
-  protected final SynchronizedLong syncFailures_ = new SynchronizedLong(0);
+	protected final SynchronizedLong syncFailures_ = new SynchronizedLong(0);
 
-  public class SyncCollectionIterator implements Iterator {
-	protected final Iterator baseIterator_;
+	public class SyncCollectionIterator implements Iterator {
+		protected final Iterator baseIterator_;
 
-	SyncCollectionIterator(final Iterator baseIterator) {
-	  this.baseIterator_ = baseIterator;
+		SyncCollectionIterator(final Iterator baseIterator) {
+			this.baseIterator_ = baseIterator;
+		}
+
+		@Override
+		public boolean hasNext() {
+			final boolean wasInterrupted = SyncCollection.this.beforeRead();
+			try {
+				return this.baseIterator_.hasNext();
+			}
+			finally {
+				SyncCollection.this.afterRead(wasInterrupted);
+			}
+		}
+
+		@Override
+		public Object next() {
+			final boolean wasInterrupted = SyncCollection.this.beforeRead();
+			try {
+				return this.baseIterator_.next();
+			}
+			finally {
+				SyncCollection.this.afterRead(wasInterrupted);
+			}
+		}
+
+		@Override
+		public void remove() {
+			try {
+				SyncCollection.this.wr_.acquire();
+				try {
+					this.baseIterator_.remove();
+				}
+				finally {
+					SyncCollection.this.wr_.release();
+				}
+			}
+			catch (final InterruptedException ex) {
+				Thread.currentThread().interrupt();
+				throw new UnsupportedOperationException();
+			}
+		}
+
 	}
-
-	@Override
-	public boolean hasNext() {
-	  final boolean wasInterrupted = SyncCollection.this.beforeRead();
-	  try {
-		return this.baseIterator_.hasNext();
-	  }
-	  finally {
-		SyncCollection.this.afterRead(wasInterrupted);
-	  }
+	/**
+	 * Create a new SyncCollection protecting the given collection,
+	 * and using the given ReadWriteLock to control reader and writer methods.
+	 * <p>
+	 * <b>Sample Usage</b>
+	 * <pre>
+	 * Collection c = new SyncCollection(new HashSet(),
+	 *                                   new WriterPreferenceReadWriteLock());
+	 * </pre>
+	 **/
+	public SyncCollection(final Collection collection, final ReadWriteLock rwl) {
+		this (collection, rwl.readLock(), rwl.writeLock());
 	}
-
-	@Override
-	public Object next() {
-	  final boolean wasInterrupted = SyncCollection.this.beforeRead();
-	  try {
-		return this.baseIterator_.next();
-	  }
-	  finally {
-		SyncCollection.this.afterRead(wasInterrupted);
-	  }
+	/**
+	 * Create a new SyncCollection protecting the given collection,
+	 * and using the given sync to control both reader and writer methods.
+	 * Common, reasonable choices for the sync argument include
+	 * Mutex, ReentrantLock, and Semaphores initialized to 1.
+	 * <p>
+	 * <b>Sample Usage</b>
+	 * <pre>
+	 * Collection c = new SyncCollection(new ArrayList(), new Mutex());
+	 * </pre>
+	 **/
+	public SyncCollection(final Collection collection, final Sync sync) {
+		this (collection, sync, sync);
 	}
-
+	/**
+	 * Create a new SyncCollection protecting the given collection,
+	 * and using the given pair of locks to control reader and writer methods.
+	 **/
+	public SyncCollection(final Collection collection, final Sync readLock, final Sync writeLock) {
+		this.c_ = collection;
+		this.rd_ = readLock;
+		this.wr_ = writeLock;
+	}
 	@Override
-	public void remove() {
-	  try {
-		SyncCollection.this.wr_.acquire();
+	public boolean add(final Object o) {
 		try {
-		   this.baseIterator_.remove();
+			this.wr_.acquire();
+			try {
+				return this.c_.add(o);
+			}
+			finally {
+				this.wr_.release();
+			}
+		}
+		catch (final InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new UnsupportedOperationException();
+		}
+	}
+	@Override
+	public boolean addAll(final Collection coll) {
+		try {
+			this.wr_.acquire();
+			try {
+				return this.c_.addAll(coll);
+			}
+			finally {
+				this.wr_.release();
+			}
+		}
+		catch (final InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new UnsupportedOperationException();
+		}
+	}
+	/** Clean up after a reader operation **/
+	protected void afterRead(final boolean wasInterrupted) {
+		if (wasInterrupted)
+			Thread.currentThread().interrupt();
+		else
+			this.rd_.release();
+	}
+	/** Try to acquire sync before a reader operation; record failure **/
+	protected boolean beforeRead() {
+		try {
+			this.rd_.acquire();
+			return false;
+		}
+		catch (final InterruptedException ex) {
+			this.syncFailures_.increment();
+			return true;
+		}
+	}
+	@Override
+	public void clear() {
+		try {
+			this.wr_.acquire();
+			try {
+				this.c_.clear();
+			}
+			finally {
+				this.wr_.release();
+			}
+		}
+		catch (final InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new UnsupportedOperationException();
+		}
+	}
+	@Override
+	public boolean contains(final Object o) {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return this.c_.contains(o);
 		}
 		finally {
-		  SyncCollection.this.wr_.release();
+			this.afterRead(wasInterrupted);
 		}
-	  }
-	  catch (final InterruptedException ex) {
-		Thread.currentThread().interrupt();
-		throw new UnsupportedOperationException();
-	  }
 	}
+	@Override
+	public boolean containsAll(final Collection coll) {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return this.c_.containsAll(coll);
+		}
+		finally {
+			this.afterRead(wasInterrupted);
+		}
+	}
+	@Override
+	public boolean isEmpty() {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return this.c_.isEmpty();
+		}
+		finally {
+			this.afterRead(wasInterrupted);
+		}
+	}
+	@Override
+	public Iterator iterator() {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return new SyncCollectionIterator(this.c_.iterator());
+		}
+		finally {
+			this.afterRead(wasInterrupted);
+		}
+	}
+	/**
+	 * Return the Sync object managing read-only operations
+	 **/
 
-  }
-  /**
-   * Create a new SyncCollection protecting the given collection,
-   * and using the given ReadWriteLock to control reader and writer methods.
-   * <p>
-   * <b>Sample Usage</b>
-   * <pre>
-   * Collection c = new SyncCollection(new HashSet(),
-   *                                   new WriterPreferenceReadWriteLock());
-   * </pre>
-   **/
-  public SyncCollection(final Collection collection, final ReadWriteLock rwl) {
-	this (collection, rwl.readLock(), rwl.writeLock());
-  }
-  /**
-   * Create a new SyncCollection protecting the given collection,
-   * and using the given sync to control both reader and writer methods.
-   * Common, reasonable choices for the sync argument include
-   * Mutex, ReentrantLock, and Semaphores initialized to 1.
-   * <p>
-   * <b>Sample Usage</b>
-   * <pre>
-   * Collection c = new SyncCollection(new ArrayList(), new Mutex());
-   * </pre>
-   **/
-  public SyncCollection(final Collection collection, final Sync sync) {
-	this (collection, sync, sync);
-  }
-  /**
-   * Create a new SyncCollection protecting the given collection,
-   * and using the given pair of locks to control reader and writer methods.
-   **/
-  public SyncCollection(final Collection collection, final Sync readLock, final Sync writeLock) {
-	this.c_ = collection;
-	this.rd_ = readLock;
-	this.wr_ = writeLock;
-  }
-  @Override
-public boolean add(final Object o) {
-	try {
-	  this.wr_.acquire();
-	  try {
-		return this.c_.add(o);
-	  }
-	  finally {
-		this.wr_.release();
-	  }
+	public Sync readerSync() {
+		return this.rd_;
 	}
-	catch (final InterruptedException ex) {
-	  Thread.currentThread().interrupt();
-	  throw new UnsupportedOperationException();
+	@Override
+	public boolean remove(final Object o) {
+		try {
+			this.wr_.acquire();
+			try {
+				return this.c_.remove(o);
+			}
+			finally {
+				this.wr_.release();
+			}
+		}
+		catch (final InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new UnsupportedOperationException();
+		}
 	}
-  }
-  @Override
-public boolean addAll(final Collection coll) {
-	try {
-	  this.wr_.acquire();
-	  try {
-		return this.c_.addAll(coll);
-	  }
-	  finally {
-		this.wr_.release();
-	  }
+	@Override
+	public boolean removeAll(final Collection coll) {
+		try {
+			this.wr_.acquire();
+			try {
+				return this.c_.removeAll(coll);
+			}
+			finally {
+				this.wr_.release();
+			}
+		}
+		catch (final InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new UnsupportedOperationException();
+		}
 	}
-	catch (final InterruptedException ex) {
-	  Thread.currentThread().interrupt();
-	  throw new UnsupportedOperationException();
+	@Override
+	public boolean retainAll(final Collection coll) {
+		try {
+			this.wr_.acquire();
+			try {
+				return this.c_.retainAll(coll);
+			}
+			finally {
+				this.wr_.release();
+			}
+		}
+		catch (final InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new UnsupportedOperationException();
+		}
 	}
-  }
-  /** Clean up after a reader operation **/
-  protected void afterRead(final boolean wasInterrupted) {
-	if (wasInterrupted)
-		Thread.currentThread().interrupt();
-	else
-	  this.rd_.release();
-  }
-  /** Try to acquire sync before a reader operation; record failure **/
-  protected boolean beforeRead() {
-	try {
-	  this.rd_.acquire();
-	  return false;
+	@Override
+	public int size() {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return this.c_.size();
+		}
+		finally {
+			this.afterRead(wasInterrupted);
+		}
 	}
-	catch (final InterruptedException ex) {
-	  this.syncFailures_.increment();
-	  return true;
+	/**
+	 * Return the number of synchronization failures for read-only operations
+	 **/
+	public long syncFailures() {
+		return this.syncFailures_.get();
 	}
-  }
-  @Override
-public void clear() {
-	try {
-	  this.wr_.acquire();
-	  try {
-		this.c_.clear();
-	  }
-	  finally {
-		this.wr_.release();
-	  }
+	@Override
+	public Object[] toArray() {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return this.c_.toArray();
+		}
+		finally {
+			this.afterRead(wasInterrupted);
+		}
 	}
-	catch (final InterruptedException ex) {
-	  Thread.currentThread().interrupt();
-	  throw new UnsupportedOperationException();
+	@Override
+	public Object[] toArray(final Object[] a) {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return this.c_.toArray(a);
+		}
+		finally {
+			this.afterRead(wasInterrupted);
+		}
 	}
-  }
-  @Override
-public boolean contains(final Object o) {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return this.c_.contains(o);
+	/** Return the base iterator of the underlying collection **/
+	public Iterator unprotectedIterator() {
+		final boolean wasInterrupted = this.beforeRead();
+		try {
+			return this.c_.iterator();
+		}
+		finally {
+			this.afterRead(wasInterrupted);
+		}
 	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  @Override
-public boolean containsAll(final Collection coll) {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return this.c_.containsAll(coll);
-	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  @Override
-public boolean isEmpty() {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return this.c_.isEmpty();
-	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  @Override
-public Iterator iterator() {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return new SyncCollectionIterator(this.c_.iterator());
-	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  /**
-   * Return the Sync object managing read-only operations
-   **/
+	/**
+	 * Return the Sync object managing mutative operations
+	 **/
 
-  public Sync readerSync() {
-	return this.rd_;
-  }
-  @Override
-public boolean remove(final Object o) {
-	try {
-	  this.wr_.acquire();
-	  try {
-		return this.c_.remove(o);
-	  }
-	  finally {
-		this.wr_.release();
-	  }
+	public Sync writerSync() {
+		return this.wr_;
 	}
-	catch (final InterruptedException ex) {
-	  Thread.currentThread().interrupt();
-	  throw new UnsupportedOperationException();
-	}
-  }
-  @Override
-public boolean removeAll(final Collection coll) {
-	try {
-	  this.wr_.acquire();
-	  try {
-		return this.c_.removeAll(coll);
-	  }
-	  finally {
-		this.wr_.release();
-	  }
-	}
-	catch (final InterruptedException ex) {
-	  Thread.currentThread().interrupt();
-	  throw new UnsupportedOperationException();
-	}
-  }
-  @Override
-public boolean retainAll(final Collection coll) {
-	try {
-	  this.wr_.acquire();
-	  try {
-		return this.c_.retainAll(coll);
-	  }
-	  finally {
-		this.wr_.release();
-	  }
-	}
-	catch (final InterruptedException ex) {
-	  Thread.currentThread().interrupt();
-	  throw new UnsupportedOperationException();
-	}
-  }
-  @Override
-public int size() {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return this.c_.size();
-	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  /**
-   * Return the number of synchronization failures for read-only operations
-   **/
-  public long syncFailures() {
-	return this.syncFailures_.get();
-  }
-  @Override
-public Object[] toArray() {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return this.c_.toArray();
-	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  @Override
-public Object[] toArray(final Object[] a) {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return this.c_.toArray(a);
-	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  /** Return the base iterator of the underlying collection **/
-  public Iterator unprotectedIterator() {
-	final boolean wasInterrupted = this.beforeRead();
-	try {
-	  return this.c_.iterator();
-	}
-	finally {
-	  this.afterRead(wasInterrupted);
-	}
-  }
-  /**
-   * Return the Sync object managing mutative operations
-   **/
-
-  public Sync writerSync() {
-	return this.wr_;
-  }
 }

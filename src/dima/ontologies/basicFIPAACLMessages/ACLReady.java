@@ -17,9 +17,9 @@ public class ACLReady extends FIPAACLMessage {
 	private static final long serialVersionUID = -2636358139895640817L;
 
 	public ACLReady(final String tx, final String rx,
-		     final String msg,
-		     final String irt, final String rw) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("ready");
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("ready");
 	}
 }

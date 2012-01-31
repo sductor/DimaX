@@ -11,21 +11,21 @@ import dima.kernel.communicatingAgent.OntologyBasedAgent;
 
 public class KQMLStreamAbout extends KQML {
 
-    /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -2987529515210135710L;
 	public KQMLStreamAbout(final String tx, final String rx,
-			   final String msg,
-			   final String irt, final String rw) {
+			final String msg,
+			final String irt, final String rw) {
 
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("stream-about");
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("stream-about");
 
-    }
-    @Override
+	}
+	@Override
 	public void processKQML(final OntologyBasedAgent a)
-    {
-    a.processStreamAbout(this);
-    }
+	{
+		a.processStreamAbout(this);
+	}
 }

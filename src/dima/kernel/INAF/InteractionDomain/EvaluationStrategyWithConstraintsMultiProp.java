@@ -22,7 +22,7 @@ import dima.kernel.INAF.InteractionTools.Operator;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class EvaluationStrategyWithConstraintsMultiProp extends
-		EvaluationStrategyWithConstraints implements Serializable {
+EvaluationStrategyWithConstraints implements Serializable {
 
 	/**
 	 *
@@ -48,8 +48,8 @@ public class EvaluationStrategyWithConstraintsMultiProp extends
 	 */
 	public EvaluationStrategyWithConstraintsMultiProp(final Vector newProposals, final Vector newConstraints)
 	{
-	    super(newProposals);
-	    this.setConstraints(newConstraints);
+		super(newProposals);
+		this.setConstraints(newConstraints);
 	}
 	/**
 	 * Insert the method's description here.
@@ -66,9 +66,9 @@ public class EvaluationStrategyWithConstraintsMultiProp extends
 		{
 			final Resource proposal = (Resource) this.proposals.elementAt(i);
 
-	        if (!this.satisfyConstraints1(proposal))
-	            // proposals.remove(proposal);
-		    v.add(proposal);
+			if (!this.satisfyConstraints1(proposal))
+				// proposals.remove(proposal);
+				v.add(proposal);
 
 		}
 		/* */ System.out.println("TAILLE DU VECTEUR DES PROP	REJETEES....."+v.size());
@@ -76,23 +76,23 @@ public class EvaluationStrategyWithConstraintsMultiProp extends
 		for (int i=0;i<v.size();i++)
 			this.proposals.remove(v.elementAt(i));
 
-	    switch (this.proposals.size())
-	        {
-	        case 0 :
+		switch (this.proposals.size())
+		{
+		case 0 :
 		{	/* */ System.out.println("EVAL: AUCUNE PROPOSITION EST SATISFAISANTE....");
-	            return new Vector();
-		    }
+		return new Vector();
+		}
 
 
-	        default : //prendre l'ensemble des propositions
-	            {
-		    /* */ System.out.println("VOICI LES PROPOSITIONS ACCEPTEES....");
-		    for (int i=0; i<this.proposals.size();i++)
+		default : //prendre l'ensemble des propositions
+		{
+			/* */ System.out.println("VOICI LES PROPOSITIONS ACCEPTEES....");
+			for (int i=0; i<this.proposals.size();i++)
 				/* */ System.out.println("EVAL: la proposition prix et tRep"+i+"    est "+((Resource) this.proposals.elementAt(i)).getCost()+"  "+((Resource)	    this.proposals.elementAt(i)).getTpsRep());
 
-		    return this.proposals;
-		    }
-	    }
+			return this.proposals;
+		}
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -110,18 +110,18 @@ public class EvaluationStrategyWithConstraintsMultiProp extends
 	{
 		/* */ System.out.println("ENTRER DANS SATISF CONSTRAINT 1....");
 
-	    final Enumeration e = this.getConstraints().elements();
+		final Enumeration e = this.getConstraints().elements();
 
-	    if (e.hasMoreElements())
+		if (e.hasMoreElements())
 		{
-		/* */ System.out.println("AU MOINS UNE CONTRAINTE ......");
-	        if (!((ConstraintResource) e.nextElement()).isSatisfied(service))
-	            return false;
+			/* */ System.out.println("AU MOINS UNE CONTRAINTE ......");
+			if (!((ConstraintResource) e.nextElement()).isSatisfied(service))
+				return false;
 
-	    }
-	    final float newBudget= ((Resource)((ConstraintResource)this.getConstraints().elementAt(0)).getObjectValue()).getCost() - service.getCost() ;
-	    this.getConstraints().setElementAt(new ConstraintResource(new Resource(new Float(newBudget),new Double(0)),new Operator("<")),0);
-	    return true;
+		}
+		final float newBudget= ((Resource)((ConstraintResource)this.getConstraints().elementAt(0)).getObjectValue()).getCost() - service.getCost() ;
+		this.getConstraints().setElementAt(new ConstraintResource(new Resource(new Float(newBudget),new Double(0)),new Operator("<")),0);
+		return true;
 	}
 	/**
 	 * Insert the method's description here.

@@ -3,7 +3,7 @@ package dimaxx.tools.aggregator;
 import dima.basicinterfaces.DimaComponentInterface;
 
 public interface AbstractCompensativeAggregation<Element> extends
-		DimaComponentInterface {
+DimaComponentInterface {
 
 	public abstract Element getRepresentativeElement();
 

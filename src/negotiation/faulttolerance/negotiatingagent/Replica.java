@@ -5,7 +5,6 @@ import java.util.Random;
 
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.ObservingSelfService;
-import negotiation.experimentationframework.ObservingStatusService;
 import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
@@ -14,21 +13,12 @@ import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
 public class Replica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature> {
@@ -38,7 +28,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	// Fields
 	//
 
-//	public boolean replicate = true;
+	//	public boolean replicate = true;
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
@@ -80,7 +70,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 							Replica.this.getMyCurrentState().getMyCriticity(),
 							Replica.this.getMyCurrentState().getMyProcCharge(),
 							Replica.this.getMyCurrentState().getMyMemCharge(),
-							new HashSet<HostState>(),getMyAgent().nextStateCounter));
+							new HashSet<HostState>(),this.getMyAgent().nextStateCounter));
 		}
 
 		@Override
@@ -129,26 +119,26 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	// Accessors
 	//
 
-//	public boolean IReplicate() {
-//		return this.replicate;
-//	}
-//
-//	public void setIReplicate(final boolean replicate) {
-//		this.replicate = replicate;
-//	}
-//
-//	@StepComposant()
-//	@Transient
-//	public boolean setReplication() {
-//		if (this.getMyInformation().getKnownAgents().isEmpty())
-//			this.replicate = false;
-//
-//		// logMonologue("agents i know : "+this.getKnownAgents());
-//		// if (IReplicate())
-//		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
-//
-//		return true;
-//	}
+	//	public boolean IReplicate() {
+	//		return this.replicate;
+	//	}
+	//
+	//	public void setIReplicate(final boolean replicate) {
+	//		this.replicate = replicate;
+	//	}
+	//
+	//	@StepComposant()
+	//	@Transient
+	//	public boolean setReplication() {
+	//		if (this.getMyInformation().getKnownAgents().isEmpty())
+	//			this.replicate = false;
+	//
+	//		// logMonologue("agents i know : "+this.getKnownAgents());
+	//		// if (IReplicate())
+	//		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
+	//
+	//		return true;
+	//	}
 
 	//	@Override
 	//	public void setNewState(final ReplicaState s) {
@@ -204,19 +194,19 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	////		logMonologue("i have been replicated by "+c.getResource());// : \n previous stae : "+previousState+"\n new state : "+getMyCurrentState());
 	//	}
 
-//	@MessageHandler
-//	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
-//	public <Info extends Information> void receiveInformation(
-//			final NotificationMessage<Information> o) {
-		//		logMonologue("yophoi");
-		//		if (o.getNotification() instanceof HostState
-		//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
-		//						((HostState) o.getNotification()).getMyAgentIdentifier())){
-		//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
-		//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
-		//			setNewState(r);
-		//		}
-//	}
+	//	@MessageHandler
+	//	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
+	//	public <Info extends Information> void receiveInformation(
+	//			final NotificationMessage<Information> o) {
+	//		logMonologue("yophoi");
+	//		if (o.getNotification() instanceof HostState
+	//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
+	//						((HostState) o.getNotification()).getMyAgentIdentifier())){
+	//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
+	//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
+	//			setNewState(r);
+	//		}
+	//	}
 
 	// }
 	// @Override
@@ -226,13 +216,13 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-//	public Double getCharge(final ResourceIdentifier r)  {
-//		try {
-//			return this.getMyInformation().getInformation(HostState.class, r).getMyCharge();
-//		} catch (final NoInformationAvailableException e) {
-//			throw new RuntimeException("muahahahaha tant pis pour ta gueule!!!!!!!!!!!!!!!!!!!!!!");
-//		}
-//	}
+	//	public Double getCharge(final ResourceIdentifier r)  {
+	//		try {
+	//			return this.getMyInformation().getInformation(HostState.class, r).getMyCharge();
+	//		} catch (final NoInformationAvailableException e) {
+	//			throw new RuntimeException("muahahahaha tant pis pour ta gueule!!!!!!!!!!!!!!!!!!!!!!");
+	//		}
+	//	}
 }
 
 /*

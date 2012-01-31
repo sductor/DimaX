@@ -17,11 +17,11 @@ public class ACLStreamAbout extends FIPAACLMessage {
 	private static final long serialVersionUID = 2967983016774246567L;
 
 	public ACLStreamAbout(final String tx, final String rx,
-			   final String msg,
-			   final String irt, final String rw) {
+			final String msg,
+			final String irt, final String rw) {
 
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("stream-about");
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("stream-about");
 
 	}
 }

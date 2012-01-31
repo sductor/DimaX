@@ -13,17 +13,17 @@ public class LockMsg extends Message {
 		super();
 	}
 
-	public LockMsg(int i, int v, int a, TreeNode n, boolean l) {
-		gid = i;
-		val = v;
-		attempt = a;
-		node = n;
-		lock = l;
+	public LockMsg(final int i, final int v, final int a, final TreeNode n, final boolean l) {
+		this.gid = i;
+		this.val = v;
+		this.attempt = a;
+		this.node = n;
+		this.lock = l;
 	}
 
 	@Override
 	public String getText() {
-		return (lock ? "LOCK " : "UNLOCK ") + gid + "\n";
+		return (this.lock ? "LOCK " : "UNLOCK ") + this.gid + "\n";
 	}
 
 	@Override

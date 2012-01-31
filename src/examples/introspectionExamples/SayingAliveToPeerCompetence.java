@@ -24,15 +24,15 @@ public class SayingAliveToPeerCompetence extends BasicAgentCommunicatingCompeten
 		 */
 		private static final long serialVersionUID = 6620352657422762931L;
 
-//		public SayingAliveProtocol(BasicCompetentAgent a) {
-//			super(a);
-//		}
+		//		public SayingAliveProtocol(BasicCompetentAgent a) {
+		//			super(a);
+		//		}
 
 	}
 
-//	public SayingAliveToPeerCompetence(final BasicCompetentAgent ag) {
-//		super(ag);
-//	}
+	//	public SayingAliveToPeerCompetence(final BasicCompetentAgent ag) {
+	//		super(ag);
+	//	}
 
 	/*
 	 *

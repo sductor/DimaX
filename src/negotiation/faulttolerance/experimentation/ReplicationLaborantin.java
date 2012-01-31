@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -24,9 +23,9 @@ import negotiation.faulttolerance.candidaturenegotiation.statusdestruction.Candi
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.faulttolerance.negotiatingagent.CandidatureReplicaProposer;
+import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
@@ -34,7 +33,6 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
-import negotiation.negotiationframework.interaction.candidatureprotocol.CandidatureProposer;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
 import negotiation.negotiationframework.interaction.consensualnegotiation.InactiveProposerCore;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
@@ -77,7 +75,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 	@Competence
 	protected FaultTriggeringService myFaultService;
-	
+
 	@Competence
 	final ObservingGlobalService myGlobalObservationService = new ObservingGlobalService(this, this.getSimulationParameters()){
 
@@ -119,12 +117,17 @@ public class ReplicationLaborantin extends Laborantin {
 
 		@Override
 		public void initiate() {
-			this.agentsReliabilityEvolution = new HeavyDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
-			this.criticite = new LightWeightedAverageDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
-			this.hostsChargeEvolution = new HeavyDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
-			this.faulty = new LightAverageDoubleAggregation[this.getSimulationParameters().getNumberOfTimePoints()];
+			this.getSimulationParameters();
+			this.agentsReliabilityEvolution = new HeavyDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
+			this.getSimulationParameters();
+			this.criticite = new LightWeightedAverageDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
+			this.getSimulationParameters();
+			this.hostsChargeEvolution = new HeavyDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
+			this.getSimulationParameters();
+			this.faulty = new LightAverageDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
 
-			for (int i = 0; i < this.getSimulationParameters().getNumberOfTimePoints(); i++) {
+			this.getSimulationParameters();
+			for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++) {
 				this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
 				this.agentsReliabilityEvolution[i] = new HeavyDoubleAggregation();
 				this.criticite[i] = new LightWeightedAverageDoubleAggregation();
@@ -135,24 +138,29 @@ public class ReplicationLaborantin extends Laborantin {
 		//
 		// Methods
 		//
-		
-	
+
+
 
 		@Override
 		public void updateAgentInfo(final ExperimentationResults agent) {
 			final ReplicationResultAgent ag = (ReplicationResultAgent) agent;
-			int i = this.getSimulationParameters().getTimeStep(ag);
-		
-			
-			this.updateAnAgentValue(ag, i);
-		
+			this.getSimulationParameters();
+			int i = ExperimentationParameters.getTimeStep(ag);
 
-			if (ag.isLastInfo())
-				for (i = this.getSimulationParameters().getTimeStep(ag) + 1; i < this
-						.getSimulationParameters().getNumberOfTimePoints(); i++)
+
+			this.updateAnAgentValue(ag, i);
+
+
+			if (ag.isLastInfo()) {
+				this.getSimulationParameters();
+				this
+				.getSimulationParameters();
+				for (i = ExperimentationParameters.getTimeStep(ag) + 1; i < ExperimentationParameters.getNumberOfTimePoints(); i++)
 					this.updateAnAgentValue(ag, i);
+			}
 		}private void updateAnAgentValue(final ReplicationResultAgent ag, final int i) {
-			if (i < this.getSimulationParameters().getNumberOfTimePoints()) {
+			this.getSimulationParameters();
+			if (i < ExperimentationParameters.getNumberOfTimePoints()) {
 				this.agentsReliabilityEvolution[i].add(ag.getReliability());
 				this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
 				if (ReplicationLaborantin.this.myStatusObserver.iObserveStatus())
@@ -167,18 +175,23 @@ public class ReplicationLaborantin extends Laborantin {
 		@Override
 		public void updateHostInfo(final ExperimentationResults host) {
 			final ReplicationResultHost h = (ReplicationResultHost) host;
-			int i = this.getSimulationParameters().getTimeStep(h);
+			this.getSimulationParameters();
+			int i = ExperimentationParameters.getTimeStep(h);
 			this.updateAnHostValue(h, i);
 
-			
-			if (h.isLastInfo())
-				for (i = this.getSimulationParameters().getTimeStep(h) + 1;
-						i < this.getSimulationParameters().getNumberOfTimePoints();
+
+			if (h.isLastInfo()) {
+				this.getSimulationParameters();
+				this.getSimulationParameters();
+				for (i = ExperimentationParameters.getTimeStep(h) + 1;
+						i < ExperimentationParameters.getNumberOfTimePoints();
 						i++)
 					this.updateAnHostValue(h, i);
+			}
 		}private void updateAnHostValue(final ReplicationResultHost h, final int i) {
+			this.getSimulationParameters();
 			/**/
-			if (i < this.getSimulationParameters().getNumberOfTimePoints()) {
+			if (i < ExperimentationParameters.getNumberOfTimePoints()) {
 				this.hostsChargeEvolution[i].add(h.charge);
 				this.faulty[i].add(h.isFaulty ? 0. : 1.);
 			}
@@ -251,7 +264,7 @@ public class ReplicationLaborantin extends Laborantin {
 
 			Collections.sort(reliaStates, reliaComp);
 
-			
+
 			ReplicationResultAgent prev = reliaStates.removeFirst();
 
 			while(!reliaStates.isEmpty()){

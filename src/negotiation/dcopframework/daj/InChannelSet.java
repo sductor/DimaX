@@ -12,14 +12,14 @@ public class InChannelSet extends ChannelSet {
 	// --------------------------------------------------------------------------
 	// add `channel` to set
 	// --------------------------------------------------------------------------
-	public void addChannel(InChannel channel) {
+	public void addChannel(final InChannel channel) {
 		super.addChannel((Channel) channel, true);
 	}
 
 	// --------------------------------------------------------------------------
 	// return channel numbered `i` in set
 	// --------------------------------------------------------------------------
-	public InChannel getChannel(int i) {
-		return channel(i);
+	public InChannel getChannel(final int i) {
+		return this.channel(i);
 	}
 }

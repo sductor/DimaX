@@ -3,7 +3,7 @@ package dima.basiccommunicationcomponents;
 /**
  * A class designed to invoke .
  * Creation date: (17/01/00 17:59:03)
-  * @author: Zahia Guessoum
+ * @author: Zahia Guessoum
  */
 import java.lang.reflect.Method;
 
@@ -104,7 +104,7 @@ public class MessageSend2 extends GimaObject {
 	/** updated by J.-B. Potonnier **/
 
 	public Method getMethod(final Class c, final String methodName, final Object[] args)
-		throws NoSuchMethodException {
+			throws NoSuchMethodException {
 
 
 		final Method[] methods = c.getMethods();
@@ -118,8 +118,8 @@ public class MessageSend2 extends GimaObject {
 					for (int j=0; j<args.length; j++) t= t && margs[j].isAssignableFrom((Class)args[j]);
 				//if (t) System.out.println("The method " + methodName + " has been found");
 				if (t) return method2;
-				}
 			}
+		}
 
 		throw new NoSuchMethodException("Looking for " + methodName);
 	}

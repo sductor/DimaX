@@ -117,7 +117,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		for (final AgentIdentifier a : this.locations.keySet())
 			if (this.locations.get(a).equals(h))
 				result.add(a);
-		return result;
+				return result;
 	}
 
 	//
@@ -174,7 +174,7 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
 		final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
 
-//		assert removed1 && removed2;
+		//		assert removed1 && removed2;
 
 		switch (this.myLaunchType) {
 		case NotThreaded:
@@ -264,11 +264,11 @@ public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		for (final BasicCompetentAgent ag : ags)
 			if (this.myLaunchType.equals(LaunchType.NotThreaded))
 				ag.start(m);
-			else {
-				ag.start(m);
-				this.getMyAgent().sendMessage(ag.getIdentifier(), m);
-			}
-			//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
+				else {
+					ag.start(m);
+					this.getMyAgent().sendMessage(ag.getIdentifier(), m);
+				}
+		//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
 	}
 
 

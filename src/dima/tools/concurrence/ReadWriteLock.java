@@ -11,7 +11,7 @@ package dima.tools.concurrence;
   History:
   Date       Who                What
   11Jun1998  dl               Create public version
-*/
+ */
 
 
 /**
@@ -69,11 +69,11 @@ package dima.tools.concurrence;
  * @see Sync
  * <p>[<a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html"> Introduction to this package. </a>]
 
-**/
+ **/
 
 public interface ReadWriteLock {
-  /** get the readLock **/
-  Sync readLock();
-  /** get the writeLock **/
-  Sync writeLock();
+	/** get the readLock **/
+	Sync readLock();
+	/** get the writeLock **/
+	Sync writeLock();
 }

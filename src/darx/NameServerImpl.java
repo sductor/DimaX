@@ -288,7 +288,7 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 		// Remove the replicant info from the group info
 		rep_gp_info.removeMember(doomed_replicant);
 		System.out
-				.println(doomed_replicant.textifyDarxPath() + " unregistered");
+		.println(doomed_replicant.textifyDarxPath() + " unregistered");
 		if (NameServerImpl.debug)
 			this.displayGroups();
 		return doomed_replicant;
@@ -383,8 +383,8 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 				i++;
 			} else {
 				System.out
-						.println("Incorrect use of name server startup command:"
-								+ "\n'./startnserv [-p <ns_port_number>] [-debug]'");
+				.println("Incorrect use of name server startup command:"
+						+ "\n'./startnserv [-p <ns_port_number>] [-debug]'");
 				System.exit(0);
 			}
 	}

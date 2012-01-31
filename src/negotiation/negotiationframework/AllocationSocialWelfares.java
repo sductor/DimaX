@@ -67,8 +67,6 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 				for (final ActionSpec s : temp2)
 					s2.add(s);
 
-
-
 						if (this.socialWelfare.equals(AllocationSocialWelfares.key4leximinSocialWelfare)){
 							this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
 							final int pref = this.leximinWelfare(s1, s2, this.getComparator());

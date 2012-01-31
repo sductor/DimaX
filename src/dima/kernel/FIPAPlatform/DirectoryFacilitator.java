@@ -4,12 +4,12 @@ package dima.kernel.FIPAPlatform;
  * Insert the type's description here.
  * Creation date: (28/04/02 13:04:14)
  * @author:
-  * This class defines one agents of the FIPA architectures
-  * This agent has the role of yeloww pages
-  * It provides the needed services to register a service
-  * or a list of services.
-  * And it provided the needed services to answer the request of the
-  * agent looking for service providers.
+ * This class defines one agents of the FIPA architectures
+ * This agent has the role of yeloww pages
+ * It provides the needed services to register a service
+ * or a list of services.
+ * And it provided the needed services to answer the request of the
+ * agent looking for service providers.
  */
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import dima.basiccommunicationcomponents.Message;
 
 
 public class DirectoryFacilitator
-	extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
+extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
 	/**
 	 *
 	 */
@@ -37,7 +37,7 @@ public class DirectoryFacilitator
 	public DirectoryFacilitator() {
 		super(new AgentName("DF"));
 		this.servicesList = new HashMap();
-		DIMAdf = this;
+		DirectoryFacilitator.DIMAdf = this;
 	}
 	/**
 	 * Broker constructor comment.
@@ -47,7 +47,7 @@ public class DirectoryFacilitator
 	public DirectoryFacilitator(final AgentIdentifier newId) {
 		super(newId);
 		this.servicesList = new HashMap();
-		DIMAdf = this;
+		DirectoryFacilitator.DIMAdf = this;
 	}
 	/**
 	 * Broker constructor comment.
@@ -65,8 +65,8 @@ public class DirectoryFacilitator
 	 * @param newId Gdima.basicagentcomponents.AgentIdentifier
 	 */
 	public DirectoryFacilitator(
-		final java.util.Map mp,
-		final AgentIdentifier newId) {
+			final java.util.Map mp,
+			final AgentIdentifier newId) {
 		super(mp, newId);
 		this.servicesList = new HashMap();
 	}
@@ -77,19 +77,19 @@ public class DirectoryFacilitator
 	 * @param id Gdima.basicagentcomponents.AgentName
 	 */
 	public void addService(final AgentIdentifier providerId, final Service service) {
-        System.out.println("DF registers the Service: " + service.getId() + " provided by: " + providerId);
+		System.out.println("DF registers the Service: " + service.getId() + " provided by: " + providerId);
 		if (this.servicesList.containsKey(service.getId()))
-			 ((Vector) this.servicesList.get(service.getId())).add(providerId);
+			((Vector) this.servicesList.get(service.getId())).add(providerId);
 		else {
 			final Vector v = new Vector();
 			v.add(providerId);
 			this.servicesList.put(service.getId(), v);
+		}
 	}
-	}
 
 
 
-		//System.out.println(" service ajout�");
+	//System.out.println(" service ajout�");
 
 	/**
 	 * Insert the method's description here.
@@ -99,10 +99,10 @@ public class DirectoryFacilitator
 	public void addServices(final AgentIdentifier providerId, final Vector services) {
 		System.out.println("DF registers the Services: " + services + " provided by: " + providerId);
 		for (int i=0; i<services.size(); i++) this.addService(providerId, (Service)services.elementAt(i));
-			}
+	}
 
 	public static DirectoryFacilitator getDIMAdf() {
-		return DIMAdf;
+		return DirectoryFacilitator.DIMAdf;
 	}
 	/**
 	 * Insert the method's description here.
@@ -111,8 +111,8 @@ public class DirectoryFacilitator
 	 */
 	@Override
 	public void proactivityInitialize() {
-	   System.out.println("DF has started its activity");
-			 }
+		System.out.println("DF has started its activity");
+	}
 
 	public void getServiceProviders(final Service service, final AgentIdentifier requesterId) {
 		this.getServiceProviders(service.getId(), requesterId);
@@ -128,7 +128,7 @@ public class DirectoryFacilitator
 		//System.out.println("***** :" + servicesList.get(serviceId) );
 		Vector s = new Vector();
 		if (this.servicesList.containsKey(serviceId))
-		       s = (Vector) this.servicesList.get(serviceId);
+			s = (Vector) this.servicesList.get(serviceId);
 		providers.addAll(s);
 		//System.out.println("***** suite:" + requesterId );
 		//Message m = new Message("setServiceProviders", serviceId, providers);
@@ -151,7 +151,7 @@ public class DirectoryFacilitator
 	 * @param newDIMAdf Gdima.kernel.aFIPAPlatform.DirectoryFacilitator
 	 */
 	static void setDIMAdf(final DirectoryFacilitator newDIMAdf) {
-		DIMAdf = newDIMAdf;
+		DirectoryFacilitator.DIMAdf = newDIMAdf;
 	}
 	/**
 	 * step method comment.
@@ -166,11 +166,11 @@ public class DirectoryFacilitator
 	}
 
 	public static void main(final String args[])
-	  {final DirectoryFacilitator df = new DirectoryFacilitator();
-	   df.activate();}
+	{final DirectoryFacilitator df = new DirectoryFacilitator();
+	df.activate();}
 
-	  public static void initDF()
-	  {final DirectoryFacilitator df = new DirectoryFacilitator();
-	  df.activate();}
+	public static void initDF()
+	{final DirectoryFacilitator df = new DirectoryFacilitator();
+	df.activate();}
 
 }

@@ -29,19 +29,19 @@ public class LetterGame
 		this.pickLetter();
 
 	}
-public void exchangeLetter(final Letter l) throws GameException
-{
-	// vrifier qu'on l'a dans le deck
-	if (!this.deck.contains(l))
-		throw new GameException("Can't use a letter absent in the deck!");
+	public void exchangeLetter(final Letter l) throws GameException
+	{
+		// vrifier qu'on l'a dans le deck
+		if (!this.deck.contains(l))
+			throw new GameException("Can't use a letter absent in the deck!");
 
-	this.deck.dropLetter(l);
+		this.deck.dropLetter(l);
 
-	// on lance un appel  proposition
+		// on lance un appel  proposition
 
-	////exchangeLetter();
-	//pickLetter();
-}
+		////exchangeLetter();
+		//pickLetter();
+	}
 	/**
 	 * Returns the deck.
 	 * @return Deck
@@ -49,25 +49,25 @@ public void exchangeLetter(final Letter l) throws GameException
 	public Deck getDeck() {
 		return this.deck;
 	}
-/**
- * Insert the method's description here.
- * Creation date: (10/09/2003 12:30:16)
- */
-public Vector getNoNeededLetters()
-{
-	final Vector needed = new Vector(this.getWordToComplete().getNeededLetters());
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (10/09/2003 12:30:16)
+	 */
+	public Vector getNoNeededLetters()
+	{
+		final Vector needed = new Vector(this.getWordToComplete().getNeededLetters());
 
-	final Vector all = new Vector(this.getDeck().getLetters());
+		final Vector all = new Vector(this.getDeck().getLetters());
 
 
-	for (int i=0;i<needed.size();i++)
-		if ( all.contains( needed.get(i) ) )
-			all.remove(needed.get(i));
+		for (int i=0;i<needed.size();i++)
+			if ( all.contains( needed.get(i) ) )
+				all.remove(needed.get(i));
 
-	System.out.println(this.getWordToComplete().getWord()+" --> Les needed sont :"+needed+" et les non needed "+all);
+		System.out.println(this.getWordToComplete().getWord()+" --> Les needed sont :"+needed+" et les non needed "+all);
 
-	return all;
-}
+		return all;
+	}
 	/**
 	 * Returns the wordToComplete.
 	 * @return Word
@@ -79,20 +79,20 @@ public Vector getNoNeededLetters()
 		return this.deck.contains(l);
 	}
 	public static void main(final String[] args) {
-	try {
-		final LetterGame game = new LetterGame("BONJOUR", "ANOBB");
-		game.useLetter(new Letter('B'));
-		game.useLetter(new Letter('O'));
-		game.dropLetter(new Letter('B'));
+		try {
+			final LetterGame game = new LetterGame("BONJOUR", "ANOBB");
+			game.useLetter(new Letter('B'));
+			game.useLetter(new Letter('O'));
+			game.dropLetter(new Letter('B'));
 
-		System.out.println(game.getDeck());
-		game.pickLetter();
-		game.pickLetter();
-		game.pickLetter();
-		System.out.println(game.getWordToComplete().getCurrentSubword());
-	} catch (final Exception e) {
+			System.out.println(game.getDeck());
+			game.pickLetter();
+			game.pickLetter();
+			game.pickLetter();
+			System.out.println(game.getWordToComplete().getCurrentSubword());
+		} catch (final Exception e) {
 			e.printStackTrace(System.out);
-	}
+		}
 
 	}
 	public Letter neededLetter() {

@@ -35,9 +35,9 @@ class NPuzzleSupport extends Canvas {
 	}
 	@Override
 	public void paint( final Graphics g) {
-	    for ( int i =0; i < this.cote; i++)
-	        for ( int j = 0; j < this.cote; j++)
-	 	        this.parent.places[i][j].refresh( g);
+		for ( int i =0; i < this.cote; i++)
+			for ( int j = 0; j < this.cote; j++)
+				this.parent.places[i][j].refresh( g);
 	}
 	@Override
 	public void  processMouseEvent(final MouseEvent evt) {

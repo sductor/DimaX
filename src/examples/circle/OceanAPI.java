@@ -22,7 +22,7 @@ import java.lang.reflect.Constructor;
 
 
 public class OceanAPI extends Frame
-	implements ActionListener, WindowListener {
+implements ActionListener, WindowListener {
 
 	/**
 	 *
@@ -62,14 +62,14 @@ public class OceanAPI extends Frame
 		if(e.getSource() == this.getBExit())
 			this.connEtoM1(e);
 	}
-public void bGo_ActionPerformed(final ActionEvent actionEvent) {
+	public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 		this.numbreOfSharks = Integer.parseInt(this.getTNumber().getText());
 
 		final java.util.Vector faune = new java.util.Vector();
 		for (int i=0; i<this.numbreOfSharks;i++)
-		 {   final Shark a = new Shark();
-			 faune.addElement(a);
-			 a.activate();}
+		{   final Shark a = new Shark();
+		faune.addElement(a);
+		a.activate();}
 
 	}
 	private void connEtoC1(final WindowEvent arg1) {
@@ -104,9 +104,9 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 				this.ivjBExit.setBounds(37, 62, 56, 23);
 				this.ivjBExit.setLabel("Exit");
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjBExit;
 	}
 	private Button getBGo() {
@@ -117,9 +117,9 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 				this.ivjBGo.setBounds(35, 23, 56, 23);
 				this.ivjBGo.setLabel("Go");
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjBGo;
 	}
 	private Button getBQuitter() {
@@ -130,9 +130,9 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 				this.ivjBExit.setBounds(37, 62, 56, 23);
 				this.ivjBExit.setLabel("Exit");
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjBExit;
 	}
 	private Panel getContentsPane() {
@@ -147,9 +147,9 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 				this.getContentsPane().add(this.getTNumber(), this.getTNumber().getName());
 				this.getContentsPane().add(this.getBExit(), this.getBExit().getName());
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjContentsPane;
 	}
 	private Label getLabel1() {
@@ -160,9 +160,9 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 				this.ivjLabel1.setText("Number of Sharks");
 				this.ivjLabel1.setBounds(108, 22, 125, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjLabel1;
 	}
 	private Sea getMer1() {
@@ -174,9 +174,9 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 				OceanAPI.ivjMer1.setBackground(Color.cyan);
 				OceanAPI.ivjMer1.setBounds(17, 110, 340, 276);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return OceanAPI.ivjMer1;
 	}
 	public int getnumbreOfSharks() {
@@ -193,9 +193,9 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 				this.ivjTNumber.setName("TNumber");
 				this.ivjTNumber.setBounds(249, 23, 51, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjTNumber;
 	}
 	private void handleException(final Throwable throwable) {
@@ -220,10 +220,10 @@ public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 			try {
 				final Class aCloserClass = Class.forName("com.ibm.uvm.abt.edit.WindowCloser");
 				final Class parmTypes[] = {
-					java.awt.Window.class
+						java.awt.Window.class
 				};
 				final Object parms[] = {
-					aOcean
+						aOcean
 				};
 				final Constructor aCtor = aCloserClass.getConstructor(parmTypes);
 				aCtor.newInstance(parms);

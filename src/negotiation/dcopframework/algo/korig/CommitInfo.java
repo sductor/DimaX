@@ -3,14 +3,14 @@ package negotiation.dcopframework.algo.korig;
 public class CommitInfo {
 	public int id;
 	public int leader;
-	
-	public CommitInfo(int i, int l) {
-		id = i;
-		leader = l;
+
+	public CommitInfo(final int i, final int l) {
+		this.id = i;
+		this.leader = l;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "" + id + "->" + leader;
+		return "" + this.id + "->" + this.leader;
 	}
 }

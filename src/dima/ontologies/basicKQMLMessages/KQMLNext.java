@@ -11,19 +11,19 @@ import dima.kernel.communicatingAgent.OntologyBasedAgent;
 
 public class KQMLNext extends KQML {
 
-  /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -6575131659494766740L;
-public KQMLNext(final String tx, final String rx,
-		  final String msg,
-		  final String irt, final String rw) {
-      super(tx,rx,msg,irt,rw);
-      this.setPerformative("next");
-  }
-  @Override
-public void processKQML(final OntologyBasedAgent a)
-    {
-    a.processNext(this);
-    }
+	public KQMLNext(final String tx, final String rx,
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("next");
+	}
+	@Override
+	public void processKQML(final OntologyBasedAgent a)
+	{
+		a.processNext(this);
+	}
 }

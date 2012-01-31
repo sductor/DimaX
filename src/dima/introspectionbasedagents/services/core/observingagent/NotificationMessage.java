@@ -29,7 +29,7 @@ extends Message implements MessageInEnvelope {
 	// Constructors
 	//
 
-	 NotificationMessage(final String key, final Notification n) {
+	NotificationMessage(final String key, final Notification n) {
 		super("notification of "+key+", "+n);
 		this.notif=n;
 		this.key = key;

@@ -17,9 +17,9 @@ public class ACLGenerator extends FIPAACLMessage {
 	private static final long serialVersionUID = 7671382264182674960L;
 
 	public ACLGenerator(final String tx, final String rx,
-			 final String msg,
-			 final String irt, final String rw) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("generator");
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("generator");
 	}
 }

@@ -40,13 +40,13 @@ public class LoneBelief {
 
 	public void dropLetter() {
 		final Letter l = DropHeuristic.whichToDrop(this.game);
-			if (l != null)
-				try {
-					// action simple base sur la dcision complexe
-					this.game.dropLetter(l);
-				} catch (final GameException e) {
-					e.printStackTrace(System.out);
-				}
+		if (l != null)
+			try {
+				// action simple base sur la dcision complexe
+				this.game.dropLetter(l);
+			} catch (final GameException e) {
+				e.printStackTrace(System.out);
+			}
 	}
 
 	/**

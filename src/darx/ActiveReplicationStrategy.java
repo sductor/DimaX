@@ -72,7 +72,7 @@ class SyncMessageDeliver extends Thread {
  * @version %I%, %G%
  */
 public class ActiveReplicationStrategy extends ReplicationStrategy implements
-		Serializable {
+Serializable {
 
 	/**
 	 *
@@ -135,7 +135,7 @@ public class ActiveReplicationStrategy extends ReplicationStrategy implements
 				.hasMoreElements();)
 			try {
 				((TaskShellHandle) en.nextElement())
-						.processDeliverAsyncMessage(msg);
+				.processDeliverAsyncMessage(msg);
 			} catch (final RemoteException e) {
 				this.handleUnreachableReplicant(this.info, e);
 			}
@@ -145,7 +145,7 @@ public class ActiveReplicationStrategy extends ReplicationStrategy implements
 	public Serializable deliverSyncMessage(final TaskShell shell,
 			final DarxMessage msg) {
 		final SyncMessageDeliver[] proc = new SyncMessageDeliver[this.replicants
-				.size() + 1];
+		                                                         .size() + 1];
 		proc[0] = new SyncMessageDeliver(shell, msg);
 		proc[0].start();
 		int k = 0;

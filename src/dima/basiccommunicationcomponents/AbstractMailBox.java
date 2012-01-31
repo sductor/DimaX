@@ -6,30 +6,30 @@ package dima.basiccommunicationcomponents;
  * @author: Gerard Rozsavolgyi
  */
 public abstract class AbstractMailBox extends CommunicationObject{
-/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 4046287963420672717L;
-/**
- * AbstractMailBox constructor comment.
- */
-public AbstractMailBox() {
-	super();
-}
-/**
- * AbstractMailBox constructor comment.
- */
-public abstract AbstractMessage getFirstMessage();
-/**
- * AbstractMailBox constructor comment.
- */
-public abstract boolean hasMail();
-/**
- * AbstractMailBox constructor comment.
- */
-public abstract AbstractMessage readMail();
-/**
- * AbstractMailBox constructor comment.
- */
-public abstract  boolean writeMail(AbstractMessage m);
+	/**
+	 * AbstractMailBox constructor comment.
+	 */
+	public AbstractMailBox() {
+		super();
+	}
+	/**
+	 * AbstractMailBox constructor comment.
+	 */
+	public abstract AbstractMessage getFirstMessage();
+	/**
+	 * AbstractMailBox constructor comment.
+	 */
+	public abstract boolean hasMail();
+	/**
+	 * AbstractMailBox constructor comment.
+	 */
+	public abstract AbstractMessage readMail();
+	/**
+	 * AbstractMailBox constructor comment.
+	 */
+	public abstract  boolean writeMail(AbstractMessage m);
 }

@@ -12,7 +12,7 @@ public class Assertion {
 	// --------------------------------------------------------------------------
 	// print `s` to stderr and terminate
 	// --------------------------------------------------------------------------
-	public static void fail(String s) {
+	public static void fail(final String s) {
 		System.err.println("assertion failed: " + s);
 		System.exit(-1);
 	}
@@ -20,7 +20,7 @@ public class Assertion {
 	// --------------------------------------------------------------------------
 	// check condition `c`; if false, print `s` to stderr and terminate
 	// --------------------------------------------------------------------------
-	public static void test(boolean c, String s) {
-		if (!c) fail(s);
+	public static void test(final boolean c, final String s) {
+		if (!c) Assertion.fail(s);
 	}
 }

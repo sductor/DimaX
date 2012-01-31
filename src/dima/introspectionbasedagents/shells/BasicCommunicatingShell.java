@@ -106,10 +106,10 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 				LogService.writeWarning(
 						this.getStatus(),
 						" Unhandled envellope!:\n"
-						+mess+
-						"\n sended by "+mess.getSender()+" to "+mess.getReceiver()+
-						"\n --> Known envellopes are: "+this.getMyMethods().getHandledEnvellope()+
-						"\n --> Exception handle say :\n"+this.getExceptionHandler().handleUnhandledMessage(mess, this.getStatus()));
+								+mess+
+								"\n sended by "+mess.getSender()+" to "+mess.getReceiver()+
+								"\n --> Known envellopes are: "+this.getMyMethods().getHandledEnvellope()+
+								"\n --> Exception handle say :\n"+this.getExceptionHandler().handleUnhandledMessage(mess, this.getStatus()));
 			} catch (final Throwable e) {
 				this.getExceptionHandler().handleException(e, this.getStatus());
 			}

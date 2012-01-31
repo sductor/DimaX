@@ -176,7 +176,7 @@ public class RemoteTask implements Serializable {
 			reply = this.handle.deliverSyncMessage(msg);
 		} catch (final RemoteException e) {
 			System.out
-					.println("Synchronous message cannot be delivered : " + e);
+			.println("Synchronous message cannot be delivered : " + e);
 			System.out.println("Trying emission once more...");
 			try {
 				// Take a nap
@@ -277,7 +277,7 @@ public class RemoteTask implements Serializable {
 	 * @see DarxHandle
 	 */
 	public void killReplicantAt(final String url) throws RemoteException,
-			UnknownReplicantException {
+	UnknownReplicantException {
 		this.handle.killReplicantAt(url, 6789);
 	}
 
@@ -371,8 +371,8 @@ public class RemoteTask implements Serializable {
 			e.printStackTrace();
 		} catch (final NotBoundException e) {
 			System.out
-					.println("RMI registration pb while fetching new leader for "
-							+ this.task_name);
+			.println("RMI registration pb while fetching new leader for "
+					+ this.task_name);
 			e.printStackTrace();
 		}
 	}
@@ -423,8 +423,8 @@ public class RemoteTask implements Serializable {
 			e.printStackTrace();
 		} catch (final NotBoundException e) {
 			System.out
-					.println("RMI registration pb while setting new leader for "
-							+ this.task_name);
+			.println("RMI registration pb while setting new leader for "
+					+ this.task_name);
 			e.printStackTrace();
 		}
 	}

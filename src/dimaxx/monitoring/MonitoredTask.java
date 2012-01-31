@@ -47,13 +47,13 @@ public class MonitoredTask<Component extends ProactiveComponentInterface & Ident
 
 	@Override
 	public RemoteTask activateTask(final String url, final int port_nb)
-	throws RemoteException {
+			throws RemoteException {
 		final String server_path = url + ":" + Integer.toString(port_nb)
-		+ "/DarxServer";
+				+ "/DarxServer";
 		try {
 			// System.out.println("Getting registry at:"+url+":"+port_nb);
 			final Registry server_reg = LocateRegistry
-			.getRegistry(url, port_nb);
+					.getRegistry(url, port_nb);
 			// System.out.println("Getting server:"+ server_path);
 			this.server = (DarxServer) server_reg.lookup(server_path);
 			this.handle = this.server.startTask(this);

@@ -11,12 +11,12 @@ package dima.tools.concurrence;
   History:
   Date       Who                What
   11Jun1998  dl               Create public version
-*/
+ */
 
 /** A standard linked list node used in various queue classes **/
 class LinkedNode {
-  Object value;
-  LinkedNode next = null;
-  LinkedNode(final Object x) { this.value = x; }
-  LinkedNode(final Object x, final LinkedNode n) { this.value = x; this.next = n; }
+	Object value;
+	LinkedNode next = null;
+	LinkedNode(final Object x) { this.value = x; }
+	LinkedNode(final Object x, final LinkedNode n) { this.value = x; this.next = n; }
 }

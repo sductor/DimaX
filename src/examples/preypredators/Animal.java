@@ -11,10 +11,10 @@ import java.util.Vector;
 public interface Animal {
 	public int getDistanceView();
 	public Point getPos();
-/**
- * Insert the method's description here.
- * Creation date: (08/11/00 16:11:53)
- * @return TPsma.Animal
- */
-Animal getTarget(Vector env);
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (08/11/00 16:11:53)
+	 * @return TPsma.Animal
+	 */
+	Animal getTarget(Vector env);
 }

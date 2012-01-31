@@ -40,7 +40,7 @@ public class Couple implements Comparable<Couple>, Serializable {
 
 	@Override
 	public int compareTo(final Couple b) {// Pour trier sur les abscisses
-											// croissantes
+		// croissantes
 		final Double x1 = new Double(this.getX());
 		final Double x2 = new Double(b.getX());
 

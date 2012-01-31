@@ -18,11 +18,11 @@ public class TimeSlot implements Cloneable, Serializable {
 		this(new Day(y,m,d), hr, min, durations);
 	}
 	/** Create a mew time slot from the specified moment and with the specified duration
-		*
-		* @param hr hour from 0 to 23
-		* @param min minutes from 0 to 59
-		* @param durations duration of the slot in number of mintute
-		*/
+	 *
+	 * @param hr hour from 0 to 23
+	 * @param min minutes from 0 to 59
+	 * @param durations duration of the slot in number of mintute
+	 */
 	public TimeSlot(final Day d, final int hr, final int min, final int durations) {
 		this.startDay = d;
 		this.hour = hr;

@@ -11,7 +11,7 @@ package dima.tools.concurrence;
   History:
   Date       Who                What
   30Jun1998  dl               Create public version
-*/
+ */
 
 /**
  * Base class for simple,  small classes
@@ -178,26 +178,26 @@ package dima.tools.concurrence;
 
 public class SynchronizedVariable implements Executor {
 
-  protected final Object lock_;
+	protected final Object lock_;
 
-  /** Create a SynchronizedVariable using itself as the lock **/
-  public SynchronizedVariable() { this.lock_ = this; }
-  /** Create a SynchronizedVariable using the supplied lock **/
-  public SynchronizedVariable(final Object lock) { this.lock_ = lock; }
-  /**
-   * If current thread is not interrupted, execute the given command
-   * within this object's lock
-   **/
+	/** Create a SynchronizedVariable using itself as the lock **/
+	public SynchronizedVariable() { this.lock_ = this; }
+	/** Create a SynchronizedVariable using the supplied lock **/
+	public SynchronizedVariable(final Object lock) { this.lock_ = lock; }
+	/**
+	 * If current thread is not interrupted, execute the given command
+	 * within this object's lock
+	 **/
 
-  @Override
-public void execute(final Runnable command) throws InterruptedException {
-	if (Thread.interrupted()) throw new InterruptedException();
-	synchronized (this.lock_) {
-	  command.run();
+	@Override
+	public void execute(final Runnable command) throws InterruptedException {
+		if (Thread.interrupted()) throw new InterruptedException();
+		synchronized (this.lock_) {
+			command.run();
+		}
 	}
-  }
-  /**
-   * Return the lock used for all synchronization for this object
-   **/
-  public Object getLock() { return this.lock_; }
+	/**
+	 * Return the lock used for all synchronization for this object
+	 **/
+	public Object getLock() { return this.lock_; }
 }

@@ -34,7 +34,7 @@ public interface ExperimentationProtocol extends DimaComponentInterface{
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 
-	
+
 	/**
 	 * Clés statiques
 	 */

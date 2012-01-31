@@ -19,13 +19,13 @@ public class ACLForward extends FIPAACLMessage {
 	private String from;
 
 	public ACLForward(final String tx, final String rx,
-		       final String msg,
-		       final String irt, final String rw,
-		       final String newFrom, final String newTo) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("forward");
-	this.setTo (newTo);
-	this.setFrom (newFrom);
+			final String msg,
+			final String irt, final String rw,
+			final String newFrom, final String newTo) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("forward");
+		this.setTo (newTo);
+		this.setFrom (newFrom);
 	}
 	public String getFrom() { return this.from;}
 	public String getTo() {return this.to;}

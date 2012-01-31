@@ -23,73 +23,73 @@ public class GenericCall {
 	 * callMethod("faultAndRepair.faultAndObs.costFunction."+costFunctionClassName,costFunctionClassName,new Class[]{Integer.class} , null,paramList.toArray(), true);
 	 *
 	 */
-		public static Object callMethod(final String className,final String methodName,final Class[] parametersClass,final Object object,final Object[] methodParameters, final boolean constructor){
+	public static Object callMethod(final String className,final String methodName,final Class[] parametersClass,final Object object,final Object[] methodParameters, final boolean constructor){
 
 
-			Class<?> classe = null;
-			Method method = null;
-			Constructor<?> construc=null;
-			//1° get the class
-			try {
-				classe = Class.forName(className);
-			} catch (final ClassNotFoundException e1) {
-				System.out.println("Class "+ className+ " not found");
-				e1.printStackTrace();
-			}
+		Class<?> classe = null;
+		Method method = null;
+		Constructor<?> construc=null;
+		//1° get the class
+		try {
+			classe = Class.forName(className);
+		} catch (final ClassNotFoundException e1) {
+			System.out.println("Class "+ className+ " not found");
+			e1.printStackTrace();
+		}
 
-			//2° get the method
-			try {
-				if(constructor)
-					construc=classe.getConstructor(parametersClass);
-				else
-					method = classe.getMethod(methodName,parametersClass);
-			} catch (final SecurityException e) {
-				e.printStackTrace();
-			} catch (final NoSuchMethodException e) {
-				System.out.println("Method"+ methodName+ "of paramsType String not found");
-				e.printStackTrace();
-			}
-			/*
+		//2° get the method
+		try {
+			if(constructor)
+				construc=classe.getConstructor(parametersClass);
+			else
+				method = classe.getMethod(methodName,parametersClass);
+		} catch (final SecurityException e) {
+			e.printStackTrace();
+		} catch (final NoSuchMethodException e) {
+			System.out.println("Method"+ methodName+ "of paramsType String not found");
+			e.printStackTrace();
+		}
+		/*
 			 if(constructor){
 				System.out.println("constructor found: " + construc.toString());
 			}else{
 				System.out.println("Public method found: " + method.toString());
 			}
-			 */
+		 */
 
-			//3° Call the method
-			Object o=null;
-			if(constructor)
-				try {
-					o=construc.newInstance(methodParameters);
-				} catch (final IllegalArgumentException e) {
+		//3° Call the method
+		Object o=null;
+		if(constructor)
+			try {
+				o=construc.newInstance(methodParameters);
+			} catch (final IllegalArgumentException e) {
 
-					e.printStackTrace();
-				} catch (final InstantiationException e) {
+				e.printStackTrace();
+			} catch (final InstantiationException e) {
 
-					e.printStackTrace();
-				} catch (final IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (final IllegalAccessException e) {
 
-					e.printStackTrace();
-				} catch (final InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (final InvocationTargetException e) {
 
-					e.printStackTrace();
-				}
-			else
-				try {
-					o= method.invoke(object,methodParameters);
-				} catch (final IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+		else
+			try {
+				o= method.invoke(object,methodParameters);
+			} catch (final IllegalArgumentException e) {
 
-					e.printStackTrace();
-				} catch (final IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (final IllegalAccessException e) {
 
-					e.printStackTrace();
-				} catch (final InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (final InvocationTargetException e) {
 
-					e.printStackTrace();
-				}
+				e.printStackTrace();
+			}
 
 
-			return o;
-		}
+		return o;
+	}
 }

@@ -20,11 +20,11 @@ public class TransactionID implements Serializable {
 	public boolean egale(final TransactionID tid) {
 		if(tid==null) return false;
 		else
-		return this.myValue== tid.getMyValue();
+			return this.myValue== tid.getMyValue();
 	}
 
 	public long getMyValue(){
-	return this.myValue;
+		return this.myValue;
 	}
 
 

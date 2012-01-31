@@ -11,8 +11,8 @@ public class StandardAvailability implements Serializable {
 	 */
 	private static final long serialVersionUID = 9115737110899218315L;
 	/** x = time in hours, y = 1.0 is unavailable, whereas 0.0 is available
-		* This list should be sorted by x
-		*/
+	 * This list should be sorted by x
+	 */
 	ArrayList points;
 
 	public StandardAvailability() {

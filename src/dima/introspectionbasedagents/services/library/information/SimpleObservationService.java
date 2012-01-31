@@ -103,23 +103,22 @@ ObservationService {
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 		else { //information replacement
 			//			logMonologue("replacing !!!!!!!!!"+this.infos.get(information.getClass()).get(information.getMyAgentIdentifier())+" with "+information);
-			Information knownInfo=this.infos.get(information.getClass()).get(information.getMyAgentIdentifier());
+			final Information knownInfo=this.infos.get(information.getClass()).get(information.getMyAgentIdentifier());
 
-			if (information.isNewerThan(knownInfo)>1){
+			if (information.isNewerThan(knownInfo)>1)
 				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-			}else if (information.isNewerThan(knownInfo)<1){
+			else if (information.isNewerThan(knownInfo)<1){
 				//				do nothing
-			} else if (information.isNewerThan(knownInfo)==0){
+			} else if (information.isNewerThan(knownInfo)==0)
 				if (!information.equals(knownInfo)){
-					logWarning(
+					this.logWarning(
 							"remplacing an information with a different information of the same time :\n"+information+" and :\n "+
-									this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()), 
+									this.infos.get(information.getClass()).get(information.getMyAgentIdentifier()),
 									LogService.onBoth);
 					((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 				}else{
 					//do nothing
 				}
-			}
 		}
 
 	}

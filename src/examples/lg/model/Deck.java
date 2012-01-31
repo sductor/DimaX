@@ -55,16 +55,16 @@ public class Deck {
 			throw new GameException("Can't drop a letter that is absent!");
 	}
 
-@Override
-public String toString()
-{
-	String str = new String("");
+	@Override
+	public String toString()
+	{
+		String str = new String("");
 
-	for(final Enumeration e=this.letters.elements(); e.hasMoreElements();)
-		str = str + ((Letter)e.nextElement()).getLetter() + " ";
+		for(final Enumeration e=this.letters.elements(); e.hasMoreElements();)
+			str = str + ((Letter)e.nextElement()).getLetter() + " ";
 
-	return str;
-}
+		return str;
+	}
 
 	public static void main(final String[] args) {
 		Deck deck;

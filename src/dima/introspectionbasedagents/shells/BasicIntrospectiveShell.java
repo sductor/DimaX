@@ -136,7 +136,7 @@ public class BasicIntrospectiveShell extends GimaObject {
 		this.executeBehaviors(PostStepComposant.class, creation);
 		for (final MethodHandler meth : this.metToRemove)
 			this.myMethods.removeMethod(meth);
-		this.metToRemove.clear();
+				this.metToRemove.clear();
 	}
 
 	public void proactivityTerminate(final Date creation){

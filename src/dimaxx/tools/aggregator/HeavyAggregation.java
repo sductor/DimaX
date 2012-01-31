@@ -31,15 +31,15 @@ UtilitaristAnalyser<Element> {
 		super();
 	}
 
-	public HeavyAggregation(Comparator<? super Element> arg0) {
+	public HeavyAggregation(final Comparator<? super Element> arg0) {
 		super(arg0);
 	}
 
-	public HeavyAggregation(Map<? extends Element, ? extends Double> arg0) {
+	public HeavyAggregation(final Map<? extends Element, ? extends Double> arg0) {
 		super(arg0);
 	}
 
-	public HeavyAggregation(SortedMap<Element, ? extends Double> arg0) {
+	public HeavyAggregation(final SortedMap<Element, ? extends Double> arg0) {
 		super(arg0);
 	}
 
@@ -47,12 +47,12 @@ UtilitaristAnalyser<Element> {
 	 * 
 	 */
 
-	public Double add(Element e) {
+	public Double add(final Element e) {
 		return this.put(e, 1.);
 	}
 	@Override
-	public Double put(Element o, Double weight) {
-		return super.put(o, this.containsKey(o)?weight+get(o):weight);
+	public Double put(final Element o, final Double weight) {
+		return super.put(o, this.containsKey(o)?weight+this.get(o):weight);
 	}
 	/*
 	 * 
@@ -90,11 +90,10 @@ UtilitaristAnalyser<Element> {
 	public double getWeightOfAggregatedElements() {
 		double sum=0;
 
-		for (double w : this.values()){
+		for (final double w : this.values())
 			sum+=w;
-		}
 
-		return sum;
+				return sum;
 	}
 
 	@Override
@@ -107,7 +106,7 @@ UtilitaristAnalyser<Element> {
 	 */
 
 	@Override
-	public Element getQuantile(int k, int q) {
+	public Element getQuantile(final int k, final int q) {
 		return FunctionalQuantileNMinMaxAggregator.getQuantile(
 				new ArrayList<Element>(this.keySet()), k, q);
 	}

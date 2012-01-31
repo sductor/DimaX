@@ -7,13 +7,13 @@ package examples.EcoResolution;
 
 class Execution extends Thread {
 
-		EcoNPuzzle ecoTq;
+	EcoNPuzzle ecoTq;
 
-		Execution( final EcoNPuzzle et) {
-			this.ecoTq = et;
-		}
-		@Override
-		public void run() {
-			this.ecoTq.run();
-		}
+	Execution( final EcoNPuzzle et) {
+		this.ecoTq = et;
+	}
+	@Override
+	public void run() {
+		this.ecoTq.run();
+	}
 }

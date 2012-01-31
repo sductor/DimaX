@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -79,7 +78,7 @@ public class FuzzyController implements Serializable {
 		for (final FuzzySet f : this.parametres)
 			if (f.nom.equals(nom))
 				return f;
-		return null;
+				return null;
 	}
 
 	public FuzzySubSet mixageConclusions(final List<FuzzySubSet> conclusions) {
@@ -293,8 +292,8 @@ class ControleurParser {
 				// la
 				// Map
 				final String nomSef = sefCourant.getChildText("label");// Pour
-																		// le
-																		// sef
+				// le
+				// sef
 
 				// Extraction de la fonction d'appartenace du sef courant
 				final List<Element> coordonne = sefCourant
@@ -305,9 +304,9 @@ class ControleurParser {
 				while (itC.hasNext()) {
 					final Element c = itC.next();
 					final double abscisse = new Double(c.getChildText("x"))
-							.doubleValue();
+					.doubleValue();
 					final double ordonne = new Double(c.getChildText("y"))
-							.doubleValue();
+					.doubleValue();
 					final Couple p = new Couple(abscisse, ordonne);
 					// System.out.println("   * Ajout du point " + p.toString()
 					// + " dans le sef " + nom + ", " + nomSef);

@@ -14,12 +14,12 @@ public class DimaXCommunicationComponent
 <Component extends ProactiveComponentInterface & IdentifiedComponentInterface & CommunicatingComponentInterface>
 extends CommunicationComponent {
 
-    /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 4142959262808107106L;
 	protected  DarxCommInterface comm;
-    protected  DimaXTask<Component> task;
+	protected  DimaXTask<Component> task;
 
 
 	public DimaXCommunicationComponent(final DimaXTask<Component> task) {

@@ -133,15 +133,15 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.signalException(text, e);
 	}
 
-//	@Override
-//	public Boolean logException(final String text, final String details, final Throwable e) {
-//		return this.myAgent.logException(text, details, e);
-//	}
-//
-//	@Override
-//	public Boolean logException(final String text, final String details) {
-//		return this.myAgent.logException(text, details);
-//	}
+	//	@Override
+	//	public Boolean logException(final String text, final String details, final Throwable e) {
+	//		return this.myAgent.logException(text, details, e);
+	//	}
+	//
+	//	@Override
+	//	public Boolean logException(final String text, final String details) {
+	//		return this.myAgent.logException(text, details);
+	//	}
 
 	@Override
 	public Boolean signalException(final String text) {
@@ -153,15 +153,15 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logMonologue(text, details);
 	}
 
-//	@Override
-//	public Boolean logMonologue(final String text) {
-//		return this.myAgent.logMonologue(text);
-//	}
-//
-//	@Override
-//	public Boolean logWarning(final String text, final Throwable e) {
-//		return this.myAgent.logWarning(text, e);
-//	}
+	//	@Override
+	//	public Boolean logMonologue(final String text) {
+	//		return this.myAgent.logMonologue(text);
+	//	}
+	//
+	//	@Override
+	//	public Boolean logWarning(final String text, final Throwable e) {
+	//		return this.myAgent.logWarning(text, e);
+	//	}
 
 	@Override
 	public Boolean logWarning(final String text, final Throwable e, final String details) {
@@ -173,10 +173,10 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logWarning(text, details);
 	}
 
-//	@Override
-//	public Boolean logWarning(final String text) {
-//		return this.myAgent.logWarning(text);
-//	}
+	//	@Override
+	//	public Boolean logWarning(final String text) {
+	//		return this.myAgent.logWarning(text);
+	//	}
 
 	@Override
 	public void addLogKey(final String key, final boolean toString, final boolean toFile) {

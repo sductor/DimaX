@@ -8,71 +8,70 @@ import negotiation.dcopframework.algo.Algorithm;
 import negotiation.dcopframework.daj.Node;
 import negotiation.dcopframework.dcop.Graph;
 import negotiation.dcopframework.dcop.Helper;
-
+import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
-import dima.introspectionbasedagents.services.library.APILauncherModule;
 
 public class DCOPLaborantin extends APILauncherModule {
 
-	private Graph g;
-	private Algorithm algo;
+	private final Graph g;
+	private final Algorithm algo;
 	private HashMap<Integer, Node> nodeMap;
-	
-	private  int cycles;
 
-	private  int numberMessages;
-	private  int sizeofMessages;
-	private  int numberEval;
-	private  int numberConflicts;
-	private  int wastedCycles;
-	
-	private  int[] quality;
-	private  int[] msgsize;
-	private  int[] nummsg;
-	
-	private  int[] nEval;
-	private  int[] nConflicts;
-	private  int[] wCycles;
-	
-	private  int grouping;
-	
-	private  boolean s;
-	private int ws;
+	private final  int cycles;
+
+	private final  int numberMessages;
+	private final  int sizeofMessages;
+	private final  int numberEval;
+	private final  int numberConflicts;
+	private final  int wastedCycles;
+
+	private final  int[] quality;
+	private final  int[] msgsize;
+	private final  int[] nummsg;
+
+	private final  int[] nEval;
+	private final  int[] nConflicts;
+	private final  int[] wCycles;
+
+	private final  int grouping;
+
+	private final  boolean s;
+	private final int ws;
 
 	private  int activetnodeT;
 	private  double totalLockReq;
 	private  int[] groupK;
-	
-	public ArrayList<Stats> allstats;
-	
-	public DCOPLaborantin(String newId,
-			String filename, int cycles, int kort, Algorithm a, boolean isWin, boolean s, int ws) 
-			throws UnInstanciedCompetenceException,	DuplicateCompetenceException {
-		super(newId);
-		
-		numberMessages = 0;
-		sizeofMessages = 0;
 
-		numberEval = 0;
-		numberConflicts = 0;
-		wastedCycles = 0;
-		
-		g = new Graph(filename);
+	public ArrayList<Stats> allstats;
+
+	public DCOPLaborantin(final String newId,
+			final String filename, final int cycles, final int kort, final Algorithm a, final boolean isWin, final boolean s, final int ws)
+					throws UnInstanciedCompetenceException,	DuplicateCompetenceException {
+		super(newId);
+
+		this.numberMessages = 0;
+		this.sizeofMessages = 0;
+
+		this.numberEval = 0;
+		this.numberConflicts = 0;
+		this.wastedCycles = 0;
+
+		this.g = new Graph(filename);
 		//algo = Algorithm.MGM1;
 		this.grouping = kort;
 		this.algo = a;
-		quality = new int[cycles];
-		msgsize = new int[cycles];
-		nummsg = new int[cycles];
-		nEval = new int[cycles];
-		nConflicts = new int[cycles];
-		wCycles = new int[cycles];
-		
-		Helper.app = this;		
+		this.quality = new int[cycles];
+		this.msgsize = new int[cycles];
+		this.nummsg = new int[cycles];
+		this.nEval = new int[cycles];
+		this.nConflicts = new int[cycles];
+		this.wCycles = new int[cycles];
+
+		Helper.app = this;
 		this.cycles = cycles;
-		
+
 		this.isWin = isWin;
 		this.s = s;
 		this.ws = ws;

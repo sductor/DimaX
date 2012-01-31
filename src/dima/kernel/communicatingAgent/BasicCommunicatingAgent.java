@@ -19,11 +19,8 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.BasicAgents.AgentEngine;
 import dima.kernel.BasicAgents.BasicReactiveAgent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
-import dimaxx.exceptions.UninstanciableMonitorException;
 import dimaxx.kernel.DimaXCommunicationComponent;
 import dimaxx.kernel.DimaXTask;
-import dimaxx.monitoring.AgentMonitor;
-import dimaxx.monitoring.MonitoredTask;
 
 
 public abstract class BasicCommunicatingAgent extends BasicReactiveAgent implements MailBoxBasedCommunicatingComponentInterface {
@@ -133,14 +130,14 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 
 
 
-		DimaXTask<BasicCommunicatingAgent> darxEngine;
+	DimaXTask<BasicCommunicatingAgent> darxEngine;
 	public void activateWithDarx(final int PortNb)
 	{
 
-		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
-		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
+		this.darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
+		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(this.darxEngine);
 		try	{
-			darxEngine.activateTask(PortNb);
+			this.darxEngine.activateTask(PortNb);
 		}  catch (final java.rmi.RemoteException e){
 			LogService.writeException(this,"Error during Activation : ",e);
 		}
@@ -150,34 +147,34 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	public void activateWithDarx(final String url,final int PortNb)
 	{
 
-		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
-		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
+		this.darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
+		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(this.darxEngine);
 		try	{
-			darxEngine.activateTask(url,PortNb);
+			this.darxEngine.activateTask(url,PortNb);
 		}  catch (final java.rmi.RemoteException e){
 			LogService.writeException(this,"Error during Activation : ",e);
 		}
 	}
-	
-	
-//	public void activateWithMonitor(final String url,final int PortNb, final Class<? extends AgentMonitor>... monitors) throws UninstanciableMonitorException
-//	{
-//		MonitoredTask<BasicCommunicatingAgent> darxEngine;
-//
-//		darxEngine = new  MonitoredTask<BasicCommunicatingAgent>(this, monitors);
-//		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
-//		try	{
-//			darxEngine.activateTask(url,PortNb);
-//		}  catch (final java.rmi.RemoteException e){
-//			LogService.writeException(this,"Error during Activation : ",e);
-//		}
-//	}
+
+
+	//	public void activateWithMonitor(final String url,final int PortNb, final Class<? extends AgentMonitor>... monitors) throws UninstanciableMonitorException
+	//	{
+	//		MonitoredTask<BasicCommunicatingAgent> darxEngine;
+	//
+	//		darxEngine = new  MonitoredTask<BasicCommunicatingAgent>(this, monitors);
+	//		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
+	//		try	{
+	//			darxEngine.activateTask(url,PortNb);
+	//		}  catch (final java.rmi.RemoteException e){
+	//			LogService.writeException(this,"Error during Activation : ",e);
+	//		}
+	//	}
 
 	public void removeAquaintance(
-			BasicCommunicatingAgent ag) {
-		this.aquaintances.remove(ag.getId().toString());		
+			final BasicCommunicatingAgent ag) {
+		this.aquaintances.remove(ag.getId().toString());
 	}
-	
+
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (31/03/00 12:45:29)
@@ -401,7 +398,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		am.setReceiver(agentId);
 		if (this.aquaintances.containsKey(agentId.toString()))
 			this.com.sendMessage(
-					((AgentAddress) this.aquaintances.get(agentId.toString())),
+					this.aquaintances.get(agentId.toString()),
 					am);
 		else
 			this.com.sendMessage(am);

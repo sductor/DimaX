@@ -54,7 +54,7 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 			for (final V v : this.get(k))
 				if (v.equals(value))
 					return true;
-		return false;
+					return false;
 	}
 	/**
 	 * Fonction coûteuse
@@ -68,9 +68,9 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 				if (v.equals(value))
 					relevantKeys.add(k);
 
-		for (final K k : relevantKeys)
-			this.get(k).remove(value);
-		return relevantKeys;
+					for (final K k : relevantKeys)
+						this.get(k).remove(value);
+							return relevantKeys;
 	}
 	/**
 	 * Fonction coûteuse
@@ -81,7 +81,7 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 		final Collection<V> finalValues = new HashSet<V>();
 		for (final Set<V> l : super.values())
 			finalValues.addAll(l);
-		return finalValues;
+				return finalValues;
 	}
 
 	@Override

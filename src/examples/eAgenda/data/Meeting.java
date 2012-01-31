@@ -44,10 +44,10 @@ public class Meeting extends Activity implements Serializable {
 		return res;
 	}
 	public ArrayList getNecessParticipants() {
-	    if (this.necessaryMembers.getSize()!=0) {
-		final ArrayList res = this.necessaryMembers.getCanonicalList();
-		return res;}
-	    else return new ArrayList();
+		if (this.necessaryMembers.getSize()!=0) {
+			final ArrayList res = this.necessaryMembers.getCanonicalList();
+			return res;}
+		else return new ArrayList();
 	}
 
 	public int[] getDurationSet() {

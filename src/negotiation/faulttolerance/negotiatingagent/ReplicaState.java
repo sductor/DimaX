@@ -9,12 +9,11 @@ import java.util.Random;
 import java.util.Set;
 
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
-import negotiation.negotiationframework.NegotiationStaticParameters;
-import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.agent.SimpleAgentState;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
@@ -65,8 +64,8 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			final Double myCriticity,
 			final Double myProcCharge,
 			final Double myMemCharge,
-			final Set<HostState> myReps, 
-			int stateNumber) {
+			final Set<HostState> myReps,
+			final int stateNumber) {
 		super(myAgent,stateNumber);
 		this.myCriticity = myCriticity;
 		this.myProcCharge = myProcCharge;
@@ -79,7 +78,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	public ReplicaState(
 			final ReplicaState init,
 			final HostState newRep
-//			,final Long creationTime
+			//			,final Long creationTime
 			) {
 		super(init.getMyAgentIdentifier(),// creationTime,
 				init.getStateCounter()+1);
@@ -105,8 +104,8 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			final Double myProcCharge,
 			final Double myMemCharge,
 			final Double dispo,
-//			final Long creationTime, 
-			int stateNumber) {
+			//			final Long creationTime,
+			final int stateNumber) {
 		super(myAgent,// creationTime,
 				stateNumber);
 		this.myReplicas = null;
@@ -217,14 +216,14 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	 * Opinion
 	 */
 
-//	@Override
-//	public int compareTo(final Information<AgentState> o) {
-//		if (o instanceof ReplicaState) {
-//			final ReplicaState e = (ReplicaState) o;
-//			return this.getMyReliability().compareTo(e.getMyReliability());
-//		} else
-//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-//	}
+	//	@Override
+	//	public int compareTo(final Information<AgentState> o) {
+	//		if (o instanceof ReplicaState) {
+	//			final ReplicaState e = (ReplicaState) o;
+	//			return this.getMyReliability().compareTo(e.getMyReliability());
+	//		} else
+	//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+	//	}
 
 	@Override
 	public Double getNumericValue(final Information o) {
@@ -263,7 +262,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
 
 		final ReplicaState rep = new ReplicaState(
-				NegotiationStaticParameters.globaLAgentIdentifer,
+				SimpleOpinionService.globaLAgentIdentifer,
 				meanCrit.getRepresentativeElement(),
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
@@ -292,7 +291,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
 
 		final ReplicaState rep = new ReplicaState(
-				NegotiationStaticParameters.globaLAgentIdentifer,
+				SimpleOpinionService.globaLAgentIdentifer,
 				meanCrit.getRepresentativeElement(),
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),

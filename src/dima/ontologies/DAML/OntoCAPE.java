@@ -12,23 +12,23 @@ package dima.ontologies.DAML;
  */
 
 public class OntoCAPE {
-  protected static final String uri =
-          "file:D:/mydoc/oc/daml/v07/modeling_task_specification.daml#";
-  protected static final String uri1 =
-      "file:D:/mydoc/oc/daml/v07/process_modeling_software.daml#";
+	protected static final String uri =
+			"file:D:/mydoc/oc/daml/v07/modeling_task_specification.daml#";
+	protected static final String uri1 =
+			"file:D:/mydoc/oc/daml/v07/process_modeling_software.daml#";
 
 
 
-    public static final String   modelComponent = uri1+"ModelComponent";
-    public static final String   modelingTaskSpec = uri+"ModelingTaskSpec";
+	public static final String   modelComponent = OntoCAPE.uri1+"ModelComponent";
+	public static final String   modelingTaskSpec = OntoCAPE.uri+"ModelingTaskSpec";
 
-  public static String getURIMTS()
-       {
-           return uri;
-    }
-    public static String getURIMC()
-     {
-         return uri1;
-    }
+	public static String getURIMTS()
+	{
+		return OntoCAPE.uri;
+	}
+	public static String getURIMC()
+	{
+		return OntoCAPE.uri1;
+	}
 
 }

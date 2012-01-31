@@ -50,7 +50,7 @@ public class Agenda implements Serializable {
 	//me
 	public void removeActivity(final Activity activity) {
 		this.activities.removeActivity(activity);
-		}
+	}
 
 
 	public void addContact(final Contact c) {
@@ -87,7 +87,7 @@ public class Agenda implements Serializable {
 	/** Return an array for each minutes from now with 0 if an activities can take place, 1 otherwise */
 	public byte[] getNonImpossibleTimeFromNowUntil(final Day dayLimit, final long startTime) {
 
-		final int departureTime = (int)(getNextDepartureTimeAfter(startTime).getTime().getTime() / 60000);
+		final int departureTime = (int)(Agenda.getNextDepartureTimeAfter(startTime).getTime().getTime() / 60000);
 		final int size = (int)(Day.getTimeMillis(dayLimit, 0, 0, 0)/60000) - departureTime + this.diffGMT + 24*60*60; // Le +24*60*60 c est pour inclure la date limite dans les pour parler ;)
 		final byte[] possible = new byte[size];
 		for (int i=0;i<size;i++) possible[i] = 0;
@@ -119,15 +119,15 @@ public class Agenda implements Serializable {
 			for (int i=0;i<24*60;i++)
 				if (av.getAvailability(i) > 0.9)
 					try
-					{
+			{
 						// Lock this position
 						possible[i+start] = 1;
-					}
-					catch (final ArrayIndexOutOfBoundsException ex)
-					{
-						System.err.println("Array out of bound with "+i+" "+start+" "+size+" "+possible.length+" "+timeCursor+" "+dayLimit);
-						System.exit(-1);
-					}
+			}
+			catch (final ArrayIndexOutOfBoundsException ex)
+			{
+				System.err.println("Array out of bound with "+i+" "+start+" "+size+" "+possible.length+" "+timeCursor+" "+dayLimit);
+				System.exit(-1);
+			}
 			start += 24*60;
 			timeCursor = Day.forwardedDay(timeCursor,1);
 		}

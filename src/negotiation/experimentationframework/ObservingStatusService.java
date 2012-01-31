@@ -35,10 +35,12 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 			throws UnrespectedCompetenceSyntaxException {
 		super(ag);
 		this.p = p;
+		this.getSimulationParameters();
 		this.statusEvolution =
-				new StatusQuantityTrunk[this.getSimulationParameters().getNumberOfTimePoints()];
-		for (int i = 0; i < this
-				.getSimulationParameters().getNumberOfTimePoints(); i++)
+				new StatusQuantityTrunk[ExperimentationParameters.getNumberOfTimePoints()];
+		this
+		.getSimulationParameters();
+		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++)
 			this.statusEvolution[i] = new StatusQuantityTrunk();
 	}
 
@@ -103,8 +105,9 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 		String result =
 				"t (seconds in percent);\t lost;\t fragile;\t " +
 						"thrifty (empty);\t thrifty;\t thrifty (full);\t wastefull;\t =\n";
-		for (int i = 0; i < this
-				.getSimulationParameters().getNumberOfTimePoints(); i++)
+		this
+		.getSimulationParameters();
+		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++)
 			result += this.getSimulationParameters()
 			.geTime(i)
 			/ 1000.

@@ -21,20 +21,20 @@ public class AppletPredProie extends Applet {
 	int xPos;
 	private PredProieAPI windowPredProie;
 
-/**
- * AppletPredProie constructor comment.
- */
-public AppletPredProie() {
-	//super();
-	this.font = new Font("Dialog", 1, 24);
-	this.str = "Predator";
-	this.xPos = 10;
-}
-		private void handleException(final Throwable exception)
+	/**
+	 * AppletPredProie constructor comment.
+	 */
+	public AppletPredProie() {
+		//super();
+		this.font = new Font("Dialog", 1, 24);
+		this.str = "Predator";
+		this.xPos = 10;
+	}
+	private void handleException(final Throwable exception)
 	{
 	}
-@Override
-public void init()
+	@Override
+	public void init()
 	{
 		super.init();
 		try

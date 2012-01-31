@@ -68,8 +68,8 @@ class EcoTile extends EcoAgent {
 			this.place.locked = true;
 			final boolean b = this.place.owner.manhattanDistance( this.place, ( EcoPlace) constraint) == 1;
 			if ( !this.canEscapeOn( ( EcoPlace) constraint) && b) {
-				 ( ( EcoPlace) constraint).freeWithConstraint( this.place);
-				 this.doEscapeAggressionWithConstraint( constraint);
+				( ( EcoPlace) constraint).freeWithConstraint( this.place);
+				this.doEscapeAggressionWithConstraint( constraint);
 			}
 		}
 	}
@@ -160,8 +160,8 @@ class EcoTile extends EcoAgent {
 				return ( EcoPlace) l_aux.firstElement();
 			}
 		} else {
-				etq.unlockSystem();
-				return this.findEscapePlaceWithConstraint( constraint);
+			etq.unlockSystem();
+			return this.findEscapePlaceWithConstraint( constraint);
 		}
 
 	}
@@ -185,16 +185,16 @@ class EcoTile extends EcoAgent {
 		final int i = this.place.row;
 		final int j = this.place.col;
 		if ( i == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( i)
-			|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j))
+				|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j))
 			etq.forbidRowColumn();
 		super.informDependantsOfSatisfaction();
 	}
-/**
- * Tests wheter a proactive object is active or no ie whether the ProactiveComponent.
- */
-@Override
-public  boolean isActive()
-  {return this.isSatisfied();}
+	/**
+	 * Tests wheter a proactive object is active or no ie whether the ProactiveComponent.
+	 */
+	@Override
+	public  boolean isActive()
+	{return this.isSatisfied();}
 	@Override
 	public boolean isFree() {
 		return true;
@@ -213,7 +213,7 @@ public  boolean isActive()
 		final int i = ec.row;
 		final int j = ec.col;
 		if ( i == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( i)
-			|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j))
+				|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j))
 			etq.forbidRowColumn();
 		etq.computeSpeed();
 		try {

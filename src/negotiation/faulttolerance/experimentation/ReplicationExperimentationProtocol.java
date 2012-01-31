@@ -46,9 +46,9 @@ ExperimentationProtocol {
 			ReplicationExperimentationProtocol.key4greedySelect,
 			ReplicationExperimentationProtocol.key4rouletteWheelSelect});//,key4AllocSelect
 	Collection<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{
-					DispersionSymbolicValue.Nul,
-					DispersionSymbolicValue.Moyen,
-					DispersionSymbolicValue.Max});
+			DispersionSymbolicValue.Nul,
+			DispersionSymbolicValue.Moyen,
+			DispersionSymbolicValue.Max});
 	Collection<Double> doubleParameters = Arrays.asList(new Double[]{
 			0.1,
 			0.3,
@@ -56,11 +56,11 @@ ExperimentationProtocol {
 			1.});
 
 	//pref TODO : Non imple chez l'agent!!
-//	Collection<String> agentPref = Arrays.asList(new String[]{
-//			ReplicationExperimentationProtocol.key4agentKey_Relia,
-//			ReplicationExperimentationProtocol.key4agentKey_loadNRelia});		
-//	static final String key4agentKey_Relia="onlyRelia";
-//	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
+	//	Collection<String> agentPref = Arrays.asList(new String[]{
+	//			ReplicationExperimentationProtocol.key4agentKey_Relia,
+	//			ReplicationExperimentationProtocol.key4agentKey_loadNRelia});
+	//	static final String key4agentKey_Relia="onlyRelia";
+	//	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
 
 	//
 	// Variation configuration
@@ -68,28 +68,28 @@ ExperimentationProtocol {
 
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=true;
-	
+
 	static boolean varyAccessibleHost=true;
-	
+
 	static boolean  varyAgentSelection=true;
-	static boolean varyHostSelection=false;	
-	
+	static boolean varyHostSelection=false;
+
 	static boolean varyHostDispo=true;
 	static boolean varyHostFaultDispersion=true;
-	
+
 	static boolean varyAgentLoad=true;
 	static boolean varyAgentLoadDispersion=true;
 
 	//
 	// Default values
 	//
-	
+
 	static ReplicationExperimentationParameters getDefaultParameters(final File f) {
 		return new ReplicationExperimentationParameters(
 				f,
 				Experimentator.myId,
-				ReplicationExperimentationProtocol.nbAgents,
-				ReplicationExperimentationProtocol.nbHosts,
+				ExperimentationProtocol.nbAgents,
+				ExperimentationProtocol.nbHosts,
 				1,
 				0.6,
 				DispersionSymbolicValue.Nul,
@@ -101,11 +101,11 @@ ExperimentationProtocol {
 				ExperimentationProtocol.key4greedySelect);
 	}
 
-	
+
 	//
 	// Primitives
 	//
-	
+
 	@Override
 	public LinkedList<ExperimentationParameters> generateSimulation() {
 		final String usedProtocol, agentSelection, hostSelection;
@@ -252,8 +252,8 @@ ExperimentationProtocol {
 
 	static {
 		resultPath=LogService.getMyPath()+"result_"
-				+ ReplicationExperimentationProtocol.nbAgents + "agents_"
-				+ ReplicationExperimentationProtocol.nbHosts + "hosts_"
+				+ ExperimentationProtocol.nbAgents + "agents_"
+				+ ExperimentationProtocol.nbHosts + "hosts_"
 				+ ExperimentationProtocol._simulationTime / 60000
 				+ "mins"
 				+ (ReplicationExperimentationProtocol.varyAgentSelection==true?"varyAgentSelection":"")
@@ -276,13 +276,13 @@ ExperimentationProtocol {
 	final double nbSimuPerMAchine = 1;
 	@Override
 	public Integer getMaxNumberOfAgentPerMachine(final HostIdentifier id) {
-		return new Integer((int) this.nbSimuPerMAchine* (ReplicationExperimentationProtocol.nbAgents + ReplicationExperimentationProtocol.nbHosts)+1);
+		return new Integer((int) this.nbSimuPerMAchine* (ExperimentationProtocol.nbAgents + ExperimentationProtocol.nbHosts)+1);
 	}
 	//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
 	//		return new Integer(10);
 	//	}
 
-	
+
 	//
 	// Creation de laborantin
 	// /////////////////////////////////

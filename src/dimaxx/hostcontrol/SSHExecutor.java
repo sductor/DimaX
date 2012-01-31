@@ -39,8 +39,8 @@ public class SSHExecutor extends  SSHInfo {
 
 	private static final long serialVersionUID = -5702324561374287507L;
 
-//	private OutputStream commandWriter = null;
-//	private OutputStream output = System.out;
+	//	private OutputStream commandWriter = null;
+	//	private OutputStream output = System.out;
 	private final JSch jsch = new JSch();
 
 	private Channel channel = null;
@@ -114,24 +114,24 @@ public class SSHExecutor extends  SSHInfo {
 	// Accessor
 	//
 
-//	/**
-//	 * Holds the output stream that write into the remote input stream
-//	 * Instanciated by connect()
-//	 */
-//	protected OutputStream getCommandWriter() {
-//		return this.commandWriter;
-//	}
-//
-//	/**
-//	 * Holds the output stream associated to the remote outputStream
-//	 * By default, System.out
-//	 */
-//	protected void setOutputStream(OutputStream remoteOutputStream) {
-//		if (this.channel!=null){
-//			this.channel.setOutputStream(remoteOutputStream);}
-//		this.output = remoteOutputStream;
-//	}
-//
+	//	/**
+	//	 * Holds the output stream that write into the remote input stream
+	//	 * Instanciated by connect()
+	//	 */
+	//	protected OutputStream getCommandWriter() {
+	//		return this.commandWriter;
+	//	}
+	//
+	//	/**
+	//	 * Holds the output stream associated to the remote outputStream
+	//	 * By default, System.out
+	//	 */
+	//	protected void setOutputStream(OutputStream remoteOutputStream) {
+	//		if (this.channel!=null){
+	//			this.channel.setOutputStream(remoteOutputStream);}
+	//		this.output = remoteOutputStream;
+	//	}
+	//
 	protected boolean isConnected(){
 		return this.channel!=null && this.session!=null;
 	}
@@ -141,12 +141,12 @@ public class SSHExecutor extends  SSHInfo {
 	//
 
 	public void executeWithJava(final Class<?> classe, final String args)
-	throws ErrorOnProcessExecutionException, JSchException, IOException {
+			throws ErrorOnProcessExecutionException, JSchException, IOException {
 		final String sourceDirectory = this.dir;
 		final String binPath = sourceDirectory + "bin";// "src/";// +
 		final String libPath = sourceDirectory + "lib/*";
 		final String command = "cd " + binPath + "; " + "java -cp $CLASSPATH:" + libPath + " "
-		+ classe.getCanonicalName() + " " + args;
+				+ classe.getCanonicalName() + " " + args;
 
 		this.execute(command);
 	}
@@ -176,13 +176,13 @@ public class SSHExecutor extends  SSHInfo {
 		this.session.connect();
 		System.out.println("\n * * SSH : " + this.url + " : Session connected");
 
-//		// Instanciating streams
-//		final PipedInputStream in = new PipedInputStream();
-//		this.commandWriter = new PipedOutputStream(in);
+		//		// Instanciating streams
+		//		final PipedInputStream in = new PipedInputStream();
+		//		this.commandWriter = new PipedOutputStream(in);
 
 		this.channel=this.session.openChannel("shell");
-//		this.channel.setInputStream(in);
-//		this.channel.setOutputStream(System.out);
+		//		this.channel.setInputStream(in);
+		//		this.channel.setOutputStream(System.out);
 		this.channel.connect();
 
 		if (this.hasGate())

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.tools.computingFuzzyLogic.implicator.Implicateur;
 

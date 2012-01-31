@@ -26,8 +26,8 @@ class EcoBlank extends EcoTile {
 
 		return true;
 	}
-   // public  boolean isFree() {return true}
-  //  public  boolean isSatisfied();
+	// public  boolean isFree() {return true}
+	//  public  boolean isSatisfied();
 
 	public boolean canSatisfyOnPlace() {
 		//retourne true si son goalAgent est adjacent a sa position
@@ -35,10 +35,10 @@ class EcoBlank extends EcoTile {
 	}
 	@Override
 	public void  doEscapeActionWithConstraint( final EcoAgent ea) {
-			final boolean b = this.isSatisfied();//on regarde si le palet etait satisfied
-			this.move( (EcoPlace) ea);
-			if ( b)
-				this.state =  EcoAgent.TRY_SATISFACTION;
+		final boolean b = this.isSatisfied();//on regarde si le palet etait satisfied
+		this.move( (EcoPlace) ea);
+		if ( b)
+			this.state =  EcoAgent.TRY_SATISFACTION;
 	}
 	@Override
 	public  void  doEscapeAggressionWithConstraint( final EcoAgent constraint) {}
@@ -47,8 +47,8 @@ class EcoBlank extends EcoTile {
 	public void doSatisfactionAggressionOnPlace() {
 		if ( this.place.isAdjacentTo( ( EcoPlace) this.goalAgent))
 			( ( EcoPlace) this.goalAgent).freeWithConstraint( null);//##############
-			//doSatisfactionActionOnPlace si liberation reussie : peut etre appel'e dans freeWithConstraint()
-			//de constraint
+		//doSatisfactionActionOnPlace si liberation reussie : peut etre appel'e dans freeWithConstraint()
+		//de constraint
 		else {// on recherche une place intermediaire...
 			final EcoPlace ec = ( EcoPlace) this.findSatisfactionPlace();
 			ec.freeWithConstraint( null);//constraint : eviter le goalAgent
@@ -61,8 +61,8 @@ class EcoBlank extends EcoTile {
 	}
 	@Override
 	public EcoAgent findSatisfactionPlace() {//Choix d'une place intermediaire : la
-	//plus proche du goalAgent telle que ( si possible) l'EcoTile qu'elle supporte ne soit pas
-	//satisfied
+		//plus proche du goalAgent telle que ( si possible) l'EcoTile qu'elle supporte ne soit pas
+		//satisfied
 
 		Vector list = this.place.adjacentPlaces(); //list des EcoCases adjacentes
 		final Vector sauv = ( Vector) list.clone();//pour le cas ou l'on ne pourrait eviter de move un EcoTile
@@ -83,7 +83,7 @@ class EcoBlank extends EcoTile {
 		for( int i = 0; i < list.size(); i++) {
 			final EcoPlace aux = ( EcoPlace) list.elementAt( i);
 			final int db = etq.distanceAvoidingProhibitedPlaces( aux, ( EcoPlace) this.goalAgent,
-																	 prohibitedPlaces);
+					prohibitedPlaces);
 			if ( 0 < db && db < d) {
 				plusProcheDuBut = aux;
 				d = db;

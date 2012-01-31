@@ -9,27 +9,28 @@ public abstract class SimpleAgentState implements AgentState {
 	private static final long serialVersionUID = -1317496111744783996L;
 
 	final AgentIdentifier myAgent;
-	private Long creationTime;
-	private int stateCounter;
+	private final Long creationTime;
+	private final int stateCounter;
 
-	public SimpleAgentState(final AgentIdentifier myAgent, int stateNumber) {
+	public SimpleAgentState(final AgentIdentifier myAgent, final int stateNumber) {
 		super();
 		this.myAgent = myAgent;
 		this.creationTime = new Date().getTime();
-		stateCounter=stateNumber;
+		this.stateCounter=stateNumber;
 	}
 
-//	public SimpleAgentState(final AgentIdentifier myAgent,
-//			final Long creationTime, int stateNumber) {
-//		super();
-//		this.myAgent = myAgent;
-//		this.creationTime = creationTime;
-//		stateCounter=stateNumber;
-//
-//	}
+	//	public SimpleAgentState(final AgentIdentifier myAgent,
+	//			final Long creationTime, int stateNumber) {
+	//		super();
+	//		this.myAgent = myAgent;
+	//		this.creationTime = creationTime;
+	//		stateCounter=stateNumber;
+	//
+	//	}
 
+	@Override
 	public int getStateCounter(){
-		return stateCounter;
+		return this.stateCounter;
 	}
 	@Override
 	public AgentIdentifier getMyAgentIdentifier() {
@@ -46,10 +47,10 @@ public abstract class SimpleAgentState implements AgentState {
 		return new Date().getTime() - this.creationTime;
 	}
 
-//	@Override
-//	public void resetUptime() {
-//		this.creationTime = new Date().getTime();
-//	}
+	//	@Override
+	//	public void resetUptime() {
+	//		this.creationTime = new Date().getTime();
+	//	}
 
 	@Override
 	public String toString() {
@@ -59,14 +60,14 @@ public abstract class SimpleAgentState implements AgentState {
 	@Override
 	public int isNewerThan(final Information i) {
 		if (i instanceof AgentState){
-			SimpleAgentState that = (SimpleAgentState) i;
+			final SimpleAgentState that = (SimpleAgentState) i;
 			assert this.equals(that) || this.getStateCounter()!=that.getStateCounter():this.getStateCounter()+" "+that.getStateCounter();
 			assert this.equals(that) || (this.getStateCounter()>that.getStateCounter()?
 					this.creationTime>=that.creationTime:this.creationTime<= that.creationTime)
-							:this.getStateCounter()+" "+this.creationTime+" * "+that.getStateCounter()+" "+that.creationTime;
+					:this.getStateCounter()+" "+this.creationTime+" * "+that.getStateCounter()+" "+that.creationTime;
 
 					return this.getStateCounter()-that.getStateCounter();
-		} else 
+		} else
 			throw new RuntimeException("wtf");
 	}
 }

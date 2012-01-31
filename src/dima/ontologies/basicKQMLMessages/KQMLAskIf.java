@@ -11,19 +11,19 @@ import dima.kernel.communicatingAgent.OntologyBasedAgent;
 
 public class KQMLAskIf extends KQML {
 
-    /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 3848164711605645669L;
 	public KQMLAskIf(final String tx, final String rx,
-			 final String msg,
-			 final String irt, final String rw) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("ask-if");
-    }
-    @Override
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("ask-if");
+	}
+	@Override
 	public void processKQML(final OntologyBasedAgent a)
-    {
-    a.processAskIf(this);
-    }
+	{
+		a.processAskIf(this);
+	}
 }

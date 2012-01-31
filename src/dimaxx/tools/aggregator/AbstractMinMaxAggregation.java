@@ -3,7 +3,7 @@ package dimaxx.tools.aggregator;
 import dima.basicinterfaces.DimaComponentInterface;
 
 public interface AbstractMinMaxAggregation<Element> extends
-		DimaComponentInterface {
+DimaComponentInterface {
 
 	// public abstract boolean add(final Element value);
 

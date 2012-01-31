@@ -16,16 +16,16 @@ public class ACLAskAbout extends FIPAACLMessage {
 	private static final long serialVersionUID = 5541514307932863319L;
 
 	public ACLAskAbout (final String tx, final String rx,
-			 final String msg,
-			 final String irt, final String rw) {
+			final String msg,
+			final String irt, final String rw) {
 
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("ask-about");
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("ask-about");
 	}
 
-@Override
-public boolean isAsk ()
-{
-	return true;
-}
+	@Override
+	public boolean isAsk ()
+	{
+		return true;
+	}
 }

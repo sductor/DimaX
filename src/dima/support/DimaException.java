@@ -1,10 +1,10 @@
 package dima.support;
 
 /**
-* Root  Exceptionfor all competences
-* @author: G�rard Rozsavolgyi
-* @version
-*/
+ * Root  Exceptionfor all competences
+ * @author: G�rard Rozsavolgyi
+ * @version
+ */
 public class DimaException extends Exception {
 
 	/**

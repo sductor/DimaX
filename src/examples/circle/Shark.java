@@ -1,8 +1,8 @@
 package examples.circle;
 
 /**
-*  ProactiveComponent example
-*/
+ *  ProactiveComponent example
+ */
 
 
 import java.awt.Color;
@@ -51,10 +51,10 @@ public class Shark extends BasicReactiveAgent {
 		g.fillRect(this.getPosX() - 1, this.getPosY() - 1, 3, 3);
 
 	}
-/* this method is synchronized because we access and modifify the class (static) field deadShark. */
+	/* this method is synchronized because we access and modifify the class (static) field deadShark. */
 
-@Override
-public  synchronized void proactivityTerminate() {
+	@Override
+	public  synchronized void proactivityTerminate() {
 		Shark.deadShark++;
 		System.out.println(Shark.deadShark);
 		if(Shark.deadShark >= 1000) {
@@ -70,11 +70,11 @@ public  synchronized void proactivityTerminate() {
 	public void setPosY(final int newValue) {
 		this.posY = newValue;
 	}
-/** Try to get closer to the central circle ! */
+	/** Try to get closer to the central circle ! */
 
 
-@Override
-public void step() {
+	@Override
+	public void step() {
 		final int distX = this.getPosX() - 170;
 		final int distY = this.getPosY() - 138;
 		final int dist = (int)Math.sqrt(Math.pow(Math.abs(distX), 2D) + Math.pow(Math.abs(distY), 2D));

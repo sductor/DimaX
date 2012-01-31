@@ -11,7 +11,7 @@ public interface AgentState extends Information {
 	@Override
 	public AgentIdentifier getMyAgentIdentifier();
 
-//	void resetUptime();
+	//	void resetUptime();
 
 	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers();
 

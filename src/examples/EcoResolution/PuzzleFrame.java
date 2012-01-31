@@ -102,7 +102,7 @@ public class PuzzleFrame extends Frame {
 		super( titre);
 		this.parent = a;
 		PuzzleFrame.TAILLE_DEFAUT = t;
-			//{{INIT_CONTROLS
+		//{{INIT_CONTROLS
 		this.setLayout(new BorderLayout(1,2));
 		this.setVisible(false);
 		this.setSize(609,576);
@@ -176,7 +176,7 @@ public class PuzzleFrame extends Frame {
 		//}}
 		//{{INIT_MENUS
 		//}}
-		 this.taquin = new EcoNPuzzle( this,  PuzzleFrame.TAILLE_DEFAUT);//creation d'une instance d'EcoNPuzzle
+		this.taquin = new EcoNPuzzle( this,  PuzzleFrame.TAILLE_DEFAUT);//creation d'une instance d'EcoNPuzzle
 		//liee a la fenetre de l'application
 		this.puzzlePanel.add( this.taquin.support);
 		//les boutons et la boite a cocher
@@ -203,13 +203,13 @@ public class PuzzleFrame extends Frame {
 	}
 	void button1_ActionPerformed(final java.awt.event.ActionEvent event)
 	{
-		 final String str = this.textField1.getText();
-		 try {
+		final String str = this.textField1.getText();
+		try {
 			final int i = Integer.parseInt( str);
 			if ( 2 < i ) this.resize( i);
-		 } catch ( final NumberFormatException exc) {}
-		 this.runButton.setEnabled(true);
-		 this.stopButton.setEnabled(false);
+		} catch ( final NumberFormatException exc) {}
+		this.runButton.setEnabled(true);
+		this.stopButton.setEnabled(false);
 
 	}
 	void button2_ActionPerformed(final java.awt.event.ActionEvent event)
@@ -231,26 +231,26 @@ public class PuzzleFrame extends Frame {
 	}
 	void PuzzleFrame_WindowClosing(final java.awt.event.WindowEvent event)
 	{
-			if ( this.active != null) {
-				this.active.stop();
-				this.active = null;
-			}
-			this.dispose();
-			this.parent.repaint();
+		if ( this.active != null) {
+			this.active.stop();
+			this.active = null;
+		}
+		this.dispose();
+		this.parent.repaint();
 	}
 	void PuzzleFrame_WindowDeiconified(final java.awt.event.WindowEvent event)
 	{
-		            if ( this.active != null)
-				this.active.resume();
+		if ( this.active != null)
+			this.active.resume();
 
 	}
 	void PuzzleFrame_WindowIconified(final java.awt.event.WindowEvent event)
 	{
-			if ( this.active != null)
-				this.active.suspend();
-			this.parent.repaint();
+		if ( this.active != null)
+			this.active.suspend();
+		this.parent.repaint();
 	}
-   public void refresh( final EcoPlace e1, final EcoPlace e2) {
+	public void refresh( final EcoPlace e1, final EcoPlace e2) {
 		final Graphics g = this.taquin.support.getGraphics();
 		e1.refresh( g);
 		e2.refresh( g);

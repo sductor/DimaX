@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.contracts.AllocationTransition;
 import negotiation.negotiationframework.strategy.evaluation.AbstractStrategicEvaluationModule;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;

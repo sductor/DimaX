@@ -12,20 +12,20 @@ import dima.kernel.communicatingAgent.OntologyBasedAgent;
 
 public class KQMLUntell extends KQML {
 
-    /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -2551178784793661678L;
 	public KQMLUntell(final String tx, final String rx,
-		      final String msg,
-		      final String irt, final String rw) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("untell");
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("untell");
 
-    }
-     @Override
+	}
+	@Override
 	public void processKQML(final OntologyBasedAgent a)
-    {
-      a.processUntell(this);
-    }
+	{
+		a.processUntell(this);
+	}
 }

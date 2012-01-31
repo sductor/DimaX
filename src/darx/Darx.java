@@ -238,9 +238,9 @@ public class Darx extends UnicastRemoteObject implements DarxServer {
 				i++;
 			} else {
 				System.out
-						.println("Incorrect use of DARX server startup command:"
-								+ "\n'./startdarx -ns <ns_url ns_port_number>] "
-								+ "[-p <port_number>]'");
+				.println("Incorrect use of DARX server startup command:"
+						+ "\n'./startdarx -ns <ns_url ns_port_number>] "
+						+ "[-p <port_number>]'");
 				final Collection<String> yo = Arrays.asList(parameters);
 				System.out
 				.println("received command :"+yo.toString());

@@ -59,7 +59,7 @@ public class Executor implements Serializable {
 	 * @throws WrongOSException
 	 */
 	public String execute(final String cmd)
-	throws ErrorOnProcessExecutionException {
+			throws ErrorOnProcessExecutionException {
 		try {
 			if (this.getOperatingSystem().equals(OperatingSystem.Linux) || this.getOperatingSystem().equals(OperatingSystem.Mac))
 				return this.executeWithBash(cmd);
@@ -82,7 +82,7 @@ public class Executor implements Serializable {
 	 * @throws WrongOSException
 	 */
 	protected String executeWithBash(final String cmd)
-	throws ErrorOnProcessExecutionException, WrongOSException {
+			throws ErrorOnProcessExecutionException, WrongOSException {
 		final Process p = this.getLinuxProcess();
 		this.executeOnProcess(p, cmd);
 		return this.getProcessOutput(p);
@@ -98,7 +98,7 @@ public class Executor implements Serializable {
 	 * @throws WrongOSException
 	 */
 	protected String executeWithWindows(final String cmd)
-	throws ErrorOnProcessExecutionException, WrongOSException {
+			throws ErrorOnProcessExecutionException, WrongOSException {
 		final Process p = this.getWindowsProcess();
 		this.executeOnProcess(p, cmd);
 		return this.getProcessOutput(p);
@@ -114,7 +114,7 @@ public class Executor implements Serializable {
 	 * @return the process after the command being executed
 	 */
 	private Process executeOnProcess(final Process p, String cmd)
-	throws ErrorOnProcessExecutionException {
+			throws ErrorOnProcessExecutionException {
 		cmd += "\n";
 		try {
 			final OutputStream in = p.getOutputStream();
@@ -160,7 +160,7 @@ public class Executor implements Serializable {
 	 * @throws WrongOSException
 	 */
 	private Process getWindowsProcess()
-	throws ErrorOnProcessExecutionException, WrongOSException {
+			throws ErrorOnProcessExecutionException, WrongOSException {
 		if (!this.getOperatingSystem().equals(OperatingSystem.Windows))
 			throw new WrongOSException();
 		try {
@@ -179,7 +179,7 @@ public class Executor implements Serializable {
 	 * @throws ErrorOnProcessExecutionException
 	 */
 	private String getProcessOutput(final Process p)
-	throws ErrorOnProcessExecutionException {
+			throws ErrorOnProcessExecutionException {
 		final byte[] b = new byte[1024]; // Pour convertir la commande dans le
 		// bon
 		// format
@@ -201,7 +201,7 @@ public class Executor implements Serializable {
 	}
 
 	public String executeWithBash(final String[] args)
-	throws ErrorOnProcessExecutionException, WrongOSException {
+			throws ErrorOnProcessExecutionException, WrongOSException {
 		// A utiliser directement
 		// dans le terminal
 
@@ -213,9 +213,9 @@ public class Executor implements Serializable {
 			cmd += args[i] + " ";
 		cmd += "\n";
 		String getBMips =
-			"grep bogomips /proc/cpuinfo | cut -d: -f2 | sed -e \"s/ \\([0-9]*.[0-9]*\\)/\\1/\""
-			; getBMips += " | sed -e \"2 s/\\([0-9]*.[0-9]*\\)//\" ";
-			return this.executeWithBash(cmd);
+				"grep bogomips /proc/cpuinfo | cut -d: -f2 | sed -e \"s/ \\([0-9]*.[0-9]*\\)/\\1/\""
+				; getBMips += " | sed -e \"2 s/\\([0-9]*.[0-9]*\\)//\" ";
+				return this.executeWithBash(cmd);
 	}
 
 
@@ -224,7 +224,7 @@ public class Executor implements Serializable {
 		final Executor exec = new Executor();
 
 		String getBMips =
-			"grep bogomips /proc/cpuinfo | cut -d: -f2 | sed -e \"s/ \\([0-9]*.[0-9]*\\)/\\1/\"";
+				"grep bogomips /proc/cpuinfo | cut -d: -f2 | sed -e \"s/ \\([0-9]*.[0-9]*\\)/\\1/\"";
 		getBMips += " | sed -e \"2 s/\\([0-9]*.[0-9]*\\)//\" ";
 
 		//String getLatence = "ping " + args[0] + " -q -c 3 | grep rtt | cut -d/ -f5";

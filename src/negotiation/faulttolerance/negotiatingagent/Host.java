@@ -10,13 +10,8 @@ import negotiation.negotiationframework.interaction.consensualnegotiation.Abstra
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
 
 public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
@@ -55,7 +50,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		@Override
 		protected void resetMyState() {
 			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
-					Host.this.getMyCurrentState().getLambda(),getMyAgent().nextStateCounter));
+					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().nextStateCounter));
 			this.resetMyUptime();
 		}
 
@@ -95,66 +90,66 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 
 
-	//
-	// Accessors
-	//
+//
+// Accessors
+//
 
 //	public boolean isFaulty() {
 //		return this.getMyCurrentState().isFaulty();
 //	}
 
-	//
-	// Behavior
-	//
+//
+// Behavior
+//
 
-	//	@MessageHandler
-	//	@NotificationEnvelope
-	//	public void updateAgentInfo(final NotificationMessage<ReplicaState> r) {
-	//		this.getMyInformation().add(r.getNotification());
-	//	}
+//	@MessageHandler
+//	@NotificationEnvelope
+//	public void updateAgentInfo(final NotificationMessage<ReplicaState> r) {
+//		this.getMyInformation().add(r.getNotification());
+//	}
 
 //	@MessageHandler
 //	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
 //	public <Info extends Information> void receiveInformation(
 //			final NotificationMessage<Information> o) {
-		//		logMonologue("yophoi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		//		if (o.getNotification() instanceof ReplicaState && getMyCurrentState().Ihost(((ReplicaState)o.getNotification()).getMyAgentIdentifier())){
-		//			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
-		//			HostState h = new HostState(getMyCurrentState(),
-		//					(ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
-		//			//on remet ce nouveau state dans h
-		//			h = new HostState(h, (ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
-		//			setNewState(h);
-		//		}
+//		logMonologue("yophoi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		if (o.getNotification() instanceof ReplicaState && getMyCurrentState().Ihost(((ReplicaState)o.getNotification()).getMyAgentIdentifier())){
+//			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
+//			HostState h = new HostState(getMyCurrentState(),
+//					(ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
+//			//on remet ce nouveau state dans h
+//			h = new HostState(h, (ReplicaState) o.getNotification(), getMyCurrentState().getCreationTime());
+//			setNewState(h);
+//		}
 //	}
 
-	//	public Double getReliability(final AgentIdentifier id)
-	//			throws NoInformationAvailableException {
-	//		return getMyInformation()
-	//				.getInformation(ReplicaState.class, id).getMyReliability();
-	//	}
-	//
-	//	public Double getMemCharge(final AgentIdentifier id)
-	//			throws NoInformationAvailableException {
-	//		return getMyInformation()
-	//				.getInformation(ReplicaState.class, id).getMyMemCharge();
-	//	}
-	//
-	//	public Double getProcCharge(final AgentIdentifier id)
-	//			throws NoInformationAvailableException {
-	//		return getMyInformation()
-	//				.getInformation(ReplicaState.class, id).getMyProcCharge();
-	//	}
+//	public Double getReliability(final AgentIdentifier id)
+//			throws NoInformationAvailableException {
+//		return getMyInformation()
+//				.getInformation(ReplicaState.class, id).getMyReliability();
+//	}
+//
+//	public Double getMemCharge(final AgentIdentifier id)
+//			throws NoInformationAvailableException {
+//		return getMyInformation()
+//				.getInformation(ReplicaState.class, id).getMyMemCharge();
+//	}
+//
+//	public Double getProcCharge(final AgentIdentifier id)
+//			throws NoInformationAvailableException {
+//		return getMyInformation()
+//				.getInformation(ReplicaState.class, id).getMyProcCharge();
+//	}
 
 
-	// @Override
-	// protected EndInfo getMyEndNotif() {
-	// return new HostEndInfo(getMyCurrentState(),getCreationTime());
-	// }
+// @Override
+// protected EndInfo getMyEndNotif() {
+// return new HostEndInfo(getMyCurrentState(),getCreationTime());
+// }
 
-	//
-	// Subclass
-	//
+//
+// Subclass
+//
 
 
 //}

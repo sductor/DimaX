@@ -3,9 +3,6 @@ package negotiation.negotiationframework.interaction.candidatureprotocol;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
@@ -37,11 +34,11 @@ ActionSpec,PersonalState,Contract> {
 			if (id instanceof ResourceIdentifier
 					&& !this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
 					.contains(id))
-				candidatures.add(constructCandidature((ResourceIdentifier) id));
+				candidatures.add(this.constructCandidature((ResourceIdentifier) id));
 
 				return candidatures;
 	}
-	
+
 	public abstract Contract constructCandidature(ResourceIdentifier id);
 
 }

@@ -55,7 +55,7 @@ implements Runnable {
 	@Override
 	public void run() {
 		this.proactivity.startUp();
-//		this.thread.interrupt();
+		//		this.thread.interrupt();
 		this.proactivity=null;
 		this.thread = null;
 	}

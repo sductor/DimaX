@@ -7,15 +7,15 @@ package dima.tools.agentInterface;
  */
 public abstract class AbstractAction extends AgentInterfaceObject{
 
-/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1664100656568523289L;
 
-/**
- * Insert the method's description here.
- * Creation date: (07/06/00 09:55:45)
- * @param o Object
- */
-public abstract void execute(Object o);
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (07/06/00 09:55:45)
+	 * @param o Object
+	 */
+	public abstract void execute(Object o);
 }

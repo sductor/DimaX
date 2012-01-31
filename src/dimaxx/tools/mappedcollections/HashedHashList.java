@@ -46,7 +46,7 @@ public class HashedHashList<K, V> extends Hashtable<K, List<V>> {
 			for (final V v : this.get(k))
 				if (v.equals(value))
 					return true;
-		return false;
+					return false;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class HashedHashList<K, V> extends Hashtable<K, List<V>> {
 		final Collection<V> finalValues = new HashSet<V>();
 		for (final List<V> l : super.values())
 			finalValues.addAll(l);
-		return finalValues;
+				return finalValues;
 	}
 
 	@Override

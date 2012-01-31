@@ -39,7 +39,7 @@ class EcoPlace extends EcoAgent {
 	}
 	public Vector adjacentPlaces() {
 		//retourne la list des Ecocases adjacentes a this
-	//( il y en a 2, 3, ou 4)
+		//( il y en a 2, 3, ou 4)
 		final int ilc = this.owner.indexFirstRowColumnAllowed;
 
 		final Vector adjPlaces = new Vector();
@@ -79,8 +79,8 @@ class EcoPlace extends EcoAgent {
 	public  EcoAgent findSatisfactionPlace() {return this;}
 	public boolean isAdjacentTo( final EcoPlace ec) {//renvoie true si ec est adjacent a "this"
 		if ( this.row == ec.row && Math.abs( this.col - ec.col) == 1 ||
-			this.col == ec.col && Math.abs( this.row - ec.row) == 1)
-				return true;
+				this.col == ec.col && Math.abs( this.row - ec.row) == 1)
+			return true;
 		else
 			return false;
 	}
@@ -105,45 +105,45 @@ class EcoPlace extends EcoAgent {
 	//********************************************************************
 	// Methodes de EcoCases li'ees a l'interface graphique
 	//********************************************************************
-   public void refresh( final Graphics g) {
+	public void refresh( final Graphics g) {
 		if ( this.tile.number != 0) {
 			Color c;
 			switch( this.tile.state) {
-				case EcoAgent. TRY_SATISFACTION :
-					c = Color.blue;
-					break;
-				case EcoAgent.FORBIDDEN :
-					c = Color.darkGray;
-					break;
-				case EcoAgent.SATISFIED :
-					c = Color.gray;
-					break;
-				case EcoAgent.AGGRESSION_SATISFACTION :
-					c = Color.red;
-					break;
-				case EcoAgent.AGGRESSION_ESCAPE :
-					c = new Color( 153, 0, 153);
-					break;
-				default :
-					c = Color.gray;
+			case EcoAgent. TRY_SATISFACTION :
+				c = Color.blue;
+				break;
+			case EcoAgent.FORBIDDEN :
+				c = Color.darkGray;
+				break;
+			case EcoAgent.SATISFIED :
+				c = Color.gray;
+				break;
+			case EcoAgent.AGGRESSION_SATISFACTION :
+				c = Color.red;
+				break;
+			case EcoAgent.AGGRESSION_ESCAPE :
+				c = new Color( 153, 0, 153);
+				break;
+			default :
+				c = Color.gray;
 			}
 			g.setColor( c );
 			g.fill3DRect( this.posX, this.posY, this.size, this.size, true);//representation graphique d'un EcoPalets :
-		  //g.fill3DRect( posX + 1, posY + 1, size - 2, size - 2, false);// 3 rectangle "3D" imbriqu'es pour
+			//g.fill3DRect( posX + 1, posY + 1, size - 2, size - 2, false);// 3 rectangle "3D" imbriqu'es pour
 			//g.fill3DRect( posX + 2, posY + 2, size - 4, size - 4, false);//creer un effet de relief
 			g.setColor( Color.white);
 			g.setFont( new Font( "Arial", Font.BOLD, this.size / 2));
 			final FontMetrics fm = g.getFontMetrics();
 			final String st = new Integer( this.tile.number).toString();
 			g.drawString( st, this.posX + ( this.size - fm.stringWidth(st)) / 2,
-											this.posY + ( this.size + fm.getAscent()) /2 - 4  );
+					this.posY + ( this.size + fm.getAscent()) /2 - 4  );
 		} else {
 			g.setColor(  Color.white);
 			g.fillRect( this.posX, this.posY, this.size, this.size);
 		}
 	}
 	public void switchTiles( final EcoPlace ec) {//intervertit la place de 2 EcoPalets
-	// se trouvant sur cette EcoPlace avec celui se trouvant sur l'EcoPlace ec
+		// se trouvant sur cette EcoPlace avec celui se trouvant sur l'EcoPlace ec
 		final EcoTile aux = this.tile;
 		this.tile = ec.tile;
 		ec.tile.place = this;

@@ -63,34 +63,34 @@ public class NotificationEnvelopeClass implements Envelope {
 
 		if (o instanceof NotificationEnvelopeClass){
 			final NotificationEnvelopeClass that = (NotificationEnvelopeClass) o;
-//			try {// attempting key are classes
-//				Class<?> thisClass = Class.forName(this.key);
-//				Class<?> thatClass = Class.forName(that.key);
-//				return thisClass.isAssignableFrom(thatClass) || thatClass.isAssignableFrom(thisClass);
-//			} catch (ClassNotFoundException e) {
-//				//the key are not classes so simple equals of string
-				return this.key.equals(((NotificationEnvelopeClass) o).key);
-//			}
+			//			try {// attempting key are classes
+			//				Class<?> thisClass = Class.forName(this.key);
+			//				Class<?> thatClass = Class.forName(that.key);
+			//				return thisClass.isAssignableFrom(thatClass) || thatClass.isAssignableFrom(thisClass);
+			//			} catch (ClassNotFoundException e) {
+			//				//the key are not classes so simple equals of string
+			return this.key.equals(((NotificationEnvelopeClass) o).key);
+			//			}
 		}else
 			return false;
 	}
 
 	@Override
 	public int hashCode(){
-//		try {// attempting key are classes
-//			Class<?> thisClass = Class.forName(this.key);
-//			while (thisClass.isAssignableFrom(Serializable.class))
-//				thisClass = thisClass.getSuperclass();
-//			return thisClass.hashCode();
-//		} catch (ClassNotFoundException e) {
-//			//the key are not classes so simple equals of string
-			return this.key.hashCode();
-//		}
+		//		try {// attempting key are classes
+		//			Class<?> thisClass = Class.forName(this.key);
+		//			while (thisClass.isAssignableFrom(Serializable.class))
+		//				thisClass = thisClass.getSuperclass();
+		//			return thisClass.hashCode();
+		//		} catch (ClassNotFoundException e) {
+		//			//the key are not classes so simple equals of string
+		return this.key.hashCode();
+		//		}
 	}
 
 	@Override
 	public String toString(){
-			return "Envelope of notification "+this.key;
+		return "Envelope of notification "+this.key;
 	}
 
 

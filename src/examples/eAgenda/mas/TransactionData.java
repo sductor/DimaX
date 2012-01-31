@@ -32,11 +32,11 @@ public class TransactionData implements Serializable {
 	}
 
 	public TransactionID getTransactionID(){
-	return this.TID;
+		return this.TID;
 	}
 
 	public Meeting getMeeting(){
-	return this.goal;
+		return this.goal;
 	}
 
 

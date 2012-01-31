@@ -21,7 +21,7 @@ public class ContactList extends People {
 		super(listName);
 
 		// By default this is a and relation
-		this.operator = AND_RELATION;
+		this.operator = ContactList.AND_RELATION;
 		this.myPeople = new ArrayList();
 	}
 	public void addPeople(final People p) {
@@ -38,11 +38,11 @@ public class ContactList extends People {
 		return list;
 	}
 
-    @Override
+	@Override
 	public int getSize(){
-	return this.myPeople.size();
+		return this.myPeople.size();
 
-    }
+	}
 	public int getRelation() {
 		return this.operator;
 	}
@@ -50,7 +50,7 @@ public class ContactList extends People {
 		this.operator = relation;
 	}
 
-public ArrayList getMyPeople(){
-return this.myPeople;
-}
+	public ArrayList getMyPeople(){
+		return this.myPeople;
+	}
 }

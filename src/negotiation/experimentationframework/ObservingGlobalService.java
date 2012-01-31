@@ -139,42 +139,41 @@ extends BasicAgentCompetence<Laborantin>{
 	//
 
 
-//		//VERIFICATION
-//		HashSet<AgentIdentifier> alreadyReceived = new HashSet<AgentIdentifier>();
-//		public static ArrayList<HashSet<AgentIdentifier>> received;
-//		static {
-//			received = new ArrayList<HashSet<AgentIdentifier>>();
-//			for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++)
-//				received.add(new HashSet<AgentIdentifier>());
-//		}
-//		assert !received.get(i).contains(ag.getId());
-//		received.get(i).add(ag.getId());
-//		//VERIFICATION
+	//		//VERIFICATION
+	//		HashSet<AgentIdentifier> alreadyReceived = new HashSet<AgentIdentifier>();
+	//		public static ArrayList<HashSet<AgentIdentifier>> received;
+	//		static {
+	//			received = new ArrayList<HashSet<AgentIdentifier>>();
+	//			for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++)
+	//				received.add(new HashSet<AgentIdentifier>());
+	//		}
+	//		assert !received.get(i).contains(ag.getId());
+	//		received.get(i).add(ag.getId());
+	//		//VERIFICATION
 	@MessageHandler
 	@NotificationEnvelope
 	public final void receiveResult(final NotificationMessage<ActivityLog> l){
-		
+
 		final LinkedList<ExperimentationResults> results =
 				l.getNotification().getResults();
-		
+
 		//Verfication
-//		ExperimentationResults resultType= results.getLast();
-//		assert (!alreadyReceived.contains(resultType.getId())):"argh! already received"+resultType.getId();
-//		alreadyReceived.add(resultType.getId());
-//		assert (results.size()<=p.getNumberOfTimePoints()):"arg : "+results.size();
-//		System.out.println("\n"+resultType.getId()+"   "+ExperimentationProtocol._state_snapshot_frequency+" :");
-//		for (final ExperimentationResults r : results){
-//			System.out.println(r.getUptime()+"  "+ExperimentationParameters.getTimeStep(r));
-//		}
+		//		ExperimentationResults resultType= results.getLast();
+		//		assert (!alreadyReceived.contains(resultType.getId())):"argh! already received"+resultType.getId();
+		//		alreadyReceived.add(resultType.getId());
+		//		assert (results.size()<=p.getNumberOfTimePoints()):"arg : "+results.size();
+		//		System.out.println("\n"+resultType.getId()+"   "+ExperimentationProtocol._state_snapshot_frequency+" :");
+		//		for (final ExperimentationResults r : results){
+		//			System.out.println(r.getUptime()+"  "+ExperimentationParameters.getTimeStep(r));
+		//		}
 		//verfication
-		
-				
-		for (final ExperimentationResults r : results){
+
+
+		for (final ExperimentationResults r : results)
 			this.updateInfo(r);
-		}
-		
-		if (results.getLast() instanceof ReplicationResultAgent)
-			this.finalStates.add((ReplicationResultAgent) results.getLast());
+
+				if (results.getLast() instanceof ReplicationResultAgent)
+					this.finalStates.add((ReplicationResultAgent) results.getLast());
 
 	}
 
@@ -222,9 +221,9 @@ extends BasicAgentCompetence<Laborantin>{
 							variable.getMaxElement()+";\t " +
 							//							variable.getSum()+";\t " +
 							variable.getRepresentativeElement()+";\t " +
-							(double) variable.getWeightOfAggregatedElements()/(double)  totalNumber+"\n";
+							variable.getWeightOfAggregatedElements()/totalNumber+"\n";
 				else
-					result += "-;\t-;\t-;\t-;\t-;\t-  ("+(double)variable.getWeightOfAggregatedElements()/(double)  totalNumber+")\n";
+					result += "-;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
 
 				return result;
 	}
@@ -239,9 +238,9 @@ extends BasicAgentCompetence<Laborantin>{
 				+entry+"  max ;\t "
 				//				+entry+" sum ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
-		for (int i = 0; i < p.getNumberOfTimePoints(); i++){
+		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++){
 			result += p.geTime(i)/1000.+" ;\t ";
-			if (variable[i].getWeightOfAggregatedElements()>significatifPercent*totalNumber)//!variable[i].isEmpty() && 
+			if (variable[i].getWeightOfAggregatedElements()>significatifPercent*totalNumber)//!variable[i].isEmpty() &&
 				result +=
 				variable[i].getMinElement()+";\t " +
 						variable[i].getQuantile(1,3)+";\t " +
@@ -250,9 +249,9 @@ extends BasicAgentCompetence<Laborantin>{
 						variable[i].getMaxElement()+";\t " +
 						//						variable[i].getSum()+";\t " +
 						variable[i].getRepresentativeElement()+";\t (" +
-						(double) variable[i].getWeightOfAggregatedElements()/(double)  totalNumber+")\n";
-			else 
-				result += "-;\t-;\t-;\t-;\t-;\t-;\t  ("+(double)variable[i].getWeightOfAggregatedElements()/(double)  totalNumber+")\n";
+						variable[i].getWeightOfAggregatedElements()/totalNumber+")\n";
+			else
+				result += "-;\t-;\t-;\t-;\t-;\t-;\t  ("+variable[i].getWeightOfAggregatedElements()/totalNumber+")\n";
 		}
 		return result;
 	}
@@ -260,7 +259,7 @@ extends BasicAgentCompetence<Laborantin>{
 	public static  String getMeanTimeEvolutionObs(final ExperimentationParameters p, final String entry, final LightAverageDoubleAggregation[] variable,
 			final double significatifPercent, final int totalNumber){
 		String result = "t (seconds);\t "+entry+" ;\t percent of agent aggregated=\n";
-		for (int i = 0; i < p.getNumberOfTimePoints(); i++){
+		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++){
 			result += p.geTime(i)/1000.+" ;\t ";
 			if (variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber)
 				result+=variable[i].getRepresentativeElement()+";\t (" +

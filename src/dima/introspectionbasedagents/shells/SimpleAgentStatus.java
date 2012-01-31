@@ -115,9 +115,9 @@ public class SimpleAgentStatus extends GimaObject {
 	@Override
 	public String toString() {
 		return 		"Agent Status :"
-		+	"\n    *** agent : " + this.getCurrentlyExecutedAgent()
-		+ 	"\n    *** method : " + this.getCurrentlyExecutedMethod()
-		+ 	"\n    *** mail  : " + this.getCurrentlyReadedMail().getClass();
+				+	"\n    *** agent : " + this.getCurrentlyExecutedAgent()
+				+ 	"\n    *** method : " + this.getCurrentlyExecutedMethod()
+				+ 	"\n    *** mail  : " + this.getCurrentlyReadedMail().getClass();
 	}
 
 }

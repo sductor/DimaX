@@ -111,7 +111,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 		if (this.dimaComponent instanceof CompetentComponent)
 			((CompetentComponent) this.dimaComponent).logMonologue("Suspending "+this.getTaskName(), LogService.darxKey);
 		else
-		LogService.write(this, "Suspending "+ this.getTaskName());
+			LogService.write(this, "Suspending "+ this.getTaskName());
 		this.setdimaxTaskActive(false);
 	}
 
@@ -126,7 +126,7 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 		if (this.dimaComponent instanceof CompetentComponent)
 			((CompetentComponent) this.dimaComponent).logMonologue("Resuming "+this.getTaskName(), LogService.darxKey);
 		else
-		LogService.write(this, "Resuming "+ this.getTaskName());
+			LogService.write(this, "Resuming "+ this.getTaskName());
 		this.setdimaxTaskActive(true);
 	}
 
@@ -159,11 +159,11 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 			else if (this.dimaComponent instanceof CompetentComponent)
 				((CompetentComponent) this.dimaComponent).signalException(msg+" is not a message : can not be added to mail box!");
 			else
-			LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
+				LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
 		} else if (this.dimaComponent instanceof CompetentComponent)
 			((CompetentComponent) this.dimaComponent).signalException(this.dimaComponent+" does not communicate!");
 		else
-		LogService.writeException(this, this.dimaComponent+" does not communicate!");
+			LogService.writeException(this, this.dimaComponent+" does not communicate!");
 
 	}
 

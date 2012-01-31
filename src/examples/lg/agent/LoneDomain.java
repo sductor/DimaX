@@ -15,11 +15,11 @@ import examples.lg.strategy.DropHeuristic;
  * Window>Preferences>Java>Code Generation.
  */
 public abstract class LoneDomain extends dima.kernel.communicatingAgent.ATNBasedCommunicatingAgent{
-/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 4215144812105413765L;
-protected LetterGame game;
+	protected LetterGame game;
 
 
 
@@ -47,13 +47,13 @@ protected LetterGame game;
 
 	public void dropLetter() {
 		final Letter l = DropHeuristic.whichToDrop(this.game);
-			if (l != null)
-				try {
-					// action simple bas�e sur la d�cision complexe
-					this.game.dropLetter(l);
-				} catch (final GameException e) {
-					e.printStackTrace(System.out);
-				}
+		if (l != null)
+			try {
+				// action simple bas�e sur la d�cision complexe
+				this.game.dropLetter(l);
+			} catch (final GameException e) {
+				e.printStackTrace(System.out);
+			}
 	}
 
 	/**

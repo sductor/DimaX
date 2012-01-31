@@ -73,7 +73,7 @@ public class AgentFact extends BasicCommunicatingAgent {
 	public void proactivityTerminate(){
 		LogService.write(this.getId(),"La factoriel de "+this.n+" vaut "+this.liste.pop());
 		this.desactivateWithFipa();
-//		System.exit(1);
+		//		System.exit(1);
 	}
 
 	@Override

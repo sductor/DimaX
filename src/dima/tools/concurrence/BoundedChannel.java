@@ -11,7 +11,7 @@ package dima.tools.concurrence;
   History:
   Date       Who                What
   11Jun1998  dl               Create public version
-*/
+ */
 
 
 /**
@@ -25,9 +25,9 @@ package dima.tools.concurrence;
  **/
 
 public interface BoundedChannel extends Channel {
-  /**
-   * Return the maximum number of elements that can be held.
-   * @return the capacity of this channel.
-   **/
-  public int capacity();
+	/**
+	 * Return the maximum number of elements that can be held.
+	 * @return the capacity of this channel.
+	 **/
+	public int capacity();
 }

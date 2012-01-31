@@ -48,11 +48,11 @@ public class DimaXDeploymentScript extends HostsPark{
 	//
 
 	public void launchNameServer() {
-//		Integer port=7777;
-//		final String[] s = new String[2];
-//		s[0] = "-p";
-//		s[1] = port.toString();
-//		NameServerImpl.main(s);;
+		//		Integer port=7777;
+		//		final String[] s = new String[2];
+		//		s[0] = "-p";
+		//		s[1] = port.toString();
+		//		NameServerImpl.main(s);;
 		try {
 			this.execute(this.getNameServer(), this.getNameServerClass(), this.getNameServerCommandArgs());
 			try{Thread.sleep(2000);}catch(final Exception e){};
@@ -82,13 +82,13 @@ public class DimaXDeploymentScript extends HostsPark{
 
 	private final String getNameServerCommandArgs(){
 		return	"-p "+
-		this.getNameServer().getPort().toString();
+				this.getNameServer().getPort().toString();
 
 	}
 
 	private final String getDarxServerCommandArgs(final RemoteHostExecutor host){
 		return "-ns "+this.getNameServer().getUrl()+" "+this.getNameServer().getPort().toString()
-		+" -p "+host.getPort().toString();
+				+" -p "+host.getPort().toString();
 	}
 
 }

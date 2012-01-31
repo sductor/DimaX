@@ -89,8 +89,8 @@ public class SimpleExceptionHandler extends GimaObject{
 			final AbstractMessage abstractMessage,
 			final Throwable e){
 		return "Method "+methodHandler+" on message "+abstractMessage
-		+"\n(" + e+")"
-		+"\n has raised an EXCEPTION";
+				+"\n(" + e+")"
+				+"\n has raised an EXCEPTION";
 
 	}
 
@@ -109,17 +109,17 @@ public class SimpleExceptionHandler extends GimaObject{
 			final MethodHandler mt,
 			final Throwable e){
 		return "Method "+mt.getMethodName()
-		+"\n has raised an EXCEPTION";
+				+"\n has raised an EXCEPTION";
 
 	}
 
-//	protected boolean handleNotReadyException(
-//			final DimaComponentInterface dimaComponentInterface,Throwable e){
-//		if (e instanceof NotReadyException) {
-//			NotReadyException nre = (NotReadyException) e;
-//			dimaComponentInterface.wh
-//		}
-//		else
-//			return false;
-//	}
+	//	protected boolean handleNotReadyException(
+	//			final DimaComponentInterface dimaComponentInterface,Throwable e){
+	//		if (e instanceof NotReadyException) {
+	//			NotReadyException nre = (NotReadyException) e;
+	//			dimaComponentInterface.wh
+	//		}
+	//		else
+	//			return false;
+	//	}
 }

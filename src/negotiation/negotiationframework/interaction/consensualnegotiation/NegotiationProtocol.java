@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -394,9 +395,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				try {
 					contractIsOutOfDate = this.getMyAgent().getMyInformation()
 							.getInformation(delta.getSpecificationOf(id).getClass(),id).isNewerThan(delta.getSpecificationOf(id))>1;
-					if (contractIsOutOfDate)
-						delta.setSpecification(
-								(ActionSpec) this.getMyAgent().getMyInformation().getInformation(delta.getSpecificationOf(id).getClass(),id));
+							if (contractIsOutOfDate)
+								delta.setSpecification(
+										(ActionSpec) this.getMyAgent().getMyInformation().getInformation(delta.getSpecificationOf(id).getClass(),id));
 				} catch (final NoInformationAvailableException e) {
 					contractIsOutOfDate = false;
 				}
@@ -458,7 +459,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				else if (lost) {
 					// do nothing
 				} else if (!this.contracts.contains(c)
-						&& !c.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect))
+						&& !c.willReachExpirationTime(ExperimentationProtocol._timeToCollect))
 					throw new RuntimeException("aaaaaaaaarrrgh" + "i should now "
 							+ c + "!!!!!\n" + this.losts);
 				// do nothing : probleme avec losts : contract identifier mal

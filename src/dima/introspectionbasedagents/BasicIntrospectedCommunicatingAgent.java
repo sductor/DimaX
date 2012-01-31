@@ -87,18 +87,18 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	@Override
 	public final void preActivity() {
 		this.myShell.preActivity(this.creation);
-			Thread.yield();
+		Thread.yield();
 	}
 
 	@Override
 	public final void step() {
-			this.myShell.step(this.creation);
+		this.myShell.step(this.creation);
 	}
 
 	@Override
 	public final void postActivity(){
 		this.myShell.postActivity(this.creation);
-			Thread.yield();
+		Thread.yield();
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class Ticker extends GimaObject{
 
 	public static int getStepNumber(final Date creation, final long cycleTime){
 		final long elapsedTime =
-			new Date().getTime() - creation.getTime();
+				new Date().getTime() - creation.getTime();
 		return (int) (elapsedTime/cycleTime);
 	}
 

@@ -1,10 +1,10 @@
 package dima.basiccommunicationcomponents;
 
 /**
-* Root for all  CommunicationExceptions
-* @author G�rard Rozsavolgyi
+ * Root for all  CommunicationExceptions
+ * @author G�rard Rozsavolgyi
  * @author: Gerard Rozsavolgyi
-*/
+ */
 import dima.support.DimaException;
 
 public class CommunicationException extends DimaException {

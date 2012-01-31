@@ -63,11 +63,11 @@ public class NormalLaw extends GimaObject {
 
 		double result = 0;
 
-			// On r�cup�re un nombre pseudo-al�atoire selon une loi normale centr�e r�duite
-			// Utilisation de l'algorithme de Box-Muller
-			final double randNumNorm = Math.sqrt(-2.0*Math.log(randNumUni))*Math.cos(2*Math.PI*randNumBi);
-			result = this.moyenne +
-			Math.max(-1, Math.min(1, this.ecartType/2.6 * randNumNorm))*Math.min(1-this.moyenne, this.moyenne);
+		// On r�cup�re un nombre pseudo-al�atoire selon une loi normale centr�e r�duite
+		// Utilisation de l'algorithme de Box-Muller
+		final double randNumNorm = Math.sqrt(-2.0*Math.log(randNumUni))*Math.cos(2*Math.PI*randNumBi);
+		result = this.moyenne +
+				Math.max(-1, Math.min(1, this.ecartType/2.6 * randNumNorm))*Math.min(1-this.moyenne, this.moyenne);
 
 		if (result==0)
 			result+=0.001;
@@ -93,7 +93,7 @@ public class NormalLaw extends GimaObject {
 		final double randNumNorm = Math.sqrt(-2.0*Math.log(randNumUni))*Math.cos(2*Math.PI*randNumBi);
 
 		return this.moyenne +
-		Math.max(-1, Math.min(1, this.ecartType/2.6 * randNumNorm))*Math.min(1-this.moyenne, this.moyenne);
+				Math.max(-1, Math.min(1, this.ecartType/2.6 * randNumNorm))*Math.min(1-this.moyenne, this.moyenne);
 	}
 	/*
 	 *

@@ -2,14 +2,12 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.negotiationframework.agent.AgentState;
 import negotiation.negotiationframework.agent.SimpleAgentState;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -33,7 +31,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	private  boolean faulty;
 
 	// Take all fields
-	public HostState(final ResourceIdentifier myAgent, final double lambda, int stateNumber) {
+	public HostState(final ResourceIdentifier myAgent, final double lambda, final int stateNumber) {
 		this(myAgent,
 				new HashSet<ReplicaState>(), lambda,
 				ReplicationExperimentationParameters.hostMaxProc, 0., ReplicationExperimentationParameters.hostMaxMem, 0.,
@@ -69,8 +67,8 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 			final Set<ReplicaState> myReplicatedAgents,
 			final double lambda, final Double procChargeMax,
 			final Double procCurrentCharge, final Double memChargeMax,
-			final Double memCurrentCharge, final boolean faulty,// final Long creationTime, 
-			int stateNumber) {
+			final Double memCurrentCharge, final boolean faulty,// final Long creationTime,
+			final int stateNumber) {
 		super(myAgent, stateNumber);
 		this.myReplicatedAgents = myReplicatedAgents;
 		this.procChargeMax = procChargeMax;
@@ -193,14 +191,14 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	// Opinion Handling
 	//
 
-//	@Override
-//	public int compareTo(final Information o) {
-//		if (o instanceof HostState) {
-//			final HostState e = (HostState) o;
-//			return this.getMyCharge().compareTo(e.getMyCharge());
-//		} else
-//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-//	}
+	//	@Override
+	//	public int compareTo(final Information o) {
+	//		if (o instanceof HostState) {
+	//			final HostState e = (HostState) o;
+	//			return this.getMyCharge().compareTo(e.getMyCharge());
+	//		} else
+	//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+	//	}
 
 	@Override
 	public Double getNumericValue(final Information o) {

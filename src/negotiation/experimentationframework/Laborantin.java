@@ -18,7 +18,6 @@ import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.library.information.ObservationService;
 import dimaxx.server.HostIdentifier;
@@ -87,10 +86,10 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		do {
 			iFailed=false;
 			try {
-				this.instanciate(this.p); 
-			} catch (IfailedException e) {
+				this.instanciate(this.p);
+			} catch (final IfailedException e) {
 				iFailed=true;
-				logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
+				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
 			}
 		}while(iFailed);
 

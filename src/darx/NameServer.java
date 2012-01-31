@@ -114,7 +114,7 @@ public interface NameServer extends Remote {
 	 *            the replicant info to register
 	 */
 	public void register(ReplicantInfo new_replicant) throws RemoteException,
-			InexistentNameException;
+	InexistentNameException;
 
 	/**
 	 * Removes the info concerning a replicant for a given task. The killed

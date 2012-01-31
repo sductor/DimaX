@@ -1,9 +1,9 @@
 package examples.circle;
 
 /* *
-* 	Applet demonstrating a ProactiveObject Example
-*
-*/
+ * 	Applet demonstrating a ProactiveObject Example
+ *
+ */
 
 
 import java.applet.Applet;
@@ -37,10 +37,10 @@ public class OceanApplet extends Applet
 	private void handleException(final Throwable exception)
 	{
 	}
-/** Basicaly creates a new OceanAPI */
+	/** Basicaly creates a new OceanAPI */
 
-@Override
-public void init()
+	@Override
+	public void init()
 	{
 		super.init();
 		try

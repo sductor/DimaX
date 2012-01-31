@@ -17,10 +17,10 @@ public class ACLEos extends FIPAACLMessage {
 	private static final long serialVersionUID = 736143267852269147L;
 
 	public ACLEos(final String tx, final String rx,
-		   final String msg,
-		   final String irt, final String rw) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("eos");
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("eos");
 
 	}
 }

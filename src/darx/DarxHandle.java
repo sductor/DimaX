@@ -103,7 +103,7 @@ public interface DarxHandle extends Remote {
 	 *             if there is no replicant from the group at the given location
 	 **/
 	void killReplicantAt(String url, int port_nb) throws RemoteException,
-			UnknownReplicantException;
+	UnknownReplicantException;
 
 	/**
 	 * Ends the generic task execution. This method spreads the termination

@@ -44,14 +44,14 @@ public class HostsPark {
 	 * @value the list of hosts of this network
 	 */
 	private final HashedHashSet<String, RemoteHostExecutor> hostsOfNetworks=
-		new HashedHashSet<String, RemoteHostExecutor>();
+			new HashedHashSet<String, RemoteHostExecutor>();
 
 	/**
 	 * @key an host url
 	 * @value the associated network
 	 */
 	private final Map<RemoteHostExecutor, String> networksOfHosts =
-		new HashMap<RemoteHostExecutor, String>();
+			new HashMap<RemoteHostExecutor, String>();
 
 	//
 	// Constructor
@@ -127,7 +127,7 @@ public class HostsPark {
 		for (final RemoteHostExecutor h : this.getHosts())
 			hosts.add(h.generateHostIdentifier());
 
-		return hosts;
+				return hosts;
 	}
 	/*
 	 * Dynamic extension of the network
@@ -218,22 +218,22 @@ public class HostsPark {
 		final List<Element> networks = park.getChildren("network");
 
 		final List<Element> activatedGroupsElement =
-			park.getChild("activatedGroups").getChildren("groupID");
+				park.getChild("activatedGroups").getChildren("groupID");
 		final List<Element> activatedNetworksElement =
-			park.getChild("activatedNetworks").getChildren("networkID");
+				park.getChild("activatedNetworks").getChildren("networkID");
 
 		final Collection<String> activatedGroups = new ArrayList<String>();
 		for (final Element groupID : activatedGroupsElement)
 			activatedGroups.add(groupID.getText().trim());
 
-		final Collection<String> activatedNetworks = new ArrayList<String>();
-		for (final Element networkID : activatedNetworksElement)
-			activatedNetworks.add(networkID.getText().trim());
-		System.out.println("Activated network "+activatedNetworks+", activated groups "+activatedGroups);
+				final Collection<String> activatedNetworks = new ArrayList<String>();
+				for (final Element networkID : activatedNetworksElement)
+					activatedNetworks.add(networkID.getText().trim());
+						System.out.println("Activated network "+activatedNetworks+", activated groups "+activatedGroups);
 
-		for (final Element network : networks)
-			if (activatedNetworks.contains(network.getChildText("networkID").trim()))
-				this.parseNetwork(network, activatedGroups);
+						for (final Element network : networks)
+							if (activatedNetworks.contains(network.getChildText("networkID").trim()))
+								this.parseNetwork(network, activatedGroups);
 	}
 
 	private void parseNameServer(final Element park){
@@ -254,7 +254,7 @@ public class HostsPark {
 			if (activatedGroups.contains(groupID))
 				for (final Element host : (List<Element>) group.getChildren("host"))	{
 					final RemoteHostExecutor rhost =
-						new RemoteHostExecutor(groupID);
+							new RemoteHostExecutor(groupID);
 					rhost.setAdress(host);
 					rhost.setSSH(ssh);
 					this.addRemoteHost(rhost);

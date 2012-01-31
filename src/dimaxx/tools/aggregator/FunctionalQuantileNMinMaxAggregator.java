@@ -11,7 +11,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 	 * @param quantileNumber
 	 * @return the value of the k iem q-quantile
 	 */
-	public static <Element> Element getQuantile(List<Element> e,
+	public static <Element> Element getQuantile(final List<Element> e,
 			final int k, final int q) {
 		final double p = e.size() * new Double(k) / new Double(q);
 		int j = (int) Math.abs(p);
@@ -29,7 +29,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 	 * @param e
 	 * @return
 	 */
-	public static <Element> Element getMin(List<Element> e) {
+	public static <Element> Element getMin(final List<Element> e) {
 		return e.get(0);
 	}
 
@@ -39,7 +39,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 	 * @param e
 	 * @return
 	 */
-	public static <Element> Element getMax(List<Element> e) {
+	public static <Element> Element getMax(final List<Element> e) {
 		return e.get(e.size());
 	}
 
@@ -50,7 +50,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 	 * @return
 	 */
 	public static <Element> Element getFirstTercile(
-			List<Element> e) {
+			final List<Element> e) {
 		return FunctionalQuantileNMinMaxAggregator.getQuantile(e, 1, 3);
 	}
 
@@ -61,7 +61,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 	 * @return
 	 */
 	public static <Element> Element getSecondTercile(
-			List<Element> e) {
+			final List<Element> e) {
 		return FunctionalQuantileNMinMaxAggregator.getQuantile(e, 2, 3);
 	}
 
@@ -71,7 +71,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 	 * @param e
 	 * @return
 	 */
-	public static <Element> Element getMediane(List<Element> e) {
+	public static <Element> Element getMediane(final List<Element> e) {
 		return FunctionalQuantileNMinMaxAggregator.getQuantile(e, 1, 2);
 	}
 

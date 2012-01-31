@@ -104,15 +104,12 @@ Tests wheter a proactive object has reached it goal or
 	public void proactivityLoop() {
 
 		while(this.isAlive())
-		{
 			if (this.isActive()){
 				this.preActivity();
 				this.step();
 				this.postActivity();
-			} else {
-				tryToResumeActivity();
-			}
-		}
+			} else
+				this.tryToResumeActivity();
 	}
 	/**
 	 * This is the method containing the termination condition of a ProactiveComponent
@@ -150,14 +147,15 @@ Tests wheter a proactive object has reached it goal or
 
 	@Override
 	public abstract void step();
-	
-	
-	
+
+
+
 	/**
 	 * This method attempt to resume activity when the agent is not active
 	 */
+	@Override
 	public void tryToResumeActivity(){}
-	
+
 	/**
 	 * Returns a String that represents the value of this object.
 	 * @return a string representation of the receiver

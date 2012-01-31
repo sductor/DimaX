@@ -6,15 +6,15 @@ package dima.tools.ruleBasedSystem;
  * @author: Michel Quenault (Miq)
  */
 abstract public class RuleBaseObject extends dima.support.GimaObject {
-/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 4072426149037454553L;
 
-/**
- * RuleListObject constructor comment.
- */
-public RuleBaseObject() {
-	super();
-}
+	/**
+	 * RuleListObject constructor comment.
+	 */
+	public RuleBaseObject() {
+		super();
+	}
 }

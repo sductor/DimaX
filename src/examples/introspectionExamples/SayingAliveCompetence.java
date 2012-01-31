@@ -7,9 +7,9 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class SayingAliveCompetence extends BasicAgentCompetence<BasicCompetentAgent> {
 
-//	public SayingAliveCompetence(BasicCompetentAgent ag) {
-//		super(ag);
-//	}
+	//	public SayingAliveCompetence(BasicCompetentAgent ag) {
+	//		super(ag);
+	//	}
 
 	/**
 	 *

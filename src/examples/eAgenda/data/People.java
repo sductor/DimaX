@@ -15,7 +15,7 @@ public abstract class People implements Serializable {
 		this.name = myName;
 	}
 	public abstract ArrayList getCanonicalList();
-    public abstract int getSize();
+	public abstract int getSize();
 	public String getName() {
 		return this.name;
 	}

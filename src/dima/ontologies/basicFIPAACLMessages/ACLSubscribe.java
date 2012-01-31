@@ -11,15 +11,15 @@ package dima.ontologies.basicFIPAACLMessages;
 
 public class ACLSubscribe extends FIPAACLMessage {
 
-  /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -6812286616246090983L;
 
-public ACLSubscribe(final String tx, final String rx,
-		       final String msg,
-		       final String irt, final String rw) {
-	  super(tx,rx,msg,irt,rw);
-	  this.setPerformative("subscribe");
-  }
+	public ACLSubscribe(final String tx, final String rx,
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("subscribe");
+	}
 }

@@ -16,12 +16,12 @@ import java.io.Serializable;
  */
 public class Resource extends AbstractService implements Serializable{
 
-		/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 149728366121431583L;
-		public Float cost;
-		public Double tpsRep;
+	public Float cost;
+	public Double tpsRep;
 	/**
 	 * Seance constructor comment.
 	 */
@@ -62,7 +62,7 @@ public class Resource extends AbstractService implements Serializable{
 
 	public boolean littleThan(final Resource s){
 
-	return this.getCost() < s.getCost();
+		return this.getCost() < s.getCost();
 
 	}
 	/**
@@ -107,7 +107,7 @@ public class Resource extends AbstractService implements Serializable{
 	{
 		return new String("Le prix:"+this.cost+", Le tpsRep: "+this.tpsRep);
 	}
-	}
+}
 
 
 

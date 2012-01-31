@@ -10,7 +10,7 @@ package  examples.lg.model;
  */
 import dima.kernel.INAF.InteractionDomain.AbstractService;
 
-        public class Letter extends AbstractService {
+public class Letter extends AbstractService {
 	private char letter;
 
 
@@ -20,26 +20,26 @@ import dima.kernel.INAF.InteractionDomain.AbstractService;
 		else
 			throw new Exception("Must be a letter");
 	}
-/**
- * Insert the method's description here.
- * Creation date: (04/04/2003 18:57:43)
- * @return boolean
- */
-@Override
-public boolean equals(final AbstractService s)
-{
-	return this.toString().equals(s.toString());
-}
-/**
- * Insert the method's description here.
- * Creation date: (04/04/2003 18:57:43)
- * @return boolean
- */
-@Override
-public boolean equals(final Object s)
-{
-	return this.toString().equals(((Letter)s).toString());
-}
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (04/04/2003 18:57:43)
+	 * @return boolean
+	 */
+	@Override
+	public boolean equals(final AbstractService s)
+	{
+		return this.toString().equals(s.toString());
+	}
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (04/04/2003 18:57:43)
+	 * @return boolean
+	 */
+	@Override
+	public boolean equals(final Object s)
+	{
+		return this.toString().equals(((Letter)s).toString());
+	}
 	/**
 	 * Returns the letter.
 	 * @return char
@@ -47,14 +47,14 @@ public boolean equals(final Object s)
 	public char getLetter() {
 		return this.letter;
 	}
-/**
- * Insert the method's description here.
- * Creation date: (27/06/2003 11:04:37)
- * @return java.lang.String
- */
-@Override
-public String toString()
-{
-	return String.valueOf(this.getLetter());
-}
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (27/06/2003 11:04:37)
+	 * @return java.lang.String
+	 */
+	@Override
+	public String toString()
+	{
+		return String.valueOf(this.getLetter());
+	}
 }

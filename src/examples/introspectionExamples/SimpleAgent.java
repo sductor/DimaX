@@ -25,17 +25,17 @@ public class SimpleAgent extends BasicCompetentAgent {
 
 	@Competence()
 	public final SayingAliveToPeerCompetence sayAliveToPeer =
-		new SayingAliveToPeerCompetence();
+	new SayingAliveToPeerCompetence();
 	@Competence()
 	public final SayingAliveCompetence sayAlive =
-		new SayingAliveCompetence();
+	new SayingAliveCompetence();
 
 	/*
 	 *
 	 */
 
 	public SimpleAgent(final int id, final int nbA, final int nbTour)
-	throws CompetenceException {
+			throws CompetenceException {
 		super(SimpleAgent.getsimpleId(id));
 		this.myId = id;
 		this.nbAgent = nbA;
@@ -57,16 +57,16 @@ public class SimpleAgent extends BasicCompetentAgent {
 
 	public AgentIdentifier getMyMessagePeer() {
 		return SimpleAgent
-		.getsimpleId((this.myId + 1) % this.nbAgent);
+				.getsimpleId((this.myId + 1) % this.nbAgent);
 	}
 
 	public AgentIdentifier getMyAlivePeer() {
 		if (this.myId!=0)
-		return SimpleAgent
-		.getsimpleId((this.myId - 1) % this.nbAgent);
+			return SimpleAgent
+					.getsimpleId((this.myId - 1) % this.nbAgent);
 		else
 			return SimpleAgent
-			.getsimpleId(this.nbAgent - 1);
+					.getsimpleId(this.nbAgent - 1);
 	}
 	/*
 	 *
@@ -102,8 +102,8 @@ public class SimpleAgent extends BasicCompetentAgent {
 
 		this.logMonologue(
 				"=> I've received :"
-				+ m +  "\n        next agent : "
-				+ SimpleAgent.getsimpleId((this.myId + 1) % this.nbAgent),LogService.onScreen);
+						+ m +  "\n        next agent : "
+						+ SimpleAgent.getsimpleId((this.myId + 1) % this.nbAgent),LogService.onScreen);
 
 		if (this.myId == 0) {
 			this.nbTour--;
@@ -123,8 +123,8 @@ public class SimpleAgent extends BasicCompetentAgent {
 		this.sendMessage(this.getMyMessagePeer(), m);
 	}
 
-//	@MessageHandler()
-//	public void receiveAliveMessage(final SayAliveMessage m){
-//		logMonologue("**YOOOO! (2) =D ----------> "+m.getSender()+" IS STILL ALIVE");
-//	}
+	//	@MessageHandler()
+	//	public void receiveAliveMessage(final SayAliveMessage m){
+	//		logMonologue("**YOOOO! (2) =D ----------> "+m.getSender()+" IS STILL ALIVE");
+	//	}
 }

@@ -63,18 +63,18 @@ public abstract class BasicIntrospectedReactiveAgent extends BasicReactiveAgent 
 	@Override
 	public void preActivity() {
 		this.myShell.preActivity(this.creation);
-			Thread.yield();
+		Thread.yield();
 	}
 
 	@Override
 	public final void step() {
-			this.myShell.step(this.creation);
+		this.myShell.step(this.creation);
 	}
 
 	@Override
 	public void postActivity(){
 		this.myShell.postActivity(this.creation);
-			Thread.yield();
+		Thread.yield();
 	}
 
 	@Override

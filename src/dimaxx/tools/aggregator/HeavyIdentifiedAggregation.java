@@ -1,12 +1,7 @@
 package dimaxx.tools.aggregator;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
-
-import dima.support.GimaObject;
 
 
 /**
@@ -33,69 +28,72 @@ UtilitaristAnalyser<Element> {
 	}
 
 	//TODO Générer les comparator, map associés aux identifiedElement
-//	public HeavyAggregation(Comparator<? super Element> arg0) {
-//		elements = new TreeMap<ElementIdentifier<Element>, Double>(arg0);
-//	}
-//
-//	public HeavyAggregation(Map<? extends Element, ? extends Double> arg0) {
-//		elements = new TreeMap<ElementIdentifier<Element>, Double>(arg0);
-//	}
-//
-//	public HeavyAggregation(SortedMap<Element, ? extends Double> arg0) {
-//		elements = new TreeMap<ElementIdentifier<Element>, Double>(arg0);
-//	}
+	//	public HeavyAggregation(Comparator<? super Element> arg0) {
+	//		elements = new TreeMap<ElementIdentifier<Element>, Double>(arg0);
+	//	}
+	//
+	//	public HeavyAggregation(Map<? extends Element, ? extends Double> arg0) {
+	//		elements = new TreeMap<ElementIdentifier<Element>, Double>(arg0);
+	//	}
+	//
+	//	public HeavyAggregation(SortedMap<Element, ? extends Double> arg0) {
+	//		elements = new TreeMap<ElementIdentifier<Element>, Double>(arg0);
+	//	}
 
 	/*
 	 * 
 	 */
-	public Double put(Element o, Double weight) {
-		return elements.put(new ElementIdentifier(o), weight);
+	@Override
+	public Double put(final Element o, final Double weight) {
+		return this.elements.put(new ElementIdentifier(o), weight);
 	}
 
-//	public Double remove(Element o) {
-//		return elements.remove(o);
-//	}
+	//	public Double remove(Element o) {
+	//		return elements.remove(o);
+	//	}
 
-	public Double getWeightOf(Element o) {
-		return elements.get(o);
+	public Double getWeightOf(final Element o) {
+		return this.elements.get(o);
 	}
-	
-	public Double add(Element e) {
+
+	@Override
+	public Double add(final Element e) {
 		return this.put(e, 1.);
 	}
 
+	@Override
 	public boolean isEmpty() {
-		return elements.isEmpty();
+		return this.elements.isEmpty();
 	}
-	
+
 	/*
 	 * 
 	 */
 
 	@Override
 	public Element getMaxElement() {
-		return elements.lastKey().e;
+		return this.elements.lastKey().e;
 	}
 
 	@Override
 	public Element getMinElement() {
-		return elements.firstKey().e;
+		return this.elements.firstKey().e;
 	}
 
 	@Override
 	public double getVariance() {
 		throw new RuntimeException();
-//		return FunctionalDispersionAgregator.getVariance(this, elements.keySet());
+		//		return FunctionalDispersionAgregator.getVariance(this, elements.keySet());
 	}
 
 	@Override
 	public double getEcartType() {
-		return FunctionalDispersionAgregator.getEcartType(this, elements.values());
+		return FunctionalDispersionAgregator.getEcartType(this, this.elements.values());
 	}
 
 	@Override
 	public double getVariationCoefficient() {
-		return FunctionalDispersionAgregator.getVariationCoefficient(this, elements.values());
+		return FunctionalDispersionAgregator.getVariationCoefficient(this, this.elements.values());
 	}
 
 	/*
@@ -104,7 +102,7 @@ UtilitaristAnalyser<Element> {
 
 	@Override
 	public int getNumberOfAggregatedElements() {
-		return elements.size();
+		return this.elements.size();
 	}
 
 	/*
@@ -112,57 +110,58 @@ UtilitaristAnalyser<Element> {
 	 */
 
 	@Override
-	public Element getQuantile(int k, int q) {
+	public Element getQuantile(final int k, final int q) {
 		return FunctionalQuantileNMinMaxAggregator.getQuantile(
-				new ArrayList<ElementIdentifier<Element>>(elements.keySet()), k, q).e;
+				new ArrayList<ElementIdentifier<Element>>(this.elements.keySet()), k, q).e;
 	}
 
 	@Override
 	public Element getFirstTercile() {
 		return FunctionalQuantileNMinMaxAggregator
-				.getFirstTercile(new ArrayList<ElementIdentifier<Element>>(elements.keySet())).e;
+				.getFirstTercile(new ArrayList<ElementIdentifier<Element>>(this.elements.keySet())).e;
 	}
 
 	@Override
 	public Element getSecondTercile() {
 		return FunctionalQuantileNMinMaxAggregator
-				.getSecondTercile(new ArrayList<ElementIdentifier<Element>>(elements.keySet())).e;
+				.getSecondTercile(new ArrayList<ElementIdentifier<Element>>(this.elements.keySet())).e;
 	}
 
 	@Override
 	public Element getMediane() {
 		return FunctionalQuantileNMinMaxAggregator
-				.getMediane(new ArrayList<ElementIdentifier<Element>>(elements.keySet())).e;
+				.getMediane(new ArrayList<ElementIdentifier<Element>>(this.elements.keySet())).e;
 	}
-	
+
 }
 
 class ElementIdentifier<Element extends Comparable> implements Comparable<ElementIdentifier<Element>>{
-	
+
 	static int nbClass=0;
 	final int nbObject;
 	final Element e;
-	
-	ElementIdentifier(Element e) {
+
+	ElementIdentifier(final Element e) {
 		super();
-		this.nbObject = nbClass;
-		nbClass++;
+		this.nbObject = ElementIdentifier.nbClass;
+		ElementIdentifier.nbClass++;
 		this.e=e;
 	}
-	
-	public boolean equals(Object o){
+
+	@Override
+	public boolean equals(final Object o){
 		if (o instanceof ElementIdentifier)
 			return this.e.equals(((ElementIdentifier) o).e) && ((ElementIdentifier) o).nbObject==this.nbObject;
 		else
 			return false;
-		}
-	
+	}
+
 	public int hashcode(){
-		return e.hashCode();
+		return this.e.hashCode();
 	}
 
 	@Override
-	public int compareTo(ElementIdentifier<Element> that) {
+	public int compareTo(final ElementIdentifier<Element> that) {
 		return this.e.compareTo(that.e);
 	}
 

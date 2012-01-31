@@ -46,26 +46,26 @@ public class PredProieAPI extends Frame implements ActionListener, WindowListene
 
 
 	//private static int Tableau[][];
-/**
- * FramePredProie constructor comment.
- */
-public PredProieAPI() {
-	this.ivjBStart = null;
-	this.ivjBExit = null;
-	this.ivjBStop = null;
-	this.ivjContentsPane = null;
-	this.ivjLabel1 = null;
-	this.ivjLabel2 = null;
-	this.ivjLabel3 = null;
-	this.GridSize = 1;
-	PredProieAPI.ivjGrid1 = PredProieAPI.getGrid1();
-	this.ivjTNumberOfPredators = null;
-	this.ivjTNumberOfPreys = null;
-	this.ivjTGridSize = null;
-	this.numberOfPredators = 10;
-	this.numberOfPreys = 10;
-	this.initialize();
-}
+	/**
+	 * FramePredProie constructor comment.
+	 */
+	public PredProieAPI() {
+		this.ivjBStart = null;
+		this.ivjBExit = null;
+		this.ivjBStop = null;
+		this.ivjContentsPane = null;
+		this.ivjLabel1 = null;
+		this.ivjLabel2 = null;
+		this.ivjLabel3 = null;
+		this.GridSize = 1;
+		PredProieAPI.ivjGrid1 = PredProieAPI.getGrid1();
+		this.ivjTNumberOfPredators = null;
+		this.ivjTNumberOfPreys = null;
+		this.ivjTGridSize = null;
+		this.numberOfPredators = 10;
+		this.numberOfPreys = 10;
+		this.initialize();
+	}
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if(e.getSource() == this.getBStart())
@@ -100,7 +100,7 @@ public PredProieAPI() {
 		PredProieAPI.getGrille().repaint();
 		PredProieAPI.ivjGrid1.setBackground(Color.lightGray);
 	}
-private void connEtoQuitter(final ActionEvent arg1) {
+	private void connEtoQuitter(final ActionEvent arg1) {
 		try {
 			final ActionEvent actionEvent1 = null;
 			this.bStop_ActionPerformed(actionEvent1);
@@ -126,7 +126,7 @@ private void connEtoQuitter(final ActionEvent arg1) {
 			this.handleException(ivjExc);
 		}
 	}
-private Button getBQuitter() {
+	private Button getBQuitter() {
 		if(this.ivjBExit == null)
 			try {
 				this.ivjBExit = new Button();
@@ -134,9 +134,9 @@ private Button getBQuitter() {
 				this.ivjBExit.setBounds(35, 77, 56, 23);
 				this.ivjBExit.setLabel("Exit");
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjBExit;
 	}
 	private Button getBStart() {
@@ -147,9 +147,9 @@ private Button getBQuitter() {
 				this.ivjBStart.setBounds(35, 23, 56, 23);
 				this.ivjBStart.setLabel("Start");
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjBStart;
 	}
 	private Button getBStop() {
@@ -160,9 +160,9 @@ private Button getBQuitter() {
 				this.ivjBStop.setBounds(35, 50, 56, 23);
 				this.ivjBStop.setLabel("Stop");
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjBStop;
 	}
 	private Panel getContentsPane() {
@@ -183,9 +183,9 @@ private Button getBQuitter() {
 				this.getContentsPane().add(this.getTTailleGrille(), this.getTTailleGrille().getName());
 
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjContentsPane;
 	}
 	public static Grid getGrid1() {
@@ -203,9 +203,9 @@ private Button getBQuitter() {
 				PredProieAPI.ivjGrid1.setBackground(Color.lightGray);
 				PredProieAPI.ivjGrid1.setBounds(30, 110, 600, 600);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return PredProieAPI.ivjGrid1;
 	}
 	private Label getLabel1() {
@@ -216,9 +216,9 @@ private Button getBQuitter() {
 				this.ivjLabel1.setText("Number of Predators");
 				this.ivjLabel1.setBounds(120, 22, 125, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjLabel1;
 	}
 	private Label getLabel2() {
@@ -229,9 +229,9 @@ private Button getBQuitter() {
 				this.ivjLabel2.setText("Number of Preys");
 				this.ivjLabel2.setBounds(120, 52, 125, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjLabel2;
 	}
 	private Label getLabel3() {
@@ -242,9 +242,9 @@ private Button getBQuitter() {
 				this.ivjLabel3.setText("Grid Size");
 				this.ivjLabel3.setBounds(120, 82, 125, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjLabel3;
 	}
 	private TextField getTNombrePred() {
@@ -254,9 +254,9 @@ private Button getBQuitter() {
 				this.ivjTNumberOfPredators.setName("TNumberOfPredators");
 				this.ivjTNumberOfPredators.setBounds(249, 23, 51, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjTNumberOfPredators;
 	}
 	private TextField getTNombreProies() {
@@ -266,9 +266,9 @@ private Button getBQuitter() {
 				this.ivjTNumberOfPreys.setName("TNumberOfPreys");
 				this.ivjTNumberOfPreys.setBounds(249, 53, 51, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjTNumberOfPreys;
 	}
 	private TextField getTTailleGrille() {
@@ -278,9 +278,9 @@ private Button getBQuitter() {
 				this.ivjTGridSize.setName("TGridSize");
 				this.ivjTGridSize.setBounds(249, 83, 51, 23);
 			}
-			catch(final Throwable ivjExc) {
-				this.handleException(ivjExc);
-			}
+		catch(final Throwable ivjExc) {
+			this.handleException(ivjExc);
+		}
 		return this.ivjTGridSize;
 	}
 	private void handleException(final Throwable throwable) {
@@ -305,10 +305,10 @@ private Button getBQuitter() {
 			try {
 				final Class aCloserClass = Class.forName("com.ibm.uvm.abt.edit.WindowCloser");
 				final Class parmTypes[] = {
-					java.awt.Window.class
+						java.awt.Window.class
 				};
 				final Object parms[] = {
-					aFramePredProie
+						aFramePredProie
 				};
 				final Constructor aCtor = aCloserClass.getConstructor(parmTypes);
 				aCtor.newInstance(parms);
@@ -324,8 +324,8 @@ private Button getBQuitter() {
 	@Override
 	public void windowActivated(final WindowEvent windowevent) {
 	}
-@Override
-public void windowClosed(final WindowEvent windowevent) {
+	@Override
+	public void windowClosed(final WindowEvent windowevent) {
 	}
 	@Override
 	public void windowClosing(final WindowEvent windowevent) {
@@ -339,7 +339,7 @@ public void windowClosed(final WindowEvent windowevent) {
 	@Override
 	public void windowIconified(final WindowEvent windowevent) {
 	}
-@Override
-public void windowOpened(final WindowEvent windowevent) {
+	@Override
+	public void windowOpened(final WindowEvent windowevent) {
 	}
 }

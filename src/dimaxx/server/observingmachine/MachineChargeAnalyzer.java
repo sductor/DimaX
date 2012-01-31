@@ -36,7 +36,7 @@ import dimaxx.server.HostIdentifier;
  */
 
 public class MachineChargeAnalyzer extends Executor implements
-		MachineSelfChargeAnalyzable {
+MachineSelfChargeAnalyzable {
 
 	// /**
 	// * Cette classe stockent des information sur la machine (type et puissance

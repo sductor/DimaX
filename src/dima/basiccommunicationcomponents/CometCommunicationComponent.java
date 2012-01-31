@@ -7,28 +7,28 @@ import dima.basicagentcomponents.AgentAddress;
  * @author:
  */
 public class CometCommunicationComponent extends CommunicationComponent {
-/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 4522521166696299016L;
-/**
- * Insert the method's description here.
- * Creation date: (25/04/01 09:41:06)
- */
-/**
- * Insert the method's description here.
- * Creation date: (25/04/01 09:41:06)
- * a compl�ter ***
- */
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (25/04/01 09:41:06)
+	 */
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (25/04/01 09:41:06)
+	 * a compl�ter ***
+	 */
 
-@Override
-public void sendMessage(final AgentAddress ad,final Message am) {
+	@Override
+	public void sendMessage(final AgentAddress ad,final Message am) {
 
 	}
-/**
- * Insert the method's description here.
- * Creation date: (25/04/01 09:41:06)
- */
-@Override
-public void sendMessage(final Message m) {}
+	/**
+	 * Insert the method's description here.
+	 * Creation date: (25/04/01 09:41:06)
+	 */
+	@Override
+	public void sendMessage(final Message m) {}
 }

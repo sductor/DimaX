@@ -10,7 +10,6 @@ package negotiation.dcopframework.daj;
 import java.io.Serializable;
 
 import negotiation.dcopframework.algo.BasicAlgorithm;
-
 import darx.DarxCommInterface;
 import darx.DarxException;
 import darx.DarxTask;
@@ -23,9 +22,9 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 public class Node extends Thread {
 
 	// channels to receive messages from respectively send messages to
-	private InChannelSet in = new InChannelSet();
-	private OutChannelSet out = new OutChannelSet();
-	private Program program; // program that node executes
+	private final InChannelSet in = new InChannelSet();
+	private final OutChannelSet out = new OutChannelSet();
+	private final Program program; // program that node executes
 	private int switches; // number of context switches occurred so far
 
 	AgentIdentifier observer;
@@ -34,11 +33,11 @@ public class Node extends Thread {
 	// --------------------------------------------------------------------------
 	// create node with `prog` to execute in network `net`
 	// --------------------------------------------------------------------------
-	public Node(Program prog, AgentIdentifier observer) {
-		program = prog;
-		program.setNode(this);
-		switches = 0;
-		myDarxNode = new DarxNode();
+	public Node(final Program prog, final AgentIdentifier observer) {
+		this.program = prog;
+		this.program.setNode(this);
+		this.switches = 0;
+		this.myDarxNode = new DarxNode();
 		this.observer = observer;
 	}
 
@@ -46,14 +45,14 @@ public class Node extends Thread {
 	// increase number of switches
 	// --------------------------------------------------------------------------
 	public void incSwitches() {
-		switches++;
+		this.switches++;
 	}
 
 	// --------------------------------------------------------------------------
 	// get number of switches
 	// --------------------------------------------------------------------------
 	public int getSwitches() {
-		return switches;
+		return this.switches;
 	}
 
 	// --------------------------------------------------------------------------
@@ -62,69 +61,69 @@ public class Node extends Thread {
 	@Override
 	synchronized public void run() {
 		try {
-			wait();
+			this.wait();
 		}
-		catch (InterruptedException e) {
+		catch (final InterruptedException e) {
 			Assertion.fail("InterruptedException");
 		}
 		// decrease priority to make sure applet thread gets updates
-		setPriority(getPriority() - 1);
-		program.main();
+		this.setPriority(this.getPriority() - 1);
+		this.program.main();
 
-		myDarxNode.terminate();
+		this.myDarxNode.terminate();
 	}
 
 	// --------------------------------------------------------------------------
 	// add `channel` to set of inchannels
 	// --------------------------------------------------------------------------
-	public void inChannel(Channel channel) {
-		in.addChannel(channel, true);
+	public void inChannel(final Channel channel) {
+		this.in.addChannel(channel, true);
 	}
 
 	// --------------------------------------------------------------------------
 	// add `channel` to set of outchannels
 	// --------------------------------------------------------------------------
-	public void outChannel(Channel channel) {
-		out.addChannel(channel, false);
+	public void outChannel(final Channel channel) {
+		this.out.addChannel(channel, false);
 	}
 
 	// --------------------------------------------------------------------------
 	// return visual representation of node
 	// --------------------------------------------------------------------------
 	public Integer getID(){
-		return ((BasicAlgorithm) getProgram()).getID();
+		return ((BasicAlgorithm) this.getProgram()).getID();
 	}
 
 	public DarxNode getMyDarxNode() {
-		return myDarxNode;
+		return this.myDarxNode;
 	}
 
 	// --------------------------------------------------------------------------
 	// status text displayed for node
 	// --------------------------------------------------------------------------
 	public String getText() {
-		return program.getText();
+		return this.program.getText();
 	}
 
 	// --------------------------------------------------------------------------
 	// program executed by node
 	// --------------------------------------------------------------------------
 	public Program getProgram() {
-		return program;
+		return this.program;
 	}
 
 	// --------------------------------------------------------------------------
 	// set of in channels
 	// --------------------------------------------------------------------------
 	public InChannelSet getIn() {
-		return in;
+		return this.in;
 	}
 
 	// --------------------------------------------------------------------------
 	// set of out channels
 	// --------------------------------------------------------------------------
 	public OutChannelSet getOut() {
-		return out;
+		return this.out;
 	}
 
 	//
@@ -134,26 +133,31 @@ public class Node extends Thread {
 
 	class DarxNode extends DarxTask{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7290036211203787743L;
+
 		protected DarxNode() {
-			super(getID().toString());
+			super(Node.this.getID().toString());
 		}
 
 		protected  DarxCommInterface comm;
 
 		public DarxCommInterface getComm() {
-			return comm;
+			return this.comm;
 		}
 
 		//
 		// Primitive
 		//
-		
-		public void sendAsyncMessage(Integer i, final Message m) {
+
+		public void sendAsyncMessage(final Integer i, final Message m) {
 
 			final AgentIdentifier id = new AgentName(i.toString());
 			RemoteTask remote = null;
 			try {
-				remote = findTask(id.toString());
+				remote = this.findTask(id.toString());
 			}
 			catch(final DarxException e) {
 				System.out.println("Getting " + id + " from nameserver failed : " + e);
@@ -161,30 +165,30 @@ public class Node extends Thread {
 			}
 
 			if(remote != null)
-				getComm().sendAsyncMessage(remote, (Serializable) m);
+				this.getComm().sendAsyncMessage(remote, (Serializable) m);
 			else
 				throw new RuntimeException(this+" Echec de l'envoi du message"+m);
 		}
-		
-//		public Object sendSyncMessage(Integer i, final Message m) {
-//
-//			final AgentIdentifier id = new AgentName(i.toString());
-//			RemoteTask remote = null;
-//			try {
-//				remote = findTask(id.toString());
-//			}
-//			catch(final DarxException e) {
-//				System.out.println("Getting " + id + " from nameserver failed : " + e);
-//				return null;
-//			}
-//
-//			if(remote != null)
-//				return getComm().sendSyncMessage(remote, (Serializable) m);
-//			else
-//				throw new RuntimeException(this+" Echec de l'envoi du message"+m);
-//
-//		}	
-		
+
+		//		public Object sendSyncMessage(Integer i, final Message m) {
+		//
+		//			final AgentIdentifier id = new AgentName(i.toString());
+		//			RemoteTask remote = null;
+		//			try {
+		//				remote = findTask(id.toString());
+		//			}
+		//			catch(final DarxException e) {
+		//				System.out.println("Getting " + id + " from nameserver failed : " + e);
+		//				return null;
+		//			}
+		//
+		//			if(remote != null)
+		//				return getComm().sendSyncMessage(remote, (Serializable) m);
+		//			else
+		//				throw new RuntimeException(this+" Echec de l'envoi du message"+m);
+		//
+		//		}
+
 		/*
 		 * Message Handling
 		 */
@@ -199,25 +203,25 @@ public class Node extends Thread {
 		 */
 		@Override
 		public void receiveAsyncMessage(final Object msg) {
-				if (msg instanceof Message)
-					((Channel) in.getChannel(((Message) msg).getSender())).addMessage((Message) msg); 
-				else
-					LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
+			if (msg instanceof Message)
+				((Channel) Node.this.in.getChannel(((Message) msg).getSender())).addMessage((Message) msg);
+			else
+				LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
 		}
 
-//		/**
-//		 * UNIMPLEMENTED : Execute the task and return the results
-//		 *
-//		 * @param msg
-//		 *            the message, that should be cast in Message
-//		 * @see Message
-//		 */
-//		@Override
-//		public Serializable receiveSyncMessage(final Object msg) {
-//			this.receiveAsyncMessage(msg);
-//			return null;
-//		}
-//		
-}
+		//		/**
+		//		 * UNIMPLEMENTED : Execute the task and return the results
+		//		 *
+		//		 * @param msg
+		//		 *            the message, that should be cast in Message
+		//		 * @see Message
+		//		 */
+		//		@Override
+		//		public Serializable receiveSyncMessage(final Object msg) {
+		//			this.receiveAsyncMessage(msg);
+		//			return null;
+		//		}
+		//
+	}
 
 }

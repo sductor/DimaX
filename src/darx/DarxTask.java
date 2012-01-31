@@ -193,8 +193,8 @@ public class DarxTask implements Serializable, Cloneable {
 			de.printStackTrace();
 		} catch (final RemoteException re) {
 			System.out
-					.println("DarxTask> Remote Exception while trying to find task "
-							+ task_name);
+			.println("DarxTask> Remote Exception while trying to find task "
+					+ task_name);
 			re.printStackTrace();
 		}
 		return rt;

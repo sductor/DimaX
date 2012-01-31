@@ -13,23 +13,23 @@ public class LocalInfo {
 	ArrayList<int[]> data;
 	HashMap<Integer, Integer> valMap;
 
-	public LocalInfo(Variable v) {
-		id = v.id;
-		domain = v.domain;
-		value = v.value;
-		data = new ArrayList<int[]>();
-		valMap = new HashMap<Integer, Integer>();
-		for (Constraint c : v.neighbors) {
-			Variable n = c.getNeighbor(v);
-			valMap.put(n.id, n.value);
-			data.add(c.encode());
+	public LocalInfo(final Variable v) {
+		this.id = v.id;
+		this.domain = v.domain;
+		this.value = v.value;
+		this.data = new ArrayList<int[]>();
+		this.valMap = new HashMap<Integer, Integer>();
+		for (final Constraint c : v.neighbors) {
+			final Variable n = c.getNeighbor(v);
+			this.valMap.put(n.id, n.value);
+			this.data.add(c.encode());
 		}
 	}
 
 	public int getSize() {
 		int size = 0;
-		for (int[] array : data)
+		for (final int[] array : this.data)
 			size += array.length * 4;
-		return 12 + size + valMap.size() * 4;
+				return 12 + size + this.valMap.size() * 4;
 	}
 }

@@ -5,43 +5,43 @@ import java.util.Random;
 
 public class PoissonLaw {
 
-/* 1 intervalle de temps : toutes les fois ou eventOccur est appellé.
- * une exp = n intervalle de temps
- * en moyenne m pannes par intervalle de temps (m in [0, k])
- * lambda = eventFrequency * n
- * k = 1 car au plus une faute par hote par intervalle (reste en panne jusqu'a la réparation a la prochaine étape)
- */
-	
+	/* 1 intervalle de temps : toutes les fois ou eventOccur est appellé.
+	 * une exp = n intervalle de temps
+	 * en moyenne m pannes par intervalle de temps (m in [0, k])
+	 * lambda = eventFrequency * n
+	 * k = 1 car au plus une faute par hote par intervalle (reste en panne jusqu'a la réparation a la prochaine étape)
+	 */
 
-	public static Double getPoissonLaw(Double lambda, int k) {
-	       return Math.exp(-lambda)*Math.pow(lambda, k)/factorial(k);
+
+	public static Double getPoissonLaw(final Double lambda, final int k) {
+		return Math.exp(-lambda)*Math.pow(lambda, k)/PoissonLaw.factorial(k);
 	}
 
-	public static boolean eventOccur(Double lambda, int k) {
+	public static boolean eventOccur(final Double lambda, final int k) {
 		final Random rand = new Random();
-		return rand.nextDouble() > getPoissonLaw(lambda, k);
+		return rand.nextDouble() > PoissonLaw.getPoissonLaw(lambda, k);
 	}
-	
-	
+
+
 	//
 	// Primitive
 	//
-	
-	
-    // Evaluate n!
-    private static long factorial( int n )
-    {
-            return factorial_aux(n, 1);
-    }
 
-    // Evaluate n!
-    private static long factorial_aux( int n, long accu )
-    {
-        if( n <= 1 )     // base case
-            return accu;
-        else
-            return factorial_aux( n - 1, n * accu );
-    }
+
+	// Evaluate n!
+	private static long factorial( final int n )
+	{
+		return PoissonLaw.factorial_aux(n, 1);
+	}
+
+	// Evaluate n!
+	private static long factorial_aux( final int n, final long accu )
+	{
+		if( n <= 1 )     // base case
+			return accu;
+		else
+			return PoissonLaw.factorial_aux( n - 1, n * accu );
+	}
 }
 
 

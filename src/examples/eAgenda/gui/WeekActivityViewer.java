@@ -92,7 +92,7 @@ public class WeekActivityViewer extends ActivityViewer implements ActionListener
 		scrollDownButton.setActionCommand("down");
 		scrollDownButton.addActionListener(this);
 		weekPanel.add(scrollDownButton, BorderLayout.SOUTH);
-		*/
+		 */
 
 		final JPanel daysPanel = new JPanel();
 		daysPanel.setLayout(new GridLayout(1,7,5,5));

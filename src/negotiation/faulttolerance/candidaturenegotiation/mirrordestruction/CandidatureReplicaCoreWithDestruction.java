@@ -7,9 +7,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
-import negotiation.negotiationframework.AllocationSocialWelfares;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
@@ -36,7 +34,7 @@ public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 	public int getAllocationPreference(final ReplicaState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-//		this.logMonologue("yopoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", LogService.onBoth);
+		//		this.logMonologue("yopoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", LogService.onBoth);
 		Boolean creation = true;
 		final Collection<ReplicationCandidature> destructionContract=
 				new ArrayList<ReplicationCandidature>();
@@ -60,8 +58,21 @@ public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 		else
 			try {
 				final int pref = this.myOptimiser.getSocialPreference(c1, c2);
-				this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
-//				this.logMonologue("receiving desctruction demand i'll execute "+pref+" for \n "+c1+"\n"+c2, LogService.onBoth);
+				if (pref>0){
+					String log="for  \n "+c1+"\n"+c2+"\n";
+					log+="i prefer "+c1;
+					this.logMonologue(log, LogService.onBoth);
+					if (!this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), c1).isValid())
+						this.logWarning("DONT RESPECT RIGHT!!!!!!", LogService.onBoth);
+				} else if (pref<0){
+					String log="for  \n "+c1+"\n"+c2+"\n";
+					log+="i prefer "+c2;
+					this.logMonologue(log, LogService.onBoth);
+					if (!this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), c1).isValid())
+						this.logWarning("DONT RESPECT RIGHT!!!!!!", LogService.onBoth);
+				}
+				//				this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
+				//				this.logMonologue("receiving desctruction demand i'll execute "+pref+" for \n "+c1+"\n"+c2, LogService.onBoth);
 				return pref;
 			}catch(final RuntimeException e){
 				String log = "pref of \n"+c1+"\n"+c2;

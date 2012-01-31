@@ -1,14 +1,14 @@
 package dimaxx.tools.aggregator;
 
 
-public class LightWeightedAverageDoubleAggregation 
+public class LightWeightedAverageDoubleAggregation
 extends LightAverageDoubleAggregation {
 	private static final long serialVersionUID = 5702510745579722877L;
 
 	protected Double weight = 0.;
 
 
-	public boolean add(final Double value, final Double weight) {		
+	public boolean add(final Double value, final Double weight) {
 		super.add(value * weight);
 		this.weight += weight;
 		return true;
@@ -31,7 +31,7 @@ extends LightAverageDoubleAggregation {
 		this.weight -= weight;
 		return true;
 	}
-	
+
 	/*
 	 *
 	 */
@@ -61,7 +61,7 @@ extends LightAverageDoubleAggregation {
 	 */
 
 	@Override
-	public void fuse(AbstractCompensativeAggregation<? extends Double> average2) {
+	public void fuse(final AbstractCompensativeAggregation<? extends Double> average2) {
 		this.cardinal += average2.getNumberOfAggregatedElements();
 		if (average2 instanceof LightWeightedAverageDoubleAggregation) {
 			final LightWeightedAverageDoubleAggregation av2 = (LightWeightedAverageDoubleAggregation) average2;

@@ -240,7 +240,7 @@ public class TaskShell extends UnicastRemoteObject implements TaskShellHandle {
 	@Override
 	public synchronized void switchReplicationStrategy(final String url,
 			final int port_nb, final ReplicationStrategy rs)
-			throws RemoteException, UnknownReplicantException {
+					throws RemoteException, UnknownReplicantException {
 		final ReplicantInfo ri = this.policy.containsReplicant(url, port_nb);
 		this.suspend();
 		this.policy.suspend();
@@ -265,7 +265,7 @@ public class TaskShell extends UnicastRemoteObject implements TaskShellHandle {
 		final String sender_name = msg.getSenderName();
 		if (this.lastMsgs.containsKey(sender_name)
 				&& ((Integer) this.lastMsgs.get(sender_name)).intValue() >= msg
-						.getSerial()) {
+				.getSerial()) {
 			// Discard message
 			Logger.exception(this, "Ce message aurait du être refusé:\n"
 					+ msg.getContents());
@@ -342,8 +342,8 @@ public class TaskShell extends UnicastRemoteObject implements TaskShellHandle {
 					+ url + ":" + port_nb);
 		} catch (final RemoteException re) {
 			System.out
-					.println("Internal error : cannot contact Darx server at "
-							+ url + ":" + port_nb);
+			.println("Internal error : cannot contact Darx server at "
+					+ url + ":" + port_nb);
 			re.printStackTrace();
 		}
 		return server;

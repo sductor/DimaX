@@ -62,13 +62,13 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 					me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(ag, m));
 				else
 					throw new  UnrespectedCompetenceSyntaxException(me.toString());
-		for (final AgentCompetence<?> comp : BasicCompetenceShell.getNativeCompetences(ag))
-			for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(comp.getClass()))
-				if (m.isAnnotationPresent(EventHookedMethod.class))
-					if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m))
-						me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(comp, m));
-					else
-						throw new  UnrespectedCompetenceSyntaxException(me.toString());
+				for (final AgentCompetence<?> comp : BasicCompetenceShell.getNativeCompetences(ag))
+					for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(comp.getClass()))
+						if (m.isAnnotationPresent(EventHookedMethod.class))
+							if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m))
+								me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(comp, m));
+							else
+								throw new  UnrespectedCompetenceSyntaxException(me.toString());
 	}
 
 	//

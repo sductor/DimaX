@@ -123,7 +123,7 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 
 		return new FuzzySubSet(fMin, this.nomEnsemble + " & " + b.nomEnsemble,
 				this.nomSousEnsemble + " & " + b.nomSousEnsemble, this.unite
-						+ " & " + b.unite);
+				+ " & " + b.unite);
 	}
 
 	public FuzzySubSet sousEnsembleUnion(final FuzzySubSet b) {
@@ -189,7 +189,7 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 
 		return new FuzzySubSet(fMax, this.nomEnsemble + " | " + b.nomEnsemble,
 				this.nomSousEnsemble + " | " + b.nomSousEnsemble, this.unite
-						+ " | " + b.unite);
+				+ " | " + b.unite);
 	}
 
 	public double prodCart(final List<FuzzySubSet> s,
@@ -290,12 +290,12 @@ class FonctionAppartenance implements Serializable {
 		}
 
 		public boolean estIntersecte(final Segment d2) {// Les segments sont
-														// normalisé
+			// normalisé
 			// (extrémité de mm
 			// abscisse)
 			if (this.p.getX() != d2.p.getX() || this.q.getX() != d2.q.getX()) {
 				System.out
-						.println("ERREUR # test d'intersection de segment non normalisés");
+				.println("ERREUR # test d'intersection de segment non normalisés");
 				System.exit(-1);
 			}
 			return Double.compare(this.p.getY(), d2.p.getY()) != Double
@@ -303,15 +303,15 @@ class FonctionAppartenance implements Serializable {
 		}
 
 		public Couple getIntersection(final Segment d2) {// Une intersection
-															// existe
+			// existe
 			if (this.p.getX() != d2.p.getX() || this.q.getX() != d2.q.getX()) {
 				System.out
-						.println("ERREUR # calcul d'intersection de segment non normalisés");
+				.println("ERREUR # calcul d'intersection de segment non normalisés");
 				System.exit(-1);
 			}
 			if (!this.estIntersecte(d2)) {
 				System.out
-						.println("ERREUR # calcul d'intersection d esegment disjoint");
+				.println("ERREUR # calcul d'intersection d esegment disjoint");
 				System.exit(-1);
 			}
 			final double x = (d2.b - this.b) / (this.a - d2.a);

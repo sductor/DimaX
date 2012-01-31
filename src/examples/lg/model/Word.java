@@ -17,7 +17,7 @@ public class Word {
 
 	public Word(final String str) throws Exception {
 		this.index = -1;
-		if (qualifies(str))
+		if (Word.qualifies(str))
 			this.word = str;
 		else
 			throw new Exception("Word contains exotic characters!");
@@ -41,7 +41,7 @@ public class Word {
 	}
 
 	public Letter getNeededLetter() {
-	try {
+		try {
 			return new Letter(this.word.charAt(this.index+1));
 		} catch (final Exception e) {
 			// should never occur
@@ -75,10 +75,10 @@ public class Word {
 	public void addLetter(final Letter l) throws GameException {
 		if (this.isComplete())
 			throw new GameException("Word already complete!");;
-		if (this.getNeededLetter().getLetter() == l.getLetter())
-			this.index++;
-		else
-			throw new GameException("Bad letter!");
+			if (this.getNeededLetter().getLetter() == l.getLetter())
+				this.index++;
+			else
+				throw new GameException("Bad letter!");
 
 	}
 

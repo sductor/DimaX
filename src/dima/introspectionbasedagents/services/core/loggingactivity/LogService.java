@@ -43,13 +43,13 @@ public final class LogService<Agent extends CommunicatingCompetentComponent & Ma
 implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -4511578003487049832L;
 
-	
+
 	/***********************************************************************
 	 * *********************************************************************
 	 *//***********************************************************************
 	 * *********************************************************************
 	 */
-	
+
 	//Order or the log to be written to screen
 	public  boolean activateCommtoScreen = false;
 	public  boolean activateExceptoScreen = true;
@@ -58,14 +58,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public boolean activateMonoToFiles = true;
 	public boolean activateCommtoFiles = false;
 	public  boolean activateExceptoFile = true;
-	
+
 	/***********************************************************************
 	 * *********************************************************************
 	 *//***********************************************************************
 	 * *********************************************************************
 	 */
-	
-	
+
+
 	//
 	// Fields
 	//
@@ -104,8 +104,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public void addLogKey(final String key, final boolean toScreen, final boolean toFile){
 		if (this.keysToScreen.put(key,toScreen)!=null || this.keysToFiles.put(key, toFile)!=null)
 			this.logWarning("Already known key! "+key,LogService.onBoth);
-//		else
-//			System.out.println("will log "+key+" on : "+(toScreen?"screen ":" ")+(toFile?"file":""));
+		//		else
+		//			System.out.println("will log "+key+" on : "+(toScreen?"screen ":" ")+(toFile?"file":""));
 	}
 
 	@Override
@@ -308,7 +308,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@MessageHandler
 	public void receiveLogNotif(final NotificationMessage<LogNotification> n){
 		final LogNotification log = n.getNotification();
-		
+
 		if (!LogService.logSetted)
 			LogService.setLogConfiguration();
 

@@ -20,7 +20,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	//
 	// Status
 	//
-	
+
 
 	@StepComposant()
 	@Transient
@@ -28,13 +28,13 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 		this.notifyMyReliability4Status();
 		return true;
 	}
-	
+
 	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
 	public void notifyMyReliability4Status() {
 		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
-			this.notify(
-					getMyAgent().getMyCurrentState().getMyReliability(),
-					ObservingStatusService.reliabilityObservationKey);
+		this.notify(
+				this.getMyAgent().getMyCurrentState().getMyReliability(),
+				ObservingStatusService.reliabilityObservationKey);
 	}
 
 	// public CandidatureReplicaCoreWithStatus(

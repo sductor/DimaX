@@ -10,13 +10,13 @@ package negotiation.dcopframework.daj;
 public class Message {
 
 	Integer sender;
-	
+
 	public int getSender(){
-		return sender;
+		return this.sender;
 	}
-	
-	
-	public void setSender(Integer sender) {
+
+
+	public void setSender(final Integer sender) {
 		this.sender = sender;
 	}
 
@@ -27,7 +27,7 @@ public class Message {
 	public String getText() {
 		return ("(no information)");
 	}
-	
+
 	public int getSize() {
 		return 0;
 	}

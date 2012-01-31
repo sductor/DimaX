@@ -36,7 +36,7 @@ import java.util.Enumeration;
  * @version %I%, %G%
  */
 public class PassiveReplicationStrategy extends ReplicationStrategy implements
-		Runnable, Serializable {
+Runnable, Serializable {
 
 	/**
 	 *
@@ -99,8 +99,8 @@ public class PassiveReplicationStrategy extends ReplicationStrategy implements
 		int result = this.type - other_strat_type;
 		if (result == 0)
 			result = ((PassiveReplicationStrategy) other_strat)
-					.getUpdateDelay()
-					- this.updateDelay;
+			.getUpdateDelay()
+			- this.updateDelay;
 		return result;
 	}
 

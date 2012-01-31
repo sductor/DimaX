@@ -73,11 +73,11 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 
 	protected boolean isStepMethod(final MethodHandler mt) {
 		return
-		mt.isAnnotationPresent(ProactivityInitialisation.class)
-		|| mt.isAnnotationPresent(PreStepComposant.class)
-		|| mt.isAnnotationPresent(StepComposant.class)
-		|| mt.isAnnotationPresent(PostStepComposant.class)
-		|| mt.isAnnotationPresent(ProactivityFinalisation.class);
+				mt.isAnnotationPresent(ProactivityInitialisation.class)
+				|| mt.isAnnotationPresent(PreStepComposant.class)
+				|| mt.isAnnotationPresent(StepComposant.class)
+				|| mt.isAnnotationPresent(PostStepComposant.class)
+				|| mt.isAnnotationPresent(ProactivityFinalisation.class);
 	}
 
 	/**
@@ -117,8 +117,8 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 			if (!this.checkMethodValidity(mt))
 				LogService.writeException(
 						a,"cannot add " + mt+" method not valid ");
-			else
-				this.addMethod(mt);
+				else
+					this.addMethod(mt);
 
 
 	}
@@ -128,7 +128,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 */
 	@Override
 	public boolean executeStepMethod(final MethodHandler mt, final Date creation)
-	throws IllegalArgumentException, Throwable {
+			throws IllegalArgumentException, Throwable {
 		if (this.isReady(mt, creation)){
 			this.status.setCurrentlyExecutedAgent(mt.getMyComponent());
 			this.status.setCurrentlyExecutedMethod(mt);

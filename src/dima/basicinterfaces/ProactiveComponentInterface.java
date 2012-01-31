@@ -7,21 +7,21 @@ public interface ProactiveComponentInterface extends ActiveComponentInterface{
 	//
 
 
-//	/**
-//	 * Tests wheter a proactive object is active or no ie whether the
-//	 * ProactiveComponent.
-//	 */
-//	public void  setActive(boolean active);
+	//	/**
+	//	 * Tests wheter a proactive object is active or no ie whether the
+	//	 * ProactiveComponent.
+	//	 */
+	//	public void  setActive(boolean active);
 
 	/**
 	 * Tests wheter a proactive object has reached it goal or
 	 */
 	public boolean isAlive();
 
-//	/**
-//	 * Autodestruction of a proactive object
-//	 */
-//	public void kill();
+	//	/**
+	//	 * Autodestruction of a proactive object
+	//	 */
+	//	public void kill();
 
 	//
 	// Methods

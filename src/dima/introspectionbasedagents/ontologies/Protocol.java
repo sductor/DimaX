@@ -29,14 +29,14 @@ public class Protocol<Agent extends CommunicatingCompetentComponent> extends Bas
 	public Protocol() {
 	}
 
-//	public void sendMessage(AgentIdentifier id, AbstractMessageInterface m){
-//		this.com.sendMessage(id, m);
-//	}
+	//	public void sendMessage(AgentIdentifier id, AbstractMessageInterface m){
+	//		this.com.sendMessage(id, m);
+	//	}
 
-//	public void sendMessage(Collection<AgentIdentifier> ids, AbstractMessageInterface m){
-//		for (AgentIdentifier id : ids)
-//			this.com.sendMessage(id, m);
-//	}
+	//	public void sendMessage(Collection<AgentIdentifier> ids, AbstractMessageInterface m){
+	//		for (AgentIdentifier id : ids)
+	//			this.com.sendMessage(id, m);
+	//	}
 
 
 	//

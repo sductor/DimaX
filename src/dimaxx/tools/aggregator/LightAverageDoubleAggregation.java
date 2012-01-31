@@ -2,7 +2,7 @@ package dimaxx.tools.aggregator;
 
 
 public class LightAverageDoubleAggregation implements
-		AbstractCompensativeAggregation<Double> {
+AbstractCompensativeAggregation<Double> {
 	private static final long serialVersionUID = 5702510745579722877L;
 
 	protected Double sum = 0.;
@@ -48,7 +48,7 @@ public class LightAverageDoubleAggregation implements
 	 *
 	 */
 
-	public void fuse(AbstractCompensativeAggregation<? extends Double> average2) {
+	public void fuse(final AbstractCompensativeAggregation<? extends Double> average2) {
 		this.cardinal += average2.getNumberOfAggregatedElements();
 		if (average2 instanceof LightAverageDoubleAggregation) {
 			final LightAverageDoubleAggregation av2 = (LightAverageDoubleAggregation) average2;

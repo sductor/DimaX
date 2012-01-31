@@ -103,7 +103,7 @@ public class NetworkShutdownHook extends Thread{
 					System.out.println("\n *** Connecting "+h+" ...");
 					h.execute(this.destructionCommand);
 					System.out.println("   ---> Application on "+h+" successfully destroyed");
-//					h.disconnect();
+					//					h.disconnect();
 				} catch (final Exception e) {
 					System.err.println("Application on "+h+" has not been destroyed");
 					e.printStackTrace();

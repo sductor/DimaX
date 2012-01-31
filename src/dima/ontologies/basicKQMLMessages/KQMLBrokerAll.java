@@ -11,19 +11,19 @@ import dima.kernel.communicatingAgent.OntologyBasedAgent;
 
 public class KQMLBrokerAll extends KQML {
 
-    /**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = 2760825893933392157L;
 	public KQMLBrokerAll(final String tx, final String rx,
-			 final String msg,
-			 final String irt, final String rw) {
-	super(tx,rx,msg,irt,rw);
-	this.setPerformative("broker-all");
-    }
-    @Override
+			final String msg,
+			final String irt, final String rw) {
+		super(tx,rx,msg,irt,rw);
+		this.setPerformative("broker-all");
+	}
+	@Override
 	public void processKQML(final OntologyBasedAgent a)
-    {
-    a.processBrokerAll(this);
-    }
+	{
+		a.processBrokerAll(this);
+	}
 }

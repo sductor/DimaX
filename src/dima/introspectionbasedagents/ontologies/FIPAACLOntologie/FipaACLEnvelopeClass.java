@@ -124,10 +124,10 @@ public class FipaACLEnvelopeClass implements Envelope {
 	@Override
 	public String toString() {
 		return "FIPAACL Envellope of:"
-		+"\n  * perf=" + this.performative
-		/*+ "\n  * cont=" + this.content*/
-		+ "\n  * pro=" + this.protocol
-		+ "\n  * sig=" + Arrays.asList(this.attachementSignature);
+				+"\n  * perf=" + this.performative
+				/*+ "\n  * cont=" + this.content*/
+				+ "\n  * pro=" + this.protocol
+				+ "\n  * sig=" + Arrays.asList(this.attachementSignature);
 	}
 }
 

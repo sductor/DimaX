@@ -8,15 +8,15 @@ package dima.basiccommunicationcomponents;
 import dima.support.GimaObject;
 
 public class CommunicationObject extends GimaObject {
-/**
+	/**
 	 *
 	 */
 	private static final long serialVersionUID = -8229633042058749013L;
 
-/**
- * AbstractCommunicationObject constructor comment.
- */
-public CommunicationObject() {
-	super();
-}
+	/**
+	 * AbstractCommunicationObject constructor comment.
+	 */
+	public CommunicationObject() {
+		super();
+	}
 }

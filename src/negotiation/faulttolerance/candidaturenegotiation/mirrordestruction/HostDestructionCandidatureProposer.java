@@ -11,6 +11,7 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.IllAnswer;
 import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.UpgradingExplorator;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
+import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -36,14 +37,14 @@ ReplicationCandidature>  {
 	//
 
 	@EventHookedMethod(IllAnswer.class)
-	public void receiveFullNotification(final IllAnswer<ReplicationCandidature> n) {
+	public void receiveFullNotification(final IllAnswer<HostState, ReplicationCandidature> n) {
 		//		if (!getMyAgent().getMyProtocol().negotiationAsInitiatorHasStarted()
 		//				&& !n.getAnswers().getRejectedContracts().isEmpty()
 		//				&& n.getAnswers().getContractsAcceptedBy(getIdentifier()).isEmpty()){
 		//		//The state of the host is stable and there is rejected contract : we try to find if there is destruction that could loccally improve the system
 
-		final UpgradingExplorator<ReplicationCandidature, ReplicationSpecification> myDealExpl =
-				new UpgradingExplorator<ReplicationCandidature, ReplicationSpecification>() {
+		final UpgradingExplorator<ReplicationCandidature, ReplicationSpecification, HostState> myDealExpl =
+				new UpgradingExplorator<ReplicationCandidature, ReplicationSpecification, HostState>() {
 			@Override
 			protected ReplicationCandidature generateDestructionContract(
 					final ReplicationSpecification state,
@@ -54,10 +55,17 @@ ReplicationCandidature>  {
 						c,false);
 			}
 		};
-		this.contractsToPropose.addAll(myDealExpl.generateUpgradingContracts(this.getMyAgent(), n.getAnswers()));
+		Collection<ReplicationCandidature> newUpgradingContracts = myDealExpl.generateUpgradingContracts(this.getMyAgent(), n.getAgentState(), n.getAnswers());
+		if (!newUpgradingContracts.isEmpty())
+			logMonologue("detecting upgrading contracts "+newUpgradingContracts, NegotiationProtocol.log_mirrorProto);
+		this.contractsToPropose.addAll(newUpgradingContracts);
 
 		//		}
 	}
+	
+//	public boolean validity(){
+//		
+//	}
 
 	//
 	// Methods

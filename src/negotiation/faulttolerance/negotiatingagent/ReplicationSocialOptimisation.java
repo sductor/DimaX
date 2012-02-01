@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import negotiation.negotiationframework.AllocationSocialWelfares;
+import negotiation.negotiationframework.SocialChoiceFunctions;
+import negotiation.negotiationframework.SocialChoiceFunctions.UtilitaristEvaluator;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CompetentComponent;
 
@@ -33,6 +35,9 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 	}
 
 
+	/**
+	 * Filter to remove the host states in the social computation
+	 */
 	@Override
 	protected Collection<ReplicationSpecification> getResultingAllocation(
 			final Map<AgentIdentifier, ReplicationSpecification> initialStates,
@@ -71,18 +76,19 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 					final ReplicaState s = (ReplicaState) o;
 					return s.getMyReliability();
 				} else if (o instanceof HostState){
+					assert 1<0;
 					final HostState s = (HostState) o;
 					final Collection<ReplicaState> states = s.getMyAgentsCollec();
 					Double result;
-					if (ReplicationSocialOptimisation.this.socialWelfare.equals(AllocationSocialWelfares.key4leximinSocialWelfare)){
+					if (ReplicationSocialOptimisation.this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
 						result = Double.POSITIVE_INFINITY;
 						for (final ReplicaState r : states)
 							result = Math.min(result, r.getMyReliability());
-					} else if  (ReplicationSocialOptimisation.this.socialWelfare.equals(AllocationSocialWelfares.key4NashSocialWelfare)){
+					} else if  (ReplicationSocialOptimisation.this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare)){
 						result = 1.;
 						for (final ReplicaState r : states)
 							result *= r.getMyReliability();
-					}else if  (ReplicationSocialOptimisation.this.socialWelfare.equals(AllocationSocialWelfares.key4UtilitaristSocialWelfare)){
+					}else if  (ReplicationSocialOptimisation.this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare)){
 						result = 0.;
 						for (final ReplicaState r : states)
 							result += r.getMyReliability();

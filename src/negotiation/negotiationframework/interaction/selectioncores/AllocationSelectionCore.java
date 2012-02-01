@@ -35,9 +35,11 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 			return new ArrayList<Contract>();
 		else
 			try {
-				return Collections.max(
+				Collection<Contract> max = Collections.max(
 						allocations,
 						this.getMyAgent().getMyAllocationPreferenceComparator(currentState));
+				assert this.getMyAgent().respectMyRights(currentState, max);
+				return max;
 			} catch (final RuntimeException e) {
 				this.getMyAgent().signalException(
 						"my state "+currentState+", contracts "+contractsToExplore);
@@ -62,8 +64,9 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 		for (final Contract singleton : contractToAggregate) {
 			final List<Contract> a = new ArrayList<Contract>();
 			a.add(singleton);
-			toAdd.add(a);
+			toAdd.add(a);//on ajoute le contrat singleton
 
+			//on ajoute tous les précédent ensemble enrichi avec le singleton 
 			for (final Collection<Contract> alloc : result){
 				final List<Contract> a2= new ArrayList<Contract>();
 				a2.addAll(alloc);

@@ -6,7 +6,7 @@ import negotiation.negotiationframework.interaction.contracts.AbstractContractTr
 public interface DestructionCandidature<
 Contract extends AbstractContractTransition<ActionSpec>,
 ActionSpec extends AbstractActionSpecification>
-extends AbstractContractTransition<AbstractActionSpecification>{
+extends AbstractContractTransition<ActionSpec>{
 
 	public Contract getMinContract();
 }

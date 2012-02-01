@@ -1,14 +1,16 @@
 package negotiation.experimentationframework;
 
+import java.lang.reflect.Field;
 import java.util.LinkedList;
 
 import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dimaxx.server.HostIdentifier;
 
-public interface ExperimentationProtocol extends DimaComponentInterface{
+public abstract class ExperimentationProtocol implements DimaComponentInterface{
 
 	//
 	// Configuration statique
@@ -22,14 +24,14 @@ public interface ExperimentationProtocol extends DimaComponentInterface{
 	public static final long _simulationTime = (1000 * 5);
 	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 3;
 
-	public static final int nbAgents = 5;
-	public static final int nbHosts = 3;
+	public static final int nbAgents = 3;
+	public static final int nbHosts = 2;
 
 	//
 	// Negotiation Tickers
 	//
 
-	public static final long _timeToCollect = -1;//500;//
+	public static final long _timeToCollect = 10;//500;//
 	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
@@ -40,37 +42,79 @@ public interface ExperimentationProtocol extends DimaComponentInterface{
 	 */
 
 	//Protocoles
-	final static String key4mirrorProto = "mirror protocol";
-	final static String key4CentralisedstatusProto = "Centralised status protocol";
-	final static String key4statusProto = "status protocol";
-	final static String key4multiLatProto = "multi lateral protocol";
+	private final static String key4mirrorProto = "mirror protocol";
+	private final static String key4CentralisedstatusProto = "Centralised status protocol";
+	private final static String key4statusProto = "status protocol";
+	private final static String key4multiLatProto = "multi lateral protocol";
 
 	//Selection algorithms
-	final static String key4greedySelect = "greedy select";
-	final static String key4rouletteWheelSelect = "roolette wheel select";
-	final static String key4AllocSelect = "alloc select";
+	private final static String key4greedySelect = "greedy select";
+	private final static String key4rouletteWheelSelect = "roolette wheel select";
+	private final static String key4AllocSelect = "alloc select";
 
 
 	/*
 	 *  Lancement
 	 */
 
-	public LinkedList<ExperimentationParameters> generateSimulation();
+	public abstract LinkedList<ExperimentationParameters> generateSimulation();
 
 	//Return new laborantin and update machines usage
-	public Laborantin createNewLaborantin(ExperimentationParameters p, APILauncherModule api)
+	public abstract Laborantin createNewLaborantin(ExperimentationParameters p, APILauncherModule api)
 			throws NotEnoughMachinesException, CompetenceException;
 
 	/*
 	 * Déploiement
 	 */
 
-	public Integer getMaxNumberOfAgentPerMachine(HostIdentifier id);
+	public abstract Integer getMaxNumberOfAgentPerMachine(HostIdentifier id);
 
 
 	/*
 	 * Primitive
 	 */
 
-	public String getDescription();
+	public String getDescription() {
+		try {
+			String result = "**************\n";
+			result += "Static parameters are :\n";
+			for (final Field f : ReplicationExperimentationProtocol.class
+					.getFields())
+				result += f.getName() + " : "
+						+ f.get(ReplicationExperimentationProtocol.class)
+						+ "\n";
+					result += "**************";
+					return result;
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static String getKey4greedyselect() {
+		return key4greedySelect;
+	}
+
+	public static String getKey4roulettewheelselect() {
+		return key4rouletteWheelSelect;
+	}
+
+	public static String getKey4allocselect() {
+		return key4AllocSelect;
+	}
+
+	public static String getKey4mirrorproto() {
+		return key4mirrorProto;
+	}
+
+	public static String getKey4centralisedstatusproto() {
+		return key4CentralisedstatusProto;
+	}
+
+	public static String getKey4statusproto() {
+		return key4statusProto;
+	}
+
+	public static String getKey4multilatproto() {
+		return key4multiLatProto;
+	}
 }

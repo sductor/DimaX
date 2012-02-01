@@ -449,13 +449,13 @@ public class ReplicationLaborantin extends Laborantin {
 					throws CompetenceException {
 		AbstractSelectionCore select;
 		if (this.getSimulationParameters()._agentSelection
-				.equals(ExperimentationProtocol.key4greedySelect))
+				.equals(ExperimentationProtocol.getKey4greedyselect()))
 			select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else if (this.getSimulationParameters()._agentSelection
-				.equals(ExperimentationProtocol.key4rouletteWheelSelect))
+				.equals(ExperimentationProtocol.getKey4roulettewheelselect()))
 			select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else if (this.getSimulationParameters()._agentSelection
-				.equals(ExperimentationProtocol.key4AllocSelect))
+				.equals(ExperimentationProtocol.getKey4allocselect()))
 			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else
 			throw new RuntimeException(
@@ -467,13 +467,13 @@ public class ReplicationLaborantin extends Laborantin {
 		ObservationService informations;
 
 		if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4mirrorProto)) {
+				.equals(ExperimentationProtocol.getKey4mirrorproto())) {
 			core = new CandidatureReplicaCoreWithDestruction(this.getSimulationParameters()._socialWelfare);
 			proposer = new CandidatureReplicaProposer();
 			informations = new SimpleObservationService();
 
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4CentralisedstatusProto)){
+				.equals(ExperimentationProtocol.getKey4centralisedstatusproto())){
 			core = new CandidatureReplicaCoreWithStatus();
 			proposer = new CandidatureReplicaProposerWithStatus();
 			informations = new SimpleOpinionService();
@@ -482,14 +482,14 @@ public class ReplicationLaborantin extends Laborantin {
 				throw new RuntimeException("unappropriate laborantin!");
 
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4statusProto)) {
+				.equals(ExperimentationProtocol.getKey4statusproto())) {
 			core = new CandidatureReplicaCoreWithStatus();
 			proposer = new CandidatureReplicaProposerWithStatus();
 			final Map<AgentIdentifier, Class<? extends Information>> registration = new HashMap<AgentIdentifier, Class<? extends Information>>();
 			informations = new SimpleOpinionService();
 
 		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4multiLatProto))
+				.equals(ExperimentationProtocol.getKey4multilatproto()))
 			throw new RuntimeException("unimplemented!");
 		else
 			throw new RuntimeException(
@@ -513,13 +513,13 @@ public class ReplicationLaborantin extends Laborantin {
 					throws CompetenceException {
 		AbstractSelectionCore select;
 		if (this.getSimulationParameters().get_hostSelection()
-				.equals(ExperimentationProtocol.key4greedySelect))
+				.equals(ExperimentationProtocol.getKey4greedyselect()))
 			select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else if (this.getSimulationParameters().get_hostSelection()
-				.equals(ExperimentationProtocol.key4rouletteWheelSelect))
+				.equals(ExperimentationProtocol.getKey4roulettewheelselect()))
 			select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else if (this.getSimulationParameters().get_hostSelection()
-				.equals(ExperimentationProtocol.key4AllocSelect))
+				.equals(ExperimentationProtocol.getKey4allocselect()))
 			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
 		else
 			throw new RuntimeException(
@@ -530,12 +530,12 @@ public class ReplicationLaborantin extends Laborantin {
 		AbstractProposerCore proposer;
 		ObservationService informations;
 		if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4mirrorProto)) {
+				.equals(ExperimentationProtocol.getKey4mirrorproto())) {
 			core = new HostCore(true,this.getSimulationParameters()._socialWelfare);
 			proposer = new HostDestructionCandidatureProposer();
 			informations = new SimpleObservationService();
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4CentralisedstatusProto)) {
+				.equals(ExperimentationProtocol.getKey4centralisedstatusproto())) {
 			if (!ReplicationLaborantin.this.myStatusObserver.iObserveStatus())
 				throw new RuntimeException("unappropriate laborantin!"
 						+ this.myStatusObserver);
@@ -544,13 +544,13 @@ public class ReplicationLaborantin extends Laborantin {
 			informations = new SimpleObservationService();
 
 		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4statusProto)) {
+				.equals(ExperimentationProtocol.getKey4statusproto())) {
 			core = new HostCore(false,this.getSimulationParameters()._socialWelfare);
 			proposer = new InactiveProposerCore();
 			informations = new SimpleOpinionService();
 
 		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.key4multiLatProto))
+				.equals(ExperimentationProtocol.getKey4multilatproto()))
 			throw new RuntimeException("unimplemented!");
 		else
 			throw new RuntimeException(

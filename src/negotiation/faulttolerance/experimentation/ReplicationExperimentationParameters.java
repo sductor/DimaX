@@ -30,8 +30,8 @@ ExperimentationParameters {
 	 */
 
 
-	public static final Double hostMaxProc = 2.;
-	public static final Double hostMaxMem = 2.;
+	public static final Double hostMaxProc = 0.6;
+	public static final Double hostMaxMem = 0.6;
 
 
 	/*

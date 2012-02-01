@@ -50,7 +50,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 		if ( this.aquaintances.containsKey(a))
 		{ad = this.aquaintances.get(a);
 		ad.receive(m);}
-		else System.out.println(
+		else System.err.println(
 				"From AMS : Message lost! \n"+m+" "+m.getClass()
 				+"\n sender : "+m.getSender()
 				+"\n receiver -------> "+m.getReceiver()

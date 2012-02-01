@@ -79,8 +79,8 @@ extends BasicAgentCompetence<Laborantin>{
 		//Use to print at the end of the method the observation graph
 
 		//Activating status observation
-		if (this.p._usedProtocol.equals(ExperimentationProtocol.key4CentralisedstatusProto)
-				|| this.p._usedProtocol.equals(ExperimentationProtocol.key4statusProto))
+		if (this.p._usedProtocol.equals(ExperimentationProtocol.getKey4centralisedstatusproto())
+				|| this.p._usedProtocol.equals(ExperimentationProtocol.getKey4statusproto()))
 			this.getMyAgent().myStatusObserver.setActive(true);
 		else
 			this.getMyAgent().myStatusObserver.setActive(false);
@@ -94,20 +94,20 @@ extends BasicAgentCompetence<Laborantin>{
 				observedRepResultLog.add(ag.getIdentifier());
 
 				//
-				if (this.p._usedProtocol.equals(ExperimentationProtocol.key4CentralisedstatusProto)){
+				if (this.p._usedProtocol.equals(ExperimentationProtocol.getKey4centralisedstatusproto())){
 					//I aggregate agents reliability
 					ag.addObserver(this.getIdentifier(), ObservingStatusService.reliabilityObservationKey);//this.addObserver(ag.getIdentifier(),ObservingStatusService.reliabilityObservationKey);???
 					reliabilityStatusLog.add(ag.getIdentifier());
 					//I forward my opinion to every agents
 					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
 					opinionsLog.add(ag.getId(), this.getIdentifier());
-				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.key4statusProto))
+				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.getKey4statusproto()))
 					//This agent observe every agents that it knows
 					for (final AgentIdentifier h :	((Replica)ag).getMyInformation().getKnownAgents()){
 						this.getMyAgent().getAgent(h).addObserver(ag.getId(), SimpleOpinionService.opinionObservationKey);
 						opinionsLog.add(ag.getId(), h);
 					}
-				else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.key4mirrorProto)){
+				else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.getKey4mirrorproto())){
 					//no observation
 				}
 				else throw new RuntimeException("impossible : ");

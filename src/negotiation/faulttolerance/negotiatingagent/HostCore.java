@@ -80,7 +80,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
 			//			System.out.println(c.getResource() + " " + new Date().toString()
 			//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+			this.logWarning( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 		}
 
 		this.getMyAgent().setNewState(

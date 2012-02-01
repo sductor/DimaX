@@ -299,7 +299,7 @@ DimaComponentInterface {
 	}
 
 	public String statusOf(final Contract c) {
-		String result = "\n*Status of " + c;
+		String result = "\n*Status of " + c+"\n";
 		if (this.getOnWaitContracts().contains(c))
 			result += "wait;";
 		if (this.getConsensualContracts().contains(c))

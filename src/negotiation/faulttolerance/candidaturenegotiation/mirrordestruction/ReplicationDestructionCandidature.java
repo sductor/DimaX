@@ -1,11 +1,13 @@
 package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
 
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
+import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.DestructionCandidature;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class ReplicationDestructionCandidature extends
-ReplicationCandidature {
+ReplicationCandidature implements DestructionCandidature<ReplicationCandidature, ReplicationSpecification>{
 
 	/**
 	 *
@@ -29,6 +31,6 @@ ReplicationCandidature {
 
 	@Override
 	public String toString(){
-		return super.toString()+" in order to create : "+this.minContract.getAgentInitialState();
+		return super.toString()+"\n IN ORDER TO CREATE: "+this.minContract.getAgentInitialState();
 	}
 }

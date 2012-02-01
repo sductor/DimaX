@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
+
 import negotiation.experimentationframework.ExperimentationProtocol;
+import negotiation.faulttolerance.candidaturenegotiation.mirrordestruction.ReplicationDestructionCandidature;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.Host;
+import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.DestructionCandidature;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder.DestructionOrderIdentifier;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
@@ -23,6 +28,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelope
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
@@ -68,10 +74,13 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			this.getMyAgent().getIdentifier());
 
 	public static final String log_negotiationStep="negotiation step for log";
+	public static final String log_mirrorProto="mirror proto step for log";
 	public static final String log_contractDataBaseManipulation="manipulation of contracts database";
+	public static final String log_selectionStep = "selection step of contract answering";
 	//
 	// Constructor
 	//
+
 
 	public NegotiationProtocol(
 			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a) throws UnrespectedCompetenceSyntaxException {
@@ -243,7 +252,6 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				//
 				// Answering
 				//
-
 				for (final Contract contract : selectedContracts.getContractsAcceptedBy(this.getMyAgent().getIdentifier()))
 					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier())) {// if im initiator
 						if (this.getContracts().getConsensualContracts().contains(contract))//if the contract is consensual
@@ -251,11 +259,11 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 					} else
 						this.acceptContract(contract);
 				for (final Contract contract : selectedContracts.getRejectedContracts())
-					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier()))
+					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier())){
 						this.cancelContract(contract);
-						else
-							// Participant Answering
-							this.rejectContract(contract);
+					}else
+						// Participant Answering
+						this.rejectContract(contract);
 			}
 	}
 
@@ -294,6 +302,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// @role(NegotiationParticipant.class)
 	protected void acceptContract(final Contract contract) {
 		this.getMyAgent().logMonologue("**************> I accept proposal "+contract+"\n"+this.getMyAgent().getMyCurrentState(),NegotiationProtocol.log_negotiationStep);
+
 		this.sendAccept(contract.getIdentifier(), this.getMyAgent()
 				.getMySpecif(contract));
 		this.contracts.addAcceptation(this.getMyAgent().getIdentifier(),
@@ -302,7 +311,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	// @role(NegotiationParticipant.class)
 	protected void rejectContract(final Contract contract) {
-		//		getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+getMyAgent().getMyCurrentState(),log_negotiationStep);
+		getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+getMyAgent().getMyCurrentState(),log_negotiationStep);
 		this.contracts
 		.addRejection(this.getMyAgent().getIdentifier(), contract);
 		this.notify(contract);
@@ -369,8 +378,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		delta.getMyContract().setSpecification(this.getMyAgent().getMySpecif(delta.getMyContract()));
 		this.cleanContracts();
 		final Contract c = delta.getMyContract();
+		this.logMonologue("I've received proposal "+c,NegotiationProtocol.log_negotiationStep);
 		if (!(this.getMyAgent() instanceof Host)
-				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
+			|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty()){
 			if (c instanceof DestructionOrder){
 				this.logMonologue("I've received destruction order "+c,NegotiationProtocol.log_negotiationStep);
 				//				acceptContract(c);
@@ -385,6 +395,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 						// try {
 						this.contracts.addContract(c);
 			}
+		} else {
+			assert 1<0:"TODO?? : answer cancel??";
+		}
 	}
 
 	private void updateInformations(final Contract delta) {
@@ -422,6 +435,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final SimpleContractAnswer reject = new SimpleContractAnswer(
 				Performative.RejectProposal, c);
 		this.sendMessage(c.getInitiator(), reject);
+
+
+		//		if (c instanceof DestructionCandidature)
+		//			logMonologue("sending destruction rejection "+c, NegotiationProtocol.log_mirrorProto);
 	}
 
 	//
@@ -437,6 +454,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final ContractIdentifier c = delta.getIdentifier();
 		final ActionSpec s = delta.getSpec();
 		this.getMyAgent().getMyInformation().add(s);
+		this.logMonologue("I 've been accepted! =) "+c+"\n"+this.getMyAgent().getMyCurrentState(),NegotiationProtocol.log_negotiationStep);
+
 
 		if (c instanceof DestructionOrderIdentifier)
 			try {
@@ -472,7 +491,6 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 						this.faceAnUnknownContract(e);
 						return;
 					}
-					this.logMonologue("I 've been accepted! =) "+c+"\n"+this.getMyAgent().getMyCurrentState(),NegotiationProtocol.log_negotiationStep);
 					this.contracts.addAcceptation(id, contract);
 					contract.setSpecification(s);
 				}
@@ -487,6 +505,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final AgentIdentifier id = delta.getSender();
 		final ContractIdentifier c = delta.getIdentifier();
 		this.logMonologue("I 've been rejected! =( "+c+"\n"+this.getMyAgent().getMyCurrentState(),NegotiationProtocol.log_negotiationStep);
+
 
 		if (!this.contracts.getContractsRejectedBy(
 				this.getMyAgent().getIdentifier()).contains(c)) {
@@ -511,6 +530,12 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		} catch (final UnknownContractException e) {
 			throw new RuntimeException(c.toString());
 		}
+
+		//		if (c instanceof DestructionCandidature)
+		//			logMonologue("sending destruction request "+c, NegotiationProtocol.log_mirrorProto);
+
+
+
 		final SimpleContractAnswer request = new SimpleContractAnswer(
 				Performative.Request, c);
 		this.sendMessage(c.getNotInitiatingParticipants(), request);
@@ -521,6 +546,12 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final SimpleContractAnswer cancel = new SimpleContractAnswer(
 				Performative.Cancel, c);
 		this.sendMessage(c.getNotInitiatingParticipants(), cancel);
+
+
+		//		if (c instanceof DestructionCandidature)
+		//			logMonologue("sending destruction cancel "+c, NegotiationProtocol.log_mirrorProto);
+
+
 	}
 
 	//
@@ -579,22 +610,22 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final ContractIdentifier c = m.getIdentifier();
 		if (!(this.getMyAgent() instanceof Host)
 				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
-			// getMyAgent().logMonologue("I've received cancel "+c);
-			// try {
-			if (id.equals(c.getInitiator()) && !this.losts.contains(c)) {
-				// this.contracts.addRejection(id,
-				// this.contracts.getContract(c));//UTILISER LES EXPIRE POUR
-				// AUTRE CHOSE QUE DES COANDIDATURE
-				if (this.contracts.contains(c))// OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-					// CACHE DES ERREURS
-					// BIZZARES!!!!
-					try {
-						this.contracts.remove(this.contracts.getContract(c));
-					} catch (final UnknownContractException e) {
-						this.faceAnUnknownContract(e);
-					}
-			} else
-				throw new RuntimeException();
+			logMonologue("I've received cancel "+c,NegotiationProtocol.log_negotiationStep);
+		// try {
+		if (id.equals(c.getInitiator()) && !this.losts.contains(c)) {
+			// this.contracts.addRejection(id,
+			// this.contracts.getContract(c));//UTILISER LES EXPIRE POUR
+			// AUTRE CHOSE QUE DES COANDIDATURE
+			//				if (this.contracts.contains(c))// OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+			// CACHE DES ERREURS
+			// BIZZARES!!!!
+			try {
+				this.contracts.remove(this.contracts.getContract(c));
+			} catch (final UnknownContractException e) {
+				this.faceAnUnknownContract(e);
+			}
+		} else
+			throw new RuntimeException();
 	}
 
 	//

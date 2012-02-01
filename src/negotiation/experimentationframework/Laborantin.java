@@ -82,6 +82,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		System.err.println("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
 				this.getSimulationParameters().getName());//agents.values());
 
+		int count = 5;
 		boolean iFailed=false;
 		do {
 			iFailed=false;
@@ -90,9 +91,13 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			} catch (final IfailedException e) {
 				iFailed=true;
 				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
+				count--;
 			}
-		}while(iFailed);
+		}while(iFailed && count > 0);
 
+		if (count==0)
+				throw new RuntimeException();
+		
 		for (final AgentIdentifier id : this.agents.keySet())
 			if (id instanceof ResourceIdentifier)
 				this.remainingHost.add(id);

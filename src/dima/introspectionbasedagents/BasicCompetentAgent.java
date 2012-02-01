@@ -23,6 +23,7 @@ import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunicat
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
+import dima.introspectionbasedagents.shells.MethodHandler;
 import dimaxx.server.HostIdentifier;
 
 public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent{
@@ -44,14 +45,14 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	public BasicCompetentAgent(final AgentIdentifier newId)  throws CompetenceException {
 		super(newId);
-		this.log= new LogService(this);
+		this.log= new LogService<BasicCompetentAgent>(this);
 		this.observer=	new PatternObserverWithHookservice(this);
 		BasicCompetentAgent.nbCompetentAgent++;
 	}
 
 	public BasicCompetentAgent(final String newId) throws CompetenceException {
 		super(newId);
-		this.log= new LogService(this);
+		this.log= new LogService<BasicCompetentAgent>(this);
 		this.observer=	new PatternObserverWithHookservice(this);
 		BasicCompetentAgent.nbCompetentAgent++;
 	}
@@ -248,7 +249,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					methodComponent,
-					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					MethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);
@@ -265,7 +266,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					this,
-					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					MethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);
@@ -393,7 +394,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	@Competence()
 	public
-	final LogService log;
+	final LogService<BasicCompetentAgent> log;
 
 
 
@@ -478,9 +479,9 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	//
 
 	@Override
-	protected BasicCompetenceShell initiateMyShell(){
+	protected BasicCompetenceShell<BasicCompetentAgent> initiateMyShell(){
 		try {
-			return new BasicCompetenceShell(this, this.creation);
+			return new BasicCompetenceShell<BasicCompetentAgent>(this, this.creation);
 		} catch (final Exception e) {
 			throw new RuntimeException(this+" ("+this.getClass()+") can not instanciate the competence shield!", e);
 		}

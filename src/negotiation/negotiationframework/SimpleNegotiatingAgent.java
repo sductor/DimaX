@@ -72,6 +72,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public void initialisation(){
 		this.addLogKey(AllocationSocialWelfares.log_socialWelfareOrdering, false, false);
 		this.addLogKey(NegotiationProtocol.log_negotiationStep, false, true);
+		this.addLogKey(NegotiationProtocol.log_mirrorProto, false, true);
+		this.addLogKey(NegotiationProtocol.log_selectionStep, false, false);
 		//		addLogKey(NegotiationProtocol.log_contractDataBaseManipulation, false, false);
 	}
 

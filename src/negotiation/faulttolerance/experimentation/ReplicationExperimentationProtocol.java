@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationProtocol;
@@ -15,13 +16,14 @@ import negotiation.experimentationframework.Experimentator;
 import negotiation.experimentationframework.IfailedException;
 import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
 import negotiation.negotiationframework.AllocationSocialWelfares;
+import negotiation.negotiationframework.SocialChoiceFunctions;
 import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
 
-public class ReplicationExperimentationProtocol implements
+public class ReplicationExperimentationProtocol extends
 ExperimentationProtocol {
 	private static final long serialVersionUID = 3221531706912973963L;
 
@@ -34,22 +36,22 @@ ExperimentationProtocol {
 	// Set of values
 	//
 
-	Collection<String> protos = Arrays.asList(new String[]{
-			ReplicationExperimentationProtocol.key4mirrorProto,
-			ReplicationExperimentationProtocol.key4CentralisedstatusProto,
-			ReplicationExperimentationProtocol.key4statusProto});
-	Collection<String> welfare = Arrays.asList(new String[]{
-			AllocationSocialWelfares.key4leximinSocialWelfare,
-			AllocationSocialWelfares.key4NashSocialWelfare,
-			AllocationSocialWelfares.key4UtilitaristSocialWelfare});
-	Collection<String> select = Arrays.asList(new String[]{
-			ReplicationExperimentationProtocol.key4greedySelect,
-			ReplicationExperimentationProtocol.key4rouletteWheelSelect});//,key4AllocSelect
-	Collection<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{
+	static List<String> protos = Arrays.asList(new String[]{
+			ReplicationExperimentationProtocol.getKey4mirrorproto(),
+			ReplicationExperimentationProtocol.getKey4centralisedstatusproto(),
+			ReplicationExperimentationProtocol.getKey4statusproto()});
+	static List<String> welfare = Arrays.asList(new String[]{
+			SocialChoiceFunctions.key4leximinSocialWelfare,
+			SocialChoiceFunctions.key4NashSocialWelfare,
+			SocialChoiceFunctions.key4UtilitaristSocialWelfare});
+	static List<String> select = Arrays.asList(new String[]{
+			ReplicationExperimentationProtocol.getKey4greedyselect(),
+			ReplicationExperimentationProtocol.getKey4roulettewheelselect()});//,key4AllocSelect
+	static List<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{
 			DispersionSymbolicValue.Nul,
 			DispersionSymbolicValue.Moyen,
 			DispersionSymbolicValue.Max});
-	Collection<Double> doubleParameters = Arrays.asList(new Double[]{
+	static List<Double> doubleParameters = Arrays.asList(new Double[]{
 			0.1,
 			0.3,
 			0.6,
@@ -69,16 +71,16 @@ ExperimentationProtocol {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=true;
 
-	static boolean varyAccessibleHost=true;
+	static boolean varyAccessibleHost=false;
 
-	static boolean  varyAgentSelection=true;
+	static boolean  varyAgentSelection=false;
 	static boolean varyHostSelection=false;
 
-	static boolean varyHostDispo=true;
-	static boolean varyHostFaultDispersion=true;
+	static boolean varyHostDispo=false;
+	static boolean varyHostFaultDispersion=false;
 
-	static boolean varyAgentLoad=true;
-	static boolean varyAgentLoadDispersion=true;
+	static boolean varyAgentLoad=false;
+	static boolean varyAgentLoadDispersion=false;
 
 	//
 	// Default values
@@ -90,15 +92,15 @@ ExperimentationProtocol {
 				Experimentator.myId,
 				ExperimentationProtocol.nbAgents,
 				ExperimentationProtocol.nbHosts,
-				1,
-				0.6,
+				doubleParameters.get(3),
+				doubleParameters.get(2),
 				DispersionSymbolicValue.Nul,
-				0.3,
+				doubleParameters.get(1),
 				DispersionSymbolicValue.Nul,
-				ExperimentationProtocol.key4mirrorProto,
-				AllocationSocialWelfares.key4leximinSocialWelfare,
-				ExperimentationProtocol.key4greedySelect,
-				ExperimentationProtocol.key4greedySelect);
+				ExperimentationProtocol.getKey4mirrorproto(),
+				SocialChoiceFunctions.key4UtilitaristSocialWelfare,
+				ExperimentationProtocol.getKey4greedyselect(),
+				ExperimentationProtocol.getKey4allocselect());
 	}
 
 
@@ -114,24 +116,24 @@ ExperimentationProtocol {
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new LinkedList<ReplicationExperimentationParameters>();
 		simuToLaunch.add(ReplicationExperimentationProtocol.getDefaultParameters(f));
-		if (ReplicationExperimentationProtocol.varyAgentSelection)
-			simuToLaunch = this.varyAgentSelection(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyHostSelection)
-			simuToLaunch = this.varyHostSelection(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyProtocol)
-			simuToLaunch = this.varyProtocol(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyHostDispo)
 			simuToLaunch = this.varyHostDispo(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentLoad)
 			simuToLaunch = this.varyAgentLoad(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyOptimizers)
-			simuToLaunch = this.varyOptimizers(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAccessibleHost)
 			simuToLaunch = this.varyAccessibleHost(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyHostFaultDispersion)
 			simuToLaunch = this.varyHostFaultDispersion(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentLoadDispersion)
 			simuToLaunch = this.varyAgentLoadDispersion(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyAgentSelection)
+			simuToLaunch = this.varyAgentSelection(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyHostSelection)
+			simuToLaunch = this.varyHostSelection(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyOptimizers)
+			simuToLaunch = this.varyOptimizers(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyProtocol)
+			simuToLaunch = this.varyProtocol(simuToLaunch);
 
 		final Comparator<ExperimentationParameters> comp = new Comparator<ExperimentationParameters>() {
 
@@ -308,22 +310,6 @@ ExperimentationProtocol {
 		return l;
 	}
 
-	@Override
-	public String getDescription() {
-		try {
-			String result = "**************\n";
-			result += "Static parameters are :\n";
-			for (final Field f : ReplicationExperimentationProtocol.class
-					.getFields())
-				result += f.getName() + " : "
-						+ f.get(ReplicationExperimentationProtocol.class)
-						+ "\n";
-					result += "**************";
-					return result;
-		} catch (final Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
 }
 
 

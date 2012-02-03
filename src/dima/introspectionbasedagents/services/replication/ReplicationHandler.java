@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.library.replication;
+package dima.introspectionbasedagents.services.replication;
 
 import java.util.Collection;
 

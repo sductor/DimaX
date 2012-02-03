@@ -8,8 +8,8 @@ import negotiation.negotiationframework.interaction.contracts.AbstractContractTr
 import negotiation.negotiationframework.strategy.StrategicNegotiatingAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
 
 public class UtilitaristStrategicModule
 <ActionSpec extends AbstractActionSpecification,

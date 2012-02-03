@@ -1,11 +1,10 @@
-package dima.introspectionbasedagents.services.core.observingagent;
+package dima.introspectionbasedagents.services.observingagent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
@@ -16,6 +15,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 /**
  * This is the service that provide pattern observing Ductor Sylvain

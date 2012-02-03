@@ -12,7 +12,7 @@ import negotiation.negotiationframework.interaction.consensualnegotiation.Select
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 /**
  * Selection Cores must extenbds this class to be coherent with the roles. They
@@ -38,7 +38,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	private ContractTrunk<Contract> given;
 	
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
-	private final boolean considerOnWait;
+	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
 
 	public AbstractSelectionCore(
 			final boolean fuseInitiatorNparticipant,

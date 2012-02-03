@@ -15,7 +15,7 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import dima.introspectionbasedagents.NotReadyException;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class CandidatureReplicaProposerWithStatus extends CandidatureReplicaProposer
 implements

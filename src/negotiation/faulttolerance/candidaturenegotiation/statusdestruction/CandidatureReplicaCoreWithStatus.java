@@ -10,8 +10,8 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
-import dima.introspectionbasedagents.services.library.information.OpinionService;
-import dima.introspectionbasedagents.services.library.information.OpinionService.Opinion;
+import dima.introspectionbasedagents.services.information.OpinionService;
+import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
 
 public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private static final long serialVersionUID = -3882932472033817195L;

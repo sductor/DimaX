@@ -3,10 +3,10 @@ package examples.introspectionExamples;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import dima.introspectionbasedagents.APIAgent;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.shells.APIAgent;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleExampleApi extends APIAgent{
 	private static final long serialVersionUID = 2197507938900786081L;

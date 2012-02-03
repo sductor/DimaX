@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.core.observingagent;
+package dima.introspectionbasedagents.services.observingagent;
 
 import java.io.Serializable;
 import java.lang.annotation.Documented;
@@ -8,11 +8,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dima.introspectionbasedagents.shells.IntrospectionStaticPrimitivesLibrary;
 import dima.introspectionbasedagents.shells.MethodHandler;
 import dimaxx.tools.mappedcollections.HashedHashSet;

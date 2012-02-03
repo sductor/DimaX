@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents;
+package dima.introspectionbasedagents.shells;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +9,8 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.introspectionbasedagents.APILauncherModule.StartActivityMessage;
+import dima.introspectionbasedagents.CommunicatingCompetentComponent;
+import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
@@ -19,11 +20,12 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
-import dima.introspectionbasedagents.shells.BasicCompetenceShell;
-import dima.introspectionbasedagents.shells.MethodHandler;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
+import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
+import dimaxx.kernel.DimaXTask;
 import dimaxx.server.HostIdentifier;
 
 public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent{
@@ -34,8 +36,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	// Fields
 	//
 
-	private BasicCompetenceShell myShell;
+	BasicCompetenceShell myShell;
 	public static int nbCompetentAgent=0;
+	DimaXTask<BasicCompetentAgent> darxEngine=null;
+	APILauncherModule myApi;
 
 
 	//
@@ -125,6 +129,9 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.appliHasStarted;
 	}
 
+	public void setDarxEngine(DimaXTask darxEngine) {
+		this.darxEngine=darxEngine;
+	}
 	//
 	// Launch
 	//
@@ -159,7 +166,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return true;
 	}
 
-	APILauncherModule myApi;
 	public boolean launchWith(final APILauncherModule api){
 		this.myApi=api;
 		return api.launch(this);
@@ -168,12 +174,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean launchWith(final APILauncherModule api, final HostIdentifier h){
 		this.myApi=api;
 		return api.launch(this,h);
-	}
-
-	@ProactivityFinalisation
-	public void unegistration() {
-		//		logMonologue("I'm out of here!!! >=] on d road again yeaaahh"+myApi, LogService.onBoth);
-		this.myApi.destroy(this);
 	}
 
 	//
@@ -496,5 +496,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public String toString(){
 		return this.getIdentifier().toString();
 	}
+
 
 }

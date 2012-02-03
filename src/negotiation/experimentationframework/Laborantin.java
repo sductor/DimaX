@@ -10,16 +10,16 @@ import java.util.Map;
 
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.APIAgent;
-import dima.introspectionbasedagents.APILauncherModule;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.APIAgent;
+import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.server.HostIdentifier;
 /**
  * Laborantin manage the execution of an experience moddelled with its simulation parameters
@@ -75,6 +75,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	}
 
 
+	//To be called in subclass constructor
 	protected void initialisation() throws CompetenceException, NotEnoughMachinesException{
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
 		this.p.initiateParameters();
@@ -122,8 +123,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	//
 	@ProactivityInitialisation
-	public void startSimu() throws CompetenceException, NotEnoughMachinesException{
-		this.initialisation();
+	public void startSimu() throws CompetenceException{
 		//		System.out.println(agents);
 		//		System.out.println(api.getAvalaibleHosts());
 		APIAgent.launch(this.api,this.locations);
@@ -215,7 +215,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	@StepComposant()
 	@Transient
 	public boolean endSimulation(){
-		if (this.getUptime()>4*this.p.getMaxSimulationTime() && (this.remainingAgent.size()>0 || this.remainingHost.size()>0)){
+		if (this.getUptime()>10*this.p.getMaxSimulationTime() && (this.remainingAgent.size()>0 || this.remainingHost.size()>0)){
 			this.signalException("i should have end!!!!(rem ag, rem host)="
 					+this.remainingAgent+","+this.remainingHost);
 			for (final AgentIdentifier r : this.remainingHost)

@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.library;
+package dima.introspectionbasedagents.services.information;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.mappedcollections.HashedHashSet;

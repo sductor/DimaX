@@ -12,7 +12,7 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.ontologies.ClassEnveloppe;
 import dima.introspectionbasedagents.ontologies.Envelope;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.support.DimaException;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 

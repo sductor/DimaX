@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.library.information;
+package dima.introspectionbasedagents.services.information;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,12 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleObservationService extends
 BasicAgentCompetence<BasicCompetentAgent> implements

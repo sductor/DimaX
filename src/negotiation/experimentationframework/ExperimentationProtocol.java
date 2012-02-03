@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.server.HostIdentifier;
 
 public abstract class ExperimentationProtocol implements DimaComponentInterface{
@@ -21,18 +21,18 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	//
 
 
-	public static final long _simulationTime = (1000 * 5);
-	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 3;
+	public static final long _simulationTime = (1000 * 10);
+	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 10;
 
-	public static final int nbAgents = 3;
-	public static final int nbHosts = 2;
+	public static final int nbAgents = 7;
+	public static final int nbHosts = 5;
 
 	//
 	// Negotiation Tickers
 	//
 
-	public static final long _timeToCollect = 10;//500;//
-	public static final long _initiatorPropositionFrequency = -1;// (long) (_timeToCollect*0.5);//(long)
+	public static final long _timeToCollect = 1000;//500;//
+	public static final long _initiatorPropositionFrequency = (long) (_timeToCollect*0.5);//(long)
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 

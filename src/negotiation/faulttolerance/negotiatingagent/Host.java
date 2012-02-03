@@ -11,7 +11,7 @@ import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.information.ObservationService;
 
 public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>

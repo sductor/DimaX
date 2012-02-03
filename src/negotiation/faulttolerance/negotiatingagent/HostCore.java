@@ -6,9 +6,9 @@ import negotiation.negotiationframework.AllocationSocialWelfares;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
-import dima.introspectionbasedagents.services.library.replication.ReplicationHandler;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.replication.ReplicationHandler;
 
 /**
  * This class contains the core evaluation, decision and execution methods of an
@@ -80,7 +80,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
 			//			System.out.println(c.getResource() + " " + new Date().toString()
 			//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			this.logWarning( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+			this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 		}
 
 		this.getMyAgent().setNewState(

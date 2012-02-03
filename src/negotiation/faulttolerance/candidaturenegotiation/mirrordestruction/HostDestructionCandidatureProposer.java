@@ -13,9 +13,9 @@ import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.U
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
 import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
-import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice.EventHookedMethod;
+import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class HostDestructionCandidatureProposer
 extends

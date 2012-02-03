@@ -11,7 +11,7 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationPara
 import negotiation.negotiationframework.agent.SimpleAgentState;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;

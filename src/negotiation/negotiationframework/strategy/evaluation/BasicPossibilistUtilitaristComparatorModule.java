@@ -3,7 +3,7 @@ package negotiation.negotiationframework.strategy.evaluation;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 
 public class BasicPossibilistUtilitaristComparatorModule
 <Contract extends AbstractContractTransition<ActionSpec>,

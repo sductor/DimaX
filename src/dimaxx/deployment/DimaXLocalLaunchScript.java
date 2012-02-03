@@ -2,7 +2,7 @@ package dimaxx.deployment;
 
 import darx.Darx;
 import darx.NameServerImpl;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.hostcontrol.LocalHost;
 
 public class DimaXLocalLaunchScript {

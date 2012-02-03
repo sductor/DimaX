@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 
 public interface AgentState extends Information {
 

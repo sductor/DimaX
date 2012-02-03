@@ -3,7 +3,7 @@ package dimaxx.server.observingmachine;
 import java.util.Collection;
 import java.util.List;
 
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.hostcontrol.Executor;
 import dimaxx.server.HostIdentifier;
 

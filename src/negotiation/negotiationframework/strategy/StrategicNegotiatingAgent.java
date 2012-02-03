@@ -12,8 +12,8 @@ import negotiation.negotiationframework.strategy.evaluation.AbstractStrategicEva
 import negotiation.negotiationframework.strategy.exploration.AbstractStrategicExplorationModule;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
-import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 
 public abstract class StrategicNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,

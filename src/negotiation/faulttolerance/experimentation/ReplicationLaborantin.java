@@ -41,14 +41,14 @@ import negotiation.negotiationframework.interaction.selectioncores.AllocationSel
 import negotiation.negotiationframework.interaction.selectioncores.GreedyBasicSelectionCore;
 import negotiation.negotiationframework.interaction.selectioncores.GreedyRouletteWheelSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
-import dima.introspectionbasedagents.services.library.information.SimpleOpinionService;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.information.SimpleOpinionService;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
@@ -94,6 +94,8 @@ public class ReplicationLaborantin extends Laborantin {
 		HeavyDoubleAggregation[] agentsReliabilityEvolution;
 		/* Mean */
 		LightWeightedAverageDoubleAggregation[] criticite;
+		/* Disponibility */
+		HeavyDoubleAggregation[] agentsDispoEvolution;
 		/* Point */
 		// Map<AgentIdentifier, Double> firstReplicationtime =
 		// new HashMap<AgentIdentifier, Double>();
@@ -117,19 +119,16 @@ public class ReplicationLaborantin extends Laborantin {
 
 		@Override
 		public void initiate() {
-			this.getSimulationParameters();
 			this.agentsReliabilityEvolution = new HeavyDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
-			this.getSimulationParameters();
+			this.agentsDispoEvolution = new HeavyDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
 			this.criticite = new LightWeightedAverageDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
-			this.getSimulationParameters();
 			this.hostsChargeEvolution = new HeavyDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
-			this.getSimulationParameters();
 			this.faulty = new LightAverageDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
 
-			this.getSimulationParameters();
 			for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++) {
 				this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
 				this.agentsReliabilityEvolution[i] = new HeavyDoubleAggregation();
+				this.agentsDispoEvolution[i] = new HeavyDoubleAggregation();
 				this.criticite[i] = new LightWeightedAverageDoubleAggregation();
 				this.faulty[i] = new LightAverageDoubleAggregation();
 			}
@@ -162,6 +161,7 @@ public class ReplicationLaborantin extends Laborantin {
 			this.getSimulationParameters();
 			if (i < ExperimentationParameters.getNumberOfTimePoints()) {
 				this.agentsReliabilityEvolution[i].add(ag.getReliability());
+				this.agentsDispoEvolution[i].add(ag.getDisponibility());
 				this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
 				if (ReplicationLaborantin.this.myStatusObserver.iObserveStatus())
 					ReplicationLaborantin.this.myStatusObserver.incr(ag,i);
@@ -212,10 +212,17 @@ public class ReplicationLaborantin extends Laborantin {
 									.getSimulationParameters().nbAgents), this
 									.getSimulationParameters().nbAgents), true,
 									false);
+			LogService.logOnFile(this.getSimulationParameters().getF(), ObservingGlobalService
+					.getQuantileTimeEvolutionObs(this.getSimulationParameters(),"disponibilite",
+							this.agentsDispoEvolution, 0.75 * (ReplicationLaborantin.this
+									.getAliveAgentsNumber() / this
+									.getSimulationParameters().nbAgents), this
+									.getSimulationParameters().nbAgents), true,
+									false);
 			// Taux de survie = moyenne pond��r�� des (wi, li) | li ��� {0,1} agent
 			// mort/vivant
 			LogService.logOnFile(ReplicationLaborantin.this.getSimulationParameters().getF(), ObservingGlobalService
-					.getMeanTimeEvolutionObs(this.getSimulationParameters(),"criticity", this.criticite,
+					.getMeanTimeEvolutionObs(this.getSimulationParameters(),"survie : moyenne ponderee des (wi, mort/vivant)", this.criticite,
 							0.75 * (ReplicationLaborantin.this.getAliveAgentsNumber() / this
 									.getSimulationParameters().nbAgents), this
 									.getSimulationParameters().nbAgents), true,
@@ -301,6 +308,8 @@ public class ReplicationLaborantin extends Laborantin {
 				.getSimulationParameters().getName(),  everyone);
 
 		this.myGlobalObservationService.initiate();
+
+		this.initialisation();
 
 	}
 

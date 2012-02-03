@@ -7,7 +7,7 @@ import negotiation.negotiationframework.interaction.contracts.AbstractContractTr
 import negotiation.negotiationframework.strategy.evaluation.AbstractStrategicEvaluationModule;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 
 public interface AbstractStrategicExplorationModule
 <Contract extends AbstractContractTransition<ActionSpec>,

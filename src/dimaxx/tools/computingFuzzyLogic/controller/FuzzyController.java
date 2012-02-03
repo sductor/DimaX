@@ -13,7 +13,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.hostcontrol.LocalHost;
 import dimaxx.tools.computingFuzzyLogic.defuzzyficator.Defuzzificateur;
 import dimaxx.tools.computingFuzzyLogic.implicator.Implicateur;

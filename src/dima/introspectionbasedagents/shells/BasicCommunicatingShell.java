@@ -7,7 +7,7 @@ import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCommunicatingMethodTrunk.UnHandledMessageException;
 
 public class BasicCommunicatingShell extends BasicIntrospectiveShell {

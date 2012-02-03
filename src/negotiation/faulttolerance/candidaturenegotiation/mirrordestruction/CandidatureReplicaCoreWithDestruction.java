@@ -9,7 +9,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class CandidatureReplicaCoreWithDestruction extends ReplicaCore {
 	private static final long serialVersionUID = 1735540071994141334L;

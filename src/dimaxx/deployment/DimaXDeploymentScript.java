@@ -7,7 +7,7 @@ import org.jdom.JDOMException;
 
 import darx.Darx;
 import darx.NameServerImpl;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.hostcontrol.RemoteHostExecutor;
 
 public class DimaXDeploymentScript extends HostsPark{

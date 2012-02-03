@@ -7,13 +7,13 @@ import java.util.Comparator;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleRationalAgent<
 ActionSpec extends AbstractActionSpecification,

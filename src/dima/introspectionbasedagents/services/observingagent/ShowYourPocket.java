@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.core.observingagent;
+package dima.introspectionbasedagents.services.observingagent;
 
 
 import dima.basicagentcomponents.AgentIdentifier;

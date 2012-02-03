@@ -25,21 +25,21 @@ ExperimentationParameters {
 	public  Double agentLoadMean;
 	public DispersionSymbolicValue agentLoadDispersion;
 
+	public Double agentCriticityMean;
+	public DispersionSymbolicValue agentCriticityDispersion;
 	/***
 	 * Constantes
 	 */
 
 
-	public static final Double hostMaxProc = 0.6;
-	public static final Double hostMaxMem = 0.6;
+	public static final Double hostMaxProc = 1.;
+	public static final Double hostMaxMem = 1.;
 
 
 	/*
 	 * Criticité
 	 */
 
-	public final ZeroOneSymbolicValue agentCriticityMean = ZeroOneSymbolicValue.Moyen;
-	public final DispersionSymbolicValue agentCriticityDispersion = DispersionSymbolicValue.Fort;
 
 
 	/* FAULTS
@@ -106,6 +106,8 @@ ExperimentationParameters {
 			final DispersionSymbolicValue hostFaultProbabilityDispersion,
 			final Double agentLoadMean,
 			final DispersionSymbolicValue agentLoadDispersion,
+			final Double agentCriticityMean,
+			final DispersionSymbolicValue agentCriticityDispersion,
 			final String usedProtocol,
 			final String socialWelfare,
 			final String agentSelection,
@@ -116,6 +118,8 @@ ExperimentationParameters {
 		this.hostDisponibilityDispersion=hostFaultProbabilityDispersion;
 		this.agentLoadMean = agentLoadMean;
 		this.agentLoadDispersion=agentLoadDispersion;
+		this.agentCriticityMean=agentCriticityMean;
+		this.agentCriticityDispersion=agentCriticityDispersion;
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;
 		this._agentSelection = agentSelection;
@@ -147,7 +151,11 @@ ExperimentationParameters {
 				+16*this._usedProtocol.hashCode()
 				+32*this._socialWelfare.hashCode()
 				+64*this._agentSelection.hashCode()
-				+128*this._hostSelection.hashCode();
+				+128*this._hostSelection.hashCode()
+				+256*this.hostDisponibilityDispersion.hashCode()
+				+512*this.agentLoadDispersion.hashCode()
+				+1024*this.agentCriticityMean.hashCode()
+				+2048*this.agentCriticityDispersion.hashCode();
 	}
 	//
 	// Accessors
@@ -194,6 +202,8 @@ ExperimentationParameters {
 				this.hostDisponibilityDispersion,
 				this.agentLoadMean,
 				this.agentLoadDispersion,
+				this.agentCriticityMean,
+				this.agentCriticityDispersion,
 				this._usedProtocol,
 				this._socialWelfare,
 				this._agentSelection,

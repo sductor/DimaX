@@ -9,7 +9,7 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ObservingSelfService
 extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
@@ -39,6 +39,7 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 		this.l.getResults().getLast().setLastInfo();
 		this.notify(this.l);
 		this.getMyAgent().sendNotificationNow();
+		this.getMyAgent().wwait(1000);
 	}
 
 	@MessageHandler

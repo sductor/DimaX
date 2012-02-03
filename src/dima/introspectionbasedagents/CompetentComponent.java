@@ -7,6 +7,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.introspectionbasedagents.services.AgentCompetence;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 

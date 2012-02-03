@@ -2,7 +2,7 @@ package dimaxx.hostcontrol;
 
 import java.net.InetAddress;
 
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 
 public class LocalHost {

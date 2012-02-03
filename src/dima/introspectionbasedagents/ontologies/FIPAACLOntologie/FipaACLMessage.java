@@ -10,7 +10,7 @@ import dima.introspectionbasedagents.ontologies.Envelope;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
 import dima.introspectionbasedagents.ontologies.MessageWithProtocol;
 import dima.introspectionbasedagents.ontologies.Protocol;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.MethodHandler;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 

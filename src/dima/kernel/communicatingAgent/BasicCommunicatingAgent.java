@@ -15,7 +15,8 @@ import dima.basiccommunicationcomponents.CommunicationComponent;
 import dima.basiccommunicationcomponents.Message;
 import dima.basiccommunicationcomponents.SimpleMailBox;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dima.kernel.BasicAgents.AgentEngine;
 import dima.kernel.BasicAgents.BasicReactiveAgent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
@@ -130,14 +131,17 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 
 
 
-	DimaXTask<BasicCommunicatingAgent> darxEngine;
 	public void activateWithDarx(final int PortNb)
 	{
 
-		this.darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
-		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(this.darxEngine);
+		DimaXTask<BasicCommunicatingAgent> darxEngine=null;
+		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
+		if (this instanceof BasicCompetentAgent)
+			((BasicCompetentAgent) this).setDarxEngine(darxEngine);
+		
+		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
 		try	{
-			this.darxEngine.activateTask(PortNb);
+			darxEngine.activateTask(PortNb);
 		}  catch (final java.rmi.RemoteException e){
 			LogService.writeException(this,"Error during Activation : ",e);
 		}
@@ -146,11 +150,14 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 
 	public void activateWithDarx(final String url,final int PortNb)
 	{
-
-		this.darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
-		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(this.darxEngine);
+		DimaXTask<BasicCommunicatingAgent> darxEngine=null;
+		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
+		if (this instanceof BasicCompetentAgent)
+			((BasicCompetentAgent) this).setDarxEngine(darxEngine);
+		
+		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
 		try	{
-			this.darxEngine.activateTask(url,PortNb);
+			darxEngine.activateTask(url,PortNb);
 		}  catch (final java.rmi.RemoteException e){
 			LogService.writeException(this,"Error during Activation : ",e);
 		}

@@ -1,11 +1,10 @@
-package dima.introspectionbasedagents;
+package dima.introspectionbasedagents.shells;
 
 import java.util.Date;
 import java.util.Map;
 
 import dima.basicagentcomponents.AgentAddress;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent{

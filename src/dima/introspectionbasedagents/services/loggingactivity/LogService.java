@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.core.loggingactivity;
+package dima.introspectionbasedagents.services.loggingactivity;
 
 
 import java.io.File;
@@ -19,15 +19,15 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.CompetentComponent;
-import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
 import dima.introspectionbasedagents.shells.MethodHandler;
+import dima.introspectionbasedagents.shells.NotReadyException;
 import dima.introspectionbasedagents.shells.SimpleAgentStatus;
 import dima.introspectionbasedagents.shells.SimpleExceptionHandler;
 /**
@@ -55,7 +55,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public  boolean activateExceptoScreen = true;
 	public  boolean activateMonotoScreen = true;
 	//Order or the log to be written in specific files
-	public boolean activateMonoToFiles = true;
+	public boolean activateMonoToFiles = false;
 	public boolean activateCommtoFiles = false;
 	public  boolean activateExceptoFile = true;
 

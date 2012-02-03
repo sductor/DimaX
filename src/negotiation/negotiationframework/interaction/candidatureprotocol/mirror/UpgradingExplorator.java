@@ -13,7 +13,7 @@ import negotiation.negotiationframework.interaction.consensualnegotiation.Unknow
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
+import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
 
 public abstract class UpgradingExplorator<
 Contract extends AbstractContractTransition<ActionSpec>,

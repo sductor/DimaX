@@ -1,12 +1,12 @@
-package dima.introspectionbasedagents.services.library.information;
+package dima.introspectionbasedagents.services.information;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.AgentCompetence;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.tools.aggregator.FunctionnalCompensativeAggregator;
 import dimaxx.tools.aggregator.UtilitaristAnalyser;
 

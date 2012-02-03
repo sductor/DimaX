@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.core.observingagent;
+package dima.introspectionbasedagents.services.observingagent;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import dima.introspectionbasedagents.ontologies.Envelope;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.MethodHandler;
 
 public class NotificationEnvelopeClass implements Envelope {

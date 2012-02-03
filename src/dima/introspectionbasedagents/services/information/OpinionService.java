@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.library.information;
+package dima.introspectionbasedagents.services.information;
 
 import java.util.Collection;
 

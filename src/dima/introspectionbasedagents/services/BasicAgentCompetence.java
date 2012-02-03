@@ -6,7 +6,7 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
-import dima.introspectionbasedagents.NotReadyException;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -8166804401339182512L;

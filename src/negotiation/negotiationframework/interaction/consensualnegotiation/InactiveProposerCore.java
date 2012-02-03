@@ -6,8 +6,8 @@ import java.util.Set;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.strategy.StrategicNegotiatingAgent;
-import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class InactiveProposerCore<
 ActionSpec extends AbstractActionSpecification,

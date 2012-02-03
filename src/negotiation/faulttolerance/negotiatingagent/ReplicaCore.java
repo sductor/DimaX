@@ -5,8 +5,8 @@ import java.util.Collection;
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public  class ReplicaCore
 extends

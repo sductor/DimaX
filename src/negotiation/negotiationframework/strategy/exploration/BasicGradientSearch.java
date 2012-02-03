@@ -8,7 +8,7 @@ import negotiation.negotiationframework.interaction.contracts.AbstractActionSpec
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.strategy.evaluation.AbstractStrategicEvaluationModule;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 
 public class BasicGradientSearch
 <Action extends AbstractContractTransition<ActionSpec>,

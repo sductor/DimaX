@@ -16,7 +16,7 @@ import darx.DarxTask;
 import darx.RemoteTask;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 
 public class Node extends Thread {

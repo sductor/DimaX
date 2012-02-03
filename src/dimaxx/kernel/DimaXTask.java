@@ -9,7 +9,7 @@ import dima.basicinterfaces.CommunicatingComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.ProactiveComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.hostcontrol.LocalHost;
 
 public class DimaXTask<Component extends ProactiveComponentInterface & IdentifiedComponentInterface> extends DarxTask {

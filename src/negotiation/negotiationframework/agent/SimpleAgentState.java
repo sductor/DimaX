@@ -3,7 +3,7 @@ package negotiation.negotiationframework.agent;
 import java.util.Date;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 
 public abstract class SimpleAgentState implements AgentState {
 	private static final long serialVersionUID = -1317496111744783996L;

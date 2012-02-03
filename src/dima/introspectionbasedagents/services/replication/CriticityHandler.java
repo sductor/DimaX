@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.library.replication;
+package dima.introspectionbasedagents.services.replication;
 
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.services.AgentCompetence;

@@ -17,9 +17,9 @@ import negotiation.experimentationframework.IfailedException;
 import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
 import negotiation.negotiationframework.AllocationSocialWelfares;
 import negotiation.negotiationframework.SocialChoiceFunctions;
-import dima.introspectionbasedagents.APILauncherModule;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
 
@@ -73,14 +73,17 @@ ExperimentationProtocol {
 
 	static boolean varyAccessibleHost=false;
 
-	static boolean  varyAgentSelection=false;
+	static boolean  varyAgentSelection=true;
 	static boolean varyHostSelection=false;
 
 	static boolean varyHostDispo=false;
-	static boolean varyHostFaultDispersion=false;
+	static boolean varyHostFaultDispersion=true;
 
 	static boolean varyAgentLoad=false;
-	static boolean varyAgentLoadDispersion=false;
+	static boolean varyAgentLoadDispersion=true;
+	
+	static boolean varyAgentCriticity=false;
+	static boolean varyAgentCriticityDispersion=false;
 
 	//
 	// Default values
@@ -92,11 +95,13 @@ ExperimentationProtocol {
 				Experimentator.myId,
 				ExperimentationProtocol.nbAgents,
 				ExperimentationProtocol.nbHosts,
-				doubleParameters.get(3),
-				doubleParameters.get(2),
-				DispersionSymbolicValue.Nul,
-				doubleParameters.get(1),
-				DispersionSymbolicValue.Nul,
+				doubleParameters.get(3),//kaccessible
+				doubleParameters.get(2),//dispo mean
+				DispersionSymbolicValue.Nul,//dispo dispersion
+				doubleParameters.get(1),//load mean
+				DispersionSymbolicValue.Nul,//load dispersion
+				doubleParameters.get(2),//criticity mean
+				DispersionSymbolicValue.Fort,//criticity dispersion
 				ExperimentationProtocol.getKey4mirrorproto(),
 				SocialChoiceFunctions.key4UtilitaristSocialWelfare,
 				ExperimentationProtocol.getKey4greedyselect(),
@@ -116,15 +121,19 @@ ExperimentationProtocol {
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new LinkedList<ReplicationExperimentationParameters>();
 		simuToLaunch.add(ReplicationExperimentationProtocol.getDefaultParameters(f));
-		if (ReplicationExperimentationProtocol.varyHostDispo)
-			simuToLaunch = this.varyHostDispo(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyAgentLoad)
-			simuToLaunch = this.varyAgentLoad(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAccessibleHost)
 			simuToLaunch = this.varyAccessibleHost(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyHostDispo)
+			simuToLaunch = this.varyHostDispo(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyHostFaultDispersion)
 			simuToLaunch = this.varyHostFaultDispersion(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyAgentLoad)
+			simuToLaunch = this.varyAgentLoad(simuToLaunch);;
 		if (ReplicationExperimentationProtocol.varyAgentLoadDispersion)
+			simuToLaunch = this.varyAgentLoadDispersion(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyAgentCriticity)
+			simuToLaunch = this.varyAgentLoad(simuToLaunch);;
+		if (ReplicationExperimentationProtocol.varyAgentCriticityDispersion)
 			simuToLaunch = this.varyAgentLoadDispersion(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentSelection)
 			simuToLaunch = this.varyAgentSelection(simuToLaunch);
@@ -193,6 +202,16 @@ ExperimentationProtocol {
 			}
 		return result;
 	}
+	private Collection<ReplicationExperimentationParameters> varyAccessibleHost(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final Double v : this.doubleParameters){
+				final ReplicationExperimentationParameters n =  p.clone();
+				n.setkAccessible(v);
+				result.add(n);
+			}
+		return result;
+	}
 	private Collection<ReplicationExperimentationParameters> varyHostDispo(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps)
@@ -204,26 +223,6 @@ ExperimentationProtocol {
 		return result;
 	}
 
-	private Collection<ReplicationExperimentationParameters> varyAccessibleHost(final Collection<ReplicationExperimentationParameters> exps){
-		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
-			for (final Double v : this.doubleParameters){
-				final ReplicationExperimentationParameters n =  p.clone();
-				n.setkAccessible(v);
-				result.add(n);
-			}
-		return result;
-	}
-	private Collection<ReplicationExperimentationParameters> varyAgentLoad(final Collection<ReplicationExperimentationParameters> exps){
-		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
-			for (final Double v : this.doubleParameters){
-				final ReplicationExperimentationParameters n = p.clone();
-				n.agentLoadMean=v;
-				result.add(n);
-			}
-		return result;
-	}
 	private Collection<ReplicationExperimentationParameters> varyHostFaultDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps)
@@ -235,6 +234,17 @@ ExperimentationProtocol {
 		return result;
 	}
 
+	private Collection<ReplicationExperimentationParameters> varyAgentLoad(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final Double v : this.doubleParameters){
+				final ReplicationExperimentationParameters n = p.clone();
+				n.agentLoadMean=v;
+				result.add(n);
+			}
+		return result;
+	}
+	
 	private Collection<ReplicationExperimentationParameters> varyAgentLoadDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps)
@@ -245,7 +255,26 @@ ExperimentationProtocol {
 			}
 		return result;
 	}
-
+	private Collection<ReplicationExperimentationParameters> varyAgentCriticity(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final Double v : this.doubleParameters){
+				final ReplicationExperimentationParameters n = p.clone();
+				n.agentCriticityMean=v;
+				result.add(n);
+			}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyAgentCriticityDispersion(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final DispersionSymbolicValue v : this.dispersion){
+				final ReplicationExperimentationParameters n = p.clone();
+				n.agentCriticityDispersion=v;
+				result.add(n);
+			}
+		return result;
+	}
 	/*
 	 *
 	 */

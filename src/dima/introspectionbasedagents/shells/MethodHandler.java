@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.support.GimaObject;
 
 

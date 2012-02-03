@@ -9,8 +9,8 @@ import negotiation.negotiationframework.interaction.contracts.AbstractActionSpec
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 public abstract class CandidatureProposer<
 ActionSpec extends AbstractActionSpecification,

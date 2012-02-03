@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.core.loggingactivity;
+package dima.introspectionbasedagents.services.loggingactivity;
 
 import java.util.Date;
 

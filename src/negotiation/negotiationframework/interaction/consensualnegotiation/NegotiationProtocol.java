@@ -20,7 +20,6 @@ import negotiation.negotiationframework.interaction.contracts.AbstractContractTr
 import negotiation.negotiationframework.interaction.contracts.ContractIdentifier;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.NotReadyException;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.Protocol;
@@ -28,10 +27,11 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelope
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogMonologue;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
-import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 /**
  * Negotiation, as a protocol, provide : * the involved roles * the method to

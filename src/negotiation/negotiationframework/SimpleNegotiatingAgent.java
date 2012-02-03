@@ -19,9 +19,9 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
@@ -88,7 +88,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public AbstractProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> getMyProposerCore() {
 		return this.myProposerCore;
 	}
-
+			
 	@MessageHandler()
 	public void hereThereAre(final ShowYourPocket m) {
 		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "
@@ -96,7 +96,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		pockets += "\n" + this.getMyProtocol();
 		this.logMonologue(pockets,LogService.onFile);
 	}
-
+	
 	//
 	// Methods
 	//
@@ -104,7 +104,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public ContractTrunk<Contract> select(final ContractTrunk<Contract> cs) {
 		return this.selectionCore.select(cs);
 	}
-
+	
 	//
 	// Behavior
 	//
@@ -115,12 +115,26 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		this.setAlive(false);
 		return true;
 	}
+}
 
-	@ProactivityFinalisation
-	public void showInfo() {
-		//		this.logMonologue("terminating with this state : "
-		//				+ this.getMyCurrentState(), LogService.onScreen);
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	@ProactivityFinalisation
+//	public void showInfo() {
+//		//		this.logMonologue("terminating with this state : "
+//		//				+ this.getMyCurrentState(), LogService.onScreen);
+//	}
 
 	//
 	// Primitives
@@ -132,7 +146,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	// return super.start(m);
 	// }
 
-}
+//}
 
 //
 // //

@@ -13,9 +13,9 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.tools.distribution.PoissonLaw;
 import dimaxx.tools.distribution.WeibullLaw;
 

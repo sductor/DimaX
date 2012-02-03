@@ -9,7 +9,7 @@ import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ExperimentationParameters
 implements DimaComponentInterface {

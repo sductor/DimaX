@@ -1,9 +1,8 @@
-package dima.introspectionbasedagents;
+package dima.introspectionbasedagents.shells;
 
 import java.util.Date;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.shells.BasicIntrospectiveShell;
 import dima.kernel.BasicAgents.BasicReactiveAgent;
 
 public abstract class BasicIntrospectedReactiveAgent extends BasicReactiveAgent {

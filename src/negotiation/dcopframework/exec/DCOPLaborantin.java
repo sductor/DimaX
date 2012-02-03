@@ -7,9 +7,9 @@ import negotiation.dcopframework.algo.Algorithm;
 import negotiation.dcopframework.daj.Node;
 import negotiation.dcopframework.dcop.Graph;
 import negotiation.dcopframework.dcop.Helper;
-import dima.introspectionbasedagents.APIAgent;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
+import dima.introspectionbasedagents.shells.APIAgent;
 
 public class DCOPLaborantin extends APIAgent {
 

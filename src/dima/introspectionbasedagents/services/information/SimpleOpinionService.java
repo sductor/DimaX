@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.services.library.information;
+package dima.introspectionbasedagents.services.information;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,8 +11,8 @@ import dima.basicagentcomponents.AgentName;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.FunctionalDispersionAgregator;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;

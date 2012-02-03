@@ -17,8 +17,8 @@ import negotiation.negotiationframework.interaction.selectioncores.AbstractSelec
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class Replica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature> {

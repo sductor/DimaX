@@ -10,7 +10,6 @@ import java.util.Map;
 import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
@@ -18,8 +17,8 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
 
 /**
  * The competence shell adds the handle of competences to an agent introspective shell
@@ -37,6 +36,7 @@ BasicCommunicatingShell {
 	Agent myMainComponent;
 	Collection<Class<? extends AgentCompetence<Agent>>> loadedCompetence =
 			new ArrayList<Class<? extends AgentCompetence<Agent>>>();
+
 
 	//
 	// Constructor
@@ -130,6 +130,8 @@ BasicCommunicatingShell {
 			LogService.writeException(this,"proactivityTerminate : Impossible!!");
 		}
 
+		//		logMonologue("I'm out of here!!! >=] on d road again yeaaahh"+myApi, LogService.onBoth);
+		((BasicCompetentAgent)this.myMainComponent).myApi.destroy((BasicCompetentAgent)this.myMainComponent);
 		this.myMainComponent=null;
 	}
 

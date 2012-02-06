@@ -76,7 +76,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 
 	//To be called in subclass constructor
-	protected void initialisation() throws CompetenceException, NotEnoughMachinesException{
+	protected void initialisation() throws CompetenceException, NotEnoughMachinesException, IfailedException{
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
 		this.p.initiateParameters();
 		this.logMonologue("Launching : \n"+this.p,LogService.onBoth);
@@ -93,11 +93,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 				iFailed=true;
 				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
 				count--;
+				if (count==0)
+					throw e;
 			}
 		}while(iFailed && count > 0);
 
-		if (count==0)
-				throw new RuntimeException();
+		
 		
 		for (final AgentIdentifier id : this.agents.keySet())
 			if (id instanceof ResourceIdentifier)

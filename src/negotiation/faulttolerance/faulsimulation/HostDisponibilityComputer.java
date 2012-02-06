@@ -26,26 +26,26 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	// Fields
 	//
 
-	final long experienceTime;
-	final long timeScale;
-	final long eventFrequency;
-
-	final double lambdaRepair;
+//	final long experienceTime;
+//	final long timeScale;
+//	final long eventFrequency;
+//
+//	final double lambdaRepair;
 
 	//
 	// Constructor
 	//
 
-	public HostDisponibilityComputer(final ObservationService myAgentInformation,
-			final long experienceTime, final long timeScale, final long eventFrequency,
-			final double lambdaRepair) {
-		super();
-		//		this.myAgentInformation = myAgentInformation;
-		this.experienceTime = experienceTime;
-		this.timeScale = timeScale;
-		this.eventFrequency = eventFrequency;
-		this.lambdaRepair = lambdaRepair;
-	}
+//	public HostDisponibilityComputer(final ObservationService myAgentInformation,
+//			final long experienceTime, final long timeScale, final long eventFrequency,
+//			final double lambdaRepair) {
+//		super();
+//		//		this.myAgentInformation = myAgentInformation;
+//		this.experienceTime = experienceTime;
+//		this.timeScale = timeScale;
+//		this.eventFrequency = eventFrequency;
+//		this.lambdaRepair = lambdaRepair;
+//	}
 	//
 	// Methods
 	//
@@ -106,10 +106,8 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			if (HostDisponibilityComputer.eventOccur(
 					HostDisponibilityComputer.getUptime(myAgentInformation,host),
 					HostDisponibilityComputer.getLambda(myAgentInformation,host),
-					!myAgentInformation.getInformation(HostState.class,
-							host).isFaulty())) {
-				if (myAgentInformation
-						.getInformation(HostState.class, host).isFaulty())
+					!myAgentInformation.getInformation(HostState.class,host).isFaulty())) {
+				if (myAgentInformation.getInformation(HostState.class, host).isFaulty())
 					return new RepairEvent(host);
 				else
 					return new FaultEvent(host);
@@ -122,7 +120,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		}
 	}
 
-	public static void setFaulty(
+	public static void updateFaultyStatus(
 			final ObservationService myAgentInformation,
 			final FaultStatusMessage event) {
 		try {
@@ -141,12 +139,11 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	}
 
 	public static Collection<? extends ResourceIdentifier> getHosts(final ObservationService myAgentInformation) {
-		final Collection<ResourceIdentifier> hostAlive = new ArrayList<ResourceIdentifier>();
-		for (final AgentIdentifier id : myAgentInformation
-				.getKnownAgents())
+		final Collection<ResourceIdentifier> host = new ArrayList<ResourceIdentifier>();
+		for (final AgentIdentifier id : myAgentInformation.getKnownAgents())
 			if (id instanceof ResourceIdentifier)
-				hostAlive.add((ResourceIdentifier) id);
-				return hostAlive;
+				host.add((ResourceIdentifier) id);
+				return host;
 	}
 	//
 	// Primitive
@@ -190,7 +187,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		Static, Weibull, Poisson
 	}
 
-	private  static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
+	private  static final DisponibilityComputationType choosenType = DisponibilityComputationType.Poisson;//Static;//
 
 	private  static Double getDisponibility(
 			final Map<ResourceIdentifier, Double> hosts_lambdas,

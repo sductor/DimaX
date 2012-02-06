@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -15,8 +17,11 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 /**
  * Service used by the agent to be concious of the system state
  */
-public abstract class FaultObservationService extends
-BasicAgentCompetence<SimpleNegotiatingAgent<?, ?, ?>> {
+public abstract class FaultObservationService<
+ActionSpec extends AbstractActionSpecification,
+PersonalState extends ActionSpec,
+Contract extends AbstractContractTransition<ActionSpec>> extends
+BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
 	private static final long serialVersionUID = 2339746438446977252L;
 
 	//
@@ -81,18 +86,18 @@ BasicAgentCompetence<SimpleNegotiatingAgent<?, ?, ?>> {
 						"nnnnnnnooooooooooooonnnnnnnnnnnnnnn!!!!!!!!!! :\n" + f
 						+ this.getMyAgent().getMyCurrentState());
 			myState.setFaulty(true);
-			this.logMonologue("I've failed!! =( Those replicas are dead : "
+			this.logWarning("I've failed!! =( Those replicas are dead : "
 					+ ((HostState) this.getMyAgent().getMyCurrentState())
-					.getMyAgents(),LogService.onBoth);
+					.getMyResourceIdentifiers(),LogService.onBoth);
 			//
+			this.getMyAgent().getMyProtocol().setLost(f.getHost());
 			this.getMyAgent().getMyProtocol().stop();
 			this.resetMyState();
-			this.resetMyUptime();
+//			this.resetMyUptime();
 		} else {
 			this.getMyAgent().getMyInformation().remove(f.getHost());
-			if (this.getMyAgent().getMyCurrentState()
-					.setLost(f.getHost(), true))
-				this.logMonologue("I've lost a replica :" + f.getHost()
+			if (this.getMyAgent().getMyCurrentState().setLost(f.getHost(), true))
+				this.logWarning("I've lost a replica :" + f.getHost()
 						+ " !! =(",LogService.onBoth);
 			this.getMyAgent().getMyProtocol().setLost(f.getHost());
 		}
@@ -115,7 +120,7 @@ BasicAgentCompetence<SimpleNegotiatingAgent<?, ?, ?>> {
 			this.logMonologue("I'm repaired!! =)",LogService.onBoth);
 			//
 			this.resetMyState();
-			this.resetMyUptime();
+//			this.resetMyUptime();
 			this.getMyAgent().getMyProtocol().start();
 		} else if (this.initiallyKnownAgent.contains(f.getHost()))
 			this.getMyAgent().getMyInformation().add(f.getHost());

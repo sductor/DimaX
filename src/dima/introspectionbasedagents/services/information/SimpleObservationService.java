@@ -95,6 +95,7 @@ ObservationService {
 
 	@Override
 	public void add(final Information information) {
+		this.add(information.getMyAgentIdentifier());
 		if (!this.infos.containsKey(information.getClass())){//new information type
 			this.infos.put(information.getClass(), new InformationDataBase<Information>());
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);

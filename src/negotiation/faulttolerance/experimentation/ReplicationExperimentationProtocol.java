@@ -56,7 +56,16 @@ ExperimentationProtocol {
 			0.3,
 			0.6,
 			1.});
-
+	static List<Double> doubleParameters2 = Arrays.asList(new Double[]{
+			0.,
+			0.5,
+			1.});
+	static List<Double> doubleParameters3 = Arrays.asList(new Double[]{
+			0.,
+			0.25,
+			0.5,
+			0.75,
+			1.});
 	//pref TODO : Non imple chez l'agent!!
 	//	Collection<String> agentPref = Arrays.asList(new String[]{
 	//			ReplicationExperimentationProtocol.key4agentKey_Relia,
@@ -71,19 +80,22 @@ ExperimentationProtocol {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=true;
 
-	static boolean varyAccessibleHost=false;
+	static boolean varyAccessibleHost=true;
 
-	static boolean  varyAgentSelection=true;
+	static boolean varyAgentSelection=true;
 	static boolean varyHostSelection=false;
 
-	static boolean varyHostDispo=false;
+	static boolean varyHostDispo=true;
 	static boolean varyHostFaultDispersion=true;
 
-	static boolean varyAgentLoad=false;
+	static boolean varyAgentLoad=true;
 	static boolean varyAgentLoadDispersion=true;
-	
-	static boolean varyAgentCriticity=false;
-	static boolean varyAgentCriticityDispersion=false;
+
+	static boolean varyAgentCriticity=true;
+	static boolean varyAgentCriticityDispersion=true;
+
+	static boolean varyFault=true;	
+	static int dynamicCriticity=0; //-1 never dynamics, 1 always dynamics, 0 both
 
 	//
 	// Default values
@@ -105,7 +117,9 @@ ExperimentationProtocol {
 				ExperimentationProtocol.getKey4mirrorproto(),
 				SocialChoiceFunctions.key4UtilitaristSocialWelfare,
 				ExperimentationProtocol.getKey4greedyselect(),
-				ExperimentationProtocol.getKey4allocselect());
+				ExperimentationProtocol.getKey4allocselect(),
+				false,
+				doubleParameters2.get(0));
 	}
 
 
@@ -128,13 +142,13 @@ ExperimentationProtocol {
 		if (ReplicationExperimentationProtocol.varyHostFaultDispersion)
 			simuToLaunch = this.varyHostFaultDispersion(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentLoad)
-			simuToLaunch = this.varyAgentLoad(simuToLaunch);;
+			simuToLaunch = this.varyAgentLoad(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentLoadDispersion)
 			simuToLaunch = this.varyAgentLoadDispersion(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentCriticity)
-			simuToLaunch = this.varyAgentLoad(simuToLaunch);;
+			simuToLaunch = this.varyAgentCriticity(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentCriticityDispersion)
-			simuToLaunch = this.varyAgentLoadDispersion(simuToLaunch);
+			simuToLaunch = this.varyAgentCriticityDispersion(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentSelection)
 			simuToLaunch = this.varyAgentSelection(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyHostSelection)
@@ -143,6 +157,10 @@ ExperimentationProtocol {
 			simuToLaunch = this.varyOptimizers(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyProtocol)
 			simuToLaunch = this.varyProtocol(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyFault)
+			simuToLaunch = this.varyMaxSimultFailure(simuToLaunch);
+
+		simuToLaunch = this.varyDynamicCriticity(simuToLaunch);
 
 		final Comparator<ExperimentationParameters> comp = new Comparator<ExperimentationParameters>() {
 
@@ -157,6 +175,8 @@ ExperimentationProtocol {
 		Collections.sort(simus,comp);
 		return simus;
 	}
+
+
 
 	/*
 	 *
@@ -244,7 +264,7 @@ ExperimentationProtocol {
 			}
 		return result;
 	}
-	
+
 	private Collection<ReplicationExperimentationParameters> varyAgentLoadDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps)
@@ -275,6 +295,36 @@ ExperimentationProtocol {
 			}
 		return result;
 	}
+
+	private Collection<ReplicationExperimentationParameters> varyMaxSimultFailure(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final Double v : this.doubleParameters2){
+				final ReplicationExperimentationParameters n = p.clone();
+				n.setMaxSimultFailure(v);
+				result.add(n);
+			}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyDynamicCriticity(
+			Collection<ReplicationExperimentationParameters> exps) {
+		assert dynamicCriticity>=-1 && dynamicCriticity<=1;
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			if (dynamicCriticity==-1){
+				p.dynamicCriticity=false;
+				result.add(p);
+			} else if (dynamicCriticity==1){
+				p.dynamicCriticity=true;
+				result.add(p);
+			} else {
+				final ReplicationExperimentationParameters n = p.clone();
+				n.dynamicCriticity=!p.dynamicCriticity;
+				result.add(n);
+			}
+		return result;
+	}
+	
 	/*
 	 *
 	 */
@@ -321,20 +371,20 @@ ExperimentationProtocol {
 	@Override
 	public ReplicationLaborantin createNewLaborantin(
 			final ExperimentationParameters para, final APILauncherModule api)
-					throws NotEnoughMachinesException, CompetenceException {
+					throws NotEnoughMachinesException, CompetenceException, IfailedException {
 		ReplicationLaborantin l = null;
 		final ReplicationExperimentationParameters p = (ReplicationExperimentationParameters) para;
-		boolean erreur = true;
-		while (erreur)
-			try {
+//		boolean erreur = true;
+//		while (erreur)
+//			try {
 				l = new ReplicationLaborantin(p, api,this.getMaxNumberOfAgentPerMachine(null));
-				erreur = false;
-			} catch (final IfailedException e) {
-				LogService.writeException(
-						"retrying to launch simu " + p.getName()
-						+ " failure caused by : ", e.e);
-				erreur = true;
-			}
+//				erreur = false;
+//			} catch (final IfailedException e) {
+//				LogService.writeException(
+//						"retrying to launch simu " + p.getName()
+//						+ " failure caused by : ", e.e);
+//				erreur = true;
+//			}
 
 		return l;
 	}

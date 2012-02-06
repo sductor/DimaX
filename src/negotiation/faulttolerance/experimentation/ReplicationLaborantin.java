@@ -244,7 +244,7 @@ public class ReplicationLaborantin extends Laborantin {
 					.getMeanTimeEvolutionObs(this.getSimulationParameters(),"percent of hosts that are alive",
 							this.faulty, 0.75,
 							this.getSimulationParameters().nbHosts), true, false);
-
+			LogService.logOnFile(this.getSimulationParameters().getF(), "Optimal? "+this.analyseOptimal(), true, false);
 			if (ReplicationLaborantin.this.myStatusObserver.iObserveStatus())
 				ReplicationLaborantin.this.myStatusObserver.writeStatusResult();
 			this.logWarning(this.getIdentifier()+" OOOOOOOOOKKKKKKKKKKKK?????????"+
@@ -297,20 +297,15 @@ public class ReplicationLaborantin extends Laborantin {
 			throws CompetenceException, IfailedException, NotEnoughMachinesException {
 		super(p, api, numberOfAgentPerMAchine);
 
-		final Collection<AgentIdentifier> everyone = new ArrayList<AgentIdentifier>();
-		everyone.addAll(this.getSimulationParameters().getHostsIdentifier());
-		everyone.addAll(this.getSimulationParameters().getReplicasIdentifier());
-
 		this.myInformationService = new SimpleObservationService();
 		this.myInformationService.setMyAgent(this);
 
-		this.myFaultService = new FaultTriggeringService(this
-				.getSimulationParameters().getName(),  everyone);
 
 		this.myGlobalObservationService.initiate();
 
 		this.initialisation();
-
+		
+		this.myFaultService = new FaultTriggeringService(p);
 	}
 
 
@@ -341,7 +336,7 @@ public class ReplicationLaborantin extends Laborantin {
 	// 0);
 	private int getNumberOfKnownHosts() {
 		// return numberOfKnownHosts.nextValue();
-		return this.getSimulationParameters().getkAccessible();
+		return this.getSimulationParameters().kAccessible;
 	}
 
 
@@ -405,6 +400,7 @@ public class ReplicationLaborantin extends Laborantin {
 					this.getSimulationParameters().agentMemory);
 			this.addAgent(ag);
 			//			this.setAgentObservation(ag);
+			this.myInformationService.add(((Replica) ag).getMyCurrentState());
 
 			/*
 			 * First rep
@@ -509,7 +505,7 @@ public class ReplicationLaborantin extends Laborantin {
 				ReplicationExperimentationParameters._criticityMin
 				+ agentCriticity.get(replica), 1),
 				agentProcessor.get(replica), agentMemory.get(replica), core,
-				select, proposer, informations);
+				select, proposer, informations, getSimulationParameters().dynamicCriticity);
 
 		rep.getMyInformation().addAll(hostsIKnow);
 

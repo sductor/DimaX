@@ -113,9 +113,13 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				// reject.setSender(host);
 				// receiveReject(reject);
 			}
-		else
-			throw new RuntimeException(
-					"impossible!! vérifier le fault service!!");
+		else{
+			this.losts.addAll(contracts.getAllContracts());
+			this.contracts.clear();
+			
+		}
+//			throw new RuntimeException(
+//					"impossible!! vérifier le fault service!!");
 
 	}
 
@@ -395,8 +399,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 						// try {
 						this.contracts.addContract(c);
 			}
-		} else {
-			assert 1<0:"TODO?? : answer cancel??";
+		} else {	
+			this.contracts.addContract(c);
+			sendReject(c.getIdentifier());
+//			assert 1<0:"TODO?? : answer cancel??";
 		}
 	}
 

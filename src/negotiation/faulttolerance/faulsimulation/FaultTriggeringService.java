@@ -9,6 +9,7 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationPara
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
@@ -19,16 +20,16 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	// Fields
 	//
 
-	private final Collection<AgentIdentifier> everybody;
+	private ReplicationExperimentationParameters p;
 
 	//
 	// Constructor
 	//
 
-	public FaultTriggeringService(final String simuId,
-			final Collection<AgentIdentifier> everybody) {
+	public FaultTriggeringService(
+			ReplicationExperimentationParameters p) {
 		super();
-		this.everybody = everybody;
+		this.p=p;
 	}
 
 	//
@@ -37,33 +38,40 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 
 	int i = 0;
 
-	// @StepComposant(ticker=ReplicationExperimentationProtocol._host_maxFaultfrequency)
+
+	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
 	public void toggleFault() {
-		final List<ResourceIdentifier> hosts = new ArrayList<ResourceIdentifier>();
-		hosts.addAll(HostDisponibilityComputer.getHosts(this.getMyAgent().myInformationService));
-		Collections.shuffle(hosts);
-		int nbMax = (int) (hosts.size() * ReplicationExperimentationParameters._host_maxSimultaneousFailure);
-		for (final ResourceIdentifier h : hosts) {
-			final FaultStatusMessage sentence = HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h);
+		int nbMax = p.host_maxSimultaneousFailure.intValue();
+		if (nbMax>0){
+			final List<ResourceIdentifier> hosts = new ArrayList<ResourceIdentifier>();
+			hosts.addAll(HostDisponibilityComputer.getHosts(this.getMyAgent().myInformationService));
+//			hosts.remove(0);
+			Collections.shuffle(hosts);
+			for (final ResourceIdentifier h : hosts) {
+				final FaultStatusMessage sentence = 
+						HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h);
 
-			if (sentence != null) {
-				// Execution de la sentence!! muahaha!!!
-				HostDisponibilityComputer.setFaulty(this.getMyAgent().myInformationService, sentence);
-				this.logMonologue("executing this sentence : " + sentence
-						+ " (" + this.i + ")",LogService.onBoth);
-				// Déclaration public
-				for (final AgentIdentifier id : this.everybody)
-					this.getMyAgent().sendMessage(id, sentence);
-						// notify(hostAlive.get(h)?(new FaultEvent(h)):new
-						// RepairEvent(h));
+				if (sentence != null) {
+					// Execution de la sentence!! muahaha!!!
+					HostDisponibilityComputer.updateFaultyStatus(
+							this.getMyAgent().myInformationService, sentence);
+//					this.logWarning("executing this sentence : " + sentence
+//							+ " (" + this.i + ")",LogService.onBoth);
+					// Déclaration public
+					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents()){
+						this.getMyAgent().sendMessage(id, sentence);
+					}
+					// notify(hostAlive.get(h)?(new FaultEvent(h)):new
+					// RepairEvent(h));
 
-						if (sentence instanceof FaultEvent)
-							nbMax--;// il est mort! =(
-						if (nbMax == 0)
-							break;
+					if (sentence instanceof FaultEvent)
+						nbMax--;// il est mort! =(
+					if (nbMax == 0)
+						break;
+				}
 			}
+			this.i++;
 		}
-		this.i++;
 	}
 }
 

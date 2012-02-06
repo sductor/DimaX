@@ -42,7 +42,7 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	 */
 
 	//Protocoles
-	private final static String key4mirrorProto = "mirror protocol";
+	public final static String key4mirrorProto = "mirror protocol";
 	private final static String key4CentralisedstatusProto = "Centralised status protocol";
 	private final static String key4statusProto = "status protocol";
 	private final static String key4multiLatProto = "multi lateral protocol";
@@ -50,7 +50,7 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	//Selection algorithms
 	private final static String key4greedySelect = "greedy select";
 	private final static String key4rouletteWheelSelect = "roolette wheel select";
-	private final static String key4AllocSelect = "alloc select";
+	public final static String key4AllocSelect = "alloc select";
 
 
 	/*
@@ -61,7 +61,7 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 
 	//Return new laborantin and update machines usage
 	public abstract Laborantin createNewLaborantin(ExperimentationParameters p, APILauncherModule api)
-			throws NotEnoughMachinesException, CompetenceException;
+			throws NotEnoughMachinesException, CompetenceException, IfailedException;
 
 	/*
 	 * Déploiement

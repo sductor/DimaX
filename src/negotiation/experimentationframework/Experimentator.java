@@ -107,10 +107,17 @@ public class Experimentator extends APIAgent{
 			try {
 				//				while (!this.simuToLaunch.isEmpty()){
 				nextSimu = this.simuToLaunch.pop();
-				final Laborantin l = this.myProtocol.createNewLaborantin(nextSimu, this.getApi());
-				l.launchWith(this.getApi());
-				this.startActivity(l);
-				this.launchedSimu.put(l.getId(), l);
+				Laborantin l;
+				try {
+					l = this.myProtocol.createNewLaborantin(nextSimu, this.getApi());
+					l.launchWith(this.getApi());
+					this.startActivity(l);
+					this.launchedSimu.put(l.getId(), l);
+				} catch (IfailedException e) {
+					LogService.logOnFile(f, "EXPERIMENTATION "+nextSimu+" \n ABORTED!!!!!!!!!!!!!!", true,					false);
+					launchSimulation();
+				}
+
 				//				}
 				//				launchSimulation();
 			} catch (final NotEnoughMachinesException e) {

@@ -4,7 +4,7 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationProt
 import negotiation.negotiationframework.agent.RationalCore;
 import negotiation.negotiationframework.agent.SimpleRationalAgent;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
+import negotiation.negotiationframework.interaction.consensualnegotiation.ContractDataBase;
 import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import negotiation.negotiationframework.interaction.consensualnegotiation.SelectionCore;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
@@ -101,7 +101,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	// Methods
 	//
 
-	public ContractTrunk<Contract> select(final ContractTrunk<Contract> cs) {
+	public ContractDataBase<Contract> select(final ContractDataBase<Contract> cs) {
 		return this.selectionCore.select(cs);
 	}
 	

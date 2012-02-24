@@ -70,7 +70,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	//
 
 	private boolean ImActive = true;
-	private final ContractTrunk<Contract> contracts = new ContractTrunk<Contract>(
+	private final ContractDataBase<Contract> contracts = new ContractDataBase<Contract>(
 			this.getMyAgent().getIdentifier());
 
 	public static final String log_negotiationStep="negotiation step for log";
@@ -91,7 +91,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// Accessors
 	//
 
-	public ContractTrunk<Contract> getContracts() {
+	public ContractDataBase<Contract> getContracts() {
 		return this.contracts;
 	}
 
@@ -230,7 +230,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				//
 
 				// logMonologue("What do I have?"+contracts.getOnWaitContracts());
-				final ContractTrunk<Contract> selectedContracts = this
+				final ContractDataBase<Contract> selectedContracts = this
 						.getMyAgent().select(this.contracts);
 
 				//

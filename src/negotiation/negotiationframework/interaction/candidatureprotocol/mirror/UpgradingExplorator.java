@@ -7,7 +7,7 @@ import java.util.Map;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.agent.AgentState;
-import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
+import negotiation.negotiationframework.interaction.consensualnegotiation.ContractDataBase;
 import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import negotiation.negotiationframework.interaction.consensualnegotiation.UnknownContractException;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
@@ -23,7 +23,7 @@ PersonalState extends ActionSpec> {
 	public Collection<Contract> generateUpgradingContracts(
 			final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> myAgent,
 			final PersonalState state,
-			final ContractTrunk<Contract> n) {
+			final ContractDataBase<Contract> n) {
 		//		myAgent.logMonologue("entering upgrading contract myState is "+myAgent.getMyCurrentState());
 		final Collection<Contract> unacceptedContracts = n.getContractsRejectedBy(myAgent.getIdentifier());
 		final Collection<Contract> toPutOnWait = new ArrayList<Contract>();

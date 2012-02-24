@@ -14,7 +14,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
-public class ContractTrunk<Contract extends AbstractContractTransition<?>> implements
+public class ContractDataBase<Contract extends AbstractContractTransition<?>> implements
 DimaComponentInterface {
 
 	/**
@@ -36,7 +36,7 @@ DimaComponentInterface {
 	//
 	//
 
-	public ContractTrunk(final AgentIdentifier myAgentIdentifier) {
+	public ContractDataBase(final AgentIdentifier myAgentIdentifier) {
 		super();
 		this.myAgentIdentifier = myAgentIdentifier;
 	}

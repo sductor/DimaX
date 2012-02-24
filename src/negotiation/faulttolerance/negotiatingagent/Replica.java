@@ -167,7 +167,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 										+ signe
 										* r.nextDouble()
 										* ReplicationExperimentationParameters._criticityVariationAmplitude));
-				this.logWarning("Updating my criticity", LogService.onFile);
+				this.logWarning("Updating my criticity", LogService.onNone);
 				this.setNewState(
 						new ReplicaState(
 								this.getIdentifier(),

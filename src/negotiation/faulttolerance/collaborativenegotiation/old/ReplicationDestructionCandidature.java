@@ -1,9 +1,9 @@
-package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
+package negotiation.faulttolerance.collaborativenegotiation.old;
 
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
-import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.DestructionCandidature;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.proposercorecollaborative.old.UpgradingExploratorSimple.DestructionCandidature;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class ReplicationDestructionCandidature extends

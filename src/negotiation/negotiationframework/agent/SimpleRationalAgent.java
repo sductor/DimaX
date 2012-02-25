@@ -178,9 +178,9 @@ extends BasicCompetentAgent {
 		return this.Iaccept(s, a);
 	}
 
-	public boolean Iaccept(final PersonalState s, final Collection<Contract> c) {
-		return this.isAnImprovment(s, c)
-				&& this.respectMyRights(this.getMyResultingState(s, c));
+	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
+		return this.isAnImprovment(s, (Collection<Contract>) c)
+				&& this.respectMyRights(this.getMyResultingState(s, (Collection<Contract>) c));
 	}
 
 	private boolean isAnImprovment(final PersonalState s,

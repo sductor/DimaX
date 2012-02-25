@@ -13,22 +13,21 @@ import dima.basicagentcomponents.AgentIdentifier;
 public abstract class ContractTransition<
 ActionSpec extends AbstractActionSpecification> implements
 AbstractContractTransition<ActionSpec> {
+	public long getValidityTime() {
+		return validityTime;
+	}
+
+	private static final long serialVersionUID = -3237282341034282940L;
 
 	//
 	// Fields
 	//
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -3237282341034282940L;
 	protected final AgentIdentifier creator;
 	protected final Date creationTime = new Date();
 	protected final long validityTime;
 
-	protected final String name;
 	protected final List<AgentIdentifier> actors;
-	protected final List<Object> args; // functionnal properties
 
 	private final Map<AgentIdentifier, ActionSpec> specs = new Hashtable<AgentIdentifier, ActionSpec>(); // non
 	// functionnal
@@ -38,25 +37,19 @@ AbstractContractTransition<ActionSpec> {
 	// Constructor
 	//
 
-	public ContractTransition(final AgentIdentifier creator, final String name,
-			final List<AgentIdentifier> actors, final List<Object> args,
+	public ContractTransition(final AgentIdentifier creator, 
+			final List<AgentIdentifier> actors, 
 			final long validityTime) {
 		super();
 		this.actors = actors;
 		this.creator = creator;
-		this.name = name;
-		this.args = args;
 		this.validityTime = validityTime;
 	}
 
-	public ContractTransition(final AgentIdentifier creator, final String name,
-			final AgentIdentifier[] actors, final Object[] args, final long validityTime) {
-		super();
-		this.actors = Arrays.asList(actors);
-		this.creator = creator;
-		this.name = name;
-		this.args = Arrays.asList(args);
-		this.validityTime = validityTime;
+	public ContractTransition(final AgentIdentifier creator, 
+			final AgentIdentifier[] actors, 
+			final long validityTime) {
+		this(creator, Arrays.asList(actors), validityTime);
 	}
 
 	//

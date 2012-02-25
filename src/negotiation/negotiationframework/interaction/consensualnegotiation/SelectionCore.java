@@ -13,6 +13,6 @@ extends	AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contra
 
 	// Select contract to accept/wait/reject for a participant
 	// Select contract to request/cancel for a initiator
-	public ContractDataBase<Contract> select(ContractDataBase<Contract> cs);
+	public ContractTrunk<Contract> select(ContractTrunk<Contract> cs);
 
 }

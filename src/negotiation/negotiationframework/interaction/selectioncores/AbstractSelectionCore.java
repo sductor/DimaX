@@ -5,12 +5,12 @@ import java.util.Collection;
 import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.IllAnswer;
-import negotiation.negotiationframework.interaction.consensualnegotiation.ContractDataBase;
+import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
 import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import negotiation.negotiationframework.interaction.consensualnegotiation.SelectionCore;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.interaction.proposercorecollaborative.IllAnswer;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
@@ -34,8 +34,8 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
-	private ContractDataBase<Contract> returned;
-	private ContractDataBase<Contract> given;
+	private ContractTrunk<Contract> returned;
+	private ContractTrunk<Contract> given;
 	
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
 	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
@@ -53,9 +53,9 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	 */
 
 	@Override
-	public ContractDataBase<Contract> select(final ContractDataBase<Contract> given) {
+	public ContractTrunk<Contract> select(final ContractTrunk<Contract> given) {
 		this.returned =
-				new ContractDataBase<Contract>(
+				new ContractTrunk<Contract>(
 						this.getMyAgent().getIdentifier());
 		this.given = given;
 

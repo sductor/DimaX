@@ -1,4 +1,4 @@
-package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
+package negotiation.faulttolerance.collaborativenegotiation.old;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,11 +8,11 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.IllAnswer;
-import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.UpgradingExplorator;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
 import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.proposercorecollaborative.IllAnswer;
+import negotiation.negotiationframework.interaction.proposercorecollaborative.old.UpgradingExploratorSimple;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dima.introspectionbasedagents.shells.NotReadyException;
@@ -43,8 +43,8 @@ ReplicationCandidature>  {
 		//				&& n.getAnswers().getContractsAcceptedBy(getIdentifier()).isEmpty()){
 		//		//The state of the host is stable and there is rejected contract : we try to find if there is destruction that could loccally improve the system
 
-		final UpgradingExplorator<ReplicationCandidature, ReplicationSpecification, HostState> myDealExpl =
-				new UpgradingExplorator<ReplicationCandidature, ReplicationSpecification, HostState>() {
+		final UpgradingExploratorSimple<ReplicationCandidature, ReplicationSpecification, HostState> myDealExpl =
+				new UpgradingExploratorSimple<ReplicationCandidature, ReplicationSpecification, HostState>() {
 			@Override
 			protected ReplicationCandidature generateDestructionContract(
 					final ReplicationSpecification state,

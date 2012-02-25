@@ -1,4 +1,4 @@
-package negotiation.faulttolerance.candidaturenegotiation.statusdestruction;
+package negotiation.faulttolerance.candidaturewithstatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,9 +12,9 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
-import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder;
 import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
+import negotiation.negotiationframework.interaction.proposercorestatus.AgentStateStatus;
+import negotiation.negotiationframework.interaction.proposercorestatus.DestructionOrder;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class CandidatureReplicaProposerWithStatus extends CandidatureReplicaProposer

@@ -4,7 +4,7 @@ import java.util.Date;
 
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.negotiationframework.interaction.candidatureprotocol.status.AgentStateStatus;
+import negotiation.negotiationframework.interaction.proposercorestatus.AgentStateStatus;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class ReplicationResultAgent implements ExperimentationResults {

@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.interaction.candidatureprotocol.status;
+package negotiation.negotiationframework.interaction.proposercorestatus;
 
 public enum AgentStateStatus {
 	Fragile, /**/Empty, Thrifty, Full, /**/Wastefull,

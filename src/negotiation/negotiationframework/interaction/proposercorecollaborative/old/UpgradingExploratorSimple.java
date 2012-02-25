@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.interaction.candidatureprotocol.mirror;
+package negotiation.negotiationframework.interaction.proposercorecollaborative.old;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.agent.AgentState;
-import negotiation.negotiationframework.interaction.consensualnegotiation.ContractDataBase;
+import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
 import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
 import negotiation.negotiationframework.interaction.consensualnegotiation.UnknownContractException;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
@@ -15,7 +15,7 @@ import negotiation.negotiationframework.interaction.contracts.AbstractContractTr
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
 
-public abstract class UpgradingExplorator<
+public abstract class UpgradingExploratorSimple<
 Contract extends AbstractContractTransition<ActionSpec>,
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec> {
@@ -23,7 +23,7 @@ PersonalState extends ActionSpec> {
 	public Collection<Contract> generateUpgradingContracts(
 			final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> myAgent,
 			final PersonalState state,
-			final ContractDataBase<Contract> n) {
+			final ContractTrunk<Contract> n) {
 		//		myAgent.logMonologue("entering upgrading contract myState is "+myAgent.getMyCurrentState());
 		final Collection<Contract> unacceptedContracts = n.getContractsRejectedBy(myAgent.getIdentifier());
 		final Collection<Contract> toPutOnWait = new ArrayList<Contract>();
@@ -75,6 +75,14 @@ PersonalState extends ActionSpec> {
 	}
 
 	protected abstract Contract generateDestructionContract(ActionSpec state, Contract c);
+	
+	public interface DestructionCandidature<
+	Contract extends AbstractContractTransition<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
+	extends AbstractContractTransition<ActionSpec>{
+
+		public Contract getMinContract();
+	}
 }
 
 

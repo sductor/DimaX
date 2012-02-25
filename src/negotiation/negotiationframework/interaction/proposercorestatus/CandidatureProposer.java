@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.interaction.candidatureprotocol;
+package negotiation.negotiationframework.interaction.proposercorestatus;
 
 import java.util.HashSet;
 import java.util.Set;

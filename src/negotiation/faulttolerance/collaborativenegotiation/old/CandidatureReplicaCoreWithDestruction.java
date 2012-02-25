@@ -1,4 +1,4 @@
-package negotiation.faulttolerance.candidaturenegotiation.mirrordestruction;
+package negotiation.faulttolerance.collaborativenegotiation.old;
 
 import java.util.ArrayList;
 import java.util.Collection;

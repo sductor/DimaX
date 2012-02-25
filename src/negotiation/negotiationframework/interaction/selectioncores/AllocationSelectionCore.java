@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import negotiation.negotiationframework.HyperSetGeneration;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 
@@ -30,7 +31,18 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 	protected Collection<Contract> selection(
 			final PersonalState currentState,
 			final List<Contract> contractsToExplore) {
-		final Collection<Collection<Contract>> allocations = this.generateAllocations(currentState,contractsToExplore);
+
+		final HyperSetGeneration<Contract> generator= new HyperSetGeneration<Contract>(contractsToExplore) {
+
+			@Override
+			public boolean toKeep(Collection<Contract> elem) {
+				return getMyAgent().respectMyRights(
+						currentState,elem);
+			}
+		};
+		
+		final Collection<Collection<Contract>> allocations = generator.getHyperset();
+
 		if (allocations.isEmpty())
 			return new ArrayList<Contract>();
 		else
@@ -48,51 +60,54 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 	}
 
 
-	//
-	// Primitive
-	//
-
-	private Collection<Collection<Contract>> generateAllocations(
-			final PersonalState currentState,
-			final Collection<Contract> contractToAggregate) {
-
-		final Collection<Collection<Contract>> result =
-				new ArrayList<Collection<Contract>>();
-		final Collection<Collection<Contract>> toAdd =
-				new ArrayList<Collection<Contract>>();
-
-		for (final Contract singleton : contractToAggregate) {
-			final List<Contract> a = new ArrayList<Contract>();
-			a.add(singleton);
-			toAdd.add(a);//on ajoute le contrat singleton
-
-			//on ajoute tous les précédent ensemble enrichi avec le singleton 
-			for (final Collection<Contract> alloc : result){
-				final List<Contract> a2= new ArrayList<Contract>();
-				a2.addAll(alloc);
-				a2.add(singleton);
-				toAdd.add(a2);
-			}
-
-			result.addAll(toAdd);
-			toAdd.clear();
-		}
-
-		this.cleanContracts(currentState,result);
-		//		logMonologue("allocations générée for "+getMyAgent().getMyCurrentState()+" from "+contractToAggregate+"\n : "+result);
-		return result;
-	}
-
-
-	protected void cleanContracts(
-			final PersonalState currentState,
-			final Collection<Collection<Contract>> allocationsToExplore) {
-		// Removing forbidden allocations
-		final Iterator<Collection<Contract>> r = allocationsToExplore.iterator();
-		while (r.hasNext())
-			if (!this.getMyAgent().respectMyRights(
-					currentState,
-					r.next()))
-				r.remove();
-	}
 }
+
+
+//
+////
+//// Primitive
+////
+//
+//private Collection<Collection<Contract>> generateAllocations(
+//		final PersonalState currentState,
+//		final Collection<Contract> contractToAggregate) {
+//
+//	final Collection<Collection<Contract>> result =
+//			new ArrayList<Collection<Contract>>();
+//	final Collection<Collection<Contract>> toAdd =
+//			new ArrayList<Collection<Contract>>();
+//
+//	for (final Contract singleton : contractToAggregate) {
+//		final List<Contract> a = new ArrayList<Contract>();
+//		a.add(singleton);
+//		toAdd.add(a);//on ajoute le contrat singleton
+//
+//		//on ajoute tous les précédent ensemble enrichi avec le singleton 
+//		for (final Collection<Contract> alloc : result){
+//			final List<Contract> a2= new ArrayList<Contract>();
+//			a2.addAll(alloc);
+//			a2.add(singleton);
+//			toAdd.add(a2);
+//		}
+//
+//		result.addAll(toAdd);
+//		toAdd.clear();
+//	}
+//
+//	this.cleanContracts(currentState,result);
+//	//		logMonologue("allocations générée for "+getMyAgent().getMyCurrentState()+" from "+contractToAggregate+"\n : "+result);
+//	return result;
+//}
+//
+//
+//protected void cleanContracts(
+//		final PersonalState currentState,
+//		final Collection<Collection<Contract>> allocationsToExplore) {
+//	// Removing forbidden allocations
+//	final Iterator<Collection<Contract>> r = allocationsToExplore.iterator();
+//	while (r.hasNext())
+//		if (!this.getMyAgent().respectMyRights(
+//				currentState,
+//				r.next()))
+//			r.remove();
+//}

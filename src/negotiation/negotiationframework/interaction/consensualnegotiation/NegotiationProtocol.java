@@ -7,18 +7,17 @@ import java.util.Iterator;
 import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 
 import negotiation.experimentationframework.ExperimentationProtocol;
-import negotiation.faulttolerance.candidaturenegotiation.mirrordestruction.ReplicationDestructionCandidature;
+import negotiation.faulttolerance.collaborativenegotiation.old.ReplicationDestructionCandidature;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.candidatureprotocol.mirror.DestructionCandidature;
-import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder;
-import negotiation.negotiationframework.interaction.candidatureprotocol.status.DestructionOrder.DestructionOrderIdentifier;
 import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.interaction.contracts.ContractIdentifier;
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.interaction.proposercorestatus.DestructionOrder;
+import negotiation.negotiationframework.interaction.proposercorestatus.DestructionOrder.DestructionOrderIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -70,7 +69,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	//
 
 	private boolean ImActive = true;
-	private final ContractDataBase<Contract> contracts = new ContractDataBase<Contract>(
+	private final ContractTrunk<Contract> contracts = new ContractTrunk<Contract>(
 			this.getMyAgent().getIdentifier());
 
 	public static final String log_negotiationStep="negotiation step for log";
@@ -91,7 +90,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// Accessors
 	//
 
-	public ContractDataBase<Contract> getContracts() {
+	public ContractTrunk<Contract> getContracts() {
 		return this.contracts;
 	}
 
@@ -230,7 +229,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				//
 
 				// logMonologue("What do I have?"+contracts.getOnWaitContracts());
-				final ContractDataBase<Contract> selectedContracts = this
+				final ContractTrunk<Contract> selectedContracts = this
 						.getMyAgent().select(this.contracts);
 
 				//

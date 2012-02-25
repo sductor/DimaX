@@ -50,14 +50,17 @@ ReplicationCandidature>  {
 					final ReplicationSpecification state,
 					final ReplicationCandidature c) {
 				return new ReplicationDestructionCandidature(
-						(ResourceIdentifier) HostDestructionCandidatureProposer.this.getMyAgent().getIdentifier(),
+						(ResourceIdentifier) HostDestructionCandidatureProposer.
+						this.getMyAgent().getIdentifier(),
 						state.getMyAgentIdentifier(),
 						c,false);
 			}
 		};
-		Collection<ReplicationCandidature> newUpgradingContracts = myDealExpl.generateUpgradingContracts(this.getMyAgent(), n.getAgentState(), n.getAnswers());
+		Collection<ReplicationCandidature> newUpgradingContracts = 
+				myDealExpl.generateUpgradingContracts(this.getMyAgent(), n.getAgentState(), n.getAnswers());
 		if (!newUpgradingContracts.isEmpty())
-			logMonologue("detecting upgrading contracts "+newUpgradingContracts, NegotiationProtocol.log_mirrorProto);
+			logMonologue("detecting upgrading contracts "+newUpgradingContracts, 
+					NegotiationProtocol.log_mirrorProto);
 		this.contractsToPropose.addAll(newUpgradingContracts);
 
 		//		}

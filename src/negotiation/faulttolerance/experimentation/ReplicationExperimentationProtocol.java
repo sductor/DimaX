@@ -80,22 +80,22 @@ ExperimentationProtocol {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=true;
 
-	static boolean varyAccessibleHost=true;
+	static boolean varyAccessibleHost=false;
 
 	static boolean varyAgentSelection=true;
 	static boolean varyHostSelection=false;
 
-	static boolean varyHostDispo=true;
+	static boolean varyHostDispo=false;
 	static boolean varyHostFaultDispersion=true;
 
-	static boolean varyAgentLoad=true;
+	static boolean varyAgentLoad=false;
 	static boolean varyAgentLoadDispersion=true;
 
-	static boolean varyAgentCriticity=true;
-	static boolean varyAgentCriticityDispersion=true;
+	static boolean varyAgentCriticity=false;
+	static boolean varyAgentCriticityDispersion=false;
 
-	static boolean varyFault=true;	
-	static int dynamicCriticity=0; //-1 never dynamics, 1 always dynamics, 0 both
+	static boolean varyFault=false;	
+	static int dynamicCriticity=1; //-1 never dynamics, 1 always dynamics, 0 both
 
 	//
 	// Default values

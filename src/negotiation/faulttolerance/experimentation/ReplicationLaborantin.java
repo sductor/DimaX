@@ -31,15 +31,15 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
-import negotiation.negotiationframework.agent.RationalCore;
-import negotiation.negotiationframework.agent.SimpleRationalAgent;
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.consensualnegotiation.InactiveProposerCore;
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
-import negotiation.negotiationframework.interaction.selectioncores.AllocationSelectionCore;
-import negotiation.negotiationframework.interaction.selectioncores.GreedyBasicSelectionCore;
-import negotiation.negotiationframework.interaction.selectioncores.GreedyRouletteWheelSelectionCore;
+import negotiation.negotiationframework.ProposerCore;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.proposercores.InactiveProposerCore;
+import negotiation.negotiationframework.rationality.RationalCore;
+import negotiation.negotiationframework.rationality.SimpleRationalAgent;
+import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.selectioncores.AllocationSelectionCore;
+import negotiation.negotiationframework.selectioncores.GreedyBasicSelectionCore;
+import negotiation.negotiationframework.selectioncores.GreedyRouletteWheelSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -468,7 +468,7 @@ public class ReplicationLaborantin extends Laborantin {
 							+ this.getSimulationParameters()._agentSelection);
 
 		RationalCore core;
-		AbstractProposerCore proposer;
+		ProposerCore proposer;
 		ObservationService informations;
 
 		if (this.getSimulationParameters()._usedProtocol
@@ -532,7 +532,7 @@ public class ReplicationLaborantin extends Laborantin {
 							+ this.getSimulationParameters()._agentSelection);
 
 		HostCore core;
-		AbstractProposerCore proposer;
+		ProposerCore proposer;
 		ObservationService informations;
 		if (this.getSimulationParameters()._usedProtocol
 				.equals(ExperimentationProtocol.getKey4mirrorproto())) {

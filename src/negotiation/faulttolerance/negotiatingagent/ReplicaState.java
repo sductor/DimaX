@@ -9,8 +9,8 @@ import java.util.Random;
 import java.util.Set;
 
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
-import negotiation.negotiationframework.agent.SimpleAgentState;
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;

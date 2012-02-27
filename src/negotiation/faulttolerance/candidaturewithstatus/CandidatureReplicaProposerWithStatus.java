@@ -11,15 +11,15 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
+import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.proposercorestatus.AgentStateStatus;
-import negotiation.negotiationframework.interaction.proposercorestatus.DestructionOrder;
+import negotiation.negotiationframework.proposercores.status.AgentStateStatus;
+import negotiation.negotiationframework.proposercores.status.DestructionOrder;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class CandidatureReplicaProposerWithStatus extends CandidatureReplicaProposer
 implements
-AbstractProposerCore<
+ProposerCore<
 SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
 ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 	private static final long serialVersionUID = -5315491050460219982L;

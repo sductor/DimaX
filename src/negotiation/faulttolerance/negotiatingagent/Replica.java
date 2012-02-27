@@ -11,10 +11,10 @@ import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.FaultStatusMessage;
+import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.agent.RationalCore;
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.rationality.RationalCore;
+import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -110,7 +110,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final Double memCharge,
 			final RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> myRationality,
 			final AbstractSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
-			final AbstractProposerCore<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
+			final ProposerCore<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
 			final ObservationService myInformation,
 			final boolean dynamicCriticity)
 					throws CompetenceException {

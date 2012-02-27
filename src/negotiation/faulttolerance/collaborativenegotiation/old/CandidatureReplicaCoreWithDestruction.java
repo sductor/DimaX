@@ -7,7 +7,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
-import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
+import negotiation.negotiationframework.NegotiationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 

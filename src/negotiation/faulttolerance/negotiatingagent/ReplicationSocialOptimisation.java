@@ -5,9 +5,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 
-import negotiation.negotiationframework.AllocationSocialWelfares;
-import negotiation.negotiationframework.SocialChoiceFunctions;
-import negotiation.negotiationframework.SocialChoiceFunctions.UtilitaristEvaluator;
+import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
+import negotiation.negotiationframework.rationality.SocialChoiceFunctions;
+import negotiation.negotiationframework.rationality.SocialChoiceFunctions.UtilitaristEvaluator;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CompetentComponent;
 

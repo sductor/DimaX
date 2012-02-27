@@ -28,7 +28,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol.SimpleContractEnvellope;
+import negotiation.negotiationframework.NegotiationProtocol.SimpleContractEnvellope;
 
 /* import dimaxx.server.Logger; */
 

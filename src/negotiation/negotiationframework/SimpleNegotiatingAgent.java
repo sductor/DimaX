@@ -1,15 +1,13 @@
 package negotiation.negotiationframework;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.negotiationframework.agent.RationalCore;
-import negotiation.negotiationframework.agent.SimpleRationalAgent;
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.consensualnegotiation.ContractTrunk;
-import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
-import negotiation.negotiationframework.interaction.consensualnegotiation.SelectionCore;
-import negotiation.negotiationframework.interaction.contracts.AbstractActionSpecification;
-import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
+import negotiation.negotiationframework.rationality.RationalCore;
+import negotiation.negotiationframework.rationality.SimpleRationalAgent;
+import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -41,7 +39,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	private final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore;
 
 	@Competence
-	private final AbstractProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> myProposerCore;
+	private final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> myProposerCore;
 
 	//
 	// Constructors
@@ -52,7 +50,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 			final PersonalState myInitialState,
 			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
 			final AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
-			final AbstractProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
+			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
@@ -85,7 +83,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		return this.protocol;
 	}
 
-	public AbstractProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> getMyProposerCore() {
+	public ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> getMyProposerCore() {
 		return this.myProposerCore;
 	}
 			

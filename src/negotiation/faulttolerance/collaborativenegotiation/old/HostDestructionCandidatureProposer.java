@@ -7,12 +7,12 @@ import java.util.Set;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
+import negotiation.negotiationframework.NegotiationProtocol;
+import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.consensualnegotiation.NegotiationProtocol;
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.interaction.proposercorecollaborative.IllAnswer;
-import negotiation.negotiationframework.interaction.proposercorecollaborative.old.UpgradingExploratorSimple;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.proposercores.collaborative.IllAnswer;
+import negotiation.negotiationframework.proposercores.collaborative.old.UpgradingExploratorSimple;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dima.introspectionbasedagents.shells.NotReadyException;
@@ -21,7 +21,7 @@ public class HostDestructionCandidatureProposer
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>>
 implements
-AbstractProposerCore<
+ProposerCore<
 SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
 ReplicationSpecification,
 HostState,

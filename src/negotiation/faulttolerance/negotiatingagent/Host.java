@@ -5,10 +5,10 @@ import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationResultHost;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
+import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
@@ -73,7 +73,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final double lambda,
 			final HostCore myRationality,
 			final AbstractSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
-			final AbstractProposerCore<
+			final ProposerCore<
 			SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
 			ReplicationSpecification, HostState, ReplicationCandidature> 	proposerCore,
 			final ObservationService myInformation,

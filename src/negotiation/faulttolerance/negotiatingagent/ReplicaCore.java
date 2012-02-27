@@ -2,8 +2,8 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.agent.RationalCore;
-import negotiation.negotiationframework.agent.SimpleRationalAgent;
+import negotiation.negotiationframework.rationality.RationalCore;
+import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;

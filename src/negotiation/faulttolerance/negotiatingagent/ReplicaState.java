@@ -12,8 +12,8 @@ import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
@@ -59,7 +59,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	////		remainingDispo=0.;
 	//	}
 
-	protected ReplicaState(
+	public ReplicaState(
 			final AgentIdentifier myAgent,
 			final Double myCriticity,
 			final Double myProcCharge,

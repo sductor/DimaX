@@ -138,7 +138,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
 		if (this instanceof BasicCompetentAgent)
 			((BasicCompetentAgent) this).setDarxEngine(darxEngine);
-		
+
 		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
 		try	{
 			darxEngine.activateTask(PortNb);
@@ -154,7 +154,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
 		if (this instanceof BasicCompetentAgent)
 			((BasicCompetentAgent) this).setDarxEngine(darxEngine);
-		
+
 		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
 		try	{
 			darxEngine.activateTask(url,PortNb);

@@ -11,7 +11,6 @@ import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
@@ -86,7 +85,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> getMyProposerCore() {
 		return this.myProposerCore;
 	}
-			
+
 	@MessageHandler()
 	public void hereThereAre(final ShowYourPocket m) {
 		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "
@@ -94,7 +93,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		pockets += "\n" + this.getMyProtocol();
 		this.logMonologue(pockets,LogService.onFile);
 	}
-	
+
 	//
 	// Methods
 	//
@@ -102,7 +101,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public ContractTrunk<Contract> select(final ContractTrunk<Contract> cs) {
 		return this.selectionCore.select(cs);
 	}
-	
+
 	//
 	// Behavior
 	//
@@ -134,15 +133,15 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 //		//				+ this.getMyCurrentState(), LogService.onScreen);
 //	}
 
-	//
-	// Primitives
-	//
+//
+// Primitives
+//
 
-	// @Override
-	// public boolean start(final StartSimulationMessage m){
-	// this.getMyCurrentState().resetUptime();
-	// return super.start(m);
-	// }
+// @Override
+// public boolean start(final StartSimulationMessage m){
+// this.getMyCurrentState().resetUptime();
+// return super.start(m);
+// }
 
 //}
 

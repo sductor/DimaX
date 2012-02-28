@@ -7,7 +7,7 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationPara
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.negotiationframework.proposercores.status.AgentStateStatus;
+import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.information.OpinionService;

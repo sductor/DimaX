@@ -18,11 +18,10 @@ import negotiation.experimentationframework.Laborantin;
 import negotiation.experimentationframework.ObservingGlobalService;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaProposerWithStatus;
-import negotiation.faulttolerance.collaborativenegotiation.old.CandidatureReplicaCoreWithDestruction;
-import negotiation.faulttolerance.collaborativenegotiation.old.HostDestructionCandidatureProposer;
+import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
+import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
-import negotiation.faulttolerance.negotiatingagent.CandidatureReplicaProposer;
 import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
@@ -32,8 +31,10 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.ProposerCore;
+import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.proposercores.InactiveProposerCore;
+import negotiation.negotiationframework.protocoles.InactiveProposerCore;
+import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
@@ -44,10 +45,11 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
-import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.replication.ReplicationHandler;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.aggregator.HeavyAggregation;
@@ -304,7 +306,7 @@ public class ReplicationLaborantin extends Laborantin {
 		this.myGlobalObservationService.initiate();
 
 		this.initialisation();
-		
+
 		this.myFaultService = new FaultTriggeringService(p);
 	}
 
@@ -371,7 +373,7 @@ public class ReplicationLaborantin extends Laborantin {
 					fault);
 			this.addAgent(host);
 			//			this.setHostObservation(host);
-			this.myInformationService.add(((Host) host).getMyCurrentState());
+			this.myInformationService.add((host).getMyCurrentState());
 		}
 
 		this.logMonologue("Those are my dispos!!!!! :\n" + this.myInformationService.show(HostState.class),LogService.onFile);
@@ -400,7 +402,7 @@ public class ReplicationLaborantin extends Laborantin {
 					this.getSimulationParameters().agentMemory);
 			this.addAgent(ag);
 			//			this.setAgentObservation(ag);
-			this.myInformationService.add(((Replica) ag).getMyCurrentState());
+			this.myInformationService.add((ag).getMyCurrentState());
 
 			/*
 			 * First rep
@@ -412,17 +414,27 @@ public class ReplicationLaborantin extends Laborantin {
 					throw new RuntimeException("no host? impossible!");
 
 				SimpleRationalAgent firstReplicatedOnHost = this.getAgent(itHost.next());
-				ReplicationCandidature c =
-						new ReplicationCandidature(
-								(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
-								ag.getIdentifier(),
-								true,true);
-				c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
-				c.setSpecification((ReplicationSpecification) firstReplicatedOnHost.getMySpecif(c));
+				MatchingCandidature c;
+
+				if (this.getSimulationParameters()._usedProtocol
+						.equals(ExperimentationProtocol.getKey4mirrorproto()))
+					c = new InformedCandidature(new ReplicationCandidature(
+							(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
+							ag.getIdentifier(),
+							true,true));
+				else
+					c =
+					new ReplicationCandidature(
+							(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
+							ag.getIdentifier(),
+							true,true);
+
+				c.setSpecification(ag.getMySpecif(c));
+				c.setSpecification(firstReplicatedOnHost.getMySpecif(c));
 
 
 				while (!firstReplicatedOnHost
-						.respectMyRights(c.computeResultingState((HostState) firstReplicatedOnHost.getMySpecif(c))))
+						.respectMyRights(c.computeResultingState(firstReplicatedOnHost.getMySpecif(c))))
 					if (!itHost.hasNext())
 						throw new IfailedException("can not create at least one rep for each agent\n"
 								+this.getSimulationParameters().getHostsIdentifier());
@@ -432,140 +444,191 @@ public class ReplicationLaborantin extends Laborantin {
 								(ResourceIdentifier) firstReplicatedOnHost
 								.getIdentifier(),
 								ag.getIdentifier(), true,true);
-						c.setSpecification((ReplicationSpecification) ag.getMySpecif(c));
-						c.setSpecification((ReplicationSpecification) firstReplicatedOnHost
+						c.setSpecification(ag.getMySpecif(c));
+						c.setSpecification(firstReplicatedOnHost
 								.getMySpecif(c));
 					}
 
 				((ReplicaCore) ag.myCore).executeFirstRep(c,firstReplicatedOnHost);
 				((HostCore) firstReplicatedOnHost.myCore).executeFirstRep(c, ag);
 			} catch (final Exception e) {
+				e.printStackTrace();
 				throw new IfailedException(e);
+
 			}
 		}
 		this.logMonologue("Initializing agents done!",LogService.onFile);
 	}
 
-	protected Replica constructAgent(final AgentIdentifier replica,
+//	private void executeFirstRep(
+//			final SimpleRationalAgent<ReplicationSpecification,ReplicationSpecification,MatchingCandidature<ReplicationSpecification>> host,
+//			final MatchingCandidature<ReplicationSpecification> c,
+//			final SimpleRationalAgent ag) {
+//		assert host.respectMyRights(c);
+//
+//		host.setNewState(
+//				c.computeResultingState(
+//						host.getMyCurrentState()));
+//		host.getMyInformation().add(c.getAgentResultingState());
+//
+//		/*
+//		 *
+//		 */
+//
+//		if (c.isMatchingCreation()) {
+//			ag.addObserver(host.getIdentifier(),
+//					SimpleObservationService.informationObservationKey);
+//			ReplicationHandler.replicate(c.getAgent());
+//			this.logMonologue(c.getResource() + "  ->I have initially replicated "
+//					+ c.getAgent(),LogService.onBoth);
+//		} else
+//			throw new RuntimeException();
+//
+//	}
+	
+	protected SimpleRationalAgent constructAgent(final AgentIdentifier replicaId,
 			final Collection<HostIdentifier> hostsIKnow,
 			final DistributionParameters<AgentIdentifier> agentCriticity,
 			final DistributionParameters<AgentIdentifier> agentProcessor,
 			final DistributionParameters<AgentIdentifier> agentMemory)
 					throws CompetenceException {
-		AbstractSelectionCore select;
-		if (this.getSimulationParameters()._agentSelection
-				.equals(ExperimentationProtocol.getKey4greedyselect()))
-			select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else if (this.getSimulationParameters()._agentSelection
-				.equals(ExperimentationProtocol.getKey4roulettewheelselect()))
-			select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else if (this.getSimulationParameters()._agentSelection
-				.equals(ExperimentationProtocol.getKey4allocselect()))
-			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else
-			throw new RuntimeException(
-					"Static parameters est mal conf : agentSelection = "
-							+ this.getSimulationParameters()._agentSelection);
-
-		RationalCore core;
-		ProposerCore proposer;
-		ObservationService informations;
 
 		if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4mirrorproto())) {
-			core = new CandidatureReplicaCoreWithDestruction(this.getSimulationParameters()._socialWelfare);
-			proposer = new CandidatureReplicaProposer();
-			informations = new SimpleObservationService();
+				.equals(ExperimentationProtocol.getKey4mirrorproto())) { //Collaborative
 
-		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4centralisedstatusproto())){
-			core = new CandidatureReplicaCoreWithStatus();
-			proposer = new CandidatureReplicaProposerWithStatus();
-			informations = new SimpleOpinionService();
-			/**/
-			if (!this.myStatusObserver.iObserveStatus())
-				throw new RuntimeException("unappropriate laborantin!");
+			final CollaborativeReplica rep = new CollaborativeReplica(
+					replicaId,
+					Math.min(
+							ReplicationExperimentationParameters._criticityMin
+							+ agentCriticity.get(replicaId), 1),
+							agentProcessor.get(replicaId), agentMemory.get(replicaId),
+							this.getSimulationParameters()._socialWelfare,
+							this.getSimulationParameters().dynamicCriticity);
 
-		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4statusproto())) {
-			core = new CandidatureReplicaCoreWithStatus();
-			proposer = new CandidatureReplicaProposerWithStatus();
-			final Map<AgentIdentifier, Class<? extends Information>> registration = new HashMap<AgentIdentifier, Class<? extends Information>>();
-			informations = new SimpleOpinionService();
+			rep.getMyInformation().addAll(hostsIKnow);
+			return rep;
+		}else { //Status
 
-		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4multilatproto()))
-			throw new RuntimeException("unimplemented!");
-		else
-			throw new RuntimeException(
-					"Static parameters est mal conf : _usedProtocol = "
-							+ this.getSimulationParameters()._usedProtocol);
 
-		final Replica rep = new Replica(replica, Math.min(
-				ReplicationExperimentationParameters._criticityMin
-				+ agentCriticity.get(replica), 1),
-				agentProcessor.get(replica), agentMemory.get(replica), core,
-				select, proposer, informations, getSimulationParameters().dynamicCriticity);
+			AbstractSelectionCore select;
+			if (this.getSimulationParameters()._agentSelection
+					.equals(ExperimentationProtocol.getKey4greedyselect()))
+				select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+			else if (this.getSimulationParameters()._agentSelection
+					.equals(ExperimentationProtocol.getKey4roulettewheelselect()))
+				select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+			else if (this.getSimulationParameters()._agentSelection
+					.equals(ExperimentationProtocol.getKey4allocselect()))
+				select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+			else
+				throw new RuntimeException(
+						"Static parameters est mal conf : agentSelection = "
+								+ this.getSimulationParameters()._agentSelection);
 
-		rep.getMyInformation().addAll(hostsIKnow);
+			RationalCore core;
+			ProposerCore proposer;
+			ObservationService informations;
 
-		return rep;
+			if (this.getSimulationParameters()._usedProtocol
+					.equals(ExperimentationProtocol.getKey4centralisedstatusproto())){
+				core = new CandidatureReplicaCoreWithStatus();
+				proposer = new CandidatureReplicaProposerWithStatus();
+				informations = new SimpleOpinionService();
+				/**/
+				if (!this.myStatusObserver.iObserveStatus())
+					throw new RuntimeException("unappropriate laborantin!");
+
+			} else if (this.getSimulationParameters()._usedProtocol
+					.equals(ExperimentationProtocol.getKey4statusproto())) {
+				core = new CandidatureReplicaCoreWithStatus();
+				proposer = new CandidatureReplicaProposerWithStatus();
+				final Map<AgentIdentifier, Class<? extends Information>> registration = new HashMap<AgentIdentifier, Class<? extends Information>>();
+				informations = new SimpleOpinionService();
+
+			} else 	if (this.getSimulationParameters()._usedProtocol
+					.equals(ExperimentationProtocol.getKey4multilatproto()))
+				throw new RuntimeException("unimplemented!");
+			else
+				throw new RuntimeException(
+						"Static parameters est mal conf : _usedProtocol = "
+								+ this.getSimulationParameters()._usedProtocol);
+
+
+			final Replica rep = new Replica(replicaId, Math.min(
+					ReplicationExperimentationParameters._criticityMin
+					+ agentCriticity.get(replicaId), 1),
+					agentProcessor.get(replicaId), agentMemory.get(replicaId), core,
+					select, proposer, informations, this.getSimulationParameters().dynamicCriticity);
+
+			rep.getMyInformation().addAll(hostsIKnow);
+			return rep;
+		}
+
+
 
 	}
 
-	protected Host constructHost(final ResourceIdentifier host,
+	protected SimpleRationalAgent constructHost(final ResourceIdentifier hostId,
 			final DistributionParameters<ResourceIdentifier> fault)
 					throws CompetenceException {
-		AbstractSelectionCore select;
-		if (this.getSimulationParameters().get_hostSelection()
-				.equals(ExperimentationProtocol.getKey4greedyselect()))
-			select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else if (this.getSimulationParameters().get_hostSelection()
-				.equals(ExperimentationProtocol.getKey4roulettewheelselect()))
-			select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else if (this.getSimulationParameters().get_hostSelection()
-				.equals(ExperimentationProtocol.getKey4allocselect()))
-			select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		else
-			throw new RuntimeException(
-					"Static parameters est mal conf : agentSelection = "
-							+ this.getSimulationParameters()._agentSelection);
 
-		HostCore core;
-		ProposerCore proposer;
-		ObservationService informations;
 		if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4mirrorproto())) {
-			core = new HostCore(true,this.getSimulationParameters()._socialWelfare);
-			proposer = new HostDestructionCandidatureProposer();
-			informations = new SimpleObservationService();
-		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4centralisedstatusproto())) {
-			if (!ReplicationLaborantin.this.myStatusObserver.iObserveStatus())
-				throw new RuntimeException("unappropriate laborantin!"
-						+ this.myStatusObserver);
-			core = new HostCore(false,this.getSimulationParameters()._socialWelfare);
-			proposer = new InactiveProposerCore();
-			informations = new SimpleObservationService();
+				.equals(ExperimentationProtocol.getKey4mirrorproto()))
+			return new CollaborativeHost(
+					hostId,
+					fault.get(hostId),
+					this.getSimulationParameters()._socialWelfare,
+					this.dispos);
+		else {
 
-		} else if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4statusproto())) {
-			core = new HostCore(false,this.getSimulationParameters()._socialWelfare);
-			proposer = new InactiveProposerCore();
-			informations = new SimpleOpinionService();
+			AbstractSelectionCore select;
+			if (this.getSimulationParameters().get_hostSelection()
+					.equals(ExperimentationProtocol.getKey4greedyselect()))
+				select = new GreedyBasicSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+			else if (this.getSimulationParameters().get_hostSelection()
+					.equals(ExperimentationProtocol.getKey4roulettewheelselect()))
+				select = new GreedyRouletteWheelSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+			else if (this.getSimulationParameters().get_hostSelection()
+					.equals(ExperimentationProtocol.getKey4allocselect()))
+				select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+			else
+				throw new RuntimeException(
+						"Static parameters est mal conf : agentSelection = "
+								+ this.getSimulationParameters()._agentSelection);
 
-		} else 	if (this.getSimulationParameters()._usedProtocol
-				.equals(ExperimentationProtocol.getKey4multilatproto()))
-			throw new RuntimeException("unimplemented!");
-		else
-			throw new RuntimeException(
-					"Static parameters est mal conf : _usedProtocol = "
-							+ this.getSimulationParameters()._usedProtocol);
+			HostCore core;
+			ProposerCore proposer;
+			ObservationService informations;
 
-		final Host hostAg = new Host(host, fault.get(host),
-				core, select, proposer, informations, this.dispos);
 
-		return hostAg;
+			if (this.getSimulationParameters()._usedProtocol
+					.equals(ExperimentationProtocol.getKey4centralisedstatusproto())) {
+				if (!ReplicationLaborantin.this.myStatusObserver.iObserveStatus())
+					throw new RuntimeException("unappropriate laborantin!"
+							+ this.myStatusObserver);
+				core = new HostCore(false,this.getSimulationParameters()._socialWelfare);
+				proposer = new InactiveProposerCore();
+				informations = new SimpleObservationService();
+
+			} else if (this.getSimulationParameters()._usedProtocol
+					.equals(ExperimentationProtocol.getKey4statusproto())) {
+				core = new HostCore(false,this.getSimulationParameters()._socialWelfare);
+				proposer = new InactiveProposerCore();
+				informations = new SimpleOpinionService();
+
+			} else 	if (this.getSimulationParameters()._usedProtocol
+					.equals(ExperimentationProtocol.getKey4multilatproto()))
+				throw new RuntimeException("unimplemented!");
+			else
+				throw new RuntimeException(
+						"Static parameters est mal conf : _usedProtocol = "
+								+ this.getSimulationParameters()._usedProtocol);
+
+			final Host hostAg = new Host(hostId, fault.get(hostId),
+					core, select, proposer, informations, this.dispos);
+
+			return hostAg;
+		}
 	}
 }
 

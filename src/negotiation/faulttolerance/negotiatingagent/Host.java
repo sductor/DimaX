@@ -40,7 +40,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	@Competence
 	public
-	FaultObservationService<ReplicationSpecification, HostState, ReplicationCandidature> myFaultAwareService = 
+	FaultObservationService<ReplicationSpecification, HostState, ReplicationCandidature> myFaultAwareService =
 	new FaultObservationService<ReplicationSpecification, HostState, ReplicationCandidature>() {
 
 		/**
@@ -52,7 +52,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		protected void resetMyState() {
 			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
 					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().nextStateCounter));
-//			this.resetMyUptime();
+			//			this.resetMyUptime();
 		}
 
 		@Override

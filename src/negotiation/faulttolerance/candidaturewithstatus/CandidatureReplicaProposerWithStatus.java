@@ -13,8 +13,8 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.proposercores.status.AgentStateStatus;
-import negotiation.negotiationframework.proposercores.status.DestructionOrder;
+import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
+import negotiation.negotiationframework.protocoles.status.DestructionOrder;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class CandidatureReplicaProposerWithStatus extends CandidatureReplicaProposer

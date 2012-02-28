@@ -146,13 +146,13 @@ public class APIAgent extends BasicCompetentAgent {
 	public static void startActivities(final APILauncherModule api) {
 		api.startApplication();
 	}
-	
+
 	//
 	// Subclasses
 	//
-	
+
 	public enum LaunchType { NotThreaded, FIPA, DarX }
-		
+
 	public class APILauncherModule extends BasicAgentModule<BasicCompetentAgent> {
 		private static final long serialVersionUID = 7241441256737644000L;
 
@@ -301,7 +301,7 @@ public class APIAgent extends BasicCompetentAgent {
 			final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
 			final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
 
-			assert removed1 && removed2:c+" \n REGISTERD \n "+registeredAgent+" \n LOCATIONS \n "+locations;
+			assert removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 
 			switch (this.myLaunchType) {
 			case NotThreaded:

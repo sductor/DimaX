@@ -2,6 +2,8 @@ package negotiation.negotiationframework.contracts;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,13 +24,16 @@ DimaComponentInterface {
 
 	private final AgentIdentifier myAgentIdentifier;
 
-	private final Map<ContractIdentifier, Contract> identifier2contract = new HashMap<ContractIdentifier, Contract>();
+	private final Map<ContractIdentifier, Contract> identifier2contract =
+			new HashMap<ContractIdentifier, Contract>();
+
+	//	protected final Set<Contract> consensualContracts = new HashSet<Contract>();
 
 	protected final Set<Contract> waitContracts = new HashSet<Contract>();
-	protected final Set<Contract> consensualContracts = new HashSet<Contract>();
-
-	private final HashedHashSet<AgentIdentifier, Contract> acceptedContracts = new HashedHashSet<AgentIdentifier, Contract>();
-	protected final HashedHashSet<AgentIdentifier, Contract> rejectedContracts = new HashedHashSet<AgentIdentifier, Contract>();
+	private final HashedHashSet<AgentIdentifier, Contract> acceptedContracts =
+			new HashedHashSet<AgentIdentifier, Contract>();
+	protected final HashedHashSet<AgentIdentifier, Contract> rejectedContracts =
+			new HashedHashSet<AgentIdentifier, Contract>();
 
 	//
 	//
@@ -43,7 +48,7 @@ DimaComponentInterface {
 	//
 	//
 
-	
+
 	/*
 	 *
 	 */
@@ -93,10 +98,21 @@ DimaComponentInterface {
 		return l;
 	}
 
-	public List<Contract> getConsensualContracts() {
+	public List<Contract> getRequestableContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		l.addAll(this.consensualContracts);
-		return l;
+		for (final Contract c: this.identifier2contract.values())
+			if (this.isRequestable(c))
+				l.add(c);
+				return l;
+	}
+
+	public List<Contract> getRequestableContracts(final Comparator<Contract> pref) {
+		final ArrayList<Contract> l = new ArrayList<Contract>();
+		for (final Contract c: this.identifier2contract.values())
+			if (this.isRequestable(c))
+				l.add(c);
+				Collections.sort(l,pref);
+				return l;
 	}
 
 	public List<Contract> getRejectedContracts() {
@@ -117,12 +133,12 @@ DimaComponentInterface {
 	}
 
 	public AgentIdentifier getMyAgentIdentifier() {
-		return myAgentIdentifier;
+		return this.myAgentIdentifier;
 	}
 
-	public List<Contract> getInitiatorConsensualContracts() {
+	public List<Contract> getInitiatorRequestableContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.consensualContracts)
+		for (final Contract c : this.getRequestableContracts())
 			if (c.getInitiator().equals(this.myAgentIdentifier))
 				l.add(c);
 				return l;
@@ -176,19 +192,18 @@ DimaComponentInterface {
 	}
 
 	public void addAcceptation(final AgentIdentifier id, final Contract c) {
-		assert identifier2contract.containsKey(c.getIdentifier());
+		assert this.identifier2contract.containsKey(c.getIdentifier());
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
 		this.acceptedContracts.add(id, c);
 		/**/
-		if (this.isRequestable(c)) {
+		if (this.isRequestable(c))
 			this.waitContracts.remove(c);
-			this.consensualContracts.add(c);
-		}
+		//			this.consensualContracts.add(c);
 	}
 
 	public void addRejection(final AgentIdentifier id, final Contract c) {
-		assert identifier2contract.containsKey(c.getIdentifier());
+		assert this.identifier2contract.containsKey(c.getIdentifier());
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
 		if (this.acceptedContracts.get(id).contains(c))
@@ -197,12 +212,12 @@ DimaComponentInterface {
 			else
 				throw new RuntimeException("impossible to reject " + c
 						+ " : i'm participant that previously accepted");
-		if (this.consensualContracts.contains(c))
-			if (id.equals(c.getInitiator()))
-				this.consensualContracts.remove(c);
-			else
-				throw new RuntimeException("impossible to reject " + c
-						+ " : i'm participant that previously accepted");
+		//		if (this.consensualContracts.contains(c))
+		//			if (id.equals(c.getInitiator()))
+		//				this.consensualContracts.remove(c);
+		//			else
+		//				throw new RuntimeException("impossible to reject " + c
+		//						+ " : i'm participant that previously accepted");
 		/**/
 		this.rejectedContracts.add(id, c);
 		/**/
@@ -210,17 +225,17 @@ DimaComponentInterface {
 			this.waitContracts.remove(c);
 	}
 
-//	public void removeRejection(final AgentIdentifier id, final Contract c) {
-//		this.rejectedContracts.get(id).remove(c);
-//		this.waitContracts.add(c);
-//	}
+	public void removeRejection(final AgentIdentifier id, final Contract c) {
+		this.rejectedContracts.get(id).remove(c);
+		this.waitContracts.add(c);
+	}
 
 	//
 	// Primitive
 	//
 
 	// CONSENSUAL IMPLEMENTATION
-	protected boolean isRequestable(final Contract c) {
+	public boolean isRequestable(final Contract c) {
 		for (final AgentIdentifier id : c.getAllParticipants())
 			if (!this.acceptedContracts.get(id).contains(c))
 				return false;
@@ -228,7 +243,7 @@ DimaComponentInterface {
 	}
 
 	// CONSENSUAL IMPLEMENTATION
-	protected boolean isAFailure(final Contract c) {
+	public boolean isAFailure(final Contract c) {
 		for (final AgentIdentifier id : c.getAllParticipants())
 			if (this.rejectedContracts.get(id).contains(c))
 				return true;
@@ -239,13 +254,13 @@ DimaComponentInterface {
 	 *
 	 */
 
-	public boolean everyOneHasAnswered(final Contract c) {
-		for (final AgentIdentifier id : c.getAllParticipants())
-			if (!this.getContractsAcceptedBy(id).contains(c)
-					&& !this.getContractsRejectedBy(id).contains(c))
-				return false;
-				return true;
-	}
+	//	public boolean everyOneHasAnswered(final Contract c) {
+	//		for (final AgentIdentifier id : c.getAllParticipants())
+	//			if (!this.getContractsAcceptedBy(id).contains(c)
+	//					&& !this.getContractsRejectedBy(id).contains(c))
+	//				return false;
+	//				return true;
+	//	}
 
 	public boolean isEmpty() {
 		return this.identifier2contract.isEmpty();
@@ -262,7 +277,7 @@ DimaComponentInterface {
 	public void remove(final Contract c) {
 		this.identifier2contract.remove(c.getIdentifier());
 		this.acceptedContracts.removeAvalue(c);
-		this.consensualContracts.remove(c);
+		//		this.consensua:lContracts.remove(c);
 		this.rejectedContracts.removeAvalue(c);
 		this.waitContracts.remove(c);
 	}
@@ -271,7 +286,7 @@ DimaComponentInterface {
 		final Contract c = this.identifier2contract.remove(id);
 		if (c != null) {
 			this.acceptedContracts.removeAvalue(c);
-			this.consensualContracts.remove(c);
+			//			this.consensualContracts.remove(c);
 			this.rejectedContracts.removeAvalue(c);
 			this.waitContracts.remove(c);
 		}
@@ -287,7 +302,7 @@ DimaComponentInterface {
 		this.rejectedContracts.clear();
 		this.acceptedContracts.clear();
 		this.waitContracts.clear();
-		this.consensualContracts.clear();
+		//		this.consensualContracts.clear();
 	}
 
 	/*
@@ -307,7 +322,7 @@ DimaComponentInterface {
 		String result = "\n*Status of " + c+"\n";
 		if (this.getOnWaitContracts().contains(c))
 			result += "wait;";
-		if (this.getConsensualContracts().contains(c))
+		if (this.getRequestableContracts().contains(c))
 			result += "requestable;";
 		if (this.getRejectedContracts().contains(c))
 			result += "rejected;";

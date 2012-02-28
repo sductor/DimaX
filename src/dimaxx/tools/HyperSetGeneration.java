@@ -8,31 +8,31 @@ import java.util.List;
 public abstract class HyperSetGeneration<T> {
 
 	private final Collection<Collection<T>>  hyperset;
-	
+
 	/*
 	 * 
 	 */
-	
-	public HyperSetGeneration(Collection<T> elems){
-		hyperset = generateHyperSet(elems);
-		filter(hyperset);
+
+	public HyperSetGeneration(final Collection<T> elems){
+		this.hyperset = this.generateHyperSet(elems);
+		this.filter(this.hyperset);
 	}
-	
+
 	public Collection<Collection<T>> getHyperset() {
-		return hyperset;
+		return this.hyperset;
 	}
-	
+
 	/*
 	 * 
 	 */
-	
+
 	public abstract boolean toKeep(Collection<T> elem);
 
 	/*
 	 * 
 	 */
-	
-	private  Collection<Collection<T>> generateHyperSet(Collection<T> elems){
+
+	private  Collection<Collection<T>> generateHyperSet(final Collection<T> elems){
 
 		final Collection<Collection<T>> result =
 				new ArrayList<Collection<T>>();
@@ -44,7 +44,7 @@ public abstract class HyperSetGeneration<T> {
 			a.add(singleton);
 			toAdd.add(a);//on ajoute le contrat singleton
 
-			//on ajoute tous les précédent ensemble enrichi avec le singleton 
+			//on ajoute tous les précédent ensemble enrichi avec le singleton
 			for (final Collection<T> alloc : result){
 				final List<T> a2= new ArrayList<T>();
 				a2.addAll(alloc);
@@ -60,11 +60,11 @@ public abstract class HyperSetGeneration<T> {
 	}
 
 
-	private  void filter(Collection<Collection<T>> hyperset){
+	private  void filter(final Collection<Collection<T>> hyperset){
 		final Iterator<Collection<T>> r = hyperset.iterator();
 		while (r.hasNext())
-			if (!toKeep(r.next()))
+			if (!this.toKeep(r.next()))
 				r.remove();
-		
+
 	}
 }

@@ -1,7 +1,7 @@
 package negotiation.faulttolerance.negotiatingagent;
 
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.proposercores.status.CandidatureProposer;
+import negotiation.negotiationframework.protocoles.status.CandidatureProposer;
 
 public class CandidatureReplicaProposer
 extends CandidatureProposer<ReplicationSpecification, ReplicaState, ReplicationCandidature>{

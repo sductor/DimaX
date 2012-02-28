@@ -147,22 +147,22 @@ public class DCOPApplication extends Application {
 		final double delta = 2 * Math.PI / n;
 		double angle = 0;
 		this.nodeMap = new HashMap<Integer, Node>();
-		final Node controller = node(new Controller(this), "Simulator",
+		final Node controller = this.node(new Controller(this), "Simulator",
 				20 + (DCOPApplication.radius - 30), 20 + (DCOPApplication.radius - 30));
 
 		for (final Variable v : this.g.varMap.values()) {
-			final Node node = node(this.getAlgo(v), "" + v.id, (int) (20 + (DCOPApplication.radius - 30)
+			final Node node = this.node(this.getAlgo(v), "" + v.id, (int) (20 + (DCOPApplication.radius - 30)
 					* (1 + Math.cos(angle))), (int) (20 + (DCOPApplication.radius - 30)
 							* (1 + Math.sin(angle))));
 			this.nodeMap.put(v.id, node);
 			angle += delta;
-			link(controller, node);
+			this.link(controller, node);
 		}
 		for (final Constraint c : this.g.conList) {
 			final Node first = this.nodeMap.get(c.first.id);
 			final Node second = this.nodeMap.get(c.second.id);
-			link(first, second);
-			link(second, first);
+			this.link(first, second);
+			this.link(second, first);
 		}
 	}
 
@@ -171,6 +171,7 @@ public class DCOPApplication extends Application {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public String getText() {
 		return "A DCOP Application";
 	}

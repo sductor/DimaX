@@ -13,15 +13,14 @@ import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
@@ -129,7 +128,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.appliHasStarted;
 	}
 
-	public void setDarxEngine(DimaXTask darxEngine) {
+	public void setDarxEngine(final DimaXTask darxEngine) {
 		this.darxEngine=darxEngine;
 	}
 	//
@@ -249,7 +248,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					methodComponent,
-					MethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);
@@ -266,7 +265,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 					methodToTest,
 					null, testArgs,
 					this,
-					MethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
+					SimpleMethodHandler.getCurrentlyExecutedMethod(BasicCompetentAgent.nombreAdaptePourRecupererlaMethodeKiVa_bouhPasBo),
 					null,	methodsArgs);
 		} catch (final Exception e) {
 			this.signalException("Impossible to add the hook", e);

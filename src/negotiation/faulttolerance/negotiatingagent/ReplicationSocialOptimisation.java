@@ -9,7 +9,6 @@ import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.SocialChoiceFunctions;
 import negotiation.negotiationframework.rationality.SocialChoiceFunctions.UtilitaristEvaluator;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.CompetentComponent;
 
 public class ReplicationSocialOptimisation extends AllocationSocialWelfares<ReplicationSpecification, ReplicationCandidature>{
 
@@ -20,8 +19,11 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 	 */
 	private static final long serialVersionUID = 187944742500004532L;
 
-	public ReplicationSocialOptimisation(final CompetentComponent myAgent, final String socialWelfare) {
-		super(myAgent, socialWelfare);
+	public ReplicationSocialOptimisation(
+			//			final CompetentComponent myAgent,
+			final String socialWelfare) {
+		super(//myAgent,
+				socialWelfare);
 	}
 
 	/*

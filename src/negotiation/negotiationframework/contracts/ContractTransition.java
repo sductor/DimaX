@@ -14,7 +14,7 @@ public abstract class ContractTransition<
 ActionSpec extends AbstractActionSpecification> implements
 AbstractContractTransition<ActionSpec> {
 	public long getValidityTime() {
-		return validityTime;
+		return this.validityTime;
 	}
 
 	private static final long serialVersionUID = -3237282341034282940L;
@@ -37,8 +37,8 @@ AbstractContractTransition<ActionSpec> {
 	// Constructor
 	//
 
-	public ContractTransition(final AgentIdentifier creator, 
-			final List<AgentIdentifier> actors, 
+	public ContractTransition(final AgentIdentifier creator,
+			final List<AgentIdentifier> actors,
 			final long validityTime) {
 		super();
 		this.actors = actors;
@@ -46,8 +46,8 @@ AbstractContractTransition<ActionSpec> {
 		this.validityTime = validityTime;
 	}
 
-	public ContractTransition(final AgentIdentifier creator, 
-			final AgentIdentifier[] actors, 
+	public ContractTransition(final AgentIdentifier creator,
+			final AgentIdentifier[] actors,
 			final long validityTime) {
 		this(creator, Arrays.asList(actors), validityTime);
 	}

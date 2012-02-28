@@ -32,7 +32,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 	public HostCore(final boolean mirrorNegotiating, final String socialWelfare) {
 		this.iWanToNegotiate = mirrorNegotiating;
-		this.myOptimiser = new ReplicationSocialOptimisation(this, socialWelfare);
+		this.myOptimiser = new ReplicationSocialOptimisation(socialWelfare);
 
 	}
 
@@ -46,12 +46,11 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		for (final ReplicationCandidature c : c1)
-			c.setSpecification(s);
-				for (final ReplicationCandidature c : c2)
-					c.setSpecification(s);
-						final int pref = this.myOptimiser.getSocialPreference(c1, c2);
-						this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
-						return pref;
+			c.setSpecification(s);	for (final ReplicationCandidature c : c2)
+				c.setSpecification(s);
+					final int pref = this.myOptimiser.getSocialPreference(c1, c2);
+					this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
+					return pref;
 	}
 
 

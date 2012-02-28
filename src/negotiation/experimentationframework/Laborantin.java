@@ -98,8 +98,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			}
 		}while(iFailed && count > 0);
 
-		
-		
+
+
 		for (final AgentIdentifier id : this.agents.keySet())
 			if (id instanceof ResourceIdentifier)
 				this.remainingHost.add(id);

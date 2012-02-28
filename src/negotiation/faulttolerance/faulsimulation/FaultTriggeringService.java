@@ -1,7 +1,6 @@
 package negotiation.faulttolerance.faulsimulation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLaborantin> {
 	private static final long serialVersionUID = -5136934098832050285L;
@@ -20,14 +18,14 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	// Fields
 	//
 
-	private ReplicationExperimentationParameters p;
+	private final ReplicationExperimentationParameters p;
 
 	//
 	// Constructor
 	//
 
 	public FaultTriggeringService(
-			ReplicationExperimentationParameters p) {
+			final ReplicationExperimentationParameters p) {
 		super();
 		this.p=p;
 	}
@@ -41,33 +39,30 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 
 	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
 	public void toggleFault() {
-		int nbMax = p.host_maxSimultaneousFailure.intValue();
+		int nbMax = this.p.host_maxSimultaneousFailure.intValue();
 		if (nbMax>0){
 			final List<ResourceIdentifier> hosts = new ArrayList<ResourceIdentifier>();
 			hosts.addAll(HostDisponibilityComputer.getHosts(this.getMyAgent().myInformationService));
-//			hosts.remove(0);
+			//			hosts.remove(0);
 			Collections.shuffle(hosts);
 			for (final ResourceIdentifier h : hosts) {
-				final FaultStatusMessage sentence = 
+				final FaultStatusMessage sentence =
 						HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h);
 
 				if (sentence != null) {
 					// Execution de la sentence!! muahaha!!!
 					HostDisponibilityComputer.updateFaultyStatus(
 							this.getMyAgent().myInformationService, sentence);
-//					this.logWarning("executing this sentence : " + sentence
-//							+ " (" + this.i + ")",LogService.onBoth);
+					//					this.logWarning("executing this sentence : " + sentence
+					//							+ " (" + this.i + ")",LogService.onBoth);
 					// Déclaration public
-					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents()){
+					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents())
 						this.getMyAgent().sendMessage(id, sentence);
-					}
-					// notify(hostAlive.get(h)?(new FaultEvent(h)):new
-					// RepairEvent(h));
 
-					if (sentence instanceof FaultEvent)
-						nbMax--;// il est mort! =(
-					if (nbMax == 0)
-						break;
+							if (sentence instanceof FaultEvent)
+								nbMax--;// il est mort! =(
+							if (nbMax == 0)
+								break;
 				}
 			}
 			this.i++;

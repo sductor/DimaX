@@ -10,9 +10,8 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.proposercores.collaborative.IllAnswer;
+import negotiation.negotiationframework.protocoles.collaborative.IllAnswer;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 /**
  * Selection Cores must extenbds this class to be coherent with the roles. They
@@ -36,7 +35,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 
 	private ContractTrunk<Contract> returned;
 	private ContractTrunk<Contract> given;
-	
+
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
 	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
 
@@ -66,7 +65,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 		//			}
 		//		}
 
-		this.select(given.getInitiatorConsensualContracts(),
+		this.select(given.getInitiatorRequestableContracts(),
 				given.getParticipantOnWaitContracts(),
 				given.getInitiatorOnWaitContracts(),
 				given.getParticipantAlreadyAcceptedContracts(),
@@ -89,7 +88,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	//
 	// Primitive
 	//
-	
+
 	/**
 	 * Use setAnswer() method to set the results
 	 * @param initiatorContractToExplore
@@ -118,15 +117,15 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 						participantAlreadyAccepted);
 		// Verification de la consistance
 		if (!this.getMyAgent().respectMyRights(currentState))
-			throw new RuntimeException("what the  (2)!!!!!!" + currentState+"\n ACCEPTED \n"+participantAlreadyAccepted+"\n GIVEN \n"+given);
+			throw new RuntimeException("what the  (2)!!!!!!" + currentState+"\n ACCEPTED \n"+participantAlreadyAccepted+"\n GIVEN \n"+this.given);
 
-		Collection<Contract> toValidate = new ArrayList<Contract>();
+		final Collection<Contract> toValidate = new ArrayList<Contract>();
 		final Collection<Contract> toReject = new ArrayList<Contract>();
 		toReject.addAll(initiatorContractToExplore);
 		toReject.addAll(participantContractToExplore);
 
 		if (this.fuseInitiatorNparticipant) {
-			
+
 			final List<Contract> contractsToExplore = new ArrayList<Contract>();
 			contractsToExplore.addAll(initiatorContractToExplore);
 			contractsToExplore.addAll(participantContractToExplore);
@@ -136,12 +135,12 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 			toValidate.addAll(this.selection(currentState, contractsToExplore));
 
 		} else {
-			
+
 			toValidate.addAll(this.selection(currentState,
 					participantContractToExplore));
 
 			if (this.considerOnWait)
-				initiatorContractToExplore.addAll(initiatorOnWaitContract);			
+				initiatorContractToExplore.addAll(initiatorOnWaitContract);
 			toValidate.addAll(
 					this.selection(currentState,
 							initiatorContractToExplore));
@@ -154,11 +153,11 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 
 	// private boolean lastFull=false;
 
-	protected void setAnswer(PersonalState currentState,
+	protected void setAnswer(final PersonalState currentState,
 			final Collection<Contract> accepted,
 			final Collection<Contract> rejected) {
 
-//		assert	this.validityVerification(accepted, rejected);
+		//		assert	this.validityVerification(accepted, rejected);
 
 		// ACCEPTATION
 		for (final Contract c : accepted) {
@@ -193,8 +192,8 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	private boolean validityVerification(
 			final Collection<Contract> accepted,
 			final Collection<Contract> notAccepted) {
-//		logMonologue("accepeted "+accepted+" refused "+notAccepted, LogService.onBoth);
-		
+		//		logMonologue("accepeted "+accepted+" refused "+notAccepted, LogService.onBoth);
+
 		// verification de validit�� d'appel
 		final Collection<Contract> test = new ArrayList<Contract>();
 		test.addAll(accepted);
@@ -202,9 +201,9 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 		//		test.addAll(onWait);
 
 		final Collection<Contract> allContracts = new ArrayList<Contract>();
-		allContracts.addAll(this.given.getInitiatorConsensualContracts());
+		allContracts.addAll(this.given.getInitiatorRequestableContracts());
 		allContracts.addAll(this.given.getParticipantOnWaitContracts());
-		 allContracts.addAll(this.given.getInitiatorOnWaitContracts());
+		allContracts.addAll(this.given.getInitiatorOnWaitContracts());
 		if (!test.containsAll(allContracts))// &&allContracts.containsAll(test)))
 			throw new RuntimeException(
 					"mauvaise implementation du selection core (1)");

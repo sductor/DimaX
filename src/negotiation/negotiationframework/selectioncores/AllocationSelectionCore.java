@@ -3,13 +3,11 @@ package negotiation.negotiationframework.selectioncores;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-
-import dimaxx.tools.HyperSetGeneration;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import dimaxx.tools.HyperSetGeneration;
 
 public class AllocationSelectionCore<
 ActionSpec extends AbstractActionSpecification,
@@ -36,19 +34,19 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 		final HyperSetGeneration<Contract> generator= new HyperSetGeneration<Contract>(contractsToExplore) {
 
 			@Override
-			public boolean toKeep(Collection<Contract> elem) {
-				return getMyAgent().respectMyRights(
+			public boolean toKeep(final Collection<Contract> elem) {
+				return AllocationSelectionCore.this.getMyAgent().respectMyRights(
 						currentState,elem);
 			}
 		};
-		
+
 		final Collection<Collection<Contract>> allocations = generator.getHyperset();
 
 		if (allocations.isEmpty())
 			return new ArrayList<Contract>();
 		else
 			try {
-				Collection<Contract> max = Collections.max(
+				final Collection<Contract> max = Collections.max(
 						allocations,
 						this.getMyAgent().getMyAllocationPreferenceComparator(currentState));
 				assert this.getMyAgent().respectMyRights(currentState, max);
@@ -83,7 +81,7 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 //		a.add(singleton);
 //		toAdd.add(a);//on ajoute le contrat singleton
 //
-//		//on ajoute tous les précédent ensemble enrichi avec le singleton 
+//		//on ajoute tous les précédent ensemble enrichi avec le singleton
 //		for (final Collection<Contract> alloc : result){
 //			final List<Contract> a2= new ArrayList<Contract>();
 //			a2.addAll(alloc);

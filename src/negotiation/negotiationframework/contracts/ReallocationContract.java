@@ -13,54 +13,57 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ReallocationContract<
 Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecification> 
-extends HashSet<Contract> implements 
+ActionSpec extends AbstractActionSpecification>
+extends HashSet<Contract> implements
 AbstractContractTransition<ActionSpec>{
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4851833906871445475L;
 	protected final AgentIdentifier creator;
 	protected final Date creationTime = new Date();
 	protected final long validityTime;
-	
+
 	HashedHashSet<AgentIdentifier, Contract> actions;
-	
+
 
 	//
 	// Constructor
-	
+
 	public ReallocationContract(
-			AgentIdentifier creator, 
-			Collection<Contract> actions) {
+			final AgentIdentifier creator,
+			final Collection<Contract> actions) {
 		super(actions);
 		this.creator = creator;
-		
+
 		//Bouh on doit calculer l'*expiration* time en fonction du min de tous les contrats!!!
 		this.validityTime = Long.MAX_VALUE;
-		
-		for (Contract a : actions){
-			for (AgentIdentifier id : a.getAllParticipants())
-				this.actions.add(id, a);		
-		}
-		
-		//Cleaning states///////////////////
-		
-		final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
 
-		for (Contract c : actions)
-			for (AgentIdentifier id : c.getAllParticipants())
-				if (result.containsKey(id)){
-					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
-						result.put(id,c.getSpecificationOf(id));
-				} else
-					result.put(id,c.getSpecificationOf(id));
+		for (final Contract a : actions)
+			for (final AgentIdentifier id : a.getAllParticipants())
+				this.actions.add(id, a);
 
-		//updating each contract with the freshest state
-		for (final Contract c : this.actions.getAllValues())
-			for (AgentIdentifier id : c.getAllParticipants())
-				c.setSpecification(result.get(id));	
+					//Cleaning states///////////////////
+
+					final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
+
+					for (final Contract c : actions)
+						for (final AgentIdentifier id : c.getAllParticipants())
+							if (result.containsKey(id)){
+								if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+									result.put(id,c.getSpecificationOf(id));
+							} else
+								result.put(id,c.getSpecificationOf(id));
+
+					//updating each contract with the freshest state
+					for (final Contract c : this.actions.getAllValues())
+						for (final AgentIdentifier id : c.getAllParticipants())
+							c.setSpecification(result.get(id));
 	}
 
 	public Collection<Contract> getAllocation(){
-		return actions.getAllValues();
+		return this.actions.getAllValues();
 	}
 	//
 	// Methods
@@ -74,17 +77,17 @@ AbstractContractTransition<ActionSpec>{
 
 	@Override
 	public AgentIdentifier getInitiator() {
-		return creator;
+		return this.creator;
 	}
 
 	@Override
 	public Collection<AgentIdentifier> getAllParticipants() {
-		return actions.keySet();
+		return this.actions.keySet();
 	}
-	
+
 	@Override
 	public Collection<AgentIdentifier> getNotInitiatingParticipants() {
-		final Collection<AgentIdentifier> result = new ArrayList<AgentIdentifier>(getAllParticipants());
+		final Collection<AgentIdentifier> result = new ArrayList<AgentIdentifier>(this.getAllParticipants());
 		result.remove(this.creator);
 		return result;
 	}
@@ -92,38 +95,37 @@ AbstractContractTransition<ActionSpec>{
 
 	@Override
 	public Collection<AgentIdentifier> getAllInvolved() {
-		final Collection<AgentIdentifier> result = new ArrayList<AgentIdentifier>(getAllParticipants());
+		final Collection<AgentIdentifier> result = new ArrayList<AgentIdentifier>(this.getAllParticipants());
 		result.add(this.creator);
-		return result;		
+		return result;
 	}
 
 	@Override
-	public void setSpecification(ActionSpec s) {
-		for (Contract a : actions.get(s.getMyAgentIdentifier())){
+	public void setSpecification(final ActionSpec s) {
+		for (final Contract a : this.actions.get(s.getMyAgentIdentifier()))
 			a.setSpecification(s);
-		}		
 	}
 
 	@Override
-	public ActionSpec getSpecificationOf(AgentIdentifier id) {
-		return actions.get(id).iterator().next().getSpecificationOf(id);
+	public ActionSpec getSpecificationOf(final AgentIdentifier id) {
+		return this.actions.get(id).iterator().next().getSpecificationOf(id);
 	}
 
 
-	
+
 	@Override
-	public <State extends ActionSpec> State computeResultingState(State s) {
-		Set<Contract> contractOfS = actions.get(s.getMyAgentIdentifier());
+	public <State extends ActionSpec> State computeResultingState(final State s) {
+		final Set<Contract> contractOfS = this.actions.get(s.getMyAgentIdentifier());
 		State s2 = s;
-		for (Contract m : contractOfS)
+		for (final Contract m : contractOfS)
 			s2 = m.computeResultingState(s2);
-		return s2;
+				return s2;
 	}
 
 
 	@Override
-	public ActionSpec computeResultingState(AgentIdentifier id) {
-		return computeResultingState(getSpecificationOf(id));
+	public ActionSpec computeResultingState(final AgentIdentifier id) {
+		return this.computeResultingState(this.getSpecificationOf(id));
 	}
 
 	//
@@ -131,15 +133,15 @@ AbstractContractTransition<ActionSpec>{
 	//
 
 	@Override
-	public  boolean remove(Object o){
+	public  boolean remove(final Object o){
 		throw new RuntimeException("not allowed");
 	}
 
 	@Override
-	public  boolean removeAll(Collection<?> o){
+	public  boolean removeAll(final Collection<?> o){
 		throw new RuntimeException("not allowed");
 	}
-	
+
 	@Override
 	public long getUptime() {
 		return new Date().getTime() - this.creationTime.getTime();
@@ -162,7 +164,7 @@ AbstractContractTransition<ActionSpec>{
 	/*
 	 *
 	 */
-	
+
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof ContractTransition) {

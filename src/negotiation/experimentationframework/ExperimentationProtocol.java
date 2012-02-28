@@ -21,6 +21,10 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	//
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -11300850940001517L;
 	public static final long _simulationTime = (1000 * 10);
 	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 10;
 
@@ -32,7 +36,7 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	//
 
 	public static final long _timeToCollect = 1000;//500;//
-	public static final long _initiatorPropositionFrequency = (long) (_timeToCollect*0.5);//(long)
+	public static final long _initiatorPropositionFrequency = (long) (ExperimentationProtocol._timeToCollect*0.5);//(long)
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 
@@ -91,30 +95,30 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	}
 
 	public static String getKey4greedyselect() {
-		return key4greedySelect;
+		return ExperimentationProtocol.key4greedySelect;
 	}
 
 	public static String getKey4roulettewheelselect() {
-		return key4rouletteWheelSelect;
+		return ExperimentationProtocol.key4rouletteWheelSelect;
 	}
 
 	public static String getKey4allocselect() {
-		return key4AllocSelect;
+		return ExperimentationProtocol.key4AllocSelect;
 	}
 
 	public static String getKey4mirrorproto() {
-		return key4mirrorProto;
+		return ExperimentationProtocol.key4mirrorProto;
 	}
 
 	public static String getKey4centralisedstatusproto() {
-		return key4CentralisedstatusProto;
+		return ExperimentationProtocol.key4CentralisedstatusProto;
 	}
 
 	public static String getKey4statusproto() {
-		return key4statusProto;
+		return ExperimentationProtocol.key4statusProto;
 	}
 
 	public static String getKey4multilatproto() {
-		return key4multiLatProto;
+		return ExperimentationProtocol.key4multiLatProto;
 	}
 }

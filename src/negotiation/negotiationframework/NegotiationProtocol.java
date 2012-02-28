@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-
 import negotiation.experimentationframework.ExperimentationProtocol;
-import negotiation.faulttolerance.collaborativenegotiation.old.ReplicationDestructionCandidature;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.Host;
-import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.contracts.UnknownContractException;
-import negotiation.negotiationframework.proposercores.status.DestructionOrder;
-import negotiation.negotiationframework.proposercores.status.DestructionOrder.DestructionOrderIdentifier;
+import negotiation.negotiationframework.protocoles.status.DestructionOrder;
+import negotiation.negotiationframework.protocoles.status.DestructionOrder.DestructionOrderIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -28,7 +24,6 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.shells.NotReadyException;
@@ -114,12 +109,12 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				// receiveReject(reject);
 			}
 		else{
-			this.losts.addAll(contracts.getAllContracts());
+			this.losts.addAll(this.contracts.getAllContracts());
 			this.contracts.clear();
-			
+
 		}
-//			throw new RuntimeException(
-//					"impossible!! vérifier le fault service!!");
+		//			throw new RuntimeException(
+		//					"impossible!! vérifier le fault service!!");
 
 	}
 
@@ -258,16 +253,16 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				//
 				for (final Contract contract : selectedContracts.getContractsAcceptedBy(this.getMyAgent().getIdentifier()))
 					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier())) {// if im initiator
-						if (this.getContracts().getConsensualContracts().contains(contract))//if the contract is consensual
+						if (this.getContracts().getRequestableContracts().contains(contract))//if the contract is consensual
 							this.requestContract(contract);
 					} else
 						this.acceptContract(contract);
 				for (final Contract contract : selectedContracts.getRejectedContracts())
-					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier())){
+					if (contract.getInitiator().equals(this.getMyAgent().getIdentifier()))
 						this.cancelContract(contract);
-					}else
-						// Participant Answering
-						this.rejectContract(contract);
+						else
+							// Participant Answering
+							this.rejectContract(contract);
 			}
 	}
 
@@ -315,7 +310,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	// @role(NegotiationParticipant.class)
 	protected void rejectContract(final Contract contract) {
-		getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+getMyAgent().getMyCurrentState(),log_negotiationStep);
+		this.getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+this.getMyAgent().getMyCurrentState(),NegotiationProtocol.log_negotiationStep);
 		this.contracts
 		.addRejection(this.getMyAgent().getIdentifier(), contract);
 		this.notify(contract);
@@ -384,7 +379,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final Contract c = delta.getMyContract();
 		this.logMonologue("I've received proposal "+c,NegotiationProtocol.log_negotiationStep);
 		if (!(this.getMyAgent() instanceof Host)
-			|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty()){
+				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty()){
 			if (c instanceof DestructionOrder){
 				this.logMonologue("I've received destruction order "+c,NegotiationProtocol.log_negotiationStep);
 				//				acceptContract(c);
@@ -399,10 +394,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 						// try {
 						this.contracts.addContract(c);
 			}
-		} else {	
+		} else {
 			this.contracts.addContract(c);
-			sendReject(c.getIdentifier());
-//			assert 1<0:"TODO?? : answer cancel??";
+			this.sendReject(c.getIdentifier());
+			//			assert 1<0:"TODO?? : answer cancel??";
 		}
 	}
 
@@ -531,7 +526,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		if (c == null)
 			throw new NullPointerException();
 		try {
-			if (!this.getContracts().getConsensualContracts().contains(this.contracts.getContract(c)))
+			if (!this.getContracts().getRequestableContracts().contains(this.contracts.getContract(c)))
 				throw new RuntimeException(c.toString());
 		} catch (final UnknownContractException e) {
 			throw new RuntimeException(c.toString());
@@ -616,9 +611,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final ContractIdentifier c = m.getIdentifier();
 		if (!(this.getMyAgent() instanceof Host)
 				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
-			logMonologue("I've received cancel "+c,NegotiationProtocol.log_negotiationStep);
+			this.logMonologue("I've received cancel "+c,NegotiationProtocol.log_negotiationStep);
 		// try {
-		if (id.equals(c.getInitiator()) && !this.losts.contains(c)) {
+		if (id.equals(c.getInitiator()) && !this.losts.contains(c))
 			// this.contracts.addRejection(id,
 			// this.contracts.getContract(c));//UTILISER LES EXPIRE POUR
 			// AUTRE CHOSE QUE DES COANDIDATURE
@@ -630,7 +625,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			} catch (final UnknownContractException e) {
 				this.faceAnUnknownContract(e);
 			}
-		} else
+		else
 			throw new RuntimeException();
 	}
 

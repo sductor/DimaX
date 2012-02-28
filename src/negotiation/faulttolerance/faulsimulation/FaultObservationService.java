@@ -93,7 +93,7 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 			this.getMyAgent().getMyProtocol().setLost(f.getHost());
 			this.getMyAgent().getMyProtocol().stop();
 			this.resetMyState();
-//			this.resetMyUptime();
+			//			this.resetMyUptime();
 		} else {
 			this.getMyAgent().getMyInformation().remove(f.getHost());
 			if (this.getMyAgent().getMyCurrentState().setLost(f.getHost(), true))
@@ -120,7 +120,7 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 			this.logMonologue("I'm repaired!! =)",LogService.onBoth);
 			//
 			this.resetMyState();
-//			this.resetMyUptime();
+			//			this.resetMyUptime();
 			this.getMyAgent().getMyProtocol().start();
 		} else if (this.initiallyKnownAgent.contains(f.getHost()))
 			this.getMyAgent().getMyInformation().add(f.getHost());

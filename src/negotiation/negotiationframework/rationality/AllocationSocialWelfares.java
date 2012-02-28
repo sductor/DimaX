@@ -2,17 +2,14 @@ package negotiation.negotiationframework.rationality;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.rationality.SocialChoiceFunctions.UtilitaristEvaluator;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.CompetentComponent;
 import dima.support.GimaObject;
 
 public abstract class AllocationSocialWelfares<
@@ -21,7 +18,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	private static final long serialVersionUID = 5135268337671313960L;
 
 	public final  String socialWelfare;
-	public final CompetentComponent myAgent;
+	//	public final CompetentComponent myAgent;
 
 	public final static String log_socialWelfareOrdering="social welfare ordering";
 
@@ -29,9 +26,11 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	//
 	//
 
-	public AllocationSocialWelfares(final CompetentComponent myAgent, final String socialWelfare){
+	public AllocationSocialWelfares(
+			//			final CompetentComponent myAgent,
+			final String socialWelfare){
 		this.socialWelfare=socialWelfare;
-		this.myAgent = myAgent;
+		//		this.myAgent = myAgent;
 	}
 
 	//
@@ -59,24 +58,22 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		final Collection<ActionSpec> s1 = new ArrayList<ActionSpec>();
 		final Collection<ActionSpec> s2 = new ArrayList<ActionSpec>();
 
-		for (final ActionSpec s : temp1){
+		for (final ActionSpec s : temp1)
 			s1.add(s);
-		}	
-		for (final ActionSpec s : temp2){
-			s2.add(s);
-		}
+				for (final ActionSpec s : temp2)
+					s2.add(s);
 
-		if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
-			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
-			final int pref = SocialChoiceFunctions.leximinWelfare(s1, s2, this.getComparator());
-			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
-			return pref;
-		} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare))
-			return SocialChoiceFunctions.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
-		else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare))
-			return SocialChoiceFunctions.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
-		else
-			throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
+						if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
+							//			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
+							final int pref = SocialChoiceFunctions.leximinWelfare(s1, s2, this.getComparator());
+							//			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
+							return pref;
+						} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare))
+							return SocialChoiceFunctions.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
+						else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare))
+							return SocialChoiceFunctions.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
+						else
+							throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
 	}
 
 

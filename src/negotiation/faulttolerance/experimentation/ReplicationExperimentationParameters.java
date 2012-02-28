@@ -7,7 +7,6 @@ import negotiation.experimentationframework.ExperimentationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.distribution.DistributionParameters;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
-import dimaxx.tools.distribution.ZeroOneSymbolicValue;
 
 public class ReplicationExperimentationParameters extends
 ExperimentationParameters {
@@ -31,13 +30,14 @@ ExperimentationParameters {
 
 	public Boolean dynamicCriticity;
 	public Double host_maxSimultaneousFailure;
+
 	/***
 	 * Constantes
 	 */
 
 
-	public static final Double hostMaxProc = 1.;
-	public static final Double hostMaxMem = 1.;
+	public static final Double hostMaxProc = 10.;
+	public static final Double hostMaxMem = 10.;
 
 
 	/*
@@ -141,7 +141,7 @@ ExperimentationParameters {
 	public boolean equals(final Object o){
 		if (o instanceof ReplicationExperimentationParameters){
 			final ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
-			
+
 			return super.equals(that) && this.getRealkAccessible()==that.getRealkAccessible() &&
 					this.hostFaultProbabilityMean.equals( that.hostFaultProbabilityMean) &&
 					this.agentLoadMean.equals(that.agentLoadMean) &&
@@ -184,17 +184,17 @@ ExperimentationParameters {
 	}
 
 	public void setMaxSimultFailure(final Double host_maxSimultaneousFailurePercent){
-		this.host_maxSimultaneousFailure = kAccessible*host_maxSimultaneousFailurePercent;
+		this.host_maxSimultaneousFailure = this.kAccessible*host_maxSimultaneousFailurePercent;
 
 	}
 
 	public Double getRealMaxSimultFailure(){
-		return this.host_maxSimultaneousFailure/kAccessible;
+		return this.host_maxSimultaneousFailure/this.kAccessible;
 	}
 
 	public void set_hostSelection(final String hostSelection) {
-		if (_usedProtocol.equals(ReplicationExperimentationProtocol.key4mirrorProto))
-			this._hostSelection = ReplicationExperimentationProtocol.key4AllocSelect;
+		if (this._usedProtocol.equals(ExperimentationProtocol.key4mirrorProto))
+			this._hostSelection = ExperimentationProtocol.key4AllocSelect;
 		else
 			this._hostSelection = hostSelection;
 	}

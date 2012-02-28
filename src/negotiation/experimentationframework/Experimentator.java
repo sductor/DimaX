@@ -17,8 +17,8 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.APIAgent;
 
 
@@ -113,9 +113,9 @@ public class Experimentator extends APIAgent{
 					l.launchWith(this.getApi());
 					this.startActivity(l);
 					this.launchedSimu.put(l.getId(), l);
-				} catch (IfailedException e) {
-					LogService.logOnFile(f, "EXPERIMENTATION "+nextSimu+" \n ABORTED!!!!!!!!!!!!!!", true,					false);
-					launchSimulation();
+				} catch (final IfailedException e) {
+					LogService.logOnFile(this.f, "EXPERIMENTATION "+nextSimu+" \n ABORTED!!!!!!!!!!!!!!", true,					false);
+					this.launchSimulation();
 				}
 
 				//				}

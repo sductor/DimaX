@@ -26,26 +26,26 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	// Fields
 	//
 
-//	final long experienceTime;
-//	final long timeScale;
-//	final long eventFrequency;
-//
-//	final double lambdaRepair;
+	//	final long experienceTime;
+	//	final long timeScale;
+	//	final long eventFrequency;
+	//
+	//	final double lambdaRepair;
 
 	//
 	// Constructor
 	//
 
-//	public HostDisponibilityComputer(final ObservationService myAgentInformation,
-//			final long experienceTime, final long timeScale, final long eventFrequency,
-//			final double lambdaRepair) {
-//		super();
-//		//		this.myAgentInformation = myAgentInformation;
-//		this.experienceTime = experienceTime;
-//		this.timeScale = timeScale;
-//		this.eventFrequency = eventFrequency;
-//		this.lambdaRepair = lambdaRepair;
-//	}
+	//	public HostDisponibilityComputer(final ObservationService myAgentInformation,
+	//			final long experienceTime, final long timeScale, final long eventFrequency,
+	//			final double lambdaRepair) {
+	//		super();
+	//		//		this.myAgentInformation = myAgentInformation;
+	//		this.experienceTime = experienceTime;
+	//		this.timeScale = timeScale;
+	//		this.eventFrequency = eventFrequency;
+	//		this.lambdaRepair = lambdaRepair;
+	//	}
 	//
 	// Methods
 	//

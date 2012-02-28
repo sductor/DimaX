@@ -10,7 +10,6 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationPara
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
-import negotiation.faulttolerance.faulsimulation.FaultStatusMessage;
 import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.rationality.RationalCore;
@@ -60,7 +59,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	};
 
 	@Competence
-	FaultObservationService<ReplicationSpecification, ReplicaState, ReplicationCandidature> myFaultAwareService = 
+	FaultObservationService<ReplicationSpecification, ReplicaState, ReplicationCandidature> myFaultAwareService =
 	new FaultObservationService<ReplicationSpecification, ReplicaState, ReplicationCandidature>() {
 
 		/**
@@ -152,9 +151,9 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-	 @StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
+	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
 	public void updateMyCriticity() {
-		if (dynamicCrticity){
+		if (this.dynamicCrticity){
 			final Random r = new Random();
 			if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
 				// met a jour
@@ -177,60 +176,61 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			}
 		}
 	}
-
-	/*
-	 *
-	 */
-
-	//	@Override
-	//	public ContractTrunk<ReplicationCandidature> select(
-	//			final ContractTrunk<ReplicationCandidature> cs) {
-	//
-	//		if (this.myCore instanceof CandidatureReplicaCoreWithMinInfo)
-	//			((CandidatureReplicaCoreWithMinInfo) this.myCore)
-	//					.setMinKnowRelia(cs);
-	//
-	//		return super.select(cs);
-	//	}
-
-	//	@Override
-	//	public void execute(final ReplicationCandidature c) {
-	//		// notify(new ReliabilityUpdate());
-	//		ReplicaState previousState = getMyCurrentState();
-	//		super.execute(c);
-	////		logMonologue("i have been replicated by "+c.getResource());// : \n previous stae : "+previousState+"\n new state : "+getMyCurrentState());
-	//	}
-
-	//	@MessageHandler
-	//	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
-	//	public <Info extends Information> void receiveInformation(
-	//			final NotificationMessage<Information> o) {
-	//		logMonologue("yophoi");
-	//		if (o.getNotification() instanceof HostState
-	//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
-	//						((HostState) o.getNotification()).getMyAgentIdentifier())){
-	//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
-	//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
-	//			setNewState(r);
-	//		}
-	//	}
-
-	// }
-	// @Override
-	// protected EndInfo getMyEndNotif() {
-	// return new AgentEndInfo(getMyCurrentState(),getCreationTime());
-	// }
-
-
-
-	//	public Double getCharge(final ResourceIdentifier r)  {
-	//		try {
-	//			return this.getMyInformation().getInformation(HostState.class, r).getMyCharge();
-	//		} catch (final NoInformationAvailableException e) {
-	//			throw new RuntimeException("muahahahaha tant pis pour ta gueule!!!!!!!!!!!!!!!!!!!!!!");
-	//		}
-	//	}
 }
+
+/*
+ *
+ */
+
+//	@Override
+//	public ContractTrunk<ReplicationCandidature> select(
+//			final ContractTrunk<ReplicationCandidature> cs) {
+//
+//		if (this.myCore instanceof CandidatureReplicaCoreWithMinInfo)
+//			((CandidatureReplicaCoreWithMinInfo) this.myCore)
+//					.setMinKnowRelia(cs);
+//
+//		return super.select(cs);
+//	}
+
+//	@Override
+//	public void execute(final ReplicationCandidature c) {
+//		// notify(new ReliabilityUpdate());
+//		ReplicaState previousState = getMyCurrentState();
+//		super.execute(c);
+////		logMonologue("i have been replicated by "+c.getResource());// : \n previous stae : "+previousState+"\n new state : "+getMyCurrentState());
+//	}
+
+//	@MessageHandler
+//	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
+//	public <Info extends Information> void receiveInformation(
+//			final NotificationMessage<Information> o) {
+//		logMonologue("yophoi");
+//		if (o.getNotification() instanceof HostState
+//				&& getMyCurrentState().getMyResourceIdentifiers().contains(
+//						((HostState) o.getNotification()).getMyAgentIdentifier())){
+//			ReplicaState r = new ReplicaState(getMyCurrentState(), (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
+//			r = new ReplicaState(r, (HostState) o.getNotification(), getMyCurrentState().getCreationTime());
+//			setNewState(r);
+//		}
+//	}
+
+// }
+// @Override
+// protected EndInfo getMyEndNotif() {
+// return new AgentEndInfo(getMyCurrentState(),getCreationTime());
+// }
+
+
+
+//	public Double getCharge(final ResourceIdentifier r)  {
+//		try {
+//			return this.getMyInformation().getInformation(HostState.class, r).getMyCharge();
+//		} catch (final NoInformationAvailableException e) {
+//			throw new RuntimeException("muahahahaha tant pis pour ta gueule!!!!!!!!!!!!!!!!!!!!!!");
+//		}
+//	}
+
 
 /*
  *

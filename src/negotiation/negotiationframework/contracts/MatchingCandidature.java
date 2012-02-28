@@ -20,10 +20,10 @@ extends ContractTransition<ActionSpec> {
 	public MatchingCandidature(final AgentIdentifier intiator,
 			final AgentIdentifier a, final ResourceIdentifier r,
 			final long validityTime) {
-		super(intiator, 
-//				"matching", 
+		super(intiator,
+				//				"matching",
 				new AgentIdentifier[] { a, r },
-//				new Object[] {}, 
+				//				new Object[] {},
 				validityTime);
 	}
 

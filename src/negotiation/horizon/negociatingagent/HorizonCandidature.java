@@ -6,21 +6,15 @@ import dima.basicagentcomponents.AgentIdentifier;
 
 public class HorizonCandidature extends MatchingCandidature<HorizonSpecification> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2602439825621634390L;
+
 	public HorizonCandidature(AgentIdentifier intiator, AgentIdentifier a,
 			ResourceIdentifier r, long validityTime) {
 		super(intiator, a, r, validityTime);
 		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5688344205746523199L;
-
-	@Override
-	public HorizonSpecification computeResultingState(AgentIdentifier id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -30,4 +24,9 @@ public class HorizonCandidature extends MatchingCandidature<HorizonSpecification
 		return null;
 	}
 
+	@Override
+	public HorizonSpecification computeResultingState(AgentIdentifier id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

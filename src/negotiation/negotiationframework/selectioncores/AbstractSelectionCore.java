@@ -69,7 +69,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 				given.getParticipantOnWaitContracts(),
 				given.getInitiatorOnWaitContracts(),
 				given.getParticipantAlreadyAcceptedContracts(),
-				given.getRejectedContracts());
+				given.getFailedContracts());
 		// if (!(this.getMyAgent().getIdentifier() instanceof
 		// ResourceIdentifier) &&
 		// !given.getParticipantOnWaitContracts().isEmpty())
@@ -81,6 +81,7 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	// Abstract
 	//
 
+	//return contract to validate
 	protected abstract Collection<Contract> selection(
 			PersonalState currentState,
 			List<Contract> contractsToExplore);

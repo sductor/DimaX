@@ -6,18 +6,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import negotiation.faulttolerance.negotiatingagent.CandidatureReplicaProposer;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
+import negotiation.negotiationframework.protocoles.status.CandidatureProposer;
 import negotiation.negotiationframework.protocoles.status.DestructionOrder;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
-public class CandidatureReplicaProposerWithStatus extends CandidatureReplicaProposer
+public class CandidatureReplicaProposerWithStatus extends CandidatureProposer<ReplicationSpecification, ReplicaState, ReplicationCandidature>
 implements
 ProposerCore<
 SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
@@ -90,7 +91,12 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 		return ((CandidatureReplicaCoreWithStatus) this.getMyAgent()
 				.getMyCore()).getStatus(state).equals(status);
 	}
+	
+	@Override
+	public ReplicationCandidature constructCandidature(final ResourceIdentifier id) {
+		return new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true);
 
+	}
 }
 
 

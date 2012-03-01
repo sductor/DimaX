@@ -13,8 +13,10 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
+import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedCandidatureContractTrunk;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
-import negotiation.negotiationframework.protocoles.collaborative.ResourceManagerProposerCore;
+import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedSelectionCore;
+import negotiation.negotiationframework.protocoles.collaborative.ResourceUpgradingInformedProposerCore;
 import negotiation.negotiationframework.selectioncores.GreedyBasicSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
@@ -83,22 +85,15 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, InformedCand
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
 		super(myId, new HostState(myId, lambda,-1),
-				new InformedCandidatureRationality(new HostCore(true, socialWelfare)),
-				new GreedyBasicSelectionCore(true, false),
-				new ResourceManagerProposerCore() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = -3102473829804287461L;
-
+				new InformedCandidatureRationality(new HostCore(true, socialWelfare),false),
+				new ResourceInformedSelectionCore(),
+				new ResourceUpgradingInformedProposerCore() {
 			@Override
-			protected InformedCandidature generateDestructionContract(
-					final AbstractActionSpecification state,
-					final AgentIdentifier id) {
+			protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {
 				return new InformedCandidature(new ReplicationCandidature(myId,id,false,false));
 			}
 		},
-		new SimpleObservationService());
+		new SimpleObservationService(),
+		new ResourceInformedCandidatureContractTrunk(myId));
 	}
 }

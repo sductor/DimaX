@@ -2,6 +2,7 @@ package dimaxx.tools;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,9 +36,9 @@ public abstract class HyperSetGeneration<T> {
 	private  Collection<Collection<T>> generateHyperSet(final Collection<T> elems){
 
 		final Collection<Collection<T>> result =
-				new ArrayList<Collection<T>>();
+				new HashSet<Collection<T>>();
 		final Collection<Collection<T>> toAdd =
-				new ArrayList<Collection<T>>();
+				new HashSet<Collection<T>>();
 
 		for (final T singleton : elems) {
 			final List<T> a = new ArrayList<T>();

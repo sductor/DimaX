@@ -40,7 +40,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 	@Override
 	public void execute(final ReplicationCandidature c) {
-		assert this.getMyAgent().respectMyRights(c);
+		assert this.getMyAgent().respectRights(c);
 		//		logMonologue(
 		//				"executing "+c+" from state "
 		//		+this.getMyAgent().getMyCurrentState()
@@ -66,24 +66,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 	}
 
-	// N��c��ssit�� de faire une fonction a part car celle ci est appell�� avant
-	// le lancement des agent : le message envoy�� par observe ne parviendrait
-	// pas! =(
-	public void executeFirstRep(final ReplicationCandidature c,
-			final SimpleRationalAgent host) {
-		assert this.getMyAgent().respectMyRights(c);
 
-		//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
-		if (c.isMatchingCreation())
-			host.addObserver(c.getResource(), SimpleObservationService.informationObservationKey);
-		else
-			host.removeObserver(c.getResource(),SimpleObservationService.informationObservationKey);
-
-		this.getMyAgent().setNewState(
-				c.computeResultingState(
-						this.getMyAgent().getMyCurrentState()));
-		this.getMyAgent().getMyInformation().add(c.getResourceResultingState());
-	}
 
 
 	@Override
@@ -96,7 +79,9 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	@Override
 	public boolean IWantToNegotiate(final ReplicaState s) {
 		return (!s.getMyResourceIdentifiers().containsAll(
-				this.getMyAgent().getMyInformation().getKnownAgents()));
+				this.getMyAgent().
+				getMyInformation().
+				getKnownAgents()));
 	}
 
 	//	@Override
@@ -188,7 +173,24 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	}
 }
 
-
+//// N��c��ssit�� de faire une fonction a part car celle ci est appell�� avant
+//// le lancement des agent : le message envoy�� par observe ne parviendrait
+//// pas! =(
+//public void executeFirstRep(final ReplicationCandidature c,
+//		final SimpleRationalAgent host) {
+//	assert this.getMyAgent().respectRights(c);
+//
+//	//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
+//	if (c.isMatchingCreation())
+//		host.addObserver(c.getResource(), SimpleObservationService.informationObservationKey);
+//	else
+//		host.removeObserver(c.getResource(),SimpleObservationService.informationObservationKey);
+//
+//	this.getMyAgent().setNewState(
+//			c.computeResultingState(
+//					this.getMyAgent().getMyCurrentState()));
+//	this.getMyAgent().getMyInformation().add(c.getResourceResultingState());
+//}
 //
 //@Override
 //public ReplicaState getMyResultingState(final ReplicaState fromState,

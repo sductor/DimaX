@@ -48,15 +48,16 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
 			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
-			final ObservationService myInformation)
+			final ObservationService myInformation,
+			final ContractTrunk<Contract> contracts)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
 		this.selectionCore.setMyAgent(this);
-		this.protocol = new NegotiationProtocol<ActionSpec, PersonalState, Contract>(this);
+		this.protocol = new NegotiationProtocol<ActionSpec, PersonalState, Contract>(this, contracts);
 
 
 		this.myProposerCore = proposerCore;

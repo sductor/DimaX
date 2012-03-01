@@ -64,10 +64,11 @@ DimaComponentInterface {
 
 	public Collection<Contract> getContracts(final AgentIdentifier id) {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.getAllContracts())
+		for (final Contract c : this.getAllContracts()){
 			if (c.getAllInvolved().contains(id))
 				l.add(c);
-				return l;
+		}
+		return l;
 	}
 
 	public List<Contract> getContractsAcceptedBy(final AgentIdentifier id) {
@@ -100,24 +101,19 @@ DimaComponentInterface {
 
 	public List<Contract> getRequestableContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c: this.identifier2contract.values())
+		for (final Contract c: this.identifier2contract.values()){
 			if (this.isRequestable(c))
 				l.add(c);
-				return l;
+		}
+		return l;
 	}
 
-	public List<Contract> getRequestableContracts(final Comparator<Contract> pref) {
+	public List<Contract> getFailedContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c: this.identifier2contract.values())
-			if (this.isRequestable(c))
+		for (final Contract c: this.identifier2contract.values()){
+			if (this.isAFailure(c))
 				l.add(c);
-				Collections.sort(l,pref);
-				return l;
-	}
-
-	public List<Contract> getRejectedContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		l.addAll(this.rejectedContracts.getAllValues());
+		}
 		return l;
 	}
 
@@ -186,13 +182,14 @@ DimaComponentInterface {
 	public void addContract(final Contract c) {
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
+
 		this.identifier2contract.put(c.getIdentifier(), c);
 		this.waitContracts.add(c);
 		this.addAcceptation(c.getInitiator(), c);
 	}
 
 	public void addAcceptation(final AgentIdentifier id, final Contract c) {
-		assert this.identifier2contract.containsKey(c.getIdentifier());
+		assert this.identifier2contract.containsKey(c.getIdentifier()):c;
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
 		this.acceptedContracts.add(id, c);
@@ -203,15 +200,18 @@ DimaComponentInterface {
 	}
 
 	public void addRejection(final AgentIdentifier id, final Contract c) {
-		assert this.identifier2contract.containsKey(c.getIdentifier());
+		assert this.identifier2contract.containsKey(c.getIdentifier()):c;
+		assert !this.acceptedContracts.get(id).contains(c):"impossible to reject " + c
+		+ " : i previously accepted";
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
-		if (this.acceptedContracts.get(id).contains(c))
-			if (id.equals(c.getInitiator()))
-				this.acceptedContracts.get(id).remove(c);
-			else
-				throw new RuntimeException("impossible to reject " + c
-						+ " : i'm participant that previously accepted");
+//		if (this.acceptedContracts.get(id).contains(c))
+//			throw new RuntimeException("impossible to reject " + c
+//						+ " : i'm participant that previously accepted");
+//			if (id.equals(c.getInitiator()))
+//				this.acceptedContracts.get(id).remove(c);
+//			else
+				
 		//		if (this.consensualContracts.contains(c))
 		//			if (id.equals(c.getInitiator()))
 		//				this.consensualContracts.remove(c);
@@ -221,14 +221,15 @@ DimaComponentInterface {
 		/**/
 		this.rejectedContracts.add(id, c);
 		/**/
-		if (this.isAFailure(c))
+		if (this.isAFailure(c)){
 			this.waitContracts.remove(c);
+		}
 	}
-
-	public void removeRejection(final AgentIdentifier id, final Contract c) {
-		this.rejectedContracts.get(id).remove(c);
-		this.waitContracts.add(c);
-	}
+//	
+		public void removeRejection(final AgentIdentifier id, final Contract c) {
+			this.rejectedContracts.get(id).remove(c);
+			this.waitContracts.add(c);
+		}
 
 	//
 	// Primitive
@@ -236,18 +237,20 @@ DimaComponentInterface {
 
 	// CONSENSUAL IMPLEMENTATION
 	public boolean isRequestable(final Contract c) {
-		for (final AgentIdentifier id : c.getAllParticipants())
+		for (final AgentIdentifier id : c.getAllParticipants()){
 			if (!this.acceptedContracts.get(id).contains(c))
 				return false;
-				return true;
+		}
+		return true;
 	}
 
 	// CONSENSUAL IMPLEMENTATION
 	public boolean isAFailure(final Contract c) {
-		for (final AgentIdentifier id : c.getAllParticipants())
+		for (final AgentIdentifier id : c.getAllParticipants()){
 			if (this.rejectedContracts.get(id).contains(c))
 				return true;
-				return false;
+		}
+		return false;
 	}
 
 	/*
@@ -274,6 +277,14 @@ DimaComponentInterface {
 		return this.identifier2contract.containsValue(c);
 	}
 
+	public boolean containsAllKey(final Collection<ContractIdentifier> c) {
+		return this.identifier2contract.keySet().containsAll(c);
+	}
+
+	public boolean containsAllValues(final Collection<Contract> c) {
+		return this.identifier2contract.values().containsAll(c);
+	}
+	
 	public void remove(final Contract c) {
 		this.identifier2contract.remove(c.getIdentifier());
 		this.acceptedContracts.removeAvalue(c);
@@ -282,15 +293,11 @@ DimaComponentInterface {
 		this.waitContracts.remove(c);
 	}
 
-	public void remove(final ContractIdentifier id) {
-		final Contract c = this.identifier2contract.remove(id);
-		if (c != null) {
-			this.acceptedContracts.removeAvalue(c);
-			//			this.consensualContracts.remove(c);
-			this.rejectedContracts.removeAvalue(c);
-			this.waitContracts.remove(c);
-		}
-	}
+//	public void remove(final ContractIdentifier id) {
+//		assert this.identifier2contract.containsKey(id);
+//		final Contract c = this.identifier2contract.get(id);
+//		remove(c);
+//	}
 
 	public void removeAll(final Collection<Contract> contracts) {
 		for (final Contract c : contracts)
@@ -324,7 +331,7 @@ DimaComponentInterface {
 			result += "wait;";
 		if (this.getRequestableContracts().contains(c))
 			result += "requestable;";
-		if (this.getRejectedContracts().contains(c))
+		if (this.getFailedContracts().contains(c))
 			result += "rejected;";
 
 		result += "(accepted:";

@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import negotiation.experimentationframework.ExperimentationProtocol;
+import negotiation.faulttolerance.candidaturewithstatus.Host;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
@@ -65,8 +65,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	//
 
 	private boolean ImActive = true;
-	private final ContractTrunk<Contract> contracts = new ContractTrunk<Contract>(
-			this.getMyAgent().getIdentifier());
+	private final ContractTrunk<Contract> contracts;
 
 	public static final String log_negotiationStep="negotiation step for log";
 	public static final String log_mirrorProto="mirror proto step for log";
@@ -78,8 +77,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 
 	public NegotiationProtocol(
-			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a) throws UnrespectedCompetenceSyntaxException {
+			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a,
+			ContractTrunk<Contract> contracts) throws UnrespectedCompetenceSyntaxException {
 		super(a);
+		this.contracts = contracts;
 	}
 
 	//
@@ -311,8 +312,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// @role(NegotiationParticipant.class)
 	protected void rejectContract(final Contract contract) {
 		this.getMyAgent().logMonologue("**************> I reject proposal "+contract+"\n"+this.getMyAgent().getMyCurrentState(),NegotiationProtocol.log_negotiationStep);
-		this.contracts
-		.addRejection(this.getMyAgent().getIdentifier(), contract);
+		this.contracts.addRejection(this.getMyAgent().getIdentifier(), contract);
 		this.notify(contract);
 		this.sendReject(contract.getIdentifier());
 	}
@@ -511,7 +511,11 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		if (!this.contracts.getContractsRejectedBy(
 				this.getMyAgent().getIdentifier()).contains(c)) {
 			this.sendCancel(c);// CONSENSUAL NEGOTIATION
-			this.contracts.remove(c);
+			try{
+				this.contracts.remove(this.contracts.getContract(c));
+			} catch (final UnknownContractException e) {
+				this.faceAnUnknownContract(e);
+			}
 		} else {
 			// on ignore tout a d��j�� ��t�� fait!
 		}
@@ -577,7 +581,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 					|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
 				if (this.contracts.getContractsAcceptedBy(
 						this.getMyAgent().getIdentifier()).contains(contract)) {
-					if (!this.getMyAgent().respectMyRights(
+					if (!this.getMyAgent().respectRights(
 							this.getMyAgent().getMyCurrentState(), contract))
 						throw new RuntimeException(
 								"what the !!!!!!\n bad contract "
@@ -609,24 +613,26 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.cleanContracts();
 		final AgentIdentifier id = m.getSender();
 		final ContractIdentifier c = m.getIdentifier();
-		if (!(this.getMyAgent() instanceof Host)
-				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
-			this.logMonologue("I've received cancel "+c,NegotiationProtocol.log_negotiationStep);
+
+		this.logMonologue("I've received cancel "+c,NegotiationProtocol.log_negotiationStep);
+
+		//		if (!(this.getMyAgent() instanceof Host)
+		//				|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
 		// try {
-		if (id.equals(c.getInitiator()) && !this.losts.contains(c))
-			// this.contracts.addRejection(id,
-			// this.contracts.getContract(c));//UTILISER LES EXPIRE POUR
-			// AUTRE CHOSE QUE DES COANDIDATURE
-			//				if (this.contracts.contains(c))// OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-			// CACHE DES ERREURS
-			// BIZZARES!!!!
-			try {
-				this.contracts.remove(this.contracts.getContract(c));
-			} catch (final UnknownContractException e) {
-				this.faceAnUnknownContract(e);
-			}
-		else
-			throw new RuntimeException();
+		//			if (id.equals(c.getInitiator()) && !this.losts.contains(c))
+		// this.contracts.addRejection(id,
+		// this.contracts.getContract(c));//UTILISER LES EXPIRE POUR
+		// AUTRE CHOSE QUE DES COANDIDATURE
+		//				if (this.contracts.contains(c))// OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+		// CACHE DES ERREURS
+		// BIZZARES!!!!
+		try {
+			this.contracts.remove(this.contracts.getContract(c));
+		} catch (final UnknownContractException e) {
+			this.faceAnUnknownContract(e);
+		}
+		//			else
+		//				throw new RuntimeException();
 	}
 
 	//

@@ -90,7 +90,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 	@Override
 	public String toString() {
 		return "\nContract ("
-				+ this.contractCreation.getTime()
+				+ this.contractCreation.getTime()+ "   " +this.contractCreation.toGMTString()
 				+ ") (init : "
 				+ this.initiator
 				+ ", part : "

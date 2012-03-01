@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import negotiation.experimentationframework.ObservingSelfService.ActivityLog;
+import negotiation.faulttolerance.candidaturewithstatus.Host;
+import negotiation.faulttolerance.candidaturewithstatus.Replica;
+import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
+import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
-import negotiation.faulttolerance.negotiatingagent.Host;
-import negotiation.faulttolerance.negotiatingagent.Replica;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -88,7 +90,7 @@ extends BasicAgentCompetence<Laborantin>{
 
 		for (final BasicCompetentAgent ag : this.getMyAgent().agents.values())
 			//Observation about agent
-			if (ag instanceof Replica){
+			if (ag instanceof Replica || ag instanceof CollaborativeReplica){
 				//Observation de l'évolution des états de l'agent
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
 				observedRepResultLog.add(ag.getIdentifier());
@@ -111,7 +113,7 @@ extends BasicAgentCompetence<Laborantin>{
 					//no observation
 				}
 				else throw new RuntimeException("impossible : ");
-			}else if (ag instanceof Host){
+			}else if (ag instanceof Host || ag instanceof CollaborativeHost){
 				//Observation de l'évolution des états de l'hpte
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
 				observedHostResultLog.add(ag.getIdentifier());

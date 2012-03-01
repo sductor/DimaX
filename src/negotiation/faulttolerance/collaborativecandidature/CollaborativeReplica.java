@@ -17,8 +17,10 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
+import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedCandidatureContractTrunk;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.status.CandidatureProposer;
 import negotiation.negotiationframework.rationality.CollaborativeCore;
@@ -102,8 +104,6 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedC
 	// Constructor
 	//
 
-
-
 	public CollaborativeReplica(
 			final AgentIdentifier id,
 			final Double criticity,	final Double procCharge,final Double memCharge,
@@ -111,21 +111,11 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedC
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, null,
-				new InformedCandidatureRationality(new CollaborativeCore(new ReplicationSocialOptimisation(socialWelfare), new ReplicaCore())),
+				new CollaborativeCore(new ReplicationSocialOptimisation(socialWelfare), new InformedCandidatureRationality(new ReplicaCore(),true)),
 				new GreedyBasicSelectionCore(true, false),
-				new CandidatureProposer() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = -6331838630678881517L;
-
-			@Override
-			public AbstractContractTransition constructCandidature(
-					final ResourceIdentifier id) {
-				return new InformedCandidature(new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true));
-			}
-		},
-		new SimpleObservationService());
+				new CollaborativeCandidatureProposer(),
+		new SimpleObservationService(),
+		new ContractTrunk(id));
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
@@ -134,34 +124,6 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedC
 	//
 	// Accessors
 	//
-
-	//	public boolean IReplicate() {
-	//		return this.replicate;
-	//	}
-	//
-	//	public void setIReplicate(final boolean replicate) {
-	//		this.replicate = replicate;
-	//	}
-	//
-	//	@StepComposant()
-	//	@Transient
-	//	public boolean setReplication() {
-	//		if (this.getMyInformation().getKnownAgents().isEmpty())
-	//			this.replicate = false;
-	//
-	//		// logMonologue("agents i know : "+this.getKnownAgents());
-	//		// if (IReplicate())
-	//		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
-	//
-	//		return true;
-	//	}
-
-	//	@Override
-	//	public void setNewState(final ReplicaState s) {
-	//		super.setNewState(s);
-	//	}
-
-
 
 	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
 	public void updateMyCriticity() {
@@ -189,3 +151,31 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedC
 		}
 	}
 }
+
+
+
+//	public boolean IReplicate() {
+//		return this.replicate;
+//	}
+//
+//	public void setIReplicate(final boolean replicate) {
+//		this.replicate = replicate;
+//	}
+//
+//	@StepComposant()
+//	@Transient
+//	public boolean setReplication() {
+//		if (this.getMyInformation().getKnownAgents().isEmpty())
+//			this.replicate = false;
+//
+//		// logMonologue("agents i know : "+this.getKnownAgents());
+//		// if (IReplicate())
+//		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
+//
+//		return true;
+//	}
+
+//	@Override
+//	public void setNewState(final ReplicaState s) {
+//		super.setNewState(s);
+//	}

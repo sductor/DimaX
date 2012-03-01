@@ -35,7 +35,7 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 
 			@Override
 			public boolean toKeep(final Collection<Contract> elem) {
-				return AllocationSelectionCore.this.getMyAgent().respectMyRights(
+				return AllocationSelectionCore.this.getMyAgent().respectRights(
 						currentState,elem);
 			}
 		};
@@ -49,7 +49,7 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 				final Collection<Contract> max = Collections.max(
 						allocations,
 						this.getMyAgent().getMyAllocationPreferenceComparator(currentState));
-				assert this.getMyAgent().respectMyRights(currentState, max);
+				assert this.getMyAgent().respectRights(currentState, max);
 				return max;
 			} catch (final RuntimeException e) {
 				this.getMyAgent().signalException(

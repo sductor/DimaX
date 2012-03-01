@@ -87,7 +87,7 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 					m.execute(notification);
 				}
 			} catch (final Throwable e) {
-				throw new RuntimeException("error executing "+msave+"\n ---> NB : exception runtime suivante a ignorer seule la cause est pertinente",e);
+				throw new RuntimeException("PatternObserverWithHookservice : error executing hooked method "+msave+"\n ---> NB : exception runtime suivante a ignorer seule la cause est pertinente",e);
 			}
 		}
 		return super.notify(notification,key);

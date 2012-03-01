@@ -1,12 +1,17 @@
-package negotiation.faulttolerance.negotiatingagent;
+package negotiation.faulttolerance.candidaturewithstatus;
 
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationResultHost;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
+import negotiation.faulttolerance.negotiatingagent.HostCore;
+import negotiation.faulttolerance.negotiatingagent.HostState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
@@ -79,7 +84,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
-		super(id, new HostState(id, lambda,-1), myRationality, participantCore, proposerCore, myInformation);
+		super(id, new HostState(id, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk<ReplicationCandidature>(id));
 	}
 }
 

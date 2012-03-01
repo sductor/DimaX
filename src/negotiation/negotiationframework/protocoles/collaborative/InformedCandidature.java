@@ -38,6 +38,7 @@ implements AbstractContractTransition<ActionSpec>{
 		//				candidature.getInitiator(),
 		//				actions);
 		this.possibleContracts = new ArrayList<ReallocationContract<Contract,ActionSpec>>();
+		this.requestedContracts = new ArrayList<ReallocationContract<Contract,ActionSpec>>();
 		this.possibleContracts.add(
 				new ReallocationContract<Contract, ActionSpec>(
 						this.candidature.getInitiator(),
@@ -52,6 +53,19 @@ implements AbstractContractTransition<ActionSpec>{
 		return this.candidature;
 	}
 
+
+	public Collection<ReallocationContract<Contract, ActionSpec>> getPossibleContracts() {
+		return this.possibleContracts;
+	}
+
+	public Collection<ReallocationContract<Contract, ActionSpec>> getRequestedContracts() {
+		return this.requestedContracts;
+	}
+	
+	/*
+	 * 
+	 */
+
 	//	public void setConsequentContract(
 	//			ReallocationContract<Contract, ActionSpec> consequentContract) {
 	//		this.consequentContract = consequentContract;
@@ -61,15 +75,6 @@ implements AbstractContractTransition<ActionSpec>{
 	//	public ReallocationContract<Contract, ActionSpec> getConsequentContract() {
 	//		return consequentContract;
 	//	}
-
-	public Collection<ReallocationContract<Contract, ActionSpec>> getPossibleContracts() {
-		return this.possibleContracts;
-	}
-
-	public Collection<ReallocationContract<Contract, ActionSpec>> getRequestedContracts() {
-		return this.requestedContracts;
-	}
-
 	public ReallocationContract<Contract, ActionSpec> getBestPossible(final Comparator<Collection<Contract>> pref){
 		return Collections.max(this.possibleContracts, pref);
 	}
@@ -157,6 +162,11 @@ implements AbstractContractTransition<ActionSpec>{
 	@Override
 	public void setSpecification(final ActionSpec s) {
 		this.candidature.setSpecification(s);
+		for (ReallocationContract r : possibleContracts){
+			r.setSpecification(s);
+		}for (ReallocationContract r : requestedContracts){
+			r.setSpecification(s);
+		}
 	}
 
 

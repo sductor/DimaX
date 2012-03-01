@@ -4,7 +4,10 @@ import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class CollaborativeCore<
 ActionSpec extends AbstractActionSpecification,
@@ -22,7 +25,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	 */
 	private static final long serialVersionUID = -2882287744826409737L;
 	private final AllocationSocialWelfares<ActionSpec, Contract> myOptimiser;
-	private final RationalCore  myPersonalCore;
+	private final RationalCore<ActionSpec, PersonalState, Contract>  myPersonalCore;
 
 	//
 	// Constructor
@@ -30,7 +33,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 
 	public CollaborativeCore(
 			final AllocationSocialWelfares<ActionSpec, Contract> opt,
-			final RationalCore rationality) {
+			final RationalCore<ActionSpec, PersonalState, Contract> rationality) {
 		this.myOptimiser = opt;
 		this.myPersonalCore= rationality;
 	}
@@ -54,27 +57,59 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	@Override
-	public AbstractActionSpecification getMySpecif(
-			final AbstractActionSpecification s, final AbstractContractTransition c) {
-		return this.myPersonalCore.getMySpecif(s, c);
+	public ActionSpec getMySpecif(PersonalState s, Contract c) {
+		return myPersonalCore.getMySpecif(s, c);
 	}
 
 	@Override
-	public void execute(final AbstractContractTransition c) {
-		this.myPersonalCore.execute(c);
+	public void execute(Contract c) {
+		myPersonalCore.execute(c);
 	}
 
 	@Override
-	public Double evaluatePreference(final AbstractActionSpecification s1) {
-		return this.myPersonalCore.evaluatePreference(s1);
+	public Double evaluatePreference(PersonalState s1) {
+		return myPersonalCore.evaluatePreference(s1);
 	}
 
 	@Override
-	public boolean IWantToNegotiate(final AbstractActionSpecification s) {
-		return this.myPersonalCore.IWantToNegotiate(s);
+	public boolean IWantToNegotiate(PersonalState s) {
+		return myPersonalCore.IWantToNegotiate(s);
 	}
 
+	/*
+	 * 
+	 */
+	
 
+	@Override
+	public boolean isActive() {
+		return myPersonalCore.isActive();
+	}
 
+	@Override
+	public SimpleRationalAgent<ActionSpec, PersonalState, Contract> getMyAgent() {
+		return myPersonalCore.getMyAgent();
+	}
 
+	@Override
+	public void setMyAgent(
+			SimpleRationalAgent<ActionSpec, PersonalState, Contract> ag)
+			throws UnrespectedCompetenceSyntaxException {
+		myPersonalCore.setMyAgent(ag);
+	}
+
+	@Override
+	public void die() {
+		myPersonalCore.die();
+	}
+
+	@Override
+	public AgentIdentifier getIdentifier() {
+		return myPersonalCore.getIdentifier();
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		myPersonalCore.setActive(active);
+	}
 }

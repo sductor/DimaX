@@ -12,7 +12,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ReallocationContract<
-Contract extends MatchingCandidature<ActionSpec>,
+Contract extends AbstractContractTransition<ActionSpec>,
 ActionSpec extends AbstractActionSpecification>
 extends HashSet<Contract> implements
 AbstractContractTransition<ActionSpec>{
@@ -25,7 +25,8 @@ AbstractContractTransition<ActionSpec>{
 	protected final Date creationTime = new Date();
 	protected final long validityTime;
 
-	HashedHashSet<AgentIdentifier, Contract> actions;
+	HashedHashSet<AgentIdentifier, Contract> actions = 
+			new HashedHashSet<AgentIdentifier, Contract>();
 
 
 	//
@@ -40,31 +41,34 @@ AbstractContractTransition<ActionSpec>{
 		//Bouh on doit calculer l'*expiration* time en fonction du min de tous les contrats!!!
 		this.validityTime = Long.MAX_VALUE;
 
-		for (final Contract a : actions)
+		for (final Contract a : actions){
 			for (final AgentIdentifier id : a.getAllParticipants())
 				this.actions.add(id, a);
+		}
+		//Cleaning states///////////////////
 
-					//Cleaning states///////////////////
+		final Map<AgentIdentifier, ActionSpec> result = 
+				new HashMap<AgentIdentifier, ActionSpec>();
 
-					final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
-
-					for (final Contract c : actions)
+					for (final Contract c : actions){
+						for (final AgentIdentifier id : c.getAllParticipants()){
+							if (c.getSpecificationOf(id)!=null)
+								if (result.containsKey(id)){
+									if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+										result.put(id,c.getSpecificationOf(id));
+								} else
+									result.put(id,c.getSpecificationOf(id));
+						}
+					}
+					//updating each contract with the freshest state
+					for (final Contract c : this.actions.getAllValues()){
 						for (final AgentIdentifier id : c.getAllParticipants())
 							if (result.containsKey(id)){
-								if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
-									result.put(id,c.getSpecificationOf(id));
-							} else
-								result.put(id,c.getSpecificationOf(id));
-
-					//updating each contract with the freshest state
-					for (final Contract c : this.actions.getAllValues())
-						for (final AgentIdentifier id : c.getAllParticipants())
-							c.setSpecification(result.get(id));
+								c.setSpecification(result.get(id));
+							}
+					}
 	}
-
-	public Collection<Contract> getAllocation(){
-		return this.actions.getAllValues();
-	}
+	
 	//
 	// Methods
 	//
@@ -178,5 +182,12 @@ AbstractContractTransition<ActionSpec>{
 	@Override
 	public int hashCode() {
 		return this.getIdentifier().hashCode();
+	}
+
+	public Collection<ContractIdentifier> getIdentifiers() {
+		Collection<ContractIdentifier> myIds = new HashSet<ContractIdentifier>();
+		for (Contract c : this)
+			myIds.add(c.getIdentifier());
+		return myIds;
 	}
 }

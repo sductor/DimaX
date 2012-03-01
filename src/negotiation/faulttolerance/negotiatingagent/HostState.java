@@ -55,6 +55,8 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 								init.isFaulty(),// creationTime,
 								init.getStateCounter()+1);
 
+//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
+		
 		this.myReplicatedAgents.addAll(init.myReplicatedAgents);
 		if (this.myReplicatedAgents.contains(newRep))
 			this.myReplicatedAgents.remove(newRep);
@@ -108,9 +110,6 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		return this.getMyCharge() > 1.;
 	}
 
-	public Iterator<ReplicaState> getMyAgents() {
-		return this.myReplicatedAgents.iterator();
-	}
 	public Collection<ReplicaState> getMyAgentsCollec() {
 		return this.myReplicatedAgents;
 	}

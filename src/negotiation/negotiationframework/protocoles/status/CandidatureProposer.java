@@ -33,10 +33,13 @@ ActionSpec,PersonalState,Contract> {
 		for (final AgentIdentifier id : this.getMyAgent().getMyInformation().getKnownAgents())
 			if (id instanceof ResourceIdentifier
 					&& !this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
-					.contains(id))
-				candidatures.add(this.constructCandidature((ResourceIdentifier) id));
+					.contains(id)){
+				Contract c = this.constructCandidature((ResourceIdentifier) id);
+				c.setSpecification(getMyAgent().getMySpecif(c));
+				candidatures.add(c);
+			}
 
-				return candidatures;
+		return candidatures;
 	}
 
 	public abstract Contract constructCandidature(ResourceIdentifier id);

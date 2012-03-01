@@ -6,6 +6,7 @@ import java.util.Comparator;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ReallocationContract;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -180,7 +181,7 @@ extends BasicCompetentAgent {
 
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
 		return this.isAnImprovment(s, (Collection<Contract>) c)
-				&& this.respectMyRights(this.getMyResultingState(s, (Collection<Contract>) c));
+				&& this.respectRights(s, (Collection<Contract>) c);
 	}
 
 	private boolean isAnImprovment(final PersonalState s,
@@ -268,18 +269,60 @@ extends BasicCompetentAgent {
 		return s.isValid();
 	}
 
-	public Boolean respectMyRights(final Contract c) {
-		return this.respectMyRights(this.getMyResultingState(c));
+	public Boolean respectRights(final Contract c) {
+		for (AgentIdentifier id : c.getAllParticipants()){
+			if (!c.computeResultingState(id).isValid())
+				return false;
+		}
+
+		return true;
+	}
+	
+	public Boolean respectRights(final PersonalState s, final Contract c) {
+		for (AgentIdentifier id : c.getAllParticipants()){
+			if (id.equals(getIdentifier()) && !c.computeResultingState(s).isValid())
+				return false;
+			else if (!c.computeResultingState(id).isValid())
+				return false;
+		}
+
+		return true;
+	}
+	
+	public Boolean respectRights(final Collection<Contract> cs) {
+		ReallocationContract<Contract, ActionSpec> reall = 
+				new ReallocationContract<Contract, ActionSpec>(getIdentifier(), cs);
+
+		for (AgentIdentifier id : reall.getAllParticipants()){
+			if (!reall.computeResultingState(id).isValid())
+				return false;
+		}
+
+		return true;
 	}
 
-	public Boolean respectMyRights(final PersonalState s, final Contract c) {
-		return this.respectMyRights(this.getMyResultingState(s, c));
-	}
+	public Boolean respectRights(final PersonalState s, final Collection<Contract> cs) {
+		ReallocationContract<Contract, ActionSpec> reall = 
+				new ReallocationContract<Contract, ActionSpec>(getIdentifier(), cs);
 
-	public Boolean respectMyRights(final PersonalState s,
-			final Collection<Contract> a) {
-		return this.respectMyRights(this.getMyResultingState(s, a));
+		for (AgentIdentifier id : reall.getAllParticipants()){
+			if (id.equals(getIdentifier()) && !reall.computeResultingState(s).isValid())
+				return false;
+			else if (!reall.computeResultingState(id).isValid())
+				return false;
+		}
+
+		return true;
 	}
+	
+	//	public Boolean respectMyRights(final PersonalState s, final Contract c) {
+	//		return this.respectMyRights(this.getMyResultingState(s, c));
+	//	}
+	//
+	//	public Boolean respectMyRights(final PersonalState s,
+	//			final Collection<Contract> a) {
+	//		return this.respectMyRights(this.getMyResultingState(s, a));
+	//	}
 
 	/*
 	 *

@@ -57,7 +57,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 	@Override
 	public void execute(final ReplicationCandidature c) {
-		assert this.getMyAgent().respectMyRights(c);
+		assert this.getMyAgent().respectRights(c);
 		//		logMonologue(
 		//				"executing "+c+" from state "
 		//		+this.getMyAgent().getMyCurrentState()
@@ -88,31 +88,6 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 		this.getMyAgent().getMyInformation().add(c.getAgentResultingState());
 	}
 
-	public void executeFirstRep(
-			final ReplicationCandidature c,
-			final SimpleRationalAgent ag) {
-		assert this.getMyAgent().respectMyRights(c);
-
-		this.getMyAgent().setNewState(
-				c.computeResultingState(
-						this.getMyAgent().getMyCurrentState()));
-		this.getMyAgent().getMyInformation().add(c.getAgentResultingState());
-
-		/*
-		 *
-		 */
-
-		if (c.isMatchingCreation()) {
-			ag.addObserver(this.getMyAgent().getIdentifier(),
-					SimpleObservationService.informationObservationKey);
-			ReplicationHandler.replicate(c.getAgent());
-			this.logMonologue(c.getResource() + "  ->I have initially replicated "
-					+ c.getAgent(),LogService.onBoth);
-		} else
-			throw new RuntimeException();
-
-	}
-
 	@Override
 	public HostState getMySpecif(
 			final HostState s,
@@ -133,6 +108,31 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 }
 //
 
+
+//public void executeFirstRep(
+//		final ReplicationCandidature c,
+//		final SimpleRationalAgent ag) {
+//	assert this.getMyAgent().respectRights(c);
+//
+//	this.getMyAgent().setNewState(
+//			c.computeResultingState(
+//					this.getMyAgent().getMyCurrentState()));
+//	this.getMyAgent().getMyInformation().add(c.getAgentResultingState());
+//
+//	/*
+//	 *
+//	 */
+//
+//	if (c.isMatchingCreation()) {
+//		ag.addObserver(this.getMyAgent().getIdentifier(),
+//				SimpleObservationService.informationObservationKey);
+//		ReplicationHandler.replicate(c.getAgent());
+//		this.logMonologue(c.getResource() + "  ->I have initially replicated "
+//				+ c.getAgent(),LogService.onBoth);
+//	} else
+//		throw new RuntimeException();
+//
+//}
 
 //
 //@Override

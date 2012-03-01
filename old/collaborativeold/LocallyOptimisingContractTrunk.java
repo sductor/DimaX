@@ -108,7 +108,7 @@ extends ContractTrunk<Contract>{
 	}
 	protected boolean isAFailure(final Contract c) {
 		if (!possibleOptimisations.containsKey(c))
-			return super.isRequestable(c);
+			return super.isAFailure(c);
 		else{
 			if (possibleOptimisations.get(c).isEmpty()){
 				possibleOptimisations.remove(c);

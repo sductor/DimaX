@@ -18,14 +18,14 @@ import negotiation.experimentationframework.Laborantin;
 import negotiation.experimentationframework.ObservingGlobalService;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaProposerWithStatus;
+import negotiation.faulttolerance.candidaturewithstatus.Host;
+import negotiation.faulttolerance.candidaturewithstatus.Replica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
-import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
@@ -35,6 +35,7 @@ import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.InactiveProposerCore;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
+import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
@@ -409,28 +410,14 @@ public class ReplicationLaborantin extends Laborantin {
 			 */
 
 			try {
-				final Iterator<ResourceIdentifier> itHost = this.getSimulationParameters().getHostsIdentifier().iterator();
+				final Iterator<ResourceIdentifier> itHost = 
+						this.getSimulationParameters().getHostsIdentifier().iterator();
 				if (!itHost.hasNext())
 					throw new RuntimeException("no host? impossible!");
 
 				SimpleRationalAgent firstReplicatedOnHost = this.getAgent(itHost.next());
-				MatchingCandidature c;
+				MatchingCandidature c = generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
 
-				if (this.getSimulationParameters()._usedProtocol
-						.equals(ExperimentationProtocol.getKey4mirrorproto()))
-					c = new InformedCandidature(new ReplicationCandidature(
-							(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
-							ag.getIdentifier(),
-							true,true));
-				else
-					c =
-					new ReplicationCandidature(
-							(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
-							ag.getIdentifier(),
-							true,true);
-
-				c.setSpecification(ag.getMySpecif(c));
-				c.setSpecification(firstReplicatedOnHost.getMySpecif(c));
 
 
 				while (!firstReplicatedOnHost
@@ -440,17 +427,11 @@ public class ReplicationLaborantin extends Laborantin {
 								+this.getSimulationParameters().getHostsIdentifier());
 					else {
 						firstReplicatedOnHost = this.getAgent(itHost.next());
-						c = new ReplicationCandidature(
-								(ResourceIdentifier) firstReplicatedOnHost
-								.getIdentifier(),
-								ag.getIdentifier(), true,true);
-						c.setSpecification(ag.getMySpecif(c));
-						c.setSpecification(firstReplicatedOnHost
-								.getMySpecif(c));
+						c = generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
 					}
 
-				((ReplicaCore) ag.myCore).executeFirstRep(c,firstReplicatedOnHost);
-				((HostCore) firstReplicatedOnHost.myCore).executeFirstRep(c, ag);
+				executeFirstRep(c,ag,firstReplicatedOnHost);
+				
 			} catch (final Exception e) {
 				e.printStackTrace();
 				throw new IfailedException(e);
@@ -464,7 +445,7 @@ public class ReplicationLaborantin extends Laborantin {
 //			final SimpleRationalAgent<ReplicationSpecification,ReplicationSpecification,MatchingCandidature<ReplicationSpecification>> host,
 //			final MatchingCandidature<ReplicationSpecification> c,
 //			final SimpleRationalAgent ag) {
-//		assert host.respectMyRights(c);
+//		
 //
 //		host.setNewState(
 //				c.computeResultingState(
@@ -476,15 +457,78 @@ public class ReplicationLaborantin extends Laborantin {
 //		 */
 //
 //		if (c.isMatchingCreation()) {
-//			ag.addObserver(host.getIdentifier(),
-//					SimpleObservationService.informationObservationKey);
-//			ReplicationHandler.replicate(c.getAgent());
-//			this.logMonologue(c.getResource() + "  ->I have initially replicated "
-//					+ c.getAgent(),LogService.onBoth);
 //		} else
 //			throw new RuntimeException();
 //
 //	}
+	
+	private MatchingCandidature generateInitialAllocationCandidature(
+			SimpleRationalAgent firstReplicatedOnHost, 
+			SimpleRationalAgent ag){
+
+		MatchingCandidature c;
+		
+		if (this.getSimulationParameters()._usedProtocol
+				.equals(ExperimentationProtocol.getKey4mirrorproto())){
+			ReplicationCandidature temp = new ReplicationCandidature(
+					(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
+					ag.getIdentifier(),
+					true,true);
+//			temp.setSpecification(
+//					(ReplicationSpecification) 
+//					((InformedCandidatureRationality) ag.getMyCore())
+//					.getMySimpleSpecif(ag.getMyCurrentState(), temp));
+//			temp.setSpecification(
+//					(ReplicationSpecification) 
+//					((InformedCandidatureRationality) firstReplicatedOnHost.getMyCore())
+//					.getMySimpleSpecif(firstReplicatedOnHost.getMyCurrentState(), temp));
+//			
+			c = new InformedCandidature(temp);
+		}else
+			c =
+			new ReplicationCandidature(
+					(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
+					ag.getIdentifier(),
+					true,true);
+
+		c.setSpecification(ag.getMySpecif(c));
+		c.setSpecification(firstReplicatedOnHost.getMySpecif(c));
+		
+		return c;
+	}
+	
+	private void executeFirstRep(
+			final MatchingCandidature c,
+			final SimpleRationalAgent agent,
+			final SimpleRationalAgent host) {
+		assert agent.respectRights(c);
+		
+		//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
+		if (c.isMatchingCreation()){
+			
+			host.addObserver(agent.getIdentifier(), 
+					SimpleObservationService.informationObservationKey);
+			agent.addObserver(host.getIdentifier(),
+					SimpleObservationService.informationObservationKey);
+			
+			ReplicationHandler.replicate(c.getAgent());
+			
+			this.logMonologue(c.getResource() + "  ->I have initially replicated "
+					+ c.getAgent(),LogService.onBoth);
+		}else{
+			throw new RuntimeException();
+		}
+		
+		host.setNewState(
+				c.computeResultingState(host.getMyCurrentState()));		
+		agent.setNewState(
+				c.computeResultingState(agent.getMyCurrentState()));		
+		
+		agent.getMyInformation().add(c.computeResultingState(host.getIdentifier()));
+		host.getMyInformation().add(c.computeResultingState(agent.getIdentifier()));
+	}
+
+	
 	
 	protected SimpleRationalAgent constructAgent(final AgentIdentifier replicaId,
 			final Collection<HostIdentifier> hostsIKnow,

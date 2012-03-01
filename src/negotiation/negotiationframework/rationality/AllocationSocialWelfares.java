@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
@@ -91,18 +92,19 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 		for (final Contract c : allContract)
 			for (final AgentIdentifier id : c.getAllParticipants())
-				if (result.containsKey(id)){
-					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
-						//						System.out.println("remplacing a fresher state");
+					if (result.containsKey(id)){
+						if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+							//						System.out.println("remplacing a fresher state");
+							result.put(id,c.getSpecificationOf(id));
+					} else
 						result.put(id,c.getSpecificationOf(id));
-				} else
-					result.put(id,c.getSpecificationOf(id));
 
 		//updating each contract with the freshest state
-		for (final Contract cOld : allContract)
+		for (final Contract cOld : allContract){
 			for (final AgentIdentifier id : cOld.getAllParticipants())
-				cOld.setSpecification(result.get(id));
-					return result;
+					cOld.setSpecification(result.get(id));
+		}
+		return result;
 	}
 
 

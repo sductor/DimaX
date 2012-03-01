@@ -95,10 +95,11 @@ MatchingCandidature<ReplicationSpecification> {
 			//					new ShowYourPocket(this.getMyAgent().getIdentifier(),
 			//							"replicacore:getmyresultingstate"));
 			throw new RuntimeException(
-					"aaaahhhhhhhhhhhhhhhhh  =(  CAN NOT DESTRUCT" + this.getResource()
+					"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this
 					//					+ "\n ----> current state"
 					//					+ this.getMyAgent().getMyCurrentState()
-					+ "\n --> fromState " + fromState);
+//					+ "\n --> fromState " + fromState+ "\n --> ressource state "+ this.getResourceInitialState()
+					);
 		else {
 			ReplicaState result = new ReplicaState(fromState,
 					this.getResourceInitialState()//, this.getCreationTime()

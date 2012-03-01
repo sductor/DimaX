@@ -1,17 +1,21 @@
-package negotiation.faulttolerance.negotiatingagent;
+package negotiation.faulttolerance.candidaturewithstatus;
 
 import java.util.HashSet;
 import java.util.Random;
 
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.ObservingSelfService;
-import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
+import negotiation.faulttolerance.negotiatingagent.HostState;
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -109,11 +113,13 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final Double memCharge,
 			final RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> myRationality,
 			final AbstractSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
-			final ProposerCore<SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
+			final ProposerCore<
+			SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
+			ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
 			final ObservationService myInformation,
 			final boolean dynamicCriticity)
 					throws CompetenceException {
-		super(id, null, myRationality, participantCore, proposerCore, myInformation);
+		super(id, null, myRationality, participantCore, proposerCore, myInformation, new ContractTrunk<ReplicationCandidature>(id));
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));

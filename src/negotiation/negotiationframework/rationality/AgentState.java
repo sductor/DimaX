@@ -1,7 +1,9 @@
 package negotiation.negotiationframework.rationality;
 
 import java.util.Collection;
+import java.util.Iterator;
 
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
@@ -25,6 +27,7 @@ public interface AgentState extends Information {
 
 
 	public int getStateCounter();
+
 }
 
 // public interface SocialState<State extends AgentState> extends

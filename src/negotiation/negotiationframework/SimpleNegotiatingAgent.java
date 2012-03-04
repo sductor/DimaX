@@ -1,6 +1,10 @@
 package negotiation.negotiationframework;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol;
+import negotiation.negotiationframework.communicationprotocol.ReverseCFPProtocol;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -32,7 +36,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	//
 
 	@Competence()
-	private final NegotiationProtocol<ActionSpec, PersonalState, Contract> protocol;
+	private final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol;
 
 	@Competence()
 	private final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore;
@@ -51,13 +55,13 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
-			final ContractTrunk<Contract> contracts)
+			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
 		this.selectionCore.setMyAgent(this);
-		this.protocol = new NegotiationProtocol<ActionSpec, PersonalState, Contract>(this, contracts);
+		this.protocol = new ReverseCFPProtocol<ActionSpec, PersonalState, Contract>(this, contracts);
 
 
 		this.myProposerCore = proposerCore;
@@ -65,21 +69,40 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		.setMyAgent(this);
 
 	}
+	public SimpleNegotiatingAgent(
+			final AgentIdentifier id,
+			final PersonalState myInitialState,
+			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
+			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
+			final ObservationService myInformation,
+			AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
+					throws CompetenceException {
+		super(id, myInitialState, myRationality, myInformation);
 
+		this.selectionCore = selectionCore;
+		this.selectionCore.setMyAgent(this);
+		this.protocol = protocol;
+
+
+		this.myProposerCore = proposerCore;
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
+		.setMyAgent(this);
+
+	}
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(AllocationSocialWelfares.log_socialWelfareOrdering, false, false);
-		this.addLogKey(NegotiationProtocol.log_negotiationStep, false, true);
-		this.addLogKey(NegotiationProtocol.log_mirrorProto, false, true);
-		this.addLogKey(NegotiationProtocol.log_selectionStep, false, false);
-		//		addLogKey(NegotiationProtocol.log_contractDataBaseManipulation, false, false);
+		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, true);
+		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, true);
+		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
 	}
 
 	//
 	// Accessors
 	//
 
-	public NegotiationProtocol<ActionSpec, PersonalState, Contract> getMyProtocol() {
+	public AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> getMyProtocol() {
 		return this.protocol;
 	}
 
@@ -87,20 +110,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		return this.myProposerCore;
 	}
 
-	@MessageHandler()
-	public void hereThereAre(final ShowYourPocket m) {
-		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "
-				+ m.getCallingMethod() + ")";
-		pockets += "\n" + this.getMyProtocol();
-		this.logMonologue(pockets,LogService.onFile);
-	}
-
-	//
-	// Methods
-	//
-
-	public ContractTrunk<Contract> select(final ContractTrunk<Contract> cs) {
-		return this.selectionCore.select(cs);
+	public SelectionCore<ActionSpec, PersonalState, Contract> getMySelectionCore() {
+		return selectionCore;
 	}
 
 	//
@@ -112,6 +123,14 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public boolean end(){
 		this.setAlive(false);
 		return true;
+	}
+
+	@MessageHandler()
+	public void hereThereAre(final ShowYourPocket m) {
+		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "
+				+ m.getCallingMethod() + ")";
+		pockets += "\n" + this.getMyProtocol();
+		this.logMonologue(pockets,LogService.onFile);
 	}
 }
 

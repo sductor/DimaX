@@ -57,7 +57,7 @@ extends AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 			}
 
 			// Verification de la consistance
-			if (!this.getMyAgent().respectMyRights(currentState))
+			if (!currentState.isValid())
 				throw new RuntimeException(
 						"what the  (3)!!!!!!\n accepted state : "
 								+ currentState);

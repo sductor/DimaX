@@ -8,16 +8,16 @@ import dima.basiccommunicationcomponents.Message;
 public class IllAnswer<State extends AbstractActionSpecification, Contract extends AbstractContractTransition<?>> extends Message {
 	private static final long serialVersionUID = -6005898857508683984L;
 
-	private final ContractTrunk<Contract> answers;
+	private final ContractTrunk<Contract, ?, State> answers;
 	private final State agentState;
 
-	public IllAnswer(final ContractTrunk<Contract> answers, final State agentState) {
+	public IllAnswer(final ContractTrunk<Contract, ?, State> answers, final State agentState) {
 		super();
 		this.answers = answers;
 		this.agentState = agentState;
 	}
 
-	public ContractTrunk<Contract> getAnswers() {
+	public ContractTrunk<Contract, ?, State> getAnswers() {
 		return this.answers;
 	}
 

@@ -84,12 +84,12 @@ implements AbstractContractTransition<ActionSpec>{
 	 */
 
 	@Override
-	public <State extends ActionSpec> State computeResultingState(final State s) {
+	public <State extends ActionSpec> State computeResultingState(final State s) throws IncompleteContractException {
 		return this.candidature.computeResultingState(s);
 	}
 
 	@Override
-	public ActionSpec computeResultingState(final AgentIdentifier id) {
+	public ActionSpec computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
 		return this.candidature.computeResultingState(id);
 	}
 
@@ -201,11 +201,27 @@ implements AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public ActionSpec getSpecificationOf(final AgentIdentifier id) {
+	public ActionSpec getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
 		return this.candidature.getSpecificationOf(id);
 	}
 
 
+	public boolean isViable()
+			throws IncompleteContractException {
+		return candidature.isViable();
+	}
+
+	public <State extends ActionSpec> boolean isViable(State... initialStates)
+			throws IncompleteContractException {
+		return candidature.isViable(initialStates);
+	}
+
+	public <State extends ActionSpec> boolean isViable(
+			Collection<State> initialStates)
+			throws IncompleteContractException {
+		return candidature.isViable(initialStates);
+	}
+	
 	@Override
 	public boolean equals(final Object o) {
 		return this.candidature.equals(o);

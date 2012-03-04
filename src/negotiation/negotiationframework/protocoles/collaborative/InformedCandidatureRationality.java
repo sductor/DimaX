@@ -70,7 +70,7 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 	public int getAllocationPreference(final PersonalState s,
 			final Collection<InformedCandidature<Contract, ActionSpec>> c1,
 			final Collection<InformedCandidature<Contract, ActionSpec>> c2) {
-		if (optimiseWithBest){//optimisation informé
+		if (optimiseWithBest){//optimisation informé (pour les agents)
 			final Collection<Contract> consequentC1 = new ArrayList<Contract>();
 			final Collection<Contract> consequentC2 = new ArrayList<Contract>();
 			for (final InformedCandidature<Contract, ActionSpec> c : c1){

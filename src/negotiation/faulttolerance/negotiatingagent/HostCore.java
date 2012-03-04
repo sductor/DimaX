@@ -2,6 +2,7 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.Collection;
 
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
@@ -45,47 +46,56 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	public int getAllocationPreference(final HostState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-		for (final ReplicationCandidature c : c1)
-			c.setSpecification(s);	for (final ReplicationCandidature c : c2)
-				c.setSpecification(s);
-					final int pref = this.myOptimiser.getSocialPreference(c1, c2);
-					this.logMonologue("Preference : "+pref+" for \n "+c1+"\n"+c2, AllocationSocialWelfares.log_socialWelfareOrdering);
-					return pref;
+		for (final ReplicationCandidature c : c1){
+			c.setSpecification(s);	
+		}	
+		for (final ReplicationCandidature c : c2){
+			c.setSpecification(s);
+		}
+		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
+		this.logMonologue(
+				"Preference : "+pref+" for \n "+c1+"\n"+c2, 
+				AllocationSocialWelfares.log_socialWelfareOrdering);
+		return pref;
 	}
 
 
 
 	@Override
 	public void execute(final ReplicationCandidature c) {
-		assert this.getMyAgent().respectRights(c);
-		//		logMonologue(
-		//				"executing "+c+" from state "
-		//		+this.getMyAgent().getMyCurrentState()
-		//		+" to state "+c.computeResultingState(
-		//						this.getMyAgent().getMyCurrentState()));
+		try {
+			assert c.isViable();//this.getMyAgent().respectRights(c);
+			//		logMonologue(
+			//				"executing "+c+" from state "
+			//		+this.getMyAgent().getMyCurrentState()
+			//		+" to state "+c.computeResultingState(
+			//						this.getMyAgent().getMyCurrentState()));
 
-		/*
-		 *
-		 */
+			/*
+			 *
+			 */
 
-		if (c.isMatchingCreation()) {
-			ReplicationHandler.replicate(c.getAgent());
-			this.observe(c.getAgent(), SimpleObservationService.informationObservationKey);
-			//			System.out.println(c.getResource() + " " + new Date().toString()
-			//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
-		} else {
-			ReplicationHandler.killReplica(c.getAgent());
-			this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
-			//			System.out.println(c.getResource() + " " + new Date().toString()
-			//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-			this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+			if (c.isMatchingCreation()) {
+				ReplicationHandler.replicate(c.getAgent());
+				this.observe(c.getAgent(), SimpleObservationService.informationObservationKey);
+				//			System.out.println(c.getResource() + " " + new Date().toString()
+				//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
+			} else {
+				ReplicationHandler.killReplica(c.getAgent());
+				this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
+				//			System.out.println(c.getResource() + " " + new Date().toString()
+				//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+			}
+
+			this.getMyAgent().setNewState(
+					c.computeResultingState(
+							this.getMyAgent().getMyCurrentState()));
+			this.getMyAgent().getMyInformation().add(c.getAgentResultingState());
+		} catch (IncompleteContractException e) {
+			throw new RuntimeException();
 		}
-
-		this.getMyAgent().setNewState(
-				c.computeResultingState(
-						this.getMyAgent().getMyCurrentState()));
-		this.getMyAgent().getMyInformation().add(c.getAgentResultingState());
 	}
 
 	@Override

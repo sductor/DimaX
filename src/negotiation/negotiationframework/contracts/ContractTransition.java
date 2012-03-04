@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import negotiation.experimentationframework.Laborantin;
+
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicagentcomponents.AgentName;
 
 public abstract class ContractTransition<
 ActionSpec extends AbstractActionSpecification> implements
@@ -87,6 +91,15 @@ AbstractContractTransition<ActionSpec> {
 	 */
 
 	@Override
+	public ActionSpec getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException{
+		if (!this.specs.containsKey(id))
+			throw new IncompleteContractException();
+		else
+			return this.specs.get(id);
+
+	}
+
+	@Override
 	public void setSpecification(final ActionSpec s) {
 		if (s==null)
 			throw new RuntimeException("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
@@ -94,8 +107,103 @@ AbstractContractTransition<ActionSpec> {
 			this.specs.put(s.getMyAgentIdentifier(), s);
 		else
 			throw new RuntimeException("unappropriate specification set");
+
+		try {
+			if (!Laborantin.initialisation)
+				assert isInitiallyValid():this;
+		} catch (IncompleteContractException e){/*ok!*/}
 	}
 
+	/*
+	 *
+	 */
+
+	public boolean isInitiallyValid()	
+			throws IncompleteContractException {
+		if (!specs.keySet().containsAll(actors)){
+			throw new IncompleteContractException();
+		} else {
+			for (AgentIdentifier id : actors)
+				if (!getSpecificationOf(id).isValid())
+					return false;
+		}
+		return true;		
+	}
+
+	@Override
+	public <State extends ActionSpec> boolean isViable(State... initialStates)
+			throws IncompleteContractException {
+		return isViable(Arrays.asList(initialStates));
+	}
+
+	@Override
+	public <State extends ActionSpec> boolean isViable(
+			Collection<State> initialStates)
+					throws IncompleteContractException {
+		Collection<AgentIdentifier> agents =
+				new ArrayList<AgentIdentifier>();
+		agents.addAll(actors);
+
+		for (State s : initialStates){
+			if (!computeResultingState(s).isValid())
+				return false;
+			else
+				agents.remove(s.getMyAgentIdentifier());
+		}
+
+		for (AgentIdentifier id : agents){
+			if (!computeResultingState(id).isValid())
+				return false;
+		}
+		return true;
+	}
+
+	public boolean isViable() throws IncompleteContractException{
+		if (!specs.keySet().containsAll(actors)){
+			throw new IncompleteContractException();
+		} else {
+			for (AgentIdentifier id : actors)
+				if (!computeResultingState(id).isValid())
+					return false;
+		}
+		return true;
+	}
+
+	public static <Contract extends AbstractContractTransition<ActionSpec>, ActionSpec extends AbstractActionSpecification> 
+	Boolean respectRights(final Collection<Contract> cs) throws IncompleteContractException {
+		ReallocationContract<Contract, ActionSpec> reall = 
+				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
+
+		for (AgentIdentifier id : reall.getAllParticipants()){
+			if (!reall.computeResultingState(id).isValid())
+				return false;
+		}
+
+		return true;
+	}
+
+	public static <
+	Contract extends AbstractContractTransition<ActionSpec>, 
+	ActionSpec extends AbstractActionSpecification, 
+	State extends ActionSpec> 
+	Boolean respectRights(final Collection<Contract> cs, Collection<State> initialStates) throws IncompleteContractException {
+		ReallocationContract<Contract, ActionSpec> reall = 
+				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
+
+		for (AgentIdentifier id : reall.getAllParticipants()){
+			if (!reall.computeResultingState(id).isValid())
+				return false;
+		}
+
+		return true;
+	}
+	public static <
+	Contract extends AbstractContractTransition<ActionSpec>, 
+	ActionSpec extends AbstractActionSpecification, 
+	State extends ActionSpec> 
+	Boolean respectRights(final Collection<Contract> cs, State... initialStates) throws IncompleteContractException {
+		return respectRights(cs, Arrays.asList(initialStates));
+	}
 	/*
 	 *
 	 */
@@ -132,12 +240,6 @@ AbstractContractTransition<ActionSpec> {
 	/*
 	 *
 	 */
-
-	@Override
-	public ActionSpec getSpecificationOf(final AgentIdentifier id){
-		return this.specs.get(id);
-
-	}
 
 
 	//

@@ -7,6 +7,8 @@ import java.util.List;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ContractTransition;
 import dimaxx.tools.HyperSetGeneration;
 
 public class AllocationSelectionCore<
@@ -35,8 +37,11 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 
 			@Override
 			public boolean toKeep(final Collection<Contract> elem) {
-				return AllocationSelectionCore.this.getMyAgent().respectRights(
-						currentState,elem);
+				try {
+					return ContractTransition.respectRights(elem, currentState);
+				} catch (IncompleteContractException e) {
+					throw new RuntimeException();
+				}
 			}
 		};
 
@@ -49,12 +54,14 @@ AbstractSelectionCore<ActionSpec, PersonalState, Contract> {
 				final Collection<Contract> max = Collections.max(
 						allocations,
 						this.getMyAgent().getMyAllocationPreferenceComparator(currentState));
-				assert this.getMyAgent().respectRights(currentState, max);
+				assert ContractTransition.respectRights(max,currentState);
 				return max;
 			} catch (final RuntimeException e) {
 				this.getMyAgent().signalException(
 						"my state "+currentState+", contracts "+contractsToExplore);
 				throw e;
+			} catch (IncompleteContractException e) {
+				throw new RuntimeException();
 			}
 	}
 

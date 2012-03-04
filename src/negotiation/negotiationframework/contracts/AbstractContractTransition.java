@@ -20,15 +20,21 @@ extends DimaComponentInterface {
 
 	public void setSpecification(ActionSpec s);
 
-
-
-	ActionSpec getSpecificationOf(AgentIdentifier id);
+	ActionSpec getSpecificationOf(AgentIdentifier id) throws IncompleteContractException;
 
 	//Attention retourne l'état tel quel si l'agent n'est pas concerné
-	public <State extends ActionSpec> State computeResultingState(final State s);
+	public <State extends ActionSpec> State computeResultingState(AgentIdentifier id) 
+			throws IncompleteContractException;
+	
 
-	public ActionSpec computeResultingState(AgentIdentifier id);//doit associer comme time a l'action spec le time du contract
+	public <State extends ActionSpec> State computeResultingState(final State s) 
+			throws IncompleteContractException;
+	
+//	public <State extends ActionSpec> State computeResultingState(AgentIdentifier id, Collection<State> initialStates)	
+//			throws IncompleteContractException;
 
+//	public ActionSpec computeResultingState(AgentIdentifier id) throws IncompleteContractException;
+	//doit associer comme time a l'action spec le time du contract
 	//
 	// public void setAccepted(AgentIdentifier id);
 	//
@@ -46,7 +52,18 @@ extends DimaComponentInterface {
 
 	public long getCreationTime();
 
+//	public boolean isViable()	throws IncompleteContractException;
+	
+	public boolean isInitiallyValid()	throws IncompleteContractException;
+
+	public <State extends ActionSpec> boolean isViable(State... initialStates)	throws IncompleteContractException;
+	
+	public <State extends ActionSpec> boolean isViable(Collection<State> initialStates)	throws IncompleteContractException;
+
+	public class IncompleteContractException extends Exception{};
 	// public ContractTransition<ActionSpec> clone();
+	
+	
 }
 
 //

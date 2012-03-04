@@ -3,7 +3,7 @@ package negotiation.negotiationframework.protocoles;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.negotiationframework.ProposerCore;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;

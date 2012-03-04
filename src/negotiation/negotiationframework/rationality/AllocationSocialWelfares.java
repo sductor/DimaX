@@ -9,6 +9,7 @@ import java.util.Map;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.SocialChoiceFunctions.UtilitaristEvaluator;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.support.GimaObject;
@@ -50,31 +51,38 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 			final Collection<Contract> c1,
 			final Collection<Contract> c2) {
 
+		try {
+			Map<AgentIdentifier, ActionSpec> initialStates =this.getInitialStates(c1, c2);
+			
+			Collection<ActionSpec> temp1 = 
+					this.getResultingAllocation(initialStates, c1);
+			final Collection<ActionSpec> temp2 =
+					this.getResultingAllocation(initialStates, c2);
 
-		final Collection<ActionSpec> temp1 =
-				this.getResultingAllocation(this.getInitialStates(c1, c2), c1);
-		final Collection<ActionSpec> temp2 =
-				this.getResultingAllocation(this.getInitialStates(c1, c2), c2);
+			final Collection<ActionSpec> s1 = new ArrayList<ActionSpec>();
+			final Collection<ActionSpec> s2 = new ArrayList<ActionSpec>();
 
-		final Collection<ActionSpec> s1 = new ArrayList<ActionSpec>();
-		final Collection<ActionSpec> s2 = new ArrayList<ActionSpec>();
-
-		for (final ActionSpec s : temp1)
-			s1.add(s);
-				for (final ActionSpec s : temp2)
-					s2.add(s);
-
-						if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
-							//			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
-							final int pref = SocialChoiceFunctions.leximinWelfare(s1, s2, this.getComparator());
-							//			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
-							return pref;
-						} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare))
-							return SocialChoiceFunctions.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
-						else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare))
-							return SocialChoiceFunctions.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
-						else
-							throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
+			for (final ActionSpec s : temp1){
+				s1.add(s);
+			}
+			for (final ActionSpec s : temp2){
+				s2.add(s);
+			}
+			
+			if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
+				//			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
+				final int pref = SocialChoiceFunctions.leximinWelfare(s1, s2, this.getComparator());
+				//			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
+				return pref;
+			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare))
+				return SocialChoiceFunctions.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
+			else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare))
+				return SocialChoiceFunctions.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
+			else
+				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
+		} catch (IncompleteContractException e) {
+			throw new RuntimeException();
+		}
 	}
 
 
@@ -84,7 +92,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 	private	Map<AgentIdentifier, ActionSpec> getInitialStates(
 			final Collection<Contract> a1,
-			final Collection<Contract> a2){
+			final Collection<Contract> a2) throws IncompleteContractException{
 		final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
 		final Collection<Contract> allContract = new ArrayList<Contract>();
 		allContract.addAll(a1);
@@ -92,17 +100,17 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 		for (final Contract c : allContract)
 			for (final AgentIdentifier id : c.getAllParticipants())
-					if (result.containsKey(id)){
-						if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
-							//						System.out.println("remplacing a fresher state");
-							result.put(id,c.getSpecificationOf(id));
-					} else
+				if (result.containsKey(id)){
+					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+						//						System.out.println("remplacing a fresher state");
 						result.put(id,c.getSpecificationOf(id));
+				} else
+					result.put(id,c.getSpecificationOf(id));
 
 		//updating each contract with the freshest state
 		for (final Contract cOld : allContract){
 			for (final AgentIdentifier id : cOld.getAllParticipants())
-					cOld.setSpecification(result.get(id));
+				cOld.setSpecification(result.get(id));
 		}
 		return result;
 	}
@@ -110,7 +118,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 	protected Collection<ActionSpec> getResultingAllocation(
 			final Map<AgentIdentifier, ActionSpec> initialStates,
-			final Collection<Contract> alloc){
+			final Collection<Contract> alloc) throws IncompleteContractException{
 		final Map<AgentIdentifier, ActionSpec> meAsMap =
 				new HashMap<AgentIdentifier, ActionSpec>();
 		meAsMap.putAll(initialStates);

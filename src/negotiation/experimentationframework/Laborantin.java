@@ -42,6 +42,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	private final ExperimentationParameters p;
 	int numberOfAgentPerMAchine;
 
+	public static boolean initialisation;
+
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
 	Map<BasicCompetentAgent, HostIdentifier> locations;
@@ -77,6 +79,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	//To be called in subclass constructor
 	protected void initialisation() throws CompetenceException, NotEnoughMachinesException, IfailedException{
+		initialisation=true;
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
 		this.p.initiateParameters();
 		this.logMonologue("Launching : \n"+this.p,LogService.onBoth);
@@ -100,23 +103,26 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 
 
-		for (final AgentIdentifier id : this.agents.keySet())
+		for (final AgentIdentifier id : this.agents.keySet()){
 			if (id instanceof ResourceIdentifier)
 				this.remainingHost.add(id);
-				else
-					this.remainingAgent.add(id);
-				this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
-				//		this.agents.put(getIdentifier(), this);
-				this.getGlobalObservingService().setObservation();
-				this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
-				//		if (true)
-				//		//			throw new RuntimeException();
-				//				launch();
-				//		throw new RuntimeException();
-				this.locations = this.generateLocations(
-						this.api,
-						this.agents.values(),
-						this.numberOfAgentPerMAchine);
+			else
+				this.remainingAgent.add(id);
+		}
+		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
+		//		this.agents.put(getIdentifier(), this);
+		this.getGlobalObservingService().setObservation();
+		this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
+		//		if (true)
+		//		//			throw new RuntimeException();
+		//				launch();
+		//		throw new RuntimeException();
+		this.locations = this.generateLocations(
+				this.api,
+				this.agents.values(),
+				this.numberOfAgentPerMAchine);
+
+		initialisation=false;
 	}
 
 	protected abstract ObservingGlobalService getGlobalObservingService();

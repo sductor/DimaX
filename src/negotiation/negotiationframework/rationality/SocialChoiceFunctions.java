@@ -60,11 +60,13 @@ public class SocialChoiceFunctions {
 			final Collection<State> a2,
 			final UtilitaristEvaluator<State> u){
 		Double sum1 = 0.,sum2 = 0.;
-		for (final State a : a1)
+		for (final State a : a1){
 			sum1+=u.getUtilityValue(a);
-				for (final State a : a2)
-					sum2+=u.getUtilityValue(a);
-						return sum1.compareTo(sum2);
+		}
+		for (final State a : a2){
+			sum2+=u.getUtilityValue(a);
+		}
+		return sum1.compareTo(sum2);
 	}
 
 	public static  <State> int nashWelfare(
@@ -72,11 +74,13 @@ public class SocialChoiceFunctions {
 			final Collection<State> a2,
 			final UtilitaristEvaluator<State> u){
 		Double nash1 = 1.,nash2 = 1.;
-		for (final State a : a1)
+		for (final State a : a1){
 			nash1*=u.getUtilityValue(a);
-				for (final State a : a2)
-					nash2*=u.getUtilityValue(a);
-						return nash1.compareTo(nash2);
+		}
+		for (final State a : a2){
+			nash2*=u.getUtilityValue(a);
+		}
+		return nash1.compareTo(nash2);
 	}
 
 	//	public  <State> int minDiameter(

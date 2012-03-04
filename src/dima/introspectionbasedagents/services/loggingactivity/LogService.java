@@ -55,7 +55,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public  boolean activateExceptoScreen = true;
 	public  boolean activateMonotoScreen = true;
 	//Order or the log to be written in specific files
-	public boolean activateMonoToFiles = false;
+	public boolean activateMonoToFiles = true;
 	public boolean activateCommtoFiles = false;
 	public  boolean activateExceptoFile = true;
 

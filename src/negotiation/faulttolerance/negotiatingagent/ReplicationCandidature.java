@@ -38,7 +38,7 @@ MatchingCandidature<ReplicationSpecification> {
 	 */
 
 	@Override
-	public <State extends ReplicationSpecification>  State computeResultingState(final State s) {
+	public <State extends ReplicationSpecification>  State computeResultingState(final State s) throws IncompleteContractException {
 		if (s instanceof ReplicaState)
 			return (State) this.getAgentResultingState((ReplicaState)s);
 		else if (s instanceof HostState)
@@ -47,15 +47,15 @@ MatchingCandidature<ReplicationSpecification> {
 			throw new RuntimeException("arrrggghhhh!!!!"+s);
 	}
 	@Override
-	public ReplicationSpecification computeResultingState(final AgentIdentifier id) {
+	public ReplicationSpecification computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
 		return this.computeResultingState(this.getSpecificationOf(id));
 	}
 
-	public ReplicaState getAgentResultingState(){
+	public ReplicaState getAgentResultingState() throws IncompleteContractException{
 		return (ReplicaState) this.computeResultingState(this.getAgent());
 	}
 
-	public HostState getResourceResultingState(){
+	public HostState getResourceResultingState() throws IncompleteContractException{
 		return (HostState) this.computeResultingState(this.getResource());
 	}
 
@@ -63,43 +63,23 @@ MatchingCandidature<ReplicationSpecification> {
 	 *
 	 */
 
-	public ReplicaState getAgentInitialState(){
+	public ReplicaState getAgentInitialState() throws IncompleteContractException{
 		return (ReplicaState) this.getSpecificationOf(this.getAgent());
 	}
-	public HostState getResourceInitialState(){
+	public HostState getResourceInitialState() throws IncompleteContractException{
 		return (HostState) this.getSpecificationOf(this.getResource());
 	}
 
-	private ReplicaState getAgentResultingState(final ReplicaState fromState) {
-
-		if (this.getSpecificationOf(this.getResource()) == null)
-			throw new RuntimeException("wtf? " + this);
-		else if (!fromState.getMyAgentIdentifier().equals(this.getAgent()))
+	private ReplicaState getAgentResultingState(final ReplicaState fromState) throws IncompleteContractException {
+		
+		assert this.getSpecificationOf(this.getResource()) != null:"wtf? " + this;
+		assert fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == true:
+			"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
+		assert !fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == false:
+			"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
+					
+		if (!fromState.getMyAgentIdentifier().equals(this.getAgent()))
 			return fromState;
-		else if (fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) && this.creation == true)
-			// logException("aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED"+id);
-			//				this.getMyAgent().sendMessage(
-			//						id,
-			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
-			//								"replicacore:getmyresultingstate"));
-			throw new RuntimeException(
-					"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()
-					+ "\n ----> current state"
-					//						+ this.getMyAgent().getMyCurrentState()
-					+ "\n --> fromState " + fromState);
-		// return this;
-		else if (!fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) && this.creation == false)
-			// logException("aaaahhhhhhhhhhhhhhhhh  =(  CAN NOT DESTRUCT"+id);
-			//			this.getMyAgent().sendMessage(
-			//					id,
-			//					new ShowYourPocket(this.getMyAgent().getIdentifier(),
-			//							"replicacore:getmyresultingstate"));
-			throw new RuntimeException(
-					"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this
-					//					+ "\n ----> current state"
-					//					+ this.getMyAgent().getMyCurrentState()
-//					+ "\n --> fromState " + fromState+ "\n --> ressource state "+ this.getResourceInitialState()
-					);
 		else {
 			ReplicaState result = new ReplicaState(fromState,
 					this.getResourceInitialState()//, this.getCreationTime()
@@ -119,30 +99,18 @@ MatchingCandidature<ReplicationSpecification> {
 
 	}
 
-	private HostState getResourceResultingState(final HostState fromState) {
+	private HostState getResourceResultingState(final HostState fromState) throws IncompleteContractException {
 
-		if (this.getSpecificationOf(this.getAgent()) == null)
-			throw new NullPointerException();
-		else if (!fromState.getMyAgentIdentifier().equals(this.getResource()))
+		assert (this.getSpecificationOf(this.getAgent()) != null):"wtf? " + this;
+		assert fromState.Ihost(this.getAgent()) || this.creation == true:
+			" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"+ this.getAgent()+" \n contract : "+this	+ "\n --> fromState " + fromState;
+		assert !fromState.Ihost(this.getAgent()) || this.creation == false:
+			" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT "+" \n contract : "+this	+ "\n --> fromState " + fromState
+			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
+		
+
+		if (!fromState.getMyAgentIdentifier().equals(this.getResource()))
 			return fromState;
-		else if (fromState.Ihost(this.getAgent()) && this.creation == true)
-			//				this.getMyAgent().sendMessage(
-			//						replica.getMyAgentIdentifier(),
-			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
-			//								"hostcore:getmyresultingstate"));
-			throw new RuntimeException(
-					fromState.getMyAgentIdentifier()+" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"
-							+ this.getAgent()
-							+ "\n ----> contract description :"
-							+ this);
-		else if (!fromState.Ihost(this.getAgent()) && this.creation == false)
-			//				this.getMyAgent().sendMessage(
-			//						replica.getMyAgentIdentifier(),
-			//						new ShowYourPocket(this.getMyAgent().getIdentifier(),
-			//								"hostcore:getmyresultingstate"));
-			throw new RuntimeException(
-					fromState.getMyAgentIdentifier()+" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT " + this.getAgent()
-					+ "\n ----> current state" +fromState+"\n current contract"+ this+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent()));
 		else {
 			HostState h =
 					new HostState(fromState,
@@ -159,6 +127,21 @@ MatchingCandidature<ReplicationSpecification> {
 			h = new HostState(h, r1//, this.getCreationTime()
 					);
 
+			return h;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 			//			System.out.print(fromState+"\n to "+h+" \n to ");
 			//			System.err.println("here for "+getAgent());
@@ -166,10 +149,10 @@ MatchingCandidature<ReplicationSpecification> {
 			//			System.out.println("state with r result : "+r1);
 			//			h.update(r1);
 			//			System.out.println("final state"+h+"\n");
-			return h;
-		}
-	}
-}
+
+
+
+
 //
 // Agent candidates to be replicated and host to destroy
 //

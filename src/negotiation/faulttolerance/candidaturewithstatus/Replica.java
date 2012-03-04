@@ -13,8 +13,8 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
-import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
@@ -119,10 +119,11 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final ObservationService myInformation,
 			final boolean dynamicCriticity)
 					throws CompetenceException {
-		super(id, null, myRationality, participantCore, proposerCore, myInformation, new ContractTrunk<ReplicationCandidature>(id));
+		super(id, null, myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
+		getMyProtocol().getContracts().setMyAgent(this);
 	}
 
 	//

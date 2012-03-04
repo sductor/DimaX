@@ -6,6 +6,8 @@ import java.util.Comparator;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
@@ -95,7 +97,7 @@ extends BasicCompetentAgent {
 	public Collection<ActionSpec> getMyResources(){
 		final Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
 		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers())
-			try {
+			try {				
 				myResources.add((ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id));
 			} catch (final NoInformationAvailableException e) {
 				throw new RuntimeException("uuuuuhh impossible!!",e);
@@ -107,9 +109,10 @@ extends BasicCompetentAgent {
 		this.nextStateCounter++;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
+		assert this.getMyCurrentState().equals(s);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-		this.notify(this.getMyInformation().getMyInformation(this.myStateType), SimpleObservationService.informationObservationKey);
+		this.notify(this.getMyCurrentState(), SimpleObservationService.informationObservationKey);
 	}
 
 
@@ -136,19 +139,23 @@ extends BasicCompetentAgent {
 	}
 
 	public PersonalState getMyResultingState(final PersonalState s, final Contract c) {
-		return c.computeResultingState(s);
+		try {
+			return c.computeResultingState(s);
+		} catch (IncompleteContractException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public PersonalState getMyResultingState(final PersonalState s, final Collection<Contract> cs) {
 		PersonalState result = s;
 		for (final Contract c : cs)
-			result = c.computeResultingState(result);
+			result = getMyResultingState(result,c);
 				return result;
 	}
 
 
 	public PersonalState getMyResultingState(final Contract c) {
-		return c.computeResultingState(this.getMyCurrentState());
+		return getMyResultingState(this.getMyCurrentState(),c);
 	}
 
 
@@ -180,8 +187,12 @@ extends BasicCompetentAgent {
 	}
 
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
-		return this.isAnImprovment(s, (Collection<Contract>) c)
-				&& this.respectRights(s, (Collection<Contract>) c);
+		try {
+			return this.isAnImprovment(s, (Collection<Contract>) c)
+					&& ContractTransition.respectRights((Collection<Contract>) c,s);
+		} catch (IncompleteContractException e) {
+			throw new RuntimeException();
+		}
 	}
 
 	private boolean isAnImprovment(final PersonalState s,
@@ -265,55 +276,50 @@ extends BasicCompetentAgent {
 	 * Rights
 	 */
 
-	public Boolean respectMyRights(final PersonalState s) {
-		return s.isValid();
-	}
-
-	public Boolean respectRights(final Contract c) {
-		for (AgentIdentifier id : c.getAllParticipants()){
-			if (!c.computeResultingState(id).isValid())
-				return false;
-		}
-
-		return true;
-	}
-	
-	public Boolean respectRights(final PersonalState s, final Contract c) {
-		for (AgentIdentifier id : c.getAllParticipants()){
-			if (id.equals(getIdentifier()) && !c.computeResultingState(s).isValid())
-				return false;
-			else if (!c.computeResultingState(id).isValid())
-				return false;
-		}
-
-		return true;
-	}
-	
-	public Boolean respectRights(final Collection<Contract> cs) {
-		ReallocationContract<Contract, ActionSpec> reall = 
-				new ReallocationContract<Contract, ActionSpec>(getIdentifier(), cs);
-
-		for (AgentIdentifier id : reall.getAllParticipants()){
-			if (!reall.computeResultingState(id).isValid())
-				return false;
-		}
-
-		return true;
-	}
-
-	public Boolean respectRights(final PersonalState s, final Collection<Contract> cs) {
-		ReallocationContract<Contract, ActionSpec> reall = 
-				new ReallocationContract<Contract, ActionSpec>(getIdentifier(), cs);
-
-		for (AgentIdentifier id : reall.getAllParticipants()){
-			if (id.equals(getIdentifier()) && !reall.computeResultingState(s).isValid())
-				return false;
-			else if (!reall.computeResultingState(id).isValid())
-				return false;
-		}
-
-		return true;
-	}
+//	public Boolean respectMyRights(final PersonalState s) {
+//		return s.isValid();
+//	}
+//
+//	public Boolean respectRights(final Contract c) throws IncompleteContractException {
+//		return c.isViable();
+//	}
+//	
+//	public Boolean respectRights(final PersonalState s, final Contract c) {
+//		for (AgentIdentifier id : c.getAllParticipants()){
+//			if (id.equals(getIdentifier()) && !c.computeResultingState(s).isValid())
+//				return false;
+//			else if (!c.computeResultingState(id).isValid())
+//				return false;
+//		}
+//
+//		return true;
+//	}
+//	
+//	public Boolean respectRights(final Collection<Contract> cs) {
+//		ReallocationContract<Contract, ActionSpec> reall = 
+//				new ReallocationContract<Contract, ActionSpec>(getIdentifier(), cs);
+//
+//		for (AgentIdentifier id : reall.getAllParticipants()){
+//			if (!reall.computeResultingState(id).isValid())
+//				return false;
+//		}
+//
+//		return true;
+//	}
+//
+//	public Boolean respectRights(final PersonalState s, final Collection<Contract> cs) {
+//		ReallocationContract<Contract, ActionSpec> reall = 
+//				new ReallocationContract<Contract, ActionSpec>(getIdentifier(), cs);
+//
+//		for (AgentIdentifier id : reall.getAllParticipants()){
+//			if (id.equals(getIdentifier()) && !reall.computeResultingState(s).isValid())
+//				return false;
+//			else if (!reall.computeResultingState(id).isValid())
+//				return false;
+//		}
+//
+//		return true;
+//	}
 	
 	//	public Boolean respectMyRights(final PersonalState s, final Contract c) {
 	//		return this.respectMyRights(this.getMyResultingState(s, c));

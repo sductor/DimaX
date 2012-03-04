@@ -332,6 +332,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				+ "\n * charge "+ this.getMyProcCharge() + " " + this.getMyMemCharge()
 				+ "\n * relia " + this.getMyReliability()
 				+ "\n * replicas "+(this.myReplicas==null?"empty":this.getMyResourceIdentifiers())
+				+"\n valid ? : "+this.isValid()
 				+ "\n * creation time "+ this.getCreationTime();
 		// +"\n status "+this.getMyStateStatus();
 	}

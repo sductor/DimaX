@@ -76,18 +76,18 @@ ExperimentationProtocol {
 	//
 
 	static boolean varyProtocol=false;
-	static boolean  varyOptimizers=true;
+	static boolean  varyOptimizers=false;
 
 	static boolean varyAccessibleHost=false;
 
-	static boolean varyAgentSelection=true;
+	static boolean varyAgentSelection=false;
 	static boolean varyHostSelection=false;
 
 	static boolean varyHostDispo=false;
 	static boolean varyHostFaultDispersion=true;
 
 	static boolean varyAgentLoad=false;
-	static boolean varyAgentLoadDispersion=true;
+	static boolean varyAgentLoadDispersion=false;
 
 	static boolean varyAgentCriticity=false;
 	static boolean varyAgentCriticityDispersion=false;
@@ -103,8 +103,8 @@ ExperimentationProtocol {
 		return new ReplicationExperimentationParameters(
 				f,
 				Experimentator.myId,
-				ExperimentationProtocol.nbAgents,
-				ExperimentationProtocol.nbHosts,
+				ExperimentationProtocol.startingNbAgents,
+				ExperimentationProtocol.startingNbHosts,
 				ReplicationExperimentationProtocol.doubleParameters.get(3),//kaccessible
 				ReplicationExperimentationProtocol.doubleParameters.get(2),//dispo mean
 				DispersionSymbolicValue.Nul,//dispo dispersion
@@ -331,8 +331,6 @@ ExperimentationProtocol {
 
 	static {
 		resultPath=LogService.getMyPath()+"result_"
-				+ ExperimentationProtocol.nbAgents + "agents_"
-				+ ExperimentationProtocol.nbHosts + "hosts_"
 				+ ExperimentationProtocol._simulationTime / 60000
 				+ "mins"
 				+ (ReplicationExperimentationProtocol.varyAgentSelection==true?"varyAgentSelection":"")
@@ -355,7 +353,8 @@ ExperimentationProtocol {
 	final double nbSimuPerMAchine = 1;
 	@Override
 	public Integer getMaxNumberOfAgentPerMachine(final HostIdentifier id) {
-		return new Integer((int) this.nbSimuPerMAchine* (ExperimentationProtocol.nbAgents + ExperimentationProtocol.nbHosts)+1);
+		return new Integer((int) this.nbSimuPerMAchine* 
+				(ExperimentationProtocol.startingNbAgents + ExperimentationProtocol.startingNbHosts)+1);
 	}
 	//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
 	//		return new Integer(10);

@@ -10,8 +10,8 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
-import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import negotiation.negotiationframework.protocoles.status.CandidatureProposer;
@@ -54,9 +54,8 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 								destructionCandidature.getResource());
 				destructionCandidature.setSpecification(host);
 
-				if (this.getMyAgent().respectMyRights(
-						this.getMyAgent().getMyResultingState(nextState,
-								destructionCandidature))
+				if (this.getMyAgent().getMyResultingState(nextState,
+								destructionCandidature).isValid()
 								|| this.stateStatusIs(
 										this.getMyAgent().getMyResultingState(nextState,
 												destructionCandidature),

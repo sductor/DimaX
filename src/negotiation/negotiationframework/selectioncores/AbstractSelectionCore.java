@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import negotiation.negotiationframework.NegotiationProtocol;
-import negotiation.negotiationframework.SelectionCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.protocoles.collaborative.IllAnswer;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 /**
@@ -33,8 +32,8 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
-	private ContractTrunk<Contract> returned;
-	private ContractTrunk<Contract> given;
+	private ContractTrunk<Contract, ActionSpec, PersonalState> returned;
+	private ContractTrunk<Contract, ActionSpec, PersonalState> given;
 
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
 	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
@@ -52,10 +51,10 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	 */
 
 	@Override
-	public ContractTrunk<Contract> select(final ContractTrunk<Contract> given) {
+	public ContractTrunk<Contract, ActionSpec, PersonalState> select(final ContractTrunk<Contract, ActionSpec, PersonalState> given) {
 		this.returned =
-				new ContractTrunk<Contract>(
-						this.getMyAgent().getIdentifier());
+				new ContractTrunk<Contract, ActionSpec, PersonalState>(
+						this.getMyAgent());
 		this.given = given;
 
 		//		for (Contract c : given.getAllContracts()){
@@ -105,10 +104,8 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 			final List<Contract> rejected) {
 
 		// Verification de la consistance
-		if (!this.getMyAgent().respectMyRights(
-				this.getMyAgent().getMyCurrentState()))
-			throw new RuntimeException("what the  (1)!!!!!!"
-					+ this.getMyAgent().getMyCurrentState());
+		assert this.getMyAgent().getMyCurrentState().isValid():
+			"what the  (1)!!!!!!"+ this.getMyAgent().getMyCurrentState();
 
 		// Mis à jour de l'état si tous les agents ayant été accepter
 		// confirmaient :
@@ -117,8 +114,8 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 						this.getMyAgent().getMyCurrentState(),
 						participantAlreadyAccepted);
 		// Verification de la consistance
-		if (!this.getMyAgent().respectMyRights(currentState))
-			throw new RuntimeException("what the  (2)!!!!!!" + currentState+"\n ACCEPTED \n"+participantAlreadyAccepted+"\n GIVEN \n"+this.given);
+		assert currentState.isValid():
+			"what the  (2)!!!!!!" + currentState+"\n ACCEPTED \n"+participantAlreadyAccepted+"\n GIVEN \n"+this.given;
 
 		final Collection<Contract> toValidate = new ArrayList<Contract>();
 		final Collection<Contract> toReject = new ArrayList<Contract>();
@@ -172,9 +169,9 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 			this.returned.addRejection(this.getMyAgent().getIdentifier(), c);
 		}
 
-		this.logMonologue("Setting my answer "+this.returned, NegotiationProtocol.log_selectionStep);
-		this.notify(new IllAnswer<PersonalState, Contract>(this.returned, currentState));
-		this.logMonologue("After being delaed by relevant services "+this.returned, NegotiationProtocol.log_selectionStep);
+//		this.logMonologue("Setting my answer "+this.returned, CommunicationProtocol.log_selectionStep);
+//		this.notify(new IllAnswer<PersonalState, Contract>(this.returned, currentState));
+//		this.logMonologue("After being delaed by relevant services "+this.returned, CommunicationProtocol.log_selectionStep);
 	}
 
 	//	private void checkImFull(final Collection<Contract> rejected) {

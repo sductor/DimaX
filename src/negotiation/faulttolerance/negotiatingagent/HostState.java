@@ -310,6 +310,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				+ "\n --> lambda : "+this.lambda+
 				"\n --> agents : " + this.getMyResourceIdentifiers()//myReplicatedAgents//getMyAgentIdentifiers()//
 				+ "\n --> faulty? : " + this.isFaulty()
+				+"\n valid ? : "+this.isValid()
 				+"\n --> creation time : "+this.getCreationTime();
 	}
 

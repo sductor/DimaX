@@ -10,19 +10,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import negotiation.negotiationframework.SimpleNegotiatingAgent;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
+import dima.introspectionbasedagents.services.BasicAgentModule;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
-public class ContractTrunk<Contract extends AbstractContractTransition<?>> implements
-DimaComponentInterface {
+public class ContractTrunk<
+Contract extends AbstractContractTransition<ActionSpec>,
+ActionSpec extends AbstractActionSpecification,
+PersonalState extends ActionSpec> 
+extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -4334790767170677224L;
 
-	private final AgentIdentifier myAgentIdentifier;
 
 	private final Map<ContractIdentifier, Contract> identifier2contract =
 			new HashMap<ContractIdentifier, Contract>();
@@ -39,11 +44,14 @@ DimaComponentInterface {
 	//
 	//
 
-	public ContractTrunk(final AgentIdentifier myAgentIdentifier) {
-		super();
-		this.myAgentIdentifier = myAgentIdentifier;
+	public ContractTrunk(final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> agent) {
+		super(agent);
 	}
 
+	public ContractTrunk() {
+		super();
+	}
+	
 	//
 	//
 	//
@@ -123,19 +131,15 @@ DimaComponentInterface {
 	public List<Contract> getAllInitiatorContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
 		for (final Contract c : this.identifier2contract.values())
-			if (c.getInitiator().equals(this.myAgentIdentifier))
+			if (c.getInitiator().equals(this.getMyAgentIdentifier()))
 				l.add(c);
 				return l;
-	}
-
-	public AgentIdentifier getMyAgentIdentifier() {
-		return this.myAgentIdentifier;
 	}
 
 	public List<Contract> getInitiatorRequestableContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
 		for (final Contract c : this.getRequestableContracts())
-			if (c.getInitiator().equals(this.myAgentIdentifier))
+			if (c.getInitiator().equals(this.getMyAgentIdentifier()))
 				l.add(c);
 				return l;
 
@@ -144,7 +148,7 @@ DimaComponentInterface {
 	public List<Contract> getInitiatorOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
 		for (final Contract c : this.waitContracts)
-			if (c.getInitiator().equals(this.myAgentIdentifier))
+			if (c.getInitiator().equals(this.getMyAgentIdentifier()))
 				l.add(c);
 				return l;
 
@@ -153,10 +157,10 @@ DimaComponentInterface {
 	public List<Contract> getParticipantOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
 		for (final Contract c : this.waitContracts)
-			if (!c.getInitiator().equals(this.myAgentIdentifier)
-					&& !this.acceptedContracts.get(this.myAgentIdentifier)
+			if (!c.getInitiator().equals(this.getMyAgentIdentifier())
+					&& !this.acceptedContracts.get(this.getMyAgentIdentifier())
 					.contains(c)
-					&& !this.rejectedContracts.get(this.myAgentIdentifier)
+					&& !this.rejectedContracts.get(this.getMyAgentIdentifier())
 					.contains(c))
 				l.add(c);
 				return l;
@@ -165,8 +169,8 @@ DimaComponentInterface {
 	public List<Contract> getParticipantAlreadyAcceptedContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
 		for (final Contract c : this.getAllContracts())
-			if (!c.getInitiator().equals(this.myAgentIdentifier)
-					&& this.acceptedContracts.get(this.myAgentIdentifier)
+			if (!c.getInitiator().equals(this.getMyAgentIdentifier())
+					&& this.acceptedContracts.get(this.getMyAgentIdentifier())
 					.contains(c))
 				l.add(c);
 				return l;
@@ -201,8 +205,8 @@ DimaComponentInterface {
 
 	public void addRejection(final AgentIdentifier id, final Contract c) {
 		assert this.identifier2contract.containsKey(c.getIdentifier()):c;
-		assert !this.acceptedContracts.get(id).contains(c):"impossible to reject " + c
-		+ " : i previously accepted";
+		assert id.equals(c.getInitiator()) || !this.acceptedContracts.get(id).contains(c):"impossible to reject " + c
+		+ " : "+id+" is participant t previously accepted";
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
 //		if (this.acceptedContracts.get(id).contains(c))
@@ -220,16 +224,19 @@ DimaComponentInterface {
 		//						+ " : i'm participant that previously accepted");
 		/**/
 		this.rejectedContracts.add(id, c);
+		
+		if (id.equals(c.getInitiator()))
+			this.acceptedContracts.get(id).remove(c);
 		/**/
 		if (this.isAFailure(c)){
 			this.waitContracts.remove(c);
 		}
 	}
 //	
-		public void removeRejection(final AgentIdentifier id, final Contract c) {
-			this.rejectedContracts.get(id).remove(c);
-			this.waitContracts.add(c);
-		}
+//		public void removeRejection(final AgentIdentifier id, final Contract c) {
+//			this.rejectedContracts.get(id).remove(c);
+//			this.waitContracts.add(c);
+//		}
 
 	//
 	// Primitive

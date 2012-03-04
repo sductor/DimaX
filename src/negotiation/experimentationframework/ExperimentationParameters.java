@@ -13,17 +13,15 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ExperimentationParameters
 implements DimaComponentInterface {
+	private static final long serialVersionUID = -1735965270944987539L;
 
 	//	final AgentIdentifier experimentatorId;
 
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -1735965270944987539L;
 	private final String simulationName = ExperimentationParameters.newName();
 	private final File f;
 
+
+	
 	protected final AgentIdentifier experimentatorId;
 	public final int nbAgents;
 	public final int nbHosts;

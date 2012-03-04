@@ -266,8 +266,8 @@ public class APIAgent extends BasicCompetentAgent {
 			if (!this.getAvalaibleHosts().contains(machine))
 				throw new RuntimeException("i can not use this machine "+machine+" available machines are "+this.getAvalaibleHosts());
 
-			c.addObserver(this.getIdentifier(), LogService.logNotificationKey);
-			c.addObserver(this.getIdentifier(), EndActivityMessage.class);
+			c.addObserver(this.getMyAgentIdentifier(), LogService.logNotificationKey);
+			c.addObserver(this.getMyAgentIdentifier(), EndActivityMessage.class);
 
 
 			switch (this.myLaunchType) {

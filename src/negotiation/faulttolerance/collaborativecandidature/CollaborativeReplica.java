@@ -16,9 +16,11 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.communicationprotocol.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.protocoles.collaborative.AgentInformedSelectionCore;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedCandidatureContractTrunk;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
@@ -111,14 +113,17 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedC
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, null,
-				new CollaborativeCore(new ReplicationSocialOptimisation(socialWelfare), new InformedCandidatureRationality(new ReplicaCore(),true)),
-				new GreedyBasicSelectionCore(true, false),
+				new CollaborativeCore(
+						new ReplicationSocialOptimisation(socialWelfare), 
+						new InformedCandidatureRationality(new ReplicaCore(),true)),
+				new AgentInformedSelectionCore(),
 				new CollaborativeCandidatureProposer(),
 		new SimpleObservationService(),
-		new ContractTrunk(id));
+		new OneDeciderCommunicationProtocol( new ContractTrunk(), false));
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
+		getMyProtocol().getContracts().setMyAgent(this);
 	}
 
 	//

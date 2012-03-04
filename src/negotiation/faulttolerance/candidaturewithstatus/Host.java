@@ -9,8 +9,8 @@ import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
-import negotiation.negotiationframework.ProposerCore;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
@@ -84,7 +84,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
-		super(id, new HostState(id, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk<ReplicationCandidature>(id));
+		super(id, new HostState(id, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
+		getMyProtocol().getContracts().setMyAgent(this);
 	}
 }
 

@@ -1,6 +1,7 @@
 package negotiation.negotiationframework.contracts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,12 +53,13 @@ AbstractContractTransition<ActionSpec>{
 
 					for (final Contract c : actions){
 						for (final AgentIdentifier id : c.getAllParticipants()){
-							if (c.getSpecificationOf(id)!=null)
-								if (result.containsKey(id)){
-									if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+							try {
+									if (result.containsKey(id)){
+										if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+											result.put(id,c.getSpecificationOf(id));
+									} else
 										result.put(id,c.getSpecificationOf(id));
-								} else
-									result.put(id,c.getSpecificationOf(id));
+							} catch (IncompleteContractException e) {}
 						}
 					}
 					//updating each contract with the freshest state
@@ -68,7 +70,13 @@ AbstractContractTransition<ActionSpec>{
 							}
 					}
 	}
-	
+
+
+	public ReallocationContract(
+			final AgentIdentifier creator,
+			final Contract... actions) {
+		this(creator, Arrays.asList(actions));
+	}
 	//
 	// Methods
 	//
@@ -111,14 +119,14 @@ AbstractContractTransition<ActionSpec>{
 	}
 
 	@Override
-	public ActionSpec getSpecificationOf(final AgentIdentifier id) {
+	public ActionSpec getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
 		return this.actions.get(id).iterator().next().getSpecificationOf(id);
 	}
 
 
 
 	@Override
-	public <State extends ActionSpec> State computeResultingState(final State s) {
+	public <State extends ActionSpec> State computeResultingState(final State s) throws IncompleteContractException {
 		final Set<Contract> contractOfS = this.actions.get(s.getMyAgentIdentifier());
 		State s2 = s;
 		for (final Contract m : contractOfS)
@@ -128,10 +136,39 @@ AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public ActionSpec computeResultingState(final AgentIdentifier id) {
-		return this.computeResultingState(this.getSpecificationOf(id));
+	public <State extends ActionSpec> State  computeResultingState(final AgentIdentifier id) 
+			throws IncompleteContractException {
+		return (State) this.computeResultingState(this.getSpecificationOf(id));
 	}
 
+	@Override
+	public<State extends ActionSpec>  boolean isViable(final State... s) throws IncompleteContractException{
+		return isViable(Arrays.asList(s));
+	}
+
+
+	@Override
+	public <State extends ActionSpec> boolean isViable(
+			Collection<State> initialStates)
+			throws IncompleteContractException {
+		for (Contract c : this){
+			if (!c.isViable(initialStates))
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isInitiallyValid()
+			throws IncompleteContractException {
+		for (Contract c : this){
+			if (!c.isInitiallyValid())
+				return false;
+		}
+		return true;
+	}
+	
+	
 	//
 	// Primitive
 	//
@@ -188,6 +225,8 @@ AbstractContractTransition<ActionSpec>{
 		Collection<ContractIdentifier> myIds = new HashSet<ContractIdentifier>();
 		for (Contract c : this)
 			myIds.add(c.getIdentifier());
-		return myIds;
+				return myIds;
 	}
+
+
 }

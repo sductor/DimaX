@@ -375,6 +375,7 @@ public class ReplicationLaborantin extends Laborantin {
 		/*
 		 * Host instanciation
 		 */
+		
 
 		final DistributionParameters<ResourceIdentifier> fault = new DistributionParameters<ResourceIdentifier>(
 				this.getSimulationParameters().getHostsIdentifier(),

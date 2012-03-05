@@ -22,6 +22,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	final Double disponibility;
 	final Double reliability;
 
+	final int numberOfAllocatedResources;
 	//	public void setiAmDead(final boolean iAmDead) {
 	//		this.iAmDead = iAmDead;
 	//	}
@@ -39,6 +40,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.disponibility = s.getMyDisponibility();
 		this.reliability = s.getMyReliability();
 		this.lastInfo = s.getMyDisponibility() == 0;
+		this.numberOfAllocatedResources=s.getMyReplicas().size();
 		this.status = status;
 	}
 
@@ -51,6 +53,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.disponibility = s.getMyDisponibility();
 		this.reliability = s.getMyReliability();
 		this.lastInfo = s.getMyDisponibility() == 0;
+		this.numberOfAllocatedResources=s.getMyReplicas().size();
 		this.status = null;
 	}
 
@@ -93,6 +96,10 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	@Override
 	public void setLastInfo() {
 		this.lastInfo=true;
+	}
+
+	public int getNumberOfAllocatedResources() {
+		return numberOfAllocatedResources;
 	}
 
 }

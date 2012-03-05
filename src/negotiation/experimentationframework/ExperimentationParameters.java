@@ -23,8 +23,8 @@ implements DimaComponentInterface {
 
 	
 	protected final AgentIdentifier experimentatorId;
-	public final int nbAgents;
-	public final int nbHosts;
+	public int nbAgents;
+	public int nbHosts;
 
 	public String _usedProtocol;
 	public  String _agentSelection;

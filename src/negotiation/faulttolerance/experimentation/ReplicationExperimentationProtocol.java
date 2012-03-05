@@ -78,6 +78,8 @@ ExperimentationProtocol {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=false;
 
+	static boolean varyAgentsAndhosts=false;
+	
 	static boolean varyAccessibleHost=false;
 
 	static boolean varyAgentSelection=false;
@@ -138,6 +140,8 @@ ExperimentationProtocol {
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new LinkedList<ReplicationExperimentationParameters>();
 		simuToLaunch.add(ReplicationExperimentationProtocol.getDefaultParameters(f));
+		if (ReplicationExperimentationProtocol.varyAgentsAndhosts)
+			simuToLaunch = this.varyAgentsAndhosts(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAccessibleHost)
 			simuToLaunch = this.varyAccessibleHost(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyHostDispo)
@@ -225,6 +229,17 @@ ExperimentationProtocol {
 			for (final String v : ReplicationExperimentationProtocol.welfare){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._socialWelfare=v;
+				result.add(n);
+			}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
+				final ReplicationExperimentationParameters n =  p.clone();
+				n.nbAgents=(int)(v*(double)ExperimentationProtocol.startingNbAgents);
+				n.nbHosts=(int)(v*(double)ExperimentationProtocol.startingNbHosts);
 				result.add(n);
 			}
 		return result;

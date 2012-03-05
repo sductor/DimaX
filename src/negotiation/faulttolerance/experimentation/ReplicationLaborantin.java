@@ -101,6 +101,8 @@ public class ReplicationLaborantin extends Laborantin {
 		LightWeightedAverageDoubleAggregation[] criticite;
 		/* Disponibility */
 		HeavyDoubleAggregation[] agentsDispoEvolution;
+		/* Quantile */
+		HeavyAggregation<Double>[] agentsSaturationEvolution;
 		/* Point */
 		// Map<AgentIdentifier, Double> firstReplicationtime =
 		// new HashMap<AgentIdentifier, Double>();
@@ -129,9 +131,11 @@ public class ReplicationLaborantin extends Laborantin {
 			this.criticite = new LightWeightedAverageDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
 			this.hostsChargeEvolution = new HeavyDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
 			this.faulty = new LightAverageDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
+			this.agentsSaturationEvolution = new HeavyDoubleAggregation[ExperimentationParameters.getNumberOfTimePoints()];
 
 			for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++) {
 				this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
+				this.agentsSaturationEvolution[i] = new HeavyDoubleAggregation();
 				this.agentsReliabilityEvolution[i] = new HeavyDoubleAggregation();
 				this.agentsDispoEvolution[i] = new HeavyDoubleAggregation();
 				this.criticite[i] = new LightWeightedAverageDoubleAggregation();
@@ -165,6 +169,9 @@ public class ReplicationLaborantin extends Laborantin {
 		}private void updateAnAgentValue(final ReplicationResultAgent ag, final int i) {
 			this.getSimulationParameters();
 			if (i < ExperimentationParameters.getNumberOfTimePoints()) {
+				this.agentsSaturationEvolution[i].add(
+						((double)ag.getNumberOfAllocatedResources()/
+								((ReplicationExperimentationParameters)this.getSimulationParameters()).kAccessible));
 				this.agentsReliabilityEvolution[i].add(ag.getReliability());
 				this.agentsDispoEvolution[i].add(ag.getDisponibility());
 				this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
@@ -245,6 +252,10 @@ public class ReplicationLaborantin extends Laborantin {
 					.getQuantileTimeEvolutionObs(this.getSimulationParameters(),"charge",
 							this.hostsChargeEvolution, 0.75,
 							this.getSimulationParameters().nbHosts), true, false);
+			LogService.logOnFile(this.getSimulationParameters().getF(), ObservingGlobalService
+					.getQuantileTimeEvolutionObs(this.getSimulationParameters(),"agentSaturation",
+							this.agentsSaturationEvolution, 0.75,
+							this.getSimulationParameters().nbAgents), true, false);
 			LogService.logOnFile(this.getSimulationParameters().getF(), ObservingGlobalService
 					.getMeanTimeEvolutionObs(this.getSimulationParameters(),"percent of hosts that are alive",
 							this.faulty, 0.75,
@@ -379,7 +390,7 @@ public class ReplicationLaborantin extends Laborantin {
 			this.myInformationService.add((host).getMyCurrentState());
 		}
 
-		this.logMonologue("Those are my dispos!!!!! :\n" + this.myInformationService.show(HostState.class),LogService.onScreen);
+		this.logMonologue("Those are my dispos!!!!! :\n" + this.myInformationService.show(HostState.class),LogService.onFile);
 
 		/*
 		 * Agent instanciation

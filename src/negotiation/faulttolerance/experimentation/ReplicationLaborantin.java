@@ -379,7 +379,7 @@ public class ReplicationLaborantin extends Laborantin {
 			this.myInformationService.add((host).getMyCurrentState());
 		}
 
-		this.logMonologue("Those are my dispos!!!!! :\n" + this.myInformationService.show(HostState.class),LogService.onFile);
+		this.logMonologue("Those are my dispos!!!!! :\n" + this.myInformationService.show(HostState.class),LogService.onScreen);
 
 		/*
 		 * Agent instanciation
@@ -625,6 +625,8 @@ public class ReplicationLaborantin extends Laborantin {
 				.equals(ExperimentationProtocol.getKey4mirrorproto()))
 			return new CollaborativeHost(
 					hostId,
+					this.getSimulationParameters().kAccessible * this.getSimulationParameters().hostProcCapacity.get(hostId),
+					this.getSimulationParameters().kAccessible * this.getSimulationParameters().hostMemCapacity.get(hostId),
 					fault.get(hostId),
 					this.getSimulationParameters()._socialWelfare,
 					this.dispos);
@@ -673,7 +675,11 @@ public class ReplicationLaborantin extends Laborantin {
 						"Static parameters est mal conf : _usedProtocol = "
 								+ this.getSimulationParameters()._usedProtocol);
 
-			final Host hostAg = new Host(hostId, fault.get(hostId),
+			final Host hostAg = new Host(
+					hostId, 
+					this.getSimulationParameters().kAccessible * this.getSimulationParameters().hostProcCapacity.get(hostId),
+					this.getSimulationParameters().kAccessible * this.getSimulationParameters().hostMemCapacity.get(hostId),					
+					fault.get(hostId),
 					core, select, proposer, informations, this.dispos);
 
 			return hostAg;

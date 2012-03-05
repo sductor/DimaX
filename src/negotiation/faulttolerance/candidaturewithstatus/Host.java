@@ -56,6 +56,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		@Override
 		protected void resetMyState() {
 			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
+					Host.this.getMyCurrentState().getProcChargeMax(),
+					Host.this.getMyCurrentState().getMemChargeMax(),
 					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().nextStateCounter));
 			//			this.resetMyUptime();
 		}
@@ -75,6 +77,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	public Host(
 			final ResourceIdentifier id,
+			final double hostMaxProc, final double hostMaxMem, 
 			final double lambda,
 			final HostCore myRationality,
 			final AbstractSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
@@ -84,7 +87,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
-		super(id, new HostState(id, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
+		super(id, new HostState(id, hostMaxProc, hostMaxMem, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
 		getMyProtocol().getContracts().setMyAgent(this);
 	}
 }

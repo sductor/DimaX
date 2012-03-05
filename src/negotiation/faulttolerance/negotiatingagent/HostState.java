@@ -31,10 +31,10 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	private  boolean faulty;
 
 	// Take all fields
-	public HostState(final ResourceIdentifier myAgent, final double lambda, final int stateNumber) {
+	public HostState(final ResourceIdentifier myAgent, final double hostMaxProc, final double hostMaxMem, final double lambda, final int stateNumber) {
 		this(myAgent,
 				new HashSet<ReplicaState>(), lambda,
-				ReplicationExperimentationParameters.hostMaxProc, 0., ReplicationExperimentationParameters.hostMaxMem, 0.,
+				hostMaxProc, 0., hostMaxMem, 0.,
 				false, //new Date().getTime(),
 				stateNumber);
 	}
@@ -148,11 +148,11 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		return this.memCurrentCharge;
 	}
 
-	Double getProcChargeMax() {
+	public Double getProcChargeMax() {
 		return this.procChargeMax;
 	}
 
-	Double getMemChargeMax() {
+	public Double getMemChargeMax() {
 		return this.memChargeMax;
 	}
 
@@ -304,6 +304,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		return "\nHOST="+ this.getMyAgentIdentifier()
 				//				+ "\n Date "+ this.getCreationTime()
 				+ "\n --> charge : "+ this.getMyCharge()
+				+ "\n --> capacity : "+ this.getProcChargeMax()+", "+this.getMemChargeMax()
 				//				+ "\n * dispo  : "
 				//				+ NegotiatingHost.this.myFaultAwareService
 				//						.getDisponibility(this.getMyAgentIdentifier())

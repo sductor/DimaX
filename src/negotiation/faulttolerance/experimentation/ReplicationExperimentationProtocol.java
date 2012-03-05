@@ -89,6 +89,9 @@ ExperimentationProtocol {
 	static boolean varyAgentLoad=false;
 	static boolean varyAgentLoadDispersion=false;
 
+	static boolean varyHostCapacity=false;
+	static boolean varyHostCapacityDispersion=false;
+	
 	static boolean varyAgentCriticity=false;
 	static boolean varyAgentCriticityDispersion=false;
 
@@ -107,9 +110,11 @@ ExperimentationProtocol {
 				ExperimentationProtocol.startingNbHosts,
 				ReplicationExperimentationProtocol.doubleParameters.get(3),//kaccessible
 				ReplicationExperimentationProtocol.doubleParameters.get(2),//dispo mean
-				DispersionSymbolicValue.Nul,//dispo dispersion
+				DispersionSymbolicValue.Fort,//dispo dispersion
 				ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
-				DispersionSymbolicValue.Nul,//load dispersion
+				DispersionSymbolicValue.Fort,//load dispersion
+				ReplicationExperimentationProtocol.doubleParameters.get(1),//capacity mean
+				DispersionSymbolicValue.Nul,//capcity dispersion
 				ReplicationExperimentationProtocol.doubleParameters.get(2),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
 				ExperimentationProtocol.getKey4mirrorproto(),
@@ -143,6 +148,10 @@ ExperimentationProtocol {
 			simuToLaunch = this.varyAgentLoad(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentLoadDispersion)
 			simuToLaunch = this.varyAgentLoadDispersion(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyHostCapacity)
+			simuToLaunch = this.varyHostCapacity(simuToLaunch);
+		if (ReplicationExperimentationProtocol.varyHostCapacityDispersion)
+			simuToLaunch = this.varyHostCapacityDispersion(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentCriticity)
 			simuToLaunch = this.varyAgentCriticity(simuToLaunch);
 		if (ReplicationExperimentationProtocol.varyAgentCriticityDispersion)
@@ -273,6 +282,27 @@ ExperimentationProtocol {
 			}
 		return result;
 	}
+	private Collection<ReplicationExperimentationParameters> varyHostCapacity(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
+				final ReplicationExperimentationParameters n = p.clone();
+				n.hostCapacityMean=v;
+				result.add(n);
+			}
+		return result;
+	}
+
+	private Collection<ReplicationExperimentationParameters> varyHostCapacityDispersion(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps)
+			for (final DispersionSymbolicValue v : ReplicationExperimentationProtocol.dispersion){
+				final ReplicationExperimentationParameters n = p.clone();
+				n.hostCapacityDispersion=v;
+				result.add(n);
+			}
+		return result;
+	}
 	private Collection<ReplicationExperimentationParameters> varyAgentCriticity(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps)
@@ -340,7 +370,8 @@ ExperimentationProtocol {
 				+ (ReplicationExperimentationProtocol.varyHostSelection?"varyHostSelection":"")
 				+ (ReplicationExperimentationProtocol.varyOptimizers?"varyOptimizers":"")
 				+ (ReplicationExperimentationProtocol.varyAccessibleHost?"varyAccessibleHost":"")
-				+ (ReplicationExperimentationProtocol.varyAgentLoad?"varyAgentLoad":"");
+				+ (ReplicationExperimentationProtocol.varyAgentLoad?"varyAgentLoad":"")
+				+ (ReplicationExperimentationProtocol.varyHostCapacity?"varyHostCapacity":"");
 	}
 
 

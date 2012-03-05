@@ -173,7 +173,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		// return !this.contracts.isEmpty();
 	}
 
-	Collection<Contract> cleaned = new ArrayList<Contract>();
+	protected Collection<Contract> cleaned = new ArrayList<Contract>();
 	protected void cleanContracts() {
 		for (final Contract c : this.contracts.getAllInitiatorContracts())
 			if (c.hasReachedExpirationTime()) {

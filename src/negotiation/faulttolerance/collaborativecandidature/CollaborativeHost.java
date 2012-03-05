@@ -66,6 +66,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, InformedCand
 		@Override
 		protected void resetMyState() {
 			CollaborativeHost.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
+					CollaborativeHost.this.getMyCurrentState().getProcChargeMax(),
+					CollaborativeHost.this.getMyCurrentState().getMemChargeMax(),
 					CollaborativeHost.this.getMyCurrentState().getLambda(),this.getMyAgent().nextStateCounter));
 			//			this.resetMyUptime();
 		}
@@ -85,13 +87,14 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, InformedCand
 
 	public CollaborativeHost(
 			final ResourceIdentifier myId,
-			final double lambda,
+			final double hostMaxProc, final double hostMaxMem,
+			final double lambda, 
 			final String socialWelfare,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
 		super(
 				myId, 
-				new HostState(myId, lambda,-1),
+				new HostState(myId,hostMaxProc, hostMaxMem,lambda,-1),
 				new InformedCandidatureRationality(new HostCore(true, socialWelfare),false),
 				new ResourceInformedSelectionCore(){
 					@Override

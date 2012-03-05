@@ -4,6 +4,7 @@ import java.io.File;
 
 import negotiation.experimentationframework.ExperimentationParameters;
 import negotiation.experimentationframework.ExperimentationProtocol;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.distribution.DistributionParameters;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
@@ -25,19 +26,21 @@ ExperimentationParameters {
 	public  Double agentLoadMean;
 	public DispersionSymbolicValue agentLoadDispersion;
 
+	public Double hostCapacityMean;
+	public DispersionSymbolicValue hostCapacityDispersion;
+	
 	public Double agentCriticityMean;
 	public DispersionSymbolicValue agentCriticityDispersion;
 
 	public Boolean dynamicCriticity;
 	public Double host_maxSimultaneousFailure;
 
+	
 	/***
 	 * Constantes
 	 */
 
 
-	public static final Double hostMaxProc = 1.;
-	public static final Double hostMaxMem = 1.;
 
 
 	/*
@@ -99,6 +102,8 @@ ExperimentationParameters {
 	DistributionParameters<AgentIdentifier> agentMemory;
 
 
+	DistributionParameters<ResourceIdentifier> hostProcCapacity;
+	DistributionParameters<ResourceIdentifier> hostMemCapacity;
 
 
 
@@ -113,6 +118,8 @@ ExperimentationParameters {
 			final DispersionSymbolicValue hostFaultProbabilityDispersion,
 			final Double agentLoadMean,
 			final DispersionSymbolicValue agentLoadDispersion,
+			final Double hostCapacityMean,
+			final DispersionSymbolicValue hostcapacityDispersion,
 			final Double agentCriticityMean,
 			final DispersionSymbolicValue agentCriticityDispersion,
 			final String usedProtocol,
@@ -129,6 +136,8 @@ ExperimentationParameters {
 		this.agentLoadDispersion=agentLoadDispersion;
 		this.agentCriticityMean=agentCriticityMean;
 		this.agentCriticityDispersion=agentCriticityDispersion;
+		this.hostCapacityMean=hostCapacityMean;
+		this.hostCapacityDispersion=hostcapacityDispersion;
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;
 		this._agentSelection = agentSelection;
@@ -145,6 +154,9 @@ ExperimentationParameters {
 			return super.equals(that) && this.getRealkAccessible()==that.getRealkAccessible() &&
 					this.hostFaultProbabilityMean.equals( that.hostFaultProbabilityMean) &&
 					this.agentLoadMean.equals(that.agentLoadMean) &&
+					this.agentLoadDispersion.equals(that.agentLoadDispersion) &&
+					this.hostCapacityMean.equals(that.hostCapacityMean) &&
+					this.hostCapacityDispersion.equals(that.hostCapacityDispersion) &&
 					this._usedProtocol.equals(that._usedProtocol) &&
 					this._socialWelfare.equals(that._socialWelfare) &&
 					this._agentSelection.equals(that._agentSelection) &&
@@ -168,7 +180,9 @@ ExperimentationParameters {
 				+1024*this.agentCriticityMean.hashCode()
 				+2048*this.agentCriticityDispersion.hashCode()
 				+4096*this.dynamicCriticity.hashCode()
-				+8192*this.host_maxSimultaneousFailure.hashCode();
+				+8192*this.host_maxSimultaneousFailure.hashCode()
+				+16000*this.hostCapacityMean.hashCode()
+				+32000*this.hostCapacityDispersion.hashCode();
 	}
 	//
 	// Accessors
@@ -229,6 +243,8 @@ ExperimentationParameters {
 				this.hostDisponibilityDispersion,
 				this.agentLoadMean,
 				this.agentLoadDispersion,
+				this.hostCapacityMean,
+				this.hostCapacityDispersion,
 				this.agentCriticityMean,
 				this.agentCriticityDispersion,
 				this._usedProtocol,
@@ -252,6 +268,12 @@ ExperimentationParameters {
 		this.agentMemory = new DistributionParameters<AgentIdentifier>(
 				this.getReplicasIdentifier(), this.agentLoadMean,
 				this.agentLoadDispersion);
+		this.hostMemCapacity = new DistributionParameters<ResourceIdentifier>(
+				this.getHostsIdentifier(), this.hostCapacityMean,
+				this.hostCapacityDispersion);
+		this.hostProcCapacity = new DistributionParameters<ResourceIdentifier>(
+				this.getHostsIdentifier(), this.hostCapacityMean,
+				this.hostCapacityDispersion);
 	}
 
 

@@ -11,6 +11,7 @@ import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.server.HostIdentifier;
 
 public abstract class ExperimentationProtocol implements DimaComponentInterface{
+	private static final long serialVersionUID = -11300850940001517L;
 
 	//
 	// Configuration statique
@@ -24,7 +25,6 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -11300850940001517L;
 	public static final long _simulationTime = (1000 * 20);
 	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 10;
 

@@ -64,7 +64,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	@Override
 	public void execute(final ReplicationCandidature c) {
 		try {
-			assert c.isViable();//this.getMyAgent().respectRights(c);
+			assert c.isViable():c;//this.getMyAgent().respectRights(c);
 			//		logMonologue(
 			//				"executing "+c+" from state "
 			//		+this.getMyAgent().getMyCurrentState()

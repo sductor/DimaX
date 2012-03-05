@@ -12,8 +12,8 @@ import java.util.List;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
 
+import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTrunk;

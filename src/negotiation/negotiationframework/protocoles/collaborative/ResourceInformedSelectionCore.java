@@ -17,10 +17,10 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dima.introspectionbasedagents.shells.NotReadyException;
 import dimaxx.tools.HyperSetGeneration;
+import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol;
-import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.ProposerCore;
-import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
@@ -72,7 +72,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 		else {
 			if (allCreation(allContracts)){
 				assert contracts.getReallocationContracts().isEmpty();
-				
+
 				//Trying to accept simple candidatures
 				//accepting as many as possible
 				Collections.shuffle(allContracts);
@@ -112,7 +112,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 					Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts = generateUpgradingContracts(currentState, rejected, hosted, myCore, contracts);
 					propCore.addContractsToPropose(ugradingContracts);
 					if (!ugradingContracts.isEmpty()){
-						logMonologue("upgrading contracts founds! "+ugradingContracts, AbstractCommunicationProtocol.log_selectionStep);
+						logMonologue("upgrading contracts founds! "+contracts.getReallocationContracts(), AbstractCommunicationProtocol.log_selectionStep);
 						logMonologue("yyeeeeaaaaahhhhhh!!!!!",LogService.onScreen);
 					}
 				}
@@ -204,7 +204,16 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 				new HashSet<InformedCandidature<Contract, ActionSpec>>();
 
 		concerned.addAll(unacceptedContracts);//adding allocation candidature
-		concerned.addAll(hosted);//adding allocation candidature		
+
+		try {
+			for (InformedCandidature<Contract, ActionSpec> h : hosted){
+				if (h.isViable())
+					concerned.add(h);//adding allocation candidature
+
+			}	
+		} catch (IncompleteContractException e) {
+			throw new RuntimeException();
+		}	
 
 		assert allComplete(concerned):concerned+" "+myAgentContractTrunk;
 
@@ -230,6 +239,11 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 				//on l'ajoute a la base de contrat
 				myAgentContractTrunk.addContract(c);
 				//Ajout aux propositions à faire
+				try {
+					assert c.isViable();
+				} catch (IncompleteContractException e) {
+					getMyAgent().signalException("impossible");
+				}
 				toPropose.add(c);
 			} else {//sinon on la laisse en attente
 				assert unacceptedContracts.contains(c):unacceptedContracts;
@@ -245,7 +259,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 				actions.add(c.getCandidature());				
 			}
 			//-->ajout
-			
+
 			myAgentContractTrunk.addReallocContract(
 					new ReallocationContract<Contract, ActionSpec>(
 							this.getIdentifier(),
@@ -317,6 +331,13 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 		return true;
 	}
 
+	private boolean allDestruction(Collection<InformedCandidature<Contract, ActionSpec>> contracts){
+		for (InformedCandidature<Contract, ActionSpec> c : contracts){
+			if (c.getCandidature().isMatchingCreation())
+				return false;
+		}
+		return true;
+	}
 }
 
 //	private boolean validityVerification(

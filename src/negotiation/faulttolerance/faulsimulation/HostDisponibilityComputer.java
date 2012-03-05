@@ -187,7 +187,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		Static, Weibull, Poisson
 	}
 
-	private  static final DisponibilityComputationType choosenType = DisponibilityComputationType.Poisson;//Static;//
+	private  static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
 
 	private  static Double getDisponibility(
 			final Map<ResourceIdentifier, Double> hosts_lambdas,

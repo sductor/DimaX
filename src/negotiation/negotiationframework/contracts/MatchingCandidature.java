@@ -94,18 +94,19 @@ extends ContractTransition<ActionSpec> {
 			hostSpecif = "unavailable";
 			//			hostResult = "unavailable";
 		}
-		try {
-			isviable= isViable()+"";
-		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
-			isviable="unavailable";
-		}
+//		try {
+//			isviable= isViable()+"";
+//		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+//			isviable="unavailable";
+//		}
 
 		return this.getIdentifier() + " -> ("
 		+ (this.creation ? "create" : "destruct") + ")"
 		//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
 		+"\n  -----> agent specif : "+agentSpecif//+" --> resulting in "+agentResult
 		+"\n  -----> host specif : "+hostSpecif//+" --> resulting in "+hostResult
-		+"\n ***************** isViable? "+isviable;
+//		+"\n ***************** isViable? "+isviable
+		;
 
 	}
 }

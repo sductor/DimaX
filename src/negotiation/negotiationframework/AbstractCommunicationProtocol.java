@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.communicationprotocol;
+package negotiation.negotiationframework;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +8,6 @@ import java.util.Set;
 import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.faulttolerance.candidaturewithstatus.Host;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
@@ -527,7 +526,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// @role(NegotiationParticipant.class)
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.Request, protocol = AbstractCommunicationProtocol.class)
-	void receiveRequest(final SimpleContractAnswer m) {
+	void receiveRequest(final SimpleContractAnswer m) {		
 		this.cleanContracts();
 		final ContractIdentifier c = m.getIdentifier();
 		Contract contract;
@@ -537,42 +536,43 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			this.faceAnUnknownContract(e);
 			return;
 		}
+
+		assert !c.hasReachedExpirationTime();
+		assert (!(this.getMyAgent() instanceof Host)	|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty());
+		assert this.contracts.getContractsAcceptedBy(this.getMyAgent().getIdentifier()).contains(contract);
+
+		final ActionSpec s = m.getSpec();
+		if (m!=null) this.getMyAgent().getMyInformation().add(s);
+		
+		try {
+			assert contract.isViable(this.getMyAgent().getMyCurrentState()):
+				"what the !!!!!!\n bad contract "
+				+this.getContracts().statusOf(contract)
+				+ "\nnew state "
+				+ this.getMyAgent()
+				.getMyResultingState(contract);
+		} catch (IncompleteContractException e1) {
+			getMyAgent().signalException("what the !!!!!!\n bad contract "
+					+this.getContracts().statusOf(contract)
+					+ "\nnew state "
+					+ this.getMyAgent()
+					.getMyResultingState(contract));
+		}		
+
 		this.getMyAgent().logMonologue("I'll apply proposal "+c,AbstractCommunicationProtocol.log_negotiationStep);//+"\n"+contracts);
 
-		try {
-			if (!c.hasReachedExpirationTime())
-				if (!(this.getMyAgent() instanceof Host)
-						|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty())
-					if (this.contracts.getContractsAcceptedBy(
-							this.getMyAgent().getIdentifier()).contains(contract)) {
-						if (!contract.isViable(this.getMyAgent().getMyCurrentState()))
-							throw new RuntimeException(
-									"what the !!!!!!\n bad contract "
-											+this.getContracts().statusOf(contract)
-											+ "\nnew state "
-											+ this.getMyAgent()
-											.getMyResultingState(contract));
-						else {
 
-							this.getMyAgent().execute(contract);
-							this.contracts.remove(contract);
-							// alreadyExecuted.add(c);
+		this.getMyAgent().execute(contract);
+		this.contracts.remove(contract);
 
-							//updating
-							for (final AgentIdentifier id : contract.getAllParticipants())
-								if (!id.equals(this.getIdentifier()))
-									try {
-										this.getMyAgent().getMyInformation().add(contract.computeResultingState(id));
-									} catch (IncompleteContractException e) {
-										throw new RuntimeException(e);
-									}
-						}
-					} else {
-						this.getMyAgent().signalException("I can not execute a contract i have not accepted!!"+ c);
-						this.sendMessage(c.getParticipants(), new ShowYourPocket(this.getIdentifier(),"receiveRequest"));
-					}
-		} catch (IncompleteContractException e) {
-			throw new RuntimeException();
+		//updating
+		for (final AgentIdentifier id : contract.getAllParticipants()){
+			if (!id.equals(this.getIdentifier()))
+				try {
+					this.getMyAgent().getMyInformation().add(contract.computeResultingState(id));
+				} catch (IncompleteContractException e) {
+					throw new RuntimeException(e);
+				}
 		}
 	}
 

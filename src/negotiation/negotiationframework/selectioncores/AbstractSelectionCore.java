@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol;
-import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;

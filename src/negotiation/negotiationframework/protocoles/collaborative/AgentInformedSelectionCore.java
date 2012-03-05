@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.communicationprotocol.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -63,9 +63,9 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 			
 			try {
 				while (c.computeResultingState(currentState).isValid()){
-					assert getMyAgent().Iaccept(currentState, c);
+//					assert getMyAgent().Iaccept(currentState, c);
 					accepted.add(c);
-
+					currentState = c.computeResultingState(currentState);
 					if (allContracts.isEmpty())
 						break;
 					else

@@ -1,8 +1,9 @@
-package negotiation.negotiationframework.communicationprotocol;
+package negotiation.negotiationframework.protocoles;
 
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
+import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;

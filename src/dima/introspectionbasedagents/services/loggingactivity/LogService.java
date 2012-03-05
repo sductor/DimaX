@@ -53,9 +53,9 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//Order or the log to be written to screen
 	public  boolean activateCommtoScreen = false;
 	public  boolean activateExceptoScreen = true;
-	public  boolean activateMonotoScreen = true;
+	public static  Boolean activateMonotoScreen = null;
 	//Order or the log to be written in specific files
-	public boolean activateMonoToFiles = true;
+	public static Boolean activateMonoToFiles = null;
 	public boolean activateCommtoFiles = false;
 	public  boolean activateExceptoFile = true;
 
@@ -100,6 +100,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	// Accessors
 	//
 
+	public static void setLog(boolean b) {
+		activateMonotoScreen = b;
+		activateMonoToFiles = b;
+	}
+	
 	@Override
 	public void addLogKey(final String key, final boolean toScreen, final boolean toFile){
 		if (this.keysToScreen.put(key,toScreen)!=null || this.keysToFiles.put(key, toFile)!=null)
@@ -764,8 +769,6 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public void sendNotificationNow() {
 		this.myAgent.sendNotificationNow();
 	}
-
-
 }
 
 

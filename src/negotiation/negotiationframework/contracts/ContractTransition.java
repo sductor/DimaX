@@ -101,17 +101,21 @@ AbstractContractTransition<ActionSpec> {
 
 	@Override
 	public void setSpecification(final ActionSpec s) {
-		if (s==null)
-			throw new RuntimeException("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+		assert s!=null;
+
 		if (this.actors.contains(s.getMyAgentIdentifier()))
-			this.specs.put(s.getMyAgentIdentifier(), s);
+//			if (specs.containsKey(s.getMyAgentIdentifier())){
+//				if (s.isNewerThan(specs.get(s.getMyAgentIdentifier()))>0)
+//						this.specs.put(s.getMyAgentIdentifier(), s);
+//			} else				
+				this.specs.put(s.getMyAgentIdentifier(), s);
 		else
 			throw new RuntimeException("unappropriate specification set");
 
-		try {
-			if (!Laborantin.initialisation)
-				assert isInitiallyValid():this;
-		} catch (IncompleteContractException e){/*ok!*/}
+//		try {
+//			if (!Laborantin.initialisation)
+//				assert isInitiallyValid():this;
+//		} catch (IncompleteContractException e){/*ok!*/}
 	}
 
 	/*

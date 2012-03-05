@@ -53,22 +53,14 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 		try {
 			Map<AgentIdentifier, ActionSpec> initialStates =this.getInitialStates(c1, c2);
-			
-			Collection<ActionSpec> temp1 = 
+
+			final Collection<ActionSpec> s1 = 
 					this.getResultingAllocation(initialStates, c1);
-			final Collection<ActionSpec> temp2 =
+			final Collection<ActionSpec> s2 =
 					this.getResultingAllocation(initialStates, c2);
-
-			final Collection<ActionSpec> s1 = new ArrayList<ActionSpec>();
-			final Collection<ActionSpec> s2 = new ArrayList<ActionSpec>();
-
-			for (final ActionSpec s : temp1){
-				s1.add(s);
-			}
-			for (final ActionSpec s : temp2){
-				s2.add(s);
-			}
 			
+			assert s1.size()==s2.size();
+
 			if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
 				//			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
 				final int pref = SocialChoiceFunctions.leximinWelfare(s1, s2, this.getComparator());
@@ -123,11 +115,11 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 				new HashMap<AgentIdentifier, ActionSpec>();
 		meAsMap.putAll(initialStates);
 
-		for (final Contract c : alloc)
+		for (final Contract c : alloc){
 			for (final AgentIdentifier id : c.getAllParticipants())
 				meAsMap.put(id, c.computeResultingState(meAsMap.get(id)));
-
-					return meAsMap.values();
+		}
+		return meAsMap.values();
 	}
 }
 

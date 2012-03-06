@@ -12,7 +12,6 @@ import java.util.List;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
 
-import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
@@ -20,6 +19,7 @@ import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 

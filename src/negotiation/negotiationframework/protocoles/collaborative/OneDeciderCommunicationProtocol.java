@@ -9,7 +9,6 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
@@ -17,6 +16,7 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition.Inc
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.UnknownContractException;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 
 public class OneDeciderCommunicationProtocol <
 ActionSpec extends AbstractActionSpecification,

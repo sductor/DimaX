@@ -8,7 +8,7 @@ import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 /**
- * @see negotiation.negotiationframework.AbstractCommunicationProtocol
+ * @see negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
  *
  * @author Ductor Sylvain
  *

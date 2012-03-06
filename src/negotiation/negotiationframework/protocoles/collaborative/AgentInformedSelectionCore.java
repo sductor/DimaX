@@ -8,11 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public class AgentInformedSelectionCore <

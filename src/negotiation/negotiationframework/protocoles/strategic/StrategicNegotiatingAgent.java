@@ -9,7 +9,7 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.strategic.evaluation.AbstractStrategicEvaluationModule;
 import negotiation.negotiationframework.protocoles.strategic.exploration.AbstractStrategicExplorationModule;
 import negotiation.negotiationframework.rationality.RationalCore;
-import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.selection.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;

@@ -26,7 +26,7 @@ import negotiation.negotiationframework.protocoles.collaborative.ResourceInforme
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.status.CandidatureProposer;
 import negotiation.negotiationframework.rationality.CollaborativeCore;
-import negotiation.negotiationframework.selectioncores.GreedyBasicSelectionCore;
+import negotiation.negotiationframework.selection.GreedyBasicSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;

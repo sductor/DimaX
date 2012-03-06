@@ -1,31 +1,56 @@
 package negotiation.horizon.negociatingagent;
 
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.library.information.ObservationService;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.agent.RationalCore;
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
+import negotiation.negotiationframework.interaction.consensualnegotiation.InactiveProposerCore;
+import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.interaction.selectioncores.AbstractSelectionCore;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.library.information.ObservationService;
 
+/**
+ * A SubstrateNode is an agent representing a physical computer, able to
+ * virtualize some virtual nodes.
+ * 
+ * @author Vincent Letard
+ */
 public class SubstrateNode extends
-		SimpleNegotiatingAgent<HorizonSpecification, SubstrateNodeState, HorizonContract> {
+	SimpleNegotiatingAgent<HorizonSpecification, SubstrateNodeState, HorizonContract> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -9069889310850887134L;
+    /**
+     * Serial version identifier.
+     */
+    private static final long serialVersionUID = -9069889310850887134L;
 
-	public SubstrateNode(
-			AgentIdentifier id,
-			SubstrateNodeState myInitialState,
-			RationalCore<HorizonSpecification, SubstrateNodeState, HorizonContract> myRationality,
-			AbstractSelectionCore<HorizonSpecification, SubstrateNodeState, HorizonContract> selectionCore,
-			AbstractProposerCore<? extends SimpleNegotiatingAgent, HorizonSpecification, SubstrateNodeState, HorizonContract> proposerCore,
-			ObservationService myInformation) throws CompetenceException {
-		super(id, myInitialState, myRationality, selectionCore, proposerCore,
-				myInformation);
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Constructs a new SubstrateNode.
+     * 
+     * @param id
+     * @param myInitialState
+     * @param myRationality
+     * @param selectionCore
+     * @param myInformation
+     * @throws CompetenceException
+     */
+    public SubstrateNode(
+	    ResourceIdentifier id,
+	    SubstrateNodeState myInitialState,
+	    RationalCore<HorizonSpecification, SubstrateNodeState, HorizonContract> myRationality,
+	    AbstractSelectionCore<HorizonSpecification, SubstrateNodeState, HorizonContract> selectionCore,
+	    ObservationService myInformation) throws CompetenceException {
+	super(
+		id,
+		myInitialState,
+		myRationality,
+		selectionCore,
+		new InactiveProposerCore<HorizonSpecification, SubstrateNodeState, HorizonContract>(),
+		myInformation);
+	// TODO Auto-generated constructor stub
+    }
 
+    @Override
+    public ResourceIdentifier getIdentifier() {
+	assert (super.getId() instanceof ResourceIdentifier);
+	return (ResourceIdentifier) super.getIdentifier();
+    }
 }

@@ -1,99 +1,133 @@
 package negotiation.horizon.negociatingagent;
 
 import java.util.Collection;
-import java.util.Map;
 
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
-import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 
-public class SubstrateNodeState implements HorizonSpecification {
+/**
+ * The state of a SubstrateNode. The fields inherited from
+ * {@link AbstractSingleNodeState} represent the level of service provided by
+ * the SubstrateNode.
+ * 
+ * @author Vincent Letard
+ */
+public class SubstrateNodeState extends AbstractSingleNodeState {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2415474717777657012L;
+    /**
+     * Serial version identifier.
+     */
+    private static final long serialVersionUID = -2415474717777657012L;
 
-	@Override
-	public Long getCreationTime() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Amount of computation capacity currently allocated.
+     */
+    private int allocatedProcessor = 0;
+    /**
+     * Amount of ram currently allocated.
+     */
+    private int allocatedRAM = 0;
 
-	@Override
-	public AgentIdentifier getMyAgentIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Constructs a new SubstrateNodeState. Allocated resources are initially
+     * set to 0.
+     * 
+     * @param myAgent
+     * @param stateNumber
+     * @param packetLossRate
+     * @param delay
+     * @param jitter
+     * @param bandwidth
+     * @param processor
+     * @param ram
+     */
+    public SubstrateNodeState(AgentIdentifier myAgent, int stateNumber,
+	    float packetLossRate, int delay, int jitter, int bandwidth,
+	    int processor, int ram) {
+	super(myAgent, stateNumber, packetLossRate, delay, jitter, bandwidth,
+		processor, ram);
+	this.allocatedProcessor = 0;
+	this.allocatedRAM = 0;
+    }
+    
+    /**
+     * @return the value of the field allocatedProcessor.
+     */
+    public int getAllocatedProc() {
+	return this.allocatedProcessor;
+    }
 
-	@Override
-	public long getUptime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    /**
+     * Modifies the amount of allocated processor.
+     * 
+     * @param amount
+     *            The amount allocated/freed (could be positive or negative).
+     */
+    public void allocateProcessor(int amount) {
+	int new_val = amount + this.allocatedProcessor;
+	assert (new_val >= 0);
+	this.allocatedProcessor = new_val;
+    }
 
-	@Override
-	public int isNewerThan(Information that) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    /**
+     * Checks the validity of the new value of allocatedProcessor, which must be
+     * positive and lower than the available amount.
+     * 
+     * @param new_val
+     *            the new_value computed
+     * @return false if the value is not valid, true otherwise.
+     */
+    private boolean checkProcUpdate(int new_val) {
+	return (new_val >= 0 && new_val <= this.getProc());
+    };
 
-	@Override
-	public Double getNumericValue(Information e) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * @return the value of the field allocatedRAM.
+     */
+    public int getAllocatedRAM() {
+	return this.allocatedRAM;
+    }
 
-	@Override
-	public AbstractCompensativeAggregation<Information> fuse(
-			Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Modifies the amount of allocated ram.
+     * 
+     * @param amount
+     *            The amount allocated/freed (could be positive or negative).
+     */
+    public void allocateRAM(int amount) {
+	int new_val = amount + this.allocatedRAM;
+	assert (new_val >= 0);
+	this.allocatedRAM = new_val;
+    }
 
-	@Override
-	public Information getRepresentativeElement(
-			Collection<? extends Information> elems) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Checks the validity of the new value of allocatedRAM, which must be
+     * positive and lower than the available amount.
+     * 
+     * @param new_val
+     *            the new_value computed
+     * @return false if the value is not valid, true otherwise.
+     */
+    private boolean checkRAMUpdate(int new_val) {
+	return (new_val >= 0 && new_val <= this.getRAM());
+    };
 
-	@Override
-	public Information getRepresentativeElement(
-			Map<? extends Information, Double> elems) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Collection<? extends AgentIdentifier> getMyResourceIdentifiers() {
+	// TODO Auto-generated method stub
+	return null;
+    }
 
-	@Override
-	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Class<? extends Information> getMyResourcesClass() {
+	return VirtualNodeState.class;
+    }
 
-	@Override
-	public Class<? extends Information> getMyResourcesClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getStateCounter() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean setLost(ResourceIdentifier h, boolean isLost) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isValid() {
+	return (this.allocatedProcessor >= 0
+		&& this.allocatedProcessor <= this.getProc()
+		&& this.allocatedRAM >= 0 && this.allocatedRAM <= this.getRAM());
+    }
 
 }

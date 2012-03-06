@@ -1,99 +1,86 @@
 package negotiation.horizon.negociatingagent;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.HashSet;
 
 import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
-import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 
-public class VirtualNodeState implements HorizonSpecification {
+/**
+ * The state of a virtual node. The fields inherited from
+ * {@link AbstractSingleNodeState} represent the requirements of the agent.
+ * 
+ * @author Vincent Letard
+ */
+public class VirtualNodeState extends AbstractSingleNodeState {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2721088186118421802L;
+    /**
+     * Serial version identifier.
+     */
+    private static final long serialVersionUID = -2721088186118421802L;
 
-	@Override
-	public Long getCreationTime() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * The substrate node being running this virtual node.
+     */
+    private ResourceIdentifier host = null;
 
-	@Override
-	public AgentIdentifier getMyAgentIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Constructs a new VirtualNodeState, initially hosted nowhere (host =
+     * null).
+     * 
+     * @param myAgent
+     * @param stateNumber
+     * @param packetLossRate
+     * @param delay
+     * @param jitter
+     * @param bandwidth
+     * @param processor
+     * @param ram
+     */
+    public VirtualNodeState(AgentIdentifier myAgent, int stateNumber,
+	    float packetLossRate, int delay, int jitter, int bandwidth,
+	    int processor, int ram) {
+	super(myAgent, stateNumber, packetLossRate, delay, jitter, bandwidth,
+		processor, ram);
+	this.host = null;
+    }
 
-	@Override
-	public long getUptime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    /**
+     * @return the identifier of the agent hosting this VirtualNode if there is
+     *         one, null otherwise.
+     */
+    public ResourceIdentifier getHost() {
+	return this.host;
+    }
 
-	@Override
-	public int isNewerThan(Information that) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    /**
+     * Defines the resource hosting this VirtualNode.
+     * 
+     * @param host
+     */
+    public void setHost(ResourceIdentifier host) {
+	// TODO assert precondition on host
+	this.host = host;
+    }
 
-	@Override
-	public Double getNumericValue(Information e) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Collection<? extends AgentIdentifier> getMyResourceIdentifiers() {
+	Collection<ResourceIdentifier> c = new HashSet<ResourceIdentifier>();
+	c.add(this.host);
 
-	@Override
-	public AbstractCompensativeAggregation<Information> fuse(
-			Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	assert (c.size() == 1);
+	return c;
+    }
 
-	@Override
-	public Information getRepresentativeElement(
-			Collection<? extends Information> elems) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Class<? extends Information> getMyResourcesClass() {
+	return SubstrateNodeState.class;
+    }
 
-	@Override
-	public Information getRepresentativeElement(
-			Map<? extends Information, Double> elems) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Class<? extends Information> getMyResourcesClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getStateCounter() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean setLost(ResourceIdentifier h, boolean isLost) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isValid() {
+	return (this.host == null);
+    }
 
 }

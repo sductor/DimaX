@@ -219,7 +219,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		final Collection<Collection<InformedCandidature<Contract, ActionSpec>>> allocGen =
-				new HyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(concerned) {
+				new HyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
 			@Override
 			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
 				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc);

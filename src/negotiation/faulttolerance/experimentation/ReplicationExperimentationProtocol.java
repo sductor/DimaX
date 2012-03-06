@@ -51,9 +51,13 @@ ExperimentationProtocol {
 			DispersionSymbolicValue.Max});
 	static List<Double> doubleParameters = Arrays.asList(new Double[]{
 			0.1,
-			0.3,
-			0.6,
+			0.5,
 			1.});
+//	static List<Double> doubleParameters = Arrays.asList(new Double[]{
+//			0.1,
+//			0.3,
+//			0.6,
+//			1.});
 	static List<Double> doubleParameters2 = Arrays.asList(new Double[]{
 			0.,
 			0.5,
@@ -76,22 +80,22 @@ ExperimentationProtocol {
 	//
 
 	static boolean varyProtocol=false;
-	static boolean  varyOptimizers=false;
+	static boolean  varyOptimizers=true;
 
-	static boolean varyAgentsAndhosts=false;
+	static boolean varyAgentsAndhosts=true;
 	
-	static boolean varyAccessibleHost=false;
+	static boolean varyAccessibleHost=true;
 
 	static boolean varyAgentSelection=false;
 	static boolean varyHostSelection=false;
 
 	static boolean varyHostDispo=false;
-	static boolean varyHostFaultDispersion=true;
+	static boolean varyHostFaultDispersion=false;
 
 	static boolean varyAgentLoad=false;
 	static boolean varyAgentLoadDispersion=false;
 
-	static boolean varyHostCapacity=false;
+	static boolean varyHostCapacity=true;
 	static boolean varyHostCapacityDispersion=false;
 	
 	static boolean varyAgentCriticity=false;
@@ -110,14 +114,14 @@ ExperimentationProtocol {
 				Experimentator.myId,
 				ExperimentationProtocol.startingNbAgents,
 				ExperimentationProtocol.startingNbHosts,
-				ReplicationExperimentationProtocol.doubleParameters.get(3),//kaccessible
-				ReplicationExperimentationProtocol.doubleParameters.get(2),//dispo mean
+				ReplicationExperimentationProtocol.doubleParameters.get(2),//kaccessible
+				ReplicationExperimentationProtocol.doubleParameters.get(1),//dispo mean
 				DispersionSymbolicValue.Fort,//dispo dispersion
-				ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
+				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Fort,//load dispersion
 				ReplicationExperimentationProtocol.doubleParameters.get(1),//capacity mean
 				DispersionSymbolicValue.Nul,//capcity dispersion
-				ReplicationExperimentationProtocol.doubleParameters.get(2),//criticity mean
+				ReplicationExperimentationProtocol.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
 				ExperimentationProtocol.getKey4mirrorproto(),
 				SocialChoiceFunctions.key4UtilitaristSocialWelfare,

@@ -83,8 +83,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
 		this.p.initiateParameters();
 		this.logMonologue("Launching : \n"+this.p,LogService.onBoth);
-		System.err.println("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
-				this.getSimulationParameters().getName());//agents.values());
+		System.out.println("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
+				this.getSimulationParameters().getName()+"\n"+this.p);//agents.values());
 
 		int count = 5;
 		boolean iFailed=false;

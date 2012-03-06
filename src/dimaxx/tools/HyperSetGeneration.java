@@ -1,6 +1,7 @@
 package dimaxx.tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ public abstract class HyperSetGeneration<T> {
 	 * 
 	 */
 
-	public HyperSetGeneration(final Collection<T> elems){
+	public HyperSetGeneration(final List<T> elems){
 		this.hyperset = this.generateHyperSet(elems);
 		this.filter(this.hyperset);
 	}
@@ -33,7 +34,41 @@ public abstract class HyperSetGeneration<T> {
 	 * 
 	 */
 
-	private  Collection<Collection<T>> generateHyperSet(final Collection<T> elems){
+//
+//	private  Collection<Collection<T>> exploreSubset(final List<T> elems){
+//		Integer.toBinaryString(arg0)
+//	}
+
+
+
+
+
+
+
+
+	private  Collection<Collection<T>> generateHyperSet(final List<T> s){
+		Collection<Collection<T>> result = new ArrayList<Collection<T>>();
+		for (int i = 0; i < Math.pow(2, s.size()); i++){
+			String[] number = Integer.toBinaryString(i).split("");
+			assert number.length< s.size();
+			List<T> subset = new ArrayList<T>();
+			int pos = s.size()-1;
+			for (int j =number.length-1; j > 0; j--){
+				if (number[j].equals("1"))
+					subset.add(s.get(pos));
+				pos--;
+			}
+			if (toKeep(subset))
+				result.add(subset);
+		}
+		return result;
+	}
+
+
+
+
+
+	private  Collection<Collection<T>> generateHyperSetOld(final Collection<T> elems){
 
 		final Collection<Collection<T>> result =
 				new HashSet<Collection<T>>();
@@ -67,5 +102,24 @@ public abstract class HyperSetGeneration<T> {
 			if (!this.toKeep(r.next()))
 				r.remove();
 
+	}
+	
+	public static void main(String[] args){
+		List<String> s = Arrays.asList(new String[]{"a","b","c"});
+		
+		for (int i = 0; i < Math.pow(2, s.size()); i++){
+			String[] number = Integer.toBinaryString(i).split("");
+			assert number.length< s.size();
+			System.out.println("so?  "+Integer.toBinaryString(i)+" "+Arrays.asList(number));
+			List<String> subset = new ArrayList<String>();
+			int pos = s.size()-1;
+			for (int j =number.length-1; j > 0; j--){
+				System.out.println("------------------->"+j+" : "+number[j]);
+				if (number[j].equals("1"))
+					subset.add(s.get(pos));
+				pos--;
+			}
+			System.out.println("yo "+ subset);
+		}
 	}
 }

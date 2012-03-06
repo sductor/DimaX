@@ -92,8 +92,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(AllocationSocialWelfares.log_socialWelfareOrdering, false, false);
-		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, true);
-		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, true);
+		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, false);
+		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, false);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
 	}
 

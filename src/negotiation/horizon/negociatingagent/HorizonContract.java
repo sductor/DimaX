@@ -3,8 +3,8 @@ package negotiation.horizon.negociatingagent;
 import java.util.Collection;
 import java.util.HashSet;
 
-import negotiation.negotiationframework.interaction.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.interaction.contracts.ContractIdentifier;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ContractIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class HorizonContract extends HashSet<HorizonCandidature> implements AbstractContractTransition<HorizonSpecification> {
@@ -94,6 +94,29 @@ public class HorizonContract extends HashSet<HorizonCandidature> implements Abst
 
     @Override
     public boolean willReachExpirationTime(long t) {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
+    @Override
+    public boolean isInitiallyValid()
+	    throws negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
+    @Override
+    public <State extends HorizonSpecification> boolean isViable(
+	    State... initialStates)
+	    throws negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
+    @Override
+    public <State extends HorizonSpecification> boolean isViable(
+	    Collection<State> initialStates)
+	    throws negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException {
 	// TODO Auto-generated method stub
 	return false;
     }

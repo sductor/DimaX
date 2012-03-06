@@ -3,7 +3,7 @@ package negotiation.horizon.negociatingagent;
 import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 
 /**
  * The state of a SubstrateNode. The fields inherited from

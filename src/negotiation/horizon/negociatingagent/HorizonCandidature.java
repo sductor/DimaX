@@ -1,7 +1,7 @@
 package negotiation.horizon.negociatingagent;
 
-import negotiation.negotiationframework.interaction.contracts.MatchingCandidature;
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class HorizonCandidature extends MatchingCandidature<HorizonSpecification> {

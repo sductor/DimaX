@@ -3,9 +3,9 @@ package negotiation.horizon.negociatingagent;
 import java.util.Collection;
 import java.util.HashSet;
 
-import negotiation.negotiationframework.interaction.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.library.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 
 /**
  * The state of a virtual node. The fields inherited from

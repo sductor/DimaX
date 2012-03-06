@@ -2,13 +2,14 @@ package negotiation.horizon.negociatingagent;
 
 import java.util.Set;
 
-import negotiation.negotiationframework.interaction.consensualnegotiation.AbstractProposerCore;
-import dima.introspectionbasedagents.NotReadyException;
+import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class VirtualNetworkContractProposer
 extends BasicAgentCompetence<VirtualNetwork>
-implements AbstractProposerCore<VirtualNetwork, HorizonSpecification, VirtualNetworkState, HorizonContract> {
+	implements
+	ProposerCore<VirtualNetwork, HorizonSpecification, VirtualNetworkState, HorizonContract> {
 
 	/**
 	 * 

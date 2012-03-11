@@ -60,7 +60,7 @@ public class VirtualNodeState extends AbstractSingleNodeState {
      * @param host
      */
     public void setHost(ResourceIdentifier host) {
-	// TODO assert precondition on host
+	// TODO assert precondition on host ?
 	this.host = host;
     }
 
@@ -80,7 +80,7 @@ public class VirtualNodeState extends AbstractSingleNodeState {
 
     @Override
     public boolean isValid() {
-	return (this.host == null);
+	return (this.host != null);
     }
 
 }

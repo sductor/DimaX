@@ -1,7 +1,8 @@
 package negotiation.horizon.negociatingagent;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
+import dimaxx.tools.mappedcollections.ReflexiveAdjacencyMap;
 
 public class VirtualNetworkState extends SimpleAgentState implements
 	HorizonSpecification {
@@ -20,15 +22,14 @@ public class VirtualNetworkState extends SimpleAgentState implements
     private static final long serialVersionUID = -5576314995630464103L;
 
     /**
-     * Collection of the states of the virtual nodes constituting this virtual
-     * network.
+     * Set of the nodes in the VirtualNetwork
      */
     private Set<VirtualNodeState> nodelist;
+
     /**
-     * Which nodes are connected ? The Integer values are indexes of the nodes
-     * in the nodelist.
+     * Associates each VirtualNodeState with
      */
-    private Map<Integer, List<Integer>> links;
+    private ReflexiveAdjacencyMap<VirtualNodeState> links;
 
     /**
      * Constructs a new VirtualNetworkState using the topology information
@@ -42,34 +43,13 @@ public class VirtualNetworkState extends SimpleAgentState implements
      *            in the virtual network.
      */
     public VirtualNetworkState(AgentIdentifier myAgent, int stateNumber,
-	    Set<VirtualNodeState> nodelist, Map<Integer, List<Integer>> links) {
+	    Set<VirtualNodeState> nodelist,
+	    ReflexiveAdjacencyMap<VirtualNodeState> links) {
 	super(myAgent, stateNumber);
-	// TODO Auto-generated constructor stub
+	this.links = links;
+	this.nodelist = nodelist;
     }
 
-    @Override
-    public Long getCreationTime() {
-	// TODO Auto-generated method stub
-	return null;
-    }
-
-    @Override
-    public AgentIdentifier getMyAgentIdentifier() {
-	// TODO Auto-generated method stub
-	return null;
-    }
-
-    @Override
-    public long getUptime() {
-	// TODO Auto-generated method stub
-	return 0;
-    }
-
-    @Override
-    public int isNewerThan(Information that) {
-	// TODO Auto-generated method stub
-	return 0;
-    }
 
     @Override
     public Double getNumericValue(Information e) {
@@ -100,8 +80,11 @@ public class VirtualNetworkState extends SimpleAgentState implements
 
     @Override
     public Collection<? extends AgentIdentifier> getMyResourceIdentifiers() {
-	// TODO Auto-generated method stub
-	return null;
+	Collection<AgentIdentifier> c = new LinkedList<AgentIdentifier>();
+	Iterator<VirtualNodeState> it = this.nodelist.iterator();
+	while (it.hasNext())
+	    c.add(it.next().getMyAgentIdentifier());
+	return c;
     }
 
     @Override
@@ -110,15 +93,12 @@ public class VirtualNetworkState extends SimpleAgentState implements
     }
 
     @Override
-    public int getStateCounter() {
-	// TODO Auto-generated method stub
-	return 0;
-    }
-
-    @Override
     public boolean isValid() {
-	// TODO Auto-generated method stub
-	return false;
+	Iterator<VirtualNodeState> it = this.nodelist.iterator();
+	boolean valid = true;
+	while (valid && it.hasNext())
+	    valid = it.next().isValid() && valid;
+	return valid;
     }
 
     @Override

@@ -10,7 +10,6 @@ import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class ResourceInformedProposerCore<
@@ -24,12 +23,12 @@ ActionSpec,
 PersonalState,
 InformedCandidature<Contract,ActionSpec>> {
 
-	private Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose =
+	private final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose =
 			new HashSet<InformedCandidature<Contract, ActionSpec>>();
 
 
 	public void addContractsToPropose(
-			Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose) {
+			final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose) {
 		this.contractsToPropose.addAll(contractsToPropose);
 	}
 
@@ -37,7 +36,7 @@ InformedCandidature<Contract,ActionSpec>> {
 	@Override
 	public Set<? extends InformedCandidature<Contract, ActionSpec>> getNextContractsToPropose()
 			throws NotReadyException {
-		logMonologue("proposing "+contractsToPropose, AbstractCommunicationProtocol.log_negotiationStep);
+		this.logMonologue("proposing "+this.contractsToPropose, AbstractCommunicationProtocol.log_negotiationStep);
 		final Set<InformedCandidature<Contract, ActionSpec>> result =
 				new HashSet<InformedCandidature<Contract, ActionSpec>>();
 		result.addAll(this.contractsToPropose);

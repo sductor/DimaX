@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.evaluation;
+package negotiation.negotiationframework.exploration.strategic.evaluation;
 
 import java.util.Collection;
 

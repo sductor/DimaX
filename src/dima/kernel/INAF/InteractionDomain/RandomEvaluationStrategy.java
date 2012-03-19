@@ -39,17 +39,17 @@ public class RandomEvaluationStrategy extends EvaluationStrategy implements Seri
 	{
 		switch (this.proposals.size())
 		{
-		case 0 :
-			//System.out.println(agent.getIdentifier()+" ("+role.getConversationId()+") : negotiation fail....");
-			return null;
+			case 0 :
+				//System.out.println(agent.getIdentifier()+" ("+role.getConversationId()+") : negotiation fail....");
+				return null;
 
-		case 1 :
-			return this.proposals.get(0);
-			//System.out.println(agent.getIdentifier()+" ("+role.getConversationId()+") : accept the proposal ("+role.getAcceptedProposal().getAssociatedService()+ ") of "+role.getAcceptedProposal().getContractingPartie());
+			case 1 :
+				return this.proposals.get(0);
+				//System.out.println(agent.getIdentifier()+" ("+role.getConversationId()+") : accept the proposal ("+role.getAcceptedProposal().getAssociatedService()+ ") of "+role.getAcceptedProposal().getContractingPartie());
 
-		default : //choisir une proposition au hasard parmi l'ensemble des propositions valid�es
-			return this.proposals.get((int) Math.abs(Math.random() * this.proposals.size()));
-			//System.out.println(agent.getIdentifier()+" ("+role.getConversationId()+") : accept the proposal ("+role.getAcceptedProposal().getAssociatedService()+ ") of "+role.getAcceptedProposal().getContractingPartie());
+			default : //choisir une proposition au hasard parmi l'ensemble des propositions valid�es
+				return this.proposals.get((int) Math.abs(Math.random() * this.proposals.size()));
+				//System.out.println(agent.getIdentifier()+" ("+role.getConversationId()+") : accept the proposal ("+role.getAcceptedProposal().getAssociatedService()+ ") of "+role.getAcceptedProposal().getContractingPartie());
 		}
 
 	}

@@ -71,13 +71,13 @@ MatchingCandidature<ReplicationSpecification> {
 	}
 
 	private ReplicaState getAgentResultingState(final ReplicaState fromState) throws IncompleteContractException {
-		
+
 		assert this.getSpecificationOf(this.getResource()) != null:"wtf? " + this;
 		assert fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == true:
 			"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 		assert !fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == false:
 			"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
-					
+
 		if (!fromState.getMyAgentIdentifier().equals(this.getAgent()))
 			return fromState;
 		else {
@@ -107,7 +107,7 @@ MatchingCandidature<ReplicationSpecification> {
 		assert !fromState.Ihost(this.getAgent()) || this.creation == false:
 			" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT "+" \n contract : "+this	+ "\n --> fromState " + fromState
 			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
-		
+
 
 		if (!fromState.getMyAgentIdentifier().equals(this.getResource()))
 			return fromState;
@@ -143,12 +143,12 @@ MatchingCandidature<ReplicationSpecification> {
 
 
 
-			//			System.out.print(fromState+"\n to "+h+" \n to ");
-			//			System.err.println("here for "+getAgent());
-			//			System.out.println("state generated with rinit : "+h);
-			//			System.out.println("state with r result : "+r1);
-			//			h.update(r1);
-			//			System.out.println("final state"+h+"\n");
+//			System.out.print(fromState+"\n to "+h+" \n to ");
+//			System.err.println("here for "+getAgent());
+//			System.out.println("state generated with rinit : "+h);
+//			System.out.println("state with r result : "+r1);
+//			h.update(r1);
+//			System.out.println("final state"+h+"\n");
 
 
 

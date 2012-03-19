@@ -153,21 +153,21 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 				this.nbAgentLost++;
 			else
 				switch (s.getStatus()) {
-				case Fragile:
-					this.nbAgentFragile++;
-					break;
-				case Thrifty:
-					this.nbAgentThrifty++;
-					break;
-				case Full:
-					this.nbAgentFull++;
-					break;
-				case Wastefull:
-					this.nbAgentWastefull++;
-					break;
-				case Empty:
-					this.nbAgentEmpty++;
-					break;
+					case Fragile:
+						this.nbAgentFragile++;
+						break;
+					case Thrifty:
+						this.nbAgentThrifty++;
+						break;
+					case Full:
+						this.nbAgentFull++;
+						break;
+					case Wastefull:
+						this.nbAgentWastefull++;
+						break;
+					case Empty:
+						this.nbAgentEmpty++;
+						break;
 				}
 		}
 

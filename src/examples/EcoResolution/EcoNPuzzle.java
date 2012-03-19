@@ -106,9 +106,9 @@ class EcoNPuzzle extends EcoAgent {
 	public void computeSpeed() {
 		final int n = this.pzFrame.speedChoice.getSelectedIndex();
 		switch ( n) {
-		case 0 : EcoNPuzzle.duration = 600;break;
-		case 1 : EcoNPuzzle.duration = 300;break;
-		case 2 : EcoNPuzzle.duration = 0;break;
+			case 0 : EcoNPuzzle.duration = 600;break;
+			case 1 : EcoNPuzzle.duration = 300;break;
+			case 2 : EcoNPuzzle.duration = 0;break;
 		}
 	}
 	public Point coorNextPlace( final int i, final int j) {

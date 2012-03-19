@@ -1,5 +1,7 @@
 package negotiation.negotiationframework.contracts;
 
+import java.util.Collection;
+
 import dima.basicagentcomponents.AgentIdentifier;
 
 public abstract class MatchingCandidature<
@@ -59,15 +61,16 @@ extends ContractTransition<ActionSpec> {
 		this.creation = creation;
 	}
 
+	@Override
 	public boolean isInitiallyValid() throws IncompleteContractException{
-		boolean agentContainsResource = 
-				getSpecificationOf(getAgent()).getMyResourceIdentifiers().contains(getResource());
-		boolean ressourceContainsAgent = 
-				getSpecificationOf(getResource()).getMyResourceIdentifiers().contains(getAgent());
+		final boolean agentContainsResource =
+				this.getSpecificationOf(this.getAgent()).getMyResourceIdentifiers().contains(this.getResource());
+		final boolean ressourceContainsAgent =
+				this.getSpecificationOf(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
 		assert  (agentContainsResource && ressourceContainsAgent) || (!agentContainsResource && !ressourceContainsAgent):
-			"incoherent states:\n"+getSpecificationOf(getAgent())+":\n"+getSpecificationOf(getResource());
-		assert (isMatchingCreation()?!agentContainsResource:agentContainsResource):" creation impossible : creation?"
-		+isMatchingCreation()+"incoherent states:\n"+getSpecificationOf(getAgent())+":\n"+getSpecificationOf(getResource());
+			"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
+		assert (this.isMatchingCreation()?!agentContainsResource:agentContainsResource):" creation impossible : creation?"
+		+this.isMatchingCreation()+"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
 
 		return super.isInitiallyValid();
 	}
@@ -78,36 +81,74 @@ extends ContractTransition<ActionSpec> {
 
 	@Override
 	public String toString() {
-		String agentSpecif, hostSpecif, agentResult, hostResult,isviable;
+		String agentSpecif, hostSpecif;
+		final String agentResult, hostResult, isviable;
 
 		try {
 			agentSpecif = this.getSpecificationOf(this.getAgent()).toString();
 			//			agentResult = this.computeResultingState(getAgent()).toString();
-		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		} catch (final negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
 			agentSpecif = "unavailable";
 			//			agentResult = "unavailable";
 		}
 		try {
 			hostSpecif = this.getSpecificationOf(this.getResource()).toString();
 			//			hostResult = this.computeResultingState(getResource()).toString();
-		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		} catch (final negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
 			hostSpecif = "unavailable";
 			//			hostResult = "unavailable";
 		}
-//		try {
-//			isviable= isViable()+"";
-//		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
-//			isviable="unavailable";
-//		}
+		//		try {
+		//			isviable= isViable()+"";
+		//		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		//			isviable="unavailable";
+		//		}
 
 		return this.getIdentifier() + " -> ("
 		+ (this.creation ? "create" : "destruct") + ")"
 		//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
 		+"\n  -----> agent specif : "+agentSpecif//+" --> resulting in "+agentResult
 		+"\n  -----> host specif : "+hostSpecif//+" --> resulting in "+hostResult
-//		+"\n ***************** isViable? "+isviable
+		//		+"\n ***************** isViable? "+isviable
 		;
 
+	}
+
+	//
+	// Assertion
+	//
+	public static <Contract extends MatchingCandidature>
+	boolean areAllCreation(final Collection<Contract> contracts){
+		for (final Contract c : contracts)
+			if (!c.isMatchingCreation())
+				return false;
+				return true;
+	}
+
+	public static <Contract extends MatchingCandidature>
+	boolean areAllDestruction(final Collection<Contract> contracts){
+		for (final Contract c : contracts)
+			if (c.isMatchingCreation())
+				return false;
+				return true;
+	}
+
+	/*
+	 * 
+	 */
+
+	public static <Contract extends MatchingCandidature>
+	boolean assertAllCreation(final Collection<Contract> contracts){
+		for (final Contract c : contracts)
+			assert c.isMatchingCreation();
+				return true;
+	}
+
+	public static <Contract extends MatchingCandidature>
+	boolean assertAllDestruction(final Collection<Contract> contracts){
+		for (final Contract c : contracts)
+			assert !c.isMatchingCreation();
+				return true;
 	}
 }
 

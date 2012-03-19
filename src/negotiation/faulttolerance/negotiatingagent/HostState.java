@@ -3,11 +3,9 @@ package negotiation.faulttolerance.negotiatingagent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -55,8 +53,8 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 								init.isFaulty(),// creationTime,
 								init.getStateCounter()+1);
 
-//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
-		
+		//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
+
 		this.myReplicatedAgents.addAll(init.myReplicatedAgents);
 		if (this.myReplicatedAgents.contains(newRep))
 			this.myReplicatedAgents.remove(newRep);

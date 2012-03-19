@@ -1,8 +1,5 @@
 package negotiation.faulttolerance.collaborativecandidature;
 
-import java.io.Serializable;
-import java.util.Collection;
-
 import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationResultHost;
@@ -13,18 +10,15 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
+import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedCandidatureContractTrunk;
-import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedProposerCore;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedSelectionCore;
-import negotiation.negotiationframework.selection.GreedyBasicSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 
@@ -88,12 +82,12 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, InformedCand
 	public CollaborativeHost(
 			final ResourceIdentifier myId,
 			final double hostMaxProc, final double hostMaxMem,
-			final double lambda, 
+			final double lambda,
 			final String socialWelfare,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
 		super(
-				myId, 
+				myId,
 				new HostState(myId,hostMaxProc, hostMaxMem,lambda,-1),
 				new InformedCandidatureRationality(new HostCore(true, socialWelfare),false),
 				new ResourceInformedSelectionCore(){
@@ -101,10 +95,10 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, InformedCand
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {
 						return new InformedCandidature(new ReplicationCandidature(myId,id,false,false));
 					}
-				},//new GreedyBasicSelectionCore(true, false),// 
+				},//new GreedyBasicSelectionCore(true, false),//
 				new ResourceInformedProposerCore(),
 				new SimpleObservationService(),
 				new OneDeciderCommunicationProtocol( new ResourceInformedCandidatureContractTrunk(), true) );
-		getMyProtocol().getContracts().setMyAgent(this);
+		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
 }

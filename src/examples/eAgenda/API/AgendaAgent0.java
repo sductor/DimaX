@@ -875,19 +875,19 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 					//System.out.println("action "+act+" should do "+act.getAction());
 					switch (act.getAction())
 					{
-					case PlannedAction.planMeetingPart2 :
-						/* */System.out.println(" Planned action part2");
-						if (!this.commencedTransaction.empty())
-						{
-							if (act.getStartMeeting()== ((TransactionData) this.commencedTransaction.peek()).TID.getMyValue()) {
+						case PlannedAction.planMeetingPart2 :
+							/* */System.out.println(" Planned action part2");
+							if (!this.commencedTransaction.empty())
+							{
+								if (act.getStartMeeting()== ((TransactionData) this.commencedTransaction.peek()).TID.getMyValue()) {
 
-								this.planMeetingPart2();
+									this.planMeetingPart2();
 
-								break;
-							}
-							else /* */ System.out.println("DUPLICAT 1 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting()+"..."+((TransactionData) this.commencedTransaction.peek()).TID.getMyValue());
-						} else
-							/* */ System.out.println("DUPLICAT 2 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting());
+									break;
+								}
+								else /* */ System.out.println("DUPLICAT 1 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting()+"..."+((TransactionData) this.commencedTransaction.peek()).TID.getMyValue());
+							} else
+								/* */ System.out.println("DUPLICAT 2 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting());
 					}
 					this.actionToDo.remove(i);
 

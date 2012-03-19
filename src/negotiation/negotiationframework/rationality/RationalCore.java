@@ -21,7 +21,7 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 	//
 	public ActionSpec getMySpecif(PersonalState s, Contract c);
 
-	public void execute(Contract c);
+	public void execute(Collection<Contract> contracts);
 
 	/*
 	 *
@@ -37,7 +37,7 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 	public int getAllocationPreference(PersonalState s,
 			Collection<Contract> c1, Collection<Contract> c2);
 
-	public  Double evaluatePreference(PersonalState s1);
+	public  Double evaluatePreference(Collection<Contract> cs);
 
 
 	/*

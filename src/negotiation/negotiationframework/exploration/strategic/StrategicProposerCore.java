@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic;
+package negotiation.negotiationframework.exploration.strategic;
 
 import java.util.ArrayList;
 import java.util.Collection;

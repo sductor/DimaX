@@ -179,18 +179,18 @@ public class DQLRequest
 	public void setVariableState(final String varname, final int state)
 	{
 		switch(state) {
-		case DQLRequest.DQL_MUSTBIND:
-			for(final Iterator i = this.mustbind.iterator(); i.hasNext(); )
-				if(((String) i.next()).equals(varname))
-					return;
-			this.mustbind.add(varname);
-			break;
-		case DQLRequest.DQL_MAYBIND:
-			for(final Iterator i = this.maybind.iterator(); i.hasNext(); )
-				if(((String) i.next()).equals(varname))
-					return;
-			this.maybind.add(varname);
-			break;
+			case DQLRequest.DQL_MUSTBIND:
+				for(final Iterator i = this.mustbind.iterator(); i.hasNext(); )
+					if(((String) i.next()).equals(varname))
+						return;
+				this.mustbind.add(varname);
+				break;
+			case DQLRequest.DQL_MAYBIND:
+				for(final Iterator i = this.maybind.iterator(); i.hasNext(); )
+					if(((String) i.next()).equals(varname))
+						return;
+				this.maybind.add(varname);
+				break;
 		}
 	}
 

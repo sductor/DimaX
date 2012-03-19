@@ -59,28 +59,14 @@ public class SocialChoiceFunctions {
 			final Collection<State> a1,
 			final Collection<State> a2,
 			final UtilitaristEvaluator<State> u){
-		Double sum1 = 0.,sum2 = 0.;
-		for (final State a : a1){
-			sum1+=u.getUtilityValue(a);
-		}
-		for (final State a : a2){
-			sum2+=u.getUtilityValue(a);
-		}
-		return sum1.compareTo(sum2);
+		return getUtilitaristValue(a1, u).compareTo(getUtilitaristValue(a2, u));
 	}
 
 	public static  <State> int nashWelfare(
 			final Collection<State> a1,
 			final Collection<State> a2,
 			final UtilitaristEvaluator<State> u){
-		Double nash1 = 1.,nash2 = 1.;
-		for (final State a : a1){
-			nash1*=u.getUtilityValue(a);
-		}
-		for (final State a : a2){
-			nash2*=u.getUtilityValue(a);
-		}
-		return nash1.compareTo(nash2);
+		return getNashValue(a1, u).compareTo(getNashValue(a2, u));
 	}
 
 	//	public  <State> int minDiameter(
@@ -97,6 +83,39 @@ public class SocialChoiceFunctions {
 	//		return nash1.compareTo(nash2);
 	//	}
 
+	
+	/*
+	 * 
+	 */
+	public static  <State> Double getMinValue(
+			final Collection<State> as,
+			final Comparator<State> comp,
+			final UtilitaristEvaluator<State> u){
+		return u.getUtilityValue(Collections.min(as,comp));
+	}
+
+	
+	public static  <State> Double getNashValue(
+			final Collection<State> as,
+			final UtilitaristEvaluator<State> u){
+		Double nash = 1.;
+		for (final State a : as){
+			nash*=u.getUtilityValue(a);
+		}
+		return nash;
+	}
+
+	public static  <State> Double getUtilitaristValue(
+			final Collection<State> as,
+			final UtilitaristEvaluator<State> u){
+		Double sum = 1.;
+		for (final State a : as){
+			sum+=u.getUtilityValue(a);
+		}
+		return sum;
+	}
+	
+	
 	//
 	// Subclasses
 	//

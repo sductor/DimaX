@@ -2,10 +2,8 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
@@ -24,13 +22,16 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedC
 implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 	@Override
-	public ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> select(
-			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+	public void select(
+			final ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts,
+			final Collection<InformedCandidature<Contract, ActionSpec>> toAccept,
+			final Collection<InformedCandidature<Contract, ActionSpec>> toReject,
+			final Collection<InformedCandidature<Contract, ActionSpec>> toPutOnWait) {
 
 		// Intitiation de l'état
 		assert this.getMyAgent().getMyCurrentState().isValid():
 			"what the  (1)!!!!!!"+ this.getMyAgent().getMyCurrentState();
-		assert allDestruction(contracts.getParticipantAlreadyAcceptedContracts());		
+		assert MatchingCandidature.assertAllDestruction(contracts.getParticipantAlreadyAcceptedContracts());
 		PersonalState currentState = this.getMyAgent()
 				.getMyResultingState(
 						this.getMyAgent().getMyCurrentState(),
@@ -38,101 +39,63 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 		// Verification de la consistance
 		assert currentState.isValid():"what the  (2)!!!!!!"+ this.getMyAgent().getMyCurrentState();
 
-		
-		//contract lists		
-		Collection<InformedCandidature<Contract, ActionSpec>> accepted = 
-				new HashSet<InformedCandidature<Contract, ActionSpec>>();
-		Collection<InformedCandidature<Contract, ActionSpec>> rejected = 
-				new HashSet<InformedCandidature<Contract, ActionSpec>>();
 
 		//interesting contracts
-		LinkedList<InformedCandidature<Contract,ActionSpec>> allContracts = 
+		final LinkedList<InformedCandidature<Contract,ActionSpec>> allContracts =
 				new LinkedList<InformedCandidature<Contract,ActionSpec>>(contracts.getAllContracts());
 		allContracts.removeAll(contracts.getAllInitiatorContracts());
-		allContracts.removeAll(contracts.getParticipantAlreadyAcceptedContracts());	
-		
-		assert allDestruction(allContracts);
+		allContracts.removeAll(contracts.getParticipantAlreadyAcceptedContracts());
+
+		toPutOnWait.addAll(contracts.getAllInitiatorContracts());
+		toPutOnWait.addAll(contracts.getParticipantAlreadyAcceptedContracts());
+
+		assert MatchingCandidature.assertAllDestruction(allContracts);
 
 		if (!allContracts.isEmpty()){
-			rejected.addAll(allContracts);	
-			
-			Iterator<InformedCandidature<Contract,ActionSpec>> itContracts = allContracts.iterator();
-			
-			Collections.sort(allContracts, getMyAgent().getMyPreferenceComparator());			
+			toReject.addAll(allContracts);
+
+			final Iterator<InformedCandidature<Contract,ActionSpec>> itContracts = allContracts.iterator();
+
+			Collections.sort(allContracts, this.getMyAgent().getMyPreferenceComparator());
 			InformedCandidature<Contract,ActionSpec> c = allContracts.pop();
-			
+
 			try {
 				while (c.computeResultingState(currentState).isValid()){
-//					assert getMyAgent().Iaccept(currentState, c);
-					accepted.add(c);
+					//					assert getMyAgent().Iaccept(currentState, c);
+					toAccept.add(c);
 					currentState = c.computeResultingState(currentState);
 					if (allContracts.isEmpty())
 						break;
 					else
 						c = allContracts.pop();
 				}
-			} catch (IncompleteContractException e) {
+			} catch (final IncompleteContractException e) {
 				throw new RuntimeException();
 			}
 		}
 
-		rejected.removeAll(accepted);
+		toReject.removeAll(toAccept);
 
-		/*
-		 * Instanciating returned contract trunk 		
-		 */
 
-		ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState> returned = 
-				new ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState>(getMyAgent());
+		assert this.validityVerification(contracts, toAccept, toReject);
 
-		assert validityVerification(contracts, accepted, rejected);
 
-		// ACCEPTATION
-		for (final InformedCandidature<Contract, ActionSpec> c : accepted) {
-			returned.addContract(c);
-			returned.addAcceptation(this.getMyAgent().getIdentifier(), c);
-		}
-
-		// REFUS
-		for (final InformedCandidature<Contract, ActionSpec> c : rejected) {
-			returned.addContract(c);
-			returned.addRejection(this.getMyAgent().getIdentifier(), c);
-		}
-
-		return returned;
 
 	}
 
 	private boolean validityVerification(
-			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> given,
-			Collection<InformedCandidature<Contract, ActionSpec>> accepted,
-			Collection<InformedCandidature<Contract, ActionSpec>> rejected) {
+			final ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> given,
+			final Collection<InformedCandidature<Contract, ActionSpec>> accepted,
+			final Collection<InformedCandidature<Contract, ActionSpec>> rejected) {
 
-		//accepted et rejected sont disjoint
-		for (InformedCandidature<Contract, ActionSpec> c : accepted){
-			assert (!rejected.contains(c));
-		}
-		for (InformedCandidature<Contract, ActionSpec> c : rejected){
-			assert (!accepted.contains(c));
-		}
-		
 		//toute creation est accepté
-		for (InformedCandidature<Contract, ActionSpec> c : given.getAllContracts()){
+		for (final InformedCandidature<Contract, ActionSpec> c : given.getAllContracts())
 			if (c.isMatchingCreation())
-				assert (accepted.contains(c) || given.getContractsAcceptedBy(getIdentifier()).contains(c));
-		}
+				assert (accepted.contains(c) || given.getContractsAcceptedBy(this.getIdentifier()).contains(c));
 
-		//(nécessaire) tout ce qui est rejeté est destructions
-		assert (allDestruction(rejected));
+				//(nécessaire) tout ce qui est rejeté est destructions
+				assert (MatchingCandidature.assertAllDestruction(rejected));
 
-		return true;
-	}
-	
-	private boolean allDestruction(Collection<InformedCandidature<Contract, ActionSpec>> contracts){
-		for (InformedCandidature<Contract, ActionSpec> c : contracts){
-			if (c.getCandidature().isMatchingCreation())
-				return false;
-		}
-		return true;
+				return true;
 	}
 }

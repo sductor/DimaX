@@ -1,15 +1,13 @@
 package negotiation.negotiationframework.rationality;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.rationality.SocialChoiceFunctions.UtilitaristEvaluator;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.support.GimaObject;
@@ -47,18 +45,38 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	// Methods
 	//
 
+	public double getUtility(final Collection<Contract> cs){
+
+		try {
+			final Collection<ActionSpec> as = this.cleanStates(ReallocationContract.getResultingAllocation(cs));
+
+			if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
+				
+				return SocialChoiceFunctions.getMinValue(as,  this.getComparator(), this.getUtilitaristEvaluator());
+			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare))
+				return SocialChoiceFunctions.getNashValue(as, this.getUtilitaristEvaluator());
+			else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare))
+				return SocialChoiceFunctions.getUtilitaristValue(as, this.getUtilitaristEvaluator());
+			else
+				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
+
+		} catch (final IncompleteContractException e) {
+			throw new RuntimeException();
+		}
+	}
+
 	public int getSocialPreference(
 			final Collection<Contract> c1,
 			final Collection<Contract> c2) {
 
 		try {
-			Map<AgentIdentifier, ActionSpec> initialStates =this.getInitialStates(c1, c2);
+			final Map<AgentIdentifier, ActionSpec> initialStates =ReallocationContract.getInitialStates(c1, c2);
 
-			final Collection<ActionSpec> s1 = 
-					this.getResultingAllocation(initialStates, c1);
+			final Collection<ActionSpec> s1 =
+					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c1));
 			final Collection<ActionSpec> s2 =
-					this.getResultingAllocation(initialStates, c2);
-			
+					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c2));
+
 			assert s1.size()==s2.size();
 
 			if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
@@ -72,54 +90,14 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 				return SocialChoiceFunctions.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
 			else
 				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
-		} catch (IncompleteContractException e) {
+		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
 		}
 	}
 
-
-	//
-	// Primitives
-	//
-
-	private	Map<AgentIdentifier, ActionSpec> getInitialStates(
-			final Collection<Contract> a1,
-			final Collection<Contract> a2) throws IncompleteContractException{
-		final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
-		final Collection<Contract> allContract = new ArrayList<Contract>();
-		allContract.addAll(a1);
-		allContract.addAll(a2);
-
-		for (final Contract c : allContract)
-			for (final AgentIdentifier id : c.getAllParticipants())
-				if (result.containsKey(id)){
-					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
-						//						System.out.println("remplacing a fresher state");
-						result.put(id,c.getSpecificationOf(id));
-				} else
-					result.put(id,c.getSpecificationOf(id));
-
-		//updating each contract with the freshest state
-		for (final Contract cOld : allContract){
-			for (final AgentIdentifier id : cOld.getAllParticipants())
-				cOld.setSpecification(result.get(id));
-		}
-		return result;
-	}
-
-
-	protected Collection<ActionSpec> getResultingAllocation(
-			final Map<AgentIdentifier, ActionSpec> initialStates,
-			final Collection<Contract> alloc) throws IncompleteContractException{
-		final Map<AgentIdentifier, ActionSpec> meAsMap =
-				new HashMap<AgentIdentifier, ActionSpec>();
-		meAsMap.putAll(initialStates);
-
-		for (final Contract c : alloc){
-			for (final AgentIdentifier id : c.getAllParticipants())
-				meAsMap.put(id, c.computeResultingState(meAsMap.get(id)));
-		}
-		return meAsMap.values();
+	protected Collection<ActionSpec> cleanStates(
+			final Collection<ActionSpec> res) {
+		return res;
 	}
 }
 

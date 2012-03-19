@@ -5,8 +5,8 @@ import java.util.Set;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.exploration.strategic.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
-import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
 

@@ -55,11 +55,11 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 				destructionCandidature.setSpecification(host);
 
 				if (this.getMyAgent().getMyResultingState(nextState,
-								destructionCandidature).isValid()
-								|| this.stateStatusIs(
-										this.getMyAgent().getMyResultingState(nextState,
-												destructionCandidature),
-												AgentStateStatus.Fragile)){
+						destructionCandidature).isValid()
+						|| this.stateStatusIs(
+								this.getMyAgent().getMyResultingState(nextState,
+										destructionCandidature),
+										AgentStateStatus.Fragile)){
 					//on ne fait rien et on fait sauter cette candidature de destruction
 				} else {
 
@@ -90,7 +90,7 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 		return ((CandidatureReplicaCoreWithStatus) this.getMyAgent()
 				.getMyCore()).getStatus(state).equals(status);
 	}
-	
+
 	@Override
 	public ReplicationCandidature constructCandidature(final ResourceIdentifier id) {
 		return new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true);

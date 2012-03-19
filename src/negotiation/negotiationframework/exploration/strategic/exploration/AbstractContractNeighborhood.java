@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.exploration;
+package negotiation.negotiationframework.exploration.strategic.exploration;
 
 import java.util.Collection;
 import java.util.Iterator;

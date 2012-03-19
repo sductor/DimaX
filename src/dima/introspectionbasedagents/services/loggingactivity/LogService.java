@@ -100,11 +100,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	// Accessors
 	//
 
-	public static void setLog(boolean b) {
-		activateMonotoScreen = b;
-		activateMonoToFiles = b;
+	public static void setLog(final boolean b) {
+		LogService.activateMonotoScreen = b;
+		LogService.activateMonoToFiles = b;
 	}
-	
+
 	@Override
 	public void addLogKey(final String key, final boolean toScreen, final boolean toFile){
 		if (this.keysToScreen.put(key,toScreen)!=null || this.keysToFiles.put(key, toFile)!=null)
@@ -127,11 +127,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	public void setMonotoScreen(final boolean monotoScreen) {
-		this.activateMonotoScreen = monotoScreen;
+		LogService.activateMonotoScreen = monotoScreen;
 	}
 
 	public void setToFiles(final boolean toFiles) {
-		this.activateMonoToFiles = toFiles;
+		LogService.activateMonoToFiles = toFiles;
 	}
 
 	public void setCommtoFiles(final boolean commtoFiles) {
@@ -165,11 +165,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@Override
 	public Boolean  logMonologue(final String text, final String key) {
 		final LogNotification log = new LogMonologue(this.getIdentifier(),text);
-		if (this.toScreen(key)&&this.activateMonotoScreen)
+		if (this.toScreen(key)&&LogService.activateMonotoScreen)
 			System.out.println(log.generateLogToScreen());
 		//			System.out.println("*** * From "+this.getMyAgent().getIdentifier()
 		//					+ ":\n       ----> "+text+" ("+details+")");
-		if (this.toFile(key)&&this.activateMonoToFiles)
+		if (this.toFile(key)&&LogService.activateMonoToFiles)
 			return this.getMyAgent().notify(log,LogService.logNotificationKey);
 		return true;
 	}

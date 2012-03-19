@@ -109,23 +109,23 @@ class EcoPlace extends EcoAgent {
 		if ( this.tile.number != 0) {
 			Color c;
 			switch( this.tile.state) {
-			case EcoAgent. TRY_SATISFACTION :
-				c = Color.blue;
-				break;
-			case EcoAgent.FORBIDDEN :
-				c = Color.darkGray;
-				break;
-			case EcoAgent.SATISFIED :
-				c = Color.gray;
-				break;
-			case EcoAgent.AGGRESSION_SATISFACTION :
-				c = Color.red;
-				break;
-			case EcoAgent.AGGRESSION_ESCAPE :
-				c = new Color( 153, 0, 153);
-				break;
-			default :
-				c = Color.gray;
+				case EcoAgent. TRY_SATISFACTION :
+					c = Color.blue;
+					break;
+				case EcoAgent.FORBIDDEN :
+					c = Color.darkGray;
+					break;
+				case EcoAgent.SATISFIED :
+					c = Color.gray;
+					break;
+				case EcoAgent.AGGRESSION_SATISFACTION :
+					c = Color.red;
+					break;
+				case EcoAgent.AGGRESSION_ESCAPE :
+					c = new Color( 153, 0, 153);
+					break;
+				default :
+					c = Color.gray;
 			}
 			g.setColor( c );
 			g.fill3DRect( this.posX, this.posY, this.size, this.size, true);//representation graphique d'un EcoPalets :

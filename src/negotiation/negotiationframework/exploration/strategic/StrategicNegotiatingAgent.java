@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic;
+package negotiation.negotiationframework.exploration.strategic;
 
 import java.util.Collection;
 import java.util.Date;
@@ -6,8 +6,8 @@ import java.util.Date;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.protocoles.strategic.evaluation.AbstractStrategicEvaluationModule;
-import negotiation.negotiationframework.protocoles.strategic.exploration.AbstractStrategicExplorationModule;
+import negotiation.negotiationframework.exploration.strategic.evaluation.AbstractStrategicEvaluationModule;
+import negotiation.negotiationframework.exploration.strategic.exploration.AbstractStrategicExplorationModule;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selection.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;

@@ -72,22 +72,22 @@ public class Day implements Comparable, Cloneable, Serializable {
 
 		switch (this.draft.get(Calendar.DAY_OF_WEEK))
 		{
-		case Calendar.SUNDAY:
-			return "Sunday";
-		case Calendar.MONDAY:
-			return "Monday";
-		case Calendar.TUESDAY:
-			return "Tuesday";
-		case Calendar.WEDNESDAY:
-			return "Wednesday";
-		case Calendar.THURSDAY:
-			return "Thursday";
-		case Calendar.FRIDAY:
-			return "Friday";
-		case Calendar.SATURDAY:
-			return "Saturday";
-		default:
-			return "Unknown";
+			case Calendar.SUNDAY:
+				return "Sunday";
+			case Calendar.MONDAY:
+				return "Monday";
+			case Calendar.TUESDAY:
+				return "Tuesday";
+			case Calendar.WEDNESDAY:
+				return "Wednesday";
+			case Calendar.THURSDAY:
+				return "Thursday";
+			case Calendar.FRIDAY:
+				return "Friday";
+			case Calendar.SATURDAY:
+				return "Saturday";
+			default:
+				return "Unknown";
 		}
 	}
 	public int getWeekDayValue() {
@@ -95,22 +95,22 @@ public class Day implements Comparable, Cloneable, Serializable {
 
 		switch (this.draft.get(Calendar.DAY_OF_WEEK))
 		{
-		case Calendar.SUNDAY:
-			return 0;
-		case Calendar.MONDAY:
-			return 1;
-		case Calendar.TUESDAY:
-			return 2;
-		case Calendar.WEDNESDAY:
-			return 3;
-		case Calendar.THURSDAY:
-			return 4;
-		case Calendar.FRIDAY:
-			return 5;
-		case Calendar.SATURDAY:
-			return 6;
-		default:
-			return -1;
+			case Calendar.SUNDAY:
+				return 0;
+			case Calendar.MONDAY:
+				return 1;
+			case Calendar.TUESDAY:
+				return 2;
+			case Calendar.WEDNESDAY:
+				return 3;
+			case Calendar.THURSDAY:
+				return 4;
+			case Calendar.FRIDAY:
+				return 5;
+			case Calendar.SATURDAY:
+				return 6;
+			default:
+				return -1;
 		}
 	}
 	public int getYear() {

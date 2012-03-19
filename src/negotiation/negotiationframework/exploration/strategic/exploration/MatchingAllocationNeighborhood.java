@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.exploration;
+package negotiation.negotiationframework.exploration.strategic.exploration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationProt
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;
+import negotiation.negotiationframework.exploration.strategic.StrategicNegotiatingAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.BasicAgentModule;

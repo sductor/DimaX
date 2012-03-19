@@ -154,7 +154,7 @@ public class Experimentator extends APIAgent{
 
 	public void run(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
-		
+
 		if (args[0].equals("scheduled"))
 			this.initAPI(false);//SCHEDULED
 		else if  (args[0].equals("fipa"))
@@ -164,14 +164,14 @@ public class Experimentator extends APIAgent{
 		else if  (args[0].equals("deployed"))
 			this.initAPI("lip6.xml");//DARX Deployed
 		else
-			throw new RuntimeException("unknonw args");	
-		
+			throw new RuntimeException("unknonw args");
+
 		if (args[1].equals("nolog"))
-				LogService.setLog(false);
-			else if (args[1].equals("log"))
-				LogService.setLog(true);
-			else
-				throw new RuntimeException("unknonw args");	
+			LogService.setLog(false);
+		else if (args[1].equals("log"))
+			LogService.setLog(true);
+		else
+			throw new RuntimeException("unknonw args");
 		this.launchMySelf();
 	}
 }

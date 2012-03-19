@@ -50,11 +50,10 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 * @return
 	 */
 	public boolean containsAvalue(final V item) {
-		for (final K k : this.keySet()){
+		for (final K k : this.keySet())
 			if (this.get(k).contains(item))
 				return true;
-		}
-		return false;
+				return false;
 	}
 	/**
 	 * Fonction coûteuse
@@ -63,14 +62,12 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 */
 	public Collection<K> removeAvalue(final V item) {
 		final Collection<K> relevantKeys = new ArrayList<K>();
-		for (final K k : this.keySet()){
+		for (final K k : this.keySet())
 			if (this.get(k).contains(item))
 				relevantKeys.add(k);
-		}
-		for (final K k : relevantKeys){
-			this.remove(k,item);
-		}
-		return relevantKeys;
+				for (final K k : relevantKeys)
+					this.remove(k,item);
+						return relevantKeys;
 	}
 	/**
 	 * Fonction coûteuse
@@ -79,10 +76,9 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 */
 	public Collection<V> getAllValues() {
 		final Collection<V> finalValues = new HashSet<V>();
-		for (final Set<V> l : super.values()){
+		for (final Set<V> l : super.values())
 			finalValues.addAll(l);
-		}
-		return finalValues;
+				return finalValues;
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	public static final long _simulationTime = (1000 * 10);
 	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 2;
 
-	public static final int startingNbAgents = 30;
+	public static final int startingNbAgents = 10;
 	public static final int startingNbHosts = 5;
 
 	//

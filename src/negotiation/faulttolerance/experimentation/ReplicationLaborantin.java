@@ -26,18 +26,15 @@ import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.protocoles.InactiveProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.protocoles.InactiveProposerCore;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
-import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
-import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedSelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.selection.AbstractSelectionCore;
@@ -375,7 +372,7 @@ public class ReplicationLaborantin extends Laborantin {
 		/*
 		 * Host instanciation
 		 */
-		
+
 
 		final DistributionParameters<ResourceIdentifier> fault = new DistributionParameters<ResourceIdentifier>(
 				this.getSimulationParameters().getHostsIdentifier(),
@@ -424,13 +421,13 @@ public class ReplicationLaborantin extends Laborantin {
 			 */
 
 			try {
-				final Iterator<ResourceIdentifier> itHost = 
+				final Iterator<ResourceIdentifier> itHost =
 						this.getSimulationParameters().getHostsIdentifier().iterator();
 				if (!itHost.hasNext())
 					throw new RuntimeException("no host? impossible!");
 
 				SimpleRationalAgent firstReplicatedOnHost = this.getAgent(itHost.next());
-				MatchingCandidature c = generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
+				MatchingCandidature c = this.generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
 
 
 
@@ -440,10 +437,10 @@ public class ReplicationLaborantin extends Laborantin {
 								+this.getSimulationParameters().getHostsIdentifier());
 					else {
 						firstReplicatedOnHost = this.getAgent(itHost.next());
-						c = generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
+						c = this.generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
 					}
 
-				executeFirstRep(c,ag,firstReplicatedOnHost);
+				this.executeFirstRep(c,ag,firstReplicatedOnHost);
 
 			} catch (final Exception e) {
 				throw new IfailedException(e);
@@ -457,7 +454,7 @@ public class ReplicationLaborantin extends Laborantin {
 	//			final SimpleRationalAgent<ReplicationSpecification,ReplicationSpecification,MatchingCandidature<ReplicationSpecification>> host,
 	//			final MatchingCandidature<ReplicationSpecification> c,
 	//			final SimpleRationalAgent ag) {
-	//		
+	//
 	//
 	//		host.setNewState(
 	//				c.computeResultingState(
@@ -475,26 +472,26 @@ public class ReplicationLaborantin extends Laborantin {
 	//	}
 
 	private MatchingCandidature generateInitialAllocationCandidature(
-			SimpleRationalAgent firstReplicatedOnHost, 
-			SimpleRationalAgent ag){
+			final SimpleRationalAgent firstReplicatedOnHost,
+			final SimpleRationalAgent ag){
 
 		MatchingCandidature c;
 
 		if (this.getSimulationParameters()._usedProtocol
 				.equals(ExperimentationProtocol.getKey4mirrorproto())){
-			ReplicationCandidature temp = new ReplicationCandidature(
+			final ReplicationCandidature temp = new ReplicationCandidature(
 					(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
 					ag.getIdentifier(),
 					true,true);
 			//			temp.setSpecification(
-			//					(ReplicationSpecification) 
+			//					(ReplicationSpecification)
 			//					((InformedCandidatureRationality) ag.getMyCore())
 			//					.getMySimpleSpecif(ag.getMyCurrentState(), temp));
 			//			temp.setSpecification(
-			//					(ReplicationSpecification) 
+			//					(ReplicationSpecification)
 			//					((InformedCandidatureRationality) firstReplicatedOnHost.getMyCore())
 			//					.getMySimpleSpecif(firstReplicatedOnHost.getMyCurrentState(), temp));
-			//			
+			//
 			c = new InformedCandidature(temp);
 		}else
 			c =
@@ -519,7 +516,7 @@ public class ReplicationLaborantin extends Laborantin {
 			//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
 			if (c.isMatchingCreation()){
 
-				host.addObserver(agent.getIdentifier(), 
+				host.addObserver(agent.getIdentifier(),
 						SimpleObservationService.informationObservationKey);
 				agent.addObserver(host.getIdentifier(),
 						SimpleObservationService.informationObservationKey);
@@ -528,18 +525,17 @@ public class ReplicationLaborantin extends Laborantin {
 
 				this.logMonologue(c.getResource() + "  ->I have initially replicated "
 						+ c.getAgent(),LogService.onBoth);
-			}else{
+			} else
 				throw new RuntimeException();
-			}
 
 			host.setNewState(
-					c.computeResultingState(host.getMyCurrentState()));		
+					c.computeResultingState(host.getMyCurrentState()));
 			agent.setNewState(
-					c.computeResultingState(agent.getMyCurrentState()));		
+					c.computeResultingState(agent.getMyCurrentState()));
 
 			agent.getMyInformation().add(c.computeResultingState(host.getIdentifier()));
 			host.getMyInformation().add(c.computeResultingState(agent.getIdentifier()));
-		} catch (IncompleteContractException e) {
+		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
 		}
 	}
@@ -688,9 +684,9 @@ public class ReplicationLaborantin extends Laborantin {
 								+ this.getSimulationParameters()._usedProtocol);
 
 			final Host hostAg = new Host(
-					hostId, 
+					hostId,
 					this.getSimulationParameters().kAccessible * this.getSimulationParameters().hostProcCapacity.get(hostId),
-					this.getSimulationParameters().kAccessible * this.getSimulationParameters().hostMemCapacity.get(hostId),					
+					this.getSimulationParameters().kAccessible * this.getSimulationParameters().hostMemCapacity.get(hostId),
 					fault.get(hostId),
 					core, select, proposer, informations, this.dispos);
 

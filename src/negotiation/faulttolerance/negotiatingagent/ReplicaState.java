@@ -82,9 +82,9 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			) {
 		super(init.getMyAgentIdentifier(),// creationTime,
 				init.getStateCounter()+1);
-		
-//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
-		
+
+		//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
+
 		this.myCriticity = init.getMyCriticity();
 		this.myProcCharge = init.getMyProcCharge();
 		this.myMemCharge = init.getMyMemCharge();
@@ -160,7 +160,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	 *
 	 */
 
-	
+
 	public Set<HostState> getMyReplicas() {
 		//		if (myReplicas==null)
 		//			return new ArrayList<HostState>();

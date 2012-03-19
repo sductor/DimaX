@@ -112,53 +112,53 @@ public class Predator extends Actor implements Animal  {
 		final Point res = new Point (this.pos.x,this.pos.y);
 		final Vector env = this.world.getEnvironement(this);
 		switch((int) (Math.random() * 7D)){
-		case 0:
-			if(res.y > 0)
-				res.y--;
+			case 0:
+				if(res.y > 0)
+					res.y--;
 
-			break;
+				break;
 
-		case 1:
-			if(res.x > 0)
-				res.x--;
-			break;
+			case 1:
+				if(res.x > 0)
+					res.x--;
+				break;
 
-		case 2:
-			if(res.x < this.world.getSize())
-				res.x++;
-			break;
+			case 2:
+				if(res.x < this.world.getSize())
+					res.x++;
+				break;
 
-		case 3:
-			if(res.y < this.world.getSize())
-				res.y++;
-			break;
+			case 3:
+				if(res.y < this.world.getSize())
+					res.y++;
+				break;
 
-		case 4:
-			if(res.x < this.world.getSize()&&res.y > 0){
-				res.x++;
-				res.y--;
-			}
-			break;
+			case 4:
+				if(res.x < this.world.getSize()&&res.y > 0){
+					res.x++;
+					res.y--;
+				}
+				break;
 
-		case 5:
-			if(res.y < this.world.getSize()&&res.x > 0){
-				res.x--;
-				res.y++;
-			}
-			break;
+			case 5:
+				if(res.y < this.world.getSize()&&res.x > 0){
+					res.x--;
+					res.y++;
+				}
+				break;
 
-		case 6:
-			if(res.x < this.world.getSize()&&this.pos.y < this.world.getSize()){
-				res.x++;
-				res.y++;
-			}
-			break;
-		case 7:
-			if(res.x > 0&&res.y > 0){
-				res.x--;
-				res.y--;
-			}
-			break;
+			case 6:
+				if(res.x < this.world.getSize()&&this.pos.y < this.world.getSize()){
+					res.x++;
+					res.y++;
+				}
+				break;
+			case 7:
+				if(res.x > 0&&res.y > 0){
+					res.x--;
+					res.y--;
+				}
+				break;
 		}
 
 

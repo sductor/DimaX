@@ -271,17 +271,17 @@ public class APIAgent extends BasicCompetentAgent {
 
 
 			switch (this.myLaunchType) {
-			case NotThreaded:
-				this.scheduler.add(c);
-				break;
-			case FIPA:
-				c.activateWithFipa();
-				break;
-			case DarX:
-				c.activateWithDarx(machine.getUrl(), machine.getPort());
-				break;
-			default:
-				break;
+				case NotThreaded:
+					this.scheduler.add(c);
+					break;
+				case FIPA:
+					c.activateWithFipa();
+					break;
+				case DarX:
+					c.activateWithDarx(machine.getUrl(), machine.getPort());
+					break;
+				default:
+					break;
 			}
 
 			this.registeredAgent.put(c.getIdentifier(), c);
@@ -304,31 +304,31 @@ public class APIAgent extends BasicCompetentAgent {
 			assert removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 
 			switch (this.myLaunchType) {
-			case NotThreaded:
-				this.scheduler.remove(c);
-				break;
-			case FIPA:
-				try {
-					Thread.sleep(500);
-				} catch (final InterruptedException e) {
-					e.printStackTrace();
-				}
-				AgentManagementSystem.getDIMAams().removeAquaintance(c);
-				break;
-			case DarX:
-				c.darxEngine.terminateTask();
-				break;
-				//			if (locations!=null){
-				//				c.activateWithDarx(locations.get(c).getUrl(), locations.get(c).getPort());
-				//			} else {
-				//				if (!hostsIt.hasNext())
-				//					hostsIt =hostsCollection.iterator();
-				//				final HostIdentifier machine = hostsIt.next();
-				//				c.activateWithDarx(machine.getUrl(),machine.getPort());
-				//			}
-				//			break;
-			default:
-				break;
+				case NotThreaded:
+					this.scheduler.remove(c);
+					break;
+				case FIPA:
+					try {
+						Thread.sleep(500);
+					} catch (final InterruptedException e) {
+						e.printStackTrace();
+					}
+					AgentManagementSystem.getDIMAams().removeAquaintance(c);
+					break;
+				case DarX:
+					c.darxEngine.terminateTask();
+					break;
+					//			if (locations!=null){
+					//				c.activateWithDarx(locations.get(c).getUrl(), locations.get(c).getPort());
+					//			} else {
+					//				if (!hostsIt.hasNext())
+					//					hostsIt =hostsCollection.iterator();
+					//				final HostIdentifier machine = hostsIt.next();
+					//				c.activateWithDarx(machine.getUrl(),machine.getPort());
+					//			}
+					//			break;
+				default:
+					break;
 			}
 			return true;
 		}

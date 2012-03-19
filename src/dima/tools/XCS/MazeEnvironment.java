@@ -130,30 +130,30 @@ public class MazeEnvironment implements Environment, Serializable
 				for(int i=0; i<this.xsize; i++){
 					final char att=in.charAt(i);
 					switch(att){
-					case '.': case '*': /* Intentionally to sum both cases! */
-						for(int j=0; j<this.attributeLength; j++)
-							oneLine[i*this.attributeLength + j]=this.freeAtt[j];
-						break;
-					case 'F':
-						for(int j=0; j<this.attributeLength; j++)
-							oneLine[i*this.attributeLength + j]=this.foodF[j];
-						break;
-					case 'G':
-						for(int j=0; j<this.attributeLength; j++)
-							oneLine[i*this.attributeLength + j]=this.foodG[j];
-						break;
-					case 'O':case '0': /* Intentionally to sum both cases */
-						for(int j=0; j<this.attributeLength; j++)
-							oneLine[i*this.attributeLength + j]=this.obstacleO[j];
-						break;
-					case 'Q':
-						for(int j=0; j<this.attributeLength; j++)
-							oneLine[i*this.attributeLength + j]=this.obstacleQ[j];
-						break;
-					default:
-						System.out.println("Unknown Character: "+att);
-						System.exit(0);
-						break;
+						case '.': case '*': /* Intentionally to sum both cases! */
+							for(int j=0; j<this.attributeLength; j++)
+								oneLine[i*this.attributeLength + j]=this.freeAtt[j];
+							break;
+						case 'F':
+							for(int j=0; j<this.attributeLength; j++)
+								oneLine[i*this.attributeLength + j]=this.foodF[j];
+							break;
+						case 'G':
+							for(int j=0; j<this.attributeLength; j++)
+								oneLine[i*this.attributeLength + j]=this.foodG[j];
+							break;
+						case 'O':case '0': /* Intentionally to sum both cases */
+							for(int j=0; j<this.attributeLength; j++)
+								oneLine[i*this.attributeLength + j]=this.obstacleO[j];
+							break;
+						case 'Q':
+							for(int j=0; j<this.attributeLength; j++)
+								oneLine[i*this.attributeLength + j]=this.obstacleQ[j];
+							break;
+						default:
+							System.out.println("Unknown Character: "+att);
+							System.exit(0);
+							break;
 					}
 				}
 				mazeLines.addElement(oneLine);

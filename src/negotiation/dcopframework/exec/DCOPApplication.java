@@ -218,18 +218,18 @@ public class DCOPApplication extends Application {
 
 	private BasicAlgorithm getAlgo(final Variable v) {
 		switch(this.algo){
-		case TOPTAPO:
-			if(!this.isWin)
-				return new AlgoTOptAPO(v, this.grouping);
-			else
-				return new AlgoTOptAPO(v, this.grouping, this.s, this.ws);
-		case KOPTAPO:
-			if(!this.isWin)
-				return new AlgoKOptAPO(v, this.grouping);
-			else
-				return new AlgoKOptAPO(v, this.grouping, this.s, this.ws);
-		case KOPTORIG: return new AlgoKOptOriginal(v, this.grouping);
-		default: return null;
+			case TOPTAPO:
+				if(!this.isWin)
+					return new AlgoTOptAPO(v, this.grouping);
+				else
+					return new AlgoTOptAPO(v, this.grouping, this.s, this.ws);
+			case KOPTAPO:
+				if(!this.isWin)
+					return new AlgoKOptAPO(v, this.grouping);
+				else
+					return new AlgoKOptAPO(v, this.grouping, this.s, this.ws);
+			case KOPTORIG: return new AlgoKOptOriginal(v, this.grouping);
+			default: return null;
 		}
 	}
 }

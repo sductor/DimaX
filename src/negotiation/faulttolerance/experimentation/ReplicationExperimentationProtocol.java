@@ -53,11 +53,11 @@ ExperimentationProtocol {
 			0.1,
 			0.5,
 			1.});
-//	static List<Double> doubleParameters = Arrays.asList(new Double[]{
-//			0.1,
-//			0.3,
-//			0.6,
-//			1.});
+	//	static List<Double> doubleParameters = Arrays.asList(new Double[]{
+	//			0.1,
+	//			0.3,
+	//			0.6,
+	//			1.});
 	static List<Double> doubleParameters2 = Arrays.asList(new Double[]{
 			0.,
 			0.5,
@@ -83,7 +83,7 @@ ExperimentationProtocol {
 	static boolean  varyOptimizers=true;
 
 	static boolean varyAgentsAndhosts=true;
-	
+
 	static boolean varyAccessibleHost=true;
 
 	static boolean varyAgentSelection=false;
@@ -97,7 +97,7 @@ ExperimentationProtocol {
 
 	static boolean varyHostCapacity=true;
 	static boolean varyHostCapacityDispersion=false;
-	
+
 	static boolean varyAgentCriticity=false;
 	static boolean varyAgentCriticityDispersion=false;
 
@@ -242,8 +242,8 @@ ExperimentationProtocol {
 		for (final ReplicationExperimentationParameters p : exps)
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.nbAgents=(int)(v*(double)ExperimentationProtocol.startingNbAgents);
-				n.nbHosts=(int)(v*(double)ExperimentationProtocol.startingNbHosts);
+				n.nbAgents=(int)(v*ExperimentationProtocol.startingNbAgents);
+				n.nbHosts=(int)(v*ExperimentationProtocol.startingNbHosts);
 				result.add(n);
 			}
 		return result;
@@ -403,7 +403,7 @@ ExperimentationProtocol {
 	final double nbSimuPerMAchine = 1;
 	@Override
 	public Integer getMaxNumberOfAgentPerMachine(final HostIdentifier id) {
-		return new Integer((int) this.nbSimuPerMAchine* 
+		return new Integer((int) this.nbSimuPerMAchine*
 				(ExperimentationProtocol.startingNbAgents + ExperimentationProtocol.startingNbHosts)+1);
 	}
 	//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {

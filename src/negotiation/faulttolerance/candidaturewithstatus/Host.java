@@ -77,7 +77,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	public Host(
 			final ResourceIdentifier id,
-			final double hostMaxProc, final double hostMaxMem, 
+			final double hostMaxProc, final double hostMaxMem,
 			final double lambda,
 			final HostCore myRationality,
 			final AbstractSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
@@ -88,7 +88,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
 		super(id, new HostState(id, hostMaxProc, hostMaxMem, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
-		getMyProtocol().getContracts().setMyAgent(this);
+		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
 }
 

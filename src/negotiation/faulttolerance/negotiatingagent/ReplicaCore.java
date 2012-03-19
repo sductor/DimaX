@@ -1,8 +1,10 @@
 package negotiation.faulttolerance.negotiatingagent;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -40,32 +42,45 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 
 	@Override
-	public void execute(final ReplicationCandidature c) {
+	public void execute(final Collection<ReplicationCandidature> cs) {
 		try {
-			assert c.isViable();
+			assert ContractTransition.allViable(cs):cs;
 			//		logMonologue(
 			//				"executing "+c+" from state "
 			//		+this.getMyAgent().getMyCurrentState()
 			//		+" to state "+c.computeResultingState(
 			//						this.getMyAgent().getMyCurrentState()));
 
-			if (c.isMatchingCreation()) {
-				this.observe(c.getResource(), SimpleObservationService.informationObservationKey);
-				//			System.out.println(c.getAgent()+  " " + new Date().toString()
-				//					+ "  -> i have been replicated by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
-				this.logMonologue("  -> i have been replicated by "+c.getResource(),LogService.onNone);
-			} else {
-				this.stopObservation(c.getResource(), SimpleObservationService.informationObservationKey);
-				//			System.out.println(c.getAgent()+  " " + new Date().toString()
-				//					+ "  -> i have been killed by "+c.getResource()+" new State is "+this.getMyAgent().getMyCurrentState());
-				this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onNone);
-			}
 
-			this.getMyAgent().setNewState(
-					c.computeResultingState(
-							this.getMyAgent().getMyCurrentState()));
-			this.getMyAgent().getMyInformation().add(c.getResourceResultingState());
-		} catch (IncompleteContractException e) {
+			final Collection<ReplicationCandidature> creation = new ArrayList<ReplicationCandidature>();
+			final Collection<ReplicationCandidature> destruction = new ArrayList<ReplicationCandidature>();
+
+			for (final ReplicationCandidature c : cs)
+				if (c.isMatchingCreation())
+					creation.add(c);
+					else
+						destruction.add(c);
+
+					for (final ReplicationCandidature c : creation){
+						this.observe(c.getResource(), SimpleObservationService.informationObservationKey);
+						this.getMyAgent().setNewState(
+								c.computeResultingState(
+										this.getMyAgent().getMyCurrentState()));
+						//			System.out.println(c.getResource() + " " + new Date().toString()
+						//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+						this.logMonologue("  -> i have been replicated by "+c.getResource(),LogService.onFile);
+					}
+
+					for (final ReplicationCandidature c : destruction){
+						this.stopObservation(c.getResource(), SimpleObservationService.informationObservationKey);
+						this.getMyAgent().setNewState(
+								c.computeResultingState(
+										this.getMyAgent().getMyCurrentState()));
+						//			System.out.println(c.getResource() + " " + new Date().toString()
+						//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+						this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onFile);
+					}
+		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
 		}
 
@@ -173,8 +188,8 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	}
 
 	@Override
-	public Double evaluatePreference(final ReplicaState s1) {
-		return s1.getMyReliability();
+	public Double evaluatePreference(Collection<ReplicationCandidature> cs) {
+		return getMyAgent().getMyResultingState(cs).getMyReliability();
 	}
 }
 

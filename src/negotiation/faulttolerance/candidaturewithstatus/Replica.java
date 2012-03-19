@@ -123,7 +123,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
-		getMyProtocol().getContracts().setMyAgent(this);
+		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
 
 	//

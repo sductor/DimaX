@@ -5,13 +5,12 @@ import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
-import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
-import negotiation.negotiationframework.selection.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -76,7 +75,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
-			AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
+			final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
 
@@ -93,8 +92,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(AllocationSocialWelfares.log_socialWelfareOrdering, false, false);
-		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, false);
-		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, false);
+		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, true);
+		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, true);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
 	}
 
@@ -111,7 +110,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	}
 
 	public SelectionCore<ActionSpec, PersonalState, Contract> getMySelectionCore() {
-		return selectionCore;
+		return this.selectionCore;
 	}
 
 	//

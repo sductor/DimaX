@@ -26,7 +26,7 @@ AbstractContractTransition<ActionSpec>{
 	protected final Date creationTime = new Date();
 	protected final long validityTime;
 
-	HashedHashSet<AgentIdentifier, Contract> actions = 
+	HashedHashSet<AgentIdentifier, Contract> actions =
 			new HashedHashSet<AgentIdentifier, Contract>();
 
 
@@ -42,33 +42,27 @@ AbstractContractTransition<ActionSpec>{
 		//Bouh on doit calculer l'*expiration* time en fonction du min de tous les contrats!!!
 		this.validityTime = Long.MAX_VALUE;
 
-		for (final Contract a : actions){
+		for (final Contract a : actions)
 			for (final AgentIdentifier id : a.getAllParticipants())
 				this.actions.add(id, a);
-		}
-		//Cleaning states///////////////////
 
-		final Map<AgentIdentifier, ActionSpec> result = 
-				new HashMap<AgentIdentifier, ActionSpec>();
+					final Map<AgentIdentifier, ActionSpec> result =
+							new HashMap<AgentIdentifier, ActionSpec>();
 
-					for (final Contract c : actions){
-						for (final AgentIdentifier id : c.getAllParticipants()){
-							try {
-									if (result.containsKey(id)){
-										if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
-											result.put(id,c.getSpecificationOf(id));
-									} else
-										result.put(id,c.getSpecificationOf(id));
-							} catch (IncompleteContractException e) {}
-						}
-					}
-					//updating each contract with the freshest state
-					for (final Contract c : this.actions.getAllValues()){
+					for (final Contract c : actions)
 						for (final AgentIdentifier id : c.getAllParticipants())
-							if (result.containsKey(id)){
+							try {
+								if (result.containsKey(id)){
+									if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+										result.put(id,c.getSpecificationOf(id));
+								} else
+									result.put(id,c.getSpecificationOf(id));
+							} catch (final IncompleteContractException e) {}
+					//updating each contract with the freshest state
+					for (final Contract c : this.actions.getAllValues())
+						for (final AgentIdentifier id : c.getAllParticipants())
+							if (result.containsKey(id))
 								c.setSpecification(result.get(id));
-							}
-					}
 	}
 
 
@@ -136,39 +130,37 @@ AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public <State extends ActionSpec> State  computeResultingState(final AgentIdentifier id) 
+	public <State extends ActionSpec> State  computeResultingState(final AgentIdentifier id)
 			throws IncompleteContractException {
 		return (State) this.computeResultingState(this.getSpecificationOf(id));
 	}
 
 	@Override
 	public<State extends ActionSpec>  boolean isViable(final State... s) throws IncompleteContractException{
-		return isViable(Arrays.asList(s));
+		return this.isViable(Arrays.asList(s));
 	}
 
 
 	@Override
 	public <State extends ActionSpec> boolean isViable(
-			Collection<State> initialStates)
-			throws IncompleteContractException {
-		for (Contract c : this){
+			final Collection<State> initialStates)
+					throws IncompleteContractException {
+		for (final Contract c : this)
 			if (!c.isViable(initialStates))
 				return false;
-		}
-		return true;
+				return true;
 	}
 
 	@Override
 	public boolean isInitiallyValid()
 			throws IncompleteContractException {
-		for (Contract c : this){
+		for (final Contract c : this)
 			if (!c.isInitiallyValid())
 				return false;
-		}
-		return true;
+				return true;
 	}
-	
-	
+
+
 	//
 	// Primitive
 	//
@@ -202,6 +194,86 @@ AbstractContractTransition<ActionSpec>{
 		return this.getUptime() + t > this.validityTime;
 	}
 
+
+	//
+	// Primitives
+	//
+
+	public static
+	<Contract extends AbstractContractTransition<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
+
+	/**
+	 * 
+	 * @param a1
+	 * @param a2
+	 * @return the map of initial states of every agent of a1 and a2
+	 * @throws IncompleteContractException
+	 */
+	Map<AgentIdentifier, ActionSpec> getInitialStates(
+			final Collection<Contract> a1,
+			final Collection<Contract> a2) throws IncompleteContractException{
+		final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
+		final Collection<Contract> allContract = new ArrayList<Contract>();
+		allContract.addAll(a1);
+		allContract.addAll(a2);
+
+		for (final Contract c : allContract)
+			for (final AgentIdentifier id : c.getAllParticipants())
+				if (result.containsKey(id)){
+					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
+						assert 1<0;//						System.out.println("remplacing a fresher state");
+					result.put(id,c.getSpecificationOf(id));
+				} else
+					result.put(id,c.getSpecificationOf(id));
+
+		//updating each contract with the freshest state
+		for (final Contract cOld : allContract)
+			for (final AgentIdentifier id : cOld.getAllParticipants())
+				cOld.setSpecification(result.get(id));
+					return result;
+	}
+
+	/**
+	 * 
+	 * @param initialStates
+	 * @param alloc
+	 * @return the collection of agent spec resulting from the application of the reallocation alloc to the initialStates collection
+	 * @throws IncompleteContractException
+	 */
+	public static
+	<Contract extends AbstractContractTransition<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
+
+	Collection<ActionSpec> getResultingAllocation(
+			final Map<AgentIdentifier, ActionSpec> initialStates,
+			final Collection<Contract> alloc) throws IncompleteContractException{
+		final Map<AgentIdentifier, ActionSpec> meAsMap =
+				new HashMap<AgentIdentifier, ActionSpec>();
+		meAsMap.putAll(initialStates);
+
+		for (final Contract c : alloc)
+			for (final AgentIdentifier id : c.getAllParticipants())
+				meAsMap.put(id, c.computeResultingState(meAsMap.get(id)));
+					return meAsMap.values();
+	}
+
+	/**
+	 * 
+	 * @param alloc
+	 * @return the collection of action spec that result of the application of alloc
+	 * on the collection of action spec of the agent concerned by alloc' contracts
+	 * @throws IncompleteContractException
+	 */
+	public static
+	<Contract extends AbstractContractTransition<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
+
+	Collection<ActionSpec> getResultingAllocation(
+			final Collection<Contract> alloc) throws IncompleteContractException{
+		return ReallocationContract.getResultingAllocation(ReallocationContract.getInitialStates(alloc, new ArrayList<Contract>()),alloc);
+	}
+
 	/*
 	 *
 	 */
@@ -222,8 +294,8 @@ AbstractContractTransition<ActionSpec>{
 	}
 
 	public Collection<ContractIdentifier> getIdentifiers() {
-		Collection<ContractIdentifier> myIds = new HashSet<ContractIdentifier>();
-		for (Contract c : this)
+		final Collection<ContractIdentifier> myIds = new HashSet<ContractIdentifier>();
+		for (final Contract c : this)
 			myIds.add(c.getIdentifier());
 				return myIds;
 	}

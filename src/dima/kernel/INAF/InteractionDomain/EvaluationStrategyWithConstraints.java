@@ -66,14 +66,14 @@ public class EvaluationStrategyWithConstraints extends EvaluationStrategy
 
 		switch (this.proposals.size())
 		{
-		case 0 :
-			return null;
+			case 0 :
+				return null;
 
-		case 1 :
-			return this.proposals.get(0);
+			case 1 :
+				return this.proposals.get(0);
 
-		default : //choisir une proposition au hasard parmi l'ensemble des propositions valid�es
-			return this.proposals.get((int) Math.abs(Math.random() * this.proposals.size()));
+			default : //choisir une proposition au hasard parmi l'ensemble des propositions valid�es
+				return this.proposals.get((int) Math.abs(Math.random() * this.proposals.size()));
 		}
 	}
 	/**

@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.exploration;
+package negotiation.negotiationframework.exploration.strategic.exploration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.protocoles.strategic.evaluation.AbstractStrategicEvaluationModule;
+import negotiation.negotiationframework.exploration.strategic.evaluation.AbstractStrategicEvaluationModule;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 

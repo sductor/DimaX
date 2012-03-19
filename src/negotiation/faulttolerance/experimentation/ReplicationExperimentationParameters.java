@@ -28,14 +28,14 @@ ExperimentationParameters {
 
 	public Double hostCapacityMean;
 	public DispersionSymbolicValue hostCapacityDispersion;
-	
+
 	public Double agentCriticityMean;
 	public DispersionSymbolicValue agentCriticityDispersion;
 
 	public Boolean dynamicCriticity;
 	public Double host_maxSimultaneousFailure;
 
-	
+
 	/***
 	 * Constantes
 	 */

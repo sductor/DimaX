@@ -5,7 +5,6 @@ import java.util.Collection;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
@@ -57,59 +56,59 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	@Override
-	public ActionSpec getMySpecif(PersonalState s, Contract c) {
-		return myPersonalCore.getMySpecif(s, c);
+	public ActionSpec getMySpecif(final PersonalState s, final Contract c) {
+		return this.myPersonalCore.getMySpecif(s, c);
 	}
 
 	@Override
-	public void execute(Contract c) {
-		myPersonalCore.execute(c);
+	public void execute(final Collection<Contract> contracts) {
+		this.myPersonalCore.execute(contracts);
+	}
+
+
+	public Double evaluatePreference(Collection<Contract> c) {
+		return myPersonalCore.evaluatePreference(c);
 	}
 
 	@Override
-	public Double evaluatePreference(PersonalState s1) {
-		return myPersonalCore.evaluatePreference(s1);
-	}
-
-	@Override
-	public boolean IWantToNegotiate(PersonalState s) {
-		return myPersonalCore.IWantToNegotiate(s);
+	public boolean IWantToNegotiate(final PersonalState s) {
+		return this.myPersonalCore.IWantToNegotiate(s);
 	}
 
 	/*
 	 * 
 	 */
-	
+
 
 	@Override
 	public boolean isActive() {
-		return myPersonalCore.isActive();
+		return this.myPersonalCore.isActive();
 	}
 
 	@Override
 	public SimpleRationalAgent<ActionSpec, PersonalState, Contract> getMyAgent() {
-		return myPersonalCore.getMyAgent();
+		return this.myPersonalCore.getMyAgent();
 	}
 
 	@Override
 	public void setMyAgent(
-			SimpleRationalAgent<ActionSpec, PersonalState, Contract> ag)
-			throws UnrespectedCompetenceSyntaxException {
-		myPersonalCore.setMyAgent(ag);
+			final SimpleRationalAgent<ActionSpec, PersonalState, Contract> ag)
+					throws UnrespectedCompetenceSyntaxException {
+		this.myPersonalCore.setMyAgent(ag);
 	}
 
 	@Override
 	public void die() {
-		myPersonalCore.die();
+		this.myPersonalCore.die();
 	}
 
 	@Override
 	public AgentIdentifier getIdentifier() {
-		return myPersonalCore.getIdentifier();
+		return this.myPersonalCore.getIdentifier();
 	}
 
 	@Override
-	public void setActive(boolean active) {
-		myPersonalCore.setActive(active);
+	public void setActive(final boolean active) {
+		this.myPersonalCore.setActive(active);
 	}
 }

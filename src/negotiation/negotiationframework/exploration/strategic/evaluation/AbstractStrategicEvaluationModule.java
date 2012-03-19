@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.evaluation;
+package negotiation.negotiationframework.exploration.strategic.evaluation;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
@@ -27,7 +28,7 @@ implements AbstractContractTransition<ActionSpec>{
 	private final Contract candidature;
 	//	private ReallocationContract<Contract, ActionSpec> consequentContract;
 	private final Collection<ReallocationContract<Contract, ActionSpec>> possibleContracts;
-	private Collection<ReallocationContract<Contract, ActionSpec>> requestedContracts;
+	private final Collection<ReallocationContract<Contract, ActionSpec>> requestedContracts;
 
 	public InformedCandidature(final Contract c) {
 		super(c.getInitiator(),c.getAgent(), c.getResource(), c.getValidityTime());
@@ -61,7 +62,44 @@ implements AbstractContractTransition<ActionSpec>{
 	public Collection<ReallocationContract<Contract, ActionSpec>> getRequestedContracts() {
 		return this.requestedContracts;
 	}
-	
+
+	/*
+	 * 
+	 */
+
+	public static<
+	Contract extends MatchingCandidature<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
+	Collection<ReallocationContract<Contract, ActionSpec>> toPossibles(final Collection<InformedCandidature<Contract, ActionSpec>> contracts){
+		final Collection<ReallocationContract<Contract, ActionSpec>> result = new HashSet<ReallocationContract<Contract, ActionSpec>>();
+		for (final InformedCandidature<Contract, ActionSpec> c : contracts)
+			result.addAll(c.getPossibleContracts());
+				return result;
+	}
+
+
+	public static<
+	Contract extends MatchingCandidature<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
+	Collection<ReallocationContract<Contract, ActionSpec>> toRequested(final Collection<InformedCandidature<Contract, ActionSpec>> contracts){
+		final Collection<ReallocationContract<Contract, ActionSpec>> result = new HashSet<ReallocationContract<Contract, ActionSpec>>();
+		for (final InformedCandidature<Contract, ActionSpec> c : contracts)
+			result.addAll(c.getRequestedContracts());
+				return result;
+	}
+
+
+	public static<
+	Contract extends MatchingCandidature<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
+	Collection<Contract> toCandidatures(final Collection<InformedCandidature<Contract, ActionSpec>> contracts){
+		final Collection<Contract> result = new ArrayList<Contract>();
+		for (final InformedCandidature<Contract, ActionSpec> c : contracts)
+			result.add(c.getCandidature());
+				return result;
+	}
+
+
 	/*
 	 * 
 	 */
@@ -162,11 +200,9 @@ implements AbstractContractTransition<ActionSpec>{
 	@Override
 	public void setSpecification(final ActionSpec s) {
 		this.candidature.setSpecification(s);
-		for (ReallocationContract r : possibleContracts){
-			r.setSpecification(s);
-		}for (ReallocationContract r : requestedContracts){
-			r.setSpecification(s);
-		}
+		for (final ReallocationContract r : this.possibleContracts)
+			r.setSpecification(s);for (final ReallocationContract r : this.requestedContracts)
+				r.setSpecification(s);
 	}
 
 
@@ -206,22 +242,25 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 
+	@Override
 	public boolean isViable()
 			throws IncompleteContractException {
-		return candidature.isViable();
+		return this.candidature.isViable();
 	}
 
-	public <State extends ActionSpec> boolean isViable(State... initialStates)
+	@Override
+	public <State extends ActionSpec> boolean isViable(final State... initialStates)
 			throws IncompleteContractException {
-		return candidature.isViable(initialStates);
+		return this.candidature.isViable(initialStates);
 	}
 
+	@Override
 	public <State extends ActionSpec> boolean isViable(
-			Collection<State> initialStates)
-			throws IncompleteContractException {
-		return candidature.isViable(initialStates);
+			final Collection<State> initialStates)
+					throws IncompleteContractException {
+		return this.candidature.isViable(initialStates);
 	}
-	
+
 	@Override
 	public boolean equals(final Object o) {
 		return this.candidature.equals(o);

@@ -206,49 +206,49 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 
 	private static Double getDisponibility(final Double lambda, final long uptime) {
 		switch (HostDisponibilityComputer.choosenType) {
-		case Static:
-			return lambda;
-		case Weibull:
-			return WeibullLaw
-					.getWeibullLaw(
-							(uptime + 10 * ReplicationExperimentationParameters._host_maxFaultfrequency)
-							/ ReplicationExperimentationParameters._timeScale,
-							ReplicationExperimentationParameters._kValue, lambda,
-							ReplicationExperimentationParameters._theta);
-		case Poisson:
-			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
-			return PoissonLaw.getPoissonLaw(lambda * nbInterval, 1);
-		default:
-			throw new RuntimeException("impossible");
+			case Static:
+				return lambda;
+			case Weibull:
+				return WeibullLaw
+						.getWeibullLaw(
+								(uptime + 10 * ReplicationExperimentationParameters._host_maxFaultfrequency)
+								/ ReplicationExperimentationParameters._timeScale,
+								ReplicationExperimentationParameters._kValue, lambda,
+								ReplicationExperimentationParameters._theta);
+			case Poisson:
+				final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+				return PoissonLaw.getPoissonLaw(lambda * nbInterval, 1);
+			default:
+				throw new RuntimeException("impossible");
 		}
 	}
 
 	private  static boolean eventOccur(final long uptime, final Double lambda,
 			final boolean triggerAFault) {
 		switch (HostDisponibilityComputer.choosenType) {
-		case Static:
-			final Random rand = new Random();
-			if (triggerAFault)
-				return rand.nextDouble() > lambda;
+			case Static:
+				final Random rand = new Random();
+				if (triggerAFault)
+					return rand.nextDouble() > lambda;
+					else
+						return rand.nextDouble() > ReplicationExperimentationParameters._lambdaRepair;
+			case Weibull:
+				if (triggerAFault)
+					return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
+							ReplicationExperimentationParameters._kValue, lambda,
+							ReplicationExperimentationParameters._theta);
 				else
-					return rand.nextDouble() > ReplicationExperimentationParameters._lambdaRepair;
-		case Weibull:
-			if (triggerAFault)
-				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
-						ReplicationExperimentationParameters._kValue, lambda,
-						ReplicationExperimentationParameters._theta);
-			else
-				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
-						ReplicationExperimentationParameters._kRepair,
-						ReplicationExperimentationParameters._lambdaRepair, 0.);
-		case Poisson:
-			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
-			if (triggerAFault)
-				return PoissonLaw.eventOccur(lambda * nbInterval, 1);
-			else
-				return PoissonLaw.eventOccur(ReplicationExperimentationParameters._lambdaRepair * nbInterval, 1);
-		default:
-			throw new RuntimeException("impossible");
+					return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
+							ReplicationExperimentationParameters._kRepair,
+							ReplicationExperimentationParameters._lambdaRepair, 0.);
+			case Poisson:
+				final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+				if (triggerAFault)
+					return PoissonLaw.eventOccur(lambda * nbInterval, 1);
+				else
+					return PoissonLaw.eventOccur(ReplicationExperimentationParameters._lambdaRepair * nbInterval, 1);
+			default:
+				throw new RuntimeException("impossible");
 		}
 	}
 }

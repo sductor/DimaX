@@ -99,7 +99,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	}
 
 	public int getNumberOfAllocatedResources() {
-		return numberOfAllocatedResources;
+		return this.numberOfAllocatedResources;
 	}
 
 }

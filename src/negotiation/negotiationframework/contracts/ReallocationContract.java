@@ -222,7 +222,7 @@ AbstractContractTransition<ActionSpec>{
 			for (final AgentIdentifier id : c.getAllParticipants())
 				if (result.containsKey(id)){
 					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1)
-						assert 1<0;//						System.out.println("remplacing a fresher state");
+//						assert 1<0;//						System.out.println("remplacing a fresher state");
 					result.put(id,c.getSpecificationOf(id));
 				} else
 					result.put(id,c.getSpecificationOf(id));

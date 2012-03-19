@@ -3,6 +3,7 @@ package negotiation.negotiationframework.protocoles.collaborative;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -75,11 +76,12 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 
 				//Trying to accept simple candidatures
 				//accepting as many as possible*
-				final RooletteWheel<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> r =
-						new RooletteWheel<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>(
-								this.getMyAgent(), allContracts);
+//				final RooletteWheel<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> r =
+//						new RooletteWheel<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>(
+//								this.getMyAgent(), allContracts);
+				final Iterator<InformedCandidature<Contract, ActionSpec>>r = allContracts.iterator();
 				while (r.hasNext()){
-					final InformedCandidature<Contract, ActionSpec> c = r.popNextContract();
+					final InformedCandidature<Contract, ActionSpec> c = r.next();//r.popNextContract();
 					if (this.getMyAgent().Iaccept(currentState, c)){
 						rejected.remove(c);
 						accepted.add(c);
@@ -88,12 +90,16 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 						} catch (final IncompleteContractException e) {
 							this.signalException("impossible", e);
 						}
+					} else {
+						logMonologue("i refuse "+c+" (my state is "+currentState+")", 
+								AbstractCommunicationProtocol.log_selectionStep);
 					}
 				}
 
 				if (accepted.isEmpty()){// I accepted noone, trying to find realloc
 
-					this.logMonologue("generating upgrading contracts!", AbstractCommunicationProtocol.log_selectionStep);
+					this.logMonologue("no contracts accepted : searching upgrading contracts!", 
+							AbstractCommunicationProtocol.log_selectionStep);
 					//some unaccepted contract : generating upgrading contract and adding to propose
 
 					final ResourceInformedProposerCore<Contract, ActionSpec, PersonalState> propCore =
@@ -116,9 +122,11 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 							this.generateUpgradingContracts(currentState, rejected, onWait, hosted, myCore, contracts);
 					propCore.addContractsToPropose(ugradingContracts);
 					if (!ugradingContracts.isEmpty()){
-						this.logMonologue("upgrading contracts founds! "+contracts.getReallocationContracts(),
+						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!"+contracts.getReallocationContracts(),
 								AbstractCommunicationProtocol.log_selectionStep);
-						this.logMonologue("yyeeeeaaaaahhhhhh!!!!!",LogService.onScreen);
+					} else {
+						this.logMonologue("NO upgrading contracts founds!", 
+								AbstractCommunicationProtocol.log_selectionStep);						
 					}
 				}
 
@@ -132,7 +140,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 
 				if (r!=null){//upgrading contract available
 					this.logMonologue(
-							"heeelllll yyeeeeaaaaahhhhhh!!!!!", AbstractCommunicationProtocol.log_selectionStep);
+							"upgrading contracts applied! heeelllll yyeeeeaaaaahhhhhh!!!!!", AbstractCommunicationProtocol.log_selectionStep);
 					this.logMonologue(
 							"heeelllll yyeeeeaaaaahhhhhh!!!!!", LogService.onScreen);
 					for (final Contract c : r)

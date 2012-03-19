@@ -301,7 +301,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	public String toString() {
 		return "\nHOST="+ this.getMyAgentIdentifier()
 				//				+ "\n Date "+ this.getCreationTime()
-				+ "\n --> charge : "+ this.getMyCharge()
+				+ "\n --> charge : "+ this.getCurrentProcCharge()+", "+this.getCurrentMemCharge()
 				+ "\n --> capacity : "+ this.getProcChargeMax()+", "+this.getMemChargeMax()
 				//				+ "\n * dispo  : "
 				//				+ NegotiatingHost.this.myFaultAwareService

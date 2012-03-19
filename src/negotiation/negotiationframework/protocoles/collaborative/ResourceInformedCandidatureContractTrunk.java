@@ -127,7 +127,7 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 
 	@Override
 	public String toString(){
-		return super.toString()+"\n up --> "+this.upgradingContracts;
+		return super.toString()+"\n current upgrading contract are : \n "+this.upgradingContracts;
 	}
 }
 

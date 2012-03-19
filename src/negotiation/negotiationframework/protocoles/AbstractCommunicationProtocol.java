@@ -147,7 +147,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 					this.sendMessage(
 							c.getNotInitiatingParticipants(),
-							new SimpleContractEnvellope(Performative.Propose, c));
+							new SimpleContractProposal(Performative.Propose, c));
 
 					this.contracts.addContract(c);
 				}
@@ -171,6 +171,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			final ArrayList<Contract> toAccept = new ArrayList<Contract>();
 			final ArrayList<Contract> toReject = new ArrayList<Contract>();
 			final ArrayList<Contract> toPutOnWait = new ArrayList<Contract>();
+			
+			logMonologue(
+					"initiating selection with following contracts :\n"+this.getContracts(), 
+					AbstractCommunicationProtocol.log_selectionStep);
 
 			this.getMyAgent().getMySelectionCore().select(this.getContracts(), toAccept, toReject, toPutOnWait);
 
@@ -310,7 +314,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 			this.send(contract, receivers,
 					new SimpleContractAnswer(
-							Performative.RejectProposal,
+							Performative.Cancel,
 							contract.getIdentifier()));
 
 			this.contracts.remove(contract);
@@ -323,7 +327,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.Propose, protocol = AbstractCommunicationProtocol.class)
-	protected void receiveProposal(final SimpleContractEnvellope delta)  {
+	protected void receiveProposal(final SimpleContractProposal delta)  {
 		final Contract contract = delta.getMyContract();
 		//Updating contract spec
 		for (final AgentIdentifier id : contract.getAllParticipants())
@@ -365,9 +369,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.logMonologue("I 've been accepted! =) "+c//+"\n"+this.getMyAgent().getMyCurrentState()
 				,AbstractCommunicationProtocol.log_negotiationStep);
 
-		this.getMyAgent().getMyInformation().add(delta.getSpec());
+//		this.getMyAgent().getMyInformation().add(delta.getSpec());
 		this.contracts.addAcceptation(delta.getSender(), contract);
-		contract.setSpecification(delta.getSpec());
+//		contract.setSpecification(delta.getSpec());
 	}
 
 	@MessageHandler()
@@ -387,7 +391,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				,AbstractCommunicationProtocol.log_negotiationStep);
 
 		this.contracts.addRejection(delta.getSender(), contract);
-		contract.setSpecification(delta.getSpec());
+//		contract.setSpecification(delta.getSpec());
 	}
 
 	@MessageHandler()
@@ -405,26 +409,26 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		assert !contract.hasReachedExpirationTime();
 		assert (!(this.getMyAgent() instanceof Host)	|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty());
 		assert this.contracts.getContractsAcceptedBy(this.getMyAgent().getIdentifier()).contains(contract);
-		try {
-			assert contract.isViable(this.getMyAgent().getMyCurrentState()):"what the !!!!!!\n bad contract "
-					+this.getContracts().statusOf(contract)
-					+ "\nnew state "
-					+ this.getMyAgent()
-					.getMyResultingState(contract);
-		} catch (final IncompleteContractException e1) {
-			this.getMyAgent().signalException("what the !!!!!!\n bad contract "
-					+this.getContracts().statusOf(contract)
-					+ "\nnew state "
-					+ this.getMyAgent()
-					.getMyResultingState(contract));
-		}
-		assert m.getSpec()!=null;
+//		try {
+//			assert contract.isViable(this.getMyAgent().getMyCurrentState()):"what the !!!!!!\n bad contract "
+//					+this.getContracts().statusOf(contract)
+//					+ "\nnew state "
+//					+ this.getMyAgent()
+//					.getMyResultingState(contract);
+//		} catch (final IncompleteContractException e1) {
+//			this.getMyAgent().signalException("what the !!!!!!\n bad contract "
+//					+this.getContracts().statusOf(contract)
+//					+ "\nnew state "
+//					+ this.getMyAgent()
+//					.getMyResultingState(contract));
+//		}
+//		assert m.getSpec()!=null;
 
 
 		this.getMyAgent().logMonologue("I'll apply proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);//+"\n"+contracts);
-		this.getMyAgent().getMyInformation().add(m.getSpec());
 
 		this.getMyAgent().execute(contract);
+//		this.getMyAgent().getMyInformation().add(m.getSpec());
 		this.contracts.remove(contract);
 
 		//updating
@@ -494,7 +498,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		//
 
 		final ContractIdentifier answeredContract;
-		final ActionSpec s;
+//		final ActionSpec s;
 
 		// private final AgentIdentifier sender;
 		//
@@ -505,15 +509,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				final ContractIdentifier id) {
 			super(p, AbstractCommunicationProtocol.class);
 			assert  id!=null;
-			this.s = AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState();
+//			this.s = AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState();
 			this.answeredContract = id;
-
 			assert AbstractCommunicationProtocol.this.getContracts().contains(id);
-			try {
-				AbstractCommunicationProtocol.this.getContracts().getContract(id).setSpecification(this.s);
-			} catch (final UnknownContractException e) {
-				AbstractCommunicationProtocol.this.signalException("impossible!!", e);
-			}
 		}
 
 		//
@@ -528,9 +526,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			return "Answer of contract " + this.answeredContract;
 		}
 
-		public ActionSpec getSpec() {
-			return this.s;
-		}
+//		public ActionSpec getSpec() {
+//			return this.s;
+//		}
 
 		/*
 		 *
@@ -540,12 +538,12 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	//
 
-	public class SimpleContractEnvellope extends FipaACLMessage {
+	public class SimpleContractProposal extends FipaACLMessage {
 		private static final long serialVersionUID = 7442568804092112906L;
 
 		final Contract myContract;
 
-		public SimpleContractEnvellope(final Performative performative,
+		public SimpleContractProposal(final Performative performative,
 				final Contract myContract) {
 			super(performative, AbstractCommunicationProtocol.class);
 			assert myContract != null;

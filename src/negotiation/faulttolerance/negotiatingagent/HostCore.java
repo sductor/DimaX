@@ -91,8 +91,8 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 						this.getMyAgent().setNewState(
 								c.computeResultingState(
 										this.getMyAgent().getMyCurrentState()));
-									System.out.println(c.getResource() + " " + new Date().toString()
-											+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+//									System.out.println(c.getResource() + " " + new Date().toString()
+//											+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
 						this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 					}
 
@@ -102,8 +102,8 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 						this.getMyAgent().setNewState(
 								c.computeResultingState(
 										this.getMyAgent().getMyCurrentState()));
-									System.out.println(c.getResource() + " " + new Date().toString()
-											+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+//									System.out.println(c.getResource() + " " + new Date().toString()
+//											+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
 						this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 					}
 		} catch (final IncompleteContractException e) {

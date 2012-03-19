@@ -28,7 +28,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SimpleContractEnvellope;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SimpleContractProposal;
 
 /* import dimaxx.server.Logger; */
 
@@ -136,7 +136,7 @@ public class RemoteTask implements Serializable {
 		try {
 			this.handle.deliverAsyncMessage(msg);
 		} catch (final RemoteException e) {
-			Logger.exception(this, "Asynchronous message not delivered "+msg.getContents()+"\n -->"+((SimpleContractEnvellope)msg.getContents()).getMyContract().getClass(), e);
+			Logger.exception(this, "Asynchronous message not delivered "+msg.getContents()+"\n -->"+((SimpleContractProposal)msg.getContents()).getMyContract().getClass(), e);
 			try {
 				Logger.exception(this, "Trying emission once more...");
 				// Take a nap

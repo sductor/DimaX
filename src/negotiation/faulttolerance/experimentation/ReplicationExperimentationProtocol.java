@@ -119,7 +119,7 @@ ExperimentationProtocol {
 				DispersionSymbolicValue.Fort,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Fort,//load dispersion
-				ReplicationExperimentationProtocol.doubleParameters.get(1),//capacity mean
+				2*ReplicationExperimentationProtocol.doubleParameters.get(2),//capacity mean
 				DispersionSymbolicValue.Nul,//capcity dispersion
 				ReplicationExperimentationProtocol.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion

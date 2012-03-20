@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
@@ -14,6 +15,10 @@ State extends ActionSpec,
 Contract extends InformedCandidature<Contract,ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7022976048693084925L;
 	boolean ImDecider;
 
 	public OneDeciderCommunicationProtocol(
@@ -42,18 +47,20 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
 	@Override
 	protected void answerAccepted(final ArrayList<Contract> toAccept) {
-		if (this.ImDecider)
+		if (this.ImDecider) {
 			this.confirmContract(toAccept, Receivers.EveryParticipant);
-		else
+		} else {
 			this.acceptContract(toAccept, Receivers.Initiator);
+		}
 	}
 
 	@Override
 	protected void answerRejected(final ArrayList<Contract> toReject) {
-		if (this.ImDecider)
+		if (this.ImDecider) {
 			this.cancelContract(toReject, Receivers.EveryParticipant);
-		else
+		} else {
 			this.rejectContract(toReject, Receivers.Initiator);
+		}
 	}
 
 	@Override

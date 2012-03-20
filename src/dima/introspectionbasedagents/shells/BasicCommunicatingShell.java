@@ -99,8 +99,9 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 			//			parseJavaMessage(mess);
 			try {
 				final Collection<MethodHandler> mts = this.getMyMethods().parseMail(mess);
-				for (final MethodHandler mt : mts)
+				for (final MethodHandler mt : mts) {
 					this.metToRemove.add(mt);
+				}
 			} catch (final UnHandledMessageException e) {
 				// Unhandled envellope
 				LogService.writeWarning(
@@ -117,8 +118,9 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 			this.getStatus().resetCurrentlyReadedMail();
 			this.getStatus().resetCurrentlyExecutedMethod();
 
-			for (final MethodHandler meth : this.metToRemove)
+			for (final MethodHandler meth : this.metToRemove) {
 				this.getMyMethods().removeMethod(meth);
+			}
 		}
 	}
 

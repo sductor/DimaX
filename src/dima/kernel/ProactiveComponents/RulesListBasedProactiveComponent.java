@@ -46,7 +46,9 @@ public class RulesListBasedProactiveComponent extends ProactiveComponent {
 		final Method m[] = this.getClass().getMethods();
 		for (final Method element : m) {
 			final String s = element.getName();
-			if (s.startsWith(begin)) v.add(new NamedAction(s,this));
+			if (s.startsWith(begin)) {
+				v.add(new NamedAction(s,this));
+			}
 		}
 		RulesListBasedProactiveComponent.lists.put(begin,v);
 	}
@@ -59,7 +61,9 @@ public class RulesListBasedProactiveComponent extends ProactiveComponent {
 		final Method m[] = this.getClass().getMethods();
 		for (final Method element : m) {
 			final String s = element.getName();
-			if (s.startsWith(begin)) v.add(new NamedCondition(s,this));
+			if (s.startsWith(begin)) {
+				v.add(new NamedCondition(s,this));
+			}
 		}
 		RulesListBasedProactiveComponent.lists.put(begin,v);
 	}
@@ -69,7 +73,9 @@ public class RulesListBasedProactiveComponent extends ProactiveComponent {
 	 * @return java.util.Vector
 	 */
 	public java.util.Vector getActionList(final String debut) {
-		if (!RulesListBasedProactiveComponent.lists.containsKey(debut)) this.createActionList(debut);
+		if (!RulesListBasedProactiveComponent.lists.containsKey(debut)) {
+			this.createActionList(debut);
+		}
 		return (Vector)RulesListBasedProactiveComponent.lists.get(debut);
 	}
 	/**
@@ -78,7 +84,9 @@ public class RulesListBasedProactiveComponent extends ProactiveComponent {
 	 * @return java.util.Vector
 	 */
 	public java.util.Vector getConditionList(final String debut) {
-		if (!RulesListBasedProactiveComponent.lists.containsKey(debut)) this.createConditionList(debut);
+		if (!RulesListBasedProactiveComponent.lists.containsKey(debut)) {
+			this.createConditionList(debut);
+		}
 		return (Vector)RulesListBasedProactiveComponent.lists.get(debut);
 	}
 	/**
@@ -103,7 +111,7 @@ public class RulesListBasedProactiveComponent extends ProactiveComponent {
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return this.rl.dontstop();
 	}
 	/**

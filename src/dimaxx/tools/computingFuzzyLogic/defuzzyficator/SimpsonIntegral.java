@@ -24,10 +24,11 @@ public abstract class SimpsonIntegral {
 			// Etape 4
 			X = A + i * h;
 			// Etape 5
-			if (i % 2 == 0)
+			if (i % 2 == 0) {
 				Iapp2 = Iapp2 + this.F1(X);
-			else
+			} else {
 				Iapp1 = Iapp1 + this.F1(X);
+			}
 		}
 
 		// Etape 6
@@ -55,10 +56,11 @@ public abstract class SimpsonIntegral {
 			// Etape 4
 			X = A + i * h;
 			// Etape 5
-			if (i % 2 == 0)
+			if (i % 2 == 0) {
 				Iapp2 = Iapp2 + this.F2(X);
-			else
+			} else {
 				Iapp1 = Iapp1 + this.F2(X);
+			}
 		}
 
 		// Etape 6

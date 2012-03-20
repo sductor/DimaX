@@ -134,8 +134,9 @@ public class ReplicationPolicy implements java.io.Serializable {
 	private ReplicationStrategy containsStrategy(final ReplicationStrategy rs) {
 		ReplicationStrategy reps = null;
 		final int index = this.strategies.indexOf(rs);
-		if (index != -1)
+		if (index != -1) {
 			reps = this.strategies.elementAt(index);
+		}
 		return reps;
 	}
 
@@ -186,8 +187,9 @@ public class ReplicationPolicy implements java.io.Serializable {
 			found = result.contains(rep_info);
 			i++;
 		}
-		if (!found)
+		if (!found) {
 			throw new UnknownReplicantException(rep_info);
+		}
 		return result;
 	}
 
@@ -290,8 +292,9 @@ public class ReplicationPolicy implements java.io.Serializable {
 		this.members.remove(rep_info);
 		rep_strat = this.findAppliedStrategy(rep_info);
 		handle = rep_strat.unregisterReplicant(rep_info);
-		if (rep_strat.getReplicants().size() == 0)
+		if (rep_strat.getReplicants().size() == 0) {
 			this.removeStrategy(rep_strat);
+		}
 		return handle;
 	}
 
@@ -302,8 +305,9 @@ public class ReplicationPolicy implements java.io.Serializable {
 	 */
 	protected void suspend() {
 		System.out.println("Suspending policy");
-		for (int i = 0; i < this.strategies.size(); i++)
+		for (int i = 0; i < this.strategies.size(); i++) {
 			this.strategies.elementAt(i).suspend();
+		}
 	}
 
 	/**
@@ -315,8 +319,9 @@ public class ReplicationPolicy implements java.io.Serializable {
 	protected void resume() {
 		System.out.println("Resuming policy");
 		this.publishReplicationPolicy();
-		for (int i = 0; i < this.strategies.size(); i++)
+		for (int i = 0; i < this.strategies.size(); i++) {
 			this.strategies.elementAt(i).resume();
+		}
 	}
 
 	/**
@@ -324,13 +329,14 @@ public class ReplicationPolicy implements java.io.Serializable {
 	 * used by the leader of the replication group only.
 	 */
 	protected void terminate() {
-		for (int i = 0; i < this.strategies.size(); i++)
+		for (int i = 0; i < this.strategies.size(); i++) {
 			try {
 				this.strategies.elementAt(i).terminate();
 			} catch (final RemoteException e) {
 				System.out.println("Trouble while terminating strategy");
 				e.printStackTrace();
 			}
+		}
 	}
 
 	/**
@@ -394,10 +400,12 @@ public class ReplicationPolicy implements java.io.Serializable {
 	void display() {
 		int i;
 		System.out.println("\nPolicy composition:\nMembers");
-		for (i = 0; i < this.members.size(); i++)
+		for (i = 0; i < this.members.size(); i++) {
 			System.out.println(this.members.elementAt(i).textifyDarxPath());
-		for (i = 0; i < this.strategies.size(); i++)
+		}
+		for (i = 0; i < this.strategies.size(); i++) {
 			this.strategies.elementAt(i).display();
+		}
 		System.out.println("\n\n");
 	}
 

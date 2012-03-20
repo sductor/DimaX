@@ -42,8 +42,9 @@ public class Agenda implements Serializable {
 	}
 	public void addActivity(final Activity activity, final TimeSlot slot) {
 		this.activities.addActivity(activity, slot);
-		if (this.interfaceVisible)
+		if (this.interfaceVisible) {
 			this.myInterface.repaint();
+		}
 	}
 	/** Shortcut */
 
@@ -76,11 +77,12 @@ public class Agenda implements Serializable {
 		final Calendar now = Calendar.getInstance();
 		now.setTime(new Date(startTime));
 		final int minute = now.get(Calendar.MINUTE);
-		if ( minute <50 )
+		if ( minute <50 ) {
 			now.add(Calendar.MINUTE, 60-minute);
-		else
+		} else {
 			// On commence a la demi-heure de l heure suivante
 			now.add(Calendar.MINUTE, 60-minute + 30);
+		}
 
 		return now;
 	}
@@ -90,7 +92,9 @@ public class Agenda implements Serializable {
 		final int departureTime = (int)(Agenda.getNextDepartureTimeAfter(startTime).getTime().getTime() / 60000);
 		final int size = (int)(Day.getTimeMillis(dayLimit, 0, 0, 0)/60000) - departureTime + this.diffGMT + 24*60*60; // Le +24*60*60 c est pour inclure la date limite dans les pour parler ;)
 		final byte[] possible = new byte[size];
-		for (int i=0;i<size;i++) possible[i] = 0;
+		for (int i=0;i<size;i++) {
+			possible[i] = 0;
+		}
 
 		// Mettre une couche pour Standard availability
 
@@ -100,10 +104,12 @@ public class Agenda implements Serializable {
 		// Parcour pour aujourd hui
 		int start = (departureTime+this.diffGMT)%(24*60);
 		final int top = 24*60 - start;
-		for (int i=0;i<top;i++)
-			if (av.getAvailability(i+start) > 0.9)
+		for (int i=0;i<top;i++) {
+			if (av.getAvailability(i+start) > 0.9) {
 				// Lock this position
 				possible[i] = 1;
+			}
+		}
 		if (timeCursor.compareTo(dayLimit)>=0)
 		{
 			System.err.println("Pas bon "+timeCursor+" "+dayLimit+" "+start+" "+top+" "+Day.today());
@@ -116,17 +122,19 @@ public class Agenda implements Serializable {
 		{
 			av = this.availability.getAvailabilityForDay(timeCursor.getWeekDayValue());
 			// Parcourir toute les minutes dans cette journee
-			for (int i=0;i<24*60;i++)
-				if (av.getAvailability(i) > 0.9)
+			for (int i=0;i<24*60;i++) {
+				if (av.getAvailability(i) > 0.9) {
 					try
-			{
+					{
 						// Lock this position
 						possible[i+start] = 1;
-			}
-			catch (final ArrayIndexOutOfBoundsException ex)
-			{
-				System.err.println("Array out of bound with "+i+" "+start+" "+size+" "+possible.length+" "+timeCursor+" "+dayLimit);
-				System.exit(-1);
+					}
+					catch (final ArrayIndexOutOfBoundsException ex)
+					{
+						System.err.println("Array out of bound with "+i+" "+start+" "+size+" "+possible.length+" "+timeCursor+" "+dayLimit);
+						System.exit(-1);
+					}
+				}
 			}
 			start += 24*60;
 			timeCursor = Day.forwardedDay(timeCursor,1);
@@ -146,16 +154,19 @@ public class Agenda implements Serializable {
 				if (beginActivityTime > 0)
 				{
 					final int stopTime = slot.getDuration()+beginActivityTime;
-					for (int i=beginActivityTime;i<stopTime;i++)
-						if (i>=0 && i<size)
+					for (int i=beginActivityTime;i<stopTime;i++) {
+						if (i>=0 && i<size) {
 							possible[i] = 1;
+						}
+					}
 				}
 			}
 		}
 
 		// Mettre une couche si on veut forcer certaine impossibilite (exple pas de changement (inclu rajout) dans les 2h a venir)
-		for (int i=0;i<60*2;i++)
+		for (int i=0;i<60*2;i++) {
 			possible[i] =1;
+		}
 
 		return possible;
 	}
@@ -177,10 +188,12 @@ public class Agenda implements Serializable {
 		this.interfaceVisible = on;
 		if (on)
 		{
-			if (this.myInterface == null)
+			if (this.myInterface == null) {
 				this.myInterface = new AgendaInterface(this);
+			}
 			this.myInterface.show();
-		} else
+		} else {
 			this.myInterface.close();
+		}
 	}
 }

@@ -36,7 +36,7 @@ public class Shark extends BasicReactiveAgent {
 		return this.posY;
 	}
 	@Override
-	public  boolean isActive() {
+	public  boolean competenceIsActive() {
 		final int dist = (int)Math.sqrt(Math.pow(Math.abs(this.getPosX() - 170), 2D) + Math.pow(Math.abs(this.getPosY() - 138), 2D));
 		return dist != Shark.bloodSmell / 2;
 	}
@@ -81,60 +81,69 @@ public class Shark extends BasicReactiveAgent {
 		final Graphics g = Shark.water.getGraphics();
 		g.setColor(Color.cyan);
 		g.fillRect(this.getPosX() - 1, this.getPosY() - 1, 3, 3);
-		if(dist < Shark.bloodSmell / 2)
+		if(dist < Shark.bloodSmell / 2) {
 			switch((int)(Math.random() * 2D)) {
-				case 0: // '\0'
-					if(distX < 0)
-						this.setPosX(this.getPosX() - 1);
-					else
-						this.setPosX(this.getPosX() + 1);
-					break;
+			case 0: // '\0'
+				if(distX < 0) {
+					this.setPosX(this.getPosX() - 1);
+				} else {
+					this.setPosX(this.getPosX() + 1);
+				}
+				break;
 
-				case 1: // '\001'
-					if(distY < 0)
-						this.setPosY(this.getPosY() - 1);
-					else
-						this.setPosY(this.getPosY() + 1);
-					break;
+			case 1: // '\001'
+				if(distY < 0) {
+					this.setPosY(this.getPosY() - 1);
+				} else {
+					this.setPosY(this.getPosY() + 1);
+				}
+				break;
 
-				default:
-					if(distX < 0)
-						this.setPosX(this.getPosX() - 1);
-					else
-						this.setPosX(this.getPosX() + 1);
-					if(distY < 0)
-						this.setPosY(this.getPosY() - 1);
-					else
-						this.setPosY(this.getPosY() + 1);
-					break;
+			default:
+				if(distX < 0) {
+					this.setPosX(this.getPosX() - 1);
+				} else {
+					this.setPosX(this.getPosX() + 1);
+				}
+				if(distY < 0) {
+					this.setPosY(this.getPosY() - 1);
+				} else {
+					this.setPosY(this.getPosY() + 1);
+				}
+				break;
 			}
-		else
+		} else {
 			switch((int)(Math.random() * 2D)) {
-				case 0: // '\0'
-					if(distX < 0)
-						this.setPosX(this.getPosX() + 1);
-					else
-						this.setPosX(this.getPosX() - 1);
-					break;
+			case 0: // '\0'
+				if(distX < 0) {
+					this.setPosX(this.getPosX() + 1);
+				} else {
+					this.setPosX(this.getPosX() - 1);
+				}
+				break;
 
-				case 1: // '\001'
-					if(distY < 0)
-						this.setPosY(this.getPosY() + 1);
-					else
-						this.setPosY(this.getPosY() - 1);
-					break;
+			case 1: // '\001'
+				if(distY < 0) {
+					this.setPosY(this.getPosY() + 1);
+				} else {
+					this.setPosY(this.getPosY() - 1);
+				}
+				break;
 
-				default:
-					if(distX < 0)
-						this.setPosX(this.getPosX() + 1);
-					else
-						this.setPosX(this.getPosX() - 1);
-					if(distY < 0)
-						this.setPosY(this.getPosY() + 1);
-					else
-						this.setPosY(this.getPosY() - 1);
-					break;
+			default:
+				if(distX < 0) {
+					this.setPosX(this.getPosX() + 1);
+				} else {
+					this.setPosX(this.getPosX() - 1);
+				}
+				if(distY < 0) {
+					this.setPosY(this.getPosY() + 1);
+				} else {
+					this.setPosY(this.getPosY() - 1);
+				}
+				break;
 			}
+		}
 		g.setColor(Color.red);
 		g.fillRect(this.getPosX() - 1, this.getPosY() - 1, 3, 3);
 	}

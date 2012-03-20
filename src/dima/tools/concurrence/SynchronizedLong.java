@@ -65,7 +65,9 @@ public class SynchronizedLong extends SynchronizedVariable implements Comparable
 	public boolean commit(final long assumedValue, final long newValue) {
 		synchronized(this.lock_) {
 			final boolean success = assumedValue == this.value_;
-			if (success) this.value_ = newValue;
+			if (success) {
+				this.value_ = newValue;
+			}
 			return success;
 		}
 	}
@@ -111,10 +113,11 @@ public class SynchronizedLong extends SynchronizedVariable implements Comparable
 	@Override
 	public boolean equals(final Object other) {
 		if (other != null &&
-				other instanceof SynchronizedLong)
+				other instanceof SynchronizedLong) {
 			return this.get() == ((SynchronizedLong)other).get();
-		else
+		} else {
 			return false;
+		}
 	}
 	/**
 	 * Return the current value

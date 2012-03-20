@@ -28,8 +28,9 @@ public class LocalInfo {
 
 	public int getSize() {
 		int size = 0;
-		for (final int[] array : this.data)
+		for (final int[] array : this.data) {
 			size += array.length * 4;
-				return 12 + size + this.valMap.size() * 4;
+		}
+		return 12 + size + this.valMap.size() * 4;
 	}
 }

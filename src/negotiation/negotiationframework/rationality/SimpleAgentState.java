@@ -67,7 +67,8 @@ public abstract class SimpleAgentState implements AgentState {
 					:this.getStateCounter()+" "+this.creationTime+" * "+that.getStateCounter()+" "+that.creationTime;
 
 					return this.getStateCounter()-that.getStateCounter();
-		} else
+		} else {
 			throw new RuntimeException("wtf");
+		}
 	}
 }

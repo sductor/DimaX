@@ -39,10 +39,11 @@ public class GenericCall {
 
 		//2° get the method
 		try {
-			if(constructor)
+			if(constructor) {
 				construc=classe.getConstructor(parametersClass);
-			else
+			} else {
 				method = classe.getMethod(methodName,parametersClass);
+			}
 		} catch (final SecurityException e) {
 			e.printStackTrace();
 		} catch (final NoSuchMethodException e) {
@@ -59,7 +60,7 @@ public class GenericCall {
 
 		//3° Call the method
 		Object o=null;
-		if(constructor)
+		if(constructor) {
 			try {
 				o=construc.newInstance(methodParameters);
 			} catch (final IllegalArgumentException e) {
@@ -75,7 +76,7 @@ public class GenericCall {
 
 				e.printStackTrace();
 			}
-		else
+		} else {
 			try {
 				o= method.invoke(object,methodParameters);
 			} catch (final IllegalArgumentException e) {
@@ -88,6 +89,7 @@ public class GenericCall {
 
 				e.printStackTrace();
 			}
+		}
 
 
 		return o;

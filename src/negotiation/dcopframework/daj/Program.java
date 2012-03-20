@@ -78,8 +78,9 @@ public abstract class Program {
 	// sleep for `n` scheduling periods
 	// --------------------------------------------------------------------------
 	protected void sleep(final int n) {
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			this.yield();
+		}
 	}
 
 	//	// --------------------------------------------------------------------------

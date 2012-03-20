@@ -82,9 +82,9 @@ ExperimentationProtocol {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=true;
 
-	static boolean varyAgentsAndhosts=true;
+	static boolean varyAgentsAndhosts=false;
 
-	static boolean varyAccessibleHost=true;
+	static boolean varyAccessibleHost=false;
 
 	static boolean varyAgentSelection=false;
 	static boolean varyHostSelection=false;
@@ -95,14 +95,14 @@ ExperimentationProtocol {
 	static boolean varyAgentLoad=false;
 	static boolean varyAgentLoadDispersion=false;
 
-	static boolean varyHostCapacity=true;
+	static boolean varyHostCapacity=false;
 	static boolean varyHostCapacityDispersion=false;
 
 	static boolean varyAgentCriticity=false;
 	static boolean varyAgentCriticityDispersion=false;
 
 	static boolean varyFault=false;
-	static int dynamicCriticity=1; //-1 never dynamics, 1 always dynamics, 0 both
+	static int dynamicCriticity=-1; //-1 never dynamics, 1 always dynamics, 0 both
 
 	//
 	// Default values
@@ -119,7 +119,7 @@ ExperimentationProtocol {
 				DispersionSymbolicValue.Fort,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Fort,//load dispersion
-				2*ReplicationExperimentationProtocol.doubleParameters.get(2),//capacity mean
+				2*ReplicationExperimentationProtocol.doubleParameters.get(1),//capacity mean
 				DispersionSymbolicValue.Nul,//capcity dispersion
 				ReplicationExperimentationProtocol.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
@@ -144,36 +144,51 @@ ExperimentationProtocol {
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new LinkedList<ReplicationExperimentationParameters>();
 		simuToLaunch.add(ReplicationExperimentationProtocol.getDefaultParameters(f));
-		if (ReplicationExperimentationProtocol.varyAgentsAndhosts)
+		if (ReplicationExperimentationProtocol.varyAgentsAndhosts) {
 			simuToLaunch = this.varyAgentsAndhosts(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyAccessibleHost)
+		}
+		if (ReplicationExperimentationProtocol.varyAccessibleHost) {
 			simuToLaunch = this.varyAccessibleHost(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyHostDispo)
+		}
+		if (ReplicationExperimentationProtocol.varyHostDispo) {
 			simuToLaunch = this.varyHostDispo(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyHostFaultDispersion)
+		}
+		if (ReplicationExperimentationProtocol.varyHostFaultDispersion) {
 			simuToLaunch = this.varyHostFaultDispersion(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyAgentLoad)
+		}
+		if (ReplicationExperimentationProtocol.varyAgentLoad) {
 			simuToLaunch = this.varyAgentLoad(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyAgentLoadDispersion)
+		}
+		if (ReplicationExperimentationProtocol.varyAgentLoadDispersion) {
 			simuToLaunch = this.varyAgentLoadDispersion(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyHostCapacity)
+		}
+		if (ReplicationExperimentationProtocol.varyHostCapacity) {
 			simuToLaunch = this.varyHostCapacity(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyHostCapacityDispersion)
+		}
+		if (ReplicationExperimentationProtocol.varyHostCapacityDispersion) {
 			simuToLaunch = this.varyHostCapacityDispersion(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyAgentCriticity)
+		}
+		if (ReplicationExperimentationProtocol.varyAgentCriticity) {
 			simuToLaunch = this.varyAgentCriticity(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyAgentCriticityDispersion)
+		}
+		if (ReplicationExperimentationProtocol.varyAgentCriticityDispersion) {
 			simuToLaunch = this.varyAgentCriticityDispersion(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyAgentSelection)
+		}
+		if (ReplicationExperimentationProtocol.varyAgentSelection) {
 			simuToLaunch = this.varyAgentSelection(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyHostSelection)
+		}
+		if (ReplicationExperimentationProtocol.varyHostSelection) {
 			simuToLaunch = this.varyHostSelection(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyOptimizers)
+		}
+		if (ReplicationExperimentationProtocol.varyOptimizers) {
 			simuToLaunch = this.varyOptimizers(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyProtocol)
+		}
+		if (ReplicationExperimentationProtocol.varyProtocol) {
 			simuToLaunch = this.varyProtocol(simuToLaunch);
-		if (ReplicationExperimentationProtocol.varyFault)
+		}
+		if (ReplicationExperimentationProtocol.varyFault) {
 			simuToLaunch = this.varyMaxSimultFailure(simuToLaunch);
+		}
 
 		simuToLaunch = this.varyDynamicCriticity(simuToLaunch);
 
@@ -199,165 +214,180 @@ ExperimentationProtocol {
 
 	private Collection<ReplicationExperimentationParameters> varyProtocol(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final String v : ReplicationExperimentationProtocol.protos){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._usedProtocol=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyAgentSelection(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final String v : ReplicationExperimentationProtocol.select){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._agentSelection=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyHostSelection(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final String v : ReplicationExperimentationProtocol.select){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.set_hostSelection(v);
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyOptimizers(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final String v : ReplicationExperimentationProtocol.welfare){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._socialWelfare=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.nbAgents=(int)(v*ExperimentationProtocol.startingNbAgents);
 				n.nbHosts=(int)(v*ExperimentationProtocol.startingNbHosts);
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyAccessibleHost(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.setkAccessible(v);
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyHostDispo(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.hostFaultProbabilityMean=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 
 	private Collection<ReplicationExperimentationParameters> varyHostFaultDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final DispersionSymbolicValue v : ReplicationExperimentationProtocol.dispersion){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.hostDisponibilityDispersion=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 
 	private Collection<ReplicationExperimentationParameters> varyAgentLoad(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentLoadMean=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 
 	private Collection<ReplicationExperimentationParameters> varyAgentLoadDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final DispersionSymbolicValue v : ReplicationExperimentationProtocol.dispersion){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentLoadDispersion=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyHostCapacity(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.hostCapacityMean=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 
 	private Collection<ReplicationExperimentationParameters> varyHostCapacityDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final DispersionSymbolicValue v : ReplicationExperimentationProtocol.dispersion){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.hostCapacityDispersion=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyAgentCriticity(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentCriticityMean=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyAgentCriticityDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final DispersionSymbolicValue v : ReplicationExperimentationProtocol.dispersion){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentCriticityDispersion=v;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 
 	private Collection<ReplicationExperimentationParameters> varyMaxSimultFailure(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters2){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.setMaxSimultFailure(v);
 				result.add(n);
 			}
+		}
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyDynamicCriticity(
 			final Collection<ReplicationExperimentationParameters> exps) {
 		assert ReplicationExperimentationProtocol.dynamicCriticity>=-1 && ReplicationExperimentationProtocol.dynamicCriticity<=1;
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps)
+		for (final ReplicationExperimentationParameters p : exps) {
 			if (ReplicationExperimentationProtocol.dynamicCriticity==-1){
 				p.dynamicCriticity=false;
 				result.add(p);
@@ -369,6 +399,7 @@ ExperimentationProtocol {
 				n.dynamicCriticity=!p.dynamicCriticity;
 				result.add(n);
 			}
+		}
 		return result;
 	}
 

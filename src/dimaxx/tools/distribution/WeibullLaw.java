@@ -38,10 +38,11 @@ public class WeibullLaw {
 	}
 
 	public static  Double computeWeibullLaw(final long x,  final Double k, final Double lambda, final Double theta){
-		if (x < theta)
+		if (x < theta) {
 			return 0.;
-		else
+		} else {
 			return  - Math.expm1(- Math.pow((x-theta)/lambda, k));
+		}
 	}
 
 
@@ -55,8 +56,9 @@ public class WeibullLaw {
 		//			double lambda = 0.5;
 		while(true){
 			final long uptime = new Date().getTime() - t.getTime();
-			for (double lambda = 0.1; lambda <= 1 ; lambda+=0.3)
+			for (double lambda = 0.1; lambda <= 1 ; lambda+=0.3) {
 				System.out.println("lambda="+lambda+",uptime="+uptime+" : "+WeibullLaw.eventOccur(uptime/timeScale, k, lambda, theta)+"  -> "+WeibullLaw.getWeibullLaw(uptime/timeScale, lambda, k, theta));
+			}
 			System.out.println("***************");
 			//			for (double k = 0; k < 3 ; lambda+=0.5)
 			//				System.out.println("lambda="+lambda+",uptime="+uptime+" : "+eventOccur(uptime/timeScale, k, lambda, theta)+"  -> "+getWeibullLaw(uptime/timeScale, lambda, k, theta));

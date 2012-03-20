@@ -90,10 +90,11 @@ UtilitaristAnalyser<Element> {
 	public double getWeightOfAggregatedElements() {
 		double sum=0;
 
-		for (final double w : this.values())
+		for (final double w : this.values()) {
 			sum+=w;
+		}
 
-				return sum;
+		return sum;
 	}
 
 	@Override

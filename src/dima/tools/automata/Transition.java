@@ -26,9 +26,13 @@ public class Transition extends AutomataObject {
 	State  targetState;
 	public Transition(final AbstractCondition condition, final AbstractAction action, final State arrivalState) {
 		this.conditions = new Vector();
-		if (condition!=null) this.conditions.add(condition);
+		if (condition!=null) {
+			this.conditions.add(condition);
+		}
 		this.actions = new Vector();
-		if (action!=null) this.actions.add(action);
+		if (action!=null) {
+			this.actions.add(action);
+		}
 		this.targetState = arrivalState;
 	}
 	/**
@@ -44,16 +48,26 @@ public class Transition extends AutomataObject {
 		final NamedCondition condition = new NamedCondition(scondition);
 		final NamedAction action = new NamedAction(saction);
 		this.conditions = new Vector();
-		if (condition!=null) this.conditions.add(condition);
+		if (condition!=null) {
+			this.conditions.add(condition);
+		}
 		this.actions = new Vector();
-		if (action!=null) this.actions.add(action);
+		if (action!=null) {
+			this.actions.add(action);
+		}
 		this.targetState = arrivalState;
 	}
 	public Transition(final Vector c, final Vector a, final State arrivalState) {
-		if (c == null) this.conditions = new Vector();
-		else this.conditions = new Vector(c);
-		if (a == null) this.actions = new Vector();
-		else this.actions = new Vector(a);
+		if (c == null) {
+			this.conditions = new Vector();
+		} else {
+			this.conditions = new Vector(c);
+		}
+		if (a == null) {
+			this.actions = new Vector();
+		} else {
+			this.actions = new Vector(a);
+		}
 		this.targetState = arrivalState;
 	}
 	/**
@@ -111,8 +125,11 @@ public class Transition extends AutomataObject {
 	 */
 	public boolean isSatisfied(final Object context) {
 		final Enumeration e = this.conditions.elements();
-		while (e.hasMoreElements())
-			if (!((AbstractCondition)e.nextElement()).isSatisfied(context)) return false;
+		while (e.hasMoreElements()) {
+			if (!((AbstractCondition)e.nextElement()).isSatisfied(context)) {
+				return false;
+			}
+		}
 		return true;
 	}
 	/**
@@ -122,8 +139,9 @@ public class Transition extends AutomataObject {
 	 */
 	public void performAction(final Object context) {
 		final Enumeration e = this.actions.elements();
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			((AbstractAction)e.nextElement()).execute(context);
+		}
 	}
 	/**
 	 * Insert the method's description here.

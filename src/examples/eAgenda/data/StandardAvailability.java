@@ -27,9 +27,11 @@ public class StandardAvailability implements Serializable {
 	}
 	/** Find the last point index before the point's time become bigger than the speficied value */
 	private int findIndex(final double time) {
-		for(int i=1;i<this.points.size();i++)
-			if ( ((Point)this.points.get(i)).x > time)
+		for(int i=1;i<this.points.size();i++) {
+			if ( ((Point)this.points.get(i)).x > time) {
 				return i-1;
+			}
+		}
 		System.err.println("In StandaraedAvailability.findIndex: This should not happen");
 		return -1;
 	}

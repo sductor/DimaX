@@ -30,8 +30,9 @@ public class DPOPTreeNode extends TreeNode {
 		if (obj instanceof DPOPTreeNode) {
 			final DPOPTreeNode n = (DPOPTreeNode) obj;
 			return this.gid == n.gid && this.id == n.id;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 }

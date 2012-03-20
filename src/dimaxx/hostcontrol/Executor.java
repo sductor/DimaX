@@ -61,10 +61,11 @@ public class Executor implements Serializable {
 	public String execute(final String cmd)
 			throws ErrorOnProcessExecutionException {
 		try {
-			if (this.getOperatingSystem().equals(OperatingSystem.Linux) || this.getOperatingSystem().equals(OperatingSystem.Mac))
+			if (this.getOperatingSystem().equals(OperatingSystem.Linux) || this.getOperatingSystem().equals(OperatingSystem.Mac)) {
 				return this.executeWithBash(cmd);
-			else //case OperatingSystem.Windows:
+			} else {
 				return  this.executeWithWindows(cmd);
+			}
 		} catch (final WrongOSException e) {
 			System.err.println("Impossible!!!!");
 			e.printStackTrace();
@@ -143,8 +144,9 @@ public class Executor implements Serializable {
 	private Process getLinuxProcess() throws ErrorOnProcessExecutionException,
 	WrongOSException {
 		if (!(this.getOperatingSystem().equals(OperatingSystem.Linux) || this
-				.getOperatingSystem().equals(OperatingSystem.Mac)))
+				.getOperatingSystem().equals(OperatingSystem.Mac))) {
 			throw new WrongOSException();
+		}
 		try {
 			return Runtime.getRuntime().exec("/bin/bash");
 		} catch (final IOException ex) {
@@ -161,8 +163,9 @@ public class Executor implements Serializable {
 	 */
 	private Process getWindowsProcess()
 			throws ErrorOnProcessExecutionException, WrongOSException {
-		if (!this.getOperatingSystem().equals(OperatingSystem.Windows))
+		if (!this.getOperatingSystem().equals(OperatingSystem.Windows)) {
 			throw new WrongOSException();
+		}
 		try {
 			// TODO
 			return Runtime.getRuntime().exec("HUH!!! JEN SAIS RIEN!!!");
@@ -189,10 +192,11 @@ public class Executor implements Serializable {
 		try {
 			n = out.read(b);
 			String sortie;
-			if (n > 0)
+			if (n > 0) {
 				sortie = new String(b, 0, n);
-			else
+			} else {
 				sortie = "Le processus n'a pas renvoyé de sortie";
+			}
 			return sortie;
 		} catch (final IOException ex) {
 			LogService.writeException(this, "Erreur lecture commande ", ex);
@@ -209,8 +213,9 @@ public class Executor implements Serializable {
 		String cmd;
 
 		cmd = "";
-		for (i = 0; i < args.length; i++)
+		for (i = 0; i < args.length; i++) {
 			cmd += args[i] + " ";
+		}
 		cmd += "\n";
 		String getBMips =
 				"grep bogomips /proc/cpuinfo | cut -d: -f2 | sed -e \"s/ \\([0-9]*.[0-9]*\\)/\\1/\""

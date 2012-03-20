@@ -68,12 +68,15 @@ public class PredProieAPI extends Frame implements ActionListener, WindowListene
 	}
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		if(e.getSource() == this.getBStart())
+		if(e.getSource() == this.getBStart()) {
 			this.connEtoStart(e);
-		if(e.getSource() == this.getBQuitter())
+		}
+		if(e.getSource() == this.getBQuitter()) {
 			this.connEtoQuitter(e);
-		if(e.getSource() == this.getBStop())
+		}
+		if(e.getSource() == this.getBStop()) {
 			this.connEtoStop(e);
+		}
 	}
 	public void bStart_ActionPerformed(final ActionEvent actionEvent) {
 
@@ -90,11 +93,13 @@ public class PredProieAPI extends Frame implements ActionListener, WindowListene
 	}
 	public void bStop_ActionPerformed(final ActionEvent actionEvent) {
 		int i;
-		for (i=0;i< this.world.animal.size();i++)
-			if ( this.world.animal.elementAt(i) instanceof Predator )
+		for (i=0;i< this.world.animal.size();i++) {
+			if ( this.world.animal.elementAt(i) instanceof Predator ) {
 				((Predator) this.world.animal.elementAt(i)).isAlive = false;
-			else
+			} else {
 				((Food) this.world.animal.elementAt(i)).isAlive = false;
+			}
+		}
 		PredProieAPI.getGrille().setTailleGrille(1);
 		this.GridSize = 1;
 		PredProieAPI.getGrille().repaint();
@@ -127,46 +132,49 @@ public class PredProieAPI extends Frame implements ActionListener, WindowListene
 		}
 	}
 	private Button getBQuitter() {
-		if(this.ivjBExit == null)
+		if(this.ivjBExit == null) {
 			try {
 				this.ivjBExit = new Button();
 				this.ivjBExit.setName("BExit");
 				this.ivjBExit.setBounds(35, 77, 56, 23);
 				this.ivjBExit.setLabel("Exit");
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjBExit;
 	}
 	private Button getBStart() {
-		if(this.ivjBStart == null)
+		if(this.ivjBStart == null) {
 			try {
 				this.ivjBStart = new Button();
 				this.ivjBStart.setName("BStart");
 				this.ivjBStart.setBounds(35, 23, 56, 23);
 				this.ivjBStart.setLabel("Start");
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjBStart;
 	}
 	private Button getBStop() {
-		if(this.ivjBStop == null)
+		if(this.ivjBStop == null) {
 			try {
 				this.ivjBStop = new Button();
 				this.ivjBStop.setName("BStop");
 				this.ivjBStop.setBounds(35, 50, 56, 23);
 				this.ivjBStop.setLabel("Stop");
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjBStop;
 	}
 	private Panel getContentsPane() {
-		if(this.ivjContentsPane == null)
+		if(this.ivjContentsPane == null) {
 			try {
 				this.ivjContentsPane = new Panel();
 				this.ivjContentsPane.setName("ContentsPane");
@@ -183,8 +191,9 @@ public class PredProieAPI extends Frame implements ActionListener, WindowListene
 				this.getContentsPane().add(this.getTTailleGrille(), this.getTTailleGrille().getName());
 
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjContentsPane;
 	}
@@ -195,7 +204,7 @@ public class PredProieAPI extends Frame implements ActionListener, WindowListene
 		return PredProieAPI.ivjGrid1;
 	}
 	private Grid getGrille1() {
-		if(PredProieAPI.ivjGrid1 == null)
+		if(PredProieAPI.ivjGrid1 == null) {
 			try {
 				PredProieAPI.ivjGrid1 = new Grid(this.GridSize);
 				PredProieAPI.ivjGrid1.setName("Grid1");
@@ -203,83 +212,90 @@ public class PredProieAPI extends Frame implements ActionListener, WindowListene
 				PredProieAPI.ivjGrid1.setBackground(Color.lightGray);
 				PredProieAPI.ivjGrid1.setBounds(30, 110, 600, 600);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return PredProieAPI.ivjGrid1;
 	}
 	private Label getLabel1() {
-		if(this.ivjLabel1 == null)
+		if(this.ivjLabel1 == null) {
 			try {
 				this.ivjLabel1 = new Label();
 				this.ivjLabel1.setName("Label1");
 				this.ivjLabel1.setText("Number of Predators");
 				this.ivjLabel1.setBounds(120, 22, 125, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjLabel1;
 	}
 	private Label getLabel2() {
-		if(this.ivjLabel2 == null)
+		if(this.ivjLabel2 == null) {
 			try {
 				this.ivjLabel2 = new Label();
 				this.ivjLabel2.setName("Label1");
 				this.ivjLabel2.setText("Number of Preys");
 				this.ivjLabel2.setBounds(120, 52, 125, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjLabel2;
 	}
 	private Label getLabel3() {
-		if(this.ivjLabel3 == null)
+		if(this.ivjLabel3 == null) {
 			try {
 				this.ivjLabel3 = new Label();
 				this.ivjLabel3.setName("Label3");
 				this.ivjLabel3.setText("Grid Size");
 				this.ivjLabel3.setBounds(120, 82, 125, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjLabel3;
 	}
 	private TextField getTNombrePred() {
-		if(this.ivjTNumberOfPredators == null)
+		if(this.ivjTNumberOfPredators == null) {
 			try {
 				this.ivjTNumberOfPredators = new TextField();
 				this.ivjTNumberOfPredators.setName("TNumberOfPredators");
 				this.ivjTNumberOfPredators.setBounds(249, 23, 51, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjTNumberOfPredators;
 	}
 	private TextField getTNombreProies() {
-		if(this.ivjTNumberOfPreys == null)
+		if(this.ivjTNumberOfPreys == null) {
 			try {
 				this.ivjTNumberOfPreys = new TextField();
 				this.ivjTNumberOfPreys.setName("TNumberOfPreys");
 				this.ivjTNumberOfPreys.setBounds(249, 53, 51, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjTNumberOfPreys;
 	}
 	private TextField getTTailleGrille() {
-		if(this.ivjTGridSize == null)
+		if(this.ivjTGridSize == null) {
 			try {
 				this.ivjTGridSize = new TextField();
 				this.ivjTGridSize.setName("TGridSize");
 				this.ivjTGridSize.setBounds(249, 83, 51, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjTGridSize;
 	}

@@ -144,7 +144,7 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 				final Vector tab=new Vector();
 				final ContactList necess = new ContactList("Necessary members");
 				final ContactList optional = new ContactList("Optional members");
-				while (i< line.length()-1)
+				while (i< line.length()-1) {
 					if ( !line.substring(i,i+1).equals(";")) {
 						if (!line.substring(i,i+1).equals("?") && !line.substring(i,i+1).equals("!")) {
 
@@ -181,7 +181,10 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 							i++;
 
 						}
-					}else i++;
+					} else {
+						i++;
+					}
+				}
 
 
 
@@ -192,13 +195,15 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 				temp++;
 				/* */ System.out.println("LES NECESSAIRES:  ....");
 				final ArrayList li= necess.getMyPeople();
-				for (int j=0; j< li.size();j++)
+				for (int j=0; j< li.size();j++) {
 					System.out.println(((Contact)li.get(j)).getAgentID().toString());
+				}
 
 				/* */ System.out.println("LES OPTIONNELS:  ....");
 				final ArrayList li1= optional.getMyPeople();
-				for (int j=0; j< li1.size();j++)
+				for (int j=0; j< li1.size();j++) {
 					System.out.println(((Contact)li1.get(j)).getAgentID().toString());
+				}
 
 				final Message mes=new Message("planMeetingWhenAvailable", args);//, new AgentName(myAgents[ag].getId().toString()));
 				this.wwait(2000);
@@ -244,17 +249,20 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 	protected void initAgents(final int nb) {
 
 		// Create all agents
-		if (this.obs)
+		if (this.obs) {
 			this.myAgents = new AgendaAgent4[nb];
-		else
+		} else {
 			this.myAgents = new AgendaAgent0[nb];
+		}
 		for (int i=0;i<nb;i++)
 		{
 			final Agenda agentAgenda = new Agenda();
 
-			if (this.obs)
+			if (this.obs) {
 				this.myAgents[i] = new AgendaAgent4(agentAgenda);
-			else    this.myAgents[i] = new AgendaAgent0(agentAgenda);
+			} else {
+				this.myAgents[i] = new AgendaAgent0(agentAgenda);
+			}
 
 			final AgentName name = new AgentName("AgendaAgent"+i);
 			this.myAgents[i].setId(name);
@@ -264,12 +272,14 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 
 		// Tout le monde se connait dans Contact
 
-		for (int i=0; i< this.myAgents.length; i++)
-			for (int it =0; it< this.myAgents.length; it++)
+		for (int i=0; i< this.myAgents.length; i++) {
+			for (int it =0; it< this.myAgents.length; it++) {
 				if (i!=it) {
 					final String agentName = this.myAgents[it].getId().toString();
 					this.myAgents[i].getAgenda().addContact(new	Contact(agentName, this.myAgents[it].getId()));
 				}
+			}
+		}
 
 		// Activate all agents
 
@@ -282,7 +292,7 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 			//		if (obs)
 			//		myAgents[i].activateWithDarxObs(adr,(7005+(i)%2));
 			//		else
-			this.myAgents[i].activateWithDarx(adr,(7005+i%2));
+			this.myAgents[i].activateWithDarx(adr,7005+i%2);
 			this.wwait(100);
 		}
 
@@ -310,7 +320,9 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 			final String st=(String) this.futur.get(i);
 			if (st.equals(s))
 			{
-				if (!this.simFail) this.nbProc=this.nbProcMeet-(i-deb);
+				if (!this.simFail) {
+					this.nbProc=this.nbProcMeet-(i-deb);
+				}
 				this.simFail=true;
 				this.res.print(s);this.res.print("; ");
 			}
@@ -326,7 +338,10 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 	public void inc(final String s, final Long tps) {
 		this.nbProcMeet++;
 		/* */ System.out.println("NBRE DE MEETINGS TRAITES  "+this.nbProcMeet);
-		if (this.nbProcMeet >= this.nbMeetToBeProc-10) this.reussi(); // -10 au lieu de -20 pour RI
+		if (this.nbProcMeet >= this.nbMeetToBeProc-10)
+		{
+			this.reussi(); // -10 au lieu de -20 pour RI
+		}
 		/* */ System.out.println("ID DE L'INIT...."+s);
 		this.futur.addElement(s);
 	}
@@ -345,8 +360,9 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 	@Override
 	public void step() {
 
-		while (this.hasMail())
+		while (this.hasMail()) {
 			this.readMailBox();
+		}
 
 		this.wwait(1600);
 		if (this.simFail || this.simSuc) {
@@ -361,8 +377,11 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 					this.chercher(iniAg,deb1.intValue());
 
 				}
-				if (this.simSuc) this.nbSuc=1;
-				else this.nbSuc=0;
+				if (this.simSuc) {
+					this.nbSuc=1;
+				} else {
+					this.nbSuc=0;
+				}
 				this.res.print(this.nbSuc); this.res.print(" ;");
 				this.res.print(this.nbProc);this.res.println();
 				this.res.close();
@@ -412,8 +431,9 @@ public class SimpleSimulation1 extends BasicCommunicatingAgent{
 
 				}
 			}
+		} else {
+			num=1;
 		}
-		else num=1;
 		final SimpleSimulation1 sim = new SimpleSimulation1("AgentSimulateur",new Integer(num),new Integer(p),obs);
 
 		System.out.println("ACTIVATION DU SIMULATEUR");

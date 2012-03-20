@@ -218,11 +218,13 @@ public class FIPAACLMessage extends Message {
 	 */
 	public boolean isCallForParticipationMessage()
 	{
-		if( this.getPerformative().equals("CallForProposal") && this.getProtocol().equals("FIPAContractNetProtocol") )
+		if( this.getPerformative().equals("CallForProposal") && this.getProtocol().equals("FIPAContractNetProtocol") ) {
 			return true;
+		}
 
-		if( this.getPerformative().equals("Propose") && this.getProtocol().equals("BargainingProtocol") )
+		if( this.getPerformative().equals("Propose") && this.getProtocol().equals("BargainingProtocol") ) {
 			return true;
+		}
 
 		return false;
 	}

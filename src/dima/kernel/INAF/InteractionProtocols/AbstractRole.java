@@ -128,8 +128,9 @@ public class AbstractRole extends ATN
 
 		while (i< this.receivedMessages.size())
 		{
-			if (((FIPAACLMessage)this.receivedMessages.get(i)).getPerformative().equals(perf))
+			if (((FIPAACLMessage)this.receivedMessages.get(i)).getPerformative().equals(perf)) {
 				return true;
+			}
 			i++;
 		}
 

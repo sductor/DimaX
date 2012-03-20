@@ -44,8 +44,9 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	@MessageHandler
 	public void simulationEndORder(final SimulationEndedMessage s){
-		if (this.getMyAgent().isAlive())
+		if (this.getMyAgent().isAlive()) {
 			this.getMyAgent().setAlive(false);
+		}
 	}
 
 

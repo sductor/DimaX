@@ -52,16 +52,18 @@ public class AlgoMGM1 extends BasicAlgorithm {
 						if (this.lock == -1) {
 							this.lock = sender;
 							this.out(index).send(this.createAcceptMsg());
-						} else
+						} else {
 							this.out(index).send(this.createDenyMsg());
-					} else if (this.lock == sender)
+						}
+					} else if (this.lock == sender) {
 						this.lock = -1;
-				} else if (msg instanceof MGM1ResponseMsg)
+					}
+				} else if (msg instanceof MGM1ResponseMsg) {
 					if (this.lock == this.self.id) {
 						final MGM1ResponseMsg rmsg = (MGM1ResponseMsg) msg;
-						if (rmsg.accept)
+						if (rmsg.accept) {
 							this.acceptSet.add(sender);
-						else {
+						} else {
 							this.lock = -1;
 							this.out().broadcast(this.createUnLockMsg());
 							this.reLockTime = this.getTime()
@@ -76,13 +78,16 @@ public class AlgoMGM1 extends BasicAlgorithm {
 							this.out().broadcast(this.createValueMsg());
 						}
 					}
+				}
 			} else {
 				if (this.bestVal == this.self.value) {
 					this.done = true;
-					if (this.checkStable())
+					if (this.checkStable()) {
 						break;
-				} else
+					}
+				} else {
 					this.done = false;
+				}
 				this.yield();
 			}
 		}
@@ -91,11 +96,13 @@ public class AlgoMGM1 extends BasicAlgorithm {
 	protected boolean checkStable() {
 		final Program[] prog = this.node.getNetwork().getPrograms();
 		for (int i = 0; i < prog.length; i++) {
-			if (!(prog[i] instanceof BasicAlgorithm))
+			if (!(prog[i] instanceof BasicAlgorithm)) {
 				continue;
+			}
 			final BasicAlgorithm p = (BasicAlgorithm) prog[i];
-			if (!p.done)
+			if (!p.done) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -108,12 +115,14 @@ public class AlgoMGM1 extends BasicAlgorithm {
 			int sum = 0;
 			for (final Constraint c : this.self.neighbors) {
 				final Variable n = c.getNeighbor(this.self);
-				if (n.value == -1)
+				if (n.value == -1) {
 					return -1;
-				if (this.self == c.first)
+				}
+				if (this.self == c.first) {
 					sum += c.f[i][n.value];
-				else
+				} else {
 					sum += c.f[n.value][i];
+				}
 			}
 			if (sum > best) {
 				best = sum;
@@ -160,7 +169,7 @@ class MGM1ValueMsg extends Message {
 
 	@Override
 	public String getText() {
-		return ("VALUE " + this.value);
+		return "VALUE " + this.value;
 	}
 }
 
@@ -174,7 +183,7 @@ class MGM1LockMsg extends Message {
 
 	@Override
 	public String getText() {
-		return (this.lock ? "LOCK" : "UNLOCK");
+		return this.lock ? "LOCK" : "UNLOCK";
 	}
 }
 
@@ -188,6 +197,6 @@ class MGM1ResponseMsg extends Message {
 
 	@Override
 	public String getText() {
-		return (this.accept ? "ACCEPT" : "DENY");
+		return this.accept ? "ACCEPT" : "DENY";
 	}
 }

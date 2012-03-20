@@ -36,16 +36,17 @@ public class MaStrategy extends BiddingStrategy
 
 		final float currentPrice = ((Article)this.currentBetterProposal).getPrice();
 
-		if(currentPrice>=this.hightPrice)
+		if(currentPrice>=this.hightPrice) {
 			return null;
-		else
+		} else
 		{
 			final float price = (1+this.taux)*currentPrice; //ajouter taux % du prix actuel
 
-			if (price < this.hightPrice)
+			if (price < this.hightPrice) {
 				proposal.setPrice(price);
-			else
+			} else {
 				proposal.setPrice(this.hightPrice);
+			}
 
 			return proposal;
 		}

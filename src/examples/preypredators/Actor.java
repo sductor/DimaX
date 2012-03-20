@@ -100,7 +100,7 @@ public class Actor extends BasicCommunicatingAgent {
 		return this.yoffqua;
 	}
 	@Override
-	public  boolean isActive() {
+	public  boolean competenceIsActive() {
 		return true;
 	}
 	public void kill() {
@@ -139,29 +139,37 @@ public class Actor extends BasicCommunicatingAgent {
 		final int y = this.posY;
 		int ennemi;
 		final Vector liste = new Vector();
-		if (quisuisje == 1)
+		if (quisuisje == 1) {
 			ennemi = 2;
-		else
+		} else {
 			ennemi = 1;
+		}
 		boolean bool = true;
 		//synchronized (Acteur.Tableau) {
 		for (int i = 1;i < this.vue + 1 & bool; i++) {
-			for (int j = this.max(x - i, 0); j < this.min(x + i + 1, Actor.grid.getTailleGrille()); j++)
-				for (int k = this.max(y - i, 0); k < this.min(y + i + 1, Actor.grid.getTailleGrille()); k++)
+			for (int j = this.max(x - i, 0); j < this.min(x + i + 1, Actor.grid.getTailleGrille()); j++) {
+				for (int k = this.max(y - i, 0); k < this.min(y + i + 1, Actor.grid.getTailleGrille()); k++) {
 					//System.out.println("This : "+this+" i : "+i+" j : "+j+" k : "+k);
 					if (ennemi == 1) {
 						final Predator pred = (Predator) Actor.Tableau[j][k];
-						if (pred != null)
-							if (pred.QuiSuisJe == ennemi)
+						if (pred != null) {
+							if (pred.QuiSuisJe == ennemi) {
 								liste.addElement(pred);
+							}
+						}
 					} else {
 						final Food proi = (Food) Actor.Tableau[j][k];
-						if (proi != null)
-							if (proi.QuiSuisJe == ennemi)
+						if (proi != null) {
+							if (proi.QuiSuisJe == ennemi) {
 								liste.addElement(proi);
+							}
+						}
 					}
-			if (!liste.isEmpty())
+				}
+			}
+			if (!liste.isEmpty()) {
 				bool = false;
+			}
 		}
 		//}
 		return liste;

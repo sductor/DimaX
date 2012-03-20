@@ -122,8 +122,9 @@ public class Channel implements InChannel, OutChannel {
 		if (this.isEmpty()) {
 			this.set = s;
 			return true;
+		} else {
+			return false;
 		}
-		else return false;
 	}
 
 	// --------------------------------------------------------------------------

@@ -164,10 +164,11 @@ public class Node extends Thread {
 				return;
 			}
 
-			if(remote != null)
+			if(remote != null) {
 				this.getComm().sendAsyncMessage(remote, (Serializable) m);
-			else
+			} else {
 				throw new RuntimeException(this+" Echec de l'envoi du message"+m);
+			}
 		}
 
 		//		public Object sendSyncMessage(Integer i, final Message m) {
@@ -203,10 +204,11 @@ public class Node extends Thread {
 		 */
 		@Override
 		public void receiveAsyncMessage(final Object msg) {
-			if (msg instanceof Message)
+			if (msg instanceof Message) {
 				((Channel) Node.this.in.getChannel(((Message) msg).getSender())).addMessage((Message) msg);
-			else
+			} else {
 				LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
+			}
 		}
 
 		//		/**

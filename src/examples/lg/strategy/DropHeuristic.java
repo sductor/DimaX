@@ -26,8 +26,9 @@ public class DropHeuristic {
 		Letter ret = null;
 		for (final Enumeration e = deck.getLetters().elements(); e.hasMoreElements();) {
 			final Letter l = (Letter) e.nextElement();
-			if (!word.getNeededLetters().contains(l))
+			if (!word.getNeededLetters().contains(l)) {
 				ret = l;
+			}
 		}
 		return ret;
 	}

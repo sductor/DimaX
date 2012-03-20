@@ -99,10 +99,11 @@ public class ReplicationGroupInfo implements Serializable {
 	 * @return the info concerning the current leader of the group
 	 */
 	public ReplicantInfo getLeaderInfo() throws NoMoreReplicantsException {
-		if (this.leader == -1)
+		if (this.leader == -1) {
 			throw new NoMoreReplicantsException(this.task_name);
-		else
+		} else {
 			return this.members.get(new Integer(this.leader));
+		}
 	}
 
 	/**
@@ -120,15 +121,17 @@ public class ReplicationGroupInfo implements Serializable {
 		while (!found && e.hasMoreElements()) {
 			info = e.nextElement();
 			if (url.compareTo(info.getURL()) == 0
-					&& info.getPortNb() == port_nb)
+					&& info.getPortNb() == port_nb) {
 				found = true;
+			}
 		}
 		// If no corresponding replica was found
 		if (found == false) {
 			info = new ReplicantInfo(url, port_nb, this.task_name, -1);
 			throw new UnknownReplicantException(info);
-		} else
+		} else {
 			return info;
+		}
 	}
 
 	public Enumeration<ReplicantInfo> getMembers() {
@@ -151,23 +154,26 @@ public class ReplicationGroupInfo implements Serializable {
 
 	public void setLeader(final ReplicantInfo new_leader)
 			throws UnknownReplicantException {
-		if (this.contains(new_leader))
+		if (this.contains(new_leader)) {
 			this.leader = new_leader.getReplicantID();
-		else
+		} else {
 			throw new UnknownReplicantException(new_leader);
+		}
 	}
 
 	// GROUP HANDLING
 
 	public void addMember(final ReplicantInfo new_member) {
 		final Integer id = new Integer(new_member.getReplicantID());
-		if (this.members.containsKey(id))
+		if (this.members.containsKey(id)) {
 			System.out.println(new_member.textifyDarxName()
 					+ " already registered in rep group");
-		else
+		}
+		else {
 			this.members.put(id, new_member);
-		// System.out.println(new_member.textifyDarxName()
-		// +" registered in rep group");
+			// System.out.println(new_member.textifyDarxName()
+			// +" registered in rep group");
+		}
 	}
 
 	public void addLeader(final ReplicantInfo new_leader) {
@@ -185,14 +191,15 @@ public class ReplicationGroupInfo implements Serializable {
 	public void removeMember(final ReplicantInfo doomed_member)
 			throws IllegalLeaderRemovalException, NoMoreReplicantsException {
 		final Integer doomed_id = new Integer(doomed_member.getReplicantID());
-		if (this.leader == doomed_id.intValue() && this.members.size() != 1)
+		if (this.leader == doomed_id.intValue() && this.members.size() != 1) {
 			throw new IllegalLeaderRemovalException(doomed_member);
-		else if (this.leader == -1)
+		} else if (this.leader == -1) {
 			throw new NoMoreReplicantsException(this.task_name);
-		else {
+		} else {
 			this.members.remove(doomed_id);
-			if (this.members.size() == 0)
+			if (this.members.size() == 0) {
 				this.leader = -1;
+			}
 		}
 	}
 
@@ -206,8 +213,9 @@ public class ReplicationGroupInfo implements Serializable {
 		// If the group is empty or bound to be so
 		if (this.leader == -1 || this.members.size() == 1) {
 			// If the faulty replica is the last of its group
-			if (this.leader != -1)
+			if (this.leader != -1) {
 				this.members.remove(new Integer(this.leader));
+			}
 			throw new NoMoreReplicantsException(this.task_name);
 		}
 		// Remove faulty leader

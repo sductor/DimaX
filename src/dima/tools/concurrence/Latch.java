@@ -59,31 +59,37 @@ public class Latch implements Sync {
 
 	@Override
 	public void acquire() throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		synchronized(this) {
-			while (!this.latched_)
+			while (!this.latched_) {
 				this.wait();
+			}
 		}
 	}
 	@Override
 	public boolean attempt(final long msecs) throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		synchronized(this) {
-			if (this.latched_)
+			if (this.latched_) {
 				return true;
-			else if (msecs <= 0)
+			} else if (msecs <= 0) {
 				return false;
-			else {
+			} else {
 				long waitTime = msecs;
 				final long start = System.currentTimeMillis();
 				for (;;) {
 					this.wait(waitTime);
-					if (this.latched_)
+					if (this.latched_) {
 						return true;
-					else {
+					} else {
 						waitTime = msecs - (System.currentTimeMillis() - start);
-						if (waitTime <= 0)
+						if (waitTime <= 0) {
 							return false;
+						}
 					}
 				}
 			}

@@ -42,10 +42,11 @@ public class TimeSlot implements Cloneable, Serializable {
 	}
 	/** Does the day and the time slot intersec ? */
 	public boolean contained(final Day d) {
-		if (d.compareTo(this.startDay)<0 || d.compareTo(this.stopDay)>0)
+		if (d.compareTo(this.startDay)<0 || d.compareTo(this.stopDay)>0) {
 			return false;
-		else
+		} else {
 			return true;
+		}
 	}
 	/** Get duration in minute */
 	public int getDuration() {
@@ -53,10 +54,11 @@ public class TimeSlot implements Cloneable, Serializable {
 	}
 	/** How many minute this slot is used on this day and after */
 	public int getDurationRemaining(final Day day) {
-		if (day.compareTo(this.startDay)==0)
+		if (day.compareTo(this.startDay)==0) {
 			return this.duration;
-		else
+		} else {
 			return (int)((Day.getTimeMillis(this.startDay,this.hour,this.minute,0) - Day.getTimeMillis(day, 0, 0, 0))/60000)+this.duration;
+		}
 	}
 	/** Return the number of minute passed within this day */
 	public int getMinuteInDay() {

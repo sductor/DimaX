@@ -31,10 +31,10 @@ public class LoneAgent2 extends ProactiveComponent {
 	}
 
 	/**
-	 * @see Gdima.proactive.component.ProactiveComponent#isActive()
+	 * @see Gdima.proactive.component.ProactiveComponent#competenceIsActive()
 	 */
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return !this.game.getWordToComplete().isComplete();
 	}
 
@@ -47,23 +47,24 @@ public class LoneAgent2 extends ProactiveComponent {
 		// perception simple
 		final Letter needed = this.game.getWordToComplete().getNeededLetter();
 		// perception plus complexe + d�cision simple
-		if (this.game.getDeck().contains(needed))
+		if (this.game.getDeck().contains(needed)) {
 			try {
 				// action simple bas�e sur la perception simple
 				this.game.useLetter(needed);
 			} catch (final GameException e) {
 				e.printStackTrace(System.out);
 			}
-		else { // il faut dropper une lettre, on se sert d'une heuristique
+		} else { // il faut dropper une lettre, on se sert d'une heuristique
 			// d�cision complexe
 			final Letter l = DropHeuristic.whichToDrop(this.game);
-			if (l != null)
+			if (l != null) {
 				try {
 					// action simple bas�e sur la d�cision complexe
 					this.game.dropLetter(l);
 				} catch (final GameException e) {
 					e.printStackTrace(System.out);
 				}
+			}
 
 		}
 

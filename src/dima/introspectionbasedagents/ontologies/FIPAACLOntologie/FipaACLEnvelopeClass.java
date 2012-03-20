@@ -88,8 +88,9 @@ public class FipaACLEnvelopeClass implements Envelope {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (o == this)
+		if (o == this) {
 			return true;
+		}
 
 		if (o instanceof FipaACLEnvelopeClass) {
 			final FipaACLEnvelopeClass e = (FipaACLEnvelopeClass) o;
@@ -104,12 +105,14 @@ public class FipaACLEnvelopeClass implements Envelope {
 									.equals(Language.Any))
 									&& (this.ontology.equals(e.ontology)
 											|| e.ontology.equals(Ontology.Any) || e.ontology
-											.equals(Ontology.Any)))
+											.equals(Ontology.Any))) {
 				return true;
-			else
+			} else {
 				return false;
-		} else
+			}
+		} else {
 			return false;
+		}
 	}
 
 	@Override

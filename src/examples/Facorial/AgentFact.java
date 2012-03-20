@@ -59,7 +59,7 @@ public class AgentFact extends BasicCommunicatingAgent {
 	}
 
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return !(this.liste.size() < 2 && this.nbMes == 0);
 	}
 
@@ -69,8 +69,9 @@ public class AgentFact extends BasicCommunicatingAgent {
 	 */
 	@Override
 	public void proactivityInitialize() {
-		for (int i = 1; i < this.n; i++)
+		for (int i = 1; i < this.n; i++) {
 			this.liste.addElement(new Integer(i));
+		}
 		this.wwait(1000);
 	}
 

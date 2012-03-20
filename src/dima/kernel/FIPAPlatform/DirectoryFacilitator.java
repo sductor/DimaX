@@ -78,9 +78,9 @@ extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
 	 */
 	public void addService(final AgentIdentifier providerId, final Service service) {
 		System.out.println("DF registers the Service: " + service.getId() + " provided by: " + providerId);
-		if (this.servicesList.containsKey(service.getId()))
+		if (this.servicesList.containsKey(service.getId())) {
 			((Vector) this.servicesList.get(service.getId())).add(providerId);
-		else {
+		} else {
 			final Vector v = new Vector();
 			v.add(providerId);
 			this.servicesList.put(service.getId(), v);
@@ -98,7 +98,9 @@ extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
 	 */
 	public void addServices(final AgentIdentifier providerId, final Vector services) {
 		System.out.println("DF registers the Services: " + services + " provided by: " + providerId);
-		for (int i=0; i<services.size(); i++) this.addService(providerId, (Service)services.elementAt(i));
+		for (int i=0; i<services.size(); i++) {
+			this.addService(providerId, (Service)services.elementAt(i));
+		}
 	}
 
 	public static DirectoryFacilitator getDIMAdf() {
@@ -127,8 +129,9 @@ extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
 		final Vector providers = new Vector();
 		//System.out.println("***** :" + servicesList.get(serviceId) );
 		Vector s = new Vector();
-		if (this.servicesList.containsKey(serviceId))
+		if (this.servicesList.containsKey(serviceId)) {
 			s = (Vector) this.servicesList.get(serviceId);
+		}
 		providers.addAll(s);
 		//System.out.println("***** suite:" + requesterId );
 		//Message m = new Message("setServiceProviders", serviceId, providers);
@@ -142,7 +145,7 @@ extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return true;
 	}
 	/**
@@ -160,7 +163,9 @@ extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
 
 	@Override
 	public void step() {
-		if (this.hasMail()) System.out.println("DF has a mesage");
+		if (this.hasMail()) {
+			System.out.println("DF has a mesage");
+		}
 		{this.readMailBox();	 this.wwait(3000);
 		}
 	}

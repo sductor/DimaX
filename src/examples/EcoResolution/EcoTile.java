@@ -58,8 +58,9 @@ class EcoTile extends EcoAgent {
 				this.changeStateTo(EcoAgent.TRY_SATISFACTION);
 				final EcoNPuzzle etq = this.place.owner;
 				etq.satisfied = false;
-			} else if ( this.isSatisfied())
+			} else if ( this.isSatisfied()) {
 				this.place.locked = true;
+			}
 		}
 	}
 	@Override
@@ -75,7 +76,7 @@ class EcoTile extends EcoAgent {
 	}
 	@Override
 	public void doSatisfactionActionOnPlace(final EcoAgent p) {
-		if ( !this.isSatisfied())
+		if ( !this.isSatisfied()) {
 			if ( this.canSatisfyOnPlace(p)) {
 				this.place.locked = false;
 				this.move( ( EcoPlace) this.goalAgent);
@@ -84,6 +85,7 @@ class EcoTile extends EcoAgent {
 				this.doSatisfactionAggressionOnPlace(p);
 				this.doSatisfactionActionOnPlace(p);
 			}
+		}
 	}
 	@Override
 	public void doSatisfactionAggressionOnPlace(final EcoAgent p) {
@@ -91,14 +93,16 @@ class EcoTile extends EcoAgent {
 			this.place.locked = true;
 			if ( this.place.isAdjacentTo( ( EcoPlace) this.goalAgent)) {
 				( ( EcoPlace) this.goalAgent).freeWithConstraint( this.findConstraintForSatisfaction());
-				if ( this.state != EcoAgent.AGGRESSION_SATISFACTION)
+				if ( this.state != EcoAgent.AGGRESSION_SATISFACTION) {
 					this.changeStateTo( EcoAgent.AGGRESSION_SATISFACTION);
+				}
 			} else {
 				final EcoPlace ec = ( EcoPlace) this.findSatisfactionPlace();
-				if ( ec.tile instanceof EcoBlank)
+				if ( ec.tile instanceof EcoBlank) {
 					this.move( ec);
-				else
+				} else {
 					ec.freeWithConstraint( this.goalAgent);
+				}
 				this.doSatisfactionAggressionOnPlace(p);
 			}
 		}
@@ -106,25 +110,35 @@ class EcoTile extends EcoAgent {
 	public EcoAgent findConstraintForSatisfaction() {
 		final EcoPlace ec = ( EcoPlace) this.goalAgent;
 		final Vector list = ec.adjacentPlaces();
-		if ( ec.goalAgent instanceof EcoNPuzzle) return this.place;
-		final EcoTile ep = ( EcoTile) ec.goalAgent;
-		if ( ep.isSatisfied() && list.contains( ep.place))
-			return ep.place;
-		else
+		if ( ec.goalAgent instanceof EcoNPuzzle) {
 			return this.place;
+		}
+		final EcoTile ep = ( EcoTile) ec.goalAgent;
+		if ( ep.isSatisfied() && list.contains( ep.place)) {
+			return ep.place;
+		} else {
+			return this.place;
+		}
 	}
 	@Override
 	public EcoAgent findEscapePlaceWithConstraint( final EcoAgent constraint) {
 		Vector list = this.place.adjacentPlaces();
-		if ( constraint != null)  list.removeElement(constraint);
-		if ( this.goalAgent != null && list.contains( this.goalAgent) && !( ( EcoPlace) this.goalAgent).locked) return this.goalAgent;
+		if ( constraint != null) {
+			list.removeElement(constraint);
+		}
+		if ( this.goalAgent != null && list.contains( this.goalAgent) && !( ( EcoPlace) this.goalAgent).locked) {
+			return this.goalAgent;
+		}
 		final EcoPlace ec = this.place.owner.blank.place;
-		if (  list.contains( ec)) return ec;
+		if (  list.contains( ec)) {
+			return ec;
+		}
 		final Vector vect = new Vector();
 		for( int i = 0; i < list.size(); i++) {
 			final EcoPlace e = ( EcoPlace) list.elementAt( i);
-			if ( !e.locked)
+			if ( !e.locked) {
 				vect.addElement( e);
+			}
 		}
 		list = vect;
 		final EcoNPuzzle etq = this.place.owner;
@@ -136,8 +150,9 @@ class EcoTile extends EcoAgent {
 				final EcoPlace aux = ( EcoPlace) list.elementAt( i);
 				final int db = etq.distanceToTheBlankAvoidingProhibitedPlaces( aux, prohibitedPlaces);
 				if (  db <= d) {
-					if (  db != d)
+					if (  db != d) {
 						l_aux.removeAllElements();
+					}
 					l_aux.addElement( aux);
 					d = db;
 				}
@@ -151,11 +166,13 @@ class EcoTile extends EcoAgent {
 				if ( l_aux.size() > 1) {
 					for( int i = 0; i < l_aux.size(); i++) {
 						final EcoPlace ee = ( EcoPlace) l_aux.elementAt( i);
-						if ( !ee.tile.isSatisfied())
+						if ( !ee.tile.isSatisfied()) {
 							l_aux2.addElement( ee);
+						}
 					}
-					if ( !l_aux2.isEmpty())
+					if ( !l_aux2.isEmpty()) {
 						l_aux = l_aux2;
+					}
 				}
 				return ( EcoPlace) l_aux.firstElement();
 			}
@@ -172,8 +189,9 @@ class EcoTile extends EcoAgent {
 		final Vector l = new Vector();
 		for( int i = 0; i < list.size(); i++) {
 			final EcoPlace ec = ( EcoPlace) list.elementAt( i);
-			if ( !ec.tile.isSatisfied())
+			if ( !ec.tile.isSatisfied()) {
 				l.addElement( ec);
+			}
 		}
 		final EcoPlace ec = l.isEmpty() ? ( EcoPlace) list.firstElement() : ( EcoPlace) l.firstElement();
 		return ec;
@@ -185,15 +203,16 @@ class EcoTile extends EcoAgent {
 		final int i = this.place.row;
 		final int j = this.place.col;
 		if ( i == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( i)
-				|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j))
+				|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j)) {
 			etq.forbidRowColumn();
+		}
 		super.informDependantsOfSatisfaction();
 	}
 	/**
 	 * Tests wheter a proactive object is active or no ie whether the ProactiveComponent.
 	 */
 	@Override
-	public  boolean isActive()
+	public  boolean competenceIsActive()
 	{return this.isSatisfied();}
 	@Override
 	public boolean isFree() {
@@ -213,8 +232,9 @@ class EcoTile extends EcoAgent {
 		final int i = ec.row;
 		final int j = ec.col;
 		if ( i == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( i)
-				|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j))
+				|| j == etq.indexFirstRowColumnAllowed && etq.completeRowColumn( j)) {
 			etq.forbidRowColumn();
+		}
 		etq.computeSpeed();
 		try {
 			Thread.sleep( EcoNPuzzle.duration/4);

@@ -124,10 +124,11 @@ public class HostsPark {
 	public Collection<HostIdentifier> getDarxServersIdentifier() {
 		final ArrayList<HostIdentifier> hosts = new ArrayList<HostIdentifier>();
 
-		for (final RemoteHostExecutor h : this.getHosts())
+		for (final RemoteHostExecutor h : this.getHosts()) {
 			hosts.add(h.generateHostIdentifier());
+		}
 
-				return hosts;
+		return hosts;
 	}
 	/*
 	 * Dynamic extension of the network
@@ -165,7 +166,7 @@ public class HostsPark {
 	}
 
 	public void executeOnHosts(final Class<?> main, final String args){
-		for (final RemoteHostExecutor host : this.getHosts())
+		for (final RemoteHostExecutor host : this.getHosts()) {
 			try {
 				host.executeWithJava(main, args);
 			} catch (final Exception e) {
@@ -173,11 +174,12 @@ public class HostsPark {
 				this.removeRemoteHost(host);
 				e.printStackTrace();
 			}
+		}
 	}
 
 
 	public void executeOnGroup(final String groupID, final Class<?> main, final String args) {
-		for (final RemoteHostExecutor host : this.getHostsOfNetwork(groupID))
+		for (final RemoteHostExecutor host : this.getHostsOfNetwork(groupID)) {
 			try {
 				host.executeWithJava(main, args);
 			} catch (final Exception e) {
@@ -185,6 +187,7 @@ public class HostsPark {
 				this.removeRemoteHost(host);
 				e.printStackTrace();
 			}
+		}
 	}
 
 	/*
@@ -223,17 +226,21 @@ public class HostsPark {
 				park.getChild("activatedNetworks").getChildren("networkID");
 
 		final Collection<String> activatedGroups = new ArrayList<String>();
-		for (final Element groupID : activatedGroupsElement)
+		for (final Element groupID : activatedGroupsElement) {
 			activatedGroups.add(groupID.getText().trim());
+		}
 
-				final Collection<String> activatedNetworks = new ArrayList<String>();
-				for (final Element networkID : activatedNetworksElement)
-					activatedNetworks.add(networkID.getText().trim());
-						System.out.println("Activated network "+activatedNetworks+", activated groups "+activatedGroups);
+		final Collection<String> activatedNetworks = new ArrayList<String>();
+		for (final Element networkID : activatedNetworksElement) {
+			activatedNetworks.add(networkID.getText().trim());
+		}
+		System.out.println("Activated network "+activatedNetworks+", activated groups "+activatedGroups);
 
-						for (final Element network : networks)
-							if (activatedNetworks.contains(network.getChildText("networkID").trim()))
-								this.parseNetwork(network, activatedGroups);
+		for (final Element network : networks) {
+			if (activatedNetworks.contains(network.getChildText("networkID").trim())) {
+				this.parseNetwork(network, activatedGroups);
+			}
+		}
 	}
 
 	private void parseNameServer(final Element park){
@@ -251,7 +258,7 @@ public class HostsPark {
 
 		for (final Element group : (List<Element>) network.getChildren("group")){
 			final String groupID = group.getChildText("groupID").trim();
-			if (activatedGroups.contains(groupID))
+			if (activatedGroups.contains(groupID)) {
 				for (final Element host : (List<Element>) group.getChildren("host"))	{
 					final RemoteHostExecutor rhost =
 							new RemoteHostExecutor(groupID);
@@ -259,6 +266,7 @@ public class HostsPark {
 					rhost.setSSH(ssh);
 					this.addRemoteHost(rhost);
 				}
+			}
 		}
 	}
 

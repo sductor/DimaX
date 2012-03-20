@@ -15,6 +15,10 @@ import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class DCOPLaborantin extends APILauncherModule {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8123963561118532399L;
 	private final Graph g;
 	private final Algorithm algo;
 	private HashMap<Integer, Node> nodeMap;

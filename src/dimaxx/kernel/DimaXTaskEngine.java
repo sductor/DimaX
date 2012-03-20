@@ -30,8 +30,8 @@ public class DimaXTaskEngine extends Thread {
 		Thread.yield();
 
 		// Run
-		while (this.task.dimaComponent.isAlive())
-			if (this.task.dimaComponent.isActive() && this.task.dimaxTaskIsActive()){//Allows Suspend & Resume at agent && darx levels
+		while (this.task.dimaComponent.isAlive()) {
+			if (this.task.dimaComponent.competenceIsActive() && this.task.dimaxTaskIsActive()){//Allows Suspend & Resume at agent && darx levels
 				this.task.dimaComponent.preActivity();
 				Thread.yield();
 				this.task.dimaComponent.step();
@@ -42,6 +42,7 @@ public class DimaXTaskEngine extends Thread {
 				this.task.dimaComponent.tryToResumeActivity();
 				Thread.yield();
 			}
+		}
 		// Terminate
 		//			LogService.write(this.task.getTaskName(), "end of proactivity <<<");
 		this.task.terminate();

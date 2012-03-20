@@ -19,7 +19,7 @@ public class CommitMsg extends Message {
 
 	@Override
 	public String getText() {
-		return ("COMMIT ") + this.gid + "\n";
+		return "COMMIT " + this.gid + "\n";
 	}
 
 	@Override

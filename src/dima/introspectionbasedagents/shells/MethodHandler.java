@@ -44,8 +44,9 @@ public class MethodHandler extends SimpleMethodHandler {
 		super(caller.getClass().getMethod(methodName, signature==null?SimpleMethodHandler.getSignature(args):signature));
 		this.caller = caller;
 		this.args = args;
-		if (!SimpleMethodHandler.checkSignature(this.getParameterTypes(), args))
+		if (!SimpleMethodHandler.checkSignature(this.getParameterTypes(), args)) {
 			throw new IllegalArgumentException();
+		}
 	}
 
 	//
@@ -94,7 +95,7 @@ public class MethodHandler extends SimpleMethodHandler {
 	}
 
 	public Object execute() throws Throwable {
-		if (!(this.caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) this.caller).isActive())
+		if (!(this.caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) this.caller).competenceIsActive()) {
 			try {
 				return this.execute(this.caller, this.args);
 			} catch (final IllegalAccessException e) {
@@ -111,8 +112,9 @@ public class MethodHandler extends SimpleMethodHandler {
 				//						e.getCause());
 				throw e.getCause();
 			}
-		else
+		} else {
 			return null;
+		}
 	}
 
 	//
@@ -122,11 +124,13 @@ public class MethodHandler extends SimpleMethodHandler {
 	private Object execute(final Object myComponent, final Object[] args) throws IllegalArgumentException, InvocationTargetException, IllegalAccessException {
 		if (this.isActive){
 			final Method m = this.getMethod();
-			if (!m.isAccessible())
+			if (!m.isAccessible()) {
 				m.setAccessible(true);
+			}
 			return m.invoke(myComponent, args);
-		} else
+		} else {
 			return null;
+		}
 	}
 }
 
@@ -271,13 +275,14 @@ class SimpleMethodHandler extends GimaObject {
 	}
 
 	public static Class<?>[] getSignature(final Object[] args){
-		if (args==null)
+		if (args==null) {
 			return null;
-		else {
+		} else {
 			final LinkedList<Class<?>> r = new LinkedList<Class<?>>();
-			for (final Object arg : args)
+			for (final Object arg : args) {
 				r.addLast(arg.getClass());
-					return r.toArray(new Class<?>[0]);
+			}
+			return r.toArray(new Class<?>[0]);
 		}
 	}
 
@@ -285,21 +290,23 @@ class SimpleMethodHandler extends GimaObject {
 	public static  boolean checkSignature(
 			final Class<?>[] attachementSignature, final Object[] attachement) {
 		if (attachementSignature.length == attachement.length) {
-			if (attachementSignature.length==0)
+			if (attachementSignature.length==0) {
 				return true;
-			else {
+			} else {
 				int cpt = 0;
 				while (attachementSignature[cpt].isAssignableFrom(attachement[cpt]
 						.getClass())
-						&& cpt < attachement.length - 1)
+						&& cpt < attachement.length - 1) {
 					cpt++;
+				}
 				if (cpt != attachement.length - 1) {
 					LogService.writeException("unappropriate message ("
 							+ cpt + ") :\n" + Arrays.asList(attachement) + ","
 							+ Arrays.asList(attachementSignature));
 					return false;
-				} else
+				} else {
 					return true;
+				}
 			}
 		} else {
 			LogService.writeException("unappropriate message (different length) :"

@@ -56,13 +56,17 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 					//					this.logWarning("executing this sentence : " + sentence
 					//							+ " (" + this.i + ")",LogService.onBoth);
 					// Déclaration public
-					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents())
+					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents()) {
 						this.getMyAgent().sendMessage(id, sentence);
+					}
 
-							if (sentence instanceof FaultEvent)
-								nbMax--;// il est mort! =(
-							if (nbMax == 0)
-								break;
+					if (sentence instanceof FaultEvent)
+					{
+						nbMax--;// il est mort! =(
+					}
+					if (nbMax == 0) {
+						break;
+					}
 				}
 			}
 			this.i++;

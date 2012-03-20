@@ -51,26 +51,28 @@ BasicCommunicatingShell {
 		this.getExceptionHandler().setMyAgentShell(this);
 
 		this.myMainComponent = myComponent;
-		for (final AgentCompetence<Agent> comp : BasicCompetenceShell.getNativeCompetences(this.myMainComponent))
+		for (final AgentCompetence<Agent> comp : BasicCompetenceShell.getNativeCompetences(this.myMainComponent)) {
 			this.load(comp);
-				if (this.myMainComponent instanceof BasicCompetentAgent) {
-					final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
-					PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
+		}
+		if (this.myMainComponent instanceof BasicCompetentAgent) {
+			final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
+			PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
 
-				}
+		}
 	}
 	public BasicCompetenceShell(
 			final Agent myComponent, final Date horloge,
 			final AbstractMailBox mailbox)
 					throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
 		super(myComponent, mailbox, new LogService(myComponent));
-		for (final AgentCompetence<Agent> comp : BasicCompetenceShell.getNativeCompetences(this.myMainComponent))
+		for (final AgentCompetence<Agent> comp : BasicCompetenceShell.getNativeCompetences(this.myMainComponent)) {
 			this.load(comp);
-				if (this.myMainComponent instanceof BasicCompetentAgent) {
-					final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
-					PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
+		}
+		if (this.myMainComponent instanceof BasicCompetentAgent) {
+			final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
+			PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
 
-				}
+		}
 	}
 
 	public BasicCompetenceShell(final Agent myComponent, final Date horloge)
@@ -97,15 +99,17 @@ BasicCommunicatingShell {
 			throw new UnInstanciedCompetenceException(competence.toString());
 		}
 
-		for (final Class<? extends AgentCompetence<Agent>> compAlre : this.loadedCompetence)
+		for (final Class<? extends AgentCompetence<Agent>> compAlre : this.loadedCompetence) {
 			if (compAlre.isAssignableFrom(competence.getClass())
-					|| competence.getClass().isAssignableFrom(compAlre))
+					|| competence.getClass().isAssignableFrom(compAlre)) {
 				throw new DuplicateCompetenceException(competence+" & "+compAlre);
+			}
+		}
 
-				//OK
-				this.loadedCompetence.add((Class<? extends AgentCompetence<Agent>>) competence.getClass());
-				competence.setMyAgent(this.myMainComponent);
-				this.getMyMethods().load(competence);
+		//OK
+		this.loadedCompetence.add((Class<? extends AgentCompetence<Agent>>) competence.getClass());
+		competence.setMyAgent(this.myMainComponent);
+		this.getMyMethods().load(competence);
 	}
 
 	public void unload(final AgentCompetence<Agent> newComp) {
@@ -123,8 +127,9 @@ BasicCommunicatingShell {
 		super.proactivityTerminate(creation);
 		try {
 
-			for (final AgentCompetence<? extends CompetentComponent> competence : BasicCompetenceShell.getNativeCompetences(this.myMainComponent))
+			for (final AgentCompetence<? extends CompetentComponent> competence : BasicCompetenceShell.getNativeCompetences(this.myMainComponent)) {
 				competence.die();
+			}
 
 		} catch (final Exception e) {
 			LogService.writeException(this,"proactivityTerminate : Impossible!!");
@@ -188,8 +193,9 @@ BasicCommunicatingShell {
 				final Object resultatTest = compM.execute();
 				if (resultatTest instanceof Boolean && (Boolean) resultatTest){
 					final Object resultatAg = this.methodsHook.get(compM).execute();
-					if (resultatAg instanceof Boolean && (Boolean) resultatAg)
+					if (resultatAg instanceof Boolean && (Boolean) resultatAg) {
 						this.methodsHook.remove(compM);
+					}
 				}
 			}
 		} catch (final Throwable e) {
@@ -206,7 +212,7 @@ BasicCommunicatingShell {
 			throws UnrespectedCompetenceSyntaxException {
 		final Collection<AgentCompetence<SAgent>> result = new ArrayList<AgentCompetence<SAgent>>();
 
-		for (final Field comp : IntrospectionStaticPrimitivesLibrary.getAllFields(mainComponent.getClass()))
+		for (final Field comp : IntrospectionStaticPrimitivesLibrary.getAllFields(mainComponent.getClass())) {
 			if (BasicCompetenceShell.fieldIsACompetence(comp)){
 				//Important code a remettre
 				//				if (!Modifier.isFinal(comp.getModifiers())){
@@ -224,11 +230,13 @@ BasicCommunicatingShell {
 					throw new RuntimeException(comp.getName());
 				}
 
-				if (myComp==null)
+				if (myComp==null) {
 					throw new RuntimeException("wtf!!!!!"+comp);
-				else
+				} else {
 					result.add(myComp);
+				}
 			}
+		}
 		return result;
 	}
 
@@ -237,11 +245,11 @@ BasicCommunicatingShell {
 
 		//		System.out.println("------------testing "+comp);
 
-		if (comp.isAnnotationPresent(Competence.class))
+		if (comp.isAnnotationPresent(Competence.class)) {
 			//			System.out.println("------------testing "+comp+ "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			if (AgentCompetence.class.isAssignableFrom(comp.getType()))
+			if (AgentCompetence.class.isAssignableFrom(comp.getType())) {
 				return true;
-			else{
+			} else{
 				LogService.writeWarning(comp,
 						"This field '"+comp.getName()
 						+"' is annotated with competence but " +
@@ -249,12 +257,13 @@ BasicCommunicatingShell {
 						"it can not be used");
 				throw new UnrespectedCompetenceSyntaxException(comp.getName());
 			}
+		}
 
-		if (AgentCompetence.class.isAssignableFrom(comp.getType()))
+		if (AgentCompetence.class.isAssignableFrom(comp.getType())) {
 			//			System.out.println("------------testing "+comp+ "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			if (comp.isAnnotationPresent(Competence.class))
+			if (comp.isAnnotationPresent(Competence.class)) {
 				return true;
-			else {
+			} else {
 				LogService.writeWarning(comp,
 						"This field '"+comp.getName()
 						+"' implements AgentCompetence interface " +
@@ -262,6 +271,7 @@ BasicCommunicatingShell {
 						"it can not be used");
 				throw new UnrespectedCompetenceSyntaxException(comp.getName());
 			}
+		}
 
 		return false;
 	}

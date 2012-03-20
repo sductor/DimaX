@@ -161,8 +161,9 @@ ExperimentationParameters {
 					this._socialWelfare.equals(that._socialWelfare) &&
 					this._agentSelection.equals(that._agentSelection) &&
 					this._hostSelection.equals(that._hostSelection);
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override
@@ -193,8 +194,8 @@ ExperimentationParameters {
 	}
 
 	public Double getRealkAccessible() {
-		return ((double)this.kAccessible)/
-				((double)this.nbHosts);
+		return (double)this.kAccessible/
+				(double)this.nbHosts;
 	}
 
 	public void setMaxSimultFailure(final Double host_maxSimultaneousFailurePercent){
@@ -207,10 +208,11 @@ ExperimentationParameters {
 	}
 
 	public void set_hostSelection(final String hostSelection) {
-		if (this._usedProtocol.equals(ExperimentationProtocol.key4mirrorProto))
+		if (this._usedProtocol.equals(ExperimentationProtocol.key4mirrorProto)) {
 			this._hostSelection = ExperimentationProtocol.key4AllocSelect;
-		else
+		} else {
 			this._hostSelection = hostSelection;
+		}
 	}
 
 	public DistributionParameters<AgentIdentifier> getAgentCriticity() {

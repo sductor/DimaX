@@ -82,13 +82,14 @@ extends BasicAgentCompetence<Laborantin>{
 
 		//Activating status observation
 		if (this.p._usedProtocol.equals(ExperimentationProtocol.getKey4centralisedstatusproto())
-				|| this.p._usedProtocol.equals(ExperimentationProtocol.getKey4statusproto()))
-			this.getMyAgent().myStatusObserver.setActive(true);
-		else
-			this.getMyAgent().myStatusObserver.setActive(false);
+				|| this.p._usedProtocol.equals(ExperimentationProtocol.getKey4statusproto())) {
+			this.getMyAgent().myStatusObserver.activateCompetence(true);
+		} else {
+			this.getMyAgent().myStatusObserver.activateCompetence(false);
+		}
 
 
-		for (final BasicCompetentAgent ag : this.getMyAgent().agents.values())
+		for (final BasicCompetentAgent ag : this.getMyAgent().agents.values()) {
 			//Observation about agent
 			if (ag instanceof Replica || ag instanceof CollaborativeReplica){
 				//Observation de l'évolution des états de l'agent
@@ -103,34 +104,38 @@ extends BasicAgentCompetence<Laborantin>{
 					//I forward my opinion to every agents
 					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
 					opinionsLog.add(ag.getId(), this.getIdentifier());
-				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.getKey4statusproto()))
+				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.getKey4statusproto())) {
 					//This agent observe every agents that it knows
 					for (final AgentIdentifier h :	((Replica)ag).getMyInformation().getKnownAgents()){
 						this.getMyAgent().getAgent(h).addObserver(ag.getId(), SimpleOpinionService.opinionObservationKey);
 						opinionsLog.add(ag.getId(), h);
 					}
-				else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.getKey4mirrorproto())){
+				} else if (this.getSimulationParameters()._usedProtocol.equals(ExperimentationProtocol.getKey4mirrorproto())){
 					//no observation
+				} else {
+					throw new RuntimeException("impossible : ");
 				}
-				else throw new RuntimeException("impossible : ");
 			}else if (ag instanceof Host || ag instanceof CollaborativeHost){
 				//Observation de l'évolution des états de l'hpte
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);
 				observedHostResultLog.add(ag.getIdentifier());
 				// this.myFaultService.addObserver(h.getId(), FaultEvent.class);
 				// this.myFaultService.addObserver(h.getId(), RepairEvent.class)
-			} else if (ag instanceof ReplicationLaborantin)
+			} else if (ag instanceof ReplicationLaborantin) {
 				this.logMonologue("C'est moi!!!!!!!!!! =D",LogService.onFile);
-			else
+			} else {
 				throw new RuntimeException("impossible");
+			}
+		}
 
 		String mono = "Setting observation :"
 				+"\n * I observe results of "+observedHostResultLog
 				+"\n * I observe results of      "+observedRepResultLog
 				+"\n * I observe reliability of  "+reliabilityStatusLog;
-		for (final AgentIdentifier id : opinionsLog.keySet())
+		for (final AgentIdentifier id : opinionsLog.keySet()) {
 			mono += "\n * "+id+" observe opinon of "+opinionsLog.get(id);
-				this.logMonologue(mono,LogService.onFile);
+		}
+		this.logMonologue(mono,LogService.onFile);
 
 	}
 
@@ -171,25 +176,29 @@ extends BasicAgentCompetence<Laborantin>{
 		//verfication
 
 
-		for (final ExperimentationResults r : results)
+		for (final ExperimentationResults r : results) {
 			this.updateInfo(r);
+		}
 
-				if (results.getLast() instanceof ReplicationResultAgent)
-					this.finalStates.add((ReplicationResultAgent) results.getLast());
+		if (results.getLast() instanceof ReplicationResultAgent) {
+			this.finalStates.add((ReplicationResultAgent) results.getLast());
+		}
 
 	}
 
 	private void updateInfo(final ExperimentationResults r) {
-		if (r.isHost())
+		if (r.isHost()) {
 			this.updateHostInfo(r);
-		else
+		} else {
 			this.updateAgentInfo(r);
+		}
 
 		if (r.isLastInfo()){
-			if (r.isHost())
+			if (r.isHost()) {
 				this.getMyAgent().remainingHost.remove(r.getId());
-			else
+			} else {
 				this.getMyAgent().remainingAgent.remove(r.getId());
+			}
 
 			this.logMonologue(r.getId()
 					+" has finished!, " +
@@ -213,21 +222,23 @@ extends BasicAgentCompetence<Laborantin>{
 				//				+entry+" sum ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
 		final HeavyAggregation<Double> variable = new HeavyDoubleAggregation();
-		for (final Double d :  agent_values)
+		for (final Double d :  agent_values) {
 			variable.add(d);
-				if (!variable.isEmpty() && variable.getWeightOfAggregatedElements()>(int) (significatifPercent*totalNumber))
-					result += variable.getMinElement()+";\t " +
-							variable.getQuantile(1,3)+";\t " +
-							variable.getMediane()+";\t " +
-							variable.getQuantile(2,3)+";\t " +
-							variable.getMaxElement()+";\t " +
-							//							variable.getSum()+";\t " +
-							variable.getRepresentativeElement()+";\t " +
-							variable.getWeightOfAggregatedElements()/totalNumber+"\n";
-				else
-					result += "-;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
+		}
+		if (!variable.isEmpty() && variable.getWeightOfAggregatedElements()>(int) (significatifPercent*totalNumber)) {
+			result += variable.getMinElement()+";\t " +
+					variable.getQuantile(1,3)+";\t " +
+					variable.getMediane()+";\t " +
+					variable.getQuantile(2,3)+";\t " +
+					variable.getMaxElement()+";\t " +
+					//							variable.getSum()+";\t " +
+					variable.getRepresentativeElement()+";\t " +
+					variable.getWeightOfAggregatedElements()/totalNumber+"\n";
+		} else {
+			result += "-;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
+		}
 
-				return result;
+		return result;
 	}
 
 	public static  String getQuantileTimeEvolutionObs(final ExperimentationParameters p, final String entry,
@@ -242,18 +253,19 @@ extends BasicAgentCompetence<Laborantin>{
 				+entry+" mean ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++){
 			result += p.geTime(i)/1000.+" ;\t ";
-			if (variable[i].getWeightOfAggregatedElements()>significatifPercent*totalNumber)//!variable[i].isEmpty() &&
+			if (variable[i].getWeightOfAggregatedElements()>significatifPercent*totalNumber) {
 				result +=
-				variable[i].getMinElement()+";\t " +
-						variable[i].getQuantile(1,3)+";\t " +
-						variable[i].getMediane()+";\t " +
-						variable[i].getQuantile(2,3)+";\t " +
-						variable[i].getMaxElement()+";\t " +
-						//						variable[i].getSum()+";\t " +
-						variable[i].getRepresentativeElement()+";\t (" +
-						variable[i].getWeightOfAggregatedElements()/totalNumber+")\n";
-			else
+						variable[i].getMinElement()+";\t " +
+								variable[i].getQuantile(1,3)+";\t " +
+								variable[i].getMediane()+";\t " +
+								variable[i].getQuantile(2,3)+";\t " +
+								variable[i].getMaxElement()+";\t " +
+								//						variable[i].getSum()+";\t " +
+								variable[i].getRepresentativeElement()+";\t (" +
+								variable[i].getWeightOfAggregatedElements()/totalNumber+")\n";
+			} else {
 				result += "-;\t-;\t-;\t-;\t-;\t-;\t  ("+variable[i].getWeightOfAggregatedElements()/totalNumber+")\n";
+			}
 		}
 		return result;
 	}
@@ -263,11 +275,12 @@ extends BasicAgentCompetence<Laborantin>{
 		String result = "t (seconds);\t "+entry+" ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++){
 			result += p.geTime(i)/1000.+" ;\t ";
-			if (variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber)
+			if (variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber) {
 				result+=variable[i].getRepresentativeElement()+";\t (" +
 						(double) variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
-			else
+			} else {
 				result += "-;\t ("+(double)variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
+			}
 		}
 		return result;
 	}

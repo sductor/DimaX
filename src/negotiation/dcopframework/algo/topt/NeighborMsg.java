@@ -27,7 +27,7 @@ public class NeighborMsg extends Message {
 
 	@Override
 	public String getText() {
-		return ("NEIGHBOR " + this.id + ";TTL " + this.ttl);
+		return "NEIGHBOR " + this.id + ";TTL " + this.ttl;
 	}
 
 	public NeighborMsg forward() {

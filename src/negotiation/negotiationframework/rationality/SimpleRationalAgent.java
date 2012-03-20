@@ -85,7 +85,9 @@ extends BasicCompetentAgent {
 	public PersonalState getMyCurrentState() {
 		try {
 			//			if(!((PersonalState) myInformation.getInformation(myStateType, getIdentifier())).equals(s))
-			//				logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh2222222222222222222222222"+s+"******************"+((PersonalState) myInformation.getInformation(myStateType, getIdentifier())));
+			//				logException("arrrgggggggggggggggggggggggggggggggg"
+			//hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh2222222222222222222222222"
+			//+s+"******************"+((PersonalState) myInformation.getInformation(myStateType, getIdentifier())));
 
 			return (PersonalState) this.myInformation.getInformation(this.myStateType, this.getIdentifier());
 		} catch (final NoInformationAvailableException e) {
@@ -96,12 +98,13 @@ extends BasicCompetentAgent {
 
 	public Collection<ActionSpec> getMyResources(){
 		final Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
-		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers())
+		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers()) {
 			try {
 				myResources.add((ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id));
 			} catch (final NoInformationAvailableException e) {
-				throw new RuntimeException("uuuuuhh impossible!!",e);
+				this.signalException("uuuuuhh impossible!!",e);
 			}
+		}
 		return myResources;
 	}
 
@@ -148,9 +151,10 @@ extends BasicCompetentAgent {
 
 	public PersonalState getMyResultingState(final PersonalState s, final Collection<Contract> cs) {
 		PersonalState result = s;
-		for (final Contract c : cs)
+		for (final Contract c : cs) {
 			result = this.getMyResultingState(result,c);
-				return result;
+		}
+		return result;
 	}
 
 
@@ -279,9 +283,9 @@ extends BasicCompetentAgent {
 	public  Double evaluatePreference(final Contract... cs){
 		return this.evaluatePreference(Arrays.asList(cs));
 	}
-//	public  Double evaluatePreference(final PersonalState s1){
-//		return this.myCore.evaluatePreference(s1);
-//	}
+	//	public  Double evaluatePreference(final PersonalState s1){
+	//		return this.myCore.evaluatePreference(s1);
+	//	}
 
 	/*
 	 * Rights

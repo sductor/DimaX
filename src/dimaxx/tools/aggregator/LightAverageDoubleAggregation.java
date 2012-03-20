@@ -26,10 +26,11 @@ AbstractCompensativeAggregation<Double> {
 
 	@Override
 	public Double getRepresentativeElement() {
-		if (this.cardinal == 0)
+		if (this.cardinal == 0) {
 			return Double.NaN;
-		else
+		} else {
 			return this.sum / this.cardinal;
+		}
 	}
 
 	@Override
@@ -38,10 +39,11 @@ AbstractCompensativeAggregation<Double> {
 	}
 
 	public Double getSum() {
-		if (this.cardinal == 0)
+		if (this.cardinal == 0) {
 			return Double.NaN;
-		else
+		} else {
 			return this.sum;
+		}
 	}
 
 	/*
@@ -54,7 +56,8 @@ AbstractCompensativeAggregation<Double> {
 			final LightAverageDoubleAggregation av2 = (LightAverageDoubleAggregation) average2;
 			this.sum += av2.getRepresentativeElement() * av2.cardinal;
 			this.cardinal += av2.cardinal;
-		} else
+		} else {
 			this.sum += average2.getRepresentativeElement();
+		}
 	}
 }

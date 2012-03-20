@@ -90,10 +90,11 @@ AbstractContractTransition<ActionSpec> {
 
 	@Override
 	public ActionSpec getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException{
-		if (!this.specs.containsKey(id))
+		if (!this.specs.containsKey(id)) {
 			throw new IncompleteContractException();
-		else
+		} else {
 			return this.specs.get(id);
+		}
 
 	}
 
@@ -103,14 +104,16 @@ AbstractContractTransition<ActionSpec> {
 		assert !this.specs.containsKey(s.getMyAgentIdentifier()) || s.isNewerThan(this.specs.get(s.getMyAgentIdentifier()))>=0:
 			s+" "+this.specs.get(s.getMyAgentIdentifier());
 
-		if (this.actors.contains(s.getMyAgentIdentifier()))
+		if (this.actors.contains(s.getMyAgentIdentifier())) {
 			this.specs.put(s.getMyAgentIdentifier(), s);
-		else
+		} else {
 			throw new RuntimeException("unappropriate specification set");
+		}
 
 		try {
-			if (!Laborantin.initialisation)
+			if (!Laborantin.initialisation) {
 				assert this.isInitiallyValid():this;
+			}
 		} catch (final IncompleteContractException e){/*ok!*/}
 	}
 
@@ -121,13 +124,16 @@ AbstractContractTransition<ActionSpec> {
 	@Override
 	public boolean isInitiallyValid()
 			throws IncompleteContractException {
-		if (!this.specs.keySet().containsAll(this.actors))
+		if (!this.specs.keySet().containsAll(this.actors)) {
 			throw new IncompleteContractException();
-		else
-			for (final AgentIdentifier id : this.actors)
-				if (!this.getSpecificationOf(id).isValid())
+		} else {
+			for (final AgentIdentifier id : this.actors) {
+				if (!this.getSpecificationOf(id).isValid()) {
 					return false;
-					return true;
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -144,26 +150,33 @@ AbstractContractTransition<ActionSpec> {
 				new ArrayList<AgentIdentifier>();
 		agents.addAll(this.actors);
 
-		for (final State s : initialStates)
-			if (!this.computeResultingState(s).isValid())
+		for (final State s : initialStates) {
+			if (!this.computeResultingState(s).isValid()) {
 				return false;
-				else
-					agents.remove(s.getMyAgentIdentifier());
+			} else {
+				agents.remove(s.getMyAgentIdentifier());
+			}
+		}
 
-				for (final AgentIdentifier id : agents)
-					if (!this.computeResultingState(id).isValid())
-						return false;
-						return true;
+		for (final AgentIdentifier id : agents) {
+			if (!this.computeResultingState(id).isValid()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean isViable() throws IncompleteContractException{
-		if (!this.specs.keySet().containsAll(this.actors))
+		if (!this.specs.keySet().containsAll(this.actors)) {
 			throw new IncompleteContractException();
-		else
-			for (final AgentIdentifier id : this.actors)
-				if (!this.computeResultingState(id).isValid())
+		} else {
+			for (final AgentIdentifier id : this.actors) {
+				if (!this.computeResultingState(id).isValid()) {
 					return false;
-					return true;
+				}
+			}
+		}
+		return true;
 	}
 
 	public static <Contract extends AbstractContractTransition<ActionSpec>, ActionSpec extends AbstractActionSpecification>
@@ -171,11 +184,13 @@ AbstractContractTransition<ActionSpec> {
 		final ReallocationContract<Contract, ActionSpec> reall =
 				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
 
-		for (final AgentIdentifier id : reall.getAllParticipants())
-			if (!reall.computeResultingState(id).isValid())
+		for (final AgentIdentifier id : reall.getAllParticipants()) {
+			if (!reall.computeResultingState(id).isValid()) {
 				return false;
+			}
+		}
 
-				return true;
+		return true;
 	}
 
 	public static <
@@ -186,11 +201,13 @@ AbstractContractTransition<ActionSpec> {
 		final ReallocationContract<Contract, ActionSpec> reall =
 				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
 
-		for (final AgentIdentifier id : reall.getAllParticipants())
-			if (!reall.computeResultingState(id).isValid())
+		for (final AgentIdentifier id : reall.getAllParticipants()) {
+			if (!reall.computeResultingState(id).isValid()) {
 				return false;
+			}
+		}
 
-				return true;
+		return true;
 	}
 	public static <
 	Contract extends AbstractContractTransition<ActionSpec>,
@@ -264,28 +281,32 @@ AbstractContractTransition<ActionSpec> {
 	public static <Contract extends AbstractContractTransition>
 	boolean allViable(final Collection<Contract> contracts)
 			throws IncompleteContractException{
-		for (final Contract c : contracts)
-			assert c.isViable();
+		for (final Contract c : contracts) {
+			assert c.isViable():c;
+		}
 
-				return true;
+		return true;
 	}
 
 	public static <Contract extends AbstractContractTransition<?>>
 	boolean stillValid(final Collection<Contract> cs){
-		for (final Contract c : cs)
+		for (final Contract c : cs) {
 			assert !c.hasReachedExpirationTime();
-				return true;
+		}
+		return true;
 	}
 
 	public static <Contract extends AbstractContractTransition<?>>
 	boolean allComplete(final Collection<Contract> contracts){
-		for (final Contract c : contracts)
-			for (final AgentIdentifier id : c.getAllParticipants())
+		for (final Contract c : contracts) {
+			for (final AgentIdentifier id : c.getAllParticipants()) {
 				try {
 					c.computeResultingState(id);
 				} catch (final IncompleteContractException e) {
 					assert 1<0:c;
 				}
+			}
+		}
 		return true;
 	}
 }

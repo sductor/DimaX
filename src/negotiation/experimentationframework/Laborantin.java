@@ -96,32 +96,35 @@ public abstract class Laborantin extends BasicCompetentAgent {
 				iFailed=true;
 				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
 				count--;
-				if (count==0)
+				if (count==0) {
 					throw e;
+				}
 			}
 		}while(iFailed && count > 0);
 
 
 
-		for (final AgentIdentifier id : this.agents.keySet())
-			if (id instanceof ResourceIdentifier)
+		for (final AgentIdentifier id : this.agents.keySet()) {
+			if (id instanceof ResourceIdentifier) {
 				this.remainingHost.add(id);
-				else
-					this.remainingAgent.add(id);
-				this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
-				//		this.agents.put(getIdentifier(), this);
-				this.getGlobalObservingService().setObservation();
-				this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
-				//		if (true)
-				//		//			throw new RuntimeException();
-				//				launch();
-				//		throw new RuntimeException();
-				this.locations = this.generateLocations(
-						this.api,
-						this.agents.values(),
-						this.numberOfAgentPerMAchine);
+			} else {
+				this.remainingAgent.add(id);
+			}
+		}
+		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
+		//		this.agents.put(getIdentifier(), this);
+		this.getGlobalObservingService().setObservation();
+		this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
+		//		if (true)
+		//		//			throw new RuntimeException();
+		//				launch();
+		//		throw new RuntimeException();
+		this.locations = this.generateLocations(
+				this.api,
+				this.agents.values(),
+				this.numberOfAgentPerMAchine);
 
-				Laborantin.initialisation=false;
+		Laborantin.initialisation=false;
 	}
 
 	protected abstract ObservingGlobalService getGlobalObservingService();
@@ -149,37 +152,42 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		final Map<BasicCompetentAgent, HostIdentifier> result = new Hashtable<BasicCompetentAgent, HostIdentifier>();
 		final Map<HostIdentifier, Integer> hostsLoad = new Hashtable<HostIdentifier, Integer>();
 
-		for (final HostIdentifier h : api.getAvalaibleHosts())
-			if (api.getAgentsRunningOn(h).size()<nbMaxAgent)
+		for (final HostIdentifier h : api.getAvalaibleHosts()) {
+			if (api.getAgentsRunningOn(h).size()<nbMaxAgent) {
 				hostsLoad.put(h, api.getAgentsRunningOn(h).size());
+			}
+		}
 
-				final Collection<HostIdentifier> hosts = new ArrayList<HostIdentifier>();
-				hosts.addAll(hostsLoad.keySet());
-				Iterator<HostIdentifier> itHosts = hosts.iterator();
+		final Collection<HostIdentifier> hosts = new ArrayList<HostIdentifier>();
+		hosts.addAll(hostsLoad.keySet());
+		Iterator<HostIdentifier> itHosts = hosts.iterator();
 
-				for (final BasicCompetentAgent id : collection)
-					if (hosts.isEmpty())
+		for (final BasicCompetentAgent id : collection) {
+			if (hosts.isEmpty()) {
+				throw new NotEnoughMachinesException();
+			} else {
+				if (!itHosts.hasNext()) {
+					itHosts = hosts.iterator();
+				}
+
+				HostIdentifier host = itHosts.next();
+
+				while (hostsLoad.get(host)>nbMaxAgent){
+					itHosts.remove();
+					if (itHosts.hasNext()) {
+						host = itHosts.next();
+					} else {
 						throw new NotEnoughMachinesException();
-						else {
-							if (!itHosts.hasNext())
-								itHosts = hosts.iterator();
+					}
+				}
 
-							HostIdentifier host = itHosts.next();
-
-							while (hostsLoad.get(host)>nbMaxAgent){
-								itHosts.remove();
-								if (itHosts.hasNext())
-									host = itHosts.next();
-								else
-									throw new NotEnoughMachinesException();
-							}
-
-							assert host!=null:
-								"wtfffffffffffffffffffffffffffffffff";
-							result.put(id, host);
-							hostsLoad.put(host, new Integer(hostsLoad.get(host)+1));
-						}
-				return result;
+				assert host!=null:
+					"wtfffffffffffffffffffffffffffffffff";
+				result.put(id, host);
+				hostsLoad.put(host, new Integer(hostsLoad.get(host)+1));
+			}
+		}
+		return result;
 	}
 
 
@@ -224,13 +232,15 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		if (this.getUptime()>10*this.p.getMaxSimulationTime() && (this.remainingAgent.size()>0 || this.remainingHost.size()>0)){
 			this.signalException("i should have end!!!!(rem ag, rem host)="
 					+this.remainingAgent+","+this.remainingHost);
-			for (final AgentIdentifier r : this.remainingHost)
+			for (final AgentIdentifier r : this.remainingHost) {
 				this.sendMessage(r, new SimulationEndedMessage());
-					for (final AgentIdentifier r : this.remainingAgent)
-						this.sendMessage(r, new SimulationEndedMessage());
-							this.remainingAgent.clear();
-							this.remainingHost.clear();
-							return false;
+			}
+			for (final AgentIdentifier r : this.remainingAgent) {
+				this.sendMessage(r, new SimulationEndedMessage());
+			}
+			this.remainingAgent.clear();
+			this.remainingHost.clear();
+			return false;
 		} else if (this.remainingAgent.size()<=0){
 			//			this.logMonologue("Every agent has finished!!",onBoth);
 			if (this.remainingHost.size()<=0){
@@ -251,12 +261,14 @@ public abstract class Laborantin extends BasicCompetentAgent {
 				return true;
 			} else if (!this.endRequestSended){
 				this.logMonologue("all agents lost! ending ..",LogService.onBoth);
-				for (final ResourceIdentifier r : this.getSimulationParameters().getHostsIdentifier())
+				for (final ResourceIdentifier r : this.getSimulationParameters().getHostsIdentifier()) {
 					this.sendMessage(r, new SimulationEndedMessage());
-						this.endRequestSended=true;
-						return false;
-			} else
+				}
+				this.endRequestSended=true;
 				return false;
+			} else {
+				return false;
+			}
 		} else{
 			this.observer.autoSendOfNotifications();
 			return false;

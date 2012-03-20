@@ -37,10 +37,11 @@ public class PoissonLaw {
 	// Evaluate n!
 	private static long factorial_aux( final int n, final long accu )
 	{
-		if( n <= 1 )     // base case
+		if( n <= 1 ) {
 			return accu;
-		else
+		} else {
 			return PoissonLaw.factorial_aux( n - 1, n * accu );
+		}
 	}
 }
 

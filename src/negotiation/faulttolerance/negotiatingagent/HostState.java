@@ -56,10 +56,11 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
 
 		this.myReplicatedAgents.addAll(init.myReplicatedAgents);
-		if (this.myReplicatedAgents.contains(newRep))
+		if (this.myReplicatedAgents.contains(newRep)) {
 			this.myReplicatedAgents.remove(newRep);
-		else
+		} else {
 			this.myReplicatedAgents.add(newRep);
+		}
 	}
 
 	// private universal constructor
@@ -115,9 +116,10 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	@Override
 	public Collection<AgentIdentifier> getMyResourceIdentifiers(){
 		final Collection<AgentIdentifier> result = new ArrayList();
-		for (final ReplicaState r : this.myReplicatedAgents)
+		for (final ReplicaState r : this.myReplicatedAgents) {
 			result.add(r.getMyAgentIdentifier());
-				return result;
+		}
+		return result;
 	}
 
 	@Override
@@ -176,9 +178,9 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 
 	@Override
 	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-		if (h.equals(this.getMyAgentIdentifier()))
+		if (h.equals(this.getMyAgentIdentifier())) {
 			this.setFaulty(isLost);
-		else {
+		} else {
 			// Do nothing
 		}
 		return false;
@@ -202,8 +204,9 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		if (o instanceof HostState) {
 			final HostState e = (HostState) o;
 			return e.getMyCharge();
-		} else
+		} else {
 			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+		}
 	}
 
 	@Override
@@ -222,7 +225,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		meanMemMax = new LightAverageDoubleAggregation(),
 		meanLambda = new LightAverageDoubleAggregation();
 
-		for (final Information o : elems)
+		for (final Information o : elems) {
 			if (o instanceof HostState) {
 				final HostState e = (HostState) o;
 				meanProcCu.add(e.getCurrentProcCharge());
@@ -230,8 +233,10 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				meanMemCu.add(e.getCurrentMemCharge());
 				meanMemMax.add(e.getMemChargeMax());
 				meanLambda.add(e.getLambda());
-			} else
+			} else {
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+			}
+		}
 
 		return new HostState(
 				this.getMyAgentIdentifier(),
@@ -255,7 +260,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		meanMemMax = new LightWeightedAverageDoubleAggregation(),
 		meanLambda = new LightWeightedAverageDoubleAggregation();
 
-		for (final Information o : elems.keySet())
+		for (final Information o : elems.keySet()) {
 			if (o instanceof HostState) {
 				final HostState e = (HostState) o;
 				meanProcCu.add(e.getCurrentProcCharge(),elems.get(e));
@@ -263,8 +268,10 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				meanMemCu.add(e.getCurrentMemCharge(),elems.get(e));
 				meanMemMax.add(e.getMemChargeMax(),elems.get(e));
 				meanLambda.add(e.getLambda(),elems.get(e));
-			} else
+			} else {
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+			}
+		}
 
 		return new HostState(
 				this.getMyAgentIdentifier(),
@@ -288,8 +295,9 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 			final HostState that = (HostState) o;
 			return that.getMyAgentIdentifier().equals(
 					this.getMyAgentIdentifier());
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override

@@ -82,10 +82,11 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 
 		aMin = ya0 < yb0;
 
-		if (aMin)
+		if (aMin) {
 			fMin.add(pa0);
-		else
+		} else {
 			fMin.add(pb0);
+		}
 
 		while (itAb.hasNext()) {
 			x1 = itAb.next();
@@ -103,18 +104,19 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 				if (z.getX() == pa1.getX()) {// 2eme extrémité commune
 					// On ne fait rien : le prochain segment aura une 1ere
 					// extrémité commune
-				} else if (z.getX() == pa0.getX())
+				} else if (z.getX() == pa0.getX()) {
 					aMin = pa1.getY() < pb1.getY();
-				else {// Intersection stricte
+				} else {// Intersection stricte
 					fMin.add(z);
 					aMin = !aMin;
 				}
 			}
 
-			if (aMin)
+			if (aMin) {
 				fMin.add(pa1);
-			else
+			} else {
 				fMin.add(pb1);
+			}
 
 			x0 = x1;
 			pa0 = pa1;
@@ -148,10 +150,11 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 
 		aMax = yb0 < ya0;
 
-		if (aMax)
+		if (aMax) {
 			fMax.add(pa0);
-		else
+		} else {
 			fMax.add(pb0);
+		}
 
 		while (itAb.hasNext()) {
 			x1 = itAb.next();
@@ -169,18 +172,19 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 				if (z.getX() == pa1.getX()) {// 2eme extrémité commune
 					// On ne fait rien : le prochain segment aura une 1ere
 					// extrémité commune
-				} else if (z.getX() == pa0.getX())
+				} else if (z.getX() == pa0.getX()) {
 					aMax = pb1.getY() < pa1.getY();
-				else {// Intersection stricte
+				} else {// Intersection stricte
 					fMax.add(z);
 					aMax = !aMax;
 				}
 			}
 
-			if (aMax)
+			if (aMax) {
 				fMax.add(pa1);
-			else
+			} else {
 				fMax.add(pb1);
+			}
 
 			x0 = x1;
 			pa0 = pa1;
@@ -198,8 +202,9 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 
 		final Iterator<FuzzySubSet> itS = s.iterator();
 		final Iterator<Double> itO = abcisses.iterator();
-		while (itS.hasNext() && itO.hasNext())
+		while (itS.hasNext() && itO.hasNext()) {
 			y = Math.min(itS.next().getDegre(itO.next()), y);
+		}
 
 		return y;
 	}
@@ -245,11 +250,12 @@ public class FuzzySubSet extends FonctionAppartenance implements Serializable {
 
 	@Override
 	public String toString() {
-		if (!this.nomEnsemble.equals("") || !this.nomSousEnsemble.equals(""))
+		if (!this.nomEnsemble.equals("") || !this.nomSousEnsemble.equals("")) {
 			return "sef (" + this.nomEnsemble + ", " + this.nomSousEnsemble
 					+ ")";
-		else
+		} else {
 			return "sef anonyme";
+		}
 	}
 }
 
@@ -350,11 +356,11 @@ class FonctionAppartenance implements Serializable {
 	public double getDegre(final double x) {
 		final Couple p = new Couple(x, 0);
 
-		if (x <= this.fonctionAppartenance.first().getX())
+		if (x <= this.fonctionAppartenance.first().getX()) {
 			return this.fonctionAppartenance.first().getY();
-		else if (x >= this.fonctionAppartenance.last().getX())
+		} else if (x >= this.fonctionAppartenance.last().getX()) {
 			return this.fonctionAppartenance.last().getY();
-		else {
+		} else {
 			final SortedSet<Couple> ssMin = this.fonctionAppartenance
 					.headSet(p);
 			final SortedSet<Couple> ssMax = this.fonctionAppartenance
@@ -371,8 +377,9 @@ class FonctionAppartenance implements Serializable {
 		final Iterator<Couple> itValeurs = this.fonctionAppartenance.iterator();
 		while (itValeurs.hasNext()) {
 			final Couple neo = itValeurs.next();
-			if (neo.getY() > 0 && min.getY() > neo.getY())
+			if (neo.getY() > 0 && min.getY() > neo.getY()) {
 				min = neo;
+			}
 		}
 		return min;
 	}
@@ -384,8 +391,9 @@ class FonctionAppartenance implements Serializable {
 		final Iterator<Couple> itValeurs = this.fonctionAppartenance.iterator();
 		while (itValeurs.hasNext()) {
 			final Couple neo = itValeurs.next();
-			if (min.getY() > neo.getY())
+			if (min.getY() > neo.getY()) {
 				min = neo;
+			}
 		}
 		return min;
 	}
@@ -397,8 +405,9 @@ class FonctionAppartenance implements Serializable {
 		final Iterator<Couple> itValeurs = this.fonctionAppartenance.iterator();
 		while (itValeurs.hasNext()) {
 			final Couple neo = itValeurs.next();
-			if (max.getY() <= neo.getY())
+			if (max.getY() <= neo.getY()) {
 				max = neo;
+			}
 		}
 		return max;
 	}

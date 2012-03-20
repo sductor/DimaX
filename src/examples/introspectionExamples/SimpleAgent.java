@@ -40,11 +40,12 @@ public class SimpleAgent extends BasicCompetentAgent {
 		this.myId = id;
 		this.nbAgent = nbA;
 		this.nbTour = nbTour;
-		if (this.nbAgent < 2)
+		if (this.nbAgent < 2) {
 			this.logMonologue(
 					"JE SUIS TOUT SEUL!! Ca va pas le faire!!!",LogService.onScreen);
-		else
+		} else {
 			this.sayAliveToPeer.setMyPeer(this.getMyAlivePeer());
+		}
 	}
 
 	/*
@@ -61,12 +62,13 @@ public class SimpleAgent extends BasicCompetentAgent {
 	}
 
 	public AgentIdentifier getMyAlivePeer() {
-		if (this.myId!=0)
+		if (this.myId!=0) {
 			return SimpleAgent
 					.getsimpleId((this.myId - 1) % this.nbAgent);
-		else
+		} else {
 			return SimpleAgent
 					.getsimpleId(this.nbAgent - 1);
+		}
 	}
 	/*
 	 *
@@ -92,8 +94,9 @@ public class SimpleAgent extends BasicCompetentAgent {
 			this.logMonologue("First message sended:\n" + m,LogService.onScreen);
 			this.logMonologue("notifying "+m,LogService.onScreen);
 			this.notify(m);
-		} else
-			this.sayAlive.setActive(false);
+		} else {
+			this.sayAlive.activateCompetence(false);
+		}
 		return true;
 	}
 

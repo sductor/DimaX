@@ -32,17 +32,21 @@ public class Constraint {
 	}
 
 	public Variable getNeighbor(final Variable v) {
-		if (v == this.first)
+		if (v == this.first) {
 			return this.second;
-		if (v == this.second)
+		}
+		if (v == this.second) {
 			return this.first;
+		}
 		return null;
 	}
 	public int getNeighbor(final int vid) {
-		if (vid == this.first.id)
+		if (vid == this.first.id) {
 			return this.second.id;
-		if (vid == this.second.id)
+		}
+		if (vid == this.second.id) {
 			return this.first.id;
+		}
 		return -1;
 	}
 
@@ -54,7 +58,7 @@ public class Constraint {
 		buffer.append(" ");
 		buffer.append(this.second.id);
 		buffer.append(Helper.newline);
-		for (int i = 0; i < this.d1; i++)
+		for (int i = 0; i < this.d1; i++) {
 			for (int j = 0; j < this.d2; j++) {
 				buffer.append("F ");
 				buffer.append(i);
@@ -64,6 +68,7 @@ public class Constraint {
 				buffer.append(this.f[i][j]);
 				buffer.append(Helper.newline);
 			}
+		}
 		return buffer.toString();
 	}
 
@@ -73,49 +78,59 @@ public class Constraint {
 		msg[1] = this.d1;
 		msg[2] = this.second.id;
 		msg[3] = this.d2;
-		for (int i = 0; i < this.d1; i++)
-			for (int j = 0; j < this.d2; j++)
+		for (int i = 0; i < this.d1; i++) {
+			for (int j = 0; j < this.d2; j++) {
 				msg[4 + i * this.d2 + j] = this.f[i][j];
+			}
+		}
 		return msg;
 	}
 
 	public void cache() {
-		if (this.m >= 0)
+		if (this.m >= 0) {
 			return;
+		}
 		for (int i = 0; i < this.d1; i++) {
 			int best = -1;
 			int max = -1;
-			for (int j = 0; j < this.d2; j++)
+			for (int j = 0; j < this.d2; j++) {
 				if (this.f[i][j] > max) {
 					max = this.f[i][j];
 					best = j;
 				}
+			}
 			this.m1[i] = best;
-			if (max > this.m)
+			if (max > this.m) {
 				this.m = max;
+			}
 		}
 		for (int i = 0; i < this.d2; i++) {
 			int best = -1;
 			int max = -1;
-			for (int j = 0; j < this.d1; j++)
+			for (int j = 0; j < this.d1; j++) {
 				if (this.f[j][i] > max) {
 					max = this.f[j][i];
 					best = j;
 				}
+			}
 			this.m2[i] = best;
 		}
 	}
 
 	public int evaluate() {
 		//System.out.println("(" + first.id + "," + first.value + ") (" + second.id + "," + second.value + ")");
-		if (Helper.app != null)
+		if (Helper.app != null) {
 			Helper.app.numberEval++;
-		if (this.first.value == -1 && this.second.value == -1)
+		}
+		if (this.first.value == -1 && this.second.value == -1) {
 			return this.m;
-		if (this.first.value == -1 && this.second.value != -1)
+		}
+		if (this.first.value == -1 && this.second.value != -1) {
 			return this.f[this.m2[this.second.value]][this.second.value];
-		if (this.first.value != -1 && this.second.value == -1)
+		}
+		if (this.first.value != -1 && this.second.value == -1) {
 			return this.f[this.first.value][this.m1[this.first.value]];
+		}
 		return this.f[this.first.value][this.second.value];
 	}
 

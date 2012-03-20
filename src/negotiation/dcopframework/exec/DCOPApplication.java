@@ -148,7 +148,7 @@ public class DCOPApplication extends Application {
 		double angle = 0;
 		this.nodeMap = new HashMap<Integer, Node>();
 		final Node controller = this.node(new Controller(this), "Simulator",
-				20 + (DCOPApplication.radius - 30), 20 + (DCOPApplication.radius - 30));
+				20 + DCOPApplication.radius - 30, 20 + DCOPApplication.radius - 30);
 
 		for (final Variable v : this.g.varMap.values()) {
 			final Node node = this.node(this.getAlgo(v), "" + v.id, (int) (20 + (DCOPApplication.radius - 30)
@@ -188,17 +188,19 @@ public class DCOPApplication extends Application {
 
 		final int kort = Integer.parseInt(args[2]);
 		Algorithm a = Algorithm.KOPTAPO;
-		if (args[1].equalsIgnoreCase("TOPT"))
+		if (args[1].equalsIgnoreCase("TOPT")) {
 			a = Algorithm.TOPTAPO;
-		else if (args[1].equalsIgnoreCase("KOriginal"))
+		} else if (args[1].equalsIgnoreCase("KOriginal")) {
 			a = Algorithm.KOPTORIG;
+		}
 
 		final int cycles = Integer.parseInt(args[3]);
 
-		if (isGUI)
+		if (isGUI) {
 			app = new DCOPApplication(temp, DCOPApplication.radius, cycles, kort, a, isWin, s, ws);
-		else
+		} else {
 			app = new DCOPApplication(temp, cycles, kort, a, isWin, s, ws);
+		}
 
 		/*HashMap<Integer, Integer> sol = app.g.branchBoundSolve();
 		for(Integer i : app.g.varMap.keySet()){
@@ -209,27 +211,30 @@ public class DCOPApplication extends Application {
 		Helper.app = app;
 		app.run();
 
-		for (final Integer i : app.nodeMap.keySet())
+		for (final Integer i : app.nodeMap.keySet()) {
 			app.g.varMap.get(i).value = ((BasicAlgorithm) app.nodeMap.get(i).getProgram()).getValue();
+		}
 
-				System.out.println("Quality:\t" + app.g.evaluate());
-				System.out.println("GlobalTime:\t" + app.getNetwork().getScheduler().getTime());
+		System.out.println("Quality:\t" + app.g.evaluate());
+		System.out.println("GlobalTime:\t" + app.getNetwork().getScheduler().getTime());
 	}
 
 	private BasicAlgorithm getAlgo(final Variable v) {
 		switch(this.algo){
-			case TOPTAPO:
-				if(!this.isWin)
-					return new AlgoTOptAPO(v, this.grouping);
-				else
-					return new AlgoTOptAPO(v, this.grouping, this.s, this.ws);
-			case KOPTAPO:
-				if(!this.isWin)
-					return new AlgoKOptAPO(v, this.grouping);
-				else
-					return new AlgoKOptAPO(v, this.grouping, this.s, this.ws);
-			case KOPTORIG: return new AlgoKOptOriginal(v, this.grouping);
-			default: return null;
+		case TOPTAPO:
+			if(!this.isWin) {
+				return new AlgoTOptAPO(v, this.grouping);
+			} else {
+				return new AlgoTOptAPO(v, this.grouping, this.s, this.ws);
+			}
+		case KOPTAPO:
+			if(!this.isWin) {
+				return new AlgoKOptAPO(v, this.grouping);
+			} else {
+				return new AlgoKOptAPO(v, this.grouping, this.s, this.ws);
+			}
+		case KOPTORIG: return new AlgoKOptOriginal(v, this.grouping);
+		default: return null;
 		}
 	}
 }
@@ -247,19 +252,21 @@ class Controller extends Program {
 		while (true) {
 			done = true;
 			present = this.getTime();
-			if (present > (this.app.cycles - 1)) {
+			if (present > this.app.cycles - 1) {
 				this.out().broadcast(new TerminateMessage());
 				break;
 			}
 			if (present % 1 == 0) {
 				final Program[] prog = this.node.getNetwork().getPrograms();
 				for (final Program element : prog) {
-					if (element == this)
+					if (element == this) {
 						continue;
+					}
 					final BasicAlgorithm p = (BasicAlgorithm) element;
 					this.app.g.varMap.get(p.getID()).value = p.getValue();
-					if (!p.isStable())
+					if (!p.isStable()) {
 						done = false;
+					}
 				}
 				if (this.app.g.checkValues()) {
 					this.app.quality[present] = this.app.g.evaluate();
@@ -276,7 +283,7 @@ class Controller extends Program {
 							//+ "\t" + app.sizeofMessages
 							);
 
-					if (resultid != -1)
+					if (resultid != -1) {
 						for (int i = resultid + 1; i < present; ++i) {
 							this.app.quality[i] = this.app.quality[resultid];
 							this.app.nummsg[i] = this.app.nummsg[resultid];
@@ -286,7 +293,7 @@ class Controller extends Program {
 							this.app.nConflicts[i] = this.app.nConflicts[resultid];
 							this.app.wCycles[i] = this.app.wCycles[resultid];
 						}
-					else
+					} else {
 						for(int i = 0; i < present; ++i){
 							this.app.quality[i] = this.app.quality[present];
 							this.app.nummsg[i] = this.app.nummsg[present];
@@ -296,6 +303,7 @@ class Controller extends Program {
 							this.app.nConflicts[i] = this.app.nConflicts[present];
 							this.app.wCycles[i] = this.app.wCycles[present];
 						}
+					}
 					resultid = present;
 				}
 
@@ -303,7 +311,7 @@ class Controller extends Program {
 				 * if (done) { count++; } else count = 0; if (count == 5) {
 				 * out().broadcast(new TerminateMessage()); break; }
 				 */
-				if (done || present == (this.app.cycles - 1)) {
+				if (done || present == this.app.cycles - 1) {
 					this.out().broadcast(new TerminateMessage());
 					break;
 				}
@@ -327,8 +335,9 @@ class Controller extends Program {
 			for(final Node n : this.app.nodeMap.values()){
 				final BasicAlgorithm ba = (BasicAlgorithm)n.getProgram();
 				this.app.allstats.addAll(ba.statList);
-				if(ba instanceof AlgoTOptAPO && !((AlgoTOptAPO)ba).trivial)
+				if(ba instanceof AlgoTOptAPO && !((AlgoTOptAPO)ba).trivial) {
 					this.app.activetnodeT++;
+				}
 				if(ba instanceof AlgoKOptAPO){
 					final AlgoKOptAPO kopt = (AlgoKOptAPO)ba;
 					this.app.groupK[i++] = kopt.localTreeMap.size();

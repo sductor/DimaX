@@ -40,8 +40,9 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 				new StatusQuantityTrunk[ExperimentationParameters.getNumberOfTimePoints()];
 		this
 		.getSimulationParameters();
-		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++)
+		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++) {
 			this.statusEvolution[i] = new StatusQuantityTrunk();
+		}
 	}
 
 	//
@@ -49,7 +50,7 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 	//
 
 	public boolean iObserveStatus() {
-		return this.isActive();
+		return this.competenceIsActive();
 	}
 
 	protected ExperimentationParameters getSimulationParameters() {
@@ -107,26 +108,27 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 						"thrifty (empty);\t thrifty;\t thrifty (full);\t wastefull;\t =\n";
 		this
 		.getSimulationParameters();
-		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++)
+		for (int i = 0; i < ExperimentationParameters.getNumberOfTimePoints(); i++) {
 			result += this.getSimulationParameters()
-			.geTime(i)
-			/ 1000.
-			+ " ;\t "
-			+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentLost,this.getSimulationParameters().nbAgents)
-			+ ";\t "
-			+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentFragile,this.getSimulationParameters().nbAgents)
-			+ ";\t "
-			+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentEmpty,this.getSimulationParameters().nbAgents)
-			+ ";\t "
-			+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentThrifty,this.getSimulationParameters().nbAgents)
-			+ ";\t "
-			+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentFull,this.getSimulationParameters().nbAgents)
-			+ ";\t "
-			+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentWastefull,this.getSimulationParameters().nbAgents)
-			+ " ("
-			+ this.statusEvolution[i].getTotal()
-			/ this.getSimulationParameters().nbAgents
-			+ ")\n";
+					.geTime(i)
+					/ 1000.
+					+ " ;\t "
+					+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentLost,this.getSimulationParameters().nbAgents)
+					+ ";\t "
+					+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentFragile,this.getSimulationParameters().nbAgents)
+					+ ";\t "
+					+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentEmpty,this.getSimulationParameters().nbAgents)
+					+ ";\t "
+					+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentThrifty,this.getSimulationParameters().nbAgents)
+					+ ";\t "
+					+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentFull,this.getSimulationParameters().nbAgents)
+					+ ";\t "
+					+ ObservingGlobalService.getPercent(this.statusEvolution[i].nbAgentWastefull,this.getSimulationParameters().nbAgents)
+					+ " ("
+					+ this.statusEvolution[i].getTotal()
+					/ this.getSimulationParameters().nbAgents
+					+ ")\n";
+		}
 
 		LogService.logOnFile(this.getSimulationParameters()
 				.getF(), result, true, false);
@@ -149,26 +151,27 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 		int nbAgentEmpty = 0;
 
 		public void incr(final ReplicationResultAgent s) {
-			if (s.getDisponibility()==0)
+			if (s.getDisponibility()==0) {
 				this.nbAgentLost++;
-			else
+			} else {
 				switch (s.getStatus()) {
-					case Fragile:
-						this.nbAgentFragile++;
-						break;
-					case Thrifty:
-						this.nbAgentThrifty++;
-						break;
-					case Full:
-						this.nbAgentFull++;
-						break;
-					case Wastefull:
-						this.nbAgentWastefull++;
-						break;
-					case Empty:
-						this.nbAgentEmpty++;
-						break;
+				case Fragile:
+					this.nbAgentFragile++;
+					break;
+				case Thrifty:
+					this.nbAgentThrifty++;
+					break;
+				case Full:
+					this.nbAgentFull++;
+					break;
+				case Wastefull:
+					this.nbAgentWastefull++;
+					break;
+				case Empty:
+					this.nbAgentEmpty++;
+					break;
 				}
+			}
 		}
 
 		public double getTotal() {

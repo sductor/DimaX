@@ -81,8 +81,9 @@ public class LinkedQueue implements Channel {
 				this.last_.next = p;
 				this.last_ = p;
 			}
-			if (this.waitingForTake_ > 0)
+			if (this.waitingForTake_ > 0) {
 				this.putLock_.notify();
+			}
 		}
 	}
 	public boolean isEmpty() {
@@ -92,8 +93,12 @@ public class LinkedQueue implements Channel {
 	}
 	@Override
 	public boolean offer(final Object x, final long msecs) throws InterruptedException {
-		if (x == null) throw new IllegalArgumentException();
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (x == null) {
+			throw new IllegalArgumentException();
+		}
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		this.insert(x);
 		return true;
 	}
@@ -101,19 +106,22 @@ public class LinkedQueue implements Channel {
 	public Object peek() {
 		synchronized(this.head_) {
 			final LinkedNode first = this.head_.next;
-			if (first != null)
+			if (first != null) {
 				return first.value;
-			else
+			} else {
 				return null;
+			}
 		}
 	}
 	@Override
 	public Object poll(final long msecs) throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		Object x = this.extract();
-		if (x != null)
+		if (x != null) {
 			return x;
-		else
+		} else {
 			synchronized(this.putLock_) {
 				try {
 					long waitTime = msecs;
@@ -137,21 +145,28 @@ public class LinkedQueue implements Channel {
 					throw ex;
 				}
 			}
+		}
 	}
 	@Override
 	public void put(final Object x) throws InterruptedException {
-		if (x == null) throw new IllegalArgumentException();
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (x == null) {
+			throw new IllegalArgumentException();
+		}
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		this.insert(x);
 	}
 	@Override
 	public Object take() throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		// try to extract. If fail, then enter wait-based retry loop
 		Object x = this.extract();
-		if (x != null)
+		if (x != null) {
 			return x;
-		else
+		} else {
 			synchronized(this.putLock_) {
 				try {
 					++this.waitingForTake_;
@@ -160,8 +175,9 @@ public class LinkedQueue implements Channel {
 						if (x != null) {
 							--this.waitingForTake_;
 							return x;
-						} else
+						} else {
 							this.putLock_.wait();
+						}
 					}
 				}
 				catch(final InterruptedException ex) {
@@ -170,5 +186,6 @@ public class LinkedQueue implements Channel {
 					throw ex;
 				}
 			}
+		}
 	}
 }

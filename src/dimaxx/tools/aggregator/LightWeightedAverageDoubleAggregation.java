@@ -38,10 +38,11 @@ extends LightAverageDoubleAggregation {
 
 	@Override
 	public Double getRepresentativeElement() {
-		if (this.weight == 0)
+		if (this.weight == 0) {
 			return Double.NaN;
-		else
+		} else {
 			return this.sum / this.weight;
+		}
 	}
 
 	public double getWeightOfAggregatedElement() {
@@ -50,10 +51,11 @@ extends LightAverageDoubleAggregation {
 
 	@Override
 	public Double getSum() {
-		if (this.cardinal == 0)
+		if (this.cardinal == 0) {
 			return Double.NaN;
-		else
+		} else {
 			return this.sum / this.weight;
+		}
 	}
 
 	/*
@@ -68,7 +70,8 @@ extends LightAverageDoubleAggregation {
 			this.sum += av2.getRepresentativeElement() * av2.weight;
 			this.weight += av2.weight;
 			this.cardinal += av2.cardinal;
-		} else
+		} else {
 			this.sum += average2.getRepresentativeElement();
+		}
 	}
 }

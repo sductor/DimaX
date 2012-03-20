@@ -39,12 +39,6 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 
 	public  Double evaluatePreference(Collection<Contract> cs);
 
-
-	/*
-	 *
-	 */
-
-	public boolean IWantToNegotiate(PersonalState s);
 }
 
 // public boolean Iaccept(final PersonalState s1, final PersonalState s2);

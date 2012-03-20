@@ -219,7 +219,7 @@ public class Darx extends UnicastRemoteObject implements DarxServer {
 	public static void analyseCommandLine(final String[] parameters) {
 		final int l = parameters.length;
 		int i = 0;
-		while (i < l)
+		while (i < l) {
 			if (parameters[i].compareTo("-ns") == 0) {
 				i++;
 				Darx.setNs_url(parameters[i]);
@@ -246,6 +246,7 @@ public class Darx extends UnicastRemoteObject implements DarxServer {
 				.println("received command :"+yo.toString());
 				System.exit(0);
 			}
+		}
 	}
 
 	// --------------------------------------//
@@ -378,9 +379,10 @@ public class Darx extends UnicastRemoteObject implements DarxServer {
 			System.out.println("No known replicant for task: " + task_name
 					+ " on this server");
 		}
-		if (rep_info != null)
+		if (rep_info != null) {
 			System.out.println(rep_info.textifyDarxName()
 					+ " successfully deleted\n");
+		}
 	}
 
 	// -----------------------//
@@ -407,7 +409,7 @@ public class Darx extends UnicastRemoteObject implements DarxServer {
 				next = true;
 			}
 			// This loop is entered if a non-DARX exception was caught
-			while (next)
+			while (next) {
 				try {
 					task_info = Darx.nserver.selectAnotherLeader(task_info);
 					ts_handle = task_info.getTaskShellHandle();
@@ -418,6 +420,7 @@ public class Darx extends UnicastRemoteObject implements DarxServer {
 				} catch (final Exception e) {
 					next = true;
 				}
+			}
 			return new RemoteTask(task_info, ts_handle);
 		} catch (final DarxException e) {
 			throw e;

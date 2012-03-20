@@ -26,7 +26,6 @@ extends DimaComponentInterface {
 	public <State extends ActionSpec> State computeResultingState(AgentIdentifier id)
 			throws IncompleteContractException;
 
-
 	public <State extends ActionSpec> State computeResultingState(final State s)
 			throws IncompleteContractException;
 
@@ -60,8 +59,13 @@ extends DimaComponentInterface {
 
 	public <State extends ActionSpec> boolean isViable(Collection<State> initialStates)	throws IncompleteContractException;
 
-	public class IncompleteContractException extends Exception{};
-	// public ContractTransition<ActionSpec> clone();
+	public class IncompleteContractException extends Exception{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7759487818635127561L;};
+		// public ContractTransition<ActionSpec> clone();
 
 
 }

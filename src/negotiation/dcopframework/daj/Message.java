@@ -25,7 +25,7 @@ public class Message {
 	// return string denoting message content
 	// --------------------------------------------------------------------------
 	public String getText() {
-		return ("(no information)");
+		return "(no information)";
 	}
 
 	public int getSize() {

@@ -66,32 +66,35 @@ EvaluationStrategyWithConstraints implements Serializable {
 		{
 			final Resource proposal = (Resource) this.proposals.elementAt(i);
 
-			if (!this.satisfyConstraints1(proposal))
+			if (!this.satisfyConstraints1(proposal)) {
 				// proposals.remove(proposal);
 				v.add(proposal);
+			}
 
 		}
 		/* */ System.out.println("TAILLE DU VECTEUR DES PROP	REJETEES....."+v.size());
 
-		for (int i=0;i<v.size();i++)
+		for (int i=0;i<v.size();i++) {
 			this.proposals.remove(v.elementAt(i));
+		}
 
 		switch (this.proposals.size())
 		{
-			case 0 :
-			{	/* */ System.out.println("EVAL: AUCUNE PROPOSITION EST SATISFAISANTE....");
-			return new Vector();
+		case 0 :
+		{	/* */ System.out.println("EVAL: AUCUNE PROPOSITION EST SATISFAISANTE....");
+		return new Vector();
+		}
+
+
+		default : //prendre l'ensemble des propositions
+		{
+			/* */ System.out.println("VOICI LES PROPOSITIONS ACCEPTEES....");
+			for (int i=0; i<this.proposals.size();i++) {
+				/* */ System.out.println("EVAL: la proposition prix et tRep"+i+"    est "+((Resource) this.proposals.elementAt(i)).getCost()+"  "+((Resource)	    this.proposals.elementAt(i)).getTpsRep());
 			}
 
-
-			default : //prendre l'ensemble des propositions
-			{
-				/* */ System.out.println("VOICI LES PROPOSITIONS ACCEPTEES....");
-				for (int i=0; i<this.proposals.size();i++)
-					/* */ System.out.println("EVAL: la proposition prix et tRep"+i+"    est "+((Resource) this.proposals.elementAt(i)).getCost()+"  "+((Resource)	    this.proposals.elementAt(i)).getTpsRep());
-
-				return this.proposals;
-			}
+			return this.proposals;
+		}
 		}
 	}
 	/**
@@ -115,8 +118,9 @@ EvaluationStrategyWithConstraints implements Serializable {
 		if (e.hasMoreElements())
 		{
 			/* */ System.out.println("AU MOINS UNE CONTRAINTE ......");
-			if (!((ConstraintResource) e.nextElement()).isSatisfied(service))
+			if (!((ConstraintResource) e.nextElement()).isSatisfied(service)) {
 				return false;
+			}
 
 		}
 		final float newBudget= ((Resource)((ConstraintResource)this.getConstraints().elementAt(0)).getObjectValue()).getCost() - service.getCost() ;

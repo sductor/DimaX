@@ -74,16 +74,19 @@ public class ContractIdentifier implements DimaComponentInterface {
 	@Override
 	public boolean equals(final Object that) {
 
-		if (that instanceof ContractIdentifier)
+		if (that instanceof ContractIdentifier) {
 			if (((ContractIdentifier) that).initiator.equals(this.initiator)
 					&& ((ContractIdentifier) that).participants
-					.equals(this.participants))
+					.equals(this.participants)) {
 				if (!((ContractIdentifier)
-						that).contractCreation.equals(this.contractCreation) )
+						that).contractCreation.equals(this.contractCreation) ) {
 					throw new
 					RuntimeException("un agent a envoyé deux prop dans la mm session!!\n"+this+that);
-				else
+				} else {
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 

@@ -314,10 +314,11 @@ public class SyncCollection implements Collection {
 	}
 	/** Clean up after a reader operation **/
 	protected void afterRead(final boolean wasInterrupted) {
-		if (wasInterrupted)
+		if (wasInterrupted) {
 			Thread.currentThread().interrupt();
-		else
+		} else {
 			this.rd_.release();
+		}
 	}
 	/** Try to acquire sync before a reader operation; record failure **/
 	protected boolean beforeRead() {

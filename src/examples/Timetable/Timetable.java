@@ -54,7 +54,7 @@ public class Timetable
 
 		// ajouter des services "seance" aux agents enseignant et groupe
 
-		for(int i =1;i<=2;i++ )
+		for(int i =1;i<=2;i++ ) {
 			for(int j=1;j<=4;j++ )
 			{
 				final Seance s = new Seance(i,j);
@@ -68,6 +68,7 @@ public class Timetable
 				g3.addService(s);
 
 			}
+		}
 
 		// ajouter des needs aux agents enseignant
 

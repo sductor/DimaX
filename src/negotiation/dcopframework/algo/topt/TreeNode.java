@@ -18,15 +18,17 @@ public class TreeNode {
 		this.value = val;
 		this.fixed = f;
 		this.children = new ArrayList<TreeNode>();
-		if (p != null)
+		if (p != null) {
 			p.children.add(this);
+		}
 		this.parent = p;
 		this.mark = false;
 	}
 
 	public int getTreeID() {
-		if (this.parent == null)
+		if (this.parent == null) {
 			return this.id;
+		}
 		return this.parent.getTreeID();
 	}
 
@@ -38,9 +40,10 @@ public class TreeNode {
 	public HashSet<Integer> getSet() {
 		final HashSet<Integer> set = new HashSet<Integer>();
 		set.add(this.id);
-		for (final TreeNode n : this.children)
+		for (final TreeNode n : this.children) {
 			set.addAll(n.getSet());
-				return set;
+		}
+		return set;
 	}
 
 	public int getSize() {
@@ -48,20 +51,23 @@ public class TreeNode {
 	}
 
 	public TreeNode find(final int i) {
-		if (this.id == i)
+		if (this.id == i) {
 			return this;
+		}
 		for (final TreeNode n : this.children) {
 			final TreeNode f = n.find(i);
-			if (f != null)
+			if (f != null) {
 				return f;
+			}
 		}
 		return null;
 	}
 
 	public void markAll() {
 		this.mark = true;
-		for (final TreeNode n : this.children)
+		for (final TreeNode n : this.children) {
 			n.markAll();
+		}
 	}
 	public int getMarkedNodeSize(){
 		return this.getMarkedSet().size();
@@ -70,21 +76,25 @@ public class TreeNode {
 		int dist = 0;
 		for (final TreeNode n : this.children) {
 			final int newtemp = n.maxdistanceMarkedNode();
-			if(newtemp > dist)
+			if(newtemp > dist) {
 				dist = newtemp;
+			}
 		}
-		if(dist > 0)
+		if(dist > 0) {
 			dist++;
-		else if(this.mark)
+		} else if(this.mark) {
 			dist = 1;
+		}
 		return dist-1;
 	}
 	public HashSet<Integer> getMarkedSet(){
 		final HashSet<Integer> set = new HashSet<Integer>();
-		if(this.mark)
+		if(this.mark) {
 			set.add(this.id);
-		for(final TreeNode n: this.children)
+		}
+		for(final TreeNode n: this.children) {
 			set.addAll(n.getMarkedSet());
-				return set;
+		}
+		return set;
 	}
 }

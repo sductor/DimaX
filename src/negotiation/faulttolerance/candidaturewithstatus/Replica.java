@@ -17,7 +17,7 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.rationality.RationalCore;
-import negotiation.negotiationframework.selection.AbstractSelectionCore;
+import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -48,16 +48,17 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		@Override
 		protected ExperimentationResults generateMyResults() {
 			ReplicationResultAgent myInfo;
-			if (Replica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
+			if (Replica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus) {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
 						Replica.this.getCreationTime(),
 						((CandidatureReplicaCoreWithStatus) Replica.this
 								.getMyCore()).getMyStatus());
-			else
+			} else {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
 						Replica.this.getCreationTime());
+			}
 			return myInfo;
 		}
 	};
@@ -112,7 +113,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final Double procCharge,
 			final Double memCharge,
 			final RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> myRationality,
-			final AbstractSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
+			final SimpleSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
 			final ProposerCore<
 			SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
 			ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,

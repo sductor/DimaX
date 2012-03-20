@@ -109,10 +109,11 @@ public class MazeEnvironment implements Environment, Serializable
 	 */
 	public MazeEnvironment(final String inFileString, final int attLength)
 	{
-		if(attLength==3)
+		if(attLength==3) {
 			this.attributeLength=3;
-		else
+		} else {
 			this.attributeLength=2;
+		}
 
 		FileReader fr=null;
 		BufferedReader br=null;
@@ -124,36 +125,42 @@ public class MazeEnvironment implements Environment, Serializable
 			this.ysize=0;
 			while(br.ready()){
 				final String in=br.readLine();
-				if(this.xsize==0)
+				if(this.xsize==0) {
 					this.xsize=in.length();
+				}
 				final char[] oneLine=new char[this.xsize*this.attributeLength];
 				for(int i=0; i<this.xsize; i++){
 					final char att=in.charAt(i);
 					switch(att){
-						case '.': case '*': /* Intentionally to sum both cases! */
-							for(int j=0; j<this.attributeLength; j++)
-								oneLine[i*this.attributeLength + j]=this.freeAtt[j];
-							break;
-						case 'F':
-							for(int j=0; j<this.attributeLength; j++)
-								oneLine[i*this.attributeLength + j]=this.foodF[j];
-							break;
-						case 'G':
-							for(int j=0; j<this.attributeLength; j++)
-								oneLine[i*this.attributeLength + j]=this.foodG[j];
-							break;
-						case 'O':case '0': /* Intentionally to sum both cases */
-							for(int j=0; j<this.attributeLength; j++)
-								oneLine[i*this.attributeLength + j]=this.obstacleO[j];
-							break;
-						case 'Q':
-							for(int j=0; j<this.attributeLength; j++)
-								oneLine[i*this.attributeLength + j]=this.obstacleQ[j];
-							break;
-						default:
-							System.out.println("Unknown Character: "+att);
-							System.exit(0);
-							break;
+					case '.': case '*': /* Intentionally to sum both cases! */
+						for(int j=0; j<this.attributeLength; j++) {
+							oneLine[i*this.attributeLength + j]=this.freeAtt[j];
+						}
+						break;
+					case 'F':
+						for(int j=0; j<this.attributeLength; j++) {
+							oneLine[i*this.attributeLength + j]=this.foodF[j];
+						}
+						break;
+					case 'G':
+						for(int j=0; j<this.attributeLength; j++) {
+							oneLine[i*this.attributeLength + j]=this.foodG[j];
+						}
+						break;
+					case 'O':case '0': /* Intentionally to sum both cases */
+						for(int j=0; j<this.attributeLength; j++) {
+							oneLine[i*this.attributeLength + j]=this.obstacleO[j];
+						}
+						break;
+					case 'Q':
+						for(int j=0; j<this.attributeLength; j++) {
+							oneLine[i*this.attributeLength + j]=this.obstacleQ[j];
+						}
+						break;
+					default:
+						System.out.println("Unknown Character: "+att);
+						System.exit(0);
+						break;
 					}
 				}
 				mazeLines.addElement(oneLine);
@@ -164,8 +171,9 @@ public class MazeEnvironment implements Environment, Serializable
 
 		for(int i=0; i<this.ysize; i++){
 			final char[] line = (char [])mazeLines.elementAt(i);
-			for(int j=0; j<line.length; j++)
+			for(int j=0; j<line.length; j++) {
 				this.maze[j][i]=line[j];
+			}
 		}
 		this.reset=false;
 		this.setRandomPosition();
@@ -244,12 +252,14 @@ public class MazeEnvironment implements Environment, Serializable
 	private String getPerceptions()
 	{
 		final char[] perc=new char[this.getConditionLength()];
-		for(int i=0; i<this.conLength; i++)
-			for(int j=0; j<this.attributeLength; j++)
+		for(int i=0; i<this.conLength; i++) {
+			for(int j=0; j<this.attributeLength; j++) {
 				perc[i*this.attributeLength + j] =
-				this.maze[j + this.attributeLength *
-				          ((this.xcurrent + (int)((Math.ceil((i-3)/4.)*2-1)*-1* Math.ceil(i%4/4.))+this.xsize)%this.xsize)]
-				        		  [(this.ycurrent + (int)((Math.ceil(Math.floor(i%7/2.)/4.)*2-1.)*Math.ceil((i+2)%4/4.))+this.ysize)%this.ysize];
+						this.maze[j + this.attributeLength *
+						          ((this.xcurrent + (int)((Math.ceil((i-3)/4.)*2-1)*-1* Math.ceil(i%4/4.))+this.xsize)%this.xsize)]
+						        		  [(this.ycurrent + (int)((Math.ceil(Math.floor(i%7/2.)/4.)*2-1.)*Math.ceil((i+2)%4/4.))+this.ysize)%this.ysize];
+			}
+		}
 		return new String(perc);
 	}
 	/**

@@ -134,9 +134,10 @@ public class BasicIntrospectiveShell extends GimaObject {
 	protected final Set<MethodHandler> metToRemove = new HashSet<MethodHandler>();
 	public final void postActivity(final Date creation){
 		this.executeBehaviors(PostStepComposant.class, creation);
-		for (final MethodHandler meth : this.metToRemove)
+		for (final MethodHandler meth : this.metToRemove) {
 			this.myMethods.removeMethod(meth);
-				this.metToRemove.clear();
+		}
+		this.metToRemove.clear();
 	}
 
 	public void proactivityTerminate(final Date creation){
@@ -156,17 +157,20 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 *            the agent to execute
 	 */
 	protected void executeBehaviors(final Class<? extends Annotation> annotation, final Date creation) {
-		for (final MethodHandler mt : this.myMethods.getMethods())
-			if (mt.isAnnotationPresent(annotation))
+		for (final MethodHandler mt : this.myMethods.getMethods()) {
+			if (mt.isAnnotationPresent(annotation)) {
 				try {
 					final boolean toRemove = this.myMethods.executeStepMethod(mt, creation);
-					if (toRemove)
+					if (toRemove) {
 						this.metToRemove.add(mt);
+					}
 				} catch (final Throwable e) {
 					// The exception is raised by the method
 					this.getExceptionHandler().handleException(
 							e, this.getStatus());
 				}
+			}
+		}
 
 	}
 }

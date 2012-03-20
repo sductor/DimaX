@@ -10,11 +10,9 @@ import negotiation.faulttolerance.experimentation.ReplicationExperimentationProt
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
@@ -26,7 +24,6 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
@@ -57,9 +54,16 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	PersonalState extends ActionSpec,
 	Contract extends AbstractContractTransition<ActionSpec>>
 	extends AgentCompetence<Agent>{
-
+		
 		public Set<? extends Contract> getNextContractsToPropose()
 				throws NotReadyException;
+
+		public boolean IWantToNegotiate(PersonalState myCurrentState,
+				ContractTrunk<Contract, ActionSpec, PersonalState> contracts);
+		
+		public boolean ImAllowedToNegotiate(PersonalState myCurrentState,
+				ContractTrunk<Contract, ActionSpec, PersonalState> contracts);
+
 
 	}
 
@@ -129,15 +133,14 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 */
 
 
-	public boolean negotiationAsInitiatorHasStarted() {
-		return !this.contracts.getAllInitiatorContracts().isEmpty();
-	}
+
 
 	// @role(NegotiationInitiatorRole.class)
 	@StepComposant(ticker = ReplicationExperimentationProtocol._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
-		if (this.isActive() && !this.negotiationAsInitiatorHasStarted()
-				&& this.getMyAgent().myCore.IWantToNegotiate(this.getMyAgent().getMyCurrentState()))
+		if (this.competenceIsActive() && 
+				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),contracts)
+				&& this.getMyAgent().getMyProposerCore().ImAllowedToNegotiate(this.getMyAgent().getMyCurrentState(), contracts)) {
 			try {
 				final Collection<? extends Contract> cs =
 						this.getMyAgent().getMyProposerCore()
@@ -152,6 +155,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 					this.contracts.addContract(c);
 				}
 			} catch (final NotReadyException e) {}
+		}
 	}
 
 	/*
@@ -161,7 +165,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// @role(NegotiationParticipant.class)
 	@StepComposant(ticker = ReplicationExperimentationProtocol._timeToCollect)
 	void answer() {
-		if (this.isActive() && !this.getContracts().isEmpty()) {
+		if (this.competenceIsActive() && !this.getContracts().isEmpty()) {
 
 			//
 			// Selecting contracts
@@ -171,9 +175,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			final ArrayList<Contract> toAccept = new ArrayList<Contract>();
 			final ArrayList<Contract> toReject = new ArrayList<Contract>();
 			final ArrayList<Contract> toPutOnWait = new ArrayList<Contract>();
-			
-			logMonologue(
-					"initiating selection with following contracts :\n"+this.getContracts(), 
+
+			this.logMonologue(
+					"initiating selection with following contracts :\n"+this.getContracts(),
 					AbstractCommunicationProtocol.log_selectionStep);
 
 			this.getMyAgent().getMySelectionCore().select(this.getContracts(), toAccept, toReject, toPutOnWait);
@@ -211,22 +215,22 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	private void send(final Contract c, final Receivers receivers, final Message m){
 		Collection<AgentIdentifier> participant;
 		switch (receivers){
-			case EveryParticipant :
-				participant = new ArrayList<AgentIdentifier>();
-				participant.addAll(c.getAllParticipants());
-				participant.remove(this.getIdentifier());
-				this.sendMessage(participant, m);
-				break;
-			case NotInitiatingParticipant :
-				participant = new ArrayList<AgentIdentifier>();
-				participant.addAll(c.getNotInitiatingParticipants());
-				participant.remove(this.getIdentifier());
-				this.sendMessage(participant, m);
-				break;
-			case Initiator :
-				assert !this.getIdentifier().equals(c.getInitiator());
-				this.sendMessage(c.getInitiator(), m);
-				break;
+		case EveryParticipant :
+			participant = new ArrayList<AgentIdentifier>();
+			participant.addAll(c.getAllParticipants());
+			participant.remove(this.getIdentifier());
+			this.sendMessage(participant, m);
+			break;
+		case NotInitiatingParticipant :
+			participant = new ArrayList<AgentIdentifier>();
+			participant.addAll(c.getNotInitiatingParticipants());
+			participant.remove(this.getIdentifier());
+			this.sendMessage(participant, m);
+			break;
+		case Initiator :
+			assert !this.getIdentifier().equals(c.getInitiator());
+			this.sendMessage(c.getInitiator(), m);
+			break;
 		}
 	}
 
@@ -234,9 +238,11 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	protected void acceptContract(final Collection<Contract> contracts, final Receivers receivers) {
 		assert ContractTransition.stillValid(contracts);
 
-		if (!contracts.isEmpty())this.getMyAgent().logMonologue(
-				"**************> I accept proposals "+contracts,
-				AbstractCommunicationProtocol.log_negotiationStep);
+		if (!contracts.isEmpty()) {
+			this.getMyAgent().logMonologue(
+					"**************> I accept proposals "+contracts,
+					AbstractCommunicationProtocol.log_negotiationStep);
+		}
 
 		for (final Contract contract : contracts){
 
@@ -254,9 +260,11 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	protected void rejectContract(final Collection<Contract> contracts, final Receivers receivers) {
 		assert ContractTransition.stillValid(contracts);
 
-		if (!contracts.isEmpty())this.getMyAgent().logMonologue(
-				"**************> I reject proposals "+contracts,
-				AbstractCommunicationProtocol.log_negotiationStep);
+		if (!contracts.isEmpty()) {
+			this.getMyAgent().logMonologue(
+					"**************> I reject proposals "+contracts,
+					AbstractCommunicationProtocol.log_negotiationStep);
+		}
 
 		for (final Contract contract : contracts){
 
@@ -280,24 +288,19 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			assert this.getContracts().getRequestableContracts().contains(contract):contract;
 		}
 
-		if (!contracts.isEmpty())this.getMyAgent().logMonologue(
-				"**************> I confirm!"+contracts,
-				AbstractCommunicationProtocol.log_negotiationStep);
+		if (!contracts.isEmpty()) {
+			this.getMyAgent().logMonologue(
+					"**************> I confirm!"+contracts,
+					AbstractCommunicationProtocol.log_negotiationStep);
+		}
 
 		this.getMyAgent().execute(contracts);
 
-		for (final Contract contract : contracts){
+		for (final Contract contract : contracts) {
 			this.send(contract, receivers,
 					new SimpleContractAnswer(
 							Performative.Confirm,
 							contract.getIdentifier()));
-		}
-
-		try {
-			for (final ActionSpec s : ReallocationContract.getResultingAllocation(contracts))
-				this.getMyAgent().getMyInformation().add(s);
-		} catch (final IncompleteContractException e) {
-			this.signalException("impossible!!",e);
 		}
 
 		this.contracts.removeAll(contracts);
@@ -306,8 +309,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	protected void cancelContract(final Collection<Contract> contracts, final Receivers receivers) {
 		assert ContractTransition.stillValid(contracts);
 
-		if (!contracts.isEmpty())this.getMyAgent().logMonologue("**************> I cancel!"+contracts,
-				AbstractCommunicationProtocol.log_negotiationStep);
+		if (!contracts.isEmpty()) {
+			this.getMyAgent().logMonologue("**************> I cancel!"+contracts,
+					AbstractCommunicationProtocol.log_negotiationStep);
+		}
 
 
 		for (final Contract contract : contracts){
@@ -329,23 +334,22 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	@FipaACLEnvelope(performative = Performative.Propose, protocol = AbstractCommunicationProtocol.class)
 	protected void receiveProposal(final SimpleContractProposal delta)  {
 		final Contract contract = delta.getMyContract();
-		//Updating contract spec
-		for (final AgentIdentifier id : contract.getAllParticipants())
-			try {
-				final ActionSpec specificationOfId = contract.getSpecificationOf(id);
-				if (!id.equals(this.getIdentifier())){
-					try {
-						assert this.getMyAgent().getMyInformation()
-						.getInformation(specificationOfId.getClass(),id).isNewerThan(specificationOfId)<1;
-					} catch (final NoInformationAvailableException e) {}
-					this.getMyAgent().getMyInformation().add(specificationOfId);
-				}
-			} catch (final IncompleteContractException e) {}
-
 		this.logMonologue("I've received proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);
 		delta.getMyContract().setSpecification(this.getMyAgent().getMySpecif(delta.getMyContract()));
 		this.contracts.addContract(contract);
 	}
+	//Updating contract spec
+	//		for (final AgentIdentifier id : contract.getAllParticipants())
+	//			try {
+	//				final ActionSpec specificationOfId = contract.getSpecificationOf(id);
+	//				if (!id.equals(this.getIdentifier())){
+	//					try {
+	//						assert this.getMyAgent().getMyInformation()
+	//						.getInformation(specificationOfId.getClass(),id).isNewerThan(specificationOfId)<1;
+	//					} catch (final NoInformationAvailableException e) {}
+	//					this.getMyAgent().getMyInformation().add(specificationOfId);
+	//				}
+	//			} catch (final IncompleteContractException e) {}
 
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.AcceptProposal, protocol = AbstractCommunicationProtocol.class)
@@ -369,9 +373,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.logMonologue("I 've been accepted! =) "+c//+"\n"+this.getMyAgent().getMyCurrentState()
 				,AbstractCommunicationProtocol.log_negotiationStep);
 
-//		this.getMyAgent().getMyInformation().add(delta.getSpec());
+		//		this.getMyAgent().getMyInformation().add(delta.getSpec());
 		this.contracts.addAcceptation(delta.getSender(), contract);
-//		contract.setSpecification(delta.getSpec());
+		//		contract.setSpecification(delta.getSpec());
 	}
 
 	@MessageHandler()
@@ -391,7 +395,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				,AbstractCommunicationProtocol.log_negotiationStep);
 
 		this.contracts.addRejection(delta.getSender(), contract);
-//		contract.setSpecification(delta.getSpec());
+		//		contract.setSpecification(delta.getSpec());
 	}
 
 	@MessageHandler()
@@ -407,38 +411,29 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		}
 
 		assert !contract.hasReachedExpirationTime();
-		assert (!(this.getMyAgent() instanceof Host)	|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty());
+		assert !(this.getMyAgent() instanceof Host)	|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty();
 		assert this.contracts.getContractsAcceptedBy(this.getMyAgent().getIdentifier()).contains(contract);
-//		try {
-//			assert contract.isViable(this.getMyAgent().getMyCurrentState()):"what the !!!!!!\n bad contract "
-//					+this.getContracts().statusOf(contract)
-//					+ "\nnew state "
-//					+ this.getMyAgent()
-//					.getMyResultingState(contract);
-//		} catch (final IncompleteContractException e1) {
-//			this.getMyAgent().signalException("what the !!!!!!\n bad contract "
-//					+this.getContracts().statusOf(contract)
-//					+ "\nnew state "
-//					+ this.getMyAgent()
-//					.getMyResultingState(contract));
-//		}
-//		assert m.getSpec()!=null;
+		//		try {
+		//			assert contract.isViable(this.getMyAgent().getMyCurrentState()):"what the !!!!!!\n bad contract "
+		//					+this.getContracts().statusOf(contract)
+		//					+ "\nnew state "
+		//					+ this.getMyAgent()
+		//					.getMyResultingState(contract);
+		//		} catch (final IncompleteContractException e1) {
+		//			this.getMyAgent().signalException("what the !!!!!!\n bad contract "
+		//					+this.getContracts().statusOf(contract)
+		//					+ "\nnew state "
+		//					+ this.getMyAgent()
+		//					.getMyResultingState(contract));
+		//		}
+		//		assert m.getSpec()!=null;
 
 
-		this.getMyAgent().logMonologue("I'll apply proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);//+"\n"+contracts);
+		this.getMyAgent().logMonologue("I've been confirmed!!! I'll apply proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);//+"\n"+contracts);
 
 		this.getMyAgent().execute(contract);
-//		this.getMyAgent().getMyInformation().add(m.getSpec());
-		this.contracts.remove(contract);
 
-		//updating
-		for (final AgentIdentifier id : contract.getAllParticipants())
-			if (!id.equals(this.getIdentifier()))
-				try {
-					this.getMyAgent().getMyInformation().add(contract.computeResultingState(id));
-				} catch (final IncompleteContractException e) {
-					throw new RuntimeException(e);
-				}
+		this.contracts.remove(contract);
 	}
 
 	@MessageHandler()
@@ -498,7 +493,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		//
 
 		final ContractIdentifier answeredContract;
-//		final ActionSpec s;
+		//		final ActionSpec s;
 
 		// private final AgentIdentifier sender;
 		//
@@ -509,7 +504,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				final ContractIdentifier id) {
 			super(p, AbstractCommunicationProtocol.class);
 			assert  id!=null;
-//			this.s = AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState();
+			//			this.s = AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState();
 			this.answeredContract = id;
 			assert AbstractCommunicationProtocol.this.getContracts().contains(id);
 		}
@@ -526,9 +521,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 			return "Answer of contract " + this.answeredContract;
 		}
 
-//		public ActionSpec getSpec() {
-//			return this.s;
-//		}
+		//		public ActionSpec getSpec() {
+		//			return this.s;
+		//		}
 
 		/*
 		 *
@@ -587,24 +582,27 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 		//accepted rejected et onWait sont disjoint
 		for (final Contract c : accepted){
-			assert (!rejected.contains(c));
-			assert (!onWait.contains(c));
+			assert !rejected.contains(c);
+			assert !onWait.contains(c);
 		}
 		for (final Contract c : rejected){
-			assert (!accepted.contains(c));
-			assert (!onWait.contains(c));
+			assert !accepted.contains(c);
+			assert !onWait.contains(c);
 		}
 		for (final Contract c : onWait){
-			assert (!accepted.contains(c));
-			assert (!rejected.contains(c));
+			assert !accepted.contains(c);
+			assert !rejected.contains(c);
 		}
+
+		final Collection<Contract> allBis = new ArrayList<Contract>(all);
 
 		//accepted rejected et onWait contienent to all
 		all.removeAll(onWait);
 		all.removeAll(rejected);
 		all.removeAll(accepted);
 
-		assert all.isEmpty();
+		assert all.isEmpty():"ALL Init \n"+allBis+"\n ACCEPTED \n"
+		+accepted+"\n REJECTED \n"+rejected+"\n ON WAIT \n"+onWait+"\nALL fin \n"+allBis;
 
 		return true;
 	}
@@ -613,9 +611,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	boolean allRequestable(
 			final Collection<Contract> all,
 			final ContractTrunk<Contract, ?, ?> ct){
-		for (final Contract c : all)
+		for (final Contract c : all) {
 			assert ct.getRequestableContracts().contains(c);
-				return true;
+		}
+		return true;
 	}
 }
 

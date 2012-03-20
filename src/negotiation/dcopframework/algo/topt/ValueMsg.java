@@ -23,7 +23,7 @@ public class ValueMsg extends Message {
 
 	@Override
 	public String getText() {
-		return ("ID " + this.id + ";VALUE " + this.value + ";TTL " + this.ttl);
+		return "ID " + this.id + ";VALUE " + this.value + ";TTL " + this.ttl;
 	}
 
 	public ValueMsg forward() {

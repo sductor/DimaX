@@ -220,8 +220,9 @@ public abstract class ReplicationStrategy implements Serializable, Comparable {
 		while (e.hasMoreElements() && !found) {
 			rep_info = (ReplicantInfo) e.nextElement();
 			if (url.compareTo(rep_info.getURL()) == 0
-					&& rep_info.getPortNb() == port_nb)
+					&& rep_info.getPortNb() == port_nb) {
 				found = true;
+			}
 		}
 		if (!found) {
 			rep_info = new ReplicantInfo(url, port_nb, this.info.getTaskName(),
@@ -229,8 +230,9 @@ public abstract class ReplicationStrategy implements Serializable, Comparable {
 			System.out.println("ReplicationStrategy: couldn't find "
 					+ rep_info.textifyDarxPath());
 			throw new UnknownReplicantException(rep_info);
-		} else
+		} else {
 			return rep_info;
+		}
 	}
 
 	/**
@@ -241,10 +243,11 @@ public abstract class ReplicationStrategy implements Serializable, Comparable {
 	public TaskShellHandle getReplicantHandle(final ReplicantInfo rep_info)
 			throws UnknownReplicantException {
 		final TaskShellHandle handle = this.replicants.get(rep_info);
-		if (handle == null)
+		if (handle == null) {
 			throw new UnknownReplicantException(rep_info);
-		else
+		} else {
 			return handle;
+		}
 	}
 
 	// -------------------//
@@ -415,8 +418,9 @@ public abstract class ReplicationStrategy implements Serializable, Comparable {
 		}
 		// Send termination order to all replicants
 		for (final Enumeration reps = this.replicants.elements(); reps
-				.hasMoreElements();)
+				.hasMoreElements();) {
 			((TaskShellHandle) reps.nextElement()).terminate();
+		}
 	}
 
 	/**

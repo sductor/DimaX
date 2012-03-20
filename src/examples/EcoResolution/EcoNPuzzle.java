@@ -45,18 +45,20 @@ class EcoNPuzzle extends EcoAgent {
 		this.suite = this.buildSuite( this.size * this.size);
 		this.places = new EcoPlace[this.size][this.size];
 		this.tiles = new EcoTile[ this.size * this.size];
-		for ( int i =0; i < this.size; i++)
+		for ( int i =0; i < this.size; i++) {
 			for ( int j = 0; j < this.size; j++) {
 				final int aux = ( ( Integer) this.suite.elementAt( i * this.size + j)).intValue();
 				final EcoPlace ec = new EcoPlace( this, i, j);
 				if ( aux  == 0) {
 					this.blank = new EcoBlank( ec);
 					ec.tile = this.blank;
-				} else
+				} else {
 					ec.tile = new EcoTile( ec, aux);
+				}
 				this.places[i][j] = ec;
 				this.tiles[aux] = ec.tile;
 			}
+		}
 	}
 	public Vector buildSuite( final int n) {
 		final Vector result = new Vector();
@@ -67,8 +69,9 @@ class EcoNPuzzle extends EcoAgent {
 			aux = generator.nextInt();
 			aux = Math.abs( aux %  n);
 			final Integer i = new Integer( aux);
-			if ( !result.contains( i))
+			if ( !result.contains( i)) {
 				result.addElement( i);
+			}
 		}
 		return result;
 	}
@@ -82,10 +85,12 @@ class EcoNPuzzle extends EcoAgent {
 		for( int i = index; i < this.size; i++) {
 			final EcoTile auxC = this.places[i][index].tile;
 			final EcoTile auxL = this.places[index][i].tile;
-			if ( auxC.equals( this.blank)  || auxL.equals( this.blank))
+			if ( auxC.equals( this.blank)  || auxL.equals( this.blank)) {
 				return false;
-			if ( !auxC.isSatisfied() || !auxL.isSatisfied())
+			}
+			if ( !auxC.isSatisfied() || !auxL.isSatisfied()) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -96,8 +101,9 @@ class EcoNPuzzle extends EcoAgent {
 			final EcoTile ep = this.tiles[( p.x * this.size + p.y + 1) % (this.size * this.size)];
 			ep.assignGoal( this.places[p.x][p.y]);
 			p = this.coorNextPlace( p.x, p.y);
-			if ( p.x >= this.size || p.y >= this.size)
+			if ( p.x >= this.size || p.y >= this.size) {
 				break;
+			}
 			this.places[p.x][p.y].assignGoal( ep);
 		}
 		final EcoBlank ev = ( EcoBlank) this.tiles[0];
@@ -106,40 +112,47 @@ class EcoNPuzzle extends EcoAgent {
 	public void computeSpeed() {
 		final int n = this.pzFrame.speedChoice.getSelectedIndex();
 		switch ( n) {
-			case 0 : EcoNPuzzle.duration = 600;break;
-			case 1 : EcoNPuzzle.duration = 300;break;
-			case 2 : EcoNPuzzle.duration = 0;break;
+		case 0 : EcoNPuzzle.duration = 600;break;
+		case 1 : EcoNPuzzle.duration = 300;break;
+		case 2 : EcoNPuzzle.duration = 0;break;
 		}
 	}
 	public Point coorNextPlace( final int i, final int j) {
-		if (  i % 2 == 0 && i < j && j <= this.size - 1)
+		if (  i % 2 == 0 && i < j && j <= this.size - 1) {
 			return new Point( i, j - 1);
-		else if (  i % 2 == 1 && i <= j && j <= this.size - 1) {
-			if ( j == this.size - 1)
+		} else if (  i % 2 == 1 && i <= j && j <= this.size - 1) {
+			if ( j == this.size - 1) {
 				return new Point( i + 1, j);
-			else
+			} else {
 				return new Point( i, j + 1);
+			}
 		} else if (  j % 2 == 0 && j <= i && i <= this.size - 1) {
-			if ( i == this.size - 1)
+			if ( i == this.size - 1) {
 				return new Point( i, j + 1);
-			else
+			} else {
 				return new Point( i + 1, j);
-		} else if (  j % 2 == 1 && j < i && i <= this.size - 1)
+			}
+		} else if (  j % 2 == 1 && j < i && i <= this.size - 1) {
 			return new Point( i - 1, j);
-		else
+		} else {
 			return new Point( -1, -1);
+		}
 	}
 	public int distanceAvoidingProhibitedPlaces( final EcoPlace e1, final EcoPlace e2, final Vector prohibitedPlaces) {
 		final boolean marks[][] = new boolean[this.size][this.size];
 		final int distanceToTheSource[][] = new int[this.size][this.size];
 		final Vector file = new Vector();
-		if ( e1.equals( e2))
+		if ( e1.equals( e2)) {
 			return 0;
-		if ( prohibitedPlaces.isEmpty())
+		}
+		if ( prohibitedPlaces.isEmpty()) {
 			return this.manhattanDistance( e1, e2);
-		for ( int i =0; i < this.size; i++)
-			for ( int j = 0; j < this.size; j++)
+		}
+		for ( int i =0; i < this.size; i++) {
+			for ( int j = 0; j < this.size; j++) {
 				marks[i][j] = prohibitedPlaces.contains( this.places[i][j]) ? true : false;
+			}
+		}
 		marks[e1.row][e1.col] = true;
 		file.addElement( e1);
 		while ( !file.isEmpty()) {
@@ -149,8 +162,9 @@ class EcoNPuzzle extends EcoAgent {
 				final EcoPlace aux = ( EcoPlace) adjPlaces.elementAt( i);
 				if ( !marks[aux.row][aux.col]) {
 					distanceToTheSource[aux.row][aux.col] = distanceToTheSource[e.row][e.col] + 1;
-					if ( aux.equals( e2))
+					if ( aux.equals( e2)) {
 						return distanceToTheSource[aux.row][aux.col];
+					}
 					marks[aux.row][aux.col] = true;
 					file.addElement( aux);
 				}
@@ -190,15 +204,17 @@ class EcoNPuzzle extends EcoAgent {
 		}
 		++this.indexFirstRowColumnAllowed;
 		//removeAdj();
-		if ( this.indexFirstRowColumnAllowed == this.size - 2 && this.unsolvablePuzzle())
-			if ( this.pzFrame.active != null)
+		if ( this.indexFirstRowColumnAllowed == this.size - 2 && this.unsolvablePuzzle()) {
+			if ( this.pzFrame.active != null) {
 				this.pzFrame.active.stop();
+			}
+		}
 	}
 	public void interrupt() {
 		this.satisfied = false;
 		this.indexFirstRowColumnAllowed = 0;
 		final Graphics g = this.support.getGraphics();
-		for ( int i =0; i < this.size; i++)
+		for ( int i =0; i < this.size; i++) {
 			for ( int j = 0; j < this.size; j++) {
 				this.places[i][j].goalAgent = null;
 				this.places[i][j].tile.goalAgent = null;
@@ -208,6 +224,7 @@ class EcoNPuzzle extends EcoAgent {
 					this.places[i][j].refresh( g);
 				}
 			}
+		}
 	}
 	@Override
 	public boolean isFree() {
@@ -219,10 +236,13 @@ class EcoNPuzzle extends EcoAgent {
 	}
 	public Vector lockedPlaces() {
 		final Vector list = new Vector();
-		for ( int i =0; i < this.size; i++)
-			for ( int j = 0; j < this.size; j++)
-				if ( this.places[i][j].locked)
+		for ( int i =0; i < this.size; i++) {
+			for ( int j = 0; j < this.size; j++) {
+				if ( this.places[i][j].locked) {
 					list.addElement( this.places[i][j]);
+				}
+			}
+		}
 		return list;
 	}
 	public int manhattanDistance( final EcoPlace e1, final EcoPlace e2) {
@@ -239,8 +259,9 @@ class EcoNPuzzle extends EcoAgent {
 			final EcoPlace aux = ( EcoPlace) list.elementAt( i);
 			final int dm = this.manhattanDistance( aux, e2);
 			if (  dm <= d) {
-				if (  dm != d)
+				if (  dm != d) {
 					tempResult.removeAllElements();
+				}
 				tempResult.addElement( aux);
 				d = dm;
 			}
@@ -251,14 +272,16 @@ class EcoNPuzzle extends EcoAgent {
 				final EcoPlace aux = ( EcoPlace) tempResult.elementAt( i);
 				final int dm = this.distanceToTheBlankAvoidingProhibitedPlaces( aux, this.lockedPlaces());
 				if (  dm <= d) {
-					if (  dm != d)
+					if (  dm != d) {
 						result.removeAllElements();
+					}
 					result.addElement( aux);
 					d = dm;
 				}
 			}
-		} else
+		} else {
 			result = tempResult;
+		}
 		return result;
 	}
 	public void reInit( final boolean ordered) {
@@ -267,33 +290,37 @@ class EcoNPuzzle extends EcoAgent {
 		this.satisfied = false;
 		this.indexFirstRowColumnAllowed = 0;
 		final Graphics g = this.support.getGraphics();
-		for ( int i =0; i < this.size; i++)
+		for ( int i =0; i < this.size; i++) {
 			for ( int j = 0; j < this.size; j++) {
 				int aux;
-				if ( ordered)
+				if ( ordered) {
 					aux = (i * this.size + j + 1) % ( this.size * this.size);
-				else
+				} else {
 					aux =  ( ( Integer) this.suite.elementAt( i * this.size + j)).intValue();
+				}
 				if ( aux == 0) {
 					this.blank = new EcoBlank( this.places[i][j]);
 					this.places[i][j].tile = this.blank;
-				} else
+				} else {
 					this.places[i][j].tile = new EcoTile( this.places[i][j], aux);
+				}
 				this.tiles[aux] = this.places[i][j].tile;
 				this.places[i][j].goalAgent = null;
 				this.places[i][j].tile.goalAgent = null;
 				this.places[i][j].locked = false;
 				this.places[i][j].refresh( g);
 			}
+		}
 	}
 	public void reset() {
-		for ( int i =0; i < this.size; i++)
+		for ( int i =0; i < this.size; i++) {
 			for ( int j = 0; j < this.size; j++) {
 				this.places[i][j].goalAgent = null;
 				this.places[i][j].tile.goalAgent = null;
 				this.places[i][j].locked = false;
 				this.places[i][j].forbidden = false;
 			}
+		}
 		this.goalAgent = null;
 	}
 	public void run() {
@@ -301,10 +328,13 @@ class EcoNPuzzle extends EcoAgent {
 	}
 	public void unlockSystem() {
 
-		for ( int i =0; i < this.size; i++)
-			for ( int j = 0; j < this.size; j++)
-				if ( this.places[i][j].locked)
+		for ( int i =0; i < this.size; i++) {
+			for ( int j = 0; j < this.size; j++) {
+				if ( this.places[i][j].locked) {
 					this.places[i][j].locked = false;
+				}
+			}
+		}
 	}
 	public boolean unsolvablePuzzle() {
 

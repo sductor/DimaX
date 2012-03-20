@@ -17,10 +17,11 @@ public class FunctionalQuantileNMinMaxAggregator {
 		int j = (int) Math.abs(p);
 		j = j - 1; // La liste commence à 0
 		final double g = p - j;
-		if (g < 0.5)
+		if (g < 0.5) {
 			return e.get(j);
-		else
+		} else {
 			return e.get(j + 1);
+		}
 	}
 
 	/**

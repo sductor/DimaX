@@ -94,10 +94,11 @@ public abstract class SingleRoleAgent extends InteractiveAgent
 	@Override
 	public AbstractRole getRole(final String convId)
 	{
-		if (this.getConversationId().equals(convId))
+		if (this.getConversationId().equals(convId)) {
 			return this.getRole();
-		else
+		} else {
 			return null;
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -124,7 +125,7 @@ public abstract class SingleRoleAgent extends InteractiveAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public abstract boolean isActive();
+	public abstract boolean competenceIsActive();
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (01/09/2003 09:54:33)

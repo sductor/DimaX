@@ -6,6 +6,8 @@ import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
@@ -23,6 +25,10 @@ ActionSpec,
 PersonalState,
 InformedCandidature<Contract,ActionSpec>> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2607277289289395798L;
 	private final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose =
 			new HashSet<InformedCandidature<Contract, ActionSpec>>();
 
@@ -42,6 +48,22 @@ InformedCandidature<Contract,ActionSpec>> {
 		result.addAll(this.contractsToPropose);
 		this.contractsToPropose.clear();
 		return result;
+	}
+
+
+	@Override
+	public boolean IWantToNegotiate(
+			PersonalState myCurrentState,
+			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+		return !contractsToPropose.isEmpty();
+	}
+
+
+	@Override
+	public boolean ImAllowedToNegotiate(
+			PersonalState myCurrentState,
+			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+		return true;
 	}
 
 }

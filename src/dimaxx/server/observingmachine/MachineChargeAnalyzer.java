@@ -146,8 +146,9 @@ MachineSelfChargeAnalyzable {
 			}
 			totalMem = totalMem.trim();
 			return new Long(totalMem).longValue();
-		} else
+		} else {
 			return maxMemory;
+		}
 	}
 
 	public Double getAbsoluteMemoryCharge() {
@@ -191,8 +192,9 @@ MachineSelfChargeAnalyzable {
 		String getBMips = "grep bogomips /proc/cpuinfo | cut -d: -f2 | sed -e \"s/ \\([0-9]*.[0-9]*\\)/\\1/\"";
 		getBMips += " | sed -e \"2 s/\\([0-9]*.[0-9]*\\)//\" ";
 		final int nbProc = Runtime.getRuntime().availableProcessors();
-		for (int i = 2; i <= nbProc; i++)
+		for (int i = 2; i <= nbProc; i++) {
 			getBMips += " | sed -e \"" + i + " s/\\([0-9]*.[0-9]*\\)//\" ";
+		}
 		String bMips;
 		try {
 			bMips = this.executeWithBash(getBMips);

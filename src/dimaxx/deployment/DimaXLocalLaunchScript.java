@@ -28,13 +28,15 @@ public class DimaXLocalLaunchScript {
 			s[3] = "-p";
 			s[4] = port.toString();
 			Darx.main(s);
-		} else
+		} else {
 			LogService.writeException(this, "name server has not been initialized");
+		}
 	}
 
 	public void launchDARX(final Integer nameServer, final Integer... darxsString) {
 		this.launchNameServer(nameServer);
-		for (final Integer port : darxsString)
+		for (final Integer port : darxsString) {
 			this.launchDarXServer(port);
+		}
 	}
 }

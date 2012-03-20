@@ -47,8 +47,9 @@ public class SocialChoiceFunctions {
 		while (!alloc1.isEmpty() && !alloc2.isEmpty()) {
 			final State minc1 =	alloc1.pop();
 			final State minc2 =	alloc2.pop();
-			if (comp.compare(minc1,minc2)!=0)
+			if (comp.compare(minc1,minc2)!=0) {
 				return comp.compare(minc1,minc2);
+			}
 		}
 
 		//		if (alloc1.isEmpty() && alloc2.isEmpty()) -> géré par l'assert
@@ -83,7 +84,7 @@ public class SocialChoiceFunctions {
 	//		return nash1.compareTo(nash2);
 	//	}
 
-	
+
 	/*
 	 * 
 	 */
@@ -94,12 +95,12 @@ public class SocialChoiceFunctions {
 		return u.getUtilityValue(Collections.min(as,comp));
 	}
 
-	
+
 	public static  <State> Double getNashValue(
 			final Collection<State> as,
 			final UtilitaristEvaluator<State> u){
 		Double nash = 1.;
-		for (final State a : as){
+		for (final State a : as) {
 			nash*=u.getUtilityValue(a);
 		}
 		return nash;
@@ -109,13 +110,13 @@ public class SocialChoiceFunctions {
 			final Collection<State> as,
 			final UtilitaristEvaluator<State> u){
 		Double sum = 1.;
-		for (final State a : as){
+		for (final State a : as) {
 			sum+=u.getUtilityValue(a);
 		}
 		return sum;
 	}
-	
-	
+
+
 	//
 	// Subclasses
 	//

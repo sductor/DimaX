@@ -124,7 +124,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return this.appliHasStarted;
 	}
 
@@ -148,13 +148,15 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
 		while (this.getMailBox().hasMail()){
 			final AbstractMessage m = this.getMailBox().readMail();
-			if (m instanceof StartActivityMessage)
+			if (m instanceof StartActivityMessage) {
 				this.start((StartActivityMessage)m);
-			else
+			} else {
 				messages.add(m);
+			}
 		}
-		for (final AbstractMessage m : messages)
+		for (final AbstractMessage m : messages) {
 			this.getMailBox().writeMail(m);
+		}
 	}
 
 	@MessageHandler

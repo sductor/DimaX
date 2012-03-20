@@ -90,7 +90,7 @@ public class Experimentator extends APIAgent{
 	public boolean launchSimulation() throws CompetenceException{
 		this.logMonologue("Launching simulations --> Available Memory :"
 				+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
-		this.logWarning("--------------> Used Memory (MO) : "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000),LogService.onBoth);
+		this.logWarning("--------------> Used Memory (MO) : "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000,LogService.onBoth);
 
 		if (this.awaitingAnswer==0){
 			//Toute les expériences sont faites!!
@@ -155,23 +155,25 @@ public class Experimentator extends APIAgent{
 	public void run(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 
-		if (args[0].equals("scheduled"))
+		if (args[0].equals("scheduled")) {
 			this.initAPI(false);//SCHEDULED
-		else if  (args[0].equals("fipa"))
+		} else if  (args[0].equals("fipa")) {
 			this.initAPI(true);//FIPA
-		else if  (args[0].equals("darx"))
+		} else if  (args[0].equals("darx")) {
 			this.initAPI(7779,7778);//DARX LOCAL
-		else if  (args[0].equals("deployed"))
+		} else if  (args[0].equals("deployed")) {
 			this.initAPI("lip6.xml");//DARX Deployed
-		else
+		} else {
 			throw new RuntimeException("unknonw args");
+		}
 
-		if (args[1].equals("nolog"))
+		if (args[1].equals("nolog")) {
 			LogService.setLog(false);
-		else if (args[1].equals("log"))
+		} else if (args[1].equals("log")) {
 			LogService.setLog(true);
-		else
+		} else {
 			throw new RuntimeException("unknonw args");
+		}
 		this.launchMySelf();
 	}
 }

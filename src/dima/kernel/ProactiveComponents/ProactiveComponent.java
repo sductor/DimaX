@@ -64,7 +64,7 @@ public abstract class ProactiveComponent extends GimaObject implements Serializa
 	 * Tests wheter a proactive object is active or no ie whether the ProactiveComponent.
 	 */
 	@Override
-	public abstract boolean isActive();
+	public abstract boolean competenceIsActive();
 	/**
 Tests wheter a proactive object has reached it goal or
 	 */
@@ -103,13 +103,15 @@ Tests wheter a proactive object has reached it goal or
 	 */
 	public void proactivityLoop() {
 
-		while(this.isAlive())
-			if (this.isActive()){
+		while(this.isAlive()) {
+			if (this.competenceIsActive()){
 				this.preActivity();
 				this.step();
 				this.postActivity();
-			} else
+			} else {
 				this.tryToResumeActivity();
+			}
+		}
 	}
 	/**
 	 * This is the method containing the termination condition of a ProactiveComponent

@@ -27,7 +27,7 @@ public class CycledATNBasedProactiveComponent extends ATNBasedProactiveComponent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return true;
 	}
 	/**
@@ -42,7 +42,9 @@ public class CycledATNBasedProactiveComponent extends ATNBasedProactiveComponent
 	 */
 	@Override
 	public void step() {
-		if (this.currentState.isFinal()) this.setInitialState();
+		if (this.currentState.isFinal()) {
+			this.setInitialState();
+		}
 		this.currentState = this.currentState.crossTransition(this);
 	}
 }

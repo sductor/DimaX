@@ -97,7 +97,7 @@ public class Groupe extends SingleRoleAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean isActive()
+	public boolean competenceIsActive()
 	{
 		return !this.needs.isEmpty();
 	}
@@ -126,8 +126,9 @@ public class Groupe extends SingleRoleAgent
 	 */
 	public void removeNeed(final AgentIdentifier agentId)
 	{
-		if (this.needs.contains(agentId))
+		if (this.needs.contains(agentId)) {
 			this.needs.remove(agentId);
+		}
 	}
 	/**
 	 * step method comment.

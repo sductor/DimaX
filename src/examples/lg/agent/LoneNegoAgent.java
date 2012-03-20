@@ -58,13 +58,14 @@ public class LoneNegoAgent extends MultiRolesAgent
 	{
 		final Letter dropedL = DropHeuristic.whichToDrop(this.game);
 		// il faut dropper une lettre, on se sert d'une heuristique
-		if (dropedL != null)
+		if (dropedL != null) {
 			try
-		{	this.game.getDeck().dropLetter(dropedL);		// retirer la letter du Deck
-		this.initInitiatorRole(dropedL,neededL); 	// on lance un appel � proposition
+			{	this.game.getDeck().dropLetter(dropedL);		// retirer la letter du Deck
+			this.initInitiatorRole(dropedL,neededL); 	// on lance un appel � proposition
+			}
+			catch (final GameException e){
+				e.printStackTrace(System.out);	}
 		}
-		catch (final GameException e){
-			e.printStackTrace(System.out);	}
 	}
 	/**
 	 * Insert the method's description here.
@@ -74,10 +75,11 @@ public class LoneNegoAgent extends MultiRolesAgent
 	@Override
 	public void failureRoleProcess(final AbstractRole r)
 	{
-		if(r.isInitiatorRole()) // si c'est le role initiateur utilis� pour l'�change de lettres
+		if(r.isInitiatorRole()) {
 			this.addService(r.getContract());
-		else if( ((ContractNetParticipant)r).getProposal() != null)
+		} else if( ((ContractNetParticipant)r).getProposal() != null) {
 			this.addService(((ContractNetParticipant)r).getProposal());
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -106,9 +108,11 @@ public class LoneNegoAgent extends MultiRolesAgent
 	{
 		final java.util.Enumeration e = this.roles.elements();
 
-		while(e.hasMoreElements())
-			if( ((AbstractRole)e.nextElement()).isInitiatorRole())
+		while(e.hasMoreElements()) {
+			if( ((AbstractRole)e.nextElement()).isInitiatorRole()) {
 				return true;
+			}
+		}
 		return false;
 	}
 	/**
@@ -133,7 +137,7 @@ public class LoneNegoAgent extends MultiRolesAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean isActive()
+	public boolean competenceIsActive()
 	{
 		//l'agent est actif tant qu'il n'a pas termin� le mot
 		return !this.game.getWordToComplete().isComplete();
@@ -150,11 +154,13 @@ public class LoneNegoAgent extends MultiRolesAgent
 		{
 			final Letter needed = this.game.getWordToComplete().getNeededLetter();
 
-			if (this.game.hasLetter(needed))
+			if (this.game.hasLetter(needed)) {
 				this.useLetter(needed);
-			//System.out.println(getId()+" : Oui j'ai la lettre ("+needed+") dans la main");
-			else
+				//System.out.println(getId()+" : Oui j'ai la lettre ("+needed+") dans la main");
+			}
+			else {
 				this.exchangeLetter(needed); // lancer un cfp
+			}
 		}
 		this.display();
 	}
@@ -174,14 +180,15 @@ public class LoneNegoAgent extends MultiRolesAgent
 	@Override
 	public void successRoleProcess(final AbstractRole r)
 	{
-		if(r.isInitiatorRole())
+		if(r.isInitiatorRole()) {
 			//addService(((ContractNetInitiator)r).getAcceptedProposal());
 			try{
 				this.getGame().getWordToComplete().addLetter((Letter)((ContractNetInitiator)r).getAcceptedProposal());
 			}catch(final GameException e)
 			{ e.printStackTrace(System.out);}
-		else
+		} else {
 			this.addService(((ContractNetParticipant)r).getContract());
+		}
 	}
 	/**
 	 * Insert the method's description here.

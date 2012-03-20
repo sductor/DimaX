@@ -25,7 +25,7 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 	/**
 	 * 
 	 */
-	public static final long _simulationTime = (1000 * 10);
+	public static final long _simulationTime = 1000 * 10;
 	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 2;
 
 	public static final int startingNbAgents = 10;
@@ -83,12 +83,13 @@ public abstract class ExperimentationProtocol implements DimaComponentInterface{
 			String result = "**************\n";
 			result += "Static parameters are :\n";
 			for (final Field f : ReplicationExperimentationProtocol.class
-					.getFields())
+					.getFields()) {
 				result += f.getName() + " : "
 						+ f.get(ReplicationExperimentationProtocol.class)
 						+ "\n";
-					result += "**************";
-					return result;
+			}
+			result += "**************";
+			return result;
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -32,15 +32,17 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 */
 	public boolean remove(final K key, final V value) {
 		final boolean r = this.get(key).remove(value);
-		if (this.get(key).isEmpty())
+		if (this.get(key).isEmpty()) {
 			this.remove(key);
+		}
 		return r;
 	}
 
 	public Boolean removeAll(final K key, final Collection<V> values) {
 		final Boolean r = this.get(key).removeAll(values);
-		if (this.get(key).isEmpty())
+		if (this.get(key).isEmpty()) {
 			this.remove(key);
+		}
 		return r;
 	}
 
@@ -50,10 +52,12 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 * @return
 	 */
 	public boolean containsAvalue(final V item) {
-		for (final K k : this.keySet())
-			if (this.get(k).contains(item))
+		for (final K k : this.keySet()) {
+			if (this.get(k).contains(item)) {
 				return true;
-				return false;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Fonction coûteuse
@@ -62,12 +66,15 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 */
 	public Collection<K> removeAvalue(final V item) {
 		final Collection<K> relevantKeys = new ArrayList<K>();
-		for (final K k : this.keySet())
-			if (this.get(k).contains(item))
+		for (final K k : this.keySet()) {
+			if (this.get(k).contains(item)) {
 				relevantKeys.add(k);
-				for (final K k : relevantKeys)
-					this.remove(k,item);
-						return relevantKeys;
+			}
+		}
+		for (final K k : relevantKeys) {
+			this.remove(k,item);
+		}
+		return relevantKeys;
 	}
 	/**
 	 * Fonction coûteuse
@@ -76,17 +83,19 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 */
 	public Collection<V> getAllValues() {
 		final Collection<V> finalValues = new HashSet<V>();
-		for (final Set<V> l : super.values())
+		for (final Set<V> l : super.values()) {
 			finalValues.addAll(l);
-				return finalValues;
+		}
+		return finalValues;
 	}
 
 	@Override
 	public synchronized Set<V> get(final Object key){
-		if (this.containsKey(key))
+		if (this.containsKey(key)) {
 			return super.get(key);
-		else
+		} else {
 			return new HashSet<V>();
+		}
 	}
 }
 

@@ -60,18 +60,21 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	public Contract getContract(final ContractIdentifier id)
 			throws UnknownContractException {
 		final Contract contract = this.identifier2contract.get(id);
-		if (contract == null)
+		if (contract == null) {
 			throw new UnknownContractException(id);
-		else
+		} else {
 			return contract;
+		}
 	}
 
 	public Collection<Contract> getContracts(final AgentIdentifier id) {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.getAllContracts())
-			if (c.getAllInvolved().contains(id))
+		for (final Contract c : this.getAllContracts()) {
+			if (c.getAllInvolved().contains(id)) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 	}
 
 	public List<Contract> getContractsAcceptedBy(final AgentIdentifier id) {
@@ -104,18 +107,22 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 	public List<Contract> getRequestableContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c: this.identifier2contract.values())
-			if (this.isRequestable(c))
+		for (final Contract c: this.identifier2contract.values()) {
+			if (this.isRequestable(c)) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 	}
 
 	public List<Contract> getFailedContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c: this.identifier2contract.values())
-			if (this.isAFailure(c))
+		for (final Contract c: this.identifier2contract.values()) {
+			if (this.isAFailure(c)) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 	}
 
 	/*
@@ -123,50 +130,60 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	 */
 	public List<Contract> getAllInitiatorContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.identifier2contract.values())
-			if (c.getInitiator().equals(this.getMyAgentIdentifier()))
+		for (final Contract c : this.identifier2contract.values()) {
+			if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 	}
 
 	public List<Contract> getInitiatorRequestableContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.getRequestableContracts())
-			if (c.getInitiator().equals(this.getMyAgentIdentifier()))
+		for (final Contract c : this.getRequestableContracts()) {
+			if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 
 	}
 
 	public List<Contract> getInitiatorOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.waitContracts)
-			if (c.getInitiator().equals(this.getMyAgentIdentifier()))
+		for (final Contract c : this.waitContracts) {
+			if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 
 	}
 
 	public List<Contract> getParticipantOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.waitContracts)
+		for (final Contract c : this.waitContracts) {
 			if (!c.getInitiator().equals(this.getMyAgentIdentifier())
 					&& !this.acceptedContracts.get(this.getMyAgentIdentifier())
 					.contains(c)
 					&& !this.rejectedContracts.get(this.getMyAgentIdentifier())
-					.contains(c))
+					.contains(c)) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 	}
 
 	public List<Contract> getParticipantAlreadyAcceptedContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.getAllContracts())
+		for (final Contract c : this.getAllContracts()) {
 			if (!c.getInitiator().equals(this.getMyAgentIdentifier())
 					&& this.acceptedContracts.get(this.getMyAgentIdentifier())
-					.contains(c))
+					.contains(c)) {
 				l.add(c);
-				return l;
+			}
+		}
+		return l;
 	}
 
 	/*
@@ -192,8 +209,10 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		this.acceptedContracts.add(id, c);
 		/**/
 		if (this.isRequestable(c))
+		{
 			this.waitContracts.remove(c);
-		//			this.consensualContracts.add(c);
+			//			this.consensualContracts.add(c);
+		}
 	}
 
 	public void addRejection(final AgentIdentifier id, final Contract c) {
@@ -218,11 +237,13 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		/**/
 		this.rejectedContracts.add(id, c);
 
-		if (id.equals(c.getInitiator()))
+		if (id.equals(c.getInitiator())) {
 			this.acceptedContracts.get(id).remove(c);
+		}
 		/**/
-		if (this.isAFailure(c))
+		if (this.isAFailure(c)) {
 			this.waitContracts.remove(c);
+		}
 	}
 	//
 	//		public void removeRejection(final AgentIdentifier id, final Contract c) {
@@ -236,18 +257,22 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 	// CONSENSUAL IMPLEMENTATION
 	public boolean isRequestable(final Contract c) {
-		for (final AgentIdentifier id : c.getAllParticipants())
-			if (!this.acceptedContracts.get(id).contains(c))
+		for (final AgentIdentifier id : c.getAllParticipants()) {
+			if (!this.acceptedContracts.get(id).contains(c)) {
 				return false;
-				return true;
+			}
+		}
+		return true;
 	}
 
 	// CONSENSUAL IMPLEMENTATION
 	public boolean isAFailure(final Contract c) {
-		for (final AgentIdentifier id : c.getAllParticipants())
-			if (this.rejectedContracts.get(id).contains(c))
+		for (final AgentIdentifier id : c.getAllParticipants()) {
+			if (this.rejectedContracts.get(id).contains(c)) {
 				return true;
-				return false;
+			}
+		}
+		return false;
 	}
 
 	/*
@@ -297,8 +322,9 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	//	}
 
 	public void removeAll(final Collection<Contract> contracts) {
-		for (final Contract c : contracts)
+		for (final Contract c : contracts) {
 			this.remove(c);
+		}
 	}
 
 	public void clear() {
@@ -316,34 +342,42 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	@Override
 	public String toString() {
 		String result = "[Known contracts are : ";
-		for (final Contract c : this.identifier2contract.values())
+		for (final Contract c : this.identifier2contract.values()) {
 			result += this.statusOf(c);
-				result += "]";
-				return result;
+		}
+		result += "]";
+		return result;
 	}
 
 	public String statusOf(final Contract c) {
 		String result = "\n*Status of " + c+"\n";
-		if (this.getOnWaitContracts().contains(c))
+		if (this.getOnWaitContracts().contains(c)) {
 			result += "wait;";
-		if (this.getRequestableContracts().contains(c))
+		}
+		if (this.getRequestableContracts().contains(c)) {
 			result += "requestable;";
-		if (this.getFailedContracts().contains(c))
+		}
+		if (this.getFailedContracts().contains(c)) {
 			result += "rejected;";
+		}
 
 		result += "(accepted:";
-		for (final AgentIdentifier id : c.getAllParticipants())
-			if (this.acceptedContracts.get(id).contains(c))
+		for (final AgentIdentifier id : c.getAllParticipants()) {
+			if (this.acceptedContracts.get(id).contains(c)) {
 				result += id + ";";
-				result += ");";
+			}
+		}
+		result += ");";
 
-				result += "(rejected:";
-				for (final AgentIdentifier id : c.getAllParticipants())
-					if (this.rejectedContracts.get(id).contains(c))
-						result += id + ";";
-						result += ")*";
+		result += "(rejected:";
+		for (final AgentIdentifier id : c.getAllParticipants()) {
+			if (this.rejectedContracts.get(id).contains(c)) {
+				result += id + ";";
+			}
+		}
+		result += ")*";
 
-						return result;
+		return result;
 	}
 }
 

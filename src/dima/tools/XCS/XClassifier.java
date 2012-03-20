@@ -165,8 +165,9 @@ public class XClassifier implements Serializable
 	public boolean applyMutation(final String state, final int numberOfActions)
 	{
 		boolean changed=this.mutateCondition(state);
-		if(this.mutateAction(numberOfActions))
+		if(this.mutateAction(numberOfActions)) {
 			changed=true;
+		}
 		return changed;
 	}
 	/**
@@ -199,11 +200,13 @@ public class XClassifier implements Serializable
 		final int condLength=cond.length();
 		final char condArray[]= new char[condLength];
 
-		for(int i=0; i<condLength; i++)
-			if(XCSConstants.drand()<XCSConstants.P_dontcare)
+		for(int i=0; i<condLength; i++) {
+			if(XCSConstants.drand()<XCSConstants.P_dontcare) {
 				condArray[i]=XCSConstants.dontCare;
-			else
+			} else {
 				condArray[i]=cond.charAt(i);
+			}
+		}
 		this.condition=new String(condArray);
 	}
 	/**
@@ -223,14 +226,16 @@ public class XClassifier implements Serializable
 	private void createRandomCondition(final int condLength)
 	{
 		final char condArray[]=new char[condLength];
-		for(int i=0; i<condLength; i++)
-			if(XCSConstants.drand()<XCSConstants.P_dontcare)
+		for(int i=0; i<condLength; i++) {
+			if(XCSConstants.drand()<XCSConstants.P_dontcare) {
 				condArray[i]=XCSConstants.dontCare;
-			else
-				if(XCSConstants.drand()<0.5)
+			} else
+				if(XCSConstants.drand()<0.5) {
 					condArray[i]='0';
-				else
+				} else {
 					condArray[i]='1';
+				}
+		}
 		this.condition=new String(condArray);
 	}
 	/**
@@ -240,9 +245,11 @@ public class XClassifier implements Serializable
 	 */
 	public boolean equals(final XClassifier cl)
 	{
-		if(cl.condition.equals( this.condition ))
-			if(cl.action ==  this.action)
+		if(cl.condition.equals( this.condition )) {
+			if(cl.action ==  this.action) {
 				return true;
+			}
+		}
 		return false;
 	}
 	/**
@@ -258,10 +265,11 @@ public class XClassifier implements Serializable
 	{
 		double accuracy;
 
-		if(this.predictionError <= XCSConstants.epsilon_0)
+		if(this.predictionError <= XCSConstants.epsilon_0) {
 			accuracy = 1.;
-		else
+		} else {
 			accuracy = XCSConstants.alpha * Math.pow( this.predictionError / XCSConstants.epsilon_0 , -XCSConstants.nu);
+		}
 		return accuracy;
 	}
 	/**
@@ -297,8 +305,9 @@ public class XClassifier implements Serializable
 	 */
 	public double getDelProp(final double meanFitness)
 	{
-		if(this.fitness/this.numerosity >= XCSConstants.delta*meanFitness || this.experience < XCSConstants.theta_del)
+		if(this.fitness/this.numerosity >= XCSConstants.delta*meanFitness || this.experience < XCSConstants.theta_del) {
 			return this.actionSetSize*this.numerosity;
+		}
 		return this.actionSetSize*this.numerosity*meanFitness / ( this.fitness/this.numerosity);
 	}
 	/**
@@ -362,11 +371,13 @@ public class XClassifier implements Serializable
 	{
 		boolean ret=false;
 		final int length=this.condition.length();
-		for(int i=0; i<length; i++)
-			if(this.condition.charAt(i) != XCSConstants.dontCare && this.condition.charAt(i) != cl.condition.charAt(i))
+		for(int i=0; i<length; i++) {
+			if(this.condition.charAt(i) != XCSConstants.dontCare && this.condition.charAt(i) != cl.condition.charAt(i)) {
 				return false;
-			else if(this.condition.charAt(i) !=  cl.condition.charAt(i))
+			} else if(this.condition.charAt(i) !=  cl.condition.charAt(i)) {
 				ret = true;
+			}
+		}
 		return ret;
 	}
 	/**
@@ -378,8 +389,9 @@ public class XClassifier implements Serializable
 	 */
 	public boolean isSubsumer()
 	{
-		if(this.experience>XCSConstants.theta_sub && this.predictionError < XCSConstants.epsilon_0)
+		if(this.experience>XCSConstants.theta_sub && this.predictionError < XCSConstants.epsilon_0) {
 			return true;
+		}
 		return false;
 	}
 	/**
@@ -389,11 +401,14 @@ public class XClassifier implements Serializable
 	 */
 	public boolean match(final String state)
 	{
-		if(this.condition.length()!=state.length())
+		if(this.condition.length()!=state.length()) {
 			return false;
-		for(int i=0; i<this.condition.length(); i++)
-			if(this.condition.charAt(i)!=XCSConstants.dontCare && this.condition.charAt(i)!=state.charAt(i))
+		}
+		for(int i=0; i<this.condition.length(); i++) {
+			if(this.condition.charAt(i)!=XCSConstants.dontCare && this.condition.charAt(i)!=state.charAt(i)) {
 				return false;
+			}
+		}
 		return true;
 	}
 	/**
@@ -408,9 +423,9 @@ public class XClassifier implements Serializable
 
 		if(XCSConstants.drand()<XCSConstants.pM){
 			int act=0;
-			do
+			do {
 				act=(int)(XCSConstants.drand()*numberOfActions);
-			while(act==this.action);
+			} while(act==this.action);
 			this.action=act;
 			changed=true;
 		}
@@ -429,17 +444,19 @@ public class XClassifier implements Serializable
 		boolean changed=false;
 		final int condLength=this.condition.length();
 
-		for(int i=0; i<condLength; i++)
+		for(int i=0; i<condLength; i++) {
 			if(XCSConstants.drand()<XCSConstants.pM){
 				final char[] cond=this.condition.toCharArray();
 				final char[] stateC=state.toCharArray();
 				changed=true;
-				if(cond[i]==XCSConstants.dontCare)
+				if(cond[i]==XCSConstants.dontCare) {
 					cond[i]=stateC[i];
-				else
+				} else {
 					cond[i]=XCSConstants.dontCare;
+				}
 				this.condition=new String(cond);
 			}
+		}
 		return changed;
 	}
 	/**
@@ -537,10 +554,13 @@ public class XClassifier implements Serializable
 	 */
 	public boolean subsumes(final XClassifier cl)
 	{
-		if(cl.action == this.action)
-			if(this.isSubsumer())
-				if(this.isMoreGeneral(cl))
+		if(cl.action == this.action) {
+			if(this.isSubsumer()) {
+				if(this.isMoreGeneral(cl)) {
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 	/**
@@ -560,17 +580,19 @@ public class XClassifier implements Serializable
 				final int help=sep1;
 				sep1=sep2;
 				sep2=help;
-			}else if(sep1==sep2)
+			}else if(sep1==sep2) {
 				sep2++;
+			}
 			final char[] cond1=this.condition.toCharArray();
 			final char[] cond2=cl.condition.toCharArray();
-			for(int i=sep1; i<sep2; i++)
+			for(int i=sep1; i<sep2; i++) {
 				if(cond1[i]!=cond2[i]){
 					changed=true;
 					final char help=cond1[i];
 					cond1[i]=cond2[i];
 					cond2[i]=help;
 				}
+			}
 			if(changed){
 				this.condition=new String(cond1);
 				cl.condition=new String(cond2);
@@ -586,10 +608,11 @@ public class XClassifier implements Serializable
 	 */
 	public double updateActionSetSize(final double numerositySum)
 	{
-		if(this.experience < 1./XCSConstants.beta)
+		if(this.experience < 1./XCSConstants.beta) {
 			this.actionSetSize= (this.actionSetSize * (this.experience-1)+ numerositySum) / this.experience;
-		else
+		} else {
 			this.actionSetSize+= XCSConstants.beta * (numerositySum - this.actionSetSize);
+		}
 		return this.actionSetSize*this.numerosity;
 	}
 	/**
@@ -612,10 +635,11 @@ public class XClassifier implements Serializable
 	 */
 	public double updatePrediction(final double P)
 	{
-		if( this.experience < 1./XCSConstants.beta)
+		if( this.experience < 1./XCSConstants.beta) {
 			this.prediction = (this.prediction * (this.experience - 1.) + P) / this.experience;
-		else
+		} else {
 			this.prediction += XCSConstants.beta * (P-this.prediction);
+		}
 		return this.prediction*this.numerosity;
 	}
 	/**
@@ -626,10 +650,11 @@ public class XClassifier implements Serializable
 	 */
 	public double updatePreError(final double P)
 	{
-		if( this.experience < 1./XCSConstants.beta)
+		if( this.experience < 1./XCSConstants.beta) {
 			this.predictionError = (this.predictionError*(this.experience - 1.) + Math.abs(P - this.prediction)) / this.experience;
-		else
+		} else {
 			this.predictionError += XCSConstants.beta * (Math.abs(P - this.prediction) - this.predictionError);
+		}
 		return this.predictionError*this.numerosity;
 	}
 }

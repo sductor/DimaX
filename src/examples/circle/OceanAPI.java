@@ -57,10 +57,12 @@ implements ActionListener, WindowListener {
 	}
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		if(e.getSource() == this.getBGo())
+		if(e.getSource() == this.getBGo()) {
 			this.connEtoC2(e);
-		if(e.getSource() == this.getBExit())
+		}
+		if(e.getSource() == this.getBExit()) {
 			this.connEtoM1(e);
+		}
 	}
 	public void bGo_ActionPerformed(final ActionEvent actionEvent) {
 		this.numbreOfSharks = Integer.parseInt(this.getTNumber().getText());
@@ -97,46 +99,49 @@ implements ActionListener, WindowListener {
 		}
 	}
 	private Button getBExit() {
-		if(this.ivjBExit == null)
+		if(this.ivjBExit == null) {
 			try {
 				this.ivjBExit = new Button();
 				this.ivjBExit.setName("BExit");
 				this.ivjBExit.setBounds(37, 62, 56, 23);
 				this.ivjBExit.setLabel("Exit");
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjBExit;
 	}
 	private Button getBGo() {
-		if(this.ivjBGo == null)
+		if(this.ivjBGo == null) {
 			try {
 				this.ivjBGo = new Button();
 				this.ivjBGo.setName("BGo");
 				this.ivjBGo.setBounds(35, 23, 56, 23);
 				this.ivjBGo.setLabel("Go");
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjBGo;
 	}
 	private Button getBQuitter() {
-		if(this.ivjBExit == null)
+		if(this.ivjBExit == null) {
 			try {
 				this.ivjBExit = new Button();
 				this.ivjBExit.setName("BExit");
 				this.ivjBExit.setBounds(37, 62, 56, 23);
 				this.ivjBExit.setLabel("Exit");
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjBExit;
 	}
 	private Panel getContentsPane() {
-		if(this.ivjContentsPane == null)
+		if(this.ivjContentsPane == null) {
 			try {
 				this.ivjContentsPane = new Panel();
 				this.ivjContentsPane.setName("ContentsPane");
@@ -147,26 +152,28 @@ implements ActionListener, WindowListener {
 				this.getContentsPane().add(this.getTNumber(), this.getTNumber().getName());
 				this.getContentsPane().add(this.getBExit(), this.getBExit().getName());
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjContentsPane;
 	}
 	private Label getLabel1() {
-		if(this.ivjLabel1 == null)
+		if(this.ivjLabel1 == null) {
 			try {
 				this.ivjLabel1 = new Label();
 				this.ivjLabel1.setName("Label1");
 				this.ivjLabel1.setText("Number of Sharks");
 				this.ivjLabel1.setBounds(108, 22, 125, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjLabel1;
 	}
 	private Sea getMer1() {
-		if(OceanAPI.ivjMer1 == null)
+		if(OceanAPI.ivjMer1 == null) {
 			try {
 				OceanAPI.ivjMer1 = new Sea();
 				OceanAPI.ivjMer1.setName("Mer1");
@@ -174,8 +181,9 @@ implements ActionListener, WindowListener {
 				OceanAPI.ivjMer1.setBackground(Color.cyan);
 				OceanAPI.ivjMer1.setBounds(17, 110, 340, 276);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return OceanAPI.ivjMer1;
 	}
@@ -187,14 +195,15 @@ implements ActionListener, WindowListener {
 		return OceanAPI.ivjMer1;
 	}
 	private TextField getTNumber() {
-		if(this.ivjTNumber == null)
+		if(this.ivjTNumber == null) {
 			try {
 				this.ivjTNumber = new TextField();
 				this.ivjTNumber.setName("TNumber");
 				this.ivjTNumber.setBounds(249, 23, 51, 23);
 			}
-		catch(final Throwable ivjExc) {
-			this.handleException(ivjExc);
+			catch(final Throwable ivjExc) {
+				this.handleException(ivjExc);
+			}
 		}
 		return this.ivjTNumber;
 	}
@@ -244,8 +253,9 @@ implements ActionListener, WindowListener {
 	}
 	@Override
 	public void windowClosing(final WindowEvent e) {
-		if(e.getSource() == this)
+		if(e.getSource() == this) {
 			this.connEtoC1(e);
+		}
 	}
 	@Override
 	public void windowDeactivated(final WindowEvent windowevent) {

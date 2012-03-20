@@ -42,10 +42,11 @@ extends CommunicationComponent {
 			return;
 		}
 
-		if(remote != null)
+		if(remote != null) {
 			this.comm.sendAsyncMessage(remote, m);
-		else
+		} else {
 			throw new RuntimeException(this+" Echec de l'envoi du message"+m);
+		}
 
 	}
 }

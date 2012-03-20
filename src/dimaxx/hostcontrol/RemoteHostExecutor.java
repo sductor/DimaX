@@ -77,11 +77,12 @@ public class RemoteHostExecutor extends SSHExecutor {
 	//
 
 	public boolean equal(final Object o){
-		if (o instanceof HostIdentifier)
+		if (o instanceof HostIdentifier) {
 			return ((HostIdentifier) o).getUrl().equals(this.getUrl())
 					&&((HostIdentifier) o).getPort().equals(this.getPort());
-		else
+		} else {
 			return false;
+		}
 	}
 
 	public int hash(){

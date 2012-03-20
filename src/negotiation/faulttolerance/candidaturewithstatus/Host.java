@@ -13,7 +13,7 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
-import negotiation.negotiationframework.selection.AbstractSelectionCore;
+import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
@@ -80,7 +80,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final double hostMaxProc, final double hostMaxMem,
 			final double lambda,
 			final HostCore myRationality,
-			final AbstractSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
+			final SimpleSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
 			final ProposerCore<
 			SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
 			ReplicationSpecification, HostState, ReplicationCandidature> 	proposerCore,

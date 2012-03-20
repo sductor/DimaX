@@ -48,8 +48,9 @@ public class ATNInterpreter extends AutomataObject {
 	{
 		State currentState = this.atn.getInitialState();
 
-		while (!currentState.isFinal())
+		while (!currentState.isFinal()) {
 			currentState = currentState.crossTransition(this.context);
+		}
 
 	}
 	/**

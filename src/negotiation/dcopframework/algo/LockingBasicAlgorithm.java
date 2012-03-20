@@ -36,7 +36,8 @@ public abstract class LockingBasicAlgorithm extends BasicAlgorithm {
 	public void removeLock(final int id) {
 		this.lockMap.remove(id);
 		this.lockSet.remove(id);
-		if (this.lockSet.isEmpty())
+		if (this.lockSet.isEmpty()) {
 			this.lockVal = -1;
+		}
 	}
 }

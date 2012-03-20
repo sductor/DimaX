@@ -92,10 +92,11 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		this.myReplicas = new HashSet<HostState>();
 		this.myReplicas.addAll(init.myReplicas);
 		//
-		if (this.myReplicas.contains(newRep))
+		if (this.myReplicas.contains(newRep)) {
 			this.myReplicas.remove(newRep);
-		else
+		} else {
 			this.myReplicas.add(newRep);
+		}
 		//
 		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
 	}
@@ -173,9 +174,10 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		//			return new ArrayList<HostState>();
 		//		else
 		final Collection<ResourceIdentifier> result = new ArrayList();
-		for (final HostState h : this.myReplicas)
+		for (final HostState h : this.myReplicas) {
 			result.add(h.getMyAgentIdentifier());
-				return result;
+		}
+		return result;
 	}
 
 	@Override
@@ -192,11 +194,13 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		final Iterator<HostState> itRep = this.getMyReplicas()
 				.iterator();
 		HostState h = itRep.next();
-		for (int i = 1; i < num; i++)
+		for (int i = 1; i < num; i++) {
 			h = itRep.next();
+		}
 		// logMonologue("removing wastefull host!!!"+h);//+"\n"+getMyAgent().getMyCurrentState());
-		if (h == null)
+		if (h == null) {
 			throw new RuntimeException("aarrrggh");
+		}
 		return h.getMyAgentIdentifier();
 	}
 
@@ -211,10 +215,11 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 	@Override
 	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-		if (isLost)
+		if (isLost) {
 			return this.myReplicas.remove(h);
-		else
+		} else {
 			throw new RuntimeException("impossible!!");
+		}
 	}
 
 	/*
@@ -235,8 +240,9 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		if (o instanceof ReplicaState) {
 			final ReplicaState e = (ReplicaState) o;
 			return e.getMyReliability();
-		} else
+		} else {
 			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+		}
 	}
 
 	@Override
@@ -254,7 +260,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		meanMem = new LightAverageDoubleAggregation(),
 		meanProc = new LightAverageDoubleAggregation();
 
-		for (final Information o : elems)
+		for (final Information o : elems) {
 			if (o instanceof ReplicaState) {
 				//				if (!((ReplicaState) o).getMyCriticity().equals(Double.NaN))
 				//					throw new RuntimeException();
@@ -263,8 +269,10 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				meanDisp.add(e.getMyDisponibility());
 				meanMem.add(e.getMyMemCharge());
 				meanProc.add(e.getMyProcCharge());
-			} else
+			} else {
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+			}
+		}
 
 		final ReplicaState rep = new ReplicaState(
 				SimpleOpinionService.globaLAgentIdentifer,
@@ -285,15 +293,17 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		meanMem = new LightWeightedAverageDoubleAggregation(),
 		meanProc = new LightWeightedAverageDoubleAggregation();
 
-		for (final Information o : elems.keySet())
+		for (final Information o : elems.keySet()) {
 			if (o instanceof ReplicaState) {
 				final ReplicaState e = (ReplicaState) o;
 				meanCrit.add(e.getMyCriticity(),elems.get(e));
 				meanDisp.add(e.getMyDisponibility(),elems.get(e));
 				meanMem.add(e.getMyMemCharge(),elems.get(e));
 				meanProc.add(e.getMyProcCharge(),elems.get(e));
-			} else
+			} else {
 				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+			}
+		}
 
 		final ReplicaState rep = new ReplicaState(
 				SimpleOpinionService.globaLAgentIdentifer,
@@ -320,8 +330,9 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			final ReplicaState that = (ReplicaState) o;
 			return that.getMyAgentIdentifier().equals(
 					this.getMyAgentIdentifier());
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override

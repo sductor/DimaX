@@ -55,9 +55,10 @@ public class AgendaViewer extends JPanel implements ActionListener {
 	public void actionPerformed(final ActionEvent e) {
 		final String command = e.getActionCommand();
 
-		if (command.equals("new personal activity"))
+		if (command.equals("new personal activity")) {
 			this.newPersonalActivityInterface.newActivity();
-		else if (command.equals("new meeting"))
+		} else if (command.equals("new meeting")) {
 			this.newMeetingInteface.newMeeting();
+		}
 	}
 }

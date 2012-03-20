@@ -19,8 +19,9 @@ public class SimpleExampleApi extends APIAgent{
 	public SimpleExampleApi()
 			throws CompetenceException {
 		super("simple example agent launcher");
-		for (int i = 0; i < this.nbAgent; i++)
+		for (int i = 0; i < this.nbAgent; i++) {
 			this.agents.add(new SimpleAgent(i, this.nbAgent, this.nbTour));
+		}
 		this.agents.add(new SimpleObserverAgent(this.nbAgent));
 	}
 

@@ -97,10 +97,11 @@ Runnable, Serializable {
 	public int compareTo(final ReplicationStrategy other_strat) {
 		final int other_strat_type = other_strat.getReplicationType();
 		int result = this.type - other_strat_type;
-		if (result == 0)
+		if (result == 0) {
 			result = ((PassiveReplicationStrategy) other_strat)
-			.getUpdateDelay()
-			- this.updateDelay;
+					.getUpdateDelay()
+					- this.updateDelay;
+		}
 		return result;
 	}
 
@@ -134,8 +135,9 @@ Runnable, Serializable {
 	 */
 	protected void update() {
 		System.out.println("Updating replicas...");
-		if (this.owner_handle == null)
+		if (this.owner_handle == null) {
 			this.owner_handle = this.getRemoteShellHandle(this.info);
+		}
 		DarxTask task = null;
 		TaskShellHandle handle = null;
 		try {
@@ -154,7 +156,7 @@ Runnable, Serializable {
 					+ " the replicated task's state: " + re);
 		}
 		for (final Enumeration e = this.replicants.elements(); e
-				.hasMoreElements();)
+				.hasMoreElements();) {
 			try {
 				handle = (TaskShellHandle) e.nextElement();
 				handle.setTask(task);
@@ -162,6 +164,7 @@ Runnable, Serializable {
 			} catch (final RemoteException re) {
 				this.handleUnreachableReplicant(this.info, re);
 			}
+		}
 		System.out.println(".............. update done");
 	}
 
@@ -210,9 +213,10 @@ Runnable, Serializable {
 				Thread.sleep(this.updateDelay);
 			} catch (final InterruptedException e) {
 			}
-			if (this.updater_state == this.RUNNING)
+			if (this.updater_state == this.RUNNING) {
 				// && (role == ReplicationStrategy.LEADER))
 				this.update();
+			}
 		}
 	}
 

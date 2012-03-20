@@ -48,22 +48,27 @@ public class Variable {
 	}
 
 	public boolean hasNeighbor(final int nid) {
-		for (final Constraint c : this.neighbors)
-			if (c.getNeighbor(this).id == nid)
+		for (final Constraint c : this.neighbors) {
+			if (c.getNeighbor(this).id == nid) {
 				return true;
-				return false;
+			}
+		}
+		return false;
 	}
 
 	public Constraint getNeighbor(final int nid) {
-		for (final Constraint c : this.neighbors)
-			if (c.getNeighbor(this).id == nid)
+		for (final Constraint c : this.neighbors) {
+			if (c.getNeighbor(this).id == nid) {
 				return c;
-				return null;
+			}
+		}
+		return null;
 	}
 
 	public void clear() {
-		if (!this.fixed)
+		if (!this.fixed) {
 			this.value = -1;
+		}
 	}
 
 	@Override
@@ -76,13 +81,15 @@ public class Variable {
 	}
 
 	public int evaluate() {
-		if (this.value == -1)
+		if (this.value == -1) {
 			return -1;
+		}
 		int reward = 0;
 		for (final Constraint c : this.neighbors) {
 			final int v = c.evaluate();
-			if (v == -1)
+			if (v == -1) {
 				return -1;
+			}
 			reward += v;
 		}
 		return reward;

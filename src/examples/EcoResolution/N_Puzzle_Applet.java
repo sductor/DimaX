@@ -41,8 +41,9 @@ public class N_Puzzle_Applet extends Applet
 		public void actionPerformed(final java.awt.event.ActionEvent event)
 		{
 			final Object object = event.getSource();
-			if (object == N_Puzzle_Applet.this.button1)
+			if (object == N_Puzzle_Applet.this.button1) {
 				N_Puzzle_Applet.this.button1_ActionPerformed(event);
+			}
 		}
 	}
 

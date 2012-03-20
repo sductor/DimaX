@@ -97,8 +97,8 @@ public class NetworkShutdownHook extends Thread{
 	private void destroyAllMachines(){
 		System.out.println("\n\n EXITING!!!!!");
 
-		for (final RemoteHostExecutor h : this.getAllHosts())
-			if (!h.getUrl().equals(LocalHost.getUrl()))
+		for (final RemoteHostExecutor h : this.getAllHosts()) {
+			if (!h.getUrl().equals(LocalHost.getUrl())) {
 				try {
 					System.out.println("\n *** Connecting "+h+" ...");
 					h.execute(this.destructionCommand);
@@ -108,5 +108,7 @@ public class NetworkShutdownHook extends Thread{
 					System.err.println("Application on "+h+" has not been destroyed");
 					e.printStackTrace();
 				}
+			}
+		}
 	}
 }

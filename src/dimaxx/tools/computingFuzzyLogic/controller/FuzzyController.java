@@ -75,23 +75,27 @@ public class FuzzyController implements Serializable {
 	 * @return le subset ayant le bon nom, null s'il n'existe pas
 	 */
 	public FuzzySet getFuzzySet(final String nom) {
-		for (final FuzzySet f : this.parametres)
-			if (f.nom.equals(nom))
+		for (final FuzzySet f : this.parametres) {
+			if (f.nom.equals(nom)) {
 				return f;
-				return null;
+			}
+		}
+		return null;
 	}
 
 	public FuzzySubSet mixageConclusions(final List<FuzzySubSet> conclusions) {
-		if (conclusions.size() == 0)
+		if (conclusions.size() == 0) {
 			LogService.writeException(this,
 					"ERREUR Dans Mixage de Regle# aucune conclusion");
+		}
 
 		final Iterator<FuzzySubSet> itConclusion = conclusions.iterator();
 
 		FuzzySubSet cGene = itConclusion.next();
 
-		while (itConclusion.hasNext())
+		while (itConclusion.hasNext()) {
 			cGene = cGene.sousEnsembleUnion(itConclusion.next());
+		}
 		// cGene.printValue();
 		return cGene;
 	}

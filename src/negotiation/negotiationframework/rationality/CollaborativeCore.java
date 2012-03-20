@@ -14,15 +14,12 @@ PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicAgentCompetence<SimpleRationalAgent<ActionSpec,PersonalState,Contract>>
 implements RationalCore<ActionSpec, PersonalState, Contract>{
+	private static final long serialVersionUID = -2882287744826409737L;
 
 	//
 	// Fields
 	//
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2882287744826409737L;
 	private final AllocationSocialWelfares<ActionSpec, Contract> myOptimiser;
 	private final RationalCore<ActionSpec, PersonalState, Contract>  myPersonalCore;
 
@@ -45,10 +42,12 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	public final int getAllocationPreference(final PersonalState s,
 			final Collection<Contract> c1,
 			final Collection<Contract> c2) {
-		for (final Contract c : c1)
-			c.setSpecification(s);	for (final Contract c : c2)
-				c.setSpecification(s);
-					return this.myOptimiser.getSocialPreference(c1, c2);
+		for (final Contract c : c1) {
+			c.setSpecification(s);
+		}	for (final Contract c : c2) {
+			c.setSpecification(s);
+		}
+		return this.myOptimiser.getSocialPreference(c1, c2);
 	}
 
 	//
@@ -66,13 +65,9 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	}
 
 
-	public Double evaluatePreference(Collection<Contract> c) {
-		return myPersonalCore.evaluatePreference(c);
-	}
-
 	@Override
-	public boolean IWantToNegotiate(final PersonalState s) {
-		return this.myPersonalCore.IWantToNegotiate(s);
+	public Double evaluatePreference(final Collection<Contract> c) {
+		return this.myPersonalCore.evaluatePreference(c);
 	}
 
 	/*
@@ -81,8 +76,8 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 
 
 	@Override
-	public boolean isActive() {
-		return this.myPersonalCore.isActive();
+	public boolean competenceIsActive() {
+		return this.myPersonalCore.competenceIsActive();
 	}
 
 	@Override
@@ -108,7 +103,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	}
 
 	@Override
-	public void setActive(final boolean active) {
-		this.myPersonalCore.setActive(active);
+	public void activateCompetence(final boolean active) {
+		this.myPersonalCore.activateCompetence(active);
 	}
 }

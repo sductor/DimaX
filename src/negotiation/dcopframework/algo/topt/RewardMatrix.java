@@ -25,8 +25,9 @@ public class RewardMatrix {
 	}
 
 	public int getBase(final int id) {
-		if (!this.map.containsKey(id))
+		if (!this.map.containsKey(id)) {
 			return 0;
+		}
 		return this.map.get(id);
 	}
 
@@ -39,8 +40,9 @@ public class RewardMatrix {
 	}
 
 	public int getValue(final int offset, final int id) {
-		if (!this.map.containsKey(id))
+		if (!this.map.containsKey(id)) {
 			return -1;
+		}
 		final int base = this.map.get(id);
 		final int tmp = offset / base;
 		return tmp % this.domain.get(id);
@@ -49,9 +51,10 @@ public class RewardMatrix {
 	@Override
 	public String toString() {
 		String val = "[";
-		for (final int element : this.data)
+		for (final int element : this.data) {
 			val += element + " ";
-				val += "]";
-				return this.map.toString() + "\n" + val;
+		}
+		val += "]";
+		return this.map.toString() + "\n" + val;
 	}
 }

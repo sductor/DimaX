@@ -101,13 +101,13 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 
 		boolean b=false;
 		// reply to the caller
-		if (!this.commencedTransaction.empty())
+		if (!this.commencedTransaction.empty()) {
 			b=((TransactionData)this.commencedTransaction.peek()).TID.getMyValue()==data.TID.getMyValue();
+		}
 
-		if (b)	/* */ System.out.println("DUPLICAT ACKNOWLEDGE  "+data.TID.getMyValue());
-
-
-		else {
+		if (b) {
+			/* */ System.out.println("DUPLICAT ACKNOWLEDGE  "+data.TID.getMyValue());
+		} else {
 
 			final Serializable[] args = new Serializable[5];
 			args[0] = data.TID;
@@ -166,10 +166,11 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 		}
 
 		// Return the result
-		if (this.theAnswer == null)
+		if (this.theAnswer == null) {
 			return null;
-		else
+		} else {
 			return this.theAnswer[0];
+		}
 	}
 	private double calculateCostFor(final TimeSlot t) {
 		// Y a du boulot a faire la
@@ -188,8 +189,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 				/* */ System.out.println("ENVOI MSG REUSSI A SIMULATEUR....");
 				final Serializable []args= new Serializable[2];
 				args[0]=this.getId().toString();
-				if (this.debutM!=0)
+				if (this.debutM!=0) {
 					args[1]= new Long(System.currentTimeMillis() - this.debutM);
+				}
 				final Message mes= new Message("inc",args);//,new AgentName("AgentSimulateur"));
 				this.sendMessage(new AgentName("AgentSimulateur"),mes);
 
@@ -200,7 +202,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 				while (!this.commencedTransaction.empty() && !t) {
 
 					t= ((TransactionData)this.commencedTransaction.peek()).TID.getMyValue()!=TID.getMyValue();
-					if (!t) this.commencedTransaction.pop();
+					if (!t) {
+						this.commencedTransaction.pop();
+					}
 
 				}
 
@@ -215,14 +219,17 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 			}// else ignore redondance
 		}
 
-		if (this.commencedTransaction.empty())
+		if (this.commencedTransaction.empty()) {
 			if (this.waitingTransaction.size() != 0)
 			{
 				/* */ System.out.println("DEPILER LES TRANSACTIONS EN ATTENTE COTE INITIATEUR"+ ((TransactionData)this.waitingTransaction.get(0)).TID.getMyValue());
 				final TransactionData d= (TransactionData)this.waitingTransaction.get(0);
 				this.startTransaction((TransactionData)this.waitingTransaction.get(0));
 
-			} else /* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+			} else {
+				/* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+			}
+		}
 		/* */ System.out.println("SORTIE NOACTION..."+TID.getMyValue()+"..."+this.getId().toString());
 
 
@@ -240,8 +247,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 
 				final Serializable []args=new Serializable[2];
 				args[0]=this.getId().toString();
-				if (this.debutM!=0)
+				if (this.debutM!=0) {
 					args[1]= new Long(System.currentTimeMillis() - this.debutM);
+				}
 				final Message mes= new Message("inc",args);//,new  AgentName("AgentSimulateur"));
 				this.sendMessage(new AgentName("AgentSimulateur"),mes);
 
@@ -251,7 +259,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 				while (!this.commencedTransaction.empty() && !t) {
 
 					t= ((TransactionData)this.commencedTransaction.peek()).TID.getMyValue()!=TID.getMyValue();
-					if (!t) this.commencedTransaction.pop();
+					if (!t) {
+						this.commencedTransaction.pop();
+					}
 
 				}
 
@@ -267,14 +277,17 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 			// else ignore redondance
 		}
 
-		if (this.commencedTransaction.empty())
+		if (this.commencedTransaction.empty()) {
 			if (this.waitingTransaction.size() != 0)
 			{
 				/* */ System.out.println("DEPILER LES TRANSACTIONS EN ATTENTE COTE INITIATEUR"+ ((TransactionData)this.waitingTransaction.get(0)).TID.getMyValue());
 				final TransactionData d= (TransactionData)this.waitingTransaction.get(0);
 				this.startTransaction((TransactionData)this.waitingTransaction.get(0));
 
-			} else /* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+			} else {
+				/* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+			}
+		}
 
 		/* */ System.out.println("SORTIE NOACTIONFAILURE..."+TID.getMyValue()+"..."+this.getId().toString());
 	}
@@ -299,7 +312,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 				while (!this.commencedTransaction.empty() && !t) {
 
 					t= ((TransactionData)this.commencedTransaction.peek()).TID.getMyValue()!=TID.getMyValue();
-					if (!t) this.commencedTransaction.pop();
+					if (!t) {
+						this.commencedTransaction.pop();
+					}
 
 				}
 				/* */ this.afficherContComTrans();
@@ -310,7 +325,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 					final TransactionData d= (TransactionData)this.waitingTransaction.get(0);
 					this.startTransaction((TransactionData)this.waitingTransaction.get(0));
 
-				} else /* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+				} else {
+					/* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+				}
 
 
 			}
@@ -361,15 +378,18 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 		int j=-1;
 		for (int i=0;i<this.waitingTransaction.size()&& !found;i++){
 			found=TID.getMyValue()== ((TransactionData)this.waitingTransaction.get(i)).TID.getMyValue();
-			if (found) j=i;
+			if (found) {
+				j=i;
+			}
 		}
 
 		if (found) {
 			/* */ System.out.println("OUF J'AI TROUVE......");
 			this.waitingTransaction.remove(j);
 
-		} else
+		} else {
 			/* */ System.out.println("ERROR.DUPLICATION.....");
+		}
 
 
 
@@ -396,7 +416,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 				while (!this.commencedTransaction.empty() && !t) {
 
 					t= ((TransactionData)this.commencedTransaction.peek()).TID.getMyValue()!=TID.getMyValue();
-					if (!t) this.commencedTransaction.pop();
+					if (!t) {
+						this.commencedTransaction.pop();
+					}
 
 				}
 
@@ -424,13 +446,16 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 					final TransactionData d= (TransactionData)this.waitingTransaction.get(0);
 					this.startTransaction((TransactionData)this.waitingTransaction.get(0));
 
-				} else /* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+				} else {
+					/* */ System.out.println("AUCUNE TRANSACTION EN ATTENTE");
+				}
 			}
 			else {
 				//
 			}
+		} else {
+			System.out.println("DUPLICATION DU END MSG.....");
 		}
-		else System.out.println("DUPLICATION DU END MSG.....");
 		/* */ System.out.println("SORTIE DE ENDTRANSACTION....."+this.getId().toString());
 	}
 	public Agenda getAgenda() {
@@ -446,9 +471,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 			/* */ System.out.println("VOICI ID CURRENT PLANIF"+((TransactionID)this.commencedPanification.peek()).getMyValue()+"..ET CELLE QUI DOIT �TRE TESTE"+tid.getMyValue());
 
 			return ((TransactionID)this.commencedPanification.peek()).egale(tid);
+		} else {
+			return false;
 		}
-
-		else 	return false;
 	}
 	/** return if the planning has started for the specified meeting */
 	private synchronized boolean planMeetingPart1(final Meeting m) {
@@ -469,7 +494,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 			this.nbParticipant = new Integer(size);
 			this.splitNecessary = new Integer(m.getNecessaryParticipants().getCanonicalList().size());
 			this.awaitingAvailability = new byte[size][];
-			for (int i=0;i<size;i++) this.awaitingAvailability[i] = null;
+			for (int i=0;i<size;i++) {
+				this.awaitingAvailability[i] = null;
+			}
 
 			// Tout le monde na pas encore repondu
 			this.allNecessaryHere = new Boolean(false);
@@ -495,7 +522,7 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 			// 2912 allNecessaryHere = new Boolean(splitNecessary.intValue()== offset.intValue());
 
 			// tous les autres
-			synchronized (all) {for (int i=0;i<size;i++)
+			synchronized (all) {for (int i=0;i<size;i++) {
 				if (i!= myPos)
 				{
 					final Serializable[] args = new Serializable[6];
@@ -516,10 +543,12 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 					this.debutM= System.currentTimeMillis();
 				}
 			}
+			}
 
-			return true;} else
+			return true;} else {
 				//Sinon, on est deja en train de plannifier (initiateur ou pas), repasser plutard !
 				return false;
+			}
 
 	}
 	private synchronized void planMeetingPart2() {
@@ -540,20 +569,24 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 		for (int i=0;i<everyoneAvailability.length;i++)
 		{
 			everyoneAvailability[i] = 0;
-			for (int j=0;j<this.nbParticipant.intValue();j++)
-				if (this.awaitingAvailability[j] != null)
+			for (int j=0;j<this.nbParticipant.intValue();j++) {
+				if (this.awaitingAvailability[j] != null) {
 					everyoneAvailability[i] += this.awaitingAvailability[j][i];
+				}
+			}
 		}
 
 		// Now all 0 values are possible place to start
 		// Init with the first possible shot ! [...]
 		int index = 0;
-		while (index < everyoneAvailability.length && everyoneAvailability[index] > 0)
+		while (index < everyoneAvailability.length && everyoneAvailability[index] > 0) {
 			index++;
+		}
 
-		if (index == everyoneAvailability.length)
+		if (index == everyoneAvailability.length) {
 			// Pas de meeting possible avant la date d expiration
 			System.out.println("Meeting impossible avant la date d expiration");
+		}
 		final Calendar start = Agenda.getNextDepartureTimeAfter(System.currentTimeMillis());
 		start.add(Calendar.MINUTE, index);
 
@@ -589,8 +622,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 			System.out.println("Adding a meeting to "+this.getId()+" at "+bestTimeSlot);
 			this.myAgenda.addActivity(m, bestTimeSlot);
 
-		} else
+		} else {
 			/* */ System.out.println("No Possible Meeting....."+m.getStartLimit());
+		}
 
 		/* */ System.out.println("SORTIR DE PLAN PART 2");
 	}
@@ -617,9 +651,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 
 	@Override
 	public synchronized void readMailBox () {
-		if (this.hasMail())
+		if (this.hasMail()) {
 			this.processNextMessage();
-		else {
+		} else {
 			//System.out.println(""+getId()+" has no mail");
 		}
 	}
@@ -629,7 +663,7 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 	private int sendToAllParticipants(final Meeting m, final TransactionID tid, final FIPAACLMessage message, final FIPAACLMessage message1) {
 		final ArrayList all = m.getAllParticipants();
 		int nbAccept=0;
-		for (int i=0;i<all.size();i++)
+		for (int i=0;i<all.size();i++) {
 			synchronized (message) {
 
 				// System.out.println("CONTENU DES DISPONIBILITES..."+ awaitingAvailability[i+offset.intValue()].toString());
@@ -649,10 +683,12 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 					this.sendMessage( ((Contact)all.get(i)).getAgentID(), message1);
 				}
 			}
+		}
 
-		if (nbAccept==0)
+		if (nbAccept==0) {
 			// aucun acceptProposal envoy� dans ce cas noAction
 			this.noActionFailure(tid);
+		}
 
 		return nbAccept;
 	}
@@ -676,14 +712,15 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 
 
 		boolean bol3=false;
-		if (!this.commencedTransaction.empty())
+		if (!this.commencedTransaction.empty()) {
 			bol3= data.TID.egale(((TransactionData) this.commencedTransaction.peek()).getTransactionID());
+		}
 
 		if (!bol3) {
 			if (bol1 || bol2) {
 
 
-				if (this.waitingTransaction.size()!=0)
+				if (this.waitingTransaction.size()!=0) {
 					if(((TransactionData)this.waitingTransaction.get(0)).TID.getMyValue()==data.TID.getMyValue())
 
 					{
@@ -692,6 +729,7 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 
 
 					}
+				}
 				/* */ System.out.println("ON EST LIBRE TRAITER LA REQUETE...."+	this.getId().toString()+ "..."+ data.TID.getMyValue());
 
 
@@ -729,8 +767,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 				}
 				//System.out.println("Puff toto 6"); System.out.flush();
 			}
-		} else
+		} else {
 			/* */  System.out.println("DUPLICATA DE MESSAGE......");
+		}
 
 		/* */ System.out.println("SORTIE START TRANSACTION "+this.getId().toString()+data.getTransactionID().getMyValue());
 	}
@@ -755,8 +794,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 
 		/* */ System.out.println("CONTENU DE COMMENCED TRANS  TAILLE "+ this.commencedTransaction.size()+ "..."+this.getId().toString());
 
-		for(int i=0; i<this.commencedTransaction.size();i++)
+		for(int i=0; i<this.commencedTransaction.size();i++) {
 			/* */ System.out.println(((TransactionData) this.commencedTransaction.get(i)).TID.getMyValue());
+		}
 
 	}
 
@@ -764,8 +804,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 
 		/* */ System.out.println("CONTENU DE COMMENCED PLAN  TAILLE "+ this.commencedPanification.size()+ "..."+this.getId().toString());
 
-		for(int i=0; i<this.commencedPanification.size();i++)
+		for(int i=0; i<this.commencedPanification.size();i++) {
 			/* */ System.out.println(((TransactionID) this.commencedPanification.get(i)).getMyValue());
+		}
 
 	}
 
@@ -794,8 +835,11 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 			i++;
 		}
 
-		if(found) return i-1;
-		else return -1;
+		if(found) {
+			return i-1;
+		} else {
+			return -1;
+		}
 
 	}
 
@@ -825,8 +869,9 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 		}catch (final Exception e ) {
 		}
 
-		while (this.hasMail())
+		while (this.hasMail()) {
 			this.readMailBox();
+		}
 
 
 
@@ -851,12 +896,13 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 				/* */ System.out.println("Meeting to REMOVE..."+((Meeting)this.meetingToBePlanned.get(0)).getStartLimit());
 				final Meeting met= (Meeting) this.meetingToBePlanned.get(0);
 
-				for (int i=0; i<this.meetingToBePlanned.size();i++)
+				for (int i=0; i<this.meetingToBePlanned.size();i++) {
 					if (met.getStartLimit()== ((Meeting)this.meetingToBePlanned.get(i)).getStartLimit())
 					{
 						/* */ System.out.println("SUPPRESSION MEETING ..."+met.getStartLimit());
 						this.meetingToBePlanned.remove(i);
 					}
+				}
 
 
 			}
@@ -865,7 +911,7 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 		}
 
 		// Check if suspended job must be restarted
-		if (this.actionToDo.size()>0)
+		if (this.actionToDo.size()>0) {
 			//System.out.println("Action to do in reserve");
 			for (int i=0;i<this.actionToDo.size();i++)
 			{
@@ -875,25 +921,28 @@ public class AgendaAgent0 extends BasicCommunicatingAgent implements java.awt.ev
 					//System.out.println("action "+act+" should do "+act.getAction());
 					switch (act.getAction())
 					{
-						case PlannedAction.planMeetingPart2 :
-							/* */System.out.println(" Planned action part2");
-							if (!this.commencedTransaction.empty())
-							{
-								if (act.getStartMeeting()== ((TransactionData) this.commencedTransaction.peek()).TID.getMyValue()) {
+					case PlannedAction.planMeetingPart2 :
+						/* */System.out.println(" Planned action part2");
+						if (!this.commencedTransaction.empty())
+						{
+							if (act.getStartMeeting()== ((TransactionData) this.commencedTransaction.peek()).TID.getMyValue()) {
 
-									this.planMeetingPart2();
+								this.planMeetingPart2();
 
-									break;
-								}
-								else /* */ System.out.println("DUPLICAT 1 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting()+"..."+((TransactionData) this.commencedTransaction.peek()).TID.getMyValue());
-							} else
-								/* */ System.out.println("DUPLICAT 2 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting());
+								break;
+							} else {
+								/* */ System.out.println("DUPLICAT 1 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting()+"..."+((TransactionData) this.commencedTransaction.peek()).TID.getMyValue());
+							}
+						} else {
+							/* */ System.out.println("DUPLICAT 2 AU NIVEAU DU ADD ACTION PLAN...."+ act.getStartMeeting());
+						}
 					}
 					this.actionToDo.remove(i);
 
 					i--;
 				}
 			}
+		}
 	}
 
 

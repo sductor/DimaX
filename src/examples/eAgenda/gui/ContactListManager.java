@@ -32,8 +32,9 @@ public class ContactListManager extends JPanel implements ActionListener {
 		this.choiceList.setMultipleMode(true);
 		this.refList = new List();
 		this.refList.setMultipleMode(true);
-		for(final Iterator it = this.myReferenceList.getAllPeople();it.hasNext();)
+		for(final Iterator it = this.myReferenceList.getAllPeople();it.hasNext();) {
 			this.refList.add(((People)it.next()).getName());
+		}
 
 		this.add(this.choiceList, BorderLayout.WEST);
 		this.add(this.refList, BorderLayout.EAST);
@@ -66,14 +67,16 @@ public class ContactListManager extends JPanel implements ActionListener {
 		if (command.equals("add"))
 		{
 			final String[] selection = this.refList.getSelectedItems();
-			for (final String element : selection)
+			for (final String element : selection) {
 				this.choiceList.add(element);
+			}
 		}
 		else if (command.equals("del"))
 		{
 			final String[] selection = this.choiceList.getSelectedItems();
-			for (final String element : selection)
+			for (final String element : selection) {
 				this.choiceList.remove(element);
+			}
 		}
 	}
 	public ContactList getSelectedPeople() {
@@ -84,9 +87,11 @@ public class ContactListManager extends JPanel implements ActionListener {
 		for(final Iterator it = this.myReferenceList.getAllPeople();it.hasNext();) {
 			final People possiblySelected = (People)it.next();
 			final String possibleName = possiblySelected.getName();
-			for (final String element : selection)
-				if (possibleName.equals(element))
+			for (final String element : selection) {
+				if (possibleName.equals(element)) {
 					res.addPeople(possiblySelected);
+				}
+			}
 		}
 
 		return res;

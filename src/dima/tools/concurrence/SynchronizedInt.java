@@ -65,7 +65,9 @@ public class SynchronizedInt extends SynchronizedVariable implements Comparable,
 	public boolean commit(final int assumedValue, final int newValue) {
 		synchronized(this.lock_) {
 			final boolean success = assumedValue == this.value_;
-			if (success) this.value_ = newValue;
+			if (success) {
+				this.value_ = newValue;
+			}
 			return success;
 		}
 	}
@@ -111,10 +113,11 @@ public class SynchronizedInt extends SynchronizedVariable implements Comparable,
 	@Override
 	public boolean equals(final Object other) {
 		if (other != null &&
-				other instanceof SynchronizedInt)
+				other instanceof SynchronizedInt) {
 			return this.get() == ((SynchronizedInt)other).get();
-		else
+		} else {
 			return false;
+		}
 	}
 	/**
 	 * Return the current value
@@ -192,7 +195,9 @@ public class SynchronizedInt extends SynchronizedVariable implements Comparable,
 	 **/
 
 	public int swap(final SynchronizedInt other) {
-		if (other == this) return this.get();
+		if (other == this) {
+			return this.get();
+		}
 		SynchronizedInt fst = this;
 		SynchronizedInt snd = other;
 		if (System.identityHashCode(fst) > System.identityHashCode(snd)) {

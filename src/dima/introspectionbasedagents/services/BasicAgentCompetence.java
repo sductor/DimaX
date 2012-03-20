@@ -50,12 +50,12 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return this.active;
 	}
 
 	@Override
-	public void setActive(final boolean active) {
+	public void activateCompetence(final boolean active) {
 		this.active = active;
 	}
 	@Override

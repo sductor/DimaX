@@ -36,8 +36,9 @@ public class Vendeur extends SingleRoleAgent
 	{
 		final Vector buyers = new Vector(this.getAquaintances().keySet());
 
-		for(int i=0;i<buyers.size();i++)
+		for(int i=0;i<buyers.size();i++) {
 			buyers.set(i,new AgentName((String)buyers.get(i)));
+		}
 
 		return buyers;
 	}
@@ -53,7 +54,7 @@ public class Vendeur extends SingleRoleAgent
 	 * Tests wheter a proactive object is active or no ie whether the ProactiveComponent.
 	 */
 	@Override
-	public boolean isActive()
+	public boolean competenceIsActive()
 	{
 		return !this.catalogue.isEmpty();
 	}

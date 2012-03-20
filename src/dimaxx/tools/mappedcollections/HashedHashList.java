@@ -24,15 +24,17 @@ public class HashedHashList<K, V> extends Hashtable<K, List<V>> {
 
 	public Boolean remove(final K key, final V value) {
 		final Boolean r = this.get(key).remove(value);
-		if (this.get(key).isEmpty())
+		if (this.get(key).isEmpty()) {
 			this.remove(key);
+		}
 		return r;
 	}
 
 	public Boolean removeAll(final K key, final Collection<V> values) {
 		final Boolean r = this.get(key).removeAll(values);
-		if (this.get(key).isEmpty())
+		if (this.get(key).isEmpty()) {
 			this.remove(key);
+		}
 		return r;
 	}
 
@@ -42,11 +44,14 @@ public class HashedHashList<K, V> extends Hashtable<K, List<V>> {
 	 * @return
 	 */
 	public boolean containsAvalue(final V value) {
-		for (final K k : this.keySet())
-			for (final V v : this.get(k))
-				if (v.equals(value))
+		for (final K k : this.keySet()) {
+			for (final V v : this.get(k)) {
+				if (v.equals(value)) {
 					return true;
-					return false;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -56,17 +61,19 @@ public class HashedHashList<K, V> extends Hashtable<K, List<V>> {
 	 */
 	public Collection<V> getAllValues() {
 		final Collection<V> finalValues = new HashSet<V>();
-		for (final List<V> l : super.values())
+		for (final List<V> l : super.values()) {
 			finalValues.addAll(l);
-				return finalValues;
+		}
+		return finalValues;
 	}
 
 	@Override
 	public synchronized List<V> get(final Object key){
-		if (this.containsKey(key))
+		if (this.containsKey(key)) {
 			return super.get(key);
-		else
+		} else {
 			return new ArrayList<V>();
+		}
 	}
 }
 

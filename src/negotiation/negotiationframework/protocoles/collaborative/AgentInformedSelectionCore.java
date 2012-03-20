@@ -9,6 +9,7 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -20,6 +21,11 @@ Contract extends MatchingCandidature<ActionSpec>>
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
 implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9125593876913236812L;
 
 	@Override
 	public void select(
@@ -64,10 +70,11 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 					//					assert getMyAgent().Iaccept(currentState, c);
 					toAccept.add(c);
 					currentState = c.computeResultingState(currentState);
-					if (allContracts.isEmpty())
+					if (allContracts.isEmpty()) {
 						break;
-					else
+					} else {
 						c = allContracts.pop();
+					}
 				}
 			} catch (final IncompleteContractException e) {
 				throw new RuntimeException();
@@ -89,13 +96,15 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 			final Collection<InformedCandidature<Contract, ActionSpec>> rejected) {
 
 		//toute creation est accepté
-		for (final InformedCandidature<Contract, ActionSpec> c : given.getAllContracts())
-			if (c.isMatchingCreation())
-				assert (accepted.contains(c) || given.getContractsAcceptedBy(this.getIdentifier()).contains(c));
+		for (final InformedCandidature<Contract, ActionSpec> c : given.getAllContracts()) {
+			if (c.isMatchingCreation()) {
+				assert accepted.contains(c) || given.getContractsAcceptedBy(this.getIdentifier()).contains(c);
+			}
+		}
 
-				//(nécessaire) tout ce qui est rejeté est destructions
-				assert (MatchingCandidature.assertAllDestruction(rejected));
+		//(nécessaire) tout ce qui est rejeté est destructions
+		assert MatchingCandidature.assertAllDestruction(rejected);
 
-				return true;
+		return true;
 	}
 }

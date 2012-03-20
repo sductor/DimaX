@@ -110,10 +110,11 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	 */
 	@Override
 	public Boolean addToBlackList(final AgentIdentifier o, final Boolean add) {
-		if (add)
+		if (add) {
 			return this.observerBlackList.add(o);
-		else
+		} else {
 			return this.observerBlackList.remove(o);
+		}
 	}
 
 	/**
@@ -137,7 +138,9 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	 */
 	@Override
 	public <Notification extends Serializable> Boolean notify(final Notification notification, final String key) {
-		if (notification==null) System.err.print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhh"+key);
+		if (notification==null) {
+			System.err.print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhh"+key);
+		}
 		return this.notificationsToSend.add(
 				new NotificationMessage<Notification>(key, notification));
 	}
@@ -220,12 +223,13 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 			attachementSignature = {String.class })
 	public void registrationOfNewObserver(final FipaACLMessage m) {
 		final String key = (String) m.getArgs()[0];
-		if (m.getContent().equals(ObservationProtocol.Observe))
+		if (m.getContent().equals(ObservationProtocol.Observe)) {
 			this.registeredObservers.add(key, m.getSender());
-		else if (m.getContent().equals(ObservationProtocol.DontObserve))
+		} else if (m.getContent().equals(ObservationProtocol.DontObserve)) {
 			this.registeredObservers.remove(key, m.getSender());
-		else
+		} else {
 			this.getMyAgent().signalException("unappropriate message");
+		}
 
 		//				getMyAgent().logMonologue(
 		//						" : I've registered observer:'" + m.getSender() + "'\n"
@@ -237,13 +241,16 @@ public abstract class PatternObserverService extends BasicAgentCommunicatingComp
 	public void autoSendOfNotifications() {
 		final Collection<NotificationMessage<?>> sendedNotif=
 				new ArrayList<NotificationMessage<?>>();
-		if (!this.registeredObservers.isEmpty())
-			for (final NotificationMessage<?> n : this.notificationsToSend)
-				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey()))
+		if (!this.registeredObservers.isEmpty()) {
+			for (final NotificationMessage<?> n : this.notificationsToSend) {
+				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey())) {
 					if (this.iGiveObservation(obs)){
 						n.setReceiver(obs);
 						sendedNotif.add(n);
 					}
+				}
+			}
+		}
 		for (final NotificationMessage n : sendedNotif){
 			this.sendMessage(n.getReceiver(),n);
 			this.logMonologue("i've sended "+n+" to "+n.getReceiver(),PatternObserverService._logKeyForObservation);

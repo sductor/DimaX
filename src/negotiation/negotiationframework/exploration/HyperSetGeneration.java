@@ -50,16 +50,18 @@ public abstract class HyperSetGeneration<T> {
 		final Collection<Collection<T>> result = new ArrayList<Collection<T>>();
 		for (int i = 0; i < Math.pow(2, s.size()); i++){
 			final String[] number = Integer.toBinaryString(i).split("");
-//			assert number.length-1< s.size():" i : "+i+"\n number "+Arrays.asList(number)+"\n s "+s;
+			//			assert number.length-1< s.size():" i : "+i+"\n number "+Arrays.asList(number)+"\n s "+s;
 			final List<T> subset = new ArrayList<T>();
 			int pos = s.size()-1;
 			for (int j =number.length-1; j > 0; j--){
-				if (number[j].equals("1"))
+				if (number[j].equals("1")) {
 					subset.add(s.get(pos));
+				}
 				pos--;
 			}
-			if (this.toKeep(subset))
+			if (this.toKeep(subset)) {
 				result.add(subset);
+			}
 		}
 		return result;
 	}
@@ -98,9 +100,11 @@ public abstract class HyperSetGeneration<T> {
 
 	private  void filter(final Collection<Collection<T>> hyperset){
 		final Iterator<Collection<T>> r = hyperset.iterator();
-		while (r.hasNext())
-			if (!this.toKeep(r.next()))
+		while (r.hasNext()) {
+			if (!this.toKeep(r.next())) {
 				r.remove();
+			}
+		}
 
 	}
 
@@ -115,8 +119,9 @@ public abstract class HyperSetGeneration<T> {
 			int pos = s.size()-1;
 			for (int j =number.length-1; j > 0; j--){
 				System.out.println("------------------->"+j+" : "+number[j]);
-				if (number[j].equals("1"))
+				if (number[j].equals("1")) {
 					subset.add(s.get(pos));
+				}
 				pos--;
 			}
 			System.out.println("yo "+ subset);

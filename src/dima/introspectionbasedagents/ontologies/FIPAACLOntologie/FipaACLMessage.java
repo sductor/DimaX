@@ -119,10 +119,12 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 			if (this.getSender()==null){
 				LogService.write("aaaaaargh");
 				return null;
-			} else
+			} else {
 				return this.getSender();
-		} else
+			}
+		} else {
 			return this.replyto;
+		}
 	}
 
 	public String getConversationId() {
@@ -242,13 +244,15 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		return null;
 	}
 
+	//////////////////////////////////////////////://Bug apres cleanup d'éclipse////// : remettre methodhandler et faire l'import...
 	public void setAttachement(final Object[] attachement,
 			final Class<?>[] attachementSignature) {
 		if (MethodHandler.checkSignature(attachementSignature, attachement)) {
 			this.setArgs(attachement);
 			this.attachementSignature = attachementSignature;
-		} else
+		} else {
 			LogService.writeException(this, "Unappropriate attachement");
+		}
 	}
 	public void setAttachement(final Object[] attachement) {
 		final Class<?>[] attachementSignature = MethodHandler.getSignature(attachement);

@@ -23,14 +23,19 @@ public class ChannelSet {
 			final Channel oldSet[] = this.set;
 			this.setSize *= 2;
 			this.set = new Channel[this.setSize];
-			for (int i = 0; i < this.setNum; i++)
+			for (int i = 0; i < this.setNum; i++) {
 				this.set[i] = oldSet[i];
+			}
 		}
-		if (this.setNum > 0)
-			if (receiver) Assertion.test(this.set[0].getReceiver() == channel.getReceiver(),
-					"channel has different receiver node");
-			else Assertion.test(this.set[0].getSender() == channel.getSender(),
-					"channel has different sender node");
+		if (this.setNum > 0) {
+			if (receiver) {
+				Assertion.test(this.set[0].getReceiver() == channel.getReceiver(),
+						"channel has different receiver node");
+			} else {
+				Assertion.test(this.set[0].getSender() == channel.getSender(),
+						"channel has different sender node");
+			}
+		}
 		this.set[this.setNum] = channel;
 		this.setNum = this.setNum + 1;
 	}
@@ -46,9 +51,12 @@ public class ChannelSet {
 	// return channel numbered `i` in set
 	// --------------------------------------------------------------------------
 	protected Channel channel(final int i) {
-		if (i < 0)
+		if (i < 0) {
 			Assertion.fail("channel index is negative");
-		if (i >= this.setNum) Assertion.fail("channel index is too large");
+		}
+		if (i >= this.setNum) {
+			Assertion.fail("channel index is too large");
+		}
 		return this.set[i];
 	}
 
@@ -56,13 +64,15 @@ public class ChannelSet {
 	// broadcast `message` to all channels in set
 	// --------------------------------------------------------------------------
 	public void send(final Message message) {
-		for (int i = 0; i < this.setNum; i++)
+		for (int i = 0; i < this.setNum; i++) {
 			this.set[i].send(message);
+		}
 	}
 
 	public void broadcast(final Message message) {
-		for (int i = 0; i < this.setNum; i++)
+		for (int i = 0; i < this.setNum; i++) {
 			this.set[i].send(message);
+		}
 	}
 
 	//	// --------------------------------------------------------------------------
@@ -126,26 +136,32 @@ public class ChannelSet {
 		Assertion.test(this.setNum != 0, "channel set is empty");
 		boolean blocked = false;
 		for (int j = 0; j < n; j++) {
-			for (int i = 0; i < this.setNum; i++)
+			for (int i = 0; i < this.setNum; i++) {
 				if (!this.set[i].isEmpty()) {
-					if (blocked)
-						for (int k = 0; k < this.setNum; k++)
+					if (blocked) {
+						for (int k = 0; k < this.setNum; k++) {
 							this.set[k].receiveAwake();
+						}
+					}
 					return i;
 				}
+			}
 			if (!blocked) {
 				blocked = true;
-				for (int k = 0; k < this.setNum; k++)
+				for (int k = 0; k < this.setNum; k++) {
 					this.set[k].receiveBlock();
+				}
 			}
 
 			//			Scheduler scheduler = set[0].getReceiver().getNetwork().getScheduler();
 			//			scheduler.schedule();
 
 		}
-		if (blocked)
-			for (int k = 0; k < this.setNum; k++)
+		if (blocked) {
+			for (int k = 0; k < this.setNum; k++) {
 				this.set[k].receiveAwake();
+			}
+		}
 		return -1;
 	}
 }

@@ -47,13 +47,14 @@ public abstract class LoneDomain extends dima.kernel.communicatingAgent.ATNBased
 
 	public void dropLetter() {
 		final Letter l = DropHeuristic.whichToDrop(this.game);
-		if (l != null)
+		if (l != null) {
 			try {
 				// action simple bas�e sur la d�cision complexe
 				this.game.dropLetter(l);
 			} catch (final GameException e) {
 				e.printStackTrace(System.out);
 			}
+		}
 	}
 
 	/**

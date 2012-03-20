@@ -50,11 +50,13 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 		if ( this.aquaintances.containsKey(a))
 		{ad = this.aquaintances.get(a);
 		ad.receive(m);}
-		else System.err.println(
-				"From AMS : Message lost! \n"+m+" "+m.getClass()
-				+"\n sender : "+m.getSender()
-				+"\n receiver -------> "+m.getReceiver()
-				+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
+		else {
+			System.err.println(
+					"From AMS : Message lost! \n"+m+" "+m.getClass()
+					+"\n sender : "+m.getSender()
+					+"\n receiver -------> "+m.getReceiver()
+					+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -88,16 +90,18 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	}
 
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return true;
 	}
 
 	@Override
 	public void step()
 	{
-		while (this.isActive())
+		while (this.competenceIsActive())
+		{
 			this.readAllMessages();
-		//wwait(200);
+			//wwait(200);
+		}
 	}
 	public void unregister(final AgentIdentifier name) {
 		this.aquaintances.remove(name.toString());

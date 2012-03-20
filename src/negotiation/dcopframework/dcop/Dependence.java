@@ -10,8 +10,9 @@ public class Dependence {
 		final Variable parent = c.getNeighbor(child);
 		this.pid = parent.id;
 		this.values = new int[parent.domain];
-		for (int i=0;i<this.values.length;i++)
+		for (int i=0;i<this.values.length;i++) {
 			this.values[i] = -1;
+		}
 	}
 
 }

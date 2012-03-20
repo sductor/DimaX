@@ -21,14 +21,15 @@ public class LocalConstraintMsg extends Message {
 		this.id = v.id;
 		this.domain = v.domain;
 		this.data = new ArrayList<int[]>();
-		for (final Constraint c : v.neighbors)
+		for (final Constraint c : v.neighbors) {
 			this.data.add(c.encode());
-				this.ttl = t;
+		}
+		this.ttl = t;
 	}
 
 	@Override
 	public String getText() {
-		return ("LOCAL " + this.id + ";TTL " + this.ttl);
+		return "LOCAL " + this.id + ";TTL " + this.ttl;
 	}
 
 	public LocalConstraintMsg forward() {
@@ -43,8 +44,9 @@ public class LocalConstraintMsg extends Message {
 	@Override
 	public int getSize() {
 		int size = 0;
-		for (final int[] array : this.data)
+		for (final int[] array : this.data) {
 			size += array.length * 4;
-				return 13 + size;
+		}
+		return 13 + size;
 	}
 }

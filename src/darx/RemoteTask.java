@@ -354,8 +354,9 @@ public class RemoteTask implements Serializable {
 					.lookup(nserver_name);
 			// Request new leader election
 			this.leader_info = nserver.selectAnotherLeader(this.leader_info);
-			if (this.leader_info == null)
+			if (this.leader_info == null) {
 				throw new DarxException();
+			}
 			System.out.println("NS elected "
 					+ this.leader_info.textifyDarxPath());
 			// Retrieve the reference to the new leader & set it as leader

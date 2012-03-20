@@ -30,8 +30,9 @@ public class ActivityList implements Serializable {
 	/** Return an exact copy of this activity list */
 	public ActivityList cloneActivities() {
 		final ActivityList res = new ActivityList();
-		for (final Iterator it = this.act.iterator();it.hasNext(); )
+		for (final Iterator it = this.act.iterator();it.hasNext(); ) {
 			res.act.add( ((TimedActivity)it.next()).cloneTimedActivity() );
+		}
 		return res;
 	}
 	public Iterator getAllActivities() {
@@ -39,9 +40,11 @@ public class ActivityList implements Serializable {
 	}
 	public ArrayList getDayActivities(final Day day) {
 		final ArrayList res = new ArrayList();
-		for(int i=0;i<this.act.size();i++)
-			if ( ((TimedActivity)this.act.get(i)).getTimeSlot().contained(day) )
+		for(int i=0;i<this.act.size();i++) {
+			if ( ((TimedActivity)this.act.get(i)).getTimeSlot().contained(day) ) {
 				res.add(this.act.get(i));
+			}
+		}
 		return res;
 	}
 }

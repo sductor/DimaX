@@ -10,8 +10,8 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedCandidatureContractTrunk;
@@ -89,8 +89,13 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, InformedCand
 		super(
 				myId,
 				new HostState(myId,hostMaxProc, hostMaxMem,lambda,-1),
-				new InformedCandidatureRationality(new HostCore(true, socialWelfare),false),
+				new InformedCandidatureRationality(new HostCore(socialWelfare),false),
 				new ResourceInformedSelectionCore(){
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = -1578866978817500691L;
+
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {
 						return new InformedCandidature(new ReplicationCandidature(myId,id,false,false));

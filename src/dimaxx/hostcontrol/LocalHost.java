@@ -24,13 +24,14 @@ public class LocalHost {
 
 		/*Going to root of an java app*/
 		if (System.getProperty("user.dir").endsWith("/bin")
-				|| System.getProperty("user.dir").endsWith("/src"))
+				|| System.getProperty("user.dir").endsWith("/src")) {
 			return System.getProperty("user.dir").substring(0,
 					System.getProperty("user.dir").length() - 4)
 					+ "/";
-		else
+		} else {
 			/* default*/
 			return System.getProperty("user.dir") + "/";
+		}
 	}
 
 	public static String getConfDir() {

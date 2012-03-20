@@ -112,12 +112,14 @@ implements DimaComponentInterface {
 		 * Agents and hosts names
 		 */
 
-		for (int i=0; i<this.nbAgents; i++)
+		for (int i=0; i<this.nbAgents; i++) {
 			this.replicasIdentifier.add(//new AgentName("_--simu="+p.toString()+"--_DomainAgent_"+i));
 					new AgentName("#"+this.getSimulationName()+"#DomainAgent_"+i));
-		for (int i=0; i<this.nbHosts; i++)
+		}
+		for (int i=0; i<this.nbHosts; i++) {
 			this.hostsIdentifier.add(//new ResourceIdentifier("_--simu="+p.toString()+"--_HostManager_"+i,77));
 					new ResourceIdentifier("#"+this.getSimulationName()+"#HostManager_"+i,77));
+		}
 	}
 
 
@@ -143,12 +145,13 @@ implements DimaComponentInterface {
 	public String toString(){
 		String result ="****************************************************************************************************************************\n";
 		result+= "Simulation with parameters :\n";
-		for (final Field f : this.getClass().getFields())
+		for (final Field f : this.getClass().getFields()) {
 			try {
 				result += f.getName()+" : "+f.get(this)+"\n";
 			} catch (final Exception e) {
 				LogService.writeException("immmmmmmmpppppppppoooooooossssssssiiiiiiiiiibbbbllllllllllle",e);
 			}
+		}
 		result+="**************";
 		return result;
 	}

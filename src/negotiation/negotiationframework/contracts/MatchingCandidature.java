@@ -67,9 +67,9 @@ extends ContractTransition<ActionSpec> {
 				this.getSpecificationOf(this.getAgent()).getMyResourceIdentifiers().contains(this.getResource());
 		final boolean ressourceContainsAgent =
 				this.getSpecificationOf(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
-		assert  (agentContainsResource && ressourceContainsAgent) || (!agentContainsResource && !ressourceContainsAgent):
+		assert  agentContainsResource && ressourceContainsAgent || !agentContainsResource && !ressourceContainsAgent:
 			"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
-		assert (this.isMatchingCreation()?!agentContainsResource:agentContainsResource):" creation impossible : creation?"
+		assert this.isMatchingCreation()?!agentContainsResource:agentContainsResource:" creation impossible : creation?"
 		+this.isMatchingCreation()+"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
 
 		return super.isInitiallyValid();
@@ -119,18 +119,22 @@ extends ContractTransition<ActionSpec> {
 	//
 	public static <Contract extends MatchingCandidature>
 	boolean areAllCreation(final Collection<Contract> contracts){
-		for (final Contract c : contracts)
-			if (!c.isMatchingCreation())
+		for (final Contract c : contracts) {
+			if (!c.isMatchingCreation()) {
 				return false;
-				return true;
+			}
+		}
+		return true;
 	}
 
 	public static <Contract extends MatchingCandidature>
 	boolean areAllDestruction(final Collection<Contract> contracts){
-		for (final Contract c : contracts)
-			if (c.isMatchingCreation())
+		for (final Contract c : contracts) {
+			if (c.isMatchingCreation()) {
 				return false;
-				return true;
+			}
+		}
+		return true;
 	}
 
 	/*
@@ -139,16 +143,18 @@ extends ContractTransition<ActionSpec> {
 
 	public static <Contract extends MatchingCandidature>
 	boolean assertAllCreation(final Collection<Contract> contracts){
-		for (final Contract c : contracts)
+		for (final Contract c : contracts) {
 			assert c.isMatchingCreation();
-				return true;
+		}
+		return true;
 	}
 
 	public static <Contract extends MatchingCandidature>
 	boolean assertAllDestruction(final Collection<Contract> contracts){
-		for (final Contract c : contracts)
+		for (final Contract c : contracts) {
 			assert !c.isMatchingCreation();
-				return true;
+		}
+		return true;
 	}
 }
 

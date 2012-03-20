@@ -38,97 +38,113 @@ public class Graph {
 	}
 
 	public boolean checkValues() {
-		for (final Variable v : this.varMap.values())
-			if (v.value == -1)
+		for (final Variable v : this.varMap.values()) {
+			if (v.value == -1) {
 				return false;
-				return true;
+			}
+		}
+		return true;
 	}
 
 	public int evaluate() {
 		int sum = 0;
-		for (final Constraint c : this.conList)
+		for (final Constraint c : this.conList) {
 			sum += c.evaluate();
-				return sum;
+		}
+		return sum;
 	}
 
 	public int evaluate(final HashMap<Integer, Integer> sol) {
 		this.backup();
-		for (final Variable v : this.varMap.values())
+		for (final Variable v : this.varMap.values()) {
 			v.value = sol.get(v.id);
-				final int sum = this.evaluate();
-				this.recover();
-				return sum;
+		}
+		final int sum = this.evaluate();
+		this.recover();
+		return sum;
 	}
 
 	public boolean sameSolution(final HashMap<Integer, Integer> sol) {
-		if (sol == null)
+		if (sol == null) {
 			return false;
+		}
 		for (final Variable v : this.varMap.values()) {
-			if (!sol.containsKey(v.id))
+			if (!sol.containsKey(v.id)) {
 				return false;
-			if (v.value != sol.get(v.id))
+			}
+			if (v.value != sol.get(v.id)) {
 				return false;
+			}
 		}
 		return true;
 	}
 
 	public void clear() {
-		for (final Variable v : this.varMap.values())
+		for (final Variable v : this.varMap.values()) {
 			v.clear();
+		}
 	}
 
 	public void backup() {
-		for (final Variable v : this.varMap.values())
+		for (final Variable v : this.varMap.values()) {
 			v.backupValue();
+		}
 	}
 
 	public void recover() {
-		for (final Variable v : this.varMap.values())
+		for (final Variable v : this.varMap.values()) {
 			v.recoverValue();
+		}
 	}
 
 	public HashMap<Integer, Integer> branchBoundSolve() {
 		final ArrayList<Variable> list = new ArrayList<Variable>();
-		for (final Variable v : this.varMap.values())
+		for (final Variable v : this.varMap.values()) {
 			list.add(v);
-				Collections.sort(list, new Comparator<Variable>() {
-					@Override
-					public int compare(final Variable v0, final Variable v1) {
-						if (v0.getDegree() >= v1.getDegree())
-							return -1;
-						else
-							return 1;
-					}
-				});
-				final int[] queue = new int[list.size()];
-				int idx = 0;
-				for (final Variable v : list) {
-					queue[idx] = v.id;
-					idx++;
+		}
+		Collections.sort(list, new Comparator<Variable>() {
+			@Override
+			public int compare(final Variable v0, final Variable v1) {
+				if (v0.getDegree() >= v1.getDegree()) {
+					return -1;
+				} else {
+					return 1;
 				}
+			}
+		});
+		final int[] queue = new int[list.size()];
+		int idx = 0;
+		for (final Variable v : list) {
+			queue[idx] = v.id;
+			idx++;
+		}
 
-				this.backup();
+		this.backup();
 
-				for (final Variable v : this.varMap.values())
-					if (!v.fixed && v.value == -1)
-						v.value = 0;
+		for (final Variable v : this.varMap.values()) {
+			if (!v.fixed && v.value == -1) {
+				v.value = 0;
+			}
+		}
 
-						this._maxReward = this.evaluate();
-						this._bestSolution = this.getSolution();
+		this._maxReward = this.evaluate();
+		this._bestSolution = this.getSolution();
 
-						// int r = _maxReward;
+		// int r = _maxReward;
 
-						for (final Variable v : this.varMap.values())
-							if (!v.fixed)
-								v.value = -1;
+		for (final Variable v : this.varMap.values()) {
+			if (!v.fixed) {
+				v.value = -1;
+			}
+		}
 
-								this._bbEnumerate(queue, 0);
+		this._bbEnumerate(queue, 0);
 
-								// int rr = _maxReward;
+		// int rr = _maxReward;
 
-								this.recover();
+		this.recover();
 
-								return this._bestSolution;
+		return this._bestSolution;
 
 	}
 
@@ -142,14 +158,15 @@ public class Graph {
 			return;
 		}
 		final Variable v = this.varMap.get(queue[idx]);
-		if (v.fixed)
+		if (v.fixed) {
 			this._bbEnumerate(queue, idx + 1);
-		else {
+		} else {
 			for (int i = 0; i < v.domain; i++) {
 				v.value = i;
 				final int val = this.evaluate();
-				if (val <= this._maxReward)
+				if (val <= this._maxReward) {
 					continue;
+				}
 				this._bbEnumerate(queue, idx + 1);
 			}
 			v.value = -1;
@@ -161,26 +178,30 @@ public class Graph {
 		int maxId = 0;
 		boolean f = false;
 		for (final Variable v : this.varMap.values()) {
-			if (v.id > maxId)
+			if (v.id > maxId) {
 				maxId = v.id;
-			if (!v.fixed)
+			}
+			if (!v.fixed) {
 				tmp.varMap.put(v.id, new Variable(v.id, v.domain, tmp));
-			else {
+			} else {
 				f = true;
 				assert v.value != -1;
 			}
 		}
 		maxId++;
 		final Variable s = new Variable(maxId, 1, tmp);
-		if (f)
+		if (f) {
 			tmp.varMap.put(s.id, s);
-		for (final Constraint c : this.conList)
+		}
+		for (final Constraint c : this.conList) {
 			if (!c.first.fixed && !c.second.fixed) {
 				final Constraint cc = new Constraint(tmp.varMap.get(c.first.id),
 						tmp.varMap.get(c.second.id));
-				for (int i = 0; i < cc.d1; i++)
-					for (int j = 0; j < cc.d2; j++)
+				for (int i = 0; i < cc.d1; i++) {
+					for (int j = 0; j < cc.d2; j++) {
 						cc.f[i][j] = c.f[i][j];
+					}
+				}
 				tmp.conList.add(cc);
 			} else if (c.first.fixed && !c.second.fixed) {
 				Constraint cc = s.getNeighbor(c.second.id);
@@ -188,8 +209,9 @@ public class Graph {
 					cc = new Constraint(tmp.varMap.get(c.second.id), s);
 					tmp.conList.add(cc);
 				}
-				for (int i = 0; i < cc.d1; i++)
+				for (int i = 0; i < cc.d1; i++) {
 					cc.f[i][0] += c.f[c.first.value][i];
+				}
 
 			} else if (!c.first.fixed && c.second.fixed) {
 				Constraint cc = s.getNeighbor(c.first.id);
@@ -197,18 +219,22 @@ public class Graph {
 					cc = new Constraint(tmp.varMap.get(c.first.id), s);
 					tmp.conList.add(cc);
 				}
-				for (int i = 0; i < cc.d1; i++)
+				for (int i = 0; i < cc.d1; i++) {
 					cc.f[i][0] += c.f[i][c.second.value];
+				}
 			}
+		}
 		return tmp;
 	}
 
 	public int getMaxId() {
 		int max = 0;
-		for (final Variable v : this.varMap.values())
-			if (v.id > max)
+		for (final Variable v : this.varMap.values()) {
+			if (v.id > max) {
 				max = v.id;
-				return max;
+			}
+		}
+		return max;
 	}
 
 	public HashMap<Integer, Integer> DPOPSolve() {
@@ -217,14 +243,18 @@ public class Graph {
 		final Variable top = tmp.varMap.get(maxId);
 		final HashMap<Integer, Integer> sol = tmp._DPOPSolve(top);
 		final HashMap<Integer, Integer> fsol = new HashMap<Integer, Integer>();
-		for (final Integer i : sol.keySet())
-			if (this.varMap.containsKey(i))
+		for (final Integer i : sol.keySet()) {
+			if (this.varMap.containsKey(i)) {
 				fsol.put(i, sol.get(i));
-				for (final Variable v : this.varMap.values())
-					if (v.fixed)
-						fsol.put(v.id, v.value);
-						//System.out.println(this.evaluate(fsol));
-						return fsol;
+			}
+		}
+		for (final Variable v : this.varMap.values()) {
+			if (v.fixed) {
+				fsol.put(v.id, v.value);
+			}
+		}
+		//System.out.println(this.evaluate(fsol));
+		return fsol;
 	}
 
 	private HashMap<Integer, Integer> _DPOPSolve(final Variable top) {
@@ -240,13 +270,15 @@ public class Graph {
 			final DPOPTreeNode parent = (DPOPTreeNode) node.parent;
 			if (parent != null) {
 				boolean fullinfo = true;
-				for (final TreeNode n : parent.children)
+				for (final TreeNode n : parent.children) {
 					if (((DPOPTreeNode) n).mat == null) {
 						fullinfo = false;
 						break;
 					}
-				if (fullinfo)
+				}
+				if (fullinfo) {
 					queue.add(parent);
+				}
 			}
 		}
 		queue.add(root);
@@ -261,8 +293,9 @@ public class Graph {
 			}
 			node.value = node.mat.value[offset];
 			map.put(node.id, node.value);
-			for (final TreeNode nn : node.children)
+			for (final TreeNode nn : node.children) {
 				queue.add((DPOPTreeNode) nn);
+			}
 		}
 		return map;
 	}
@@ -279,8 +312,9 @@ public class Graph {
 				this.depthFirstTraverse(node, visited, leafList);
 			}
 		}
-		if (parent.children.isEmpty())
+		if (parent.children.isEmpty()) {
 			leafList.add(parent);
+		}
 	}
 
 	private void computeMatrix(final DPOPTreeNode node) {
@@ -304,57 +338,62 @@ public class Graph {
 		final HashMap<Integer, Integer> list = new HashMap<Integer, Integer>();
 		for (final Constraint c : self.neighbors) {
 			final Variable n = c.getNeighbor(self);
-			if (ancestors.contains(n.id))
+			if (ancestors.contains(n.id)) {
 				list.put(n.id, n.domain);
+			}
 		}
-		for (final RewardMatrix m : matList)
-			for (final Integer i : m.domain.keySet())
-				if (i != self.id)
+		for (final RewardMatrix m : matList) {
+			for (final Integer i : m.domain.keySet()) {
+				if (i != self.id) {
 					list.put(i, m.domain.get(i));
+				}
+			}
+		}
 
-					node.mat = new RewardMatrix(list);
+		node.mat = new RewardMatrix(list);
 
-					this.backup();
-					for (int i = 0; i < node.mat.getSize(); i++) {
-						int best = -1;
-						int bestVal = -1;
-						for (int j = 0; j < self.domain; j++) {
-							self.value = j;
-							int sum = 0;
-							for (final Constraint c : self.neighbors) {
-								final Variable n = c.getNeighbor(self);
-								if (ancestors.contains(n.id)) {
-									n.value = node.mat.getValue(i, n.id);
-									sum += c.evaluate();
-								}
-							}
-							for (final RewardMatrix m : matList) {
-								int offset = AsyncHelper.translate(node.mat, m, i);
-								assert m.contains(self.id);
-								offset += j * m.getBase(self.id);
-								sum += m.data[offset];
-							}
-
-							if (sum > best) {
-								best = sum;
-								bestVal = j;
-							}
-						}
-						node.mat.data[i] = best;
-						node.mat.value[i] = bestVal;
+		this.backup();
+		for (int i = 0; i < node.mat.getSize(); i++) {
+			int best = -1;
+			int bestVal = -1;
+			for (int j = 0; j < self.domain; j++) {
+				self.value = j;
+				int sum = 0;
+				for (final Constraint c : self.neighbors) {
+					final Variable n = c.getNeighbor(self);
+					if (ancestors.contains(n.id)) {
+						n.value = node.mat.getValue(i, n.id);
+						sum += c.evaluate();
 					}
-					this.recover();
+				}
+				for (final RewardMatrix m : matList) {
+					int offset = AsyncHelper.translate(node.mat, m, i);
+					assert m.contains(self.id);
+					offset += j * m.getBase(self.id);
+					sum += m.data[offset];
+				}
 
-					// if (node.parent == null && node.mat.data[0]>128)
-					// System.out.println("REWARD " + node.id + " " + node.reward + " "
-					// + node.mat.data[0]);
+				if (sum > best) {
+					best = sum;
+					bestVal = j;
+				}
+			}
+			node.mat.data[i] = best;
+			node.mat.value[i] = bestVal;
+		}
+		this.recover();
+
+		// if (node.parent == null && node.mat.data[0]>128)
+			// System.out.println("REWARD " + node.id + " " + node.reward + " "
+		// + node.mat.data[0]);
 	}
 
 	public HashMap<Integer, Integer> getSolution() {
 		final HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
-		for (final Variable v : this.varMap.values())
+		for (final Variable v : this.varMap.values()) {
 			map.put(v.id, v.value);
-				return map;
+		}
+		return map;
 	}
 
 	public Graph(final String inFilename) {
@@ -367,7 +406,7 @@ public class Graph {
 			this.conList = new Vector<Constraint>();
 			String line;
 			Constraint c = null;
-			while ((line = reader.readLine()) != null)
+			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("VARIABLE")) {
 					final Variable v = new Variable(line, this);
 					this.varMap.put(v.id, v);
@@ -389,8 +428,10 @@ public class Graph {
 					final int v = Integer.parseInt(ss[3]);
 					c.f[x][y] = v;
 				}
-			for (final Constraint cc : this.conList)
+			}
+			for (final Constraint cc : this.conList) {
 				cc.cache();
+			}
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (final IOException e) {

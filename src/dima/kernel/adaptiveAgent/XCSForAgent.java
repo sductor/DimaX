@@ -92,17 +92,21 @@ public class XCSForAgent extends dima.tools.XCS.XCS {
 			// explore = (explore+1)%2;
 			final java.util.Random hasard=new java.util.Random();
 			final int exp=hasard.nextInt(10);
-			if (exp>5) explore =0;
-			else explore = 1;}
+			if (exp>5) {
+				explore =0;
+			} else {
+				explore = 1;
+			}}
 
 
 		final int exploreTrialC=1;
 
 		final String state = this.env.resetState();
-		if(explore==1)
+		if(explore==1) {
 			exploreStepCounter=this.doOneMultiStepProblemExplore(state, exploreStepCounter);
-		else
+		} else {
 			this.doOneMultiStepProblemExploit(state, stepsToFood, sysError,exploreTrialC, exploreStepCounter);
+		}
 
 	}
 	/**

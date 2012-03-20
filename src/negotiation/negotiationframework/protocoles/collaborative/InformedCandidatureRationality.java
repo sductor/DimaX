@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
@@ -37,33 +38,23 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 	 * Delegated methods
 	 */
 
-
-	@Override
-	public boolean IWantToNegotiate(final PersonalState s) {
-		return this.referenceRationality.IWantToNegotiate(s);
-	}
-
-	/*
-	 * 
-	 */
-
 	@Override
 	public ActionSpec getMySpecif(final PersonalState s,
 			final InformedCandidature<Contract, ActionSpec> c) {
 		return this.referenceRationality.getMySpecif(s, c.getCandidature());
 	}
 
-//	public ActionSpec getMySimpleSpecif(final PersonalState s, final Contract c) {
-//		return this.referenceRationality.getMySpecif(s, c);
-//	}
+	//	public ActionSpec getMySimpleSpecif(final PersonalState s, final Contract c) {
+	//		return this.referenceRationality.getMySpecif(s, c);
+	//	}
 
 
 	@Override
 	public Double evaluatePreference(
-			Collection<InformedCandidature<Contract, ActionSpec>> cs) {
+			final Collection<InformedCandidature<Contract, ActionSpec>> cs) {
 		return this.referenceRationality.evaluatePreference(InformedCandidature.toCandidatures(cs));
 	}
-	
+
 	@Override
 	public void execute(final Collection<InformedCandidature<Contract, ActionSpec>> contracts) {
 		this.referenceRationality.execute(InformedCandidature.toCandidatures(contracts));
@@ -76,24 +67,28 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 		if (this.optimiseWithBest){//optimisation informé (pour les agents)
 			final Collection<Contract> consequentC1 = new ArrayList<Contract>();
 			final Collection<Contract> consequentC2 = new ArrayList<Contract>();
-			for (final InformedCandidature<Contract, ActionSpec> c : c1)
+			for (final InformedCandidature<Contract, ActionSpec> c : c1) {
 				consequentC1.addAll(c.getBestPossible(
 						this.referenceRationality.getMyAgent().
 						getMyAllocationPreferenceComparator()));
-					for (final InformedCandidature<Contract, ActionSpec> c : c2)
-						consequentC2.addAll(c.getBestPossible(
-								this.referenceRationality.getMyAgent().
-								getMyAllocationPreferenceComparator()));
-							return this.referenceRationality.getAllocationPreference(s,consequentC1,consequentC2);
+			}
+			for (final InformedCandidature<Contract, ActionSpec> c : c2) {
+				consequentC2.addAll(c.getBestPossible(
+						this.referenceRationality.getMyAgent().
+						getMyAllocationPreferenceComparator()));
+			}
+			return this.referenceRationality.getAllocationPreference(s,consequentC1,consequentC2);
 
 		} else {//optimisation réel
 			final Collection<Contract> consequentC1 = new ArrayList<Contract>();
 			final Collection<Contract> consequentC2 = new ArrayList<Contract>();
-			for (final InformedCandidature<Contract, ActionSpec> c : c1)
+			for (final InformedCandidature<Contract, ActionSpec> c : c1) {
 				consequentC1.add(c.getCandidature());
-					for (final InformedCandidature<Contract, ActionSpec> c : c2)
-						consequentC2.add(c.getCandidature());
-							return this.referenceRationality.getAllocationPreference(s,consequentC1,consequentC2);
+			}
+			for (final InformedCandidature<Contract, ActionSpec> c : c2) {
+				consequentC2.add(c.getCandidature());
+			}
+			return this.referenceRationality.getAllocationPreference(s,consequentC1,consequentC2);
 		}
 	}
 
@@ -111,8 +106,8 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 	 */
 
 	@Override
-	public boolean isActive() {
-		return this.referenceRationality.isActive();
+	public boolean competenceIsActive() {
+		return this.referenceRationality.competenceIsActive();
 	}
 
 
@@ -140,7 +135,7 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 	}
 
 	@Override
-	public void setActive(final boolean active) {
-		this.referenceRationality.setActive(active);
+	public void activateCompetence(final boolean active) {
+		this.referenceRationality.activateCompetence(active);
 	}
 }

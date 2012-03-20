@@ -191,7 +191,9 @@ public class SynchronizedVariable implements Executor {
 
 	@Override
 	public void execute(final Runnable command) throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		synchronized (this.lock_) {
 			command.run();
 		}

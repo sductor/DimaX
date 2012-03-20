@@ -15,10 +15,11 @@ public class Letter extends AbstractService {
 
 
 	public Letter(final char c) throws Exception {
-		if (c>= 'A' && c <= 'Z')
+		if (c>= 'A' && c <= 'Z') {
 			this.letter = c;
-		else
+		} else {
 			throw new Exception("Must be a letter");
+		}
 	}
 	/**
 	 * Insert the method's description here.

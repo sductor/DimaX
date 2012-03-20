@@ -41,8 +41,9 @@ public class MonitoredTask<Component extends ProactiveComponentInterface & Ident
 
 		this.monitorClasses.addAll(Arrays.asList(monitors));
 
-		for (final Class<? extends AgentMonitor> m : monitors)
+		for (final Class<? extends AgentMonitor> m : monitors) {
 			this.recoverMonitor(m);
+		}
 	}
 
 	@Override

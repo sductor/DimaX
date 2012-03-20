@@ -29,8 +29,9 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 	 */
 
 	public static Double getReliability(final Double dispo, final Double criti) {
-		if (dispo / criti > 10)
+		if (dispo / criti > 10) {
 			System.out.println("aargh " + dispo + " " + criti);
+		}
 		return dispo / criti;
 	}
 
@@ -43,9 +44,11 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 	protected Collection<ReplicationSpecification> cleanStates(
 			final Collection<ReplicationSpecification> res) {
 		final Iterator<ReplicationSpecification> itState = res.iterator();
-		while (itState.hasNext())
-			if (!(itState.next() instanceof ReplicaState))
+		while (itState.hasNext()) {
+			if (!(itState.next() instanceof ReplicaState)) {
 				itState.remove();
+			}
+		}
 		return res;
 	}
 
@@ -71,7 +74,7 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 		return new UtilitaristEvaluator<ReplicationSpecification>() {
 			@Override
 			public Double getUtilityValue(final ReplicationSpecification o) {
-				assert (o instanceof ReplicaState);
+				assert o instanceof ReplicaState;
 
 				final ReplicaState s = (ReplicaState) o;
 				return s.getMyReliability();

@@ -38,13 +38,16 @@ public abstract class BasicAlgorithm extends Program {
 			nn.fixed = true;
 			this.view.varMap.put(nn.id, nn);
 			Constraint cc;
-			if (v == c.first)
+			if (v == c.first) {
 				cc = new Constraint(this.self, nn);
-			else
+			} else {
 				cc = new Constraint(nn, this.self);
-			for (int i = 0; i < cc.d1; i++)
-				for (int j = 0; j < cc.d2; j++)
+			}
+			for (int i = 0; i < cc.d1; i++) {
+				for (int j = 0; j < cc.d2; j++) {
 					cc.f[i][j] = c.f[i][j];
+				}
+			}
 			cc.cache();
 			this.view.conList.add(cc);
 		}

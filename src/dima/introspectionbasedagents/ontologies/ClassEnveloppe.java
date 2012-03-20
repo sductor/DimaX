@@ -20,12 +20,13 @@ public class ClassEnveloppe implements Envelope {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (o == this)
+		if (o == this) {
 			return true;
-		else if (o instanceof ClassEnveloppe)
+		} else if (o instanceof ClassEnveloppe) {
 			return this.messageClass.equals(((ClassEnveloppe) o).messageClass);
-		else
+		} else {
 			return false;
+		}
 	}
 
 	@Override

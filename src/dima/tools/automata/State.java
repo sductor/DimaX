@@ -51,9 +51,13 @@ public class State extends AutomataObject implements Serializable{
 		final java.util.Vector tlv = this.getTransitionList();
 		for (int i=0; i< tlv.size(); i++) {
 			t = (Transition)tlv.elementAt(i);
-			if (t.isSatisfied(context)) listeOK.addElement(t);
+			if (t.isSatisfied(context)) {
+				listeOK.addElement(t);
+			}
 		}
-		if  (listeOK.isEmpty()) return this;
+		if  (listeOK.isEmpty()) {
+			return this;
+		}
 		t = (Transition)listeOK.elementAt((int)(Math.random()*listeOK.size()));
 		t.performAction(context);
 		return t.getTargetState();
@@ -145,14 +149,15 @@ public class State extends AutomataObject implements Serializable{
 			t = (Transition2)tlv.elementAt(i);
 			// System.out.println("ENTRER DANS SELECT TRANSITION ....");
 			// System.out.println("Valeur de t"+t.toString());
-			if (t.isSatisfied(cxt))
+			if (t.isSatisfied(cxt)) {
 				// System.out.println("ENTRER DANS TRANSITION SELECTIONNEE....");
 				listeOK.addElement(t);
+			}
 		}
 
-		if  (listeOK.isEmpty())
+		if  (listeOK.isEmpty()) {
 			return this;
-		else
+		} else
 		{
 			t = (Transition2)listeOK.elementAt((int)(Math.random()*listeOK.size()));
 			// System.out.println("ENTRER POUR PERFORM ACTION .....");

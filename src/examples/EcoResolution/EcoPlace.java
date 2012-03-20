@@ -43,14 +43,18 @@ class EcoPlace extends EcoAgent {
 		final int ilc = this.owner.indexFirstRowColumnAllowed;
 
 		final Vector adjPlaces = new Vector();
-		if ( this.row > ilc)
+		if ( this.row > ilc) {
 			adjPlaces.addElement( this.owner.places[this.row-1][this.col]);
-		if ( this.row + 1 < this.owner.size)
+		}
+		if ( this.row + 1 < this.owner.size) {
 			adjPlaces.addElement( this.owner.places[this.row+1][this.col]);
-		if ( this.col > ilc)
+		}
+		if ( this.col > ilc) {
 			adjPlaces.addElement( this.owner.places[this.row][this.col-1]);
-		if ( this.col + 1 < this.owner.size)
+		}
+		if ( this.col + 1 < this.owner.size) {
 			adjPlaces.addElement( this.owner.places[this.row][this.col+1]);
+		}
 		return adjPlaces;
 	}
 	@Override
@@ -79,10 +83,11 @@ class EcoPlace extends EcoAgent {
 	public  EcoAgent findSatisfactionPlace() {return this;}
 	public boolean isAdjacentTo( final EcoPlace ec) {//renvoie true si ec est adjacent a "this"
 		if ( this.row == ec.row && Math.abs( this.col - ec.col) == 1 ||
-				this.col == ec.col && Math.abs( this.row - ec.row) == 1)
+				this.col == ec.col && Math.abs( this.row - ec.row) == 1) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 	@Override
 	public boolean isFree() {
@@ -109,23 +114,23 @@ class EcoPlace extends EcoAgent {
 		if ( this.tile.number != 0) {
 			Color c;
 			switch( this.tile.state) {
-				case EcoAgent. TRY_SATISFACTION :
-					c = Color.blue;
-					break;
-				case EcoAgent.FORBIDDEN :
-					c = Color.darkGray;
-					break;
-				case EcoAgent.SATISFIED :
-					c = Color.gray;
-					break;
-				case EcoAgent.AGGRESSION_SATISFACTION :
-					c = Color.red;
-					break;
-				case EcoAgent.AGGRESSION_ESCAPE :
-					c = new Color( 153, 0, 153);
-					break;
-				default :
-					c = Color.gray;
+			case EcoAgent. TRY_SATISFACTION :
+				c = Color.blue;
+				break;
+			case EcoAgent.FORBIDDEN :
+				c = Color.darkGray;
+				break;
+			case EcoAgent.SATISFIED :
+				c = Color.gray;
+				break;
+			case EcoAgent.AGGRESSION_SATISFACTION :
+				c = Color.red;
+				break;
+			case EcoAgent.AGGRESSION_ESCAPE :
+				c = new Color( 153, 0, 153);
+				break;
+			default :
+				c = Color.gray;
 			}
 			g.setColor( c );
 			g.fill3DRect( this.posX, this.posY, this.size, this.size, true);//representation graphique d'un EcoPalets :

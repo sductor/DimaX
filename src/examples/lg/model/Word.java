@@ -17,10 +17,11 @@ public class Word {
 
 	public Word(final String str) throws Exception {
 		this.index = -1;
-		if (Word.qualifies(str))
+		if (Word.qualifies(str)) {
 			this.word = str;
-		else
+		} else {
 			throw new Exception("Word contains exotic characters!");
+		}
 
 	}
 
@@ -53,11 +54,12 @@ public class Word {
 		final String end =  this.word.substring(this.index+1, this.word.length());
 		final char[] ch = end.toCharArray();
 		final Vector vec = new Vector();
-		for (final char element : ch)
+		for (final char element : ch) {
 			try {
 				vec.add(new Letter(element));
 			} catch (final Exception e) {
 			}
+		}
 		return vec;
 	}
 
@@ -66,19 +68,23 @@ public class Word {
 	public static boolean qualifies(final String str) {
 		boolean ret = true;
 		final char[] tab = str.toCharArray();
-		for (int i=0; i<tab.length; i++)
-			if (!(tab[i]>='A' && tab[i]<='Z'))
+		for (int i=0; i<tab.length; i++) {
+			if (!(tab[i]>='A' && tab[i]<='Z')) {
 				ret = false;
+			}
+		}
 		return ret;
 	}
 
 	public void addLetter(final Letter l) throws GameException {
-		if (this.isComplete())
-			throw new GameException("Word already complete!");;
-			if (this.getNeededLetter().getLetter() == l.getLetter())
-				this.index++;
-			else
-				throw new GameException("Bad letter!");
+		if (this.isComplete()) {
+			throw new GameException("Word already complete!");
+		};
+		if (this.getNeededLetter().getLetter() == l.getLetter()) {
+			this.index++;
+		} else {
+			throw new GameException("Bad letter!");
+		}
 
 	}
 

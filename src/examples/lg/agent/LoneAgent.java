@@ -19,10 +19,10 @@ public class LoneAgent extends LoneDomain {
 	private static final long serialVersionUID = -3659580667946276209L;
 
 	/**
-	 * @see Gdima.proactive.component.ProactiveComponent#isActive()
+	 * @see Gdima.proactive.component.ProactiveComponent#competenceIsActive()
 	 */
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 
 		return !this.isComplete(); // complete              (lecture)
 	}
@@ -31,10 +31,12 @@ public class LoneAgent extends LoneDomain {
 	public void step() {
 
 		// perception plus complexe + dcision simple
-		if (this.hasNeededLetter())
+		if (this.hasNeededLetter()) {
 			this.useLetter(); // useLetter()
-		else
+		}
+		else {
 			this.dropLetter(); // dropLetter()
+		}
 
 		this.display();
 

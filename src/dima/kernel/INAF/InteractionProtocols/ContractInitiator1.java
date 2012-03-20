@@ -109,8 +109,11 @@ public class ContractInitiator1 extends ContractNetInitiator
 	{
 		/* */ System.out.println("AJOUT DE PROP RECUE.....OK POUR ID CONV.."+this.getConversationId());
 		/* */ System.out.println("VALEUR DE PROPOSER...."+proposer.toString());
-		if (proposal!=null) /* */ System.out.println("VALEUR DE PROPOSAL....."+proposal.toString());
-		else /* */ System.out.println("ATTENTION UNE PROPOSITION VIDE......;");
+		if (proposal!=null) {
+			/* */ System.out.println("VALEUR DE PROPOSAL....."+proposal.toString());
+		} else {
+			/* */ System.out.println("ATTENTION UNE PROPOSITION VIDE......;");
+		}
 		this.receivedProposals.put(proposer,proposal);
 		/* */ System.out.println("RECEPTION DE PROPOSITION OK.....");
 	}

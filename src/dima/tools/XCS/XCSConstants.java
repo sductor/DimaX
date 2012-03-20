@@ -172,10 +172,11 @@ public class XCSConstants implements Serializable
 		final long lo   = XCSConstants.seed % XCSConstants._Q;
 		final long test = XCSConstants._A*lo - XCSConstants._R*hi;
 
-		if (test>0)
+		if (test>0) {
 			XCSConstants.seed = test;
-		else
+		} else {
 			XCSConstants.seed = test+XCSConstants._M;
+		}
 
 		return (double)XCSConstants.seed/XCSConstants._M;
 	}

@@ -50,15 +50,15 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		try {
 			final Collection<ActionSpec> as = this.cleanStates(ReallocationContract.getResultingAllocation(cs));
 
-			if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)){
-				
+			if (this.socialWelfare.equals(SocialChoiceFunctions.key4leximinSocialWelfare)) {
 				return SocialChoiceFunctions.getMinValue(as,  this.getComparator(), this.getUtilitaristEvaluator());
-			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare))
+			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare)) {
 				return SocialChoiceFunctions.getNashValue(as, this.getUtilitaristEvaluator());
-			else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare))
+			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare)) {
 				return SocialChoiceFunctions.getUtilitaristValue(as, this.getUtilitaristEvaluator());
-			else
+			} else {
 				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
+			}
 
 		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
@@ -84,12 +84,13 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 				final int pref = SocialChoiceFunctions.leximinWelfare(s1, s2, this.getComparator());
 				//			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
 				return pref;
-			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare))
+			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4NashSocialWelfare)) {
 				return SocialChoiceFunctions.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
-			else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare))
+			} else if (this.socialWelfare.equals(SocialChoiceFunctions.key4UtilitaristSocialWelfare)) {
 				return SocialChoiceFunctions.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
-			else
+			} else {
 				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
+			}
 		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
 		}

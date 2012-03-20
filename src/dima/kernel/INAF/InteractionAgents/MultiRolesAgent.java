@@ -118,7 +118,7 @@ public abstract class MultiRolesAgent extends InteractiveAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public abstract boolean isActive();
+	public abstract boolean competenceIsActive();
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (08/09/2003 18:43:23)

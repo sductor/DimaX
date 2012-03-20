@@ -11,10 +11,11 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.protocoles.CandidatureProposer;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
-import negotiation.negotiationframework.protocoles.status.CandidatureProposer;
 import negotiation.negotiationframework.protocoles.status.DestructionOrder;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
@@ -79,8 +80,9 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 			//				this.getMyAgent().execute(c);
 
 		} else if (this.stateStatusIs(this.getMyAgent().getMyCurrentState(),
-				AgentStateStatus.Fragile))
+				AgentStateStatus.Fragile)) {
 			candidatures.addAll(super.getNextContractsToPropose());
+		}
 
 		return candidatures;
 	}
@@ -96,6 +98,21 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 		return new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true);
 
 	}
+	
+
+	@Override
+	public boolean IWantToNegotiate(final ReplicaState s,
+			ContractTrunk<ReplicationCandidature, ReplicationSpecification, ReplicaState> contracts) {
+		((CandidatureReplicaCoreWithStatus)getMyAgent().getMyCore()).updateThreshold();
+		//		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
+		//				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
+		//						.getStatus(s).equals(AgentStateStatus.Wastefull))));
+		return super.IWantToNegotiate(s,contracts)
+				&& (((CandidatureReplicaCoreWithStatus)getMyAgent().getMyCore()).getStatus(s).equals(AgentStateStatus.Fragile) ||
+						((CandidatureReplicaCoreWithStatus)getMyAgent().getMyCore())
+						.getStatus(s).equals(AgentStateStatus.Wastefull));
+	}
+	
 }
 
 

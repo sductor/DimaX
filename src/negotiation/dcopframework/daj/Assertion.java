@@ -21,6 +21,8 @@ public class Assertion {
 	// check condition `c`; if false, print `s` to stderr and terminate
 	// --------------------------------------------------------------------------
 	public static void test(final boolean c, final String s) {
-		if (!c) Assertion.fail(s);
+		if (!c) {
+			Assertion.fail(s);
+		}
 	}
 }

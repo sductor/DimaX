@@ -14,6 +14,11 @@ State extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4843844714006615468L;
+
 	public ReverseCFPProtocol(
 			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a,
 			final ContractTrunk<Contract, ActionSpec, State> contracts)
@@ -56,11 +61,13 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 		assert initiator.isEmpty();
 		assert participant.isEmpty();
 
-		for (final Contract a : all)
-			if (a.getInitiator().equals(this.getMyAgent().getIdentifier()))
+		for (final Contract a : all) {
+			if (a.getInitiator().equals(this.getMyAgent().getIdentifier())) {
 				initiator.add(a);
-				else
-					participant.add(a);
+			} else {
+				participant.add(a);
+			}
+		}
 	}
 
 }

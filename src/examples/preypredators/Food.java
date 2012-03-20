@@ -95,10 +95,14 @@ public class Food extends Actor implements Animal {
 		final Vector env = this.world.getEnvironement(this);
 		int i;
 		final Point pt = new Point (x,y);
-		if (x == this.world.getSize()|y == this.world.getSize()) return false;
-		for (i=0;i<env.size();i++)
-			if (! pt.equals(((Animal) env.elementAt(i)).getPos()))
+		if (x == this.world.getSize()|y == this.world.getSize()) {
+			return false;
+		}
+		for (i=0;i<env.size();i++) {
+			if (! pt.equals(((Animal) env.elementAt(i)).getPos())) {
 				return true;
+			}
+		}
 		return false;
 	}
 	@Override
@@ -109,53 +113,57 @@ public class Food extends Actor implements Animal {
 		final Point res = new Point (this.pos.x,this.pos.y);
 		final Vector env = this.world.getEnvironement(this);
 		switch((int) (Math.random() * 7D)){
-			case 0:
-				if(res.y > 0)
-					res.y--;
+		case 0:
+			if(res.y > 0) {
+				res.y--;
+			}
 
-				break;
+			break;
 
-			case 1:
-				if(res.x > 0)
-					res.x--;
-				break;
+		case 1:
+			if(res.x > 0) {
+				res.x--;
+			}
+			break;
 
-			case 2:
-				if(res.x < this.world.getSize())
-					res.x++;
-				break;
+		case 2:
+			if(res.x < this.world.getSize()) {
+				res.x++;
+			}
+			break;
 
-			case 3:
-				if(res.y < this.world.getSize())
-					res.y++;
-				break;
+		case 3:
+			if(res.y < this.world.getSize()) {
+				res.y++;
+			}
+			break;
 
-			case 4:
-				if(res.x < this.world.getSize()&&res.y > 0){
-					res.x++;
-					res.y--;
-				}
-				break;
+		case 4:
+			if(res.x < this.world.getSize()&&res.y > 0){
+				res.x++;
+				res.y--;
+			}
+			break;
 
-			case 5:
-				if(res.y < this.world.getSize()&&res.x > 0){
-					res.x--;
-					res.y++;
-				}
-				break;
+		case 5:
+			if(res.y < this.world.getSize()&&res.x > 0){
+				res.x--;
+				res.y++;
+			}
+			break;
 
-			case 6:
-				if(res.x < this.world.getSize()&&this.pos.y < this.world.getSize()){
-					res.x++;
-					res.y++;
-				}
-				break;
-			case 7:
-				if(res.x > 0&&res.y > 0){
-					res.x--;
-					res.y--;
-				}
-				break;
+		case 6:
+			if(res.x < this.world.getSize()&&this.pos.y < this.world.getSize()){
+				res.x++;
+				res.y++;
+			}
+			break;
+		case 7:
+			if(res.x > 0&&res.y > 0){
+				res.x--;
+				res.y--;
+			}
+			break;
 		}
 
 
@@ -182,18 +190,24 @@ public class Food extends Actor implements Animal {
 	 * @return boolean
 	 */
 	@Override
-	public boolean isActive() {
+	public boolean competenceIsActive() {
 		return this.isAlive;
 	}
 	public boolean isEmptyPlace(final int x, final int y) {
 		final Vector env = this.world.getEnvironement(this);
 		int i;
 		final Point pt = new Point (x,y);
-		if (x == this.world.getSize()|y == this.world.getSize()) return false;
-		if (x < 0|y < 0) return false;
-		for (i=0;i<env.size();i++)
-			if (! pt.equals(((Animal) env.elementAt(i)).getPos()))
+		if (x == this.world.getSize()|y == this.world.getSize()) {
+			return false;
+		}
+		if (x < 0|y < 0) {
+			return false;
+		}
+		for (i=0;i<env.size();i++) {
+			if (! pt.equals(((Animal) env.elementAt(i)).getPos())) {
 				return true;
+			}
+		}
 		return false;
 	}
 	/**
@@ -227,13 +241,14 @@ public class Food extends Actor implements Animal {
 		}
 		this.dessinerProie(this.pos.x,this.pos.y,Color.lightGray);
 		//regarde si predateur sur la meme case
-		for(int i=0; i<env.size() ; i++)
+		for(int i=0; i<env.size() ; i++) {
 			if(this.getPos().equals(((Animal)env.elementAt(i)).getPos()) && env.elementAt(i) instanceof Predator){
 				this.isAlive = false;
 				((Predator) env.elementAt(i)).addEnergy(this.energy);
 				System.out.println("Food eated at: "+this.pos.x+" "+this.pos.y);
 				return;
 			}
+		}
 		//Deplacement loin des mchants ...
 		//On calcul le barycentre des mchants
 		for (int i=0; i<env.size(); i++){
@@ -264,15 +279,23 @@ public class Food extends Actor implements Animal {
 				this.pos.x ++;
 				this.pos.y ++;
 			}
-			if (this.getEmptyPlace(this.pos.x+1,this.pos.y)) this.pos.x ++;
+			if (this.getEmptyPlace(this.pos.x+1,this.pos.y)) {
+				this.pos.x ++;
+			}
 
 
-			if (this.getEmptyPlace(this.pos.x,this.pos.y+1)) this.pos.y ++;
+			if (this.getEmptyPlace(this.pos.x,this.pos.y+1)) {
+				this.pos.y ++;
+			}
 
-			if (this.getEmptyPlace(this.pos.x-1,this.pos.y)) this.pos.x --;
+			if (this.getEmptyPlace(this.pos.x-1,this.pos.y)) {
+				this.pos.x --;
+			}
 
 
-			if (this.getEmptyPlace(this.pos.x,this.pos.y-1)) this.pos.y --;
+			if (this.getEmptyPlace(this.pos.x,this.pos.y-1)) {
+				this.pos.y --;
+			}
 
 			if (this.getEmptyPlace(this.pos.x-1,this.pos.y-1)){
 				this.pos.x --;
@@ -291,18 +314,30 @@ public class Food extends Actor implements Animal {
 
 		if (dirX > 0){
 			this.pos.x --;
-			if (dirY > 0) this.pos.y --;
-			if (dirY < 0&&this.pos.y < this.world.getSize()) this.pos.y ++;
+			if (dirY > 0) {
+				this.pos.y --;
+			}
+			if (dirY < 0&&this.pos.y < this.world.getSize()) {
+				this.pos.y ++;
+			}
 		}
 
 		if (dirX < 0&&this.pos.x < this.world.getSize()) {
 			this.pos.x ++;
-			if (dirY > 0) this.pos.y --;
-			if (dirY < 0&&this.pos.y < this.world.getSize()) this.pos.y ++;
+			if (dirY > 0) {
+				this.pos.y --;
+			}
+			if (dirY < 0&&this.pos.y < this.world.getSize()) {
+				this.pos.y ++;
+			}
 		}
 		if (dirX == 0){
-			if (dirY > 0) this.pos.y --;
-			if (dirY < 0&&this.pos.y < this.world.getSize())  this.pos.y ++;
+			if (dirY > 0) {
+				this.pos.y --;
+			}
+			if (dirY < 0&&this.pos.y < this.world.getSize()) {
+				this.pos.y ++;
+			}
 		}
 
 

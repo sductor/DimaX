@@ -60,20 +60,21 @@ public class EvaluationStrategyWithConstraints extends EvaluationStrategy
 		{
 			final AbstractService proposal = (AbstractService) e.nextElement();
 
-			if (!this.satisfyConstraints(proposal))
+			if (!this.satisfyConstraints(proposal)) {
 				this.proposals.remove(proposal);
+			}
 		}
 
 		switch (this.proposals.size())
 		{
-			case 0 :
-				return null;
+		case 0 :
+			return null;
 
-			case 1 :
-				return this.proposals.get(0);
+		case 1 :
+			return this.proposals.get(0);
 
-			default : //choisir une proposition au hasard parmi l'ensemble des propositions valid�es
-				return this.proposals.get((int) Math.abs(Math.random() * this.proposals.size()));
+		default : //choisir une proposition au hasard parmi l'ensemble des propositions valid�es
+			return this.proposals.get((int) Math.abs(Math.random() * this.proposals.size()));
 		}
 	}
 	/**
@@ -95,9 +96,11 @@ public class EvaluationStrategyWithConstraints extends EvaluationStrategy
 	{
 		final Enumeration e = this.getConstraints().elements();
 
-		while (e.hasMoreElements())
-			if (!((Constraint)e.nextElement()).isSatisfied(proposer))
+		while (e.hasMoreElements()) {
+			if (!((Constraint)e.nextElement()).isSatisfied(proposer)) {
 				return false;
+			}
+		}
 		return true;
 	}
 	/**
@@ -110,9 +113,11 @@ public class EvaluationStrategyWithConstraints extends EvaluationStrategy
 	{
 		final Enumeration e = this.getConstraints().elements();
 
-		while (e.hasMoreElements())
-			if (!((Constraint) e.nextElement()).isSatisfied(service))
+		while (e.hasMoreElements()) {
+			if (!((Constraint) e.nextElement()).isSatisfied(service)) {
 				return false;
+			}
+		}
 		return true;
 	}
 	/**

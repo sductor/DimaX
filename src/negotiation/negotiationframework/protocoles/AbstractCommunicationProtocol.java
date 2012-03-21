@@ -24,6 +24,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
@@ -132,9 +133,6 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 * Initiator
 	 */
 
-
-
-
 	// @role(NegotiationInitiatorRole.class)
 	@StepComposant(ticker = ReplicationExperimentationProtocol._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
@@ -147,10 +145,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 						.getNextContractsToPropose();
 				for (final Contract c : cs){
 					this.logMonologue("**************> I propose "+c,AbstractCommunicationProtocol.log_negotiationStep);
-
+										
 					this.sendMessage(
 							c.getNotInitiatingParticipants(),
-							new SimpleContractProposal(Performative.Propose, c));
+							new SimpleContractProposal(Performative.Propose, c, (Collection<Information>) this.getMyAgent().getMyResources()));
 
 					this.contracts.addContract(c);
 				}
@@ -337,6 +335,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.logMonologue("I've received proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);
 		delta.getMyContract().setSpecification(this.getMyAgent().getMySpecif(delta.getMyContract()));
 		this.contracts.addContract(contract);
+//		for (Information i : delta.attachedInfos)
+//			getMyAgent().getMyInformation().add(i);
 	}
 	//Updating contract spec
 	//		for (final AgentIdentifier id : contract.getAllParticipants())
@@ -537,14 +537,16 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		private static final long serialVersionUID = 7442568804092112906L;
 
 		final Contract myContract;
+//		final Collection<Information> attachedInfos;
 
 		public SimpleContractProposal(final Performative performative,
-				final Contract myContract) {
+				final Contract myContract,Collection<Information> attachedInfos) {
 			super(performative, AbstractCommunicationProtocol.class);
 			assert myContract != null;
 			myContract.setSpecification(AbstractCommunicationProtocol.this.getMyAgent().getMySpecif(myContract));
 			// this.myContract = (Contract) myContract.clone();
 			this.myContract = myContract;
+//			this.attachedInfos=attachedInfos;
 		}
 
 		public Contract getMyContract() {

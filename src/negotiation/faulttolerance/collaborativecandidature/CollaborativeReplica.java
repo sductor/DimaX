@@ -21,7 +21,7 @@ import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.protocoles.collaborative.AgentInformedSelectionCore;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
-import negotiation.negotiationframework.rationality.CollaborativeCore;
+import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -108,7 +108,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedC
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, null,
-				new CollaborativeCore(
+				new AltruistRationalCore(
 						new ReplicationSocialOptimisation(socialWelfare),
 						new InformedCandidatureRationality(new ReplicaCore(),true)),
 						new AgentInformedSelectionCore(),

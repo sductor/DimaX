@@ -1,9 +1,9 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.dcop.Variable;
 
-public class ValueMsg extends Message {
+public class ValueMsg extends DCOPMessage {
 	int id;
 	int value;
 	int ttl;
@@ -12,22 +12,22 @@ public class ValueMsg extends Message {
 		super();
 	}
 
-	public ValueMsg(final Variable v, final int t) {
+	public ValueMsg(Variable v, int t) {
 		super();
-		this.id = v.id;
-		this.value = v.value;
+		id = v.id;
+		value = v.value;
 		// if (value == -1)
 		// System.out.println("Surprise");
-		this.ttl = t;
+		ttl = t;
 	}
 
 	@Override
 	public String getText() {
-		return "ID " + this.id + ";VALUE " + this.value + ";TTL " + this.ttl;
+		return ("ID " + id + ";VALUE " + value + ";TTL " + ttl);
 	}
 
 	public ValueMsg forward() {
-		final ValueMsg msg = new ValueMsg();
+		ValueMsg msg = new ValueMsg();
 		msg.id = this.id;
 		msg.value = this.value;
 		msg.ttl = this.ttl - 1;

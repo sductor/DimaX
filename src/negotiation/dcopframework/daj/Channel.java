@@ -2,138 +2,139 @@ package negotiation.dcopframework.daj;
 
 import java.util.LinkedList;
 
+import dima.basicagentcomponents.AgentName;
+
 public class Channel implements InChannel, OutChannel {
 
-	private final Node owner;
-	private final Integer neighbor;
+	private Node owner;
+	private Integer neighbor;
 
 	// set where receiver is listening in multiple receive
 	private ChannelSet set = null;
-
+	
 	private final  boolean ownerSend;
-
-	LinkedList<Message> receivedMessages;
+	
+	LinkedList<DCOPMessage> receivedMessages;
 
 	// --------------------------------------------------------------------------
 	// new channel with sender `sr` and receiver `r` using `selector`
 	// --------------------------------------------------------------------------
-	public Channel(final Node s, final Integer r) {
-		this.owner = s;
-		this.neighbor = r;
-		this.ownerSend = true;
+	public Channel(Node s, Integer r) {
+		owner = s;
+		neighbor = r;
+		ownerSend = true;
 	}
 
 	// --------------------------------------------------------------------------
 	// new channel with sender `sr` and receiver `r` using `selector`
 	// --------------------------------------------------------------------------
-	public Channel(final Integer s, final Node r) {
-		this.owner = r;
-		this.neighbor = s;
-		this.ownerSend = false;
+	public Channel(Integer s, Node r) {
+		owner = r;
+		neighbor = s;
+		ownerSend = false;
 	}
 	//
 	// Accessors
 	//
-
+	
 
 	// --------------------------------------------------------------------------
 	// return sender node
 	// --------------------------------------------------------------------------
 	public Integer getSender() {
-		return this.ownerSend?this.owner.getID():this.neighbor;
+		return ownerSend?owner.getID():neighbor;
 	}
 
 	// --------------------------------------------------------------------------
 	// return receiver node
 	// --------------------------------------------------------------------------
 	public Integer getReceiver() {
-		return this.ownerSend?this.neighbor:this.owner.getID();
+		return ownerSend?neighbor:owner.getID();
 	}
-
+	
 	//
 	// Methods
 	//
-
+	
 	@Override
-	public void send(final Message msg) {
-		msg.setSender(this.getSender());
-		this.owner.getMyDarxNode().sendAsyncMessage(this.neighbor, msg);
-
+	public void send(DCOPMessage msg) {
+		msg.setSender(getSender());
+		owner.sendMessage(new AgentName(neighbor.toString()), msg);	
+		
 	}
 
 	@Override
-	public Message receive() {
-		return this.receivedMessages.pop();
+	public DCOPMessage receive() {
+		return receivedMessages.pop();
 	}
 
 	@Override
-	public Message receive(final int n) {
+	public DCOPMessage receive(int n) {
 		//Toujours utilisé avec 1!!!!
-		return this.receivedMessages.pop();
+		return receivedMessages.pop();
 	}
-
+		
 	//
 	// Primitive
 	//
 
-	public void addMessage(final Message msg){
-		this.receivedMessages.add(msg);
+	public void addMessage(DCOPMessage msg){
+		receivedMessages.add(msg);
 	}
-
+	
 	// --------------------------------------------------------------------------
 	// returns true iff channel is empty
 	// --------------------------------------------------------------------------
 	public boolean isEmpty() {
-		return this.receivedMessages.isEmpty();
+		return receivedMessages.isEmpty();
 	}
-
+	
 	// --------------------------------------------------------------------------
 	// signal that thread is going to be blocked on channel
 	// --------------------------------------------------------------------------
 	public void receiveBlock() {
-		//		if (visual != null) {
-		//			visual.block();
-		//			NodeVisual nodeVisual = receiver.getVisual();
-		//			nodeVisual.block();
-		//			receiver.getNetwork().getVisualizer().setText(
-		//					"Node " + nodeVisual.getLabel() + " is blocked");
-		//		}
+//		if (visual != null) {
+//			visual.block();
+//			NodeVisual nodeVisual = receiver.getVisual();
+//			nodeVisual.block();
+//			receiver.getNetwork().getVisualizer().setText(
+//					"Node " + nodeVisual.getLabel() + " is blocked");
+//		}
 	}
 
 	// --------------------------------------------------------------------------
 	// signal that thread is not blocked any more on channel
 	// --------------------------------------------------------------------------
 	public void receiveAwake() {
-		//		if (visual != null) {
-		//			if (queue.isEmpty()) visual.empty();
-		//			else visual.fill();
-		//			NodeVisual nodeVisual = receiver.getVisual();
-		//			nodeVisual.awake();
-		//			receiver.getNetwork().getVisualizer().setText(
-		//					"Node " + nodeVisual.getLabel() + " is awake");
-		//		}
+//		if (visual != null) {
+//			if (queue.isEmpty()) visual.empty();
+//			else visual.fill();
+//			NodeVisual nodeVisual = receiver.getVisual();
+//			nodeVisual.awake();
+//			receiver.getNetwork().getVisualizer().setText(
+//					"Node " + nodeVisual.getLabel() + " is awake");
+//		}
 	}
-
+	
 	// --------------------------------------------------------------------------
 	// register on channel set `s` if channel is empty
 	// return true iff this was the case
 	// --------------------------------------------------------------------------
-	public boolean registerEmpty(final ChannelSet s) {
-		if (this.isEmpty()) {
-			this.set = s;
+	public boolean registerEmpty(ChannelSet s) {
+		if (isEmpty()) {
+			set = s;
 			return true;
-		} else {
-			return false;
 		}
+		else return false;
 	}
 
 	// --------------------------------------------------------------------------
 	// signal that we do not wait for message any more
 	// --------------------------------------------------------------------------
 	public void unregister() {
-		this.set = null;
+		set = null;
 	}
-
+	
 
 }
 

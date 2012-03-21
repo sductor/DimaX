@@ -1,10 +1,10 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Variable;
 
-public class NeighborMsg extends Message {
+public class NeighborMsg extends DCOPMessage {
 	int id;
 	int ttl;
 	int[] neighbors;
@@ -13,25 +13,25 @@ public class NeighborMsg extends Message {
 		super();
 	}
 
-	public NeighborMsg(final Variable v, final int t) {
+	public NeighborMsg(Variable v, int t) {
 		super();
-		this.id = v.id;
-		this.neighbors = new int[v.neighbors.size()];
+		id = v.id;
+		neighbors = new int[v.neighbors.size()];
 		int i = 0;
-		for (final Constraint c : v.neighbors) {
-			this.neighbors[i] = c.getNeighbor(v).id;
+		for (Constraint c : v.neighbors) {
+			neighbors[i] = c.getNeighbor(v).id;
 			i++;
 		}
-		this.ttl = t;
+		ttl = t;
 	}
 
 	@Override
 	public String getText() {
-		return "NEIGHBOR " + this.id + ";TTL " + this.ttl;
+		return ("NEIGHBOR " + id + ";TTL " + ttl);
 	}
 
 	public NeighborMsg forward() {
-		final NeighborMsg msg = new NeighborMsg();
+		NeighborMsg msg = new NeighborMsg();
 		msg.id = this.id;
 		msg.ttl = this.ttl - 1;
 		msg.neighbors = this.neighbors;
@@ -40,6 +40,6 @@ public class NeighborMsg extends Message {
 
 	@Override
 	public int getSize() {
-		return 9 + this.neighbors.length * 4;
+		return 9 + neighbors.length * 4;
 	}
 }

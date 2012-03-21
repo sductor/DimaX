@@ -148,7 +148,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 										
 					this.sendMessage(
 							c.getNotInitiatingParticipants(),
-							new SimpleContractProposal(Performative.Propose, c, (Collection<Information>) this.getMyAgent().getMyResources()));
+							new SimpleContractProposal(Performative.Propose, c));//, (Collection<Information>) this.getMyAgent().getMyResources()));
 
 					this.contracts.addContract(c);
 				}
@@ -539,8 +539,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final Contract myContract;
 //		final Collection<Information> attachedInfos;
 
-		public SimpleContractProposal(final Performative performative,
-				final Contract myContract,Collection<Information> attachedInfos) {
+		public SimpleContractProposal(final Performative performative
+				,final Contract myContract
+//				,Collection<Information> attachedInfos
+				) {
 			super(performative, AbstractCommunicationProtocol.class);
 			assert myContract != null;
 			myContract.setSpecification(AbstractCommunicationProtocol.this.getMyAgent().getMySpecif(myContract));

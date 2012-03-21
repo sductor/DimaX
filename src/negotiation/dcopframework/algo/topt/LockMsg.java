@@ -1,8 +1,8 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 
-public class LockMsg extends Message {
+public class LockMsg extends DCOPMessage {
 	int gid;
 	int val;
 	int attempt;
@@ -13,17 +13,17 @@ public class LockMsg extends Message {
 		super();
 	}
 
-	public LockMsg(final int i, final int v, final int a, final TreeNode n, final boolean l) {
-		this.gid = i;
-		this.val = v;
-		this.attempt = a;
-		this.node = n;
-		this.lock = l;
+	public LockMsg(int i, int v, int a, TreeNode n, boolean l) {
+		gid = i;
+		val = v;
+		attempt = a;
+		node = n;
+		lock = l;
 	}
 
 	@Override
 	public String getText() {
-		return (this.lock ? "LOCK " : "UNLOCK ") + this.gid + "\n";
+		return (lock ? "LOCK " : "UNLOCK ") + gid + "\n";
 	}
 
 	@Override

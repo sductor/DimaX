@@ -12,14 +12,14 @@ public class OutChannelSet extends ChannelSet {
 	// --------------------------------------------------------------------------
 	// add `channel` to set
 	// --------------------------------------------------------------------------
-	public void addChannel(final OutChannel channel) {
+	public void addChannel(OutChannel channel) {
 		super.addChannel((Channel) channel, false);
 	}
 
 	// --------------------------------------------------------------------------
 	// return channel numbered `i` in set
 	// --------------------------------------------------------------------------
-	public OutChannel getChannel(final int i) {
-		return this.channel(i);
+	public OutChannel getChannel(int i) {
+		return channel(i);
 	}
 }

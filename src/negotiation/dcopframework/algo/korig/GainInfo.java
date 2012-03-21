@@ -8,19 +8,19 @@ public class GainInfo {
 	public int gain;
 	public HashMap<Integer, Integer> valMap;
 
-	public GainInfo(final int i, final int g, final HashMap<Integer, Integer> vm) {
-		this.id = i;
-		this.gain = g;
-		this.valMap = vm;
+	public GainInfo(int i, int g, HashMap<Integer, Integer> vm) {
+		id = i;
+		gain = g;
+		valMap = vm;
 	}
 
 	public int getSize() {
-		return this.valMap.size() * 8 + 8;
+		return valMap.size() * 8 + 8;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "" + this.id + ":" + this.gain;
+		return "" + id + ":" + gain;
 	}
 
 }

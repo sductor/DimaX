@@ -1,8 +1,8 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 
-public class CommitMsg extends Message {
+public class CommitMsg extends DCOPMessage {
 	int gid;
 	int attempt;
 	TreeNode node;
@@ -11,15 +11,15 @@ public class CommitMsg extends Message {
 		super();
 	}
 
-	public CommitMsg(final int i, final int a, final TreeNode n) {
-		this.gid = i;
-		this.attempt = a;
-		this.node = n;
+	public CommitMsg(int i, int a, TreeNode n) {
+		gid = i;
+		attempt = a;
+		node = n;
 	}
 
 	@Override
 	public String getText() {
-		return "COMMIT " + this.gid + "\n";
+		return ("COMMIT ") + gid + "\n";
 	}
 
 	@Override

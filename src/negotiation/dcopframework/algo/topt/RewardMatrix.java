@@ -12,49 +12,46 @@ public class RewardMatrix {
 	public int[] data;
 	public int[] value;
 
-	public RewardMatrix(final HashMap<Integer, Integer> dmap) {
-		this.map = new HashMap<Integer, Integer>();
-		this.domain = dmap;
-		this.size = 1;
-		for (final Integer i : dmap.keySet()) {
-			this.map.put(i, this.size);
-			this.size *= dmap.get(i);
+	public RewardMatrix(HashMap<Integer, Integer> dmap) {
+		map = new HashMap<Integer, Integer>();
+		domain = dmap;
+		size = 1;
+		for (Integer i : dmap.keySet()) {
+			map.put(i, size);
+			size *= dmap.get(i);
 		}
-		this.data = new int[this.size];
-		this.value = new int[this.size];
+		data = new int[size];
+		value = new int[size];
 	}
 
-	public int getBase(final int id) {
-		if (!this.map.containsKey(id)) {
+	public int getBase(int id) {
+		if (!map.containsKey(id))
 			return 0;
-		}
-		return this.map.get(id);
+		return map.get(id);
 	}
 
 	public int getSize() {
-		return this.size;
+		return size;
 	}
 
-	public boolean contains(final int id) {
-		return this.map.containsKey(id);
+	public boolean contains(int id) {
+		return map.containsKey(id);
 	}
 
-	public int getValue(final int offset, final int id) {
-		if (!this.map.containsKey(id)) {
+	public int getValue(int offset, int id) {
+		if (!map.containsKey(id))
 			return -1;
-		}
-		final int base = this.map.get(id);
-		final int tmp = offset / base;
-		return tmp % this.domain.get(id);
+		int base = map.get(id);
+		int tmp = offset / base;
+		return tmp % domain.get(id);
 	}
 
 	@Override
 	public String toString() {
 		String val = "[";
-		for (final int element : this.data) {
-			val += element + " ";
-		}
+		for (int i = 0;i<data.length;i++)
+			val += data[i] + " ";
 		val += "]";
-		return this.map.toString() + "\n" + val;
+		return map.toString() + "\n" + val;
 	}
 }

@@ -1,8 +1,8 @@
 package negotiation.dcopframework.algo.topt;
 
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 
-public class ResponseMsg extends Message {
+public class ResponseMsg extends DCOPMessage {
 	int id;
 	TreeNode node;
 	int attempt;
@@ -12,16 +12,16 @@ public class ResponseMsg extends Message {
 		super();
 	}
 
-	public ResponseMsg(final int i, final int att, final TreeNode n, final boolean a) {
-		this.id = i;
-		this.attempt = att;
-		this.node = n;
-		this.accept = a;
+	public ResponseMsg(int i, int att, TreeNode n, boolean a) {
+		id = i;
+		attempt = att;
+		node = n;
+		accept = a;
 	}
 
 	@Override
 	public String getText() {
-		return (this.accept ? "ACCEPT " : "DENY ") + this.id + "\n";
+		return (accept ? "ACCEPT " : "DENY ") + id + "\n";
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package negotiation.dcopframework.algo;
 import java.util.HashSet;
 
 import negotiation.dcopframework.daj.Channel;
-import negotiation.dcopframework.daj.Message;
+import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.daj.Program;
 import negotiation.dcopframework.dcop.Constraint;
 import negotiation.dcopframework.dcop.Helper;
@@ -15,114 +15,108 @@ public class AlgoMGM1 extends BasicAlgorithm {
 
 	HashSet<Integer> acceptSet;
 
-	public AlgoMGM1(final Variable v) {
+	public AlgoMGM1(Variable v) {
 		super(v);
-		this.bestVal = -1;
-		this.acceptSet = new HashSet<Integer>();
+		bestVal = -1;
+		acceptSet = new HashSet<Integer>();
 	}
 
 	@Override
 	protected void main() {
-		this.self.value = Helper.random.nextInt(this.self.domain);
-		this.out().broadcast(this.createValueMsg());
+		self.value = Helper.random.nextInt(self.domain);
+		out().broadcast(createValueMsg());
 		while (true) {
 
-			if (this.lock == -1 && this.bestVal != -1 && this.bestVal != this.self.value
-					&& this.getTime() > this.reLockTime) {
-				this.lock = this.self.id;
-				this.acceptSet.clear();
-				this.out().broadcast(this.createLockMsg());
+			if (lock == -1 && bestVal != -1 && bestVal != self.value
+					&& getTime() > reLockTime) {
+				lock = self.id;
+				acceptSet.clear();
+				out().broadcast(createLockMsg());
 			}
 
-			final int index = this.in().select(1);
+			int index = in().select(1);
 			if (index != -1) {
-				this.done = false;
-				final int sender = ((Channel) this.in(index)).getSender();
-				final Message msg = this.in(index).receive();
+				done = false;
+				int sender = ((Channel) in(index)).getSender();
+				DCOPMessage msg = in(index).receive();
 
 				if (msg instanceof MGM1ValueMsg) {
-					final MGM1ValueMsg vmsg = (MGM1ValueMsg) msg;
-					if (this.view.varMap.get(sender).value != vmsg.value) {
-						this.view.varMap.get(sender).value = vmsg.value;
-						this.bestVal = this.checkView();
+					MGM1ValueMsg vmsg = (MGM1ValueMsg) msg;
+					if (view.varMap.get(sender).value != vmsg.value) {
+						view.varMap.get(sender).value = vmsg.value;
+						bestVal = checkView();
 					}
 				} else if (msg instanceof MGM1LockMsg) {
-					final MGM1LockMsg lmsg = (MGM1LockMsg) msg;
+					MGM1LockMsg lmsg = (MGM1LockMsg) msg;
 					if (lmsg.lock) {
-						if (this.lock == -1) {
-							this.lock = sender;
-							this.out(index).send(this.createAcceptMsg());
-						} else {
-							this.out(index).send(this.createDenyMsg());
-						}
-					} else if (this.lock == sender) {
-						this.lock = -1;
+						if (lock == -1) {
+							lock = sender;
+							out(index).send(createAcceptMsg());
+						} else
+							out(index).send(createDenyMsg());
+					} else {
+						if (lock == sender)
+							lock = -1;
 					}
 				} else if (msg instanceof MGM1ResponseMsg) {
-					if (this.lock == this.self.id) {
-						final MGM1ResponseMsg rmsg = (MGM1ResponseMsg) msg;
-						if (rmsg.accept) {
-							this.acceptSet.add(sender);
-						} else {
-							this.lock = -1;
-							this.out().broadcast(this.createUnLockMsg());
-							this.reLockTime = this.getTime()
-									+ Helper.random.nextInt(BasicAlgorithm.reLockInterval);
+					if (lock == self.id) {
+						MGM1ResponseMsg rmsg = (MGM1ResponseMsg) msg;
+						if (rmsg.accept)
+							acceptSet.add(sender);
+						else {
+							lock = -1;
+							out().broadcast(createUnLockMsg());
+							reLockTime = getTime()
+									+ Helper.random.nextInt(reLockInterval);
 						}
-						if (this.acceptSet.size() == this.self.neighbors.size()) {
-							this.lock = -1;
-							System.out.println("" + this.self.id + ":\t"
-									+ this.self.value + " -> " + this.bestVal);
-							this.out().broadcast(this.createUnLockMsg());
-							this.self.value = this.bestVal;
-							this.out().broadcast(this.createValueMsg());
+						if (acceptSet.size() == self.neighbors.size()) {
+							lock = -1;
+							System.out.println("" + self.id + ":\t"
+									+ self.value + " -> " + bestVal);
+							out().broadcast(createUnLockMsg());
+							self.value = bestVal;
+							out().broadcast(createValueMsg());
 						}
 					}
 				}
 			} else {
-				if (this.bestVal == this.self.value) {
-					this.done = true;
-					if (this.checkStable()) {
+				if (bestVal == self.value) {
+					done = true;
+					if (checkStable())
 						break;
-					}
-				} else {
-					this.done = false;
-				}
-				this.yield();
+				} else
+					done = false;
+				yield();
 			}
 		}
 	}
 
 	protected boolean checkStable() {
-		final Program[] prog = this.node.getNetwork().getPrograms();
+		Program[] prog = this.node.getNetwork().getPrograms();
 		for (int i = 0; i < prog.length; i++) {
-			if (!(prog[i] instanceof BasicAlgorithm)) {
+			if (!(prog[i] instanceof BasicAlgorithm))
 				continue;
-			}
-			final BasicAlgorithm p = (BasicAlgorithm) prog[i];
-			if (!p.done) {
+			BasicAlgorithm p = (BasicAlgorithm) prog[i];
+			if (!p.done)
 				return false;
-			}
 		}
 		return true;
 	}
-
-
+	
+	
 	int checkView() {
 		int best = 0;
 		int val = -1;
-		for (int i = 0; i < this.self.domain; i++) {
+		for (int i = 0; i < self.domain; i++) {
 			int sum = 0;
-			for (final Constraint c : this.self.neighbors) {
-				final Variable n = c.getNeighbor(this.self);
-				if (n.value == -1) {
+			for (Constraint c : self.neighbors) {
+				Variable n = c.getNeighbor(self);
+				if (n.value == -1)
 					return -1;
-				}
-				if (this.self == c.first) {
+				if (self == c.first)
 					sum += c.f[i][n.value];
-				} else {
+				else
 					sum += c.f[n.value][i];
-				}
 			}
 			if (sum > best) {
 				best = sum;
@@ -134,12 +128,12 @@ public class AlgoMGM1 extends BasicAlgorithm {
 
 	@Override
 	public String getText() {
-		return "ID: " + this.self.id + "\nVal: " + this.self.value + "\nBest: " + this.bestVal
-				+ "\nNextLock: " + this.reLockTime;
+		return "ID: " + self.id + "\nVal: " + self.value + "\nBest: " + bestVal
+				+ "\nNextLock: " + reLockTime;
 	}
 
 	MGM1ValueMsg createValueMsg() {
-		return new MGM1ValueMsg(this.self.value);
+		return new MGM1ValueMsg(self.value);
 	}
 
 	MGM1LockMsg createLockMsg() {
@@ -156,47 +150,47 @@ public class AlgoMGM1 extends BasicAlgorithm {
 
 	MGM1ResponseMsg createDenyMsg() {
 		return new MGM1ResponseMsg(false);
-	}
+	}	
 }
 
-class MGM1ValueMsg extends Message {
+class MGM1ValueMsg extends DCOPMessage {
 	int value;
 
-	public MGM1ValueMsg(final int v) {
+	public MGM1ValueMsg(int v) {
 		super();
-		this.value = v;
+		value = v;
 	}
 
 	@Override
 	public String getText() {
-		return "VALUE " + this.value;
+		return ("VALUE " + value);
 	}
 }
 
-class MGM1LockMsg extends Message {
+class MGM1LockMsg extends DCOPMessage {
 	boolean lock;
 
-	public MGM1LockMsg(final boolean l) {
+	public MGM1LockMsg(boolean l) {
 		super();
-		this.lock = l;
+		lock = l;
 	}
 
 	@Override
 	public String getText() {
-		return this.lock ? "LOCK" : "UNLOCK";
+		return (lock ? "LOCK" : "UNLOCK");
 	}
 }
 
-class MGM1ResponseMsg extends Message {
+class MGM1ResponseMsg extends DCOPMessage {
 	boolean accept;
 
-	public MGM1ResponseMsg(final boolean a) {
+	public MGM1ResponseMsg(boolean a) {
 		super();
-		this.accept = a;
+		accept = a;
 	}
 
 	@Override
 	public String getText() {
-		return this.accept ? "ACCEPT" : "DENY";
+		return (accept ? "ACCEPT" : "DENY");
 	}
 }

@@ -99,7 +99,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	public ResourceIdentifier getMyAgentIdentifier() {
 		return (ResourceIdentifier) super.getMyAgentIdentifier();
 	}
-
+ 
 	public Double getMyCharge() {
 		return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
 				this.getCurrentProcCharge() / this.getProcChargeMax());

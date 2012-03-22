@@ -17,6 +17,29 @@ public class Channel implements InChannel, OutChannel {
 	LinkedList<DCOPMessage> receivedMessages;
 
 	// --------------------------------------------------------------------------
+	// create channel from `sender` node to `receiver` node with default selector
+	// --------------------------------------------------------------------------
+	public static void link(Node sender, Node receiver) {
+		Selector sel = receiver.getNetwork().getApplication().defaultSelector;
+		link(sender, receiver, sel);
+	}
+
+	// --------------------------------------------------------------------------
+	// create channel from `sender` node to `receiver` node using `selector`
+	// --------------------------------------------------------------------------
+	public static void link(Node sender, Node receiver, Selector sel) {
+		Network network = sender.getNetwork();
+		if (network != receiver.getNetwork())
+			Assertion.fail("nodes belong to different network");
+		Channel ch = new Channel(sender, receiver, sel);
+		sender.outChannel(ch);
+		receiver.inChannel(ch);
+		Visualizer visualizer = network.getVisualizer();
+		if (visualizer == null) return;
+		ch.visual = new ChannelVisual(ch);
+		visualizer.getScreen().add(ch.visual);
+	}
+	// --------------------------------------------------------------------------
 	// new channel with sender `sr` and receiver `r` using `selector`
 	// --------------------------------------------------------------------------
 	public Channel(Node s, Integer r) {

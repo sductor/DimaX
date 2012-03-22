@@ -9,10 +9,10 @@ import negotiation.dcopframework.daj.Node;
 import negotiation.dcopframework.dcop.Graph;
 import negotiation.dcopframework.dcop.Helper;
 
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
-import dima.introspectionbasedagents.services.library.APILauncherModule;
+import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class DCOPLaborantin extends APILauncherModule {
 

@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import dima.introspectionbasedagents.APIAgent;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.shells.APIAgent;
+
 
 import negotiation.dcopframework.algo.*;
 import negotiation.dcopframework.algo.korig.AlgoKOptOriginal;
 import negotiation.dcopframework.algo.topt.AlgoKOptAPO;
 import negotiation.dcopframework.algo.topt.AlgoTOptAPO;
+import negotiation.dcopframework.daj.Channel;
 import negotiation.dcopframework.daj.DCOPMessage;
 import negotiation.dcopframework.daj.Node;
 import negotiation.dcopframework.daj.Program;
@@ -61,8 +64,8 @@ public class DCOPApplication extends APIAgent {
 	}
 
 	public DCOPApplication(String filename, int r, int cycles, 
-			int kort, Algorithm a, boolean isWin, boolean s, int ws) {
-		super("DCOP Application");
+			int kort, Algorithm a, boolean isWin, boolean s, int ws) throws CompetenceException {
+		super("DCOP Application "+filename);
 
 		numberMessages = 0;
 		sizeofMessages = 0;
@@ -91,8 +94,8 @@ public class DCOPApplication extends APIAgent {
 		this.ws = ws;
 	}
 
-	public DCOPApplication(String filename, int cycles, int kort, Algorithm a, boolean isWin, boolean s, int ws) {
-		super();
+	public DCOPApplication(String filename, int cycles, int kort, Algorithm a, boolean isWin, boolean s, int ws) throws CompetenceException {
+		super("DCOP Application "+filename);
 
 		numberMessages = 0;
 		sizeofMessages = 0;
@@ -139,35 +142,28 @@ public class DCOPApplication extends APIAgent {
 	public int[] getWCycles() {
 		return wCycles;
 	}
-	@Override
-	public void construct() {
+
+	public void construct() throws CompetenceException {
 		int n = g.varMap.values().size();
 		double delta = 2 * Math.PI / n;
 		double angle = 0;
 		nodeMap = new HashMap<Integer, Node>();
-		Node controller = node(new Controller(this), "Simulator",
-				20 + (radius - 30), 20 + (radius - 30));
+		Node controller = new Node("Simulator",new Controller(this));
 
 		for (Variable v : g.varMap.values()) {
-			Node node = node(getAlgo(v), "" + v.id, (int) (20 + (radius - 30)
-					* (1 + Math.cos(angle))), (int) (20 + (radius - 30)
-					* (1 + Math.sin(angle))));
+			Node node = new Node("" + v.id, getAlgo(v));
 			nodeMap.put(v.id, node);
 			angle += delta;
-			link(controller, node);
+			Channel.link(controller, node);
 		}
 		for (Constraint c : g.conList) {
 			Node first = nodeMap.get(c.first.id);
 			Node second = nodeMap.get(c.second.id);
-			link(first, second);
-			link(second, first);
+			Channel.link(first, second);
+			Channel.link(second, first);
 		}
 	}
 
-	@Override
-	public void resetStatistics() {
-		// TODO Auto-generated method stub
-	}
 
 	public String getText() {
 		return "A DCOP Application";

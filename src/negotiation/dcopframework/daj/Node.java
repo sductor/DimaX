@@ -17,9 +17,10 @@ import darx.DarxTask;
 import darx.RemoteTask;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.BasicCompetentAgent;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 
 public class Node extends BasicCompetentAgent {
@@ -34,8 +35,8 @@ public class Node extends BasicCompetentAgent {
 	// --------------------------------------------------------------------------
 	// create node with `prog` to execute in network `net`
 	// --------------------------------------------------------------------------
-	public Node(String name, Program prog) {
-		super(((BasicAlgorithm) prog).getID().t);
+	public Node(String name, Program prog) throws CompetenceException {
+		super(new Integer(((BasicAlgorithm) prog).getID()).toString());
 		program = prog;
 		program.setNode(this);
 		switches = 0;

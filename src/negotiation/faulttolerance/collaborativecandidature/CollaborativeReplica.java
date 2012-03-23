@@ -3,8 +3,6 @@ package negotiation.faulttolerance.collaborativecandidature;
 import java.util.HashSet;
 import java.util.Random;
 
-import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
@@ -28,6 +26,8 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import framework.experimentation.ExperimentationResults;
+import framework.experimentation.ObservingSelfService;
 
 public class CollaborativeReplica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedCandidature<ReplicationCandidature,ReplicationSpecification>> {

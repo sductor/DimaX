@@ -9,17 +9,17 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import negotiation.experimentationframework.ExperimentationParameters;
-import negotiation.experimentationframework.ExperimentationProtocol;
-import negotiation.experimentationframework.Experimentator;
-import negotiation.experimentationframework.IfailedException;
-import negotiation.experimentationframework.Laborantin.NotEnoughMachinesException;
 import negotiation.negotiationframework.rationality.SocialChoiceFunctions;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
+import framework.experimentation.ExperimentationParameters;
+import framework.experimentation.ExperimentationProtocol;
+import framework.experimentation.Experimentator;
+import framework.experimentation.IfailedException;
+import framework.experimentation.Laborantin.NotEnoughMachinesException;
 
 public class ReplicationExperimentationProtocol extends
 ExperimentationProtocol {

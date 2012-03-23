@@ -163,7 +163,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean start(final StartActivityMessage m){
 		this.appliHasStarted=true;
 		this.creation = m.getStartDate();
-		this.logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
+//		this.logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
 		return true;
 	}
 

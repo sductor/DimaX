@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.faulttolerance.candidaturewithstatus.Host;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -27,6 +26,7 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.shells.NotReadyException;
+import framework.experimentation.ExperimentationProtocol;
 
 /**
  * Negotiation, as a protocol, provide : * the involved roles * the method to

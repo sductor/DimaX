@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import negotiation.experimentationframework.ExperimentationProtocol;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
+import framework.experimentation.ExperimentationProtocol;
 
 public class ContractIdentifier implements DimaComponentInterface {
 	private static final long serialVersionUID = -2323466527487757579L;

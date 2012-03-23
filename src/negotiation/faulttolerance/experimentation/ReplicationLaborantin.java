@@ -10,12 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.experimentationframework.ExperimentationParameters;
-import negotiation.experimentationframework.ExperimentationProtocol;
-import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.IfailedException;
-import negotiation.experimentationframework.Laborantin;
-import negotiation.experimentationframework.ObservingGlobalService;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaProposerWithStatus;
 import negotiation.faulttolerance.candidaturewithstatus.Host;
@@ -56,6 +50,12 @@ import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 import dimaxx.tools.distribution.DistributionParameters;
+import framework.experimentation.ExperimentationParameters;
+import framework.experimentation.ExperimentationProtocol;
+import framework.experimentation.ExperimentationResults;
+import framework.experimentation.IfailedException;
+import framework.experimentation.Laborantin;
+import framework.experimentation.ObservingGlobalService;
 
 public class ReplicationLaborantin extends Laborantin {
 	private static final long serialVersionUID = -8907201877042609757L;

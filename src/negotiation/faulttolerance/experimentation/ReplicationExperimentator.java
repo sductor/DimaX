@@ -2,11 +2,11 @@ package negotiation.faulttolerance.experimentation;
 
 import java.io.IOException;
 
-import negotiation.experimentationframework.Experimentator;
 
 import org.jdom.JDOMException;
 
 import dima.introspectionbasedagents.services.CompetenceException;
+import framework.experimentation.Experimentator;
 
 public class ReplicationExperimentator extends Experimentator {
 

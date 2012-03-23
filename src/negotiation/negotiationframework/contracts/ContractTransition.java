@@ -8,9 +8,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import negotiation.experimentationframework.Laborantin;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import framework.experimentation.Laborantin;
 
 public abstract class ContractTransition<
 ActionSpec extends AbstractActionSpecification> implements

@@ -2,12 +2,12 @@ package negotiation.faulttolerance.experimentation;
 
 import java.io.File;
 
-import negotiation.experimentationframework.ExperimentationParameters;
-import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.distribution.DistributionParameters;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
+import framework.experimentation.ExperimentationParameters;
+import framework.experimentation.ExperimentationProtocol;
 
 public class ReplicationExperimentationParameters extends
 ExperimentationParameters {

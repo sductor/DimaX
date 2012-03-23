@@ -1,7 +1,5 @@
 package negotiation.faulttolerance.candidaturewithstatus;
 
-import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationResultHost;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
@@ -17,6 +15,8 @@ import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
+import framework.experimentation.ExperimentationResults;
+import framework.experimentation.ObservingSelfService;
 
 public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>

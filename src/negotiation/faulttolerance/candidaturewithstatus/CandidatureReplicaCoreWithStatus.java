@@ -2,7 +2,6 @@ package negotiation.faulttolerance.candidaturewithstatus;
 
 import java.util.Collection;
 
-import negotiation.experimentationframework.ObservingStatusService;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
@@ -12,6 +11,7 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.information.OpinionService;
 import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
+import framework.experimentation.ObservingStatusService;
 
 public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private static final long serialVersionUID = -3882932472033817195L;

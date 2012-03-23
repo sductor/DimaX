@@ -2,10 +2,10 @@ package negotiation.faulttolerance.experimentation;
 
 import java.util.Date;
 
-import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
+import framework.experimentation.ExperimentationResults;
 
 public class ReplicationResultHost implements ExperimentationResults {
 

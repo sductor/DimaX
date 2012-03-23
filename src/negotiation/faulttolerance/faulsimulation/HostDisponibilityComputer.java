@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -18,6 +17,7 @@ import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.tools.distribution.PoissonLaw;
 import dimaxx.tools.distribution.WeibullLaw;
+import framework.experimentation.ExperimentationProtocol;
 
 public class HostDisponibilityComputer implements DimaComponentInterface {
 	private static final long serialVersionUID = 1444858209007788890L;

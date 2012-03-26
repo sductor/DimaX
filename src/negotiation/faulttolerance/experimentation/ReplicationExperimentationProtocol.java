@@ -13,13 +13,13 @@ import negotiation.negotiationframework.rationality.SocialChoiceFunctions;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.experimentation.ExperimentationProtocol;
+import dimaxx.experimentation.Experimentator;
+import dimaxx.experimentation.IfailedException;
+import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
 import dimaxx.server.HostIdentifier;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
-import framework.experimentation.ExperimentationParameters;
-import framework.experimentation.ExperimentationProtocol;
-import framework.experimentation.Experimentator;
-import framework.experimentation.IfailedException;
-import framework.experimentation.Laborantin.NotEnoughMachinesException;
 
 public class ReplicationExperimentationProtocol extends
 ExperimentationProtocol {
@@ -112,8 +112,8 @@ ExperimentationProtocol {
 		return new ReplicationExperimentationParameters(
 				f,
 				Experimentator.myId,
-				ExperimentationProtocol.startingNbAgents,
-				ExperimentationProtocol.startingNbHosts,
+				ReplicationExperimentationProtocol.startingNbAgents,
+				ReplicationExperimentationProtocol.startingNbHosts,
 				ReplicationExperimentationProtocol.doubleParameters.get(2),//kaccessible
 				ReplicationExperimentationProtocol.doubleParameters.get(1),//dispo mean
 				DispersionSymbolicValue.Fort,//dispo dispersion
@@ -123,10 +123,10 @@ ExperimentationProtocol {
 				DispersionSymbolicValue.Nul,//capcity dispersion
 				ReplicationExperimentationProtocol.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
-				ExperimentationProtocol.getKey4mirrorproto(),
+				ReplicationExperimentationProtocol.getKey4mirrorproto(),
 				SocialChoiceFunctions.key4UtilitaristSocialWelfare,
-				ExperimentationProtocol.getKey4greedyselect(),
-				ExperimentationProtocol.getKey4allocselect(),
+				ReplicationExperimentationProtocol.getKey4greedyselect(),
+				ReplicationExperimentationProtocol.getKey4allocselect(),
 				false,
 				ReplicationExperimentationProtocol.doubleParameters2.get(0));
 	}
@@ -261,8 +261,8 @@ ExperimentationProtocol {
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationProtocol.doubleParameters){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.nbAgents=(int)(v*ExperimentationProtocol.startingNbAgents);
-				n.nbHosts=(int)(v*ExperimentationProtocol.startingNbHosts);
+				n.nbAgents=(int)(v*ReplicationExperimentationProtocol.startingNbAgents);
+				n.nbHosts=(int)(v*ReplicationExperimentationProtocol.startingNbHosts);
 				result.add(n);
 			}
 		}
@@ -435,7 +435,7 @@ ExperimentationProtocol {
 	@Override
 	public Integer getMaxNumberOfAgentPerMachine(final HostIdentifier id) {
 		return new Integer((int) this.nbSimuPerMAchine*
-				(ExperimentationProtocol.startingNbAgents + ExperimentationProtocol.startingNbHosts)+1);
+				(ReplicationExperimentationProtocol.startingNbAgents + ReplicationExperimentationProtocol.startingNbHosts)+1);
 	}
 	//	public int getMaxNumberOfAgentPerMachine(HostIdentifier id) {
 	//		return new Integer(10);
@@ -467,6 +467,133 @@ ExperimentationProtocol {
 		return l;
 	}
 
+
+
+	/***
+	 * Constantes
+	 */
+
+	/* FAULTS
+	 *
+	 * * lambda haut => weibull bas weibull bas => eventOccur haut lambda = prob
+	 * de panne disp = 1 - lambda (useStaticDispo = true) disp = weibull
+	 * (useStaticDispo = false)
+	 *
+	 *
+	 * **
+	 *
+	 * k bas => eventOccur tot et pour tout le monde
+	 */
+
+	public static final long _host_maxFaultfrequency = 500;//10 * ReplicationExperimentationProtocol._timeToCollect;// 2*_simulationTime;//
+	public static final long _timeScale = 10 * ReplicationExperimentationProtocol._host_maxFaultfrequency;
+	public static final double _kValue = 7;
+	public static final double _lambdaRepair = 1;
+	public static final double _kRepair = .001;
+	public static final double _theta = 0;// _host_maxFaultfrequency;//0.2;
+
+	//
+	// Quantile
+	//
+
+	public static final long _reliabilityObservationFrequency = 250;//10 * ReplicationExperimentationProtocol._timeToCollect;// (long)
+	// (0.25*_contractExpirationTime);
+	public static final int firstTercile = 33;// percent
+	public static final int lastTercile = 66;// percent
+	public static final double alpha_low = 1;
+	public static final double alpha_high = 1;
+
+	//
+	// System Dynamicity
+	//
+
+	/*
+	 * Criticité
+	 */
+
+	public static final double _criticityMin = 0.1;
+	public static final double _criticityVariationProba = 20. / 100.;// 20%
+	public static final double _criticityVariationAmplitude = 30. / 100.;// 10%
+	public static final long _criticity_update_frequency = 2*ReplicationExperimentationProtocol._timeToCollect;// (long)
+
+	// public static final double _dispoMax = 0.7;
+	// public static final double _dispoVariationProba = 0./100.;
+	// public static final double _dispoVariationAmplitude = 10./100.;
+	// public static final long _dispo_update_frequency =2*_quantileInfoFrequency;
+	
+
+	//
+	// Configuration statique
+	// /////////////////////////////////
+
+	//
+	// Simulation Configuration
+	//
+
+
+	/**
+	 * 
+	 */
+
+	public static final int startingNbAgents = 10;
+	public static final int startingNbHosts = 5;
+
+	//
+	// Negotiation Tickers
+	//
+
+	public static final long _timeToCollect =50;//500;//
+	public static final long _initiatorPropositionFrequency = -1;//(long) (ExperimentationProtocol._timeToCollect*0.5);//(long)
+	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
+	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
+
+
+	/**
+	 * Clés statiques
+	 */
+
+	//Protocoles
+	public final static String key4mirrorProto = "mirror protocol";
+	private final static String key4CentralisedstatusProto = "Centralised status protocol";
+	private final static String key4statusProto = "status protocol";
+	private final static String key4multiLatProto = "multi lateral protocol";
+
+	//Selection algorithms
+	private final static String key4greedySelect = "greedy select";
+	private final static String key4rouletteWheelSelect = "roolette wheel select";
+	public final static String key4AllocSelect = "alloc select";
+
+	
+	
+	
+	
+	public static String getKey4greedyselect() {
+		return ReplicationExperimentationProtocol.key4greedySelect;
+	}
+
+	public static String getKey4roulettewheelselect() {
+		return ReplicationExperimentationProtocol.key4rouletteWheelSelect;
+	}
+
+	public static String getKey4allocselect() {
+		return ReplicationExperimentationProtocol.key4AllocSelect;
+	}
+
+	public static String getKey4mirrorproto() {
+		return ReplicationExperimentationProtocol.key4mirrorProto;
+	}
+
+	public static String getKey4centralisedstatusproto() {
+		return ReplicationExperimentationProtocol.key4CentralisedstatusProto;
+	}
+
+	public static String getKey4statusproto() {
+		return ReplicationExperimentationProtocol.key4statusProto;
+	}
+
+	public static String getKey4multilatproto() {
+		return ReplicationExperimentationProtocol.key4multiLatProto;
+	}
 }
 
 

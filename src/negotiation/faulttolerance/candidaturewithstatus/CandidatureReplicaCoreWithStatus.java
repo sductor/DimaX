@@ -3,6 +3,7 @@ package negotiation.faulttolerance.candidaturewithstatus;
 import java.util.Collection;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
@@ -11,7 +12,6 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.information.OpinionService;
 import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
-import framework.experimentation.ObservingStatusService;
 
 public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private static final long serialVersionUID = -3882932472033817195L;
@@ -29,7 +29,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 		return true;
 	}
 
-	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
+	@StepComposant(ticker = ReplicationExperimentationProtocol._reliabilityObservationFrequency)
 	public void notifyMyReliability4Status() {
 		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
 		this.notify(
@@ -152,8 +152,8 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 			min = o.getMinElement().getMyReliability();
 			max = o.getMaxElement().getMyReliability();
 
-			this.lowerThreshold = ReplicationExperimentationParameters.alpha_low * ((mean + min)/2);
-			this.higherThreshold = ReplicationExperimentationParameters.alpha_high * ((mean + max)/2);
+			this.lowerThreshold = ReplicationExperimentationProtocol.alpha_low * ((mean + min)/2);
+			this.higherThreshold = ReplicationExperimentationProtocol.alpha_high * ((mean + max)/2);
 		} catch (final Exception e) {
 			this.getMyAgent().signalException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"+this.getMyAgent().getMyInformation(), e);
 			throw new RuntimeException();

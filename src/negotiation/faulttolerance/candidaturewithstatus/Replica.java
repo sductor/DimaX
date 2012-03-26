@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
@@ -22,8 +23,8 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import framework.experimentation.ExperimentationResults;
-import framework.experimentation.ObservingSelfService;
+import dimaxx.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class Replica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature> {
@@ -159,21 +160,21 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
+	@StepComposant(ticker=ReplicationExperimentationProtocol._criticity_update_frequency)
 	public void updateMyCriticity() {
 		if (this.dynamicCrticity){
 			final Random r = new Random();
-			if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
+			if (r.nextDouble() <= ReplicationExperimentationProtocol._criticityVariationProba) {// On
 				// met a jour
 				final int signe = r.nextBoolean() ? 1 : -1;
 				final Double newCriticity = Math
 						.min(1.,
 								Math.max(
-										ReplicationExperimentationParameters._criticityMin,
+										ReplicationExperimentationProtocol._criticityMin,
 										this.getMyCurrentState().getMyCriticity()
 										+ signe
 										* r.nextDouble()
-										* ReplicationExperimentationParameters._criticityVariationAmplitude));
+										* ReplicationExperimentationProtocol._criticityVariationAmplitude));
 				this.logWarning("Updating my criticity", LogService.onNone);
 				this.setNewState(
 						new ReplicaState(

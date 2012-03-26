@@ -5,7 +5,7 @@ import java.util.Date;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import dima.basicagentcomponents.AgentIdentifier;
-import framework.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ExperimentationResults;
 
 public class ReplicationResultAgent implements ExperimentationResults {
 
@@ -88,7 +88,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		return this.status;
 	}
 
-	@Override
+
 	public boolean isHost() {
 		return false;
 	}

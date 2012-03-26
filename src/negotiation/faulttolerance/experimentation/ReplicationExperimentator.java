@@ -3,10 +3,12 @@ package negotiation.faulttolerance.experimentation;
 import java.io.IOException;
 
 
+
 import org.jdom.JDOMException;
 
 import dima.introspectionbasedagents.services.CompetenceException;
-import framework.experimentation.Experimentator;
+import dimaxx.experimentation.ExperimentationProtocol;
+import dimaxx.experimentation.Experimentator;
 
 public class ReplicationExperimentator extends Experimentator {
 
@@ -24,5 +26,11 @@ public class ReplicationExperimentator extends Experimentator {
 	public static void main(final String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 		final ReplicationExperimentator exp = new ReplicationExperimentator();
 		exp.run(args);
+	}
+
+	public String getDescription(){
+		return super.getDescription()+" simus of "
+				+ExperimentationProtocol._simulationTime/1000.+
+				"secs  on "+this.getApi().getAvalaibleHosts().size()+" machine";//+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine"
 	}
 }

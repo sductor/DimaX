@@ -19,8 +19,8 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
-import framework.experimentation.ExperimentationResults;
-import framework.experimentation.ObservingSelfService;
+import dimaxx.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class CollaborativeHost
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, InformedCandidature<ReplicationCandidature,ReplicationSpecification>>

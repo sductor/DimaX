@@ -15,8 +15,8 @@ import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
-import framework.experimentation.ExperimentationResults;
-import framework.experimentation.ObservingSelfService;
+import dimaxx.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>

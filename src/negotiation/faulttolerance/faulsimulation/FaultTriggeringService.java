@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -37,7 +38,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	int i = 0;
 
 
-	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
+	@StepComposant(ticker=ReplicationExperimentationProtocol._host_maxFaultfrequency)
 	public void toggleFault() {
 		int nbMax = this.p.host_maxSimultaneousFailure.intValue();
 		if (nbMax>0){

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import framework.experimentation.Laborantin;
+import dimaxx.experimentation.Laborantin;
 
 public abstract class ContractTransition<
 ActionSpec extends AbstractActionSpecification> implements

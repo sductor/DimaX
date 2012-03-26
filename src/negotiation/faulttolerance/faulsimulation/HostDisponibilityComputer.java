@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -15,9 +16,9 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dimaxx.experimentation.ExperimentationProtocol;
 import dimaxx.tools.distribution.PoissonLaw;
 import dimaxx.tools.distribution.WeibullLaw;
-import framework.experimentation.ExperimentationProtocol;
 
 public class HostDisponibilityComputer implements DimaComponentInterface {
 	private static final long serialVersionUID = 1444858209007788890L;
@@ -217,12 +218,12 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		case Weibull:
 			return WeibullLaw
 					.getWeibullLaw(
-							(uptime + 10 * ReplicationExperimentationParameters._host_maxFaultfrequency)
-							/ ReplicationExperimentationParameters._timeScale,
-							ReplicationExperimentationParameters._kValue, lambda,
-							ReplicationExperimentationParameters._theta);
+							(uptime + 10 * ReplicationExperimentationProtocol._host_maxFaultfrequency)
+							/ ReplicationExperimentationProtocol._timeScale,
+							ReplicationExperimentationProtocol._kValue, lambda,
+							ReplicationExperimentationProtocol._theta);
 		case Poisson:
-			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationProtocol._host_maxFaultfrequency;
 			return PoissonLaw.getPoissonLaw(lambda * nbInterval, 1);
 		default:
 			throw new RuntimeException("impossible");
@@ -237,24 +238,24 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			if (triggerAFault) {
 				return rand.nextDouble() > lambda;
 			} else {
-				return rand.nextDouble() > ReplicationExperimentationParameters._lambdaRepair;
+				return rand.nextDouble() > ReplicationExperimentationProtocol._lambdaRepair;
 			}
 		case Weibull:
 			if (triggerAFault) {
-				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
-						ReplicationExperimentationParameters._kValue, lambda,
-						ReplicationExperimentationParameters._theta);
+				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationProtocol._timeScale,
+						ReplicationExperimentationProtocol._kValue, lambda,
+						ReplicationExperimentationProtocol._theta);
 			} else {
-				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
-						ReplicationExperimentationParameters._kRepair,
-						ReplicationExperimentationParameters._lambdaRepair, 0.);
+				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationProtocol._timeScale,
+						ReplicationExperimentationProtocol._kRepair,
+						ReplicationExperimentationProtocol._lambdaRepair, 0.);
 			}
 		case Poisson:
-			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationProtocol._host_maxFaultfrequency;
 			if (triggerAFault) {
 				return PoissonLaw.eventOccur(lambda * nbInterval, 1);
 			} else {
-				return PoissonLaw.eventOccur(ReplicationExperimentationParameters._lambdaRepair * nbInterval, 1);
+				return PoissonLaw.eventOccur(ReplicationExperimentationProtocol._lambdaRepair * nbInterval, 1);
 			}
 		default:
 			throw new RuntimeException("impossible");

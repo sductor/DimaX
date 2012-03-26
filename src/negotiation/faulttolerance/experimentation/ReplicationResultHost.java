@@ -5,7 +5,7 @@ import java.util.Date;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import framework.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ExperimentationResults;
 
 public class ReplicationResultHost implements ExperimentationResults {
 
@@ -49,7 +49,7 @@ public class ReplicationResultHost implements ExperimentationResults {
 		return this.lastInfo;
 	}
 
-	@Override
+
 	public boolean isHost() {
 		return true;
 	}

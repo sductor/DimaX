@@ -1,9 +1,10 @@
 package negotiation.faulttolerance.negotiatingagent;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import framework.experimentation.ExperimentationProtocol;
+import dimaxx.experimentation.ExperimentationProtocol;
 
 public class ReplicationCandidature extends
 MatchingCandidature<ReplicationSpecification> {
@@ -29,7 +30,7 @@ MatchingCandidature<ReplicationSpecification> {
 	public ReplicationCandidature(final ResourceIdentifier r,
 			final AgentIdentifier a, final boolean creation, final boolean isAgentCreator) {
 		super(isAgentCreator ? a : r, a, r,
-				ExperimentationProtocol._contractExpirationTime);
+				ReplicationExperimentationProtocol._contractExpirationTime);
 		this.setCreation(creation);
 	}
 

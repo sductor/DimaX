@@ -217,9 +217,8 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 		if (e.getClass().equals(ClassEnveloppe.class)) {
 			Class<?> m = mess.getClass();
 			while (!this.messageMethods.containsKey(e)
-					&& AbstractMessageInterface.class.isAssignableFrom(m.getClass()
-							.getSuperclass())) {
-				m = m.getClass().getSuperclass();
+					&& AbstractMessageInterface.class.isAssignableFrom(m.getSuperclass())) {
+				m = m.getSuperclass();//
 				e = new ClassEnveloppe((Class<? extends AbstractMessageInterface>) m);
 			}
 		}

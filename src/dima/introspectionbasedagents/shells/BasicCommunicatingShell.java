@@ -106,7 +106,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 				// Unhandled envellope
 				LogService.writeWarning(
 						this.getStatus(),
-						" Unhandled envellope!:\n"
+						" Unhandled envellope!: "+mess.getClass()+"\n"
 								+mess+
 								"\n sended by "+mess.getSender()+" to "+mess.getReceiver()+
 								"\n --> Known envellopes are: "+this.getMyMethods().getHandledEnvellope()+

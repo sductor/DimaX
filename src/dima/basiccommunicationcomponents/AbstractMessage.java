@@ -68,7 +68,7 @@ public abstract class AbstractMessage extends CommunicationObject implements Abs
 	public String toString() {
 		//	System.out.println(this.getClass());
 		if (this.getContent()==null) {
-			return "message unkonwn";
+			return "no content";
 		} else {
 			return this.getContent().toString();
 		}

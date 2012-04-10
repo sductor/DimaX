@@ -27,7 +27,7 @@ public class CycledATNBasedProactiveComponent extends ATNBasedProactiveComponent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return true;
 	}
 	/**

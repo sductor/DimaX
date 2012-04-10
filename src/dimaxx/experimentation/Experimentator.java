@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 
 import org.jdom.JDOMException;
 
@@ -30,25 +29,24 @@ import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
  * @author Sylvain Ductor
  *
  */
-public class Experimentator extends APIAgent{
+public final class Experimentator extends APIAgent{
 	private static final long serialVersionUID = 6985131313855716524L;
 
 	//
 	// Accessors
 	//
 
-	ExperimentationProtocol myProtocol;
+	ExperimentationParameters myProtocol;
 	final File f;
 
 	//	//Integer represent the sum of the number of agent of each simulation that uses the given machine
 	//	public final MachineNetwork machines;
-	public static final AgentIdentifier myId = new AgentName("ziExperimentator");
 
 	/*
 	 *
 	 */
 
-	public final LinkedList<ExperimentationParameters> simuToLaunch;
+	public LinkedList<ExperimentationParameters> simuToLaunch;
 
 	public final Map<AgentIdentifier, Laborantin> launchedSimu =
 			new HashMap<AgentIdentifier, Laborantin>();
@@ -58,17 +56,15 @@ public class Experimentator extends APIAgent{
 	// Constructor
 	//
 
-	public Experimentator(final ExperimentationProtocol myProtocol) throws CompetenceException {
-		super(Experimentator.myId);
+	public Experimentator(final ExperimentationParameters myProtocol) throws CompetenceException {
+		super(myProtocol.experimentatorId);
 		//		this.machines = new MachineNetwork(machines);
-		this.f = new File(ReplicationExperimentationProtocol.resultPath);
+		this.f = new File(LogService.getMyPath()+"result_"+myProtocol.resultPath);
 		//		Writing.log(
 		//				this.f,
 		//				myProtocol.getDescription(),
 		//				true, false);
 		this.myProtocol=myProtocol;
-		this.simuToLaunch = myProtocol.generateSimulation();
-		this.awaitingAnswer=this.simuToLaunch.size();
 	}
 
 	//
@@ -78,7 +74,7 @@ public class Experimentator extends APIAgent{
 
 	@ProactivityInitialisation
 	public void initialise() throws CompetenceException{
-		this.logWarning("Experimentator created for:\n"+this.myProtocol.getDescription(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
+		this.logWarning("Experimentator created for:\n"+this.myProtocol.toString(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
 		this.logWarning(getDescription(),LogService.onBoth);
 		this.launchSimulation();
 	}
@@ -94,7 +90,7 @@ public class Experimentator extends APIAgent{
 			System.out.println("1");
 			this.logWarning("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 			this.setAlive(false);
-			this.logWarning(this.myProtocol.getDescription(),LogService.onBoth);
+			this.logWarning(this.myProtocol.toString(),LogService.onBoth);
 			System.exit(1);
 		} else if (!this.simuToLaunch.isEmpty()){
 			//On lance de nouvelles expériences!
@@ -108,11 +104,11 @@ public class Experimentator extends APIAgent{
 				Laborantin l;
 				try {
 
-					ExperimentationParameters.initialisation=true;
+					ExperimentationParameters.currentlyInstanciating=true;
 					nextSimu.initiateParameters();
-					ExperimentationParameters.initialisation=false;
+					ExperimentationParameters.currentlyInstanciating=false;
 					assert nextSimu.isInitiated();
-					l = this.myProtocol.createNewLaborantin(nextSimu, this.getApi());
+					l = new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
 					l.launchWith(this.getApi());
 					this.startActivity(l);
 					this.launchedSimu.put(l.getId(), l);
@@ -158,6 +154,10 @@ public class Experimentator extends APIAgent{
 	public void run(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 
+
+		this.simuToLaunch = myProtocol.generateSimulation(args);
+		this.awaitingAnswer=this.simuToLaunch.size();
+		
 		if (args[0].equals("scheduled")) {
 			this.initAPI(false);//SCHEDULED
 		} else if  (args[0].equals("fipa")) {

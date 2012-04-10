@@ -6,6 +6,7 @@ import java.util.Date;
 import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.DimaComponentInterface;
+import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCommunicatingMethodTrunk.UnHandledMessageException;
@@ -33,7 +34,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 
 
 	public BasicCommunicatingShell(
-			final DimaComponentInterface myComponent,
+			final IdentifiedComponentInterface myComponent,
 			final AbstractMailBox mailBox) {
 		super(myComponent, new BasicCommunicatingMethodTrunk());
 		this.mailBox=mailBox;
@@ -51,7 +52,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	}
 
 	public BasicCommunicatingShell(
-			final DimaComponentInterface myComponent,
+			final IdentifiedComponentInterface myComponent,
 			final AbstractMailBox mailBox,
 			final SimpleExceptionHandler exceptionHandler) {
 		super(myComponent, new BasicCommunicatingMethodTrunk(), exceptionHandler);
@@ -96,6 +97,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 
 		while (this.getMailBox().hasMail()){
 			final AbstractMessage mess = this.getNextMail();
+//			assert mess.getReceiver().equals(getIdentifier());
 			//			parseJavaMessage(mess);
 			try {
 				final Collection<MethodHandler> mts = this.getMyMethods().parseMail(mess);
@@ -108,7 +110,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 						this.getStatus(),
 						" Unhandled envellope!: "+mess.getClass()+"\n"
 								+mess+
-								"\n sended by "+mess.getSender()+" to "+mess.getReceiver()+
+								"\n sended by "+mess.getSender()+//" to "+mess.getReceiver()+
 								"\n --> Known envellopes are: "+this.getMyMethods().getHandledEnvellope()+
 								"\n --> Exception handle say :\n"+this.getExceptionHandler().handleUnhandledMessage(mess, this.getStatus()));
 			} catch (final Throwable e) {
@@ -123,6 +125,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 			}
 		}
 	}
+
 
 	//	private void parseJavaMessage(AbstractMessage mess) {
 	//		if (mess instanceof Message //MESSAGE TYPE EST JAVA : EXECUTION AUTOMATIQUE

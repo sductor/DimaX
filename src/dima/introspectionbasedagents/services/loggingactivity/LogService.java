@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -51,12 +52,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	 */
 
 	//Order or the log to be written to screen
-	public  boolean activateCommtoScreen = false;
+	public  boolean activateCommSendtoScreen = false;
+	public  boolean activateCommReceivtoScreen = false;
 	public  boolean activateExceptoScreen = true;
 	public static  Boolean activateMonotoScreen = null;
 	//Order or the log to be written in specific files
 	public static Boolean activateMonoToFiles = null;
-	public boolean activateCommtoFiles = false;
+	public boolean activateCommSendtoFiles = true;
+	public boolean activateCommReceivtoFiles = true;
 	public  boolean activateExceptoFile = true;
 
 	/***********************************************************************
@@ -120,8 +123,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		this.keysToScreen.put(key,toScreen);
 		this.keysToFiles.put(key, toFile);
 	}
-	public void setCommtoScreen(final boolean commtoScreen) {
-		this.activateCommtoScreen = commtoScreen;
+	public void setCommtoScreen(
+			boolean activateCommSendtoScreen, 
+			boolean activateCommReceivtoScreen) {
+		this.activateCommSendtoScreen = activateCommSendtoScreen;
+		this.activateCommReceivtoScreen = activateCommReceivtoScreen;
 	}
 
 	public void setExceptoScreen(final boolean exceptoScreen) {
@@ -136,8 +142,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		LogService.activateMonoToFiles = toFiles;
 	}
 
-	public void setCommtoFiles(final boolean commtoFiles) {
-		this.activateCommtoFiles = commtoFiles;
+	public void setCommtoFiles(
+			boolean activateCommSendtoFiles, 
+			boolean activateCommReceivtoFiles) {
+		this.activateCommSendtoFiles = activateCommSendtoFiles;
+		this.activateCommReceivtoFiles = activateCommReceivtoFiles;
 	}
 
 	public void setMyMessageLogFile(final File myMessageLogFile) {
@@ -180,17 +189,39 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	// Communication
 
+	
 	public Boolean logCommunication(final Message am, final MessageStatus s){
-		//		if (!(am instanceof LogNotification) ||
-		//				(!(am instanceof NotificationMessage) && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
-		//			LogNotification log = new LogCommunication(getIdentifier(), am, s);
-		//			if (commtoScreen )
-		//				System.out.println(log.generateLogToScreen());
-		//			if (commtoFiles)
-		//				return this.notify(log,logNotificationKey);
-		//		}
+		if ((am instanceof LogNotification) ||
+				(am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
+			//do nothing;
+		} else {
+//			assert commValidityVerif(am);
+			LogNotification log = new LogCommunication(getIdentifier(), am, s);
+			if (s.equals(MessageStatus.MessageSended) || s.equals(MessageStatus.MessageLocallySended)){
+				if (activateCommSendtoScreen )
+					System.out.println(log.generateLogToScreen());
+				if (activateCommSendtoFiles)
+					return this.notify(log,logNotificationKey);
+			} else {
+				if (activateCommReceivtoScreen )
+					System.out.println(log.generateLogToScreen());
+				if (activateCommReceivtoFiles)
+					return this.notify(log,logNotificationKey);
+			}
+		}
 		return true;
 	}
+	
+	public Collection<Message> received=null;
+	public boolean commValidityVerif(Message m){
+		if (received==null){
+			received = new HashSet<Message>();
+		}
+		assert !received.contains(m);
+		received.add(m);
+		return true;
+	}
+	
 	//EXCEPTION
 
 
@@ -628,7 +659,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return this.active;
 	}
 

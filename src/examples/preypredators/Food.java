@@ -190,7 +190,7 @@ public class Food extends Actor implements Animal {
 	 * @return boolean
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return this.isAlive;
 	}
 	public boolean isEmptyPlace(final int x, final int y) {

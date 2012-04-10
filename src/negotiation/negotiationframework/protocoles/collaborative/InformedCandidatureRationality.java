@@ -106,8 +106,8 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 	 */
 
 	@Override
-	public boolean competenceIsActive() {
-		return this.referenceRationality.competenceIsActive();
+	public boolean isActive() {
+		return this.referenceRationality.isActive();
 	}
 
 

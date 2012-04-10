@@ -59,7 +59,7 @@ public class AgentFact extends BasicCommunicatingAgent {
 	}
 
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return !(this.liste.size() < 2 && this.nbMes == 0);
 	}
 

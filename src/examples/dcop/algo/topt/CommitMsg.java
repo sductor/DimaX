@@ -1,8 +1,8 @@
 package examples.dcop.algo.topt;
 
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
 
-public class CommitMsg extends DCOPMessage {
+public class CommitMsg extends DcopMessage {
 	int gid;
 	int attempt;
 	TreeNode node;
@@ -17,12 +17,10 @@ public class CommitMsg extends DCOPMessage {
 		node = n;
 	}
 
-	@Override
 	public String getText() {
 		return ("COMMIT ") + gid + "\n";
 	}
 
-	@Override
 	public int getSize() {
 		return 5;
 	}

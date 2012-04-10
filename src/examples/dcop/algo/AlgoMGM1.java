@@ -3,12 +3,10 @@ package examples.dcop.algo;
 import java.util.HashSet;
 
 import examples.dcop.daj.Channel;
-import examples.dcop.daj.DCOPMessage;
-import examples.dcop.daj.Program;
+import examples.dcop.daj.DcopMessage;
 import examples.dcop.dcop.Constraint;
+import examples.dcop.dcop.Helper;
 import examples.dcop.dcop.Variable;
-
-
 
 public class AlgoMGM1 extends BasicAlgorithm {
 
@@ -22,14 +20,18 @@ public class AlgoMGM1 extends BasicAlgorithm {
 		acceptSet = new HashSet<Integer>();
 	}
 
-	public void initialisation(){
-		self.value = random.nextInt(self.domain);
+
+	@Override
+	public void initialisation() {
+		self.value = Helper.random.nextInt(self.domain);
 		out().broadcast(createValueMsg());
 
-	}
+	}	
+
 
 	@Override
 	protected void main() {
+
 		if (lock == -1 && bestVal != -1 && bestVal != self.value
 				&& getTime() > reLockTime) {
 			lock = self.id;
@@ -40,8 +42,8 @@ public class AlgoMGM1 extends BasicAlgorithm {
 		int index = in().select(1);
 		if (index != -1) {
 			setDone(false);
-			int sender = ((Channel) in(index)).getSender();
-			DCOPMessage msg = in(index).receive();
+			int sender = (((Channel) in(index))).getNeighbor().asInt();
+			DcopMessage msg = in(index).receive();
 
 			if (msg instanceof MGM1ValueMsg) {
 				MGM1ValueMsg vmsg = (MGM1ValueMsg) msg;
@@ -70,7 +72,7 @@ public class AlgoMGM1 extends BasicAlgorithm {
 						lock = -1;
 						out().broadcast(createUnLockMsg());
 						reLockTime = getTime()
-								+ random.nextInt(reLockInterval);
+								+ Helper.random.nextInt(reLockInterval);
 					}
 					if (acceptSet.size() == self.neighbors.size()) {
 						lock = -1;
@@ -85,26 +87,13 @@ public class AlgoMGM1 extends BasicAlgorithm {
 		} else {
 			if (bestVal == self.value) {
 				setDone(true);
-				//					if (checkStable())
-				//						break;
+//				if (checkStable())
+//					break;
 			} else
 				setDone(false);
-			yield();
+//			yield();
 		}
 	}
-
-	//	protected boolean checkStable() {
-	//		Program[] prog = this.node.getNetwork().getPrograms();
-	//		for (int i = 0; i < prog.length; i++) {
-	//			if (!(prog[i] instanceof BasicAlgorithm))
-	//				continue;
-	//			BasicAlgorithm p = (BasicAlgorithm) prog[i];
-	//			if (!p.isStable())
-	//				return false;
-	//		}
-	//		return true;
-	//	}
-
 
 	int checkView() {
 		int best = 0;
@@ -128,7 +117,6 @@ public class AlgoMGM1 extends BasicAlgorithm {
 		return val;
 	}
 
-	@Override
 	public String getText() {
 		return "ID: " + self.id + "\nVal: " + self.value + "\nBest: " + bestVal
 				+ "\nNextLock: " + reLockTime;
@@ -152,10 +140,11 @@ public class AlgoMGM1 extends BasicAlgorithm {
 
 	MGM1ResponseMsg createDenyMsg() {
 		return new MGM1ResponseMsg(false);
-	}	
+	}
+
 }
 
-class MGM1ValueMsg extends DCOPMessage {
+class MGM1ValueMsg extends DcopMessage {
 	int value;
 
 	public MGM1ValueMsg(int v) {
@@ -163,13 +152,12 @@ class MGM1ValueMsg extends DCOPMessage {
 		value = v;
 	}
 
-	@Override
 	public String getText() {
 		return ("VALUE " + value);
 	}
 }
 
-class MGM1LockMsg extends DCOPMessage {
+class MGM1LockMsg extends DcopMessage {
 	boolean lock;
 
 	public MGM1LockMsg(boolean l) {
@@ -177,13 +165,12 @@ class MGM1LockMsg extends DCOPMessage {
 		lock = l;
 	}
 
-	@Override
 	public String getText() {
 		return (lock ? "LOCK" : "UNLOCK");
 	}
 }
 
-class MGM1ResponseMsg extends DCOPMessage {
+class MGM1ResponseMsg extends DcopMessage {
 	boolean accept;
 
 	public MGM1ResponseMsg(boolean a) {
@@ -191,7 +178,6 @@ class MGM1ResponseMsg extends DCOPMessage {
 		accept = a;
 	}
 
-	@Override
 	public String getText() {
 		return (accept ? "ACCEPT" : "DENY");
 	}

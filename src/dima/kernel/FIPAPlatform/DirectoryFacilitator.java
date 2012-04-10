@@ -145,7 +145,7 @@ extends dima.kernel.communicatingAgent.BasicCommunicatingAgent {
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return true;
 	}
 	/**

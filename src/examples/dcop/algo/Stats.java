@@ -1,4 +1,4 @@
-package examples.dcop.api;
+package examples.dcop.algo;
 
 public class Stats implements Comparable{
 	public int gain;

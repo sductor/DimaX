@@ -305,7 +305,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @return boolean
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return true;
 	}
 	/**
@@ -358,6 +358,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @return boolean
 	 */
 	public boolean put(final AbstractMessage m) {
+//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) ||  m.getReceiver().equals(this.getIdentifier());
 		return this.mailBox.writeMail(m);
 	}
 	/**
@@ -386,7 +387,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 */
 	@Override
 	public void receive(final Message m) {
-
+//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) || m.getReceiver().equals(this.getIdentifier()):"agent "+this.getIdentifier()+" has received "+m;
 		this.put(m);
 	}
 	/**
@@ -396,7 +397,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @param am Gdima.competences.communication.AbstractMessage
 	 */
 	public void sendAll(final Message am) {
-		this.sendMessage(this.aquaintances.values(), am);
+		this.sendMessage(this.aquaintances.values(),am);
 	}
 	/**
 	 * Insert the method's description here.
@@ -414,7 +415,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 					this.aquaintances.get(agentId.toString()),
 					am);
 		} else {
-			this.com.sendMessage(am);
+			this.com.sendMessage(agentId,am.clone());
 		}
 	}
 

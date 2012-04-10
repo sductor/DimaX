@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
+import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
@@ -22,6 +24,7 @@ public class BasicIntrospectiveShell extends GimaObject {
 	//
 
 	//	private final DimaComponentInterface myMainComponent;
+	private final AgentIdentifier myComponentIdentifier;
 
 	/** The,agent and its methods **/
 	private IntrospectedMethodsTrunk myMethods;
@@ -34,9 +37,10 @@ public class BasicIntrospectiveShell extends GimaObject {
 	//
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent,
+			final IdentifiedComponentInterface myComponent,
 			final IntrospectedMethodsTrunk methods) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = methods;
 		this.exceptionHandler  = new SimpleExceptionHandler();
 
@@ -44,10 +48,11 @@ public class BasicIntrospectiveShell extends GimaObject {
 	}
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent,
+			final IdentifiedComponentInterface myComponent,
 			final IntrospectedMethodsTrunk methods,
 			final SimpleExceptionHandler exceptionHandler) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = methods;
 		this.exceptionHandler = exceptionHandler;
 
@@ -59,8 +64,9 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 */
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent) {
+			final IdentifiedComponentInterface myComponent) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = new BasicIntrospectedMethodsTrunk();
 		this.exceptionHandler  = new SimpleExceptionHandler();
 
@@ -68,9 +74,10 @@ public class BasicIntrospectiveShell extends GimaObject {
 	}
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent, final Date horloge,
+			final IdentifiedComponentInterface myComponent, final Date horloge,
 			final SimpleExceptionHandler exceptionHandler) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = new BasicIntrospectedMethodsTrunk();
 		this.exceptionHandler = exceptionHandler;
 
@@ -81,6 +88,16 @@ public class BasicIntrospectiveShell extends GimaObject {
 	// Accessors
 	//
 
+	
+
+
+	/**
+	 * @return the component identifer
+	 */
+	public AgentIdentifier getIdentifier() {
+		return myComponentIdentifier;
+	}
+	
 	/**
 	 * @return the exceptionHandler
 	 */

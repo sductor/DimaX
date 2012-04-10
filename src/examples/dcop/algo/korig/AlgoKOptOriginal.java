@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import examples.dcop.algo.BasicAlgorithm;
+import examples.dcop.algo.TerminateMessage;
 import examples.dcop.daj.Channel;
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
+import examples.dcop.daj.Program;
 import examples.dcop.dcop.Constraint;
 import examples.dcop.dcop.Graph;
+import examples.dcop.dcop.Helper;
 import examples.dcop.dcop.Variable;
-
 
 public class AlgoKOptOriginal extends BasicAlgorithm {
 
@@ -28,7 +29,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 	HashSet<Integer> commitInfoSet;
 	int commitInfoCounter = 0;
 
-	ArrayList<DCOPMessage> buffer;
+	ArrayList<DcopMessage> buffer;
 
 	int state;
 
@@ -40,14 +41,14 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 	public AlgoKOptOriginal(Variable v, int kk) {
 		super(v);
 		k = kk;
-		self.value = random.nextInt(self.domain);
+		self.value = Helper.random.nextInt(self.domain);
 		init();
 	}
 
 	private void init() {
 		if (self.id == 0)
 			System.out.println("STARTOVER");
-		buffer = new ArrayList<DCOPMessage>();
+		buffer = new ArrayList<DcopMessage>();
 		localInfoMap = new HashMap<Integer, LocalInfo>();
 		gainInfoMap = new HashMap<Integer, GainInfo>();
 		commitInfoMap = new HashMap<Integer, CommitInfo>();
@@ -77,7 +78,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 		sync = 0;
 	}
 
-	private void processMsg(DCOPMessage msg) {
+	private void processMsg(DcopMessage msg) {
 		if (msg instanceof KorigLocalMsg) {
 			KorigLocalMsg lmsg = (KorigLocalMsg) msg;
 			if (!localInfoSet.contains(lmsg.id)) {
@@ -128,28 +129,28 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 		}
 	}
 
-	public void initialisation(){
+	@Override
+	public void initialisation() {
 		out().broadcast(new KorigValueMsg(self));		
 	}
 
 	@Override
 	protected void main() {
+
 		int index = in().select(1);
 		if (index != -1) {
 
-
 			setDone(false);
 
-			DCOPMessage msg = in(index).receive(1);
+			DcopMessage msg = in(index).receive(1);
 			if (msg == null)
 				return;
 
-			int sender = ((Channel) in(index)).getSender();
+			int sender = ((Channel) in(index)).getNeighbor().asInt();
 
-			//			if (msg instanceof TerminateMessage) {
-			//				break;
-			//			} else 
-			if (msg instanceof KorigValueMsg) {
+			if (msg instanceof TerminateMessage) {
+				break;
+			} else if (msg instanceof KorigValueMsg) {
 				KorigValueMsg vmsg = (KorigValueMsg) msg;
 				view.varMap.get(sender).value = vmsg.value;
 				boolean f = true;
@@ -174,10 +175,10 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 			}
 		} else {
 			if (!buffer.isEmpty()) {
-				ArrayList<DCOPMessage> tmp = new ArrayList<DCOPMessage>();
+				ArrayList<DcopMessage> tmp = new ArrayList<DcopMessage>();
 				tmp.addAll(buffer);
 				buffer.clear();
-				for (DCOPMessage msg : tmp)
+				for (DcopMessage msg : tmp)
 					processMsg(msg);
 			}
 
@@ -237,7 +238,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 							while (kgroup.size() < k) {
 								if (cList.isEmpty())
 									break;
-								int idx = cList.remove(random.nextInt(cList
+								int idx = cList.remove(Helper.random.nextInt(cList
 										.size()));
 								kgroup.add(idx);
 								Variable v = korigView.getVar(idx);
@@ -316,9 +317,10 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 			}
 		}
 	}
+
 }
 
-class KorigValueMsg extends DCOPMessage {
+class KorigValueMsg extends DcopMessage {
 	int id;
 	int value;
 
@@ -326,13 +328,12 @@ class KorigValueMsg extends DCOPMessage {
 		value = v.value;
 	}
 
-	@Override
 	public int getSize() {
 		return 9;
 	}
 }
 
-class KorigLocalMsg extends DCOPMessage {
+class KorigLocalMsg extends DcopMessage {
 	int id;
 	HashMap<Integer, LocalInfo> map;
 
@@ -343,7 +344,6 @@ class KorigLocalMsg extends DCOPMessage {
 			map.put(l.id, l);
 	}
 
-	@Override
 	public int getSize() {
 		int s = 0;
 		for (LocalInfo l : map.values())
@@ -352,7 +352,7 @@ class KorigLocalMsg extends DCOPMessage {
 	}
 }
 
-class KorigGainMsg extends DCOPMessage {
+class KorigGainMsg extends DcopMessage {
 	int id;
 	HashMap<Integer, GainInfo> map;
 
@@ -363,7 +363,6 @@ class KorigGainMsg extends DCOPMessage {
 			map.put(l.id, l);
 	}
 
-	@Override
 	public int getSize() {
 		int s = 0;
 		for (GainInfo l : map.values())
@@ -372,7 +371,7 @@ class KorigGainMsg extends DCOPMessage {
 	}
 }
 
-class KorigCommitMsg extends DCOPMessage {
+class KorigCommitMsg extends DcopMessage {
 	int id;
 	HashMap<Integer, CommitInfo> map;
 
@@ -383,7 +382,6 @@ class KorigCommitMsg extends DCOPMessage {
 			map.put(l.id, l);
 	}
 
-	@Override
 	public int getSize() {
 		return map.size() * 8 + 5;
 	}

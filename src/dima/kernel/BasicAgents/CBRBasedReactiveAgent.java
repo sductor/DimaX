@@ -50,7 +50,7 @@ public abstract class CBRBasedReactiveAgent extends  BasicReactiveAgent  {
 	 * Tests wheter a proactive object is active or no ie whether the ProactiveComponent.
 	 */
 	@Override
-	public boolean competenceIsActive()
+	public boolean isActive()
 	{return this.cb.isActive();
 	}
 	/**

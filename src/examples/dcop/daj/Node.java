@@ -7,25 +7,12 @@
 // ----------------------------------------------------------------------------
 package examples.dcop.daj;
 
-import java.io.Serializable;
-
-
-import darx.DarxCommInterface;
-import darx.DarxException;
-import darx.DarxTask;
-import darx.RemoteTask;
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dimaxx.experimentation.ExperimentationResults;
-import dimaxx.experimentation.ObservingSelfService;
 import examples.dcop.algo.BasicAlgorithm;
-import examples.dcop.api.DcopExperimentationResult;
 
 
 public class Node extends BasicCompetentAgent {
@@ -33,33 +20,34 @@ public class Node extends BasicCompetentAgent {
 	// channels to receive messages from respectively send messages to
 	private InChannelSet in = new InChannelSet();
 	private OutChannelSet out = new OutChannelSet();
-	private BasicAlgorithm program; // program that node executes
+	private Program program; // program that node executes
 	private int switches; // number of context switches occurred so far
-
-	@Competence
-	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
-		private static final long serialVersionUID = 6123670961531677514L;
-
-		@Override
-		protected ExperimentationResults generateMyResults() {
-			return new DcopExperimentationResult(
-					Node.this.getIdentifier(),
-					Node.this.getCreationTime(),
-					Node.this.program.isStable(),
-					Node.this.program.getValue());
-		}
-	};
 
 	// --------------------------------------------------------------------------
 	// create node with `prog` to execute in network `net`
 	// --------------------------------------------------------------------------
-	public Node(String name, BasicAlgorithm prog) throws CompetenceException {
-		super(new Integer(((BasicAlgorithm) prog).getID()).toString());
+	public Node(Program prog) throws CompetenceException {
+		super(new NodeIdentifier(((BasicAlgorithm)prog).getID()));
+		init(prog);
+	}
+
+	// --------------------------------------------------------------------------
+	// initialize node with `prog` to execute in network `net`
+	// --------------------------------------------------------------------------
+	private void init(Program prog) {
 		program = prog;
 		program.setNode(this);
 		switches = 0;
 	}
 
+
+	@Override
+	public NodeIdentifier getIdentifier() {
+		return (NodeIdentifier) super.getIdentifier();
+	}
+	
+	
+	
 	// --------------------------------------------------------------------------
 	// increase number of switches
 	// --------------------------------------------------------------------------
@@ -74,54 +62,39 @@ public class Node extends BasicCompetentAgent {
 		return switches;
 	}
 
+	//
+	// Behavior
+	//
+	
+	@ProactivityInitialisation
+	public void initialisation(){
+		((BasicAlgorithm)program).initialisation();
+	}
+	
 	// --------------------------------------------------------------------------
 	// executed when node starts execution
 	// --------------------------------------------------------------------------
-	@ProactivityInitialisation
-	public void init(){
-		program.initialisation();
-	}
-	
 	@StepComposant
-	public void exec() {
-		try {
-			wait();
-		}
-		catch (InterruptedException e) {
-			throw new RuntimeException("InterruptedException",e);
-		}
-		// decrease priority to make sure applet thread gets updates
-//		setPriority(getPriority() - 1);
+	public void run() {
 		program.main();
 	}
 
-	
-	public void receiveMessage(Object msg){
-		if (msg instanceof DCOPMessage)
-			((Channel) in.getChannel(((DCOPMessage) msg).getSenderAsInt())).addMessage((DCOPMessage) msg); 
-		else
-			LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
+	@MessageHandler
+	public void receiveMessage(DcopMessage m){
+		in.getChannel(m.getSender().asInt()).write(m);
 	}
-	
 	// --------------------------------------------------------------------------
 	// add `channel` to set of inchannels
 	// --------------------------------------------------------------------------
 	public void inChannel(Channel channel) {
-		in.addChannel(channel, true);
+		in.addChannel(channel);
 	}
 
 	// --------------------------------------------------------------------------
 	// add `channel` to set of outchannels
 	// --------------------------------------------------------------------------
 	public void outChannel(Channel channel) {
-		out.addChannel(channel, false);
-	}
-
-	// --------------------------------------------------------------------------
-	// return visual representation of node
-	// --------------------------------------------------------------------------
-	public Integer getID(){
-		return ((BasicAlgorithm) getProgram()).getID();
+		out.addChannel(channel);
 	}
 
 	// --------------------------------------------------------------------------
@@ -152,96 +125,3 @@ public class Node extends BasicCompetentAgent {
 		return out;
 	}
 }
-
-//
-	// Subclass
-	//
-
-
-//	class DarxNode extends DarxTask{
-//
-//		protected DarxNode() {
-//			super(getID().toString());
-//		}
-//
-//		protected  DarxCommInterface comm;
-//
-//		public DarxCommInterface getComm() {
-//			return comm;
-//		}
-//
-//		//
-//		// Primitive
-//		//
-//		
-//		public void sendAsyncMessage(Integer i, final Message m) {
-//
-//			final AgentIdentifier id = new AgentName(i.toString());
-//			RemoteTask remote = null;
-//			try {
-//				remote = findTask(id.toString());
-//			}
-//			catch(final DarxException e) {
-//				System.out.println("Getting " + id + " from nameserver failed : " + e);
-//				return;
-//			}
-//
-//			if(remote != null)
-//				getComm().sendAsyncMessage(remote, (Serializable) m);
-//			else
-//				throw new RuntimeException(this+" Echec de l'envoi du message"+m);
-//		}
-//		
-////		public Object sendSyncMessage(Integer i, final Message m) {
-////
-////			final AgentIdentifier id = new AgentName(i.toString());
-////			RemoteTask remote = null;
-////			try {
-////				remote = findTask(id.toString());
-////			}
-////			catch(final DarxException e) {
-////				System.out.println("Getting " + id + " from nameserver failed : " + e);
-////				return null;
-////			}
-////
-////			if(remote != null)
-////				return getComm().sendSyncMessage(remote, (Serializable) m);
-////			else
-////				throw new RuntimeException(this+" Echec de l'envoi du message"+m);
-////
-////		}	
-//		
-//		/*
-//		 * Message Handling
-//		 */
-//
-//		/**
-//		 * Put the message
-//		 * received from DarX in the agent mailbox
-//		 *
-//		 * @param msg
-//		 *            the message, that should be cast in Message
-//		 * @see Message
-//		 */
-//		@Override
-//		public void receiveAsyncMessage(final Object msg) {
-//				if (msg instanceof Message)
-//					((Channel) in.getChannel(((Message) msg).getSender())).addMessage((Message) msg); 
-//				else
-//					LogService.writeException(this, msg+" is not a message : can not be added to mail box!");
-//		}
-//
-////		/**
-////		 * UNIMPLEMENTED : Execute the task and return the results
-////		 *
-////		 * @param msg
-////		 *            the message, that should be cast in Message
-////		 * @see Message
-////		 */
-////		@Override
-////		public Serializable receiveSyncMessage(final Object msg) {
-////			this.receiveAsyncMessage(msg);
-////			return null;
-////		}
-////		
-//}

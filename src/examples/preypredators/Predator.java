@@ -205,7 +205,7 @@ public class Predator extends Actor implements Animal  {
 	 * @return boolean
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return this.isAlive;
 	}
 	/**

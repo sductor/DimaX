@@ -74,8 +74,8 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	 */
 
 	@Override
-	public boolean competenceIsActive() {
-		return this.myPersonalCore.competenceIsActive();
+	public boolean isActive() {
+		return this.myPersonalCore.isActive();
 	}
 
 	@Override

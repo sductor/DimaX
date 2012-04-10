@@ -2,7 +2,6 @@ package dimaxx.experimentation;
 
 import java.util.LinkedList;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;

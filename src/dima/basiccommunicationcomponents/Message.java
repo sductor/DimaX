@@ -24,12 +24,19 @@ public class Message extends AbstractMessage implements Serializable {
 	private String type ="java";
 	private AgentIdentifier receiver;
 	private Object[] args;
+	
+	private int messageId;
+	private static int messageIdCount=0;
+	
 	/**
 	 * Message constructor comment.
 	 */
 	public Message() {
 		super();
 		this.type = "java";
+		
+		messageId=messageIdCount;
+		messageIdCount++;
 	}
 	/**
 	 * Insert the method's description here.
@@ -41,7 +48,23 @@ public class Message extends AbstractMessage implements Serializable {
 	public Message(final String  msgContent) {
 		this.content=msgContent;
 		this.type = "java";
+		messageId=messageIdCount;
+		messageIdCount++;
 	}
+//	/**
+//	 * Insert the method's description here.
+//	 * Creation date: (07/05/00 09:51:51)
+//	 * @param status java.lang.String
+//	 * @param msgContent org.omg.CORBA.Object
+//	 * @param msgReceiver Gdima.kernel.AgentAddress
+//	 */
+//	public Message(final String  msgContent, final Serializable... paras) {
+//		this.content=msgContent;
+//		this.args = paras;
+//		this.type = "java";
+//		messageId=messageIdCount;
+//		messageIdCount++;
+//	}
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (07/05/00 09:51:51)
@@ -49,80 +72,12 @@ public class Message extends AbstractMessage implements Serializable {
 	 * @param msgContent org.omg.CORBA.Object
 	 * @param msgReceiver Gdima.kernel.AgentAddress
 	 */
-	public Message(final String  msgContent, final Serializable [] paras) {
+	public Message(final String  msgContent, final Object... paras) {
 		this.content=msgContent;
 		this.args = paras;
 		this.type = "java";
-	}
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (07/05/00 09:51:51)
-	 * @param status java.lang.String
-	 * @param msgContent org.omg.CORBA.Object
-	 * @param msgReceiver Gdima.kernel.AgentAddress
-	 */
-	public Message(final String  msgContent, final Object [] paras) {
-		this.content=msgContent;
-		this.args = paras;
-		this.type = "java";
-	}
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (07/05/00 09:51:51)
-	 * @param status java.lang.String
-	 * @param msgContent org.omg.CORBA.Object
-	 * @param msgReceiver Gdima.kernel.AgentAddress
-	 */
-
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (07/05/00 09:51:51)
-	 * @param status java.lang.String
-	 * @param msgContent org.omg.CORBA.Object
-	 * @param msgReceiver Gdima.kernel.AgentAddress
-	 */
-	public Message(final String  msgContent, final Object para) {
-		this.content=msgContent;
-		this.args = new Object [1];
-		this.args [0]= para;
-		this.type = "java";
-	}
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (07/05/00 09:51:51)
-	 * @param status java.lang.String
-	 * @param msgContent org.omg.CORBA.Object
-	 * @param msgReceiver Gdima.kernel.AgentAddress
-	 */
-
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (07/05/00 09:51:51)
-	 * @param status java.lang.String
-	 * @param msgContent org.omg.CORBA.Object
-	 * @param msgReceiver Gdima.kernel.AgentAddress
-	 */
-	public Message(final String  msgContent, final Object para1, final Object para2) {
-		this.content=msgContent;
-		this.args = new Object [2];
-		this.args [0]= para1;
-		this.args [1]= para2;
-		this.type = "java";
-	}
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (07/05/00 09:51:51)
-	 * @param status java.lang.String
-	 * @param msgContent org.omg.CORBA.Object
-	 * @param msgReceiver Gdima.kernel.AgentAddress
-	 */
-	public Message(final String  msgContent, final Object para1, final Object para2, final Object para3) {
-		this.content=msgContent;
-		this.args = new Object [3];
-		this.args [0]= para1;
-		this.args [1]= para2;
-		this.args [2]= para3;
-		this.type = "java";
+		messageId=messageIdCount;
+		messageIdCount++;
 	}
 	/**
 	 * Insert the method's description here.
@@ -158,8 +113,8 @@ public class Message extends AbstractMessage implements Serializable {
 	 * Creation date: (23/05/01 16:02:47)
 	 * @return Gdima.basicagentcomponents.AgentIdentifier
 	 */
-	@Override
-	public dima.basicagentcomponents.AgentIdentifier getReceiver() {
+//	@Override
+	protected dima.basicagentcomponents.AgentIdentifier getReceiver() {
 		return this.receiver;
 	}
 	/**
@@ -228,6 +183,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 */
 	@Override
 	public void setReceiver(final dima.basicagentcomponents.AgentIdentifier newReceiver) {
+//		assert receiver==null || (receiver.equals(newReceiver)):"old receiver "+receiver+" new receiver "+newReceiver;
 		this.receiver = newReceiver;
 	}
 	/**
@@ -236,6 +192,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 * @param newReceiver Gdima.basicagentcomponents.AgentIdentifier
 	 */
 	public void setReceiver(final String newReceiver) {
+//		assert receiver==null || (receiver.toString().equals(newReceiver));
 		this.receiver = new AgentName(newReceiver);
 	}
 	/**
@@ -245,6 +202,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 */
 	@Override
 	public void setSender(final dima.basicagentcomponents.AgentIdentifier newSender) {
+		assert sender==null || (sender.equals(newSender));
 		this.sender = newSender;
 	}
 	/**
@@ -253,6 +211,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 * @param newSender Gdima.basicagentcomponents.AgentIdentifier
 	 */
 	public void setSender(final String newSender) {
+		assert sender==null || (sender.toString().equals(newSender));
 		this.sender = new AgentName(newSender);
 	}
 	/**
@@ -263,15 +222,47 @@ public class Message extends AbstractMessage implements Serializable {
 	public void setType(final java.lang.String newType) {
 		this.type = newType;
 	}
+
+
+	public Message clone(){
+		return this;
+//		Message m = new Message((String) content, args);
+//		m.type=new String(this.type);
+//		m.sender=sender.clone();
+//		m.receiver=null;
+//		m.messageId=this.messageId;
+//		return m;
+	}
+	
 	/**
 	 * Returns a String that represents the value of this object.
+	 *
 	 * @return a string representation of the receiver
 	 */
 	@Override
 	public String toString() {
 		// Insert code to print the receiver here.
-		// This implementation forwards the message to super. You may replace or supplement this.
-		return super.toString();
+		// This implementation forwards the message to super. You may replace or
+		// supplement this.
+		// return super.toString();
+		return "MESSAGE of "+ this.getClass()
+				+ " (hash : "
+				+ this.hashCode()+" count : "+messageId
+				+ ")\n"
+				+ "from    : "
+				+ this.getSender()
+				+ "\n"
+				+ "to      : "
+				+ this.getReceiver()
+				+ "\n" + "type    : " + this.getType() + "\n"
+				+ "content : " + this.getContent()  + "\n"
+				+"args?   : "
+				+ (this.getArgs() != null ? this.getArgs().length != 0 : false)
+				+ "\n" + "details : " + this.description();
+	}
+	
 
+	public String description() {
+		return "";
 	}
 }

@@ -7,152 +7,83 @@
 // ----------------------------------------------------------------------------
 package examples.dcop.daj;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 public class ChannelSet {
 
-	// channel set, size of set, number of channels in set
-	private int setSize = 100;
-	private Channel[] set = new Channel[setSize];
-	private int setNum = 0;
-
+	public HashMap<NodeIdentifier, Channel> neighborChannel =
+			new HashMap<NodeIdentifier, Channel>();
+	
 	// --------------------------------------------------------------------------
 	// add `channel` to set
 	// if `receiver`, receiver nodes must be the same, otherwise sender nodes
 	// --------------------------------------------------------------------------
-	public void addChannel(Channel channel, boolean receiver) {
-		if (setNum == setSize) {
-			Channel oldSet[] = set;
-			setSize *= 2;
-			set = new Channel[setSize];
-			for (int i = 0; i < setNum; i++)
-				set[i] = oldSet[i];
-		}
-		if (setNum > 0) {
-			if (receiver) assert (set[0].getReceiver().equals(channel.getReceiver())):
-					"channel has different receiver node : "+set[0].getReceiver()+" and "+channel.getReceiver();
-			else assert (set[0].getSender().equals(channel.getSender())):
-					"channel has different sender node";
-		}
-		set[setNum] = channel;
-		setNum = setNum + 1;
+	public void addChannel(Channel channel) {
+		assert !neighborChannel.containsKey(channel.getNeighbor());
+		
+		neighborChannel.put(channel.getNeighbor(), channel);
 	}
 
 	// --------------------------------------------------------------------------
 	// return number of channels in set
 	// --------------------------------------------------------------------------
 	public int getSize() {
-		return setNum;
+		return neighborChannel.size();
 	}
 
 	// --------------------------------------------------------------------------
 	// return channel numbered `i` in set
 	// --------------------------------------------------------------------------
-	protected Channel channel(int i) {
-		assert (i < 0):
-			("channel index is negative");
-		assert (i >= setNum):("channel index is too large");
-		return set[i];
+	Channel channel(int i) {
+		assert neighborChannel.containsKey(new NodeIdentifier(i));
+		return neighborChannel.get(new NodeIdentifier(i));
 	}
 
 	// --------------------------------------------------------------------------
 	// broadcast `message` to all channels in set
 	// --------------------------------------------------------------------------
-	public void send(DCOPMessage message) {
-		for (int i = 0; i < setNum; i++) {
-			set[i].send(message);
+	public void broadcast(DcopMessage message) {
+		for (Channel c : neighborChannel.values()) {
+			c.send(message);
 		}
-	}
-	
-	public void broadcast(DCOPMessage message) {
-		for (int i = 0; i < setNum; i++) {
-			set[i].send(message);
-		}
-//		set[0].getSender().getNetwork().getScheduler().schedule();
 	}
 
-//	// --------------------------------------------------------------------------
-//	// return index of non-empty channel in set
-//	// --------------------------------------------------------------------------
-//	public int select() {
-//		Assertion.test(setNum != 0, "channel set is empty");
-//		Node receiver;
-//		synchronized (this) {
-//			for (int i = 0; i < setNum; i++) {
-//				if (!set[i].registerEmpty(this)) {
-//					for (int j = 0; j < i; j++)
-//						set[j].unregister();
-//					return i;
-//				}
-//			}
-//			for (int i = 0; i < setNum; i++) {
-//				set[i].receiveBlock();
-//			}
-//			receiver = set[0].getReceiver();
-//			Scheduler scheduler = receiver.getNetwork().getScheduler();
-//			int index = scheduler.sleep();
-//			try {
-//				wait();
-//			}
-//			catch (InterruptedException e) {
-//				Assertion.fail("InterruptedException");
-//			}
-//			for (int i = 0; i < setNum; i++) {
-//				set[i].unregister();
-//				set[i].receiveAwake();
-//			}
-//			scheduler.awake(index);
-//		}
-//		//
-//		// there is a small race condition between making the thread active
-//		// and getting blocked; thus we might run into a deadlock
-//		//
-//		synchronized (receiver) {
-//			try {
-//				receiver.wait();
-//			}
-//			catch (InterruptedException e) {
-//				Assertion.fail("InterruptedException");
-//			}
-//		}
-//		// must not dequeue message before being blocked
-//		// in order to avoid inconsistencies in global network conditions
-//		for (int i = 0; i < setNum; i++) {
-//			if (!set[i].isEmpty()) return i;
-//		}
-//		Assertion.fail("no message delivered");
-//		return -1;
-//	}
 
 	// --------------------------------------------------------------------------
 	// return index of non-empty channel in set; do not block but poll at most 
 	// `n` times; if then no message is found, -1 is returned
 	// --------------------------------------------------------------------------
 	public int select(int n) {
-		assert setNum != 0: "channel set is empty";
+		assert n==1;
+		Assertion.test(!neighborChannel.isEmpty(), "channel set is empty");
 		boolean blocked = false;
 		for (int j = 0; j < n; j++) {
-			for (int i = 0; i < setNum; i++) {
-				if (!set[i].isEmpty()) {
+			for (Channel c : neighborChannel.values()) {
+				if (!c.isEmpty()) {
 					if (blocked) {
-						for (int k = 0; k < setNum; k++)
-							set[k].receiveAwake();
+						for (Channel c2 : neighborChannel.values())
+							c2.receiveAwake();
 					}
-					return i;
+					return c.getNeighbor().asInt();
 				}
 			}
 			if (!blocked) {
 				blocked = true;
-				for (int k = 0; k < setNum; k++)
-					set[k].receiveBlock();
+				for (Channel c : neighborChannel.values())
+					c.receiveBlock();
 			}
-			
-//			Scheduler scheduler = set[0].getReceiver().getNetwork().getScheduler();
-//			scheduler.schedule();
-			
+						
 		}
 		if (blocked) {
-			for (int k = 0; k < setNum; k++)
-				set[k].receiveAwake();
+			for (Channel c : neighborChannel.values())
+				c.receiveAwake();
 		}
 		return -1;
+	}
+	
+
+	public Collection<Channel> getChannels() {
+		return neighborChannel.values();
 	}
 }

@@ -9,7 +9,6 @@ public class CommitInfo {
 		leader = l;
 	}
 	
-	@Override
 	public String toString() {
 		return "" + id + "->" + leader;
 	}

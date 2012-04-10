@@ -2,25 +2,20 @@ package examples.dcop.algo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
-import examples.dcop.api.Stats;
 import examples.dcop.daj.Program;
 import examples.dcop.dcop.Constraint;
 import examples.dcop.dcop.Graph;
+import examples.dcop.dcop.Helper;
 import examples.dcop.dcop.Variable;
 
-
-
 public abstract class BasicAlgorithm extends Program {
-	
+
 	public static final String stabilityNotificationKey="dcop program is done!!";
-	 
-	protected Random random = new Random();
 	protected static final int reLockInterval = 8;
 	protected int lockBase;
 	protected int reLockTime;
-	protected Graph view;
+	public Graph view;
 	protected Variable self;
 	protected int lock;
 	private boolean done;
@@ -57,8 +52,8 @@ public abstract class BasicAlgorithm extends Program {
 		
 		lock = -1;
 		lockBase = 1;
-		reLockTime = random.nextInt(reLockInterval * lockBase * 4);
-		done = false;
+		reLockTime = Helper.random.nextInt(reLockInterval * lockBase * 4);
+		done=false;
 		
 		inChannelMap = new HashMap<Integer, Integer>();
 		outChannelMap = new HashMap<Integer, Integer>();
@@ -69,16 +64,11 @@ public abstract class BasicAlgorithm extends Program {
 
 	}
 	
-
 	public void setDone(boolean done) {
-		node.notify(done, stabilityNotificationKey);
+		if (done) System.out.println("from "+self.id+" !!!!!!!!!!!!!!!!!!!!!! "+getValue());
 		this.done = done;
+		node.notify(done, stabilityNotificationKey);
 	}
-
-	public boolean isStable() {
-		return done;
-	}
-	
 	public int getValue(){
 		return self.value;
 	}
@@ -87,25 +77,13 @@ public abstract class BasicAlgorithm extends Program {
 		return self.id;
 	}
 	
+	public boolean isStable() {
+		return done;
+	}
 	
-	
-//	public void incrementApplicationWastedCycles(){
+	@Override
+	abstract protected void main();
 
-//		DCOPApplication app = (DCOPApplication) this.node
-//				.getNetwork().getApplication();
-//		app.wastedCycles++;
-//	}
-	
-//	public void incrementApplicationNumberOfConflict(){
-//		DCOPApplication app = (DCOPApplication) this.node
-//				.getNetwork().getApplication();
-//		app.numberConflicts++;
-//	}
-	
-	
-	
-	
-//	
-//	@Override
-//	abstract protected void main();
+	public abstract void initialisation();
+
 }

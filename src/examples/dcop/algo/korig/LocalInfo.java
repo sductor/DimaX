@@ -6,8 +6,6 @@ import java.util.HashMap;
 import examples.dcop.dcop.Constraint;
 import examples.dcop.dcop.Variable;
 
-
-
 public class LocalInfo {
 	int id;
 	int value;

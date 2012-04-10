@@ -1,4 +1,4 @@
-package examples.dcop.api;
+package examples.dcop_old.api;
 
 import java.util.HashMap;
 
@@ -13,21 +13,23 @@ import dima.introspectionbasedagents.services.observingagent.NotificationEnvelop
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.APIAgent;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.IfailedException;
 import dimaxx.experimentation.Laborantin;
 import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.experimentation.SimulationEndedMessage;
-import examples.dcop.algo.*;
-import examples.dcop.algo.korig.AlgoKOptOriginal;
-import examples.dcop.algo.topt.AlgoKOptAPO;
-import examples.dcop.algo.topt.AlgoTOptAPO;
-import examples.dcop.daj.Channel;
-import examples.dcop.daj.Node;
-import examples.dcop.dcop.Constraint;
-import examples.dcop.dcop.Graph;
-import examples.dcop.dcop.Variable;
+import examples.dcop_old.algo.*;
+import examples.dcop_old.algo.korig.AlgoKOptOriginal;
+import examples.dcop_old.algo.topt.AlgoKOptAPO;
+import examples.dcop_old.algo.topt.AlgoTOptAPO;
+import examples.dcop_old.daj.Channel;
+import examples.dcop_old.daj.Node;
+import examples.dcop_old.daj.NodeIdentifier;
+import examples.dcop_old.dcop.Constraint;
+import examples.dcop_old.dcop.Graph;
+import examples.dcop_old.dcop.Variable;
 import examples.introspectionExamples.SimpleMessage;
 
 
@@ -39,11 +41,11 @@ public class DCOPLaborantin extends Laborantin {
 	// Fields
 	//
 
-	public Graph g;
+	public static Graph g;
 	Algorithm algo;
-	HashMap<Integer, Node> nodeMap;	
+	public static HashMap<Integer, Node> nodeMap;	
 	int grouping;
-	
+
 	//
 	// Competence
 	//
@@ -71,28 +73,6 @@ public class DCOPLaborantin extends Laborantin {
 	}
 
 
-
-	@Override
-	protected boolean simulationHasEnded() {
-		this.logMonologue("I've finished!!",LogService.onBoth);
-		//		this.getGlobalObservingService().writeResult();
-		this.wwait(10000);
-		this.notify(new SimulationEndedMessage());
-		this.sendNotificationNow();
-		this.logMonologue("my job is done! cleaning my lab bench...",LogService.onBoth);
-		this.setAlive(false);
-		//
-		//		for (Integer i : app.nodeMap.keySet()){
-		//			app.g.varMap.get(i).value = ((BasicAlgorithm) app.nodeMap.get(i).getProgram()).getValue();
-		//		}
-		//
-		//		System.out.println("Quality:\t" + app.g.evaluate());
-		//		System.out.println("GlobalTime:\t" + app.getNetwork().getScheduler().getTime());	
-
-		return true;
-	}
-
-
 	//
 	// Methods
 	//
@@ -110,9 +90,7 @@ public class DCOPLaborantin extends Laborantin {
 		}
 
 
-		int n = g.varMap.values().size();
 		nodeMap = new HashMap<Integer, Node>();
-		//		Node controller = new Node("Simulator",new Controller(this));
 
 		for (Variable v : g.varMap.values()) {
 			Node node = new Node("" + v.id, getAlgo(v));
@@ -123,13 +101,15 @@ public class DCOPLaborantin extends Laborantin {
 		for (Constraint c : g.conList) {
 			Node first = nodeMap.get(c.first.id);
 			Node second = nodeMap.get(c.second.id);
-			Channel.link(first, second);
-			Channel.link(second, first);
+			Channel.link2ways(first, second);
 		}
 
 		for (Node ag : nodeMap.values()){
+			addAgent(ag);
 			getGlobalObservingService().appIsStable.put(ag.getIdentifier(), false);
 		}
+
+		assert verification();
 	}
 
 
@@ -144,6 +124,38 @@ public class DCOPLaborantin extends Laborantin {
 		default: return null;
 		}
 	}
+
+	public boolean verification(){
+
+		for (Constraint c : g.conList){
+			assert Graph.constraintExist(DCOPLaborantin.g, c.first.id, c.second.id);
+
+			assert ((BasicAlgorithm) nodeMap.get(c.first.id).getProgram()).view.varMap.get(c.second.id)!=null;
+			assert ((BasicAlgorithm) nodeMap.get(c.second.id).getProgram()).view.varMap.get(c.first.id)!=null;
+			
+			assert nodeMap.get(c.first.id).getIn().getChannel(new NodeIdentifier(c.second.id))!=null;
+			assert nodeMap.get(c.second.id).getIn().getChannel(new NodeIdentifier(c.first.id))!=null;
+			assert nodeMap.get(c.first.id).getOut().getChannel(new NodeIdentifier(c.second.id))!=null;
+			assert nodeMap.get(c.second.id).getOut().getChannel(new NodeIdentifier(c.first.id))!=null;
+		}
+
+		for (BasicCompetentAgent a : getAgents()){
+			Node n = (Node) a;
+			for (Channel c : n.getIn().getChannels()){
+				assert c.getOwner().equals(n);
+				assert Graph.constraintExist(DCOPLaborantin.g, c.getOwner().getIdentifier().getAsInt(), c.getNeighbor());
+				assert ((BasicAlgorithm)n.getProgram()).view.varMap.containsKey(c.getNeighbor());	
+			}
+			for (Channel c : n.getOut().getChannels()){
+				assert c.getOwner().equals(n);
+				assert Graph.constraintExist(DCOPLaborantin.g, c.getOwner().getIdentifier().getAsInt(), c.getNeighbor());
+				assert ((BasicAlgorithm)n.getProgram()).view.varMap.containsKey(c.getNeighbor());	
+			}
+		}
+
+		return true;
+	}
+}
 
 //	/**
 //	 * @param args
@@ -171,4 +183,3 @@ public class DCOPLaborantin extends Laborantin {
 //		app.launchMySelf();
 //
 //	}
-}

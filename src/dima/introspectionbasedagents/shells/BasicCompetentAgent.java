@@ -124,13 +124,19 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return this.appliHasStarted;
 	}
 
 	public void setDarxEngine(final DimaXTask darxEngine) {
 		this.darxEngine=darxEngine;
 	}
+	
+
+	public Collection<Class<? extends AgentCompetence<BasicCompetentAgent>>> getCompetences(){
+		return myShell.loadedCompetence;
+	}
+	
 	//
 	// Launch
 	//
@@ -466,14 +472,16 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	@Override
 	public void sendMessage(final AgentIdentifier agentId, final Message am) {
 		super.sendMessage(agentId, am);
+		assert am.getSender().equals(this.getIdentifier());
 		this.log.logCommunication(am, MessageStatus.MessageSended);
 	}
 
 
 	@Override
 	public void receive(final Message m) {
-		super.receive(m);
+//		assert m.getReceiver().equals(this.getIdentifier());
 		this.log.logCommunication(m, MessageStatus.MessageReceived);
+		super.receive(m);
 	}
 	//
 	// Primitive

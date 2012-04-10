@@ -32,7 +32,7 @@ extends CommunicationComponent {
 	@Override
 	public void sendMessage(final Message m) {
 
-		final AgentIdentifier id = m.getReceiver();
+		final AgentIdentifier id = getMessageReceiver(m);
 		RemoteTask remote = null;
 		try {
 			remote = this.task.findTask(id.toString());

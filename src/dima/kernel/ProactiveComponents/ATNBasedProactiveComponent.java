@@ -32,7 +32,7 @@ public class ATNBasedProactiveComponent extends ProactiveComponent {
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return !this.currentState.isFinal();}
 	/**
 	 * step method comment.

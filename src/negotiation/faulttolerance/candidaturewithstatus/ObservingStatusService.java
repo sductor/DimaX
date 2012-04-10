@@ -54,7 +54,7 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 	//
 
 	public boolean iObserveStatus() {
-		return this.competenceIsActive();
+		return this.isActive();
 	}
 
 	protected ReplicationExperimentationParameters getSimulationParameters() {

@@ -30,7 +30,6 @@ public class TreeNode {
 		return parent.getTreeID();
 	}
 
-	@Override
 	public String toString() {
 		return "" + id + " " + value + "\n";
 	}

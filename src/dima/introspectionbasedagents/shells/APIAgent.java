@@ -491,7 +491,7 @@ public class APIAgent extends BasicCompetentAgent {
 					LogService.flush();
 					for (final BasicCompetentAgent c : this.toExecute) {
 						if (c.isAlive()){
-							if (c.competenceIsActive()){
+							if (c.isActive()){
 								c.preActivity();
 								LogService.flush();
 								c.step();

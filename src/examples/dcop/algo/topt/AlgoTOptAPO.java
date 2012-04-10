@@ -5,13 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import examples.dcop.algo.LockingBasicAlgorithm;
-import examples.dcop.api.Stats;
+import examples.dcop.algo.Stats;
 import examples.dcop.daj.Channel;
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
 import examples.dcop.dcop.Constraint;
+import examples.dcop.dcop.Helper;
 import examples.dcop.dcop.Variable;
-
-
 
 public class AlgoTOptAPO extends LockingBasicAlgorithm {
 
@@ -33,52 +32,49 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	}
 
 	protected void init() {
-		self.value = random.nextInt(self.domain);
+		self.value = Helper.random.nextInt(self.domain);
 		bestSolution = null;
 		center = null;
 		trivial = false;
 	}
 
-	public void initialisation(){
+	@Override
+	public void initialisation() {
 		// TODO Auto-generated method stub
 
-		for (int i = 0; i < in().getSize(); i++) {
-			int id =  ((Channel) in(i)).getSender();
-			inChannelMap.put(id, i);
+		for (Channel c : in().getChannels()) {
+			inChannelMap.put(c.getNeighbor().asInt(),c.getNeighbor().asInt());
 		}
 
-		for (int i = 0; i < out().getSize(); i++) {
-			int id = ((Channel) out(i)).getReceiver();
-			outChannelMap.put(id, i);
+		for (Channel c : out().getChannels()) {
+			outChannelMap.put(c.getNeighbor().asInt(),c.getNeighbor().asInt());
 		}
 
 		if (t > 0)
 			out().broadcast(new LocalConstraintMsg(self, t));
 		out().broadcast(new ValueMsg(self, t + 1));
 		changed = true;
-
-		// HashMap<Integer, Integer> valTTLMap = new HashMap<Integer,
-		// Integer>();
 	}
 
-
+	// HashMap<Integer, Integer> valTTLMap = new HashMap<Integer,
+	// Integer>();
 	HashMap<Integer, Integer> conTTLMap = new HashMap<Integer, Integer>();
 
 	@Override
 	protected void main() {
+
 		// if (self.id == 90)
 		// System.out.println("DEBUG");
 		int index = in().select(1);
 		if (index != -1) {
 
-
 			setDone(false);
 
-			DCOPMessage msg = in(index).receive(1);
-			if (msg == null)
-				yield();
+			DcopMessage msg = in(index).receive(1);
+			//				if (msg == null)
+			//					yield();
 
-			int sender = ((Channel) in(index)).getSender();
+			int sender = ((Channel) in(index)).getNeighbor().asInt();
 
 			if (msg instanceof ValueMsg) {
 				ValueMsg vmsg = (ValueMsg) msg;
@@ -223,7 +219,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 							if (lockBase < 16)
 								lockBase <<= 1;
 							reLockTime = getTime()
-									+ random.nextInt(reLockInterval
+									+ Helper.random.nextInt(reLockInterval
 											* lockBase);
 							removeLock(self.id);
 							waiting = false;
@@ -234,7 +230,9 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 												view.varMap.size(),
 												attempt, n, false));
 							}
-							//								incrementApplicationNumberOfConflict();
+							//								DCOPApplication app = (DCOPApplication) this.node
+							//										.getNetwork().getApplication();
+							//								app.numberConflicts++;
 						} else {
 							acceptSet.add(rmsg.id);
 							if (acceptSet.size() >= view.varMap.size()) {
@@ -277,7 +275,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 										reLockTime = getTime()
 												+ 2
 												* (t + 1)
-												+ +random
+												+ +Helper.random
 												.nextInt(2 * (t + 1));
 							}
 						}
@@ -297,7 +295,6 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 				Integer att = lockSet.get(cmsg.gid);
 				if (att == null || att != cmsg.attempt) {
 					return;
-//					continue;
 				}
 				if (self.value != lockVal) {
 					System.out.println(cmsg.gid + " " + self.id + " "
@@ -375,7 +372,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 									new CommitMsg(self.id, attempt, n));
 						}
 						reLockTime = getTime() + 2 * (t + 1)
-								+ +random.nextInt(2 * (t + 1));
+								+ +Helper.random.nextInt(2 * (t + 1));
 					}
 				}
 
@@ -409,7 +406,6 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 				}
 				lockMap.clear();
 			}
-
 			setDone(false);
 			if (!trivial) {
 				if (getTime() > 2 * t + 1 && changed) {
@@ -426,7 +422,9 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 											view.varMap.size(), attempt, n,
 											false));
 						}
-						//							incrementApplicationNumberOfConflict();
+						//							DCOPApplication app = (DCOPApplication) this.node
+						//									.getNetwork().getApplication();
+						//							app.numberConflicts++;
 					}
 				}
 				if (checkMove()) {
@@ -451,14 +449,16 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 
 					} else if (!waiting && lockVal == -1
 							&& getTime() <= reLockTime) {
-						//							incrementApplicationWastedCycles();
+						//							DCOPApplication app = (DCOPApplication) this.node
+						//									.getNetwork().getApplication();
+						//							app.wastedCycles++;
 					}
 				} else if (bestSolution != null
 						&& view.evaluate() >= view.evaluate(bestSolution))
 					setDone(true);
 			} else
 				setDone(true);
-			yield();
+			//				yield();
 		}
 	}
 
@@ -588,7 +588,6 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 				return false;
 	}
 
-	@Override
 	public String getText() {
 		String val = "";
 		for (Variable v : view.varMap.values()) {
@@ -612,4 +611,5 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 		+ lockVal + "\nNextLock: " + reLockTime
 		+ (isStable() ? "\nDONE" : "");
 	}
+
 }

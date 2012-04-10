@@ -95,7 +95,7 @@ public class MethodHandler extends SimpleMethodHandler {
 	}
 
 	public Object execute() throws Throwable {
-		if (!(this.caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) this.caller).competenceIsActive()) {
+		if (!(this.caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) this.caller).isActive()) {
 			try {
 				return this.execute(this.caller, this.args);
 			} catch (final IllegalAccessException e) {

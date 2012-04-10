@@ -1,5 +1,6 @@
 package examples.dcop.dcop;
 
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -16,8 +17,6 @@ import examples.dcop.algo.topt.AsyncHelper;
 import examples.dcop.algo.topt.DPOPTreeNode;
 import examples.dcop.algo.topt.RewardMatrix;
 import examples.dcop.algo.topt.TreeNode;
-
-
 
 
 public class Graph {
@@ -94,7 +93,6 @@ public class Graph {
 		for (Variable v : varMap.values())
 			list.add(v);
 		Collections.sort(list, new Comparator<Variable>() {
-			@Override
 			public int compare(Variable v0, Variable v1) {
 				if (v0.getDegree() >= v1.getDegree())
 					return -1;
@@ -406,5 +404,17 @@ public class Graph {
 			e.printStackTrace();
 		}
 
+	}
+
+	public String toString(){
+		return "VarMAP : "+varMap+" \n CONLIST "+conList;
+	}
+
+	public static boolean constraintExist(Graph g, int id1, int id2){
+		for (Constraint c : g.conList){
+			if ((c.first.id==id1 && c.second.id==id2) || (c.first.id==id2 && c.second.id==id1))
+				return true;
+		}
+		return false;		
 	}
 }

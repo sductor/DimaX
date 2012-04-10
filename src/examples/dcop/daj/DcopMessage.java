@@ -7,20 +7,14 @@
 // ----------------------------------------------------------------------------
 package examples.dcop.daj;
 
-import dima.basicagentcomponents.AgentName;
-import dima.basiccommunicationcomponents.AbstractMessage;
+import dima.basiccommunicationcomponents.Message;
 
-public class DCOPMessage extends dima.basiccommunicationcomponents.Message{
-	
-	public int getSenderAsInt(){
-		return new Integer(super.getSender().toString());
+public class DcopMessage extends Message{
+
+	public NodeIdentifier getSender(){
+		return (NodeIdentifier) super.getSender();
 	}
 	
-	public void setSender(Integer sender) {
-		super.setSender(new AgentName(sender.toString()));
-	}
-
-
 	// --------------------------------------------------------------------------
 	// return string denoting message content
 	// --------------------------------------------------------------------------
@@ -30,5 +24,9 @@ public class DCOPMessage extends dima.basiccommunicationcomponents.Message{
 	
 	public int getSize() {
 		return 0;
+	}
+	
+	public String description(){
+		return getText();
 	}
 }

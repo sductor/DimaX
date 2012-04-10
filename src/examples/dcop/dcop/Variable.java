@@ -1,6 +1,5 @@
 package examples.dcop.dcop;
 
-import java.util.Arrays;
 import java.util.Vector;
 
 public class Variable {
@@ -23,7 +22,7 @@ public class Variable {
 
 	public Variable(String s, Graph g) {
 		String[] ss = s.split(" ");
-		assert ss.length >= 4:Arrays.asList(ss);
+//		assert ss.length >= 5;
 		id = Integer.parseInt(ss[1]);
 		domain = Integer.parseInt(ss[3]);
 		graph = g;
@@ -69,9 +68,8 @@ public class Variable {
 			value = -1;
 	}
 
-	@Override
 	public String toString() {
-		return "VARIABLE " + id + " 1 " + domain + "\n";
+		return "VARIABLE " + id + " 1 " + domain + Helper.newline;
 	}
 
 	public int getDegree() {

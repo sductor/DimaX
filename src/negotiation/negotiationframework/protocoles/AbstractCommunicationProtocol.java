@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import negotiation.faulttolerance.candidaturewithstatus.Host;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
@@ -26,7 +26,6 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.shells.NotReadyException;
-import dimaxx.experimentation.ExperimentationProtocol;
 
 /**
  * Negotiation, as a protocol, provide : * the involved roles * the method to
@@ -134,9 +133,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 */
 
 	// @role(NegotiationInitiatorRole.class)
-	@StepComposant(ticker = ReplicationExperimentationProtocol._initiatorPropositionFrequency)
+	@StepComposant(ticker = ReplicationExperimentationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
-		if (this.competenceIsActive() && 
+		if (this.isActive() && 
 				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),contracts)
 				&& this.getMyAgent().getMyProposerCore().ImAllowedToNegotiate(this.getMyAgent().getMyCurrentState(), contracts)) {
 			try {
@@ -161,9 +160,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 */
 
 	// @role(NegotiationParticipant.class)
-	@StepComposant(ticker = ReplicationExperimentationProtocol._timeToCollect)
+	@StepComposant(ticker = ReplicationExperimentationParameters._timeToCollect)
 	void answer() {
-		if (this.competenceIsActive() && !this.getContracts().isEmpty()) {
+		if (this.isActive() && !this.getContracts().isEmpty()) {
 
 			//
 			// Selecting contracts
@@ -367,7 +366,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		assert !c.hasReachedExpirationTime();
 
 		assert c.getInitiator().equals(this.getMyAgent().getIdentifier());
-		assert this.contracts.contains(c) || c.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect):
+		assert this.contracts.contains(c) || c.willReachExpirationTime(ReplicationExperimentationParameters._timeToCollect):
 			"aaaaaaaaarrrgh" + "i should now "+ c;
 
 		this.logMonologue("I 've been accepted! =) "+c//+"\n"+this.getMyAgent().getMyCurrentState()

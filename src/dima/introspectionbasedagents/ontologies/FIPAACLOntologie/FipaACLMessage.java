@@ -244,6 +244,14 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		return null;
 	}
 
+	
+//	public FipaACLMessage clone(){
+//		FipaACLMessage m = new FipaACLMessage(this.performative, this.content, this.protocol);
+//		m.
+//	}
+	
+	
+	
 	//////////////////////////////////////////////://Bug apres cleanup d'éclipse////// : remettre methodhandler et faire l'import...
 	public void setAttachement(final Object[] attachement,
 			final Class<?>[] attachementSignature) {

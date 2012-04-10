@@ -15,10 +15,10 @@ import negotiation.faulttolerance.candidaturewithstatus.ObservingStatusService;
 import negotiation.faulttolerance.candidaturewithstatus.Replica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
-import negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -53,11 +53,11 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 public abstract class Laborantin extends BasicCompetentAgent {
 	private static final long serialVersionUID = -6358568153248160761L;
 
+
 	//
 	// Fields
 	//
 
-	private final ExperimentationParameters p;
 
 	APILauncherModule api;
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
@@ -73,7 +73,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	@Competence
 	public ObservationService myInformationService = new SimpleObservationService();
 
+	@Competence
+	public ObservingGlobalService observingService;
 
+	@Competence
+	private final ExperimentationParameters p;
+	
 	//
 	// Constructor
 	//
@@ -82,13 +87,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			throws CompetenceException, IfailedException, NotEnoughMachinesException{
 		super("Laborantin_of_"+p.getSimulationName());
 		this.p = p;
+		observingService=p.getGlobalObservingService();
+		observingService.setMyAgent(this);
 		this.api=api;
 		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;
 	}
 
-	protected abstract ObservingGlobalService getGlobalObservingService();
-
-	protected abstract boolean simulationHasEnded();
 
 	//
 	@ProactivityInitialisation
@@ -105,7 +109,11 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		do {
 			iFailed=false;
 			try {
-				this.instanciate(this.p);
+				Collection<? extends BasicCompetentAgent> ag = p.instanciate();
+				for (BasicCompetentAgent a : ag){
+					assert a.getCompetences().contains(ObservingGlobalService.class);
+					agents.put(a.getIdentifier(), a);
+				}
 			} catch (final IfailedException e) {
 				iFailed=true;
 				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
@@ -118,8 +126,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
 		//		this.agents.put(getIdentifier(), this);
-		this.getGlobalObservingService().setObservation();
-		this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
+		observingService.setObservation();
+		this.addObserver(new AgentName(p.experimentatorId), SimulationEndedMessage.class);
 		//		if (true)
 		//		//			throw new RuntimeException();
 		//				launch();
@@ -192,14 +200,14 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	@StepComposant()
 	@Transient
 	public boolean endSimulation(){
-		if (simulationHasEnded()){
+		if (observingService.simulationHasEnded()){
 			this.logMonologue("I've finished!!",LogService.onBoth);
-			this.getGlobalObservingService().writeResult();
+			observingService.writeResult();
 			this.wwait(10000);
 			//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
 			//					HostDisponibilityTrunk.remove(h);
-			this.notify(new SimulationEndedMessage());
-			this.sendNotificationNow();
+//			this.notify(new SimulationEndedMessage());
+//			this.sendNotificationNow();
 			//				this.logMonologue("notifications Sended", onBoth);
 
 			this.logMonologue("my job is done! cleaning my lab bench...",LogService.onBoth);
@@ -224,10 +232,6 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		return this.agents.get(id);
 	}
 
-	public void addAgent(final BasicCompetentAgent ag){
-		this.agents.put(ag.getIdentifier(),ag);
-	}
-
 	public Collection<AgentIdentifier> getIdentifiers(){
 		return this.agents.keySet();
 	}
@@ -243,15 +247,19 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	// Methods
 	//
 
-	protected abstract void instanciate(ExperimentationParameters p)
-			throws IfailedException, CompetenceException;
+	/*
+	 * Protocol
+	 */
+	
+	public abstract LinkedList<ExperimentationParameters> generateSimulation(String[] protocoleArgs);
 
+	/*
+	 * Déploiement
+	 */
 
-	//
-	// Behaviors
-	//
+	public abstract Integer getNumberOfAgentPerMachine();
 
-
+	
 
 	//
 	// Subclass

@@ -56,7 +56,7 @@ public class XCSAgentEnvironment implements dima.tools.XCS.Environment {
 	}
 	@Override
 	public boolean doReset() {
-		return ! this.agent.competenceIsActive();
+		return ! this.agent.isActive();
 	}
 	/**
 	 * Executes an action in the environment.

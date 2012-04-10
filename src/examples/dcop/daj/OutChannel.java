@@ -12,5 +12,5 @@ public interface OutChannel {
 	// --------------------------------------------------------------------------
 	// send `msg` to channel
 	// --------------------------------------------------------------------------
-	public void send(DCOPMessage msg);
+	public void send(DcopMessage msg);
 }

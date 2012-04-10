@@ -42,7 +42,7 @@ public class LogCommunication extends LogNotification {
 	@Override
 	public String generateLogToScreen() {
 		final String result = "*** On " + this.date + " ("
-				+ this.date.getTime() + "):\n" + " * " + this.getCaller()
+				+ this.date.getTime() + "):\n" + " * From Agent " + this.getCaller()
 				+ " :\n * New Message " + this.status + " *\n"
 				+ this.m.toString();
 		return result;

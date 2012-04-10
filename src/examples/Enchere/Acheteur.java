@@ -49,7 +49,7 @@ public class Acheteur extends SingleRoleAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return true;
 	}
 	/**

@@ -100,7 +100,7 @@ public class Actor extends BasicCommunicatingAgent {
 		return this.yoffqua;
 	}
 	@Override
-	public  boolean competenceIsActive() {
+	public  boolean isActive() {
 		return true;
 	}
 	public void kill() {

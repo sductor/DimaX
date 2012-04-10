@@ -14,18 +14,15 @@ public class DPOPTreeNode extends TreeNode {
 		gid = g;
 	}
 
-	@Override
 	public String toString() {
 		return "" + id + " " + value + " " + (fixed ? "*" : "-") + " " + reward
 				+ "\n" + mat + "\n";
 	}
 	
-	@Override
 	public int hashCode() {
 		return this.gid;
 	}
 	
-	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof DPOPTreeNode) {
 			DPOPTreeNode n = (DPOPTreeNode) obj;

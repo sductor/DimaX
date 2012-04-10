@@ -1,5 +1,6 @@
 package dimaxx.experimentation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,8 +21,8 @@ import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
-public abstract class ObservingGlobalService<Agent extends Laborantin>
-extends BasicAgentCompetence<Agent>{
+public abstract class ObservingGlobalService
+extends BasicAgentCompetence<Laborantin>{
 	private static final long serialVersionUID = -2893635425783775245L;
 
 	//
@@ -37,16 +38,7 @@ extends BasicAgentCompetence<Agent>{
 	// Constants
 	//
 
-	public static final long _state_snapshot_frequency = ExperimentationProtocol._simulationTime / 2;
-
-	//
-	// Constructor
-	//
-
-	public ObservingGlobalService(final Agent ag)
-			throws UnrespectedCompetenceSyntaxException {
-		super(ag);
-	}
+	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 2;
 
 	//
 	// Abstract
@@ -60,6 +52,14 @@ extends BasicAgentCompetence<Agent>{
 //
 //	protected abstract void updateAgentInfo(ExperimentationResults notification);
 	protected abstract void updateInfo(ExperimentationResults notification);
+
+
+	/**
+	 * 
+	 * @return true when the simulation is ended
+	 * must ensure every agent is destroyed!!!
+	 */
+	protected abstract boolean simulationHasEnded();
 	
 	protected abstract void writeResult();
 
@@ -134,7 +134,7 @@ extends BasicAgentCompetence<Agent>{
 	//
 
 	public static int getNumberOfTimePoints() {
-		return (int) (ExperimentationProtocol._simulationTime / _state_snapshot_frequency);
+		return (int) (ExperimentationParameters._maxSimulationTime / _state_snapshot_frequency);
 	}
 
 	public static int getTimeStep(final ExperimentationResults ag) {
@@ -149,7 +149,7 @@ extends BasicAgentCompetence<Agent>{
 	}
 
 	public long getMaxSimulationTime() {
-		return ExperimentationProtocol._simulationTime;
+		return ExperimentationParameters._maxSimulationTime;
 	}
 
 	//

@@ -31,7 +31,7 @@ public class DimaXTaskEngine extends Thread {
 
 		// Run
 		while (this.task.dimaComponent.isAlive()) {
-			if (this.task.dimaComponent.competenceIsActive() && this.task.dimaxTaskIsActive()){//Allows Suspend & Resume at agent && darx levels
+			if (this.task.dimaComponent.isActive() && this.task.dimaxTaskIsActive()){//Allows Suspend & Resume at agent && darx levels
 				this.task.dimaComponent.preActivity();
 				Thread.yield();
 				this.task.dimaComponent.step();

@@ -89,6 +89,8 @@ BasicCommunicatingShell {
 	public LogService<Agent> getExceptionHandler(){
 		return (LogService<Agent>) super.getExceptionHandler();
 	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public void load(final AgentCompetence<Agent> competence)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{

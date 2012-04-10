@@ -1,8 +1,8 @@
 package examples.dcop.algo.topt;
 
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
 
-public class LockMsg extends DCOPMessage {
+public class LockMsg extends DcopMessage {
 	int gid;
 	int val;
 	int attempt;
@@ -21,12 +21,10 @@ public class LockMsg extends DCOPMessage {
 		lock = l;
 	}
 
-	@Override
 	public String getText() {
 		return (lock ? "LOCK " : "UNLOCK ") + gid + "\n";
 	}
 
-	@Override
 	public int getSize() {
 		return 6;
 		// return 6 + 8 * node.getSize();

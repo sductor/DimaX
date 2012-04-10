@@ -46,14 +46,13 @@ public class Constraint {
 		return -1;
 	}
 	
-	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CONSTRAINT ");
 		buffer.append(first.id);
 		buffer.append(" ");
 		buffer.append(second.id);
-		buffer.append("\n");
+		buffer.append(Helper.newline);
 		for (int i = 0; i < d1; i++) {
 			for (int j = 0; j < d2; j++) {
 				buffer.append("F ");
@@ -62,7 +61,7 @@ public class Constraint {
 				buffer.append(j);
 				buffer.append(" ");
 				buffer.append(f[i][j]);
-				buffer.append("\n");
+				buffer.append(Helper.newline);
 			}
 		}
 		return buffer.toString();

@@ -17,27 +17,18 @@ import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import examples.dcop.algo.BasicAlgorithm;
 
-public class GlobalDCOPObservation extends ObservingGlobalService<DCOPLaborantin>{
+public class GlobalDCOPObservation extends ObservingGlobalService{
 
 	HashMap<AgentIdentifier,Boolean> appIsStable = new HashMap<AgentIdentifier, Boolean>();
 
 	HeavyDoubleAggregation[] agentsValueEvolution;
 
-	/* Quantile */
-	//
-	// Constructor
-	//
-
-	public GlobalDCOPObservation(DCOPLaborantin ag)
-			throws UnrespectedCompetenceSyntaxException {
-		super(ag);
-	}
 
 	//
 	// Accessors
 	//
 
-	public boolean appIsStable(){
+	public boolean simulationHasEnded(){
 		for (Boolean b : appIsStable.values()){
 			if (b == false)
 				return false;
@@ -83,12 +74,13 @@ public class GlobalDCOPObservation extends ObservingGlobalService<DCOPLaborantin
 
 	@Override
 	protected void writeResult() {
-		LogService.logOnFile(getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantileTimeEvolutionObs(getMyAgent().getSimulationParameters(),"reliability",
-						this.agentsValueEvolution, 0.75 * (
-								getMyAgent().getNbAgents() / 
-								getMyAgent().getNbAgents()),
-								getMyAgent().getNbAgents()), true,
-								false);
+		System.out.println("yooooooooooooooo");
+//		LogService.logOnFile(getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+//				.getQuantileTimeEvolutionObs(getMyAgent().getSimulationParameters(),"reliability",
+//						this.agentsValueEvolution, 0.75 * (
+//								getMyAgent().getNbAgents() / 
+//								getMyAgent().getNbAgents()),
+//								getMyAgent().getNbAgents()), true,
+//								false);
 	}
 }

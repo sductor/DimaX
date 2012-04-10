@@ -1,9 +1,9 @@
 package examples.dcop.algo.topt;
 
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
 import examples.dcop.dcop.Variable;
 
-public class ValueMsg extends DCOPMessage {
+public class ValueMsg extends DcopMessage {
 	int id;
 	int value;
 	int ttl;
@@ -21,7 +21,6 @@ public class ValueMsg extends DCOPMessage {
 		ttl = t;
 	}
 
-	@Override
 	public String getText() {
 		return ("ID " + id + ";VALUE " + value + ";TTL " + ttl);
 	}
@@ -34,7 +33,6 @@ public class ValueMsg extends DCOPMessage {
 		return msg;
 	}
 
-	@Override
 	public int getSize() {
 		return 13;
 	}

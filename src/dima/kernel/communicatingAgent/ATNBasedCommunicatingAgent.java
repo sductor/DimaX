@@ -49,7 +49,7 @@ public abstract class  ATNBasedCommunicatingAgent extends BasicCommunicatingAgen
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return !this.currentState.isFinal();}
 	/**
 	 * Insert the method's description here.

@@ -6,9 +6,6 @@ import java.util.HashSet;
 import examples.dcop.algo.topt.LockMsg;
 import examples.dcop.dcop.Variable;
 
-
-
-
 public abstract class LockingBasicAlgorithm extends BasicAlgorithm {
 
 	public HashMap<Integer, LockMsg> lockMap;

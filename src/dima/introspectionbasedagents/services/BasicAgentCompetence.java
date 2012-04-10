@@ -50,7 +50,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return this.active;
 	}
 

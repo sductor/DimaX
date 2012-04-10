@@ -212,7 +212,7 @@ class EcoTile extends EcoAgent {
 	 * Tests wheter a proactive object is active or no ie whether the ProactiveComponent.
 	 */
 	@Override
-	public  boolean competenceIsActive()
+	public  boolean isActive()
 	{return this.isSatisfied();}
 	@Override
 	public boolean isFree() {

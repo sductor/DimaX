@@ -1,8 +1,8 @@
 package examples.dcop.algo.topt;
 
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
 
-public class ResponseMsg extends DCOPMessage {
+public class ResponseMsg extends DcopMessage {
 	int id;
 	TreeNode node;
 	int attempt;
@@ -19,12 +19,10 @@ public class ResponseMsg extends DCOPMessage {
 		accept = a;
 	}
 
-	@Override
 	public String getText() {
 		return (accept ? "ACCEPT " : "DENY ") + id + "\n";
 	}
 
-	@Override
 	public int getSize() {
 		return 10;
 	}

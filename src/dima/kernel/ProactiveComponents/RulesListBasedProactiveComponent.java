@@ -111,7 +111,7 @@ public class RulesListBasedProactiveComponent extends ProactiveComponent {
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return this.rl.dontstop();
 	}
 	/**

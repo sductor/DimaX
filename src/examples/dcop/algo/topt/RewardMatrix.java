@@ -46,7 +46,6 @@ public class RewardMatrix {
 		return tmp % domain.get(id);
 	}
 
-	@Override
 	public String toString() {
 		String val = "[";
 		for (int i = 0;i<data.length;i++)

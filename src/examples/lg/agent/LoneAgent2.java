@@ -31,10 +31,10 @@ public class LoneAgent2 extends ProactiveComponent {
 	}
 
 	/**
-	 * @see Gdima.proactive.component.ProactiveComponent#competenceIsActive()
+	 * @see Gdima.proactive.component.ProactiveComponent#isActive()
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return !this.game.getWordToComplete().isComplete();
 	}
 

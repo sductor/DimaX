@@ -2,13 +2,11 @@ package examples.dcop.algo.topt;
 
 import java.util.ArrayList;
 
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
 import examples.dcop.dcop.Constraint;
 import examples.dcop.dcop.Variable;
 
-
-
-public class LocalConstraintMsg extends DCOPMessage {
+public class LocalConstraintMsg extends DcopMessage {
 	int id;
 	int domain;
 	int ttl;
@@ -29,7 +27,6 @@ public class LocalConstraintMsg extends DCOPMessage {
 		ttl = t;
 	}
 
-	@Override
 	public String getText() {
 		return ("LOCAL " + id + ";TTL " + ttl);
 	}
@@ -43,7 +40,6 @@ public class LocalConstraintMsg extends DCOPMessage {
 		return msg;
 	}
 
-	@Override
 	public int getSize() {
 		int size = 0;
 		for (int[] array : data)

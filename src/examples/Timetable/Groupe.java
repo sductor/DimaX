@@ -97,7 +97,7 @@ public class Groupe extends SingleRoleAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive()
+	public boolean isActive()
 	{
 		return !this.needs.isEmpty();
 	}

@@ -36,7 +36,7 @@ public abstract class ATNBasedReactiveAgent extends  BasicReactiveAgent  {
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return !this.currentState.isFinal();}
 	/**
 	 * step method comment.

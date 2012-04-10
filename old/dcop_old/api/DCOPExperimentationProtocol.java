@@ -1,4 +1,4 @@
-package examples.dcop.api;
+package examples.dcop_old.api;
 
 import java.io.File;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import dimaxx.server.HostIdentifier;
 public class DCOPExperimentationProtocol extends ExperimentationProtocol {
 
 	@Override
-	public LinkedList<ExperimentationParameters> generateSimulation() {
+	public LinkedList<ExperimentationParameters> generateSimulation(String[] args) {
 		LinkedList<ExperimentationParameters> expPs = new LinkedList<ExperimentationParameters>();
 		expPs.add(new FiledDCOPExperimentationParameters(Experimentator.myId, new File("yo"), "conf/1.dcop", 3, "TOPT"));
 		return expPs;
@@ -27,12 +27,12 @@ public class DCOPExperimentationProtocol extends ExperimentationProtocol {
 	public Laborantin createNewLaborantin(ExperimentationParameters p,
 			APILauncherModule api) throws NotEnoughMachinesException,
 			CompetenceException, IfailedException {
-		return new DCOPLaborantin(p,api,10);
+		return new DCOPLaborantin(p,api,Integer.MAX_VALUE);
 	}
 
 	@Override
 	public Integer getMaxNumberOfAgentPerMachine(HostIdentifier id) {
-		return 10;
+		return Integer.MAX_VALUE;
 	}
 	
 }

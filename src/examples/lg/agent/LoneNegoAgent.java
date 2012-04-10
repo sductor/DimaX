@@ -137,7 +137,7 @@ public class LoneNegoAgent extends MultiRolesAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive()
+	public boolean isActive()
 	{
 		//l'agent est actif tant qu'il n'a pas termin� le mot
 		return !this.game.getWordToComplete().isComplete();

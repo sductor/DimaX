@@ -1,10 +1,10 @@
 package examples.dcop.algo.topt;
 
-import examples.dcop.daj.DCOPMessage;
+import examples.dcop.daj.DcopMessage;
 import examples.dcop.dcop.Constraint;
 import examples.dcop.dcop.Variable;
 
-public class NeighborMsg extends DCOPMessage {
+public class NeighborMsg extends DcopMessage {
 	int id;
 	int ttl;
 	int[] neighbors;
@@ -25,7 +25,6 @@ public class NeighborMsg extends DCOPMessage {
 		ttl = t;
 	}
 
-	@Override
 	public String getText() {
 		return ("NEIGHBOR " + id + ";TTL " + ttl);
 	}
@@ -38,7 +37,6 @@ public class NeighborMsg extends DCOPMessage {
 		return msg;
 	}
 
-	@Override
 	public int getSize() {
 		return 9 + neighbors.length * 4;
 	}

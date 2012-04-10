@@ -36,7 +36,7 @@ public class Shark extends BasicReactiveAgent {
 		return this.posY;
 	}
 	@Override
-	public  boolean competenceIsActive() {
+	public  boolean isActive() {
 		final int dist = (int)Math.sqrt(Math.pow(Math.abs(this.getPosX() - 170), 2D) + Math.pow(Math.abs(this.getPosY() - 138), 2D));
 		return dist != Shark.bloodSmell / 2;
 	}

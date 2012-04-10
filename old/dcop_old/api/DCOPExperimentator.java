@@ -1,30 +1,29 @@
-package negotiation.faulttolerance.experimentation;
+package examples.dcop_old.api;
 
 import java.io.IOException;
-
-
+import java.util.Collection;
+import java.util.LinkedList;
 
 import org.jdom.JDOMException;
 
 import dima.introspectionbasedagents.services.CompetenceException;
+import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ExperimentationProtocol;
 import dimaxx.experimentation.Experimentator;
+import dimaxx.experimentation.IfailedException;
+import dimaxx.experimentation.Laborantin;
+import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
+import dimaxx.server.HostIdentifier;
 
-public class ReplicationExperimentator extends Experimentator {
+public class DCOPExperimentator extends Experimentator  {
 
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5800762843932232122L;
-
-	public ReplicationExperimentator()
+	public DCOPExperimentator(ExperimentationProtocol myProtocol)
 			throws CompetenceException {
-		super(new ReplicationExperimentationProtocol());
+		super(myProtocol);
 	}
 
 	public static void main(final String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
-		final ReplicationExperimentator exp = new ReplicationExperimentator();
+		final DCOPExperimentator exp = new DCOPExperimentator(new DCOPExperimentationProtocol());
 		exp.run(args);
 	}
 
@@ -33,4 +32,5 @@ public class ReplicationExperimentator extends Experimentator {
 				+ExperimentationProtocol._simulationTime/1000.+
 				"secs  on "+this.getApi().getAvalaibleHosts().size()+" machine";//+ReplicationExperimentationProtocol.nbSimuPerMAchine+" simu per machine"
 	}
+	
 }

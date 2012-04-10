@@ -18,7 +18,6 @@ public class GainInfo {
 		return valMap.size() * 8 + 8;
 	}
 	
-	@Override
 	public String toString() {
 		return "" + id + ":" + gain;
 	}

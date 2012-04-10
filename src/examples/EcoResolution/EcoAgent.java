@@ -111,7 +111,7 @@ public  abstract class EcoAgent extends BasicReactiveAgent{
 		}
 	}
 	@Override
-	public  boolean competenceIsActive()
+	public  boolean isActive()
 	{return this.isSatisfied();}
 	/**
 Tests wheter a proactive object has reached it goal or

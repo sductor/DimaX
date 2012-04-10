@@ -93,7 +93,7 @@ public class Enseignant extends MultiRolesAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public boolean competenceIsActive()
+	public boolean isActive()
 	{
 		return !this.needs.isEmpty();
 	}

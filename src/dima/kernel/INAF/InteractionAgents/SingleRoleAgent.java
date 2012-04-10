@@ -125,7 +125,7 @@ public abstract class SingleRoleAgent extends InteractiveAgent
 	 * isActive method comment.
 	 */
 	@Override
-	public abstract boolean competenceIsActive();
+	public abstract boolean isActive();
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (01/09/2003 09:54:33)

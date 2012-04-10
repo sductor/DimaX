@@ -21,10 +21,6 @@ public abstract class Program {
 	}
 
 	// --------------------------------------------------------------------------
-	// before executing after everyone as been created
-	// --------------------------------------------------------------------------
-	protected abstract void initialisation();
-	// --------------------------------------------------------------------------
 	// user program executed by node
 	// --------------------------------------------------------------------------
 	protected abstract void main();
@@ -71,22 +67,21 @@ public abstract class Program {
 		return node.getSwitches();
 	}
 
-	// --------------------------------------------------------------------------
-	// invoke scheduler
-	// --------------------------------------------------------------------------
-	protected void yield() {
-		Thread.yield();
-	}
-
-	// --------------------------------------------------------------------------
-	// sleep for `n` scheduling periods
-	// --------------------------------------------------------------------------
-	protected void sleep(int n) {
-		for (int i = 0; i < n; i++)
-			yield();
-	}
-}
-
+//	// --------------------------------------------------------------------------
+//	// invoke scheduler
+//	// --------------------------------------------------------------------------
+//	protected void yield() {
+//		node.getNetwork().getScheduler().schedule();
+//	}
+//
+//	// --------------------------------------------------------------------------
+//	// sleep for `n` scheduling periods
+//	// --------------------------------------------------------------------------
+//	protected void sleep(int n) {
+//		for (int i = 0; i < n; i++)
+//			yield();
+//	}
+//
 //	// --------------------------------------------------------------------------
 //	// exit from network execution with code `n`
 //	// --------------------------------------------------------------------------
@@ -96,7 +91,7 @@ public abstract class Program {
 //			network.print("Execution has terminated with exit code " + String.valueOf(n));
 //		network.exit(n);
 //	}
-
+//
 //	// --------------------------------------------------------------------------
 //	// state that global network state fulfills assertion `a`
 //	// --------------------------------------------------------------------------
@@ -116,3 +111,4 @@ public abstract class Program {
 //		Visualizer visualizer = node.getNetwork().getVisualizer();
 //		if (visualizer != null) visualizer.stop();
 //	}
+}

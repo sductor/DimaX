@@ -7,19 +7,21 @@
 // ----------------------------------------------------------------------------
 package examples.dcop.daj;
 
+import dima.basicagentcomponents.AgentIdentifier;
+
 public class InChannelSet extends ChannelSet {
 
 	// --------------------------------------------------------------------------
 	// add `channel` to set
 	// --------------------------------------------------------------------------
 	public void addChannel(InChannel channel) {
-		super.addChannel((Channel) channel, true);
+		super.addChannel((Channel) channel);
 	}
 
 	// --------------------------------------------------------------------------
 	// return channel numbered `i` in set
 	// --------------------------------------------------------------------------
-	public InChannel getChannel(int i) {
-		return channel(i);
+	public InChannel getChannel(int id) {
+		return channel(id);
 	}
 }

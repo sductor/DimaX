@@ -22,7 +22,7 @@ public class AgentMult extends BasicCommunicatingAgent {
 	}
 
 	@Override
-	public boolean competenceIsActive() {
+	public boolean isActive() {
 		return true;
 	}
 

@@ -1,10 +1,10 @@
-package examples.dcop.api;
+package examples.dcop_old.api;
 
 import java.io.File;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.experimentation.ExperimentationParameters;
-import examples.dcop.algo.Algorithm;
+import examples.dcop_old.algo.Algorithm;
 
 public class FiledDCOPExperimentationParameters extends ExperimentationParameters{
 

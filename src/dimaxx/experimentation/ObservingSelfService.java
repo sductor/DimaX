@@ -55,11 +55,8 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	//
 
 	public class ActivityLog extends Message {
-
-		/**
-		 *
-		 */
 		private static final long serialVersionUID = -1828186933572497512L;
+		
 		LinkedList<ExperimentationResults> results =
 				new LinkedList<ExperimentationResults>();
 

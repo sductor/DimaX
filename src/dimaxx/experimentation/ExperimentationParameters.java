@@ -55,7 +55,7 @@ extends BasicAgentModule<Agent> {
 	public ExperimentationParameters(AgentIdentifier experimentatorId, String resultPath) {
 		super();
 		this.experimentatorId = experimentatorId;
-		this.resultPath = new File(LogService.getMyPath()+"result_"+resultPath);
+		this.resultPath = new File("result_"+resultPath);
 	}
 
 	//

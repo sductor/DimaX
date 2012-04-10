@@ -106,6 +106,7 @@ public final class Experimentator extends APIAgent{
 					nextSimu.initiateParameters();
 					l = nextSimu.createLaborantin(this.getApi());//new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
 					ExperimentationParameters.currentlyInstanciating=false;
+					l.addObserver(getIdentifier(), SimulationEndedMessage.class);
 					l.launchWith(this.getApi());
 					this.startActivity(l);
 					this.launchedSimu.put(l.getId(), l);

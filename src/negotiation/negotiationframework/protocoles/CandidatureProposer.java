@@ -3,7 +3,6 @@ package negotiation.negotiationframework.protocoles;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;

@@ -102,6 +102,16 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 		for (final ExperimentationResults r : results) {
 			this.updateInfo(r);
+
+			if (r.isLastInfo()){
+				setAgentHasEnded(r.getId());
+
+				this.logMonologue(r.getId()
+						+" has finished!, " +
+						"\n * remaining agents "+remainingAgent.size()
+						//					+"\n * remaining hosts "+remainingHost.size()
+						,LogService.onFile);
+			}
 		}
 
 		if (results.getLast() instanceof ReplicationResultAgent) {
@@ -110,29 +120,11 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 	}
 
-	private void update(final ExperimentationResults r) {
-		//		if (r.isHost()) {
-		//			this.updateHostInfo(r);
-		//		} else {
-		//			this.updateAgentInfo(r);
-		//		}
-		this.updateInfo(r);
-
-		if (r.isLastInfo()){
-			setAgentHasEnded(r.getId());
-
-			this.logMonologue(r.getId()
-					+" has finished!, " +
-					"\n * remaining agents "+remainingAgent.size()
-					//					+"\n * remaining hosts "+remainingHost.size()
-					,LogService.onFile);
-		}
-	}
-
 	public void setAgentHasEnded(AgentIdentifier id){
+//		getMyAgent().logMonologue("agent is dead "+id, LogService.onBoth);
 		remainingAgent.remove(id);
 	}
-	
+
 	//
 	// Time Primitives
 	//
@@ -261,10 +253,11 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		assert (!alreadyReceived.contains(resultType.getId())):"argh! already received"+resultType.getId();
 		alreadyReceived.add(resultType.getId());
 		assert (results.size()<=getNumberOfTimePoints()):"arg : "+results.size();
-		System.out.println("\n"+resultType.getId()+"   "+_state_snapshot_frequency+" :");
-		for (final ExperimentationResults r : results){
-			System.out.println(r.getUptime()+"  "+getTimeStep(r));
-		}
+//		String result ="Agent has sended results \n"+resultType.getId()+"   "+_state_snapshot_frequency+" :";
+//		for (final ExperimentationResults r : results){
+//			result+=r.getUptime()+"  "+getTimeStep(r)+"\n";
+//		}
+//		getMyAgent().logMonologue(result, LogService.onBoth);
 		return true;
 	}
 }

@@ -19,26 +19,43 @@ import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
 import dimaxx.server.HostIdentifier;
 
+
+/**
+ * Expérimentation parameters contient les paramaètres pour lancer une expériences.
+ * Ces paramètres sont supposé être initialement représenté de façon légère en mémoire.
+ * La méthode initiate génére un jeu de parametre fixe
+ * La méthode instanciate crèè les agents à partir de ces paramètres
+ * 
+ * generateSimulation, et createLAborantin font partie des méthodes de protocles : elle permettent à l'expérimentator de lancer un ensemble d'expériences
+ * 
+ * Les résultats sont transmis par la compétence ObservingSelfCompétence de chaque agent à la compétence ObservingGlobalCompetence
+ * 
+ * 
+ * @author Sylvain Ductor
+ *
+ * @param <Agent> le type de laborantin associé
+ */
 public abstract class ExperimentationParameters<Agent extends Laborantin>
 extends BasicAgentModule<Agent> {
 	private static final long serialVersionUID = -1735965270944987539L;
 
 	public static final long _maxSimulationTime = 1000 * 10;
 	public static boolean currentlyInstanciating;
-	final String resultPath;
+	final File resultPath;
+	
 	//
 	// Fields
 	//
 	
 	private final String simulationName = ExperimentationParameters.newName();
-	protected final String experimentatorId;
+	protected final AgentIdentifier experimentatorId;
 
 
 	
-	public ExperimentationParameters(String experimentatorId, String resultPath) {
+	public ExperimentationParameters(AgentIdentifier experimentatorId, String resultPath) {
 		super();
 		this.experimentatorId = experimentatorId;
-		this.resultPath = resultPath;
+		this.resultPath = new File(LogService.getMyPath()+"result_"+resultPath);
 	}
 
 	//
@@ -49,6 +66,10 @@ extends BasicAgentModule<Agent> {
 		return this.simulationName;
 	}
 
+	public File getResultPath() {
+		return resultPath;
+	}
+	
 	//
 	// Abstract Methods
 	//
@@ -59,9 +80,9 @@ extends BasicAgentModule<Agent> {
 
 	/**
 	 * Generate parameters values
+	 * 
 	 */	
 	public abstract  void initiateParameters();	
-	public abstract boolean isInitiated();
 	
 	/**
 	 * Instanciate the agents
@@ -72,15 +93,28 @@ extends BasicAgentModule<Agent> {
 	
 	protected abstract Collection<? extends BasicCompetentAgent> instanciate() throws IfailedException, CompetenceException;
 	
-	//
-	// Observation
-	//
+	/*
+	 * 
+	 */
 	
+	public abstract  Laborantin createLaborantin(final APILauncherModule api)throws CompetenceException, IfailedException, NotEnoughMachinesException;
+	
+	//
+	// Methods
+	//
 
-	protected ObservingGlobalService getGlobalObservingService(){
-		return getMyAgent().observingService;
-	}
+	/*
+	 * Protocol
+	 */
 	
+	public abstract LinkedList<ExperimentationParameters> generateSimulation();
+
+	/*
+	 * Déploiement
+	 */
+
+	public abstract Integer getMaxNumberOfAgent(HostIdentifier h);
+
 	
 
 	//
@@ -106,7 +140,8 @@ extends BasicAgentModule<Agent> {
 		}
 		result+="**************";
 		return result;
-	}	
+	}
+
 }
 
 ////Return new laborantin and update machines usage

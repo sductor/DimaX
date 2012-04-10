@@ -11,6 +11,8 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -79,11 +81,9 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final ResourceIdentifier id,
 			final double hostMaxProc, final double hostMaxMem,
 			final double lambda,
-			final HostCore myRationality,
-			final SimpleSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
-			final ProposerCore<
-			SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
-			ReplicationSpecification, HostState, ReplicationCandidature> 	proposerCore,
+			final RationalCore myRationality,
+			final SelectionCore participantCore,
+			final ProposerCore 	proposerCore,
 			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {

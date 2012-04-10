@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
+import negotiation.negotiationframework.NegotiationParameters;
+
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dimaxx.experimentation.ExperimentationProtocol;
 
 public class ContractIdentifier implements DimaComponentInterface {
 	private static final long serialVersionUID = -2323466527487757579L;
@@ -103,7 +103,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 				+ "),(expired?"
 				+ this.hasReachedExpirationTime()
 				+ ", will expire?"
-				+ this.willReachExpirationTime(ReplicationExperimentationProtocol._timeToCollect)
+				+ this.willReachExpirationTime(NegotiationParameters._timeToCollect)
 				+ ")";
 	}
 

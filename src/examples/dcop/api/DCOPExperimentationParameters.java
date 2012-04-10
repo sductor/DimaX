@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
@@ -16,7 +17,10 @@ import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.Experimentator;
 import dimaxx.experimentation.IfailedException;
+import dimaxx.experimentation.Laborantin;
+import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
 import dimaxx.experimentation.ObservingGlobalService;
+import dimaxx.server.HostIdentifier;
 import examples.dcop.algo.AlgoMGM1;
 import examples.dcop.algo.Algorithm;
 import examples.dcop.algo.BasicAlgorithm;
@@ -30,7 +34,7 @@ import examples.dcop.dcop.Constraint;
 import examples.dcop.dcop.Graph;
 import examples.dcop.dcop.Variable;
 
-public class DCOPExperimentationParameters extends ExperimentationParameters{
+public class DCOPExperimentationParameters extends ExperimentationParameters<Laborantin>{
 
 	//
 	// Fields
@@ -42,25 +46,19 @@ public class DCOPExperimentationParameters extends ExperimentationParameters{
 	public static HashMap<Integer, Node> nodeMap;	
 	int grouping;
 
-	//
-	// Competence
-	//
-
-	@Competence
-	GlobalDCOPObservation gdo = new GlobalDCOPObservation();
 
 	//
 	// Constructor
 	// 
 
 	public DCOPExperimentationParameters(
-			String experimentatorId,
+			AgentIdentifier experimentatorId,
 			String resultPath){
 		super(experimentatorId, resultPath);		
 	}
 	
 	public DCOPExperimentationParameters(
-			String experimentatorId,
+			AgentIdentifier experimentatorId,
 			String resultPath,
 			String filename, 
 			int grouping, 
@@ -81,13 +79,8 @@ public class DCOPExperimentationParameters extends ExperimentationParameters{
 	//
 
 	@Override
-	public Integer getNumberOfAgentPerMachine() {
+	public Integer getMaxNumberOfAgent(HostIdentifier h) {
 		return Integer.MAX_VALUE;
-	}
-
-	@Override
-	protected GlobalDCOPObservation getGlobalObservingService() {
-		return gdo;
 	}
 
 	//
@@ -95,7 +88,7 @@ public class DCOPExperimentationParameters extends ExperimentationParameters{
 	//
 
 	@Override
-	public LinkedList<ExperimentationParameters> generateSimulation(String[] args) {
+	public LinkedList<ExperimentationParameters> generateSimulation() {
 		LinkedList<ExperimentationParameters> expPs = new LinkedList<ExperimentationParameters>();
 		expPs.add(new DCOPExperimentationParameters(this.experimentatorId, this.filename, "conf/1.dcop", 1, "TOPT"));
 		return expPs;
@@ -112,14 +105,9 @@ public class DCOPExperimentationParameters extends ExperimentationParameters{
 		nodeMap = new HashMap<Integer, Node>();
 	}
 
-	@Override
-	public boolean isInitiated() {
-		return g!=null;
-	}
 
 	@Override
-	protected Collection<? extends BasicCompetentAgent> instanciate()
-			throws IfailedException, CompetenceException {
+	protected Collection<? extends BasicCompetentAgent> instanciate() throws CompetenceException {
 
 		for (Variable v : g.varMap.values()) {
 			Node node = new Node(getAlgo(v));
@@ -134,7 +122,7 @@ public class DCOPExperimentationParameters extends ExperimentationParameters{
 		}
 
 		for (Node ag : nodeMap.values()){
-			getGlobalObservingService().appIsStable.put(ag.getIdentifier(), false);
+			((GlobalDCOPObservation)getMyAgent().getObservingService()).appIsStable.put(ag.getIdentifier(), false);
 		}
 
 		assert verification();
@@ -191,7 +179,13 @@ public class DCOPExperimentationParameters extends ExperimentationParameters{
 	//
 
 	public static void main(final String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
-		final Experimentator exp = new Experimentator(new DCOPExperimentationParameters("ziDcopExperimentator","dcopResult"));
+		final Experimentator exp = new Experimentator(new DCOPExperimentationParameters(new AgentName("ziDcopExperimentator"),"dcopResult"));
 		exp.run(args);
+	}
+
+	@Override
+	public Laborantin createLaborantin(final APILauncherModule api) throws CompetenceException,
+			IfailedException, NotEnoughMachinesException {
+		return new Laborantin(this,new GlobalDCOPObservation(),api);
 	}
 }

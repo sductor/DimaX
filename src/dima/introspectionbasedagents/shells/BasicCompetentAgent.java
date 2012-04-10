@@ -35,7 +35,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	// Fields
 	//
 
-	BasicCompetenceShell myShell;
 	public static int nbCompetentAgent=0;
 	DimaXTask<BasicCompetentAgent> darxEngine=null;
 	APILauncherModule myApi;
@@ -83,23 +82,11 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	// Accessors
 	//
 
-	//	public void activateCompetence(final AgentCompetence competenceIdentifier) {
-	//		try {
-	//			this.myShell.activateCompetence(competenceIdentifier, true);
-	//		} catch (final UnknownCompetenceException e) {
-	//			LoggerManager.writeException(this,
-	//					"Trying to activate an unknown competence", e);
-	//		}
-	//	}
-	//
-	//	public void desActivateCompetence(final AgentCompetence competenceIdentifier) {
-	//		try {
-	//			this.myShell.activateCompetence(competenceIdentifier, false);
-	//		} catch (final UnknownCompetenceException e) {
-	//			this.log.logException(
-	//					"Trying to desactivate an unknown competence", e);
-	//		}
-	//	}
+
+
+	public BasicCompetenceShell<BasicCompetentAgent> getMyShell() {
+		return (BasicCompetenceShell<BasicCompetentAgent>) myShell;
+	}
 
 	public Date getCreationTime() {
 		return this.creation;
@@ -113,14 +100,14 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	//		this.creation = new Date();
 	//	}
 
-	public void load(final BasicAgentCompetence<CompetentComponent> newComp)
+	public void load(final BasicAgentCompetence<BasicCompetentAgent> newComp)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException, UnrespectedCompetenceSyntaxException{
-		this.myShell.load(newComp);
+		this.getMyShell().load(newComp);
 	}
 
-	public void unload(final BasicAgentCompetence<CompetentComponent> newComp)
+	public void unload(final BasicAgentCompetence<BasicCompetentAgent> newComp)
 			throws UnInstanciedCompetenceException, DuplicateCompetenceException{
-		this.myShell.unload(newComp);
+		this.getMyShell().unload(newComp);
 	}
 
 	@Override
@@ -131,12 +118,12 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public void setDarxEngine(final DimaXTask darxEngine) {
 		this.darxEngine=darxEngine;
 	}
-	
+
 
 	public Collection<Class<? extends AgentCompetence<BasicCompetentAgent>>> getCompetences(){
-		return myShell.loadedCompetence;
+		return getMyShell().loadedCompetence;
 	}
-	
+
 	//
 	// Launch
 	//
@@ -169,7 +156,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean start(final StartActivityMessage m){
 		this.appliHasStarted=true;
 		this.creation = m.getStartDate();
-//		this.logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
+		//		this.logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
 		return true;
 	}
 
@@ -228,7 +215,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 			final String compMethodToTest,  final Class<?>[] compSignature, final Object[] compargs,
 			final String agMethodToExecute,  final Class<?>[] agSignature, final Object[] agargs){
 		try {
-			return this.myShell.addHook(comp,
+			return this.getMyShell().addHook(comp,
 					compMethodToTest, compSignature, compargs,
 					this, agMethodToExecute, agSignature, agargs);
 		} catch (final Exception e) {
@@ -251,7 +238,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean retryWhen(final AgentCompetence comp,
 			final String methodToTest, final ActiveComponentInterface methodComponent, final Object[] testArgs, final Object[] methodsArgs){
 		try {
-			return this.myShell.addHook(
+			return this.getMyShell().addHook(
 					comp,
 					methodToTest,
 					null, testArgs,
@@ -268,7 +255,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public boolean retryWhen(final AgentCompetence comp,
 			final String methodToTest, final Object[] testArgs, final Object[] methodsArgs){
 		try {
-			return this.myShell.addHook(
+			return this.getMyShell().addHook(
 					comp,
 					methodToTest,
 					null, testArgs,
@@ -288,7 +275,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	@Override
 	public boolean whenIsReady(final NotReadyException e){
 		try {
-			return this.myShell.addHook(e.comp,
+			return this.getMyShell().addHook(e.comp,
 					e.compMethodToTest, e.compSignature, e.compargs,
 					this, e.agMethodToExecute, e.agSignature, e.agargs);
 		} catch (final Exception e2) {
@@ -479,7 +466,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	@Override
 	public void receive(final Message m) {
-//		assert m.getReceiver().equals(this.getIdentifier());
+		//		assert m.getReceiver().equals(this.getIdentifier());
 		this.log.logCommunication(m, MessageStatus.MessageReceived);
 		super.receive(m);
 	}
@@ -496,10 +483,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		}
 	}
 
-	//	 @Override
-	//	 public void finalize(){
-	//		 this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(",LogService.onBoth);
-	//	 }
+	@Override
+	public void finalize(){
+		this.logMonologue("I'm dead : I won't bother the cpu and the ram anymore... farewell my friends =,(",LogService.onBoth);
+	}
 
 	@Override
 	public String toString(){
@@ -508,3 +495,23 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 
 }
+
+
+
+//	public void activateCompetence(final AgentCompetence competenceIdentifier) {
+//		try {
+//			this.myShell.activateCompetence(competenceIdentifier, true);
+//		} catch (final UnknownCompetenceException e) {
+//			LoggerManager.writeException(this,
+//					"Trying to activate an unknown competence", e);
+//		}
+//	}
+//
+//	public void desActivateCompetence(final AgentCompetence competenceIdentifier) {
+//		try {
+//			this.myShell.activateCompetence(competenceIdentifier, false);
+//		} catch (final UnknownCompetenceException e) {
+//			this.log.logException(
+//					"Trying to desactivate an unknown competence", e);
+//		}
+//	}

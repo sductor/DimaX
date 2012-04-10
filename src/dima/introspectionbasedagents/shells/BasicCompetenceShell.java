@@ -56,6 +56,7 @@ BasicCommunicatingShell {
 		}
 		if (this.myMainComponent instanceof BasicCompetentAgent) {
 			final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
+//			agent.myShell=this;
 			PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
 
 		}
@@ -233,7 +234,7 @@ BasicCommunicatingShell {
 				}
 
 				if (myComp==null) {
-					throw new RuntimeException("wtf!!!!!"+comp);
+					throw new RuntimeException("the competence "+comp+" of agent "+mainComponent+" is not instanciated!!");
 				} else {
 					result.add(myComp);
 				}

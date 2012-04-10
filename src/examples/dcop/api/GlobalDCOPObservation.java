@@ -17,7 +17,7 @@ import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import examples.dcop.algo.BasicAlgorithm;
 
-public class GlobalDCOPObservation extends ObservingGlobalService{
+public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 
 	HashMap<AgentIdentifier,Boolean> appIsStable = new HashMap<AgentIdentifier, Boolean>();
 

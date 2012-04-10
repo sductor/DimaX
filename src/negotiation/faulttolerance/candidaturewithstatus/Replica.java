@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Random;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
@@ -15,6 +14,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -113,11 +113,9 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final Double criticity,
 			final Double procCharge,
 			final Double memCharge,
-			final RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> myRationality,
-			final SimpleSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
-			final ProposerCore<
-			SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
-			ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
+			final RationalCore myRationality,
+			final SelectionCore participantCore,
+			final ProposerCore proposerCore,
 			final ObservationService myInformation,
 			final boolean dynamicCriticity)
 					throws CompetenceException {
@@ -160,21 +158,21 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-	@StepComposant(ticker=ReplicationExperimentationProtocol._criticity_update_frequency)
+	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
 	public void updateMyCriticity() {
 		if (this.dynamicCrticity){
 			final Random r = new Random();
-			if (r.nextDouble() <= ReplicationExperimentationProtocol._criticityVariationProba) {// On
+			if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
 				// met a jour
 				final int signe = r.nextBoolean() ? 1 : -1;
 				final Double newCriticity = Math
 						.min(1.,
 								Math.max(
-										ReplicationExperimentationProtocol._criticityMin,
+										ReplicationExperimentationParameters._criticityMin,
 										this.getMyCurrentState().getMyCriticity()
 										+ signe
 										* r.nextDouble()
-										* ReplicationExperimentationProtocol._criticityVariationAmplitude));
+										* ReplicationExperimentationParameters._criticityVariationAmplitude));
 				this.logWarning("Updating my criticity", LogService.onNone);
 				this.setNewState(
 						new ReplicaState(

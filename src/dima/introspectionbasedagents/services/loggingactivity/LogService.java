@@ -55,11 +55,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public  boolean activateCommSendtoScreen = false;
 	public  boolean activateCommReceivtoScreen = false;
 	public  boolean activateExceptoScreen = true;
-	public static  Boolean activateMonotoScreen = null;
+	public static  Boolean activateMonotoScreen = true;
 	//Order or the log to be written in specific files
-	public static Boolean activateMonoToFiles = null;
+	public static Boolean activateMonoToFiles = true;
 	public boolean activateCommSendtoFiles = true;
-	public boolean activateCommReceivtoFiles = true;
+	public boolean activateCommReceivtoFiles = false;
 	public  boolean activateExceptoFile = true;
 
 	/***********************************************************************

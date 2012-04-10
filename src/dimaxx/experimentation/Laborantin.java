@@ -50,8 +50,10 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
  *
  */
 
-public abstract class Laborantin extends BasicCompetentAgent {
+public class Laborantin extends BasicCompetentAgent {
 	private static final long serialVersionUID = -6358568153248160761L;
+
+
 
 
 	//
@@ -64,7 +66,8 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
 	private Map<BasicCompetentAgent, HostIdentifier> locations;
 
-	int numberOfAgentPerMAchine;
+//	int numberOfAgentPerMAchine;
+	private final ExperimentationParameters p;
 
 	//
 	// Competence
@@ -75,35 +78,29 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	@Competence
 	public ObservingGlobalService observingService;
-
-	@Competence
-	private final ExperimentationParameters p;
 	
 	//
 	// Constructor
 	//
 
-	public Laborantin(final ExperimentationParameters p, final APILauncherModule api, final int numberOfAgentPerMAchine)
+	public Laborantin(final ExperimentationParameters p, ObservingGlobalService observingService, final APILauncherModule api)
 			throws CompetenceException, IfailedException, NotEnoughMachinesException{
 		super("Laborantin_of_"+p.getSimulationName());
 		this.p = p;
-		observingService=p.getGlobalObservingService();
-		observingService.setMyAgent(this);
+		this.observingService=observingService;
 		this.api=api;
-		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;
-	}
-
-
-	//
-	@ProactivityInitialisation
-	public void startSimu() throws CompetenceException, NotEnoughMachinesException, IfailedException{
-
-		assert p.isInitiated();
+//		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;		
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
-		this.logMonologue("Launching : \n"+this.p,LogService.onBoth);
-		System.out.println("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
-				this.getSimulationParameters().getSimulationName()+"\n"+this.p);//agents.values());
+		
+		observingService.setMyAgent(this);
+		observingService.initiate();
+		p.setMyAgent(this);
+		
+		this.logMonologue("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
+				this.getSimulationParameters().getSimulationName()+"\n"+this.p,LogService.onBoth);//agents.values());
 
+		
+		
 		int count = 5;
 		boolean iFailed=false;
 		do {
@@ -111,7 +108,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 			try {
 				Collection<? extends BasicCompetentAgent> ag = p.instanciate();
 				for (BasicCompetentAgent a : ag){
-					assert a.getCompetences().contains(ObservingGlobalService.class);
+//					assert a.getCompetences().contains(ObservingSelfService.class);
 					agents.put(a.getIdentifier(), a);
 				}
 			} catch (final IfailedException e) {
@@ -122,25 +119,29 @@ public abstract class Laborantin extends BasicCompetentAgent {
 					throw e;
 				}
 			}
-		}while(iFailed && count > 0);
-
-		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
-		//		this.agents.put(getIdentifier(), this);
-		observingService.setObservation();
-		this.addObserver(new AgentName(p.experimentatorId), SimulationEndedMessage.class);
-		//		if (true)
-		//		//			throw new RuntimeException();
-		//				launch();
-		//		throw new RuntimeException();
+		}while(iFailed && count > 0);	
+		
 		this.locations = this.generateLocations(
 				this.api,
-				this.agents.values(),
-				this.numberOfAgentPerMAchine);
-		
-		
+				this.agents.values());		
 		//		System.out.println(agents);
 		//		System.out.println(api.getAvalaibleHosts());
 		assert locations!=null;
+	}
+
+	
+	//
+	// Behaviors
+	//
+
+	//
+	@ProactivityInitialisation
+	public void startSimu() {
+		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
+
+		observingService.setObservation();
+		this.addObserver(p.experimentatorId, SimulationEndedMessage.class);
+	
 		APIAgent.launch(this.api,this.locations);
 		this.wwait(1000);
 		System.err.println("!!!!!!!!!!!!!!!!!!!!!STARTING!!!!!!!!!!!!!!!!!!!!!!!");
@@ -153,13 +154,12 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 	public Map<BasicCompetentAgent, HostIdentifier> generateLocations(
 			final APILauncherModule api,
-			final Collection<BasicCompetentAgent> collection,
-			final int nbMaxAgent) throws NotEnoughMachinesException{
+			final Collection<BasicCompetentAgent> collection) throws NotEnoughMachinesException{
 		final Map<BasicCompetentAgent, HostIdentifier> result = new Hashtable<BasicCompetentAgent, HostIdentifier>();
 		final Map<HostIdentifier, Integer> hostsLoad = new Hashtable<HostIdentifier, Integer>();
 
 		for (final HostIdentifier h : api.getAvalaibleHosts()) {
-			if (api.getAgentsRunningOn(h).size()<nbMaxAgent) {
+			if (api.getAgentsRunningOn(h).size()<p.getMaxNumberOfAgent(h)) {
 				hostsLoad.put(h, api.getAgentsRunningOn(h).size());
 			}
 		}
@@ -178,7 +178,7 @@ public abstract class Laborantin extends BasicCompetentAgent {
 
 				HostIdentifier host = itHosts.next();
 
-				while (hostsLoad.get(host)>nbMaxAgent){
+				while (hostsLoad.get(host)>p.getMaxNumberOfAgent(host)){
 					itHosts.remove();
 					if (itHosts.hasNext()) {
 						host = itHosts.next();
@@ -243,21 +243,10 @@ public abstract class Laborantin extends BasicCompetentAgent {
 		return this.p;
 	}
 
-	//
-	// Methods
-	//
-
-	/*
-	 * Protocol
-	 */
 	
-	public abstract LinkedList<ExperimentationParameters> generateSimulation(String[] protocoleArgs);
-
-	/*
-	 * Déploiement
-	 */
-
-	public abstract Integer getNumberOfAgentPerMachine();
+	public ObservingGlobalService getObservingService() {
+		return observingService;
+	}
 
 	
 
@@ -265,8 +254,14 @@ public abstract class Laborantin extends BasicCompetentAgent {
 	// Subclass
 	//
 
+
+
+
 	public class NotEnoughMachinesException extends Exception{
 		private static final long serialVersionUID = -7238636027171768604L;}
+
+
+
 	
 
 

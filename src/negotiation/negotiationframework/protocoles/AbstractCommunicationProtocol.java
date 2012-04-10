@@ -6,6 +6,7 @@ import java.util.Set;
 
 import negotiation.faulttolerance.candidaturewithstatus.Host;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
@@ -133,7 +134,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 */
 
 	// @role(NegotiationInitiatorRole.class)
-	@StepComposant(ticker = ReplicationExperimentationParameters._initiatorPropositionFrequency)
+	@StepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
 		if (this.isActive() && 
 				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),contracts)
@@ -160,7 +161,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 */
 
 	// @role(NegotiationParticipant.class)
-	@StepComposant(ticker = ReplicationExperimentationParameters._timeToCollect)
+	@StepComposant(ticker = NegotiationParameters._timeToCollect)
 	void answer() {
 		if (this.isActive() && !this.getContracts().isEmpty()) {
 
@@ -366,7 +367,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		assert !c.hasReachedExpirationTime();
 
 		assert c.getInitiator().equals(this.getMyAgent().getIdentifier());
-		assert this.contracts.contains(c) || c.willReachExpirationTime(ReplicationExperimentationParameters._timeToCollect):
+		assert this.contracts.contains(c) || c.willReachExpirationTime(NegotiationParameters._timeToCollect):
 			"aaaaaaaaarrrgh" + "i should now "+ c;
 
 		this.logMonologue("I 've been accepted! =) "+c//+"\n"+this.getMyAgent().getMyCurrentState()

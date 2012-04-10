@@ -10,6 +10,7 @@ import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.Laborantin;
 
 public abstract class ContractTransition<
@@ -111,7 +112,7 @@ AbstractContractTransition<ActionSpec> {
 		}
 
 		try {
-			if (!Laborantin.initialisation) {
+			if (!ExperimentationParameters.currentlyInstanciating) {
 				assert this.isInitiallyValid():this;
 			}
 		} catch (final IncompleteContractException e){/*ok!*/}

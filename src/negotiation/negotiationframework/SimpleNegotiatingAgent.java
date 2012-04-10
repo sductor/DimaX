@@ -1,6 +1,5 @@
 package negotiation.negotiationframework;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -22,6 +21,7 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
+import dimaxx.experimentation.ExperimentationParameters;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
@@ -117,7 +117,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	// Behavior
 	//
 
-	@StepComposant(ticker=ReplicationExperimentationProtocol._simulationTime)
+	@StepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
 	public boolean end(){
 		this.setAlive(false);

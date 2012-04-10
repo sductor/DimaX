@@ -37,7 +37,6 @@ public final class Experimentator extends APIAgent{
 	//
 
 	ExperimentationParameters myProtocol;
-	final File f;
 
 	//	//Integer represent the sum of the number of agent of each simulation that uses the given machine
 	//	public final MachineNetwork machines;
@@ -59,7 +58,6 @@ public final class Experimentator extends APIAgent{
 	public Experimentator(final ExperimentationParameters myProtocol) throws CompetenceException {
 		super(myProtocol.experimentatorId);
 		//		this.machines = new MachineNetwork(machines);
-		this.f = new File(LogService.getMyPath()+"result_"+myProtocol.resultPath);
 		//		Writing.log(
 		//				this.f,
 		//				myProtocol.getDescription(),
@@ -74,7 +72,7 @@ public final class Experimentator extends APIAgent{
 
 	@ProactivityInitialisation
 	public void initialise() throws CompetenceException{
-		this.logWarning("Experimentator created for:\n"+this.myProtocol.toString(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
+//		this.logWarning("Experimentator created for:\n"+this.myProtocol.toString(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
 		this.logWarning(getDescription(),LogService.onBoth);
 		this.launchSimulation();
 	}
@@ -90,7 +88,7 @@ public final class Experimentator extends APIAgent{
 			System.out.println("1");
 			this.logWarning("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 			this.setAlive(false);
-			this.logWarning(this.myProtocol.toString(),LogService.onBoth);
+//			this.logWarning(this.myProtocol.toString(),LogService.onBoth);
 			System.exit(1);
 		} else if (!this.simuToLaunch.isEmpty()){
 			//On lance de nouvelles expériences!
@@ -106,14 +104,13 @@ public final class Experimentator extends APIAgent{
 
 					ExperimentationParameters.currentlyInstanciating=true;
 					nextSimu.initiateParameters();
+					l = nextSimu.createLaborantin(this.getApi());//new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
 					ExperimentationParameters.currentlyInstanciating=false;
-					assert nextSimu.isInitiated();
-					l = new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
 					l.launchWith(this.getApi());
 					this.startActivity(l);
 					this.launchedSimu.put(l.getId(), l);
 				} catch (final IfailedException e) {
-					LogService.logOnFile(this.f, "EXPERIMENTATION "+nextSimu+" \n ABORTED!!!!!!!!!!!!!!", true,					false);
+					logMonologue("EXPERIMENTATION "+nextSimu+" \n ABORTED!!!!!!!!!!!!!!", LogService.onBoth);
 					this.launchSimulation();
 				}
 
@@ -151,11 +148,11 @@ public final class Experimentator extends APIAgent{
 	 */
 
 
-	public void run(final String[] args)
+	public void run(String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
 
 
-		this.simuToLaunch = myProtocol.generateSimulation(args);
+		this.simuToLaunch = myProtocol.generateSimulation();
 		this.awaitingAnswer=this.simuToLaunch.size();
 		
 		if (args[0].equals("scheduled")) {
@@ -181,7 +178,7 @@ public final class Experimentator extends APIAgent{
 	}
 	
 	public String getDescription(){
-		return "Generated "+this.simuToLaunch.size();
+		return "Experimentator of "+this.simuToLaunch.size()+" experiences of "+ExperimentationParameters._maxSimulationTime+" seconds ";
 	}
 }
 

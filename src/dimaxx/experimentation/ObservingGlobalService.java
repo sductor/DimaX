@@ -11,6 +11,7 @@ import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
@@ -21,19 +22,19 @@ import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
-public abstract class ObservingGlobalService
-extends BasicAgentCompetence<Laborantin>{
+public abstract class ObservingGlobalService<Agent extends Laborantin>
+extends BasicAgentCommunicatingCompetence<Agent>{
 	private static final long serialVersionUID = -2893635425783775245L;
 
 	//
 	// Fields
 	//
-	
+
 	protected HashSet<ReplicationResultAgent> finalStates = new HashSet();
 
 	final Collection<AgentIdentifier> remainingAgent=new ArrayList<AgentIdentifier>();
-//	final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
-	
+	//	final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
+
 	//
 	// Constants
 	//
@@ -48,9 +49,9 @@ extends BasicAgentCompetence<Laborantin>{
 
 	protected abstract void setObservation();
 
-//	protected abstract void updateHostInfo(ExperimentationResults notification);
-//
-//	protected abstract void updateAgentInfo(ExperimentationResults notification);
+	//	protected abstract void updateHostInfo(ExperimentationResults notification);
+	//
+	//	protected abstract void updateAgentInfo(ExperimentationResults notification);
 	protected abstract void updateInfo(ExperimentationResults notification);
 
 
@@ -60,7 +61,7 @@ extends BasicAgentCompetence<Laborantin>{
 	 * must ensure every agent is destroyed!!!
 	 */
 	protected abstract boolean simulationHasEnded();
-	
+
 	protected abstract void writeResult();
 
 	//
@@ -68,6 +69,9 @@ extends BasicAgentCompetence<Laborantin>{
 	//
 
 
+	public Collection<AgentIdentifier> getAliveAgents() {
+		return remainingAgent;
+	}
 
 
 
@@ -78,11 +82,11 @@ extends BasicAgentCompetence<Laborantin>{
 	@ProactivityInitialisation
 	public final void initiateAgents(){
 		for (final AgentIdentifier id : getMyAgent().agents.keySet()) {
-//			if (id instanceof ResourceIdentifier) {
-//				this.remainingHost.add(id);
-//			} else {
-				this.remainingAgent.add(id);
-//			}
+			//			if (id instanceof ResourceIdentifier) {
+			//				this.remainingHost.add(id);
+			//			} else {
+			this.remainingAgent.add(id);
+			//			}
 		}
 	}
 
@@ -107,28 +111,28 @@ extends BasicAgentCompetence<Laborantin>{
 	}
 
 	private void update(final ExperimentationResults r) {
-//		if (r.isHost()) {
-//			this.updateHostInfo(r);
-//		} else {
-//			this.updateAgentInfo(r);
-//		}
+		//		if (r.isHost()) {
+		//			this.updateHostInfo(r);
+		//		} else {
+		//			this.updateAgentInfo(r);
+		//		}
 		this.updateInfo(r);
-		
+
 		if (r.isLastInfo()){
-//			if (r.isHost()) {
-//				remainingHost.remove(r.getId());
-//			} else {
-				remainingAgent.remove(r.getId());
-//			}
+			setAgentHasEnded(r.getId());
 
 			this.logMonologue(r.getId()
 					+" has finished!, " +
 					"\n * remaining agents "+remainingAgent.size()
-//					+"\n * remaining hosts "+remainingHost.size()
+					//					+"\n * remaining hosts "+remainingHost.size()
 					,LogService.onFile);
 		}
 	}
 
+	public void setAgentHasEnded(AgentIdentifier id){
+		remainingAgent.remove(id);
+	}
+	
 	//
 	// Time Primitives
 	//

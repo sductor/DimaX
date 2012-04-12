@@ -1,8 +1,11 @@
 package negotiation.horizon.negociatingagent;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.rationality.AgentState;
 
-public interface HorizonSpecification extends
-	AbstractActionSpecification {
-
+/**
+ * @author Vincent Letard
+ */
+public interface HorizonSpecification extends AbstractActionSpecification,
+	AgentState {
 }

@@ -5,7 +5,6 @@ import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCo
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
-import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 
@@ -17,7 +16,7 @@ public class VirtualNetwork extends
     private static final long serialVersionUID = -6040992873742188247L;
 
     public VirtualNetwork(
-	    AgentIdentifier id,
+	    _VirtualNetworkIdentifier id,
 	    VirtualNetworkState myInitialState,
 	    RationalCore<HorizonSpecification, VirtualNetworkState, HorizonContract> myRationality,
 	    AbstractSelectionCore<HorizonSpecification, VirtualNetworkState, HorizonContract> selectionCore,
@@ -29,4 +28,13 @@ public class VirtualNetwork extends
 	// TODO Auto-generated constructor stub
     }
 
+    @Override
+    public _VirtualNetworkIdentifier getIdentifier() {
+	return (_VirtualNetworkIdentifier) super.getIdentifier();
+    }
+
+    @Override
+    public _VirtualNetworkIdentifier getId() {
+	return (_VirtualNetworkIdentifier) super.getId();
+    }
 }

@@ -21,7 +21,7 @@ public class VirtualNetworkCore
 
     @Override
     public boolean IWantToNegotiate(VirtualNetworkState s) {
-	// TODO Auto-generated method stub
+	// TODO Tant qu'il existe un contrat de meilleure utilité.
 	return false;
     }
 
@@ -33,8 +33,8 @@ public class VirtualNetworkCore
 
     @Override
     public void execute(HorizonContract c) {
-	// TODO Auto-generated method stub
-
+	this.getMyAgent().setNewState(
+		c.computeResultingState(this.getMyAgent().getMyCurrentState()));
     }
 
     @Override

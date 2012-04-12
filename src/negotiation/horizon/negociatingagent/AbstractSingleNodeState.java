@@ -3,7 +3,6 @@ package negotiation.horizon.negociatingagent;
 import java.util.Collection;
 import java.util.Map;
 
-import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
@@ -16,36 +15,12 @@ import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
  * @author Vincent Letard
  */
 public abstract class AbstractSingleNodeState extends SimpleAgentState implements
-	HorizonSpecification {
+HorizonSpecification {
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = -2721088186118421802L;
 
-    /**
-     * Indication on the packet loss rate for the current node (percentage).
-     */
-    private float packetLossRate;
-    /**
-     * Packets routing delay in milliseconds.
-     */
-    private int delay;
-    /**
-     * Variation of the delay in milliseconds.
-     */
-    private int jitter;
-    /**
-     * Bit rate of the bandwidth in kbit/s.
-     */
-    private int bandwidth;
-    /**
-     * Computation capacity in IPS. TODO demander à Fouad
-     */
-    private int processor;
-    /**
-     * Amount of memory in ko.
-     */
-    private int ram;
 
     /**
      * Constructs a SingleNodeState initializing its fields.
@@ -118,12 +93,6 @@ public abstract class AbstractSingleNodeState extends SimpleAgentState implement
 	    Map<? extends Information, Double> elems) {
 	// TODO Auto-generated method stub
 	return null;
-    }
-
-    @Override
-    public boolean setLost(ResourceIdentifier h, boolean isLost) {
-	// TODO Auto-generated method stub
-	return false;
     }
 
 }

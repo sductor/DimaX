@@ -1,10 +1,13 @@
 package negotiation.horizon.negociatingagent;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
@@ -22,14 +25,16 @@ public class VirtualNetworkState extends SimpleAgentState implements
     private static final long serialVersionUID = -5576314995630464103L;
 
     /**
-     * Set of the nodes in the VirtualNetwork
+     * Represents the mapping of all the virtual nodes to the substrate nodes
+     * (all virtual nodes are in the mapping even if it's associated with no
+     * substrate node).
      */
-    private Set<VirtualNodeState> nodelist;
+    private final List<VirtualNode> nodes;
 
     /**
-     * Associates each VirtualNodeState with
+     * Represents the links between all the VirtualNodes and their parameters.
      */
-    private ReflexiveAdjacencyMap<VirtualNodeState> links;
+    private ReflexiveAdjacencyMap<VirtualNode, LinkParameters> links;
 
     /**
      * Constructs a new VirtualNetworkState using the topology information
@@ -42,14 +47,83 @@ public class VirtualNetworkState extends SimpleAgentState implements
      *            Maps a node index in the Set with the list of its successors
      *            in the virtual network.
      */
-    public VirtualNetworkState(AgentIdentifier myAgent, int stateNumber,
-	    Set<VirtualNodeState> nodelist,
-	    ReflexiveAdjacencyMap<VirtualNodeState> links) {
+    public VirtualNetworkState(final AgentIdentifier myAgent,
+	    final int stateNumber, final List<SingleNodeParameters> params,
+	    final List<LinkParameters> links) {
 	super(myAgent, stateNumber);
-	this.links = links;
-	this.nodelist = nodelist;
+	int s = params.size();
+	if (links.size() > (s * (s + 1)) / 2 + s)
+	    throw new RuntimeException("Invalid argument");
+	// int id = 0;
+	// for (SingleNodeParameters node:nodes){
+	// map.put(new VirtualNode(myAgent, id, node), null);
+	// id++;
+	// }
+	this.nodes = new ArrayList<VirtualNode>(params.size());
+	for (int id = 0; id < params.size(); id++) {
+	    this.nodes.add(new VirtualNode(myAgent, id, params.get(id)));
+	}
+	this.links = new ReflexiveAdjacencyMap<VirtualNode, LinkParameters>();
+	for (int i = 0; i < links.size(); i++) {
+	    int[] vertices = ReflexiveAdjacencyMap.getCoupleOfIndex(i);
+	    this.links.add(this.nodes.get(vertices[0]), this.nodes
+		    .get(vertices[1]), links.get(i));
+	}
     }
 
+    private VirtualNetworkState(final AgentIdentifier myAgent,
+	    final int stateNumber,
+ final List<VirtualNode> nodes,
+	    final ReflexiveAdjacencyMap<VirtualNode, LinkParameters> links) {
+	super(myAgent, stateNumber);
+	// this.nodes = nodes.;
+	this.links = links;
+	assert (networkConsistentAndConnected()); // TODO pas assert ->
+	// exception
+    }
+
+    private boolean networkConsistentAndConnected() {
+	return this.nodes.keySet().equals(this.links.keySet());
+    }
+
+    public SingleNodeParameters getNodeParams(final int node){
+	return this.nodes.get(node).getParam();
+    }
+
+    // /**
+    // * @return the Set of the VirtualNodeStates of the VirtualNetwork
+    // */
+    // public Set<VirtualNodeState> getNodes() {
+    // return this.nodelist;
+    // }
+
+    // /**
+    // * @return the {@link ReflexiveAdjacencyMap} representing the links
+    // between
+    // * nodes.
+    // */
+    // public ReflexiveAdjacencyMap<VirtualNodeState> getLinks() {
+    // return this.links;
+    // }
+
+    // /**
+    // * @return the Set of the AgentIdentifiers of the VirtualNodes of the
+    // * VirtualNetwork
+    // */
+    // public Set<AgentIdentifier> getNodesID() {
+    // Iterator<VirtualNodeState> it = this.nodelist.iterator();
+    // Set<AgentIdentifier> nodesID = new HashSet<AgentIdentifier>();
+    // while (it.hasNext())
+    // nodesID.add(it.next().getMyAgentIdentifier());
+    // return nodesID;
+    // // XXX Efficacité ! Mémoizer le résultat ou créer une nouvelle classe
+    // // pour nodelist avec les identifiers
+    // }
+
+    @Override
+    public AgentIdentifier getMyAgentIdentifier() {
+	return super.getMyAgentIdentifier();
+    }
 
     @Override
     public Double getNumericValue(Information e) {
@@ -79,12 +153,11 @@ public class VirtualNetworkState extends SimpleAgentState implements
     }
 
     @Override
-    public Collection<? extends AgentIdentifier> getMyResourceIdentifiers() {
-	Collection<AgentIdentifier> c = new LinkedList<AgentIdentifier>();
-	Iterator<VirtualNodeState> it = this.nodelist.iterator();
-	while (it.hasNext())
-	    c.add(it.next().getMyAgentIdentifier());
-	return c;
+    public Set<? extends ResourceIdentifier> getMyResourceIdentifiers() {
+	Set<ResourceIdentifier> resources = new HashSet<ResourceIdentifier>(
+		this.nodes.values());
+	resources.remove(null);
+	return resources;
     }
 
     @Override
@@ -94,17 +167,70 @@ public class VirtualNetworkState extends SimpleAgentState implements
 
     @Override
     public boolean isValid() {
-	Iterator<VirtualNodeState> it = this.nodelist.iterator();
-	boolean valid = true;
-	while (valid && it.hasNext())
-	    valid = it.next().isValid() && valid;
-	return valid;
+	return this.nodes.values().contains(null);
     }
 
     @Override
     public boolean setLost(ResourceIdentifier h, boolean isLost) {
-	// TODO Auto-generated method stub
-	return false;
+	Iterator<Entry<VirtualNode, ResourceIdentifier>> it = this.nodes
+		.entrySet().iterator();
+	while (it.hasNext()) {
+	    Entry<VirtualNode, ResourceIdentifier> entry = it.next();
+	    if (entry.getValue().equals(h))
+		this.nodes.put(entry.getKey(), null);
+	    // TODO est-ce bien ce qu'il faut faire ?
+	}
+	return true; // TODO retourner toujours true ?
+    }
+
+    private class VirtualNode {
+
+	/**
+	 * Serial version identifier
+	 */
+	private static final long serialVersionUID = 6804972846662200779L;
+
+	private final int identifier;
+	private final SingleNodeParameters param;
+	private final AgentIdentifier myAgent;
+	private ResourceIdentifier myHost;
+
+	public VirtualNode(final AgentIdentifier myAgent, final int identifier,
+		final SingleNodeParameters param) {
+	    this.param = param;
+	    this.identifier = identifier;
+	    this.myAgent = myAgent;
+	    this.myHost = null;
+	}
+
+	public int getIdentifier() {
+	    return this.identifier;
+	}
+
+	public SingleNodeParameters getParam() {
+	    return this.param;
+	}
+
+	public ResourceIdentifier getMyHost() {
+	    return this.myHost;
+	}
+
+	public void setMyHost(ResourceIdentifier host) {
+	    this.myHost = host;
+	}
+
+	@Override
+	public int hashCode() {
+	    return this.identifier;
+	}
+
+	@Override
+	public boolean equals(Object obj){
+	    if (obj instanceof VirtualNode)
+		return this.identifier == ((VirtualNode) obj).getIdentifier();
+	    else
+		return false;
+	}
     }
 
 }

@@ -1,6 +1,5 @@
-package negotiation.faulttolerance.candidaturewithstatus;
+package negotiation.faulttolerance.experimentation;
 
-import negotiation.faulttolerance.experimentation.ReplicationResultHost;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
@@ -10,6 +9,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
@@ -79,23 +79,21 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	public Host(
 			final ResourceIdentifier id,
-			final double hostMaxProc, final double hostMaxMem,
-			final double lambda,
+			final HostState myState,
 			final RationalCore myRationality,
 			final SelectionCore participantCore,
 			final ProposerCore 	proposerCore,
 			final ObservationService myInformation,
-			final HostDisponibilityComputer myDispoInfo)
+			final AbstractCommunicationProtocol protocol)
 					throws CompetenceException {
-		super(id, new HostState(id, hostMaxProc, hostMaxMem, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
-		this.getMyProtocol().getContracts().setMyAgent(this);
+		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
 	}
 }
 
 
 
 
-
+//new HostState(id, hostMaxProc, hostMaxMem, lambda,-1)
 
 
 

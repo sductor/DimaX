@@ -31,15 +31,11 @@ Contract extends MatchingCandidature<ActionSpec>>
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
 implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
+	private static final long serialVersionUID = 5994721006483536151L;
 
 	//
 	// Methods
 	//
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5994721006483536151L;
 
 	@Override
 	public void select(
@@ -108,8 +104,8 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 				if (accepted.isEmpty()){// I accepted noone, trying to find realloc
 
 					this.logMonologue("no contracts accepted : searching upgrading contracts! : \nhosted :"
-					+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
-					+"\n required "+rejected,
+							+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
+							+"\n required "+rejected,
 							AbstractCommunicationProtocol.log_selectionStep);
 					//some unaccepted contract : generating upgrading contract and adding to propose
 
@@ -205,6 +201,18 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 
 	protected abstract InformedCandidature<Contract, ActionSpec> generateDestructionContract(AgentIdentifier id);
 
+	protected  Collection<Collection<InformedCandidature<Contract, ActionSpec>>> solve(
+			final PersonalState currentState,
+			Collection<InformedCandidature<Contract, ActionSpec>> concerned){
+		return new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(
+				new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
+			@Override
+			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
+				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) && !MatchingCandidature.areAllCreation(alloc);
+			}
+		}.getHyperset();
+	}
+
 	//
 	// Primitives
 	//
@@ -219,7 +227,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 
 		assert MatchingCandidature.assertAllCreation(unacceptedContracts):unacceptedContracts+" "+myAgentContractTrunk;
 		assert onWait.isEmpty();
-		
+
 		//Generating new proposals
 
 		//generating concerned : concerned is the set of atomic candidature that can be changed
@@ -245,13 +253,8 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 		assert ContractTransition.allComplete(concerned):concerned+" "+myAgentContractTrunk;
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
-		final Collection<Collection<InformedCandidature<Contract, ActionSpec>>> allocGen =
-				new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
-			@Override
-			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
-				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) && !MatchingCandidature.areAllCreation(alloc);
-			}
-		}.getHyperset();
+		final Collection<Collection<InformedCandidature<Contract, ActionSpec>>> allocGen = solve(currentState,concerned);
+
 
 		final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep = new HashSet();
 		for (final Collection<InformedCandidature<Contract, ActionSpec>> realloc : allocGen){

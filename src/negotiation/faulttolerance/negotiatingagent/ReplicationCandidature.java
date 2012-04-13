@@ -106,7 +106,7 @@ MatchingCandidature<ReplicationSpecification> {
 		assert fromState.Ihost(this.getAgent()) || this.creation == true:
 			" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"+ this.getAgent()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 		assert !fromState.Ihost(this.getAgent()) || this.creation == false:
-			" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT "+" \n contract : "+this	+ "\n --> fromState " + fromState
+			" : ooohhhhhhhhhhhhhhhhh  =( "+(creation?"agent already created!":"CAN NOT DESTRUCT ")+" \n contract : "+this	+ "\n --> fromState " + fromState
 			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
 
 

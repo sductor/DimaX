@@ -19,11 +19,14 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	 */
 	private static final long serialVersionUID = -4843844714006615468L;
 
+	public ReverseCFPProtocol()
+					throws UnrespectedCompetenceSyntaxException {
+		super(new ContractTrunk<Contract, ActionSpec, State>());
+	}
 	public ReverseCFPProtocol(
-			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a,
 			final ContractTrunk<Contract, ActionSpec, State> contracts)
 					throws UnrespectedCompetenceSyntaxException {
-		super(a, contracts);
+		super(contracts);
 	}
 
 	@Override

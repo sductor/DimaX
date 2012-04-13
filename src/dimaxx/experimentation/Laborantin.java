@@ -10,11 +10,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.faulttolerance.candidaturewithstatus.Host;
 import negotiation.faulttolerance.candidaturewithstatus.ObservingStatusService;
-import negotiation.faulttolerance.candidaturewithstatus.Replica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
+import negotiation.faulttolerance.experimentation.Host;
+import negotiation.faulttolerance.experimentation.Replica;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -66,7 +66,7 @@ public class Laborantin extends BasicCompetentAgent {
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
 	private Map<BasicCompetentAgent, HostIdentifier> locations;
 
-//	int numberOfAgentPerMAchine;
+	//	int numberOfAgentPerMAchine;
 	private final ExperimentationParameters p;
 
 	//
@@ -78,7 +78,7 @@ public class Laborantin extends BasicCompetentAgent {
 
 	@Competence
 	public ObservingGlobalService observingService;
-	
+
 	//
 	// Constructor
 	//
@@ -89,38 +89,25 @@ public class Laborantin extends BasicCompetentAgent {
 		this.p = p;
 		this.observingService=observingService;
 		this.api=api;
-//		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;		
+		//		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;		
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
-		
+
 		observingService.setMyAgent(this);
 		observingService.initiate();
 		p.setMyAgent(this);
-		
+
 		this.logMonologue("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
 				this.getSimulationParameters().getSimulationName()+"\n"+this.p,LogService.onBoth);//agents.values());
 
+		p.initiateParameters();
+		Collection<? extends BasicCompetentAgent> ag = p.instanciateAgents();
 		
-		
-		int count = 5;
-		boolean iFailed=false;
-		do {
-			iFailed=false;
-			try {
-				Collection<? extends BasicCompetentAgent> ag = p.instanciate();
-				for (BasicCompetentAgent a : ag){
-//					assert a.getCompetences().contains(ObservingSelfService.class);
-					agents.put(a.getIdentifier(), a);
-				}
-			} catch (final IfailedException e) {
-				iFailed=true;
-				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG", LogService.onBoth);
-				count--;
-				if (count==0) {
-					throw e;
-				}
-			}
-		}while(iFailed && count > 0);	
-		
+		for (BasicCompetentAgent a : ag){
+			//					assert a.getCompetences().contains(ObservingSelfService.class);
+			agents.put(a.getIdentifier(), a);
+		}
+
+
 		this.locations = this.generateLocations(
 				this.api,
 				this.agents.values());		
@@ -129,7 +116,7 @@ public class Laborantin extends BasicCompetentAgent {
 		assert locations!=null;
 	}
 
-	
+
 	//
 	// Behaviors
 	//
@@ -141,7 +128,7 @@ public class Laborantin extends BasicCompetentAgent {
 
 		observingService.setObservation();
 		this.addObserver(p.experimentatorId, SimulationEndedMessage.class);
-	
+
 		APIAgent.launch(this.api,this.locations);
 		this.wwait(1000);
 		System.err.println("!!!!!!!!!!!!!!!!!!!!!STARTING!!!!!!!!!!!!!!!!!!!!!!!");
@@ -243,12 +230,12 @@ public class Laborantin extends BasicCompetentAgent {
 		return this.p;
 	}
 
-	
+
 	public ObservingGlobalService getObservingService() {
 		return observingService;
 	}
 
-	
+
 
 	//
 	// Subclass
@@ -262,7 +249,7 @@ public class Laborantin extends BasicCompetentAgent {
 
 
 
-	
+
 
 
 

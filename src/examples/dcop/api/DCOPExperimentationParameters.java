@@ -41,10 +41,12 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 	//
 
 	String filename;
-	public static Graph g;
-	Algorithm algo;
-	public static HashMap<Integer, Node> nodeMap;	
+	
+	Algorithm algo;	
 	int grouping;
+	
+	public static Graph g;
+	public static HashMap<Integer, Node> nodeMap;
 
 
 	//
@@ -105,9 +107,10 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 		nodeMap = new HashMap<Integer, Node>();
 	}
 
+	
 
 	@Override
-	protected Collection<? extends BasicCompetentAgent> instanciate() throws CompetenceException {
+	protected Collection<? extends BasicCompetentAgent> instanciateAgents() throws CompetenceException {
 
 		for (Variable v : g.varMap.values()) {
 			Node node = new Node(getAlgo(v));
@@ -178,7 +181,7 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 	// Main
 	//
 
-	public static void main(final String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
+	public static void main(final String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, NotEnoughMachinesException, IfailedException{
 		final Experimentator exp = new Experimentator(new DCOPExperimentationParameters(new AgentName("ziDcopExperimentator"),"dcopResult"));
 		exp.run(args);
 	}
@@ -188,4 +191,5 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 			IfailedException, NotEnoughMachinesException {
 		return new Laborantin(this,new GlobalDCOPObservation(),api);
 	}
+
 }

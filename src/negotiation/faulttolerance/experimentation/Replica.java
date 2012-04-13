@@ -1,10 +1,9 @@
-package negotiation.faulttolerance.candidaturewithstatus;
+package negotiation.faulttolerance.experimentation;
 
 import java.util.HashSet;
 import java.util.Random;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
+import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.negotiatingagent.HostState;
@@ -13,6 +12,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
@@ -110,20 +110,17 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 	public Replica(
 			final AgentIdentifier id,
-			final Double criticity,
-			final Double procCharge,
-			final Double memCharge,
+			final ReplicaState myState,
 			final RationalCore myRationality,
 			final SelectionCore participantCore,
 			final ProposerCore proposerCore,
 			final ObservationService myInformation,
+			final AbstractCommunicationProtocol protocol,
 			final boolean dynamicCriticity)
 					throws CompetenceException {
-		super(id, null, myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
+		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
-		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
-		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
 
 	//
@@ -189,6 +186,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
  *
  */
 
+//this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
 //	@Override
 //	public ContractTrunk<ReplicationCandidature> select(
 //			final ContractTrunk<ReplicationCandidature> cs) {

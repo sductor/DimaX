@@ -18,9 +18,7 @@ import org.jdom.JDOMException;
 
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaProposerWithStatus;
-import negotiation.faulttolerance.candidaturewithstatus.Host;
 import negotiation.faulttolerance.candidaturewithstatus.ObservingStatusService;
-import negotiation.faulttolerance.candidaturewithstatus.Replica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
@@ -38,6 +36,7 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition.Inc
 import negotiation.negotiationframework.protocoles.InactiveProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunctions;
@@ -72,9 +71,16 @@ ExperimentationParameters<ReplicationLaborantin> {
 	//	final AgentIdentifier experimentatorId;
 
 
+	/**
+	 * Instance
+	 */
+
+	ReplicationInstanceGraph rig;
+
 	/***
 	 * Variables
 	 */
+
 
 	public int nbAgents;
 	public int nbHosts;
@@ -84,10 +90,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public String _hostSelection;
 	public String _socialWelfare;
 
-	List<AgentIdentifier> replicasIdentifier  = new ArrayList<AgentIdentifier>();
-	List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>();
 
-	public int kAccessible;
+	public int agentAccessiblePerHost;
 
 	public Double hostFaultProbabilityMean;
 	public  DispersionSymbolicValue hostDisponibilityDispersion;
@@ -104,26 +108,12 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public Boolean dynamicCriticity;
 	public Double host_maxSimultaneousFailure;
 
-	DistributionParameters<AgentIdentifier> agentCriticity;
-	DistributionParameters<AgentIdentifier> agentProcessor;
-	DistributionParameters<AgentIdentifier> agentMemory;
-
-
-	DistributionParameters<ResourceIdentifier> hostProcCapacity;
-	DistributionParameters<ResourceIdentifier> hostMemCapacity;
-
-
-	HashedHashSet<AgentIdentifier, HostIdentifier> knownHosts;
-
-	DistributionParameters<ResourceIdentifier> fault;
-	HostDisponibilityComputer dispos;//NON INSTANCIER
-
 	/***
 	 * Constantes
 	 */
 
 	public static final int startingNbAgents = 10;
-	public static final int startingNbHosts = 10;
+	public static final int startingNbHosts = 4;
 
 	/* FAULTS
 	 *
@@ -189,6 +179,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.nbAgents = nbAgents;
 		this.nbHosts= nbHosts;		
 		this.setkAccessible(k);
+		assert agentAccessiblePerHost>0;
 		this.hostFaultProbabilityMean = hostFaultProbabilityMean;
 		this.hostDisponibilityDispersion=hostFaultProbabilityDispersion;
 		this.agentLoadMean = agentLoadMean;
@@ -274,12 +265,12 @@ ExperimentationParameters<ReplicationLaborantin> {
 	// Accessors
 	//
 
-	public List<AgentIdentifier> getReplicasIdentifier() {
-		return this.replicasIdentifier;
+	public Collection<AgentIdentifier> getReplicasIdentifier() {
+		return rig.getAgentsIdentifier();
 	}
 
-	public List<ResourceIdentifier> getHostsIdentifier() {
-		return this.hostsIdentifier;
+	public Collection<ResourceIdentifier> getHostsIdentifier() {
+		return rig.getHostsIdentifier();
 	}
 	//	//	// final NormalLaw numberOfKnownHosts = new NormalLaw(this.p.kAccessible,
 	//	//	// 0);
@@ -289,21 +280,21 @@ ExperimentationParameters<ReplicationLaborantin> {
 	//	}
 
 	public void setkAccessible(final double k) {
-		this.kAccessible =(int) (k * this.nbHosts);
+		this.agentAccessiblePerHost =(int) (k * this.nbHosts);
 	}
 
 	public Double getRealkAccessible() {
-		return (double)this.kAccessible/
+		return (double)this.agentAccessiblePerHost/
 				(double)this.nbHosts;
 	}
 
 	public void setMaxSimultFailure(final Double host_maxSimultaneousFailurePercent){
-		this.host_maxSimultaneousFailure = this.kAccessible*host_maxSimultaneousFailurePercent;
+		this.host_maxSimultaneousFailure = this.agentAccessiblePerHost*host_maxSimultaneousFailurePercent;
 
 	}
 
 	public Double getRealMaxSimultFailure(){
-		return this.host_maxSimultaneousFailure/this.kAccessible;
+		return this.host_maxSimultaneousFailure/this.agentAccessiblePerHost;
 	}
 
 	public void set_hostSelection(final String hostSelection) {
@@ -318,60 +309,9 @@ ExperimentationParameters<ReplicationLaborantin> {
 	// Methods
 	//
 
-	public final void initiateParameters(){
+	public final void initiateParameters() throws IfailedException{
+		rig = new ReplicationInstanceGraph(getMyAgent(),this);
 
-		/*
-		 * Agents and hosts names
-		 */
-
-		for (int i=0; i<this.nbAgents; i++) {
-			this.replicasIdentifier.add(//new AgentName("_--simu="+p.toString()+"--_DomainAgent_"+i));
-					new AgentName("#"+this.getSimulationName()+"#DomainAgent_"+i));
-		}
-		for (int i=0; i<this.nbHosts; i++) {
-			this.hostsIdentifier.add(//new ResourceIdentifier("_--simu="+p.toString()+"--_HostManager_"+i,77));
-					new ResourceIdentifier("#"+this.getSimulationName()+"#HostManager_"+i,77));
-		}
-
-		/*
-		 * Parameters
-		 */
-
-		this.agentCriticity = new DistributionParameters<AgentIdentifier>(
-				this.getReplicasIdentifier(),
-				this.agentCriticityMean,
-				this.agentCriticityDispersion);
-		this.agentProcessor = new DistributionParameters<AgentIdentifier>(
-				this.getReplicasIdentifier(), this.agentLoadMean,
-				this.agentLoadDispersion);
-		this.agentMemory = new DistributionParameters<AgentIdentifier>(
-				this.getReplicasIdentifier(), this.agentLoadMean,
-				this.agentLoadDispersion);
-		this.hostMemCapacity = new DistributionParameters<ResourceIdentifier>(
-				this.getHostsIdentifier(), this.hostCapacityMean,
-				this.hostCapacityDispersion);
-		this.hostProcCapacity = new DistributionParameters<ResourceIdentifier>(
-				this.getHostsIdentifier(), this.hostCapacityMean,
-				this.hostCapacityDispersion);
-		this.fault = new DistributionParameters<ResourceIdentifier>(
-				getHostsIdentifier(),
-				hostFaultProbabilityMean,
-				hostDisponibilityDispersion);
-
-		/*
-		 * Voisinage
-		 */
-
-		this.knownHosts = new HashedHashSet<AgentIdentifier, HostIdentifier>();
-		for (int i = 0; i < nbHosts; i++) {
-			/* Adding acquaintance for host within latence */
-			Collections.shuffle(getReplicasIdentifier());
-			for (int j = 0;
-					j < Math.min(this.kAccessible, getHostsIdentifier().size()); 
-					j++) {
-				knownHosts.add(getReplicasIdentifier().get(j), getHostsIdentifier().get(i));
-			}
-		}
 	}
 
 
@@ -388,249 +328,102 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 */
 
 	@Override
-	protected Collection<SimpleRationalAgent> instanciate()throws IfailedException, CompetenceException {
-		this.logMonologue("Initializing agents... ",LogService.onBoth);
-		Map<AgentIdentifier,SimpleRationalAgent> result = new HashMap<AgentIdentifier, SimpleRationalAgent>();
-
-		/*
-		 * Host instanciation
-		 */
-
-
-		for (int i = 0; i < nbHosts; i++) {
-			final SimpleRationalAgent host = this.constructHost(this.
-					getHostsIdentifier().get(i),
-					fault);
-			result.put(host.getId(),host);
-			//			this.setHostObservation(host);
-			getMyAgent().myInformationService.add(host.getMyCurrentState());
-		}
-
-		this.logMonologue("Those are my dispos!!!!! :\n" + getMyAgent().myInformationService.show(HostState.class),LogService.onFile);
-
+	protected Collection<SimpleRationalAgent> instanciateAgents()throws CompetenceException {
 		assert !_usedProtocol
 		.equals(NegotiationParameters.key4CentralisedstatusProto) ||getMyAgent().myStatusObserver.iObserveStatus();
 
+		this.logMonologue("Initializing agents... ",LogService.onBoth);
+		Map<AgentIdentifier,SimpleRationalAgent> result = new HashMap<AgentIdentifier, SimpleRationalAgent>();
 
 		/*
 		 * Agent instanciation
 		 */
 
-		this.logMonologue("INITIALISING FIRST REPLICA",LogService.onFile);
-		for (int i = 0; i < nbAgents; i++) {
+		for (AgentIdentifier replicaId : getReplicasIdentifier()) {
 
-			final SimpleRationalAgent ag = this.constructAgent(getReplicasIdentifier().get(i),
-					agentCriticity,
-					agentProcessor,
-					agentMemory);
-			result.put(ag.getId(),ag);
-			//			this.setAgentObservation(ag);
-			getMyAgent().myInformationService.add(ag.getMyCurrentState());
+			final SimpleRationalAgent rep;
+			if (_usedProtocol
+					.equals(NegotiationParameters.key4mirrorProto)) { //Collaborative
+
+				rep = new CollaborativeReplica(
+						replicaId,
+						rig.getAgentState(replicaId),
+						_socialWelfare,
+						dynamicCriticity);
+
+			}else { //Status
+
+				rep = new Replica(
+						replicaId, 
+						rig.getAgentState(replicaId),
+						getCore(true, _usedProtocol, _socialWelfare), 
+						getSelectionCore(_agentSelection), 
+						getProposerCore(true, _usedProtocol), 
+						getInformationService(true, _usedProtocol), 
+						new ReverseCFPProtocol(),
+						dynamicCriticity);
+
+			}
+
+
+			rep.getMyInformation().addAll(rig.getAccessibleHost(replicaId));
+
+			for (AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
+				rep.addObserver(h,
+						SimpleObservationService.informationObservationKey);
+				rep.getMyInformation().add(rig.getHostState((ResourceIdentifier) h));
+			}
+
+			result.put(rep.getId(),rep);
+			getMyAgent().myInformationService.add(rep.getMyCurrentState());
 		}
 
 		/*
-		 * First rep
+		 * Host instanciation
 		 */
 
-		for (AgentIdentifier agId : getReplicasIdentifier()){				
-			final Iterator<HostIdentifier> itHost =
-					knownHosts.get(agId).iterator();
-			assert itHost.hasNext():"no host? argh!"+agId+"\n"+knownHosts.get(agId);
+		for (ResourceIdentifier hostId : getHostsIdentifier()) {
 
-			SimpleRationalAgent ag = result.get(agId);
-			SimpleRationalAgent firstReplicatedOnHost = result.get(itHost.next());
-			MatchingCandidature c = this.generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
+			final SimpleRationalAgent hostAg;
+			if (_usedProtocol
+					.equals(NegotiationParameters.key4mirrorProto)) {
+				hostAg = new CollaborativeHost(
+						hostId,
+						rig.getHostState(hostId),
+						_socialWelfare);
+			} else {
+				hostAg = new Host(
+						hostId,
+						rig.getHostState(hostId),
+						getCore(false, _usedProtocol, _socialWelfare), 
+						getSelectionCore(_hostSelection), 
+						getProposerCore(false, _usedProtocol), 
+						getInformationService(false, _usedProtocol), 
+						new ReverseCFPProtocol());
 
-			try {
-				while (!c.computeResultingState(firstReplicatedOnHost.getMySpecif(c)).isValid()) {
-					if (!itHost.hasNext()) {
-						throw new IfailedException("can not create at least one rep for each agent\n"
-								+getHostsIdentifier());
-					} else {
-						firstReplicatedOnHost = getMyAgent().getAgent(itHost.next());
-						c = this.generateInitialAllocationCandidature(firstReplicatedOnHost,ag);
-					}
+				for (AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
+					hostAg.addObserver(ag,
+							SimpleObservationService.informationObservationKey);
+
+					ReplicationHandler.replicate(ag);
+
+					hostAg.getMyInformation().add(rig.getAgentState(ag));
+					this.logMonologue(hostAg + "  ->I have initially replicated "
+							+ ag,LogService.onBoth);
 				}
-			} catch (IncompleteContractException e) {
-				signalException("impossible", e);
 			}
 
-			this.executeFirstRep(c,ag,firstReplicatedOnHost);
+			result.put(hostAg.getId(),hostAg);
+			getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
 		}
-		this.logMonologue("Initializing agents done!",LogService.onFile);
+
+		/*
+		 * 
+		 */		
+
+		this.logMonologue("Initializing agents done!:\n" + getMyAgent().myInformationService.show(HostState.class),LogService.onFile);
 		return result.values();
 	}
-
-	//	private void executeFirstRep(
-	//			final SimpleRationalAgent<ReplicationSpecification,ReplicationSpecification,MatchingCandidature<ReplicationSpecification>> host,
-	//			final MatchingCandidature<ReplicationSpecification> c,
-	//			final SimpleRationalAgent ag) {
-	//
-	//
-	//		host.setNewState(
-	//				c.computeResultingState(
-	//						host.getMyCurrentState()));
-	//		host.getMyInformation().add(c.getAgentResultingState());
-	//
-	//		/*
-	//		 *
-	//		 */
-	//
-	//		if (c.isMatchingCreation()) {
-	//		} else
-	//			throw new RuntimeException();
-	//
-	//	}
-
-	private MatchingCandidature generateInitialAllocationCandidature(
-			final SimpleRationalAgent firstReplicatedOnHost,
-			final SimpleRationalAgent ag){
-		assert firstReplicatedOnHost!=null;
-				assert ag!=null;
-
-		MatchingCandidature c;
-
-		if (_usedProtocol
-				.equals(NegotiationParameters.key4mirrorProto)){
-			final ReplicationCandidature temp = new ReplicationCandidature(
-					(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
-					ag.getIdentifier(),
-					true,true);
-			//			temp.setSpecification(
-			//					(ReplicationSpecification)
-			//					((InformedCandidatureRationality) ag.getMyCore())
-			//					.getMySimpleSpecif(ag.getMyCurrentState(), temp));
-			//			temp.setSpecification(
-			//					(ReplicationSpecification)
-			//					((InformedCandidatureRationality) firstReplicatedOnHost.getMyCore())
-			//					.getMySimpleSpecif(firstReplicatedOnHost.getMyCurrentState(), temp));
-			//
-			c = new InformedCandidature(temp);
-		} else {
-			c =
-					new ReplicationCandidature(
-							(ResourceIdentifier) firstReplicatedOnHost.getIdentifier(),
-							ag.getIdentifier(),
-							true,true);
-		}
-
-		c.setSpecification(ag.getMySpecif(c));
-		c.setSpecification(firstReplicatedOnHost.getMySpecif(c));
-
-		return c;
-	}
-
-	private void executeFirstRep(
-			final MatchingCandidature c,
-			final SimpleRationalAgent agent,
-			final SimpleRationalAgent host) {
-		try {
-			assert c.isViable();
-
-			//		logMonologue("Executing first rep!!!!!!!!!!!!!!!!\n"+getMyAgent().getMyCurrentState(), LogService.onScreen);
-			if (c.isMatchingCreation()){
-
-				host.addObserver(agent.getIdentifier(),
-						SimpleObservationService.informationObservationKey);
-				agent.addObserver(host.getIdentifier(),
-						SimpleObservationService.informationObservationKey);
-
-				ReplicationHandler.replicate(c.getAgent());
-
-				this.logMonologue(c.getResource() + "  ->I have initially replicated "
-						+ c.getAgent(),LogService.onBoth);
-			} else {
-				throw new RuntimeException();
-			}
-
-			host.setNewState(
-					c.computeResultingState(host.getMyCurrentState()));
-			agent.setNewState(
-					c.computeResultingState(agent.getMyCurrentState()));
-
-			agent.getMyInformation().add(c.computeResultingState(host.getIdentifier()));
-			host.getMyInformation().add(c.computeResultingState(agent.getIdentifier()));
-		} catch (final IncompleteContractException e) {
-			throw new RuntimeException();
-		}
-	}
-
-
-
-	protected SimpleRationalAgent constructAgent(final AgentIdentifier replicaId,
-			final DistributionParameters<AgentIdentifier> agentCriticity,
-			final DistributionParameters<AgentIdentifier> agentProcessor,
-			final DistributionParameters<AgentIdentifier> agentMemory)
-					throws CompetenceException {
-
-		final SimpleRationalAgent rep;
-		if (_usedProtocol
-				.equals(NegotiationParameters.key4mirrorProto)) { //Collaborative
-
-			rep = new CollaborativeReplica(
-					replicaId,
-					Math.min(
-							_criticityMin
-							+ agentCriticity.get(replicaId), 1),
-							agentProcessor.get(replicaId), agentMemory.get(replicaId),
-							_socialWelfare,
-							dynamicCriticity);
-
-		}else { //Status
-
-			rep = new Replica(replicaId, Math.min(
-					_criticityMin
-					+ agentCriticity.get(replicaId), 1),
-					agentProcessor.get(replicaId), agentMemory.get(replicaId), 
-					getCore(true, _usedProtocol, _socialWelfare), 
-					getSelectionCore(_agentSelection), 
-					getProposerCore(true, _usedProtocol), 
-					getInformationService(true, _usedProtocol), 
-					dynamicCriticity);
-
-		}
-
-
-		rep.getMyInformation().addAll(knownHosts.get(replicaId));
-		return rep;
-
-	}
-
-	protected SimpleRationalAgent constructHost(final ResourceIdentifier hostId,
-			final DistributionParameters<ResourceIdentifier> fault)
-					throws CompetenceException {
-
-
-		if (_usedProtocol
-				.equals(NegotiationParameters.key4mirrorProto)) {
-			return new CollaborativeHost(
-					hostId,
-					kAccessible * hostProcCapacity.get(hostId),
-					kAccessible *hostMemCapacity.get(hostId),
-					fault.get(hostId),
-					_socialWelfare,
-					this.dispos);
-		} else {
-
-			final Host hostAg = new Host(
-					hostId,
-					kAccessible * hostProcCapacity.get(hostId),
-					kAccessible * hostMemCapacity.get(hostId),
-					fault.get(hostId),
-					getCore(false, _usedProtocol, _socialWelfare), 
-					getSelectionCore(_hostSelection), 
-					getProposerCore(false, _usedProtocol), 
-					getInformationService(false, _usedProtocol), 
-					this.dispos);
-
-			return hostAg;
-		}
-	}
-
-	/*
-	 * 
-	 */
-
 	private RationalCore getCore(boolean agent, String _usedProtocol, String _socialWelfare){
 		if (_usedProtocol
 				.equals(NegotiationParameters.key4CentralisedstatusProto)){
@@ -646,7 +439,6 @@ ExperimentationParameters<ReplicationLaborantin> {
 							+ _usedProtocol);
 		}
 	}
-
 	private ProposerCore getProposerCore(boolean agent, String _usedProtocol){
 		if (_usedProtocol
 				.equals(NegotiationParameters.key4CentralisedstatusProto)){
@@ -661,10 +453,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 					"Static parameters est mal conf : _usedProtocol = "
 							+ _usedProtocol);
 		}
-
 	}
-
-
 	private ObservationService getInformationService(boolean agent, String _usedProtocol){
 		if (_usedProtocol
 				.equals(NegotiationParameters.key4CentralisedstatusProto)){
@@ -680,7 +469,6 @@ ExperimentationParameters<ReplicationLaborantin> {
 							+ _usedProtocol);
 		}
 	}
-
 	private SelectionCore getSelectionCore(String selection){
 
 		if (selection
@@ -701,7 +489,6 @@ ExperimentationParameters<ReplicationLaborantin> {
 					"Static parameters est mal conf : selection = "+ selection);
 		}
 	}
-
 
 
 	//
@@ -828,7 +615,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		//		final String usedProtocol, agentSelection, hostSelection;
 		//		f.mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
-				new LinkedList<ReplicationExperimentationParameters>();
+				new HashSet<ReplicationExperimentationParameters>();
 		simuToLaunch.add(getDefaultParameters());
 		if (varyAgentsAndhosts) {
 			simuToLaunch = this.varyAgentsAndhosts(simuToLaunch);
@@ -887,17 +674,32 @@ ExperimentationParameters<ReplicationLaborantin> {
 			}
 		};
 
-		final LinkedList<ExperimentationParameters> simus = new LinkedList<ExperimentationParameters>(simuToLaunch);
+		final LinkedList<ExperimentationParameters> simus = new LinkedList<ExperimentationParameters>();
+		for (ReplicationExperimentationParameters p : simuToLaunch)
+			if (isValid(p)){
+				simus.add(p);
+			}else{
+				logWarning("ABORTED !!! \n"+p, LogService.onBoth);
+			}
 		Collections.sort(simus,comp);
 		return simus;
 	}
 
 
+	private boolean isValid(ReplicationExperimentationParameters p) {
+		if (p.nbHosts*p.agentAccessiblePerHost<nbAgents)
+			return false;
+
+		return true;
+	}
+
 	@Override
 	public Laborantin createLaborantin(APILauncherModule api)
 			throws CompetenceException, IfailedException,
 			NotEnoughMachinesException {
-		return new ReplicationLaborantin(this, api);
+		ReplicationLaborantin l = new ReplicationLaborantin(this, api);
+		setMyAgent(l);
+		return l;
 	}
 
 
@@ -1115,6 +917,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		}
 		return result;
 	}
+
 
 }
 

@@ -103,7 +103,6 @@ public final class Experimentator extends APIAgent{
 				try {
 
 					ExperimentationParameters.currentlyInstanciating=true;
-					nextSimu.initiateParameters();
 					l = nextSimu.createLaborantin(this.getApi());//new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
 					ExperimentationParameters.currentlyInstanciating=false;
 					l.addObserver(getIdentifier(), SimulationEndedMessage.class);
@@ -150,11 +149,9 @@ public final class Experimentator extends APIAgent{
 
 
 	public void run(String[] args)
-			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException{
+			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException,  NotEnoughMachinesException, IfailedException{
 
 
-		this.simuToLaunch = myProtocol.generateSimulation();
-		this.awaitingAnswer=this.simuToLaunch.size();
 		
 		if (args[0].equals("scheduled")) {
 			this.initAPI(false);//SCHEDULED
@@ -168,6 +165,10 @@ public final class Experimentator extends APIAgent{
 			throw new RuntimeException("unknonw args");
 		}
 
+		myProtocol.setMyAgent(this);
+		this.simuToLaunch = myProtocol.generateSimulation();
+		this.awaitingAnswer=this.simuToLaunch.size();
+		
 		if (args[1].equals("nolog")) {
 			LogService.setLog(false);
 		} else if (args[1].equals("log")) {

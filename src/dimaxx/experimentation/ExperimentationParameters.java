@@ -26,7 +26,8 @@ import dimaxx.server.HostIdentifier;
  * La méthode initiate génére un jeu de parametre fixe
  * La méthode instanciate crèè les agents à partir de ces paramètres
  * 
- * generateSimulation, et createLAborantin font partie des méthodes de protocles : elle permettent à l'expérimentator de lancer un ensemble d'expériences
+ * generateSimulation, et createLAborantin font partie des méthodes de protocles : 
+ * elle permettent à l'expérimentator de lancer un ensemble d'expériences
  * 
  * Les résultats sont transmis par la compétence ObservingSelfCompétence de chaque agent à la compétence ObservingGlobalCompetence
  * 
@@ -82,7 +83,7 @@ extends BasicAgentModule<Agent> {
 	 * Generate parameters values
 	 * 
 	 */	
-	public abstract  void initiateParameters();	
+	public abstract  void initiateParameters() throws IfailedException;	
 	
 	/**
 	 * Instanciate the agents
@@ -91,14 +92,11 @@ extends BasicAgentModule<Agent> {
 	 * @throws CompetenceException
 	 */
 	
-	protected abstract Collection<? extends BasicCompetentAgent> instanciate() throws IfailedException, CompetenceException;
+	protected abstract Collection<? extends BasicCompetentAgent> instanciateAgents() throws CompetenceException;
 	
 	/*
 	 * 
 	 */
-	
-	public abstract  Laborantin createLaborantin(final APILauncherModule api)throws CompetenceException, IfailedException, NotEnoughMachinesException;
-	
 	//
 	// Methods
 	//
@@ -108,6 +106,9 @@ extends BasicAgentModule<Agent> {
 	 */
 	
 	public abstract LinkedList<ExperimentationParameters> generateSimulation();
+	
+	public abstract  Laborantin createLaborantin(final APILauncherModule api)throws CompetenceException, IfailedException,NotEnoughMachinesException;
+	
 
 	/*
 	 * Déploiement
@@ -141,6 +142,7 @@ extends BasicAgentModule<Agent> {
 		result+="**************";
 		return result;
 	}
+
 
 }
 

@@ -7,9 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
-import negotiation.faulttolerance.candidaturewithstatus.Host;
 import negotiation.faulttolerance.candidaturewithstatus.ObservingStatusService;
-import negotiation.faulttolerance.candidaturewithstatus.Replica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.negotiationframework.NegotiationParameters;
@@ -144,7 +142,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		if (i < ObservingGlobalService.getNumberOfTimePoints()) {
 			this.agentsSaturationEvolution[i].add(
 					(double)ag.getNumberOfAllocatedResources()/
-					(getMyAgent().getSimulationParameters()).kAccessible);
+					(getMyAgent().getSimulationParameters()).agentAccessiblePerHost);
 			this.agentsReliabilityEvolution[i].add(ag.getReliability());
 			this.agentsDispoEvolution[i].add(ag.getDisponibility());
 			this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
@@ -217,7 +215,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		LogService.logOnFile(getMyAgent().getSimulationParameters().getResultPath(), "Optimal? "+this.analyseOptimal(), true, false);
 		if (getMyAgent().myStatusObserver.iObserveStatus()) {
 			getMyAgent().myStatusObserver.writeStatusResult();
-		}
+		}	
+		
 		this.logWarning(this.getIdentifier()+" OOOOOOOOOKKKKKKKKKKKK?????????"+
 				this.analyseOptimal()+" for protocol "+getMyAgent().getSimulationParameters()._usedProtocol,
 				LogService.onBoth);

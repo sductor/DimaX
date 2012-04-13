@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import negotiation.faulttolerance.candidaturewithstatus.Host;
+import negotiation.faulttolerance.experimentation.Host;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
@@ -116,6 +116,12 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.contracts = contracts;
 	}
 
+	@Override
+	public void setMyAgent(final SimpleNegotiatingAgent<ActionSpec, State, Contract> ag) throws UnrespectedCompetenceSyntaxException {
+		super.setMyAgent(ag);
+		getContracts().setMyAgent(ag);
+	}
+	
 	//
 	// Accessors
 	//

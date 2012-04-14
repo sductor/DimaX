@@ -6,6 +6,7 @@ import dima.introspectionbasedagents.services.information.ObservationService;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -14,17 +15,18 @@ import negotiation.negotiationframework.rationality.RationalCore;
 public class CollaborativeAgent<
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
+Contract extends MatchingCandidature<ActionSpec>>
 extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>  {
 
-	public final int proposalComplexity = 1; //0 no host proposal, 1 host proposal, 2 agent fill the possible and provide requeste
-	public final CandidatureRootTable<Contract, ActionSpec> crt;
+	private final int proposalComplexity = 1; //0 no host proposal, 1 host proposal, 2 agent fill the possible and provide requeste
+	private final CandidatureRootTable<Contract, ActionSpec> crt = 
+			new CandidatureRootTable<Contract, ActionSpec>();
 	
 	public CollaborativeAgent(
 			AgentIdentifier id,
 			PersonalState myInitialState,
 			RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			SelectionCore<? extends SimpleNegotiatingAgent,ActionSpec, PersonalState, Contract> selectionCore,
 			ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
 			ObservationService myInformation,
 			AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
@@ -33,4 +35,11 @@ extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>  {
 				myInformation, protocol);
 		}
 
+	public int getProposalComplexity() {
+		return proposalComplexity;
+	}
+
+	public CandidatureRootTable<Contract, ActionSpec> getCrt() {
+		return crt;
+	}
 }

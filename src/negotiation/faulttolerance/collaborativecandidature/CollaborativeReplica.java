@@ -41,13 +41,11 @@ public class CollaborativeReplica extends Replica {
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, myState,
-				new AltruistRationalCore(
-						new ReplicationSocialOptimisation(socialWelfare),
-						new InformedCandidatureRationality(new ReplicaCore(),true)),
-						new AgentInformedSelectionCore(),
-						new CollaborativeCandidatureProposer(),
-						new SimpleObservationService(),
-						new OneDeciderCommunicationProtocol(false),dynamicCriticity);
+				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),new InformedCandidatureRationality(new ReplicaCore(),true)),
+				new AgentInformedSelectionCore(),
+				new CollaborativeCandidatureProposer(),
+				new SimpleObservationService(),
+				new OneDeciderCommunicationProtocol(false),dynamicCriticity);
 	}
 
 }

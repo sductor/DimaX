@@ -18,9 +18,9 @@ public class ResourceInformedProposerCore<
 Contract extends MatchingCandidature<ActionSpec>,
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec>
-extends BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>>>
+extends BasicAgentCompetence<CollaborativeAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>>>
 implements ProposerCore<
-SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
+CollaborativeAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
 ActionSpec,
 PersonalState,
 InformedCandidature<Contract,ActionSpec>> {

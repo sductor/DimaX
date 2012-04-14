@@ -10,6 +10,7 @@ import java.util.Set;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.InformedCandidature;
@@ -29,8 +30,10 @@ ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends MatchingCandidature<ActionSpec>>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
-implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
+BasicAgentCompetence<CollaborativeAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
+implements SelectionCore<
+CollaborativeAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
+ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	private static final long serialVersionUID = 5994721006483536151L;
 
 	//
@@ -204,8 +207,21 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 	protected  Collection<Collection<InformedCandidature<Contract, ActionSpec>>> solve(
 			final PersonalState currentState,
 			Collection<InformedCandidature<Contract, ActionSpec>> concerned){
+		
+		
+		
+		
+		
+		
+		
 		return new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(
 				new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
+			
+			
+			
+			
+			
+			
 			@Override
 			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
 				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) && !MatchingCandidature.areAllCreation(alloc);

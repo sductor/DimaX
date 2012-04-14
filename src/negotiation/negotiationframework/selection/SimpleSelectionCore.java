@@ -24,12 +24,13 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  * @param <ActionSpec>
  */
 public class SimpleSelectionCore<
+Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>
-implements SelectionCore<ActionSpec, PersonalState, Contract> {
+BasicAgentCompetence<Agent>
+implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
 	Collection<Contract> toAccept;

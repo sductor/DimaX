@@ -68,10 +68,11 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	}
 
 	public interface SelectionCore<
+	Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 	ActionSpec extends AbstractActionSpecification,
 	PersonalState extends ActionSpec,
 	Contract extends AbstractContractTransition<ActionSpec>>
-	extends	AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
+	extends	AgentCompetence<Agent> {
 
 		// Select contract to accept/wait/reject for a participant
 		// Select contract to request/cancel for a initiator

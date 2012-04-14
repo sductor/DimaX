@@ -6,6 +6,7 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.CandidatureProposer;
+import negotiation.negotiationframework.protocoles.collaborative.CollaborativeAgent;
 
 public class CollaborativeCandidatureProposer
 extends CandidatureProposer<ReplicationSpecification, ReplicaState, InformedCandidature<ReplicationCandidature,ReplicationSpecification>>{
@@ -15,6 +16,7 @@ extends CandidatureProposer<ReplicationSpecification, ReplicaState, InformedCand
 	public InformedCandidature<ReplicationCandidature,ReplicationSpecification> constructCandidature(
 			final ResourceIdentifier id) {
 		final InformedCandidature c = new InformedCandidature(new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true));
+		c.getPossibleContracts().addAll(((CollaborativeAgent)getMyAgent()).getCrt().getPossible(c));
 		c.setSpecification(this.getMyAgent().getMySpecif(c));
 		return c;
 	}

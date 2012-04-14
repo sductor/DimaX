@@ -38,7 +38,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	private final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol;
 
 	@Competence()
-	private final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore;
+	private final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore;
 
 	@Competence
 	private final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> myProposerCore;
@@ -51,7 +51,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
 			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
 			final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
@@ -59,7 +59,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
-		this.selectionCore.setMyAgent(this);
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.selectionCore).setMyAgent(this);
 		this.protocol = protocol;
 
 
@@ -89,7 +89,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		return this.myProposerCore;
 	}
 
-	public SelectionCore<ActionSpec, PersonalState, Contract> getMySelectionCore() {
+	public SelectionCore<? extends SimpleNegotiatingAgent,ActionSpec, PersonalState, Contract> getMySelectionCore() {
 		return this.selectionCore;
 	}
 

@@ -217,14 +217,10 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		return new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(
 				new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
 			
-			
-			
-			
-			
-			
 			@Override
 			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
-				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) && !MatchingCandidature.areAllCreation(alloc);
+				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) 
+						&& !MatchingCandidature.areAllCreation(alloc);
 			}
 		}.getHyperset();
 	}

@@ -5,10 +5,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
-import negotiation.negotiationframework.rationality.SocialChoiceFunctions.UtilitaristEvaluator;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.UtilitaristEvaluator;
 
-public class ReplicationSocialOptimisation extends AllocationSocialWelfares<ReplicationSpecification, ReplicationCandidature>{
+public class ReplicationSocialOptimisation extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 
 
 

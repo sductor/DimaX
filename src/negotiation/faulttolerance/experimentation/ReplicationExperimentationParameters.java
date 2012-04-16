@@ -39,7 +39,7 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
-import negotiation.negotiationframework.rationality.SocialChoiceFunctions;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -508,9 +508,9 @@ ExperimentationParameters<ReplicationLaborantin> {
 			NegotiationParameters.key4CentralisedstatusProto,
 			NegotiationParameters.key4statusProto});
 	static List<String> welfare = Arrays.asList(new String[]{
-			SocialChoiceFunctions.key4leximinSocialWelfare,
-			SocialChoiceFunctions.key4NashSocialWelfare,
-			SocialChoiceFunctions.key4UtilitaristSocialWelfare});
+			SocialChoiceFunction.key4leximinSocialWelfare,
+			SocialChoiceFunction.key4NashSocialWelfare,
+			SocialChoiceFunction.key4UtilitaristSocialWelfare});
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
@@ -603,7 +603,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 				doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
 				NegotiationParameters.key4mirrorProto,
-				SocialChoiceFunctions.key4UtilitaristSocialWelfare,
+				SocialChoiceFunction.key4UtilitaristSocialWelfare,
 				NegotiationParameters.key4greedySelect,
 				NegotiationParameters.key4greedySelect,
 				false,

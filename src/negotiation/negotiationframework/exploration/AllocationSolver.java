@@ -7,8 +7,10 @@ import java.util.List;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 
 import choco.Choco;
 import choco.Options;
@@ -31,75 +33,75 @@ Contract extends MatchingCandidature<ActionSpec>,
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec> extends BasicAgentModule {
 
-	public AllocationSolver(){
+	Solver s;
+	Model m; 
+	List<? extends ReplicationCandidature> concerned;
 	
-	}
-	
-	public void initiate(List<? extends ReplicationCandidature> concerned, HostState currentState){
-		Model m = new CPModel();
-		ArrayList<IntegerVariable>	replicas = new ArrayList<IntegerVariable>();
-		ArrayList<Double> replicasMinUtil = new ArrayList<Double>();
-		ArrayList<Double> replicasGain = new ArrayList<Double>();
-		ArrayList<Double> replicasProc = new ArrayList<Double>();
-		ArrayList<Double> replicasMem = new ArrayList<Double>();
+	public void initiate(List<? extends ReplicationCandidature> concerned, HostState currentState, final String socialWelfare) throws IncompleteContractException{
+		m = new CPModel();
+		this.concerned=concerned;
 		
-		for (ReplicationCandidature c : concerned){
-			replicas.add(Choco.makeIntVar(c.getAgent().toString(), 0, 1, Options.V_ENUM));
-			double minUt = Math.min(
-					c.getAgentInitialState().getMyReliability(),
-					c.getAgentResultingState().getMyReliability());
-			double maxUt = Math.max(
-					c.getAgentInitialState().getMyReliability(),
-					c.getAgentResultingState().getMyReliability());
-			replicasMinUtil.add(minUt);
-			replicasGain.add(maxUt-minUt);
-			assert c.getAgentInitialState().getMyMemCharge().equals(c.getAgentResultingState().getMyMemCharge());
-			replicasMem.add(c.getAgentInitialState().getMyMemCharge());
-			assert c.getAgentInitialState().getMyProcCharge().equals(c.getAgentResultingState().getMyProcCharge());
-			replicasProc.add(c.getAgentInitialState().getMyProcCharge());
+		int nbVariable = concerned.size();
+		
+		IntegerVariable[]	replicas = new IntegerVariable[nbVariable];
+		IntegerVariable	c =  Choco.makeIntVar("utility", 1, 1000000, Options.V_BOUND, Options.V_NO_DECISION);
+		
+		int[] replicasMinUtil = new int[nbVariable];
+		int[] replicasGain = new int[nbVariable];
+		int[] replicasProc = new int[nbVariable];
+		int[] replicasMem = new int[nbVariable];
+		
+		int hostProccapacity =(int)  (100 *currentState.getProcChargeMax());
+		int hostMemCapacity = (int)  (100 *currentState.getMemChargeMax());		
+		
+		for (int i = 0; i < nbVariable; i++){
+			replicas[i] = Choco.makeIntVar(concerned.get(i).getAgent().toString(), 0, 1, Options.V_ENUM);
+			int minUt = (int) (100 *Math.min(
+					concerned.get(i).getAgentInitialState().getMyReliability(),
+					concerned.get(i).getAgentResultingState().getMyReliability()));
+			int maxUt = (int) (100 * Math.max(
+					concerned.get(i).getAgentInitialState().getMyReliability(),
+					concerned.get(i).getAgentResultingState().getMyReliability()));
+			replicasMinUtil[i] = minUt;
+			replicasGain[i] = maxUt-minUt;
+			assert concerned.get(i).getAgentInitialState().getMyMemCharge().equals(concerned.get(i).getAgentResultingState().getMyMemCharge());
+			replicasMem[i] = (int) (100 * concerned.get(i).getAgentInitialState().getMyMemCharge());
+			assert concerned.get(i).getAgentInitialState().getMyProcCharge().equals(concerned.get(i).getAgentResultingState().getMyProcCharge());
+			replicasProc[i] = (int) (100 * concerned.get(i).getAgentInitialState().getMyProcCharge());
 		}
 		
-		double hostProccapacity = currentState.getProcChargeMax();
-		double hostMemCapacity = currentState.getMemChargeMax();		
-		IntegerVariable	c =  Choco.makeIntVar("cost", 1, 1000000, Options.V_BOUND);
 		
-		m.addConstraint(Choco.leq(Choco.scalar(replicasProc.toArray(), replicas.toArray(), hostProccapacity)));
-		m.addConstraint(Choco.leq(Choco.scalar(replicasProc.toArray(), replicas.toArray(), hostMemCapacity)));
-		m.addConstraint(Choco.eq (Choco.scalar(energy,  new IntegerVariable[]{obj1, obj2, obj3}), c));
-		
-		
-		IntegerVariable obj1 = 
-		IntegerVariable	obj2 = Choco.makeIntVar("obj2", 0, 7,       Options.V_ENUM);
-		IntegerVariable	obj3 = Choco.makeIntVar("obj3", 0, 10,      Options.V_ENUM);
+		m.addConstraint(Choco.leq(Choco.scalar(replicasProc, replicas), hostProccapacity));
+		m.addConstraint(Choco.leq(Choco.scalar(replicasMem, replicas), hostMemCapacity));
 
-		int  capacity = 34;
-		int[] volumes = new int[]{7, 5, 3};
-		int[] energy  = new int[]{6, 4, 2};
-		m.addConstraint(Choco.leq(Choco.scalar(volumes, new IntegerVariable[]{obj1, obj2, obj3}), capacity));
-		m.addConstraint(Choco.eq (Choco.scalar(energy,  new IntegerVariable[]{obj1, obj2, obj3}), c));
-		Solver s = new CPSolver();
-		s.read(m);
-
+		if (socialWelfare.equals(SocialChoiceFunction.key4leximinSocialWelfare)) {
+			throw new RuntimeException("todo "+socialWelfare);
+		} else if (socialWelfare.equals(SocialChoiceFunction.key4NashSocialWelfare)) {
+			throw new RuntimeException("todo : "+socialWelfare);
+		} else if (socialWelfare.equals(SocialChoiceFunction.key4UtilitaristSocialWelfare)) {
+			m.addConstraint(Choco.eq (Choco.scalar(replicasGain,  replicas), c));
+		} else {
+			throw new RuntimeException("impossible key for social welfare is : "+socialWelfare);
+		}
+		
+		s = new CPSolver();
+		s.read(m);		
 		s.maximize(s.getVar(c), false);
 		s.setValIntIterator(new DecreasingDomain());
-		s.solve()
 	}
+	
 	public  Collection<MatchingCandidature<?>> getAllSolution(){
 		
 	}
+	
 	public MatchingCandidature<?> getBestSolution(){
-		
+		s.solve();	
 	}
-    public static RealExpressionVariable scalar(double[] lc, RealVariable[] lv) {
-        if (lc.length != lv.length) {
-            throw new ModelException("scalar: parameters length are differents");
-        }
-        RealVariable[] tmp = new RealVariable[lc.length + lv.length];
-        for (int i = 0; i < lc.length; i++) {
-            tmp[i] = constant(lc[i]);
-        }
-        arraycopy(lv, 0, tmp, lc.length, lv.length);
-        return new RealExpressionVariable(null, Operator.SCALAR, tmp);
-    }
-
+	
+	private Collection<MatchingCandidature<?>> generateSolution(){
+		ArrayList<MatchingCandidature<?>> results = new ArrayList<MatchingCandidature<?>>();
+		for (MatchingCandidature<?> c : concerned){
+			s.getVar(v)
+		}
+	}
 }

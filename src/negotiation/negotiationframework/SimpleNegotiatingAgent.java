@@ -7,9 +7,9 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
-import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -71,7 +71,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	}
 	@ProactivityInitialisation
 	public void initialisation(){
-		this.addLogKey(AllocationSocialWelfares.log_socialWelfareOrdering, false, false);
+		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, false, false);
 		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, true);
 		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, true);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);

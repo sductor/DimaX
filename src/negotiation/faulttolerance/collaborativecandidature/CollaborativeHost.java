@@ -6,6 +6,7 @@ import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationAllocationSolver;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -36,7 +37,7 @@ public class CollaborativeHost extends Host{
 				myId,
 				myState,
 				new InformedCandidatureRationality(new HostCore(socialWelfare),false),
-				new ResourceInformedSelectionCore(){
+				new ResourceInformedSelectionCore(new ReplicationAllocationSolver(socialWelfare)){
 					/**
 					 * 
 					 */

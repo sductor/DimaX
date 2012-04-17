@@ -17,11 +17,13 @@ import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
+import negotiation.negotiationframework.exploration.AllocationSolver;
 import negotiation.negotiationframework.exploration.ExhaustifHyperSetGeneration;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
@@ -36,9 +38,18 @@ CollaborativeAgent<ActionSpec, PersonalState, InformedCandidature<Contract,Actio
 ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	private static final long serialVersionUID = 5994721006483536151L;
 
+	final AllocationSolver<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> solver;
 	//
 	// Methods
 	//
+
+	public ResourceInformedSelectionCore(
+			AllocationSolver solver)
+					throws UnrespectedCompetenceSyntaxException {
+		super();
+		this.solver = solver;
+	}
+
 
 	@Override
 	public void select(
@@ -204,26 +215,6 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 	protected abstract InformedCandidature<Contract, ActionSpec> generateDestructionContract(AgentIdentifier id);
 
-	protected  Collection<Collection<InformedCandidature<Contract, ActionSpec>>> solve(
-			final PersonalState currentState,
-			Collection<InformedCandidature<Contract, ActionSpec>> concerned){
-		
-		
-		
-		
-		
-		
-		
-		return new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(
-				new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
-			
-			@Override
-			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
-				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) 
-						&& !MatchingCandidature.areAllCreation(alloc);
-			}
-		}.getHyperset();
-	}
 
 	//
 	// Primitives
@@ -265,7 +256,8 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		assert ContractTransition.allComplete(concerned):concerned+" "+myAgentContractTrunk;
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
-		final Collection<Collection<InformedCandidature<Contract, ActionSpec>>> allocGen = solve(currentState,concerned);
+		solver.initiate(concerned, currentState);
+		final Collection<Collection<InformedCandidature<Contract, ActionSpec>>> allocGen = solver.getAllSolution();
 
 
 		final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep = new HashSet();

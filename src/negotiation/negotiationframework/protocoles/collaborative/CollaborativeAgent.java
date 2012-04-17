@@ -12,7 +12,7 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 
-public class CollaborativeAgent<
+public abstract class CollaborativeAgent<
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends MatchingCandidature<ActionSpec>>
@@ -38,7 +38,7 @@ extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>  {
 	public int getProposalComplexity() {
 		return proposalComplexity;
 	}
-
+	
 	public CandidatureRootTable<Contract, ActionSpec> getCrt() {
 		return crt;
 	}

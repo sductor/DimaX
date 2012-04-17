@@ -128,3 +128,14 @@ public abstract class ExhaustifHyperSetGeneration<T> {
 		}
 	}
 }
+
+
+//return new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(
+//		new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
+//	
+//	@Override
+//	public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
+//		return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) 
+//				&& !MatchingCandidature.areAllCreation(alloc);
+//	}
+//}.getHyperset();

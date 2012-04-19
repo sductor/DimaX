@@ -78,6 +78,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		this.memCurrentCharge = memCurrentCharge;
 		this.lambda = lambda;
 		this.faulty = faulty;
+//		assert this.isValid();
 	}
 
 	//
@@ -309,7 +310,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	public String toString() {
 		return "\nHOST="+ this.getMyAgentIdentifier()
 				//				+ "\n Date "+ this.getCreationTime()
-				+ "\n --> charge : "+ this.getCurrentProcCharge()+", "+this.getCurrentMemCharge()
+				+ "\n --> charge : "+ this.getCurrentProcCharge()+", "+this.getCurrentMemCharge()+" current charge % = "+getMyCharge()
 				+ "\n --> capacity : "+ this.getProcChargeMax()+", "+this.getMemChargeMax()
 				//				+ "\n * dispo  : "
 				//				+ NegotiatingHost.this.myFaultAwareService

@@ -21,6 +21,7 @@ import negotiation.negotiationframework.protocoles.collaborative.AgentInformedSe
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.rationality.AltruistRationalCore;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -37,7 +38,7 @@ public class CollaborativeReplica extends Replica {
 	public CollaborativeReplica(
 			final AgentIdentifier id,
 			final ReplicaState myState,
-			final String socialWelfare,
+			final SocialChoiceType socialWelfare,
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, myState,

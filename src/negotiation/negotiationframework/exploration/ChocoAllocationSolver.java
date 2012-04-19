@@ -3,11 +3,13 @@ package negotiation.negotiationframework.exploration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 
 import choco.Choco;
 import choco.Options;
@@ -31,16 +33,16 @@ Contract extends MatchingCandidature<ActionSpec>,
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec> extends BasicAgentModule implements AllocationSolver<Contract, ActionSpec, PersonalState> {
 
-
-	protected Solver s;
+	protected CPSolver s;
 
 	protected Contract[] concerned;
 	protected IntegerVariable[] replicas;
 	protected IntegerVariable socialWelfareValue;
 
-	protected final String socialWelfare;
+	protected final SocialChoiceType socialWelfare;
 
-	public ChocoAllocationSolver(String socialWelfare){
+
+	public ChocoAllocationSolver(SocialChoiceType socialWelfare){
 		this.socialWelfare = socialWelfare;
 	}
 
@@ -52,29 +54,65 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 			Collection<Contract> concerned, 
 			PersonalState currentState);
 
-	/* (non-Javadoc)
-	 * @see negotiation.negotiationframework.exploration.AllocationSolver#getAllSolution()
-	 */
 	@Override
-	public  Collection<Collection<Contract>> getAllSolution(){
-		Collection<Collection<Contract>> result = new ArrayList<Collection<Contract>>();
-		s.solve();
-		result.add(generateSolution());
-		while (s.isFeasible()){
-			s.nextSolution();
-			result.add(generateSolution());
-		}
-		return result;
+	public void setTimeLimit(int millisec) {
+		s.setTimeLimit(millisec);
 	}
+
+	/*
+	 * 
+	 */
 
 	/* (non-Javadoc)
 	 * @see negotiation.negotiationframework.exploration.AllocationSolver#getBestSolution()
 	 */
+	/**
+	 * impossible de la lancer *avant* une exploration des solutions...
+	 */
+	@Deprecated
 	@Override
 	public Collection<Contract> getBestSolution(){
-		s.maximize(s.getVar(socialWelfareValue), true);
-		return generateSolution();
+		s.resetSearchStrategy();
+		s.setObjective(s.getVar(socialWelfareValue));
+		s.maximize(true);
+		Collection<Contract> result = generateSolution();
+		s.resetSearchStrategy();
+		s.setObjective(null);
+		return  result;
 	}
+
+	/*
+	 * 
+	 */
+
+	Boolean hasNext=null;
+
+	@Override
+	public boolean hasNext() {
+		if (hasNext==null){
+			s.solve();
+			hasNext=(s.isFeasible()==true);
+		}
+		return hasNext;
+	}
+
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.exploration.AllocationSolver#getAllSolution()
+	 */
+	@Override
+	public Collection<Contract> getNextSolution(){
+		if (hasNext=false || hasNext==null){
+			throw new NoSuchElementException();
+		} else {	
+			Collection<Contract> result = generateSolution();
+			hasNext = s.nextSolution();
+			return result;
+		}
+	}
+
+	/*
+	 * 
+	 */
 
 	/**
 	 * Transforme la solution actuelle du solveur en candidature accepté
@@ -82,11 +120,9 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 	 */
 	private Collection<Contract> generateSolution(){
 		assert concerned.length==replicas.length;
+		assert s.isFeasible()==true;
 		ArrayList<Contract> results = new ArrayList<Contract>();
-		
-		if (!s.isFeasible())
-			return results;
-		
+
 		for (int i = 0; i < concerned.length; i++){
 			assert s.getVar(replicas[i]).getVal()==1 || s.getVar(replicas[i]).getVal()==0;
 			boolean allocated = s.getVar(replicas[i]).getVal()==1;
@@ -97,6 +133,8 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 		}		
 		return results;
 	}
+
+
 }
 
 

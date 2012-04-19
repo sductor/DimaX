@@ -130,7 +130,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	//
 
 	public static int getNumberOfTimePoints() {
-		return (int) (ExperimentationParameters._maxSimulationTime / _state_snapshot_frequency);
+		return (int) (ExperimentationParameters._maxSimulationTime / _state_snapshot_frequency) +1;//le +1 est l'état initial
 	}
 
 	public static int getTimeStep(final ExperimentationResults ag) {
@@ -140,7 +140,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	}
 
 	public static Long geTime(final int i) {
-		return (i + 1)
+		return (i)
 				* _state_snapshot_frequency;
 	}
 

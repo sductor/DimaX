@@ -22,7 +22,9 @@ import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.BasicAgentModule;
+import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.IfailedException;
 import dimaxx.server.HostIdentifier;
@@ -48,9 +50,63 @@ extends BasicAgentModule<ReplicationLaborantin>{
 	// Constructor
 	//
 
-	public ReplicationInstanceGraph(ReplicationLaborantin ag,ReplicationExperimentationParameters p) throws IfailedException {
+	public ReplicationInstanceGraph(
+			ReplicationLaborantin ag, ReplicationExperimentationParameters p) 
+					throws IfailedException {
 		super(ag);
 		this.kAccessible = p.agentAccessiblePerHost;
+
+	}
+
+	//
+	// Getter
+	//
+
+	public Collection<AgentIdentifier> getAgentsIdentifier() {
+		return agents.keySet();
+	}
+
+	public Collection<ResourceIdentifier> getHostsIdentifier() {
+		return hosts.keySet();
+	}
+
+	public Collection<ReplicaState> getAgentStates() {
+		return agents.values();
+	}
+
+	public Collection<HostState> getHostsStates() {
+		return hosts.values();
+	}
+	public ReplicaState getAgentState(AgentIdentifier id){
+		return agents.get(id);
+	}
+
+	public HostState getHostState(ResourceIdentifier id){
+		return hosts.get(id);
+	}
+
+	public Collection<ResourceIdentifier> getInitialReplication(AgentIdentifier id){
+		return getAgentState(id).getMyResourceIdentifiers();
+	}
+
+	public Collection<AgentIdentifier> getInitialReplication(ResourceIdentifier id){
+		return getHostState(id).getMyResourceIdentifiers();
+	}
+
+
+	public Collection<ResourceIdentifier> getAccessibleHost(AgentIdentifier id){
+		return accHosts.get(id);
+	}
+
+	public Collection<AgentIdentifier> getAccessibleAgent(ResourceIdentifier id){
+		return accAgents.get(id);
+	}
+
+	//
+	// Methods
+	//
+
+	void initiateAgents(ReplicationExperimentationParameters p){
 
 		/*
 		 * Agents and hosts names
@@ -103,6 +159,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 							agentProcessor.get(id), 
 							agentMemory.get(id),
 							new HashSet(), 
+							p._socialWelfare,
 							-1));
 		}
 
@@ -114,127 +171,99 @@ extends BasicAgentModule<ReplicationLaborantin>{
 							fault.get(hostId),
 							-1));
 		}
+	}
 
-		int count = 5;
-		boolean iFailed=false;
-		do {
-			iFailed=false;
-			try {
-				//		
-				/*
-				 * Voisinage
-				 */
-				List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>(hosts.keySet());
-				List<AgentIdentifier> replicasIdentifier = new ArrayList<AgentIdentifier>(agents.keySet());
+	void setVoisinage(){
+		accHosts =
+				new HashedHashSet<AgentIdentifier, ResourceIdentifier>();
+		accAgents = 
+				new HashedHashSet<ResourceIdentifier, AgentIdentifier>();
+		
+		List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>(hosts.keySet());
+		List<AgentIdentifier> replicasIdentifier = new ArrayList<AgentIdentifier>(agents.keySet());
 
-				Collections.shuffle(hostsIdentifier);
-				Collections.shuffle(replicasIdentifier);
-				Iterator<ResourceIdentifier> hotId = hostsIdentifier.iterator();
-				for (AgentIdentifier agId : replicasIdentifier){
-					if (!hotId.hasNext())
-						hotId = hostsIdentifier.iterator();
-					addAcquaintance(
-							agId, 
-							hotId.next());
-				}
+		Collections.shuffle(hostsIdentifier);
+		Collections.shuffle(replicasIdentifier);
+		Iterator<ResourceIdentifier> hotId = hostsIdentifier.iterator();
+		for (AgentIdentifier agId : replicasIdentifier){
+			if (!hotId.hasNext())
+				hotId = hostsIdentifier.iterator();
+			addAcquaintance(
+					agId, 
+					hotId.next());
+		}
 
-				Collections.shuffle(hostsIdentifier);
-				for (ResourceIdentifier h : hostsIdentifier) {
-					Collections.shuffle(replicasIdentifier);
-					Iterator<AgentIdentifier> agId = replicasIdentifier.iterator();
-					/* Adding acquaintance for host within latence */
-					while (getAccessibleAgent(h).size()<this.kAccessible)
-						addAcquaintance(agId.next(), h);
-				}
+		Collections.shuffle(hostsIdentifier);
+		for (ResourceIdentifier h : hostsIdentifier) {
+			Collections.shuffle(replicasIdentifier);
+			Iterator<AgentIdentifier> agId = replicasIdentifier.iterator();
+			/* Adding acquaintance for host within latence */
+			while (getAccessibleAgent(h).size()<this.kAccessible)
+				addAcquaintance(agId.next(), h);
+		}
+	}
 
-				/*
-				 * First rep
-				 */
+	void initialRep() throws IfailedException{
+		//duplicating in case of failure
+		Map<AgentIdentifier, ReplicaState> agentsTemp =
+				new HashMap<AgentIdentifier, ReplicaState>(agents);
+		Map<ResourceIdentifier, HostState> hostsTemp =
+				new HashMap<ResourceIdentifier, HostState>(hosts);
+		List<AgentIdentifier> replicasIdentifier = new ArrayList<AgentIdentifier>(agentsTemp.keySet());
+		Collections.shuffle(replicasIdentifier);
 
-				HashSet<AgentIdentifier> done = new HashSet<AgentIdentifier>();
-				for (AgentIdentifier agId : replicasIdentifier){			
-					assert done.add(agId):agId+" "+done+" "+replicasIdentifier;
-					final Iterator<ResourceIdentifier> itHost =
-							getAccessibleHost(agId).iterator();
-					assert itHost.hasNext():"no host? argh!"+agId+"\n";
+		HashSet<AgentIdentifier> done = new HashSet<AgentIdentifier>();
+		
+		for (AgentIdentifier agId : replicasIdentifier){	
+			List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>(getAccessibleHost(agId));
+			Collections.shuffle(hostsIdentifier);
+			final Iterator<ResourceIdentifier> itHost =
+					hostsIdentifier.iterator();		
+			
+			assert done.add(agId):agId+" "+done+" "+replicasIdentifier;
+			assert itHost.hasNext():"no host? argh!"+agId+"\n";
 
-					ResourceIdentifier firstReplicatedOnHost = itHost.next();
-					MatchingCandidature c = new ReplicationCandidature(
-							firstReplicatedOnHost,
-							agId,
-							true,true);
-					c.setSpecification(agents.get(agId));
-					c.setSpecification(hosts.get(firstReplicatedOnHost));
-
-					try {
-
-						while (!c.computeResultingState(firstReplicatedOnHost).isValid()) {
-							if (!itHost.hasNext()) {
-								throw new IfailedException("can not create at least one rep for each agent\n");
-							} else {
-								firstReplicatedOnHost = itHost.next();
-								c = new ReplicationCandidature(
-										firstReplicatedOnHost,
-										agId,
-										true,true);
-								c.setSpecification(agents.get(agId));
-								c.setSpecification(hosts.get(firstReplicatedOnHost));
-							}
-						}
-
-						agents.put(agId, (ReplicaState) c.computeResultingState(agId));
-						hosts.put(firstReplicatedOnHost,  (HostState) c.computeResultingState(firstReplicatedOnHost));
-
-					} catch (IncompleteContractException e) {
-						signalException("impossible", e);
-					}
-				}
-			} catch (final IfailedException e) {
-				iFailed=true;
-				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG "+e, LogService.onBoth);
-				count--;
-				if (count==0) {
-					throw e;
+			ResourceIdentifier firstReplicatedOnHost = itHost.next();
+			while (!allocateAgents(getMyAgent(),agId, firstReplicatedOnHost,agentsTemp,hostsTemp)) {
+				if (!itHost.hasNext()) {
+					throw new IfailedException("can not create at least one rep for each agent\n");
+				} else {
+					firstReplicatedOnHost = itHost.next();
 				}
 			}
-		}while(iFailed && count > 0);	
+		}
+		
+		agents.clear();
+		agents.putAll(agentsTemp);
+		hosts.clear();
+		hosts.putAll(hostsTemp);
+
 	}
 
-	//
-	// Getter
-	//
+	public static boolean allocateAgents(
+			BasicCompetentAgent caller,
+			AgentIdentifier r, ResourceIdentifier h,
+			Map<AgentIdentifier, ReplicaState> agents, 
+			Map<ResourceIdentifier, HostState> hosts){
+		try {	
+			MatchingCandidature c = new ReplicationCandidature(
+					h,
+					r,
+					true,true);
+			c.setSpecification(agents.get(r));
+			c.setSpecification(hosts.get(h));
 
-	public Collection<AgentIdentifier> getAgentsIdentifier() {
-		return agents.keySet();
-	}
-
-	public Collection<ResourceIdentifier> getHostsIdentifier() {
-		return hosts.keySet();
-	}
-
-	public ReplicaState getAgentState(AgentIdentifier id){
-		return agents.get(id);
-	}
-
-	public HostState getHostState(ResourceIdentifier id){
-		return hosts.get(id);
-	}
-
-	public Collection<ResourceIdentifier> getInitialReplication(AgentIdentifier id){
-		return getAgentState(id).getMyResourceIdentifiers();
-	}
-
-	public Collection<AgentIdentifier> getInitialReplication(ResourceIdentifier id){
-		return getHostState(id).getMyResourceIdentifiers();
-	}
-
-
-	public Collection<ResourceIdentifier> getAccessibleHost(AgentIdentifier id){
-		return accHosts.get(id);
-	}
-
-	public Collection<AgentIdentifier> getAccessibleAgent(ResourceIdentifier id){
-		return accAgents.get(id);
+			if (!c.computeResultingState(h).isValid() || !c.computeResultingState(r).isValid())
+				return false;
+			else {
+				agents.put(r, (ReplicaState) c.computeResultingState(r));
+				hosts.put(h,  (HostState) c.computeResultingState(h));
+				return true;
+			}
+		} catch (IncompleteContractException e) {
+			caller.signalException("impossible", e);
+			throw new RuntimeException();
+		}
 	}
 
 	//
@@ -246,9 +275,6 @@ extends BasicAgentModule<ReplicationLaborantin>{
 		accAgents.add(h, ag);
 		assert accAgents.get(h).size() <= kAccessible:accAgents;
 	}
-
-
-
 }
 
 //int count = 5;

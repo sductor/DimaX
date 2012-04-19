@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 
@@ -24,8 +25,12 @@ PersonalState extends ActionSpec> {
 			Collection<Contract> concerned,
 			PersonalState currentState);
 
-	public abstract Collection<Collection<Contract>> getAllSolution();
-
 	public abstract Collection<Contract> getBestSolution();
+
+	public abstract boolean hasNext();
+
+	public abstract Collection<Contract> getNextSolution();
+	
+	public abstract void setTimeLimit(int millisec);
 
 }

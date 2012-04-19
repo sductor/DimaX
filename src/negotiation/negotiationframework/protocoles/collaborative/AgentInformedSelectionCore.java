@@ -19,9 +19,9 @@ ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends MatchingCandidature<ActionSpec>>
 extends
-BasicAgentCompetence<CollaborativeAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
+BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
 implements SelectionCore<
-CollaborativeAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
+SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
 ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>{
 	private static final long serialVersionUID = -9125593876913236812L;
 

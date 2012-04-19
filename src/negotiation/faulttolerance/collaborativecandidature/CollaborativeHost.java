@@ -6,7 +6,7 @@ import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.ReplicationAllocationSolver;
+import negotiation.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -17,6 +17,7 @@ import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommu
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedCandidatureContractTrunk;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedProposerCore;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedSelectionCore;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -31,13 +32,13 @@ public class CollaborativeHost extends Host{
 	public CollaborativeHost(
 			final ResourceIdentifier myId,
 			HostState myState,
-			final String socialWelfare)
+			final SocialChoiceType socialWelfare)
 					throws CompetenceException {
 		super(
 				myId,
 				myState,
 				new InformedCandidatureRationality(new HostCore(socialWelfare),false),
-				new ResourceInformedSelectionCore(new ReplicationAllocationSolver(socialWelfare)){
+				new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare)){
 					/**
 					 * 
 					 */

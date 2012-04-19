@@ -11,6 +11,7 @@ import java.util.Set;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
@@ -19,6 +20,7 @@ import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 
 public class ReplicaState  extends SimpleAgentState implements ReplicationSpecification {
+
 	private static final long serialVersionUID = 1557592274895646282L;
 
 	//
@@ -41,6 +43,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	private Set<HostState> myReplicas=null;
 	private final Double myDisponibility;
 
+	private final SocialChoiceType socialWelfare;
 	//
 	// Constructors
 	//
@@ -65,12 +68,14 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			final Double myProcCharge,
 			final Double myMemCharge,
 			final Set<HostState> myReps,
+			final SocialChoiceType socialWelfare,
 			final int stateNumber) {
 		super(myAgent,stateNumber);
 		this.myCriticity = myCriticity;
 		this.myProcCharge = myProcCharge;
 		this.myMemCharge = myMemCharge;
 		this.myReplicas = myReps;
+		this.socialWelfare = socialWelfare;
 		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
 	}
 
@@ -98,6 +103,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			this.myReplicas.add(newRep);
 		}
 		//
+		this.socialWelfare = init.socialWelfare;
 		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
 	}
 
@@ -108,6 +114,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			final Double myProcCharge,
 			final Double myMemCharge,
 			final Double dispo,
+			SocialChoiceType socialWelfare,
 			//			final Long creationTime,
 			final int stateNumber) {
 		super(myAgent,// creationTime,
@@ -117,6 +124,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		this.myProcCharge = myProcCharge;
 		this.myMemCharge = myMemCharge;
 		this.myDisponibility=dispo;
+		this.socialWelfare = socialWelfare;
 	}
 
 	//
@@ -136,8 +144,8 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 	public Double getMyReliability(){
 		return ReplicationSocialOptimisation.getReliability(
-				this.myDisponibility,
-				this.myCriticity);
+				this,
+				socialWelfare);
 	}
 
 
@@ -185,6 +193,9 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		return HostState.class;
 	}
 
+	public SocialChoiceType getSocialWelfare() {
+		return socialWelfare;
+	}
 	/*
 	 *
 	 */
@@ -280,6 +291,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
 				meanDisp.getRepresentativeElement(),// this.getCreationTime(),
+				this.socialWelfare,
 				-1);
 		return rep;
 	}
@@ -311,6 +323,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
 				meanDisp.getRepresentativeElement(), //this.getCreationTime(),
+				this.socialWelfare,
 				-1);
 		return rep;
 	}

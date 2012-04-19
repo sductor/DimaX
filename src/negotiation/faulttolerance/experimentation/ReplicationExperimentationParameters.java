@@ -40,6 +40,7 @@ import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -88,7 +89,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public String _usedProtocol;
 	public String _agentSelection;
 	public String _hostSelection;
-	public String _socialWelfare;
+	public SocialChoiceType _socialWelfare;
 
 
 	public int agentAccessiblePerHost;
@@ -170,7 +171,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			final Double agentCriticityMean,
 			final DispersionSymbolicValue agentCriticityDispersion,
 			final String usedProtocol,
-			final String socialWelfare,
+			final SocialChoiceType socialWelfare,
 			final String agentSelection,
 			final String hostSelection,
 			final boolean dynamicCriticty,
@@ -312,6 +313,35 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public final void initiateParameters() throws IfailedException{
 		rig = new ReplicationInstanceGraph(getMyAgent(),this);
 
+		rig.initiateAgents(this);
+
+		int count = 5;
+		boolean iFailed=false;
+		do {
+			try{
+				iFailed=false;
+				rig.setVoisinage();
+				rig.initialRep();
+			} catch (final IfailedException e) {
+				iFailed=true;
+				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG "+count+e, LogService.onBoth);
+				count--;
+				if (count==0) {
+					throw e;
+				}
+			}
+		}while(iFailed && count > 0);	
+		
+
+		String initialisationStatus = "Neighborhoog... :\n";
+		for (AgentIdentifier r : rig.getAgentsIdentifier()){
+			initialisationStatus+=r+"  has acces to  "+rig.getAccessibleHost(r)+"\n";
+		}
+		initialisationStatus += "\n Initializing allocation... :\n";
+		for (HostState h : rig.getHostsStates()){
+			initialisationStatus+=h.getMyAgentIdentifier()+"  has allocated  "+h.getMyResourceIdentifiers()+"\n";
+		}
+		logMonologue(initialisationStatus, LogService.onBoth);
 	}
 
 
@@ -332,7 +362,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		assert !_usedProtocol
 		.equals(NegotiationParameters.key4CentralisedstatusProto) ||getMyAgent().myStatusObserver.iObserveStatus();
 
-		this.logMonologue("Initializing agents... ",LogService.onBoth);
+		//		this.logMonologue("Initializing agents... ",LogService.onBoth);
 		Map<AgentIdentifier,SimpleRationalAgent> result = new HashMap<AgentIdentifier, SimpleRationalAgent>();
 
 		/*
@@ -424,7 +454,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.logMonologue("Initializing agents done!:\n" + getMyAgent().myInformationService.show(HostState.class),LogService.onFile);
 		return result.values();
 	}
-	private RationalCore getCore(boolean agent, String _usedProtocol, String _socialWelfare){
+	private RationalCore getCore(boolean agent, String _usedProtocol, SocialChoiceType _socialWelfare){
 		if (_usedProtocol
 				.equals(NegotiationParameters.key4CentralisedstatusProto)){
 			return agent?new CandidatureReplicaCoreWithStatus():new HostCore(_socialWelfare);
@@ -507,10 +537,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			NegotiationParameters.key4mirrorProto,
 			NegotiationParameters.key4CentralisedstatusProto,
 			NegotiationParameters.key4statusProto});
-	static List<String> welfare = Arrays.asList(new String[]{
-			SocialChoiceFunction.key4leximinSocialWelfare,
-			SocialChoiceFunction.key4NashSocialWelfare,
-			SocialChoiceFunction.key4UtilitaristSocialWelfare});
+	static List<SocialChoiceType> welfare = Arrays.asList(SocialChoiceType.values());
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
@@ -598,12 +625,12 @@ ExperimentationParameters<ReplicationLaborantin> {
 				DispersionSymbolicValue.Fort,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Fort,//load dispersion
-				2*doubleParameters.get(1),//capacity mean
+				doubleParameters.get(1),//capacity mean
 				DispersionSymbolicValue.Nul,//capcity dispersion
 				doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
 				NegotiationParameters.key4mirrorProto,
-				SocialChoiceFunction.key4UtilitaristSocialWelfare,
+				SocialChoiceType.Utility,
 				NegotiationParameters.key4greedySelect,
 				NegotiationParameters.key4greedySelect,
 				false,
@@ -763,7 +790,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	private Collection<ReplicationExperimentationParameters> varyOptimizers(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final String v : welfare){
+			for (final SocialChoiceType v : welfare){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._socialWelfare=v;
 				result.add(n);
@@ -853,7 +880,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 		return result;
 	}
 
-	private Collection<ReplicationExperimentationParameters> varyHostCapacityDispersion(final Collection<ReplicationExperimentationParameters> exps){
+	private Collection<ReplicationExperimentationParameters> varyHostCapacityDispersion(
+			final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final DispersionSymbolicValue v : dispersion){

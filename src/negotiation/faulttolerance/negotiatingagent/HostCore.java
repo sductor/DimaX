@@ -8,6 +8,7 @@ import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.replication.ReplicationHandler;
@@ -31,7 +32,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	// Constructor
 	//
 
-	public HostCore(final String socialWelfare) {
+	public HostCore(final SocialChoiceType socialWelfare) {
 		this.myOptimiser = new ReplicationSocialOptimisation(socialWelfare);
 	}
 

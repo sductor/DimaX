@@ -22,6 +22,7 @@ import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
@@ -59,22 +60,23 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.selectionCore).setMyAgent(this);
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) 
+				this.selectionCore).setMyAgent(this);
 		this.protocol = protocol;
 
-
 		this.myProposerCore = proposerCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
-		.setMyAgent(this);
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) 
+				this.getMyProposerCore()).setMyAgent(this);
 		this.getMyProtocol().setMyAgent(this);
-
 	}
+	
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, false, false);
 		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, true);
 		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, true);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
+		this.addLogKey(ObservingSelfService.observationLog, false, true);
 	}
 
 	//

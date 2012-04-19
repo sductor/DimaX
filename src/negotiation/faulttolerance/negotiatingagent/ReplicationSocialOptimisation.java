@@ -19,7 +19,7 @@ public class ReplicationSocialOptimisation extends SocialChoiceFunction<Replicat
 
 	public ReplicationSocialOptimisation(
 			//			final CompetentComponent myAgent,
-			final String socialWelfare) {
+			final SocialChoiceType socialWelfare) {
 		super(//myAgent,
 				socialWelfare);
 	}
@@ -28,11 +28,15 @@ public class ReplicationSocialOptimisation extends SocialChoiceFunction<Replicat
 	 *
 	 */
 
-	public static Double getReliability(final Double dispo, final Double criti) {
-		if (dispo / criti > 10) {
-			System.out.println("aargh " + dispo + " " + criti);
-		}
-		return dispo / criti;
+	public static Double getReliability(ReplicaState s, SocialChoiceType socialWelfare) {
+		if (socialWelfare.equals(SocialChoiceType.Leximin)){
+		assert (s.getMyDisponibility() / s.getMyCriticity() < 10);
+		return s.getMyDisponibility() / s.getMyCriticity();
+		} else if (socialWelfare.equals(SocialChoiceType.Utility)){
+			return s.getMyDisponibility() * s.getMyCriticity();			
+		} else if (socialWelfare.equals(SocialChoiceType.Nash)){
+			return s.getMyDisponibility();
+		} else throw new RuntimeException();
 	}
 
 

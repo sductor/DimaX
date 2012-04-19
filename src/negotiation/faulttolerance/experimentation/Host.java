@@ -15,8 +15,10 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
 
@@ -87,6 +89,16 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			final AbstractCommunicationProtocol protocol)
 					throws CompetenceException {
 		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
+	}
+	
+	//
+	// Behavior
+	//
+	
+	@ProactivityFinalisation
+	public void thisIsZiEnd(){
+		logMonologue("Ze end : "+getMyCurrentState().getMyResourceIdentifiers(), LogService.onBoth);
+		logMonologue("Ze end : "+getMyCurrentState(), LogService.onBoth);
 	}
 }
 

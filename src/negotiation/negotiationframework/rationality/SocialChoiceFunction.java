@@ -20,13 +20,9 @@ ActionSpec extends AbstractActionSpecification,
 Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	private static final long serialVersionUID = 5135268337671313960L;
 	 
+	public enum SocialChoiceType{ Leximin, Nash, Utility};
 
-			//Optimisations
-			public final static String key4leximinSocialWelfare="leximin";
-			public final static String key4NashSocialWelfare="nash";
-			public final static String key4UtilitaristSocialWelfare="utilitarist";
-
-	public final  String socialWelfare;
+	public final  SocialChoiceType socialWelfare;
 	//	public final CompetentComponent myAgent;
 
 	public final static String log_socialWelfareOrdering="social welfare ordering";
@@ -37,7 +33,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 	public SocialChoiceFunction(
 			//			final CompetentComponent myAgent,
-			final String socialWelfare){
+			final SocialChoiceType socialWelfare){
 		this.socialWelfare=socialWelfare;
 		//		this.myAgent = myAgent;
 	}
@@ -59,11 +55,11 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		try {
 			final Collection<ActionSpec> as = this.cleanStates(ReallocationContract.getResultingAllocation(cs));
 
-			if (this.socialWelfare.equals(SocialChoiceFunction.key4leximinSocialWelfare)) {
+			if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 				return SocialChoiceFunction.getMinValue(as,  this.getComparator(), this.getUtilitaristEvaluator());
-			} else if (this.socialWelfare.equals(SocialChoiceFunction.key4NashSocialWelfare)) {
+			} else if (this.socialWelfare.equals(SocialChoiceType.Nash)) {
 				return SocialChoiceFunction.getNashValue(as, this.getUtilitaristEvaluator());
-			} else if (this.socialWelfare.equals(SocialChoiceFunction.key4UtilitaristSocialWelfare)) {
+			} else if (this.socialWelfare.equals(SocialChoiceType.Utility)) {
 				return SocialChoiceFunction.getUtilitaristValue(as, this.getUtilitaristEvaluator());
 			} else {
 				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
@@ -88,14 +84,14 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 			assert s1.size()==s2.size();
 
-			if (this.socialWelfare.equals(SocialChoiceFunction.key4leximinSocialWelfare)){
+			if (this.socialWelfare.equals(SocialChoiceType.Leximin)){
 				//			this.myAgent.logMonologue("comparing : \n"+c1+"\n"+c2+"\n"+s1+"\n"+s2,AllocationSocialWelfares.log_socialWelfareOrdering);
 				final int pref = SocialChoiceFunction.leximinWelfare(s1, s2, this.getComparator());
 				//			this.myAgent.logMonologue("result is " +pref,AllocationSocialWelfares.log_socialWelfareOrdering);
 				return pref;
-			} else if (this.socialWelfare.equals(SocialChoiceFunction.key4NashSocialWelfare)) {
+			} else if (this.socialWelfare.equals(SocialChoiceType.Nash)) {
 				return SocialChoiceFunction.nashWelfare(s1, s2, this.getUtilitaristEvaluator());
-			} else if (this.socialWelfare.equals(SocialChoiceFunction.key4UtilitaristSocialWelfare)) {
+			} else if (this.socialWelfare.equals(SocialChoiceType.Utility)) {
 				return SocialChoiceFunction.utilitaristWelfare(s1, s2, this.getUtilitaristEvaluator());
 			} else {
 				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);

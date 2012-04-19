@@ -7,6 +7,7 @@ import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
+import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
@@ -16,6 +17,7 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	
 	ActivityLog l = new ActivityLog();
+	public static final String observationLog = "log key for self observing service agents";
 
 	public ObservingSelfService() {
 		super();
@@ -28,6 +30,11 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	protected abstract ExperimentationResults generateMyResults();
 
+	@ProactivityInitialisation
+	public void firstStateInit(){
+		this.l.add(this.generateMyResults());
+	}
+	
 	@PostStepComposant(ticker=ObservingGlobalService._state_snapshot_frequency)
 	public void notifyMyState(){
 		this.l.add(this.generateMyResults());
@@ -35,8 +42,8 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 
 	@ProactivityFinalisation()
 	public void endSimulation(){
-		this.logMonologue("this is the end my friend",LogService.onFile);
 		this.l.getResults().getLast().setLastInfo();
+		this.logMonologue("this is the end my friend",observationLog);
 		this.notify(this.l);
 		this.getMyAgent().sendNotificationNow();
 		this.getMyAgent().wwait(1000);

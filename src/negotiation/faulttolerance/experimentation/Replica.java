@@ -80,7 +80,9 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 							Replica.this.getMyCurrentState().getMyCriticity(),
 							Replica.this.getMyCurrentState().getMyProcCharge(),
 							Replica.this.getMyCurrentState().getMyMemCharge(),
-							new HashSet<HostState>(),this.getMyAgent().nextStateCounter));
+							new HashSet<HostState>(),
+							Replica.this.getMyCurrentState().getSocialWelfare(),
+							this.getMyAgent().nextStateCounter));
 		}
 
 		@Override
@@ -175,8 +177,10 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 						new ReplicaState(
 								this.getIdentifier(),
 								newCriticity, this.getMyCurrentState().getMyProcCharge(),
-								this.getMyCurrentState().getMyMemCharge(), this
-								.getMyCurrentState().getMyReplicas(),this.nextStateCounter));
+								this.getMyCurrentState().getMyMemCharge(), 
+								this.getMyCurrentState().getMyReplicas(),
+								this.getMyCurrentState().getSocialWelfare(),
+								this.nextStateCounter));
 			}
 		}
 	}

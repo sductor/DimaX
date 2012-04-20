@@ -13,6 +13,7 @@ import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
@@ -43,7 +44,11 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 	public abstract void initiate();
 
-	protected abstract void setObservation();
+	protected void setObservation() {
+		for (final BasicCompetentAgent ag : this.getMyAgent().getAgents()) {
+			ag.addObserver(this.getIdentifier(), ActivityLog.class);
+		}
+	}
 
 	//	protected abstract void updateHostInfo(ExperimentationResults notification);
 	//

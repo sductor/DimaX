@@ -39,15 +39,16 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 		}
 		return true;
 	}
-	//
-	// Method
-	//
 
 	@MessageHandler
 	@NotificationEnvelope(BasicAlgorithm.stabilityNotificationKey)
 	public void receiveStability(final NotificationMessage<Boolean> m){
 		this.appIsStable.put(m.getSender(), m.getNotification());
 	}
+	
+	//
+	// Method
+	//
 
 	@Override
 	public void initiate() {
@@ -58,12 +59,6 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 
 	}
 
-	@Override
-	protected void setObservation() {
-		for (final BasicCompetentAgent ag : this.getMyAgent().getAgents()) {
-			ag.addObserver(this.getIdentifier(), ActivityLog.class);
-		}
-	}
 
 	@Override
 	protected void updateInfo(final ExperimentationResults notification) {

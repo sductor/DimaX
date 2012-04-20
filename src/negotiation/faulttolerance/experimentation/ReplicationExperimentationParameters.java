@@ -619,7 +619,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	}
 
 	@Override
-	public LinkedList<ExperimentationParameters> generateSimulation() {
+	public LinkedList<ExperimentationParameters<ReplicationLaborantin>> generateSimulation() {
 		//		final String usedProtocol, agentSelection, hostSelection;
 		//		f.mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
@@ -673,16 +673,18 @@ ExperimentationParameters<ReplicationLaborantin> {
 
 		simuToLaunch = this.varyDynamicCriticity(simuToLaunch);
 
-		final Comparator<ExperimentationParameters> comp = new Comparator<ExperimentationParameters>() {
+		final Comparator<ExperimentationParameters<ReplicationLaborantin>> comp = 
+				new Comparator<ExperimentationParameters<ReplicationLaborantin>>() {
 
 			@Override
-			public int compare(final ExperimentationParameters o1,
-					final ExperimentationParameters o2) {
+			public int compare(final ExperimentationParameters<ReplicationLaborantin> o1,
+					final ExperimentationParameters<ReplicationLaborantin> o2) {
 				return o1.getSimulationName().compareTo(o2.getSimulationName());
 			}
 		};
 
-		final LinkedList<ExperimentationParameters> simus = new LinkedList<ExperimentationParameters>();
+		final LinkedList<ExperimentationParameters<ReplicationLaborantin>> simus = 
+				new LinkedList<ExperimentationParameters<ReplicationLaborantin>>();
 		for (final ReplicationExperimentationParameters p : simuToLaunch) {
 			if (this.isValid(p)){
 				simus.add(p);

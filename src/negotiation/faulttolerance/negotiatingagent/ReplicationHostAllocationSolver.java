@@ -149,7 +149,7 @@ extends ChocoAllocationSolver
 			for (int i = 0; i < this.concerned.length; i++){
 				currentAllocation[i] = this.asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
 			}
-			m.addConstraint(Choco.leximin(currentAllocation, this.replicasValue));
+//			m.addConstraint(Choco.leximin(currentAllocation, this.replicasValue));
 		} else {
 			int current = 0;
 			for (final ReplicationCandidature c : this.concerned){
@@ -185,9 +185,9 @@ extends ChocoAllocationSolver
 	}
 	public int asInt(final double d, final boolean log){
 		if (log) {
-			return (int) (100*Math.log(d));
+			return (int) (100 * Math.log(d));
 		} else {
-			return (int) (100 * d);
+			return (int) (100 * (d+0.01));
 		}
 	}
 

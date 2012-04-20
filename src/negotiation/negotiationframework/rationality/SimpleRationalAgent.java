@@ -108,6 +108,10 @@ extends BasicCompetentAgent {
 		return myResources;
 	}
 
+	public ActionSpec getResource(AgentIdentifier id) throws NoInformationAvailableException{
+		return (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+	}
+
 	public void setNewState(final PersonalState s) {
 		this.nextStateCounter++;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
@@ -184,13 +188,18 @@ extends BasicCompetentAgent {
 	 * Rationality
 	 */
 
-	//	public boolean Iaccept(final Contract c) {
-	//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
-	//	}
-	//
-	//	public boolean Iaccept(final Collection<Contract> c) {
-	//		return this.Iaccept(this.getMyCommitedState(), c);//considere aussi les contrats acceptés
-	//	}
+	public boolean isAnImprovment(final PersonalState s, final Contract c) {
+		final Collection<Contract> a = new ArrayList<Contract>();
+		a.add(c);
+		return this.Iaccept(s, a);
+	}
+
+	public boolean isAnImprovment(final PersonalState s, final Collection<? extends Contract> c) {
+			final Collection<Contract> a2 = new ArrayList<Contract>();
+			return isPersonalyValid(s, c)
+					&& this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) > 0;
+	}
+
 
 	public boolean Iaccept(final PersonalState s, final Contract c) {
 		final Collection<Contract> a = new ArrayList<Contract>();
@@ -199,20 +208,34 @@ extends BasicCompetentAgent {
 	}
 
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
-		try {
-			return this.isAnImprovment(s, (Collection<Contract>) c)
-					&& ContractTransition.respectRights((Collection<Contract>) c,s);
-		} catch (final IncompleteContractException e) {
-			throw new RuntimeException();
-		}
+			final Collection<Contract> a2 = new ArrayList<Contract>();
+			return isPersonalyValid(s, c)
+					&&  this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) >= 0;
+	}
+	
+	/*
+	 * 
+	 */
+
+	public boolean isPersonalyValid(final PersonalState s,
+			final Collection<? extends Contract> c) {
+		return getMyResultingState(s,(Collection<Contract>)c).isValid();
 	}
 
-	private boolean isAnImprovment(final PersonalState s,
-			final Collection<Contract> a1) {
-		final Collection<Contract> a2 = new ArrayList<Contract>();
-		return this.myCore.getAllocationPreference(s, a1, a2) > 0;
+	public boolean isPersonalyValid(final PersonalState s,Contract c) {
+		return getMyResultingState(s,c).isValid();
+	}
+	
+	public boolean isSociallyValid(final PersonalState s, final Collection<? extends Contract> cs) throws IncompleteContractException{
+		return ContractTransition.respectRights((Collection<Contract>) cs,s);
 	}
 
+	public boolean isSociallyValid(final PersonalState s, Contract c) throws IncompleteContractException{
+		final Collection<Contract> a = new ArrayList<Contract>();
+		a.add(c);
+		return ContractTransition.respectRights((Collection<Contract>) a,s);
+	}
+	
 	/*
 	 * Utility
 	 */

@@ -48,14 +48,12 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				init.getLambda(),
 				init.getProcChargeMax(),
 				init.getCurrentProcCharge()
-				+ (init.myReplicatedAgents.contains(newRep.getMyAgentIdentifier()) ?
-						-newRep.getMyProcCharge() : newRep	.getMyProcCharge()),
-						init.getMemChargeMax(),
-						init.getCurrentMemCharge()
-						+ (init.myReplicatedAgents.contains(newRep.getMyAgentIdentifier()) ?
-								-newRep.getMyMemCharge() : newRep.getMyMemCharge()),
-								init.isFaulty(),// creationTime,
-								init.getStateCounter()+1);
+				+(init.myReplicatedAgents.contains(newRep.getMyAgentIdentifier())?-newRep.getMyProcCharge():newRep.getMyProcCharge()),
+				init.getMemChargeMax(),
+				init.getCurrentMemCharge()
+				+(init.myReplicatedAgents.contains(newRep.getMyAgentIdentifier())?-newRep.getMyMemCharge():newRep.getMyMemCharge()),
+				init.isFaulty(),// creationTime,
+				init.getStateCounter()+1);
 
 		//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
 
@@ -82,7 +80,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		this.memCurrentCharge = memCurrentCharge;
 		this.lambda = lambda;
 		this.faulty = faulty;
-//		assert this.isValid();
+		//		assert this.isValid();
 	}
 
 	//

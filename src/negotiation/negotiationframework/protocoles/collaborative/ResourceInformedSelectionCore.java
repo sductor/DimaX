@@ -24,6 +24,7 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
@@ -234,57 +235,70 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			assert c.isMatchingCreation();
 			concerned.put(c.getCandidature(),c);//adding allocation candidature
 		}
-		for (final ActionSpec s : this.getMyAgent().getMyResources()){
+		for (final AgentIdentifier s : currentState.getMyResourceIdentifiers()){
 			final InformedCandidature<Contract, ActionSpec> d =
-					this.generateDestructionContract(s.getMyAgentIdentifier());
-			d.setSpecification(this.getMyAgent().getMySpecif(this.getMyAgent().getMyCurrentState(), d));
-			d.setSpecification(s);
+					this.generateDestructionContract(s);
+			d.setSpecification(this.getMyAgent().getMySpecif(currentState, d));
+			try {
+				d.setSpecification(getMyAgent().getResource(s));
+			} catch (NoInformationAvailableException e) {
+				this.signalException("uuuuuhh impossible!!",e);
+			}
 			concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}
+		//		for (final ActionSpec s : this.getMyAgent().getMyResources()){
+		//			final InformedCandidature<Contract, ActionSpec> d =
+		//					this.generateDestructionContract(s.getMyAgentIdentifier());
+		//			d.setSpecification(this.getMyAgent().getMySpecif(currentState, d));
+		//			d.setSpecification(s);
+		//			concerned.put(d.getCandidature(),d);//adding destruction candidature
+		//		}
 
 		assert ContractTransition.allComplete(concerned.values()):concerned+" "+myAgentContractTrunk;
 
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		this.solver.initiate(concerned.keySet(), currentState);
+		Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
+				new HashSet<InformedCandidature<Contract,ActionSpec>>();
 		while (this.solver.hasNext()){
 			final Collection<Contract> realloc = this.solver.getNextSolution();
-
-
-			final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep =
-					new HashSet<InformedCandidature<Contract, ActionSpec>>();
-			for (final Contract c : realloc) {
-				contractsToKeep.add(concerned.get(c));
-			}
-			assert this.getMyAgent().Iaccept(currentState, contractsToKeep):
-				currentState+" \n"+contractsToKeep;
-
-			//MAJ du contract trunk
-			for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
-				//Pour toute action de ce contrat
-				if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
-					//on l'ajoute a la base de contrat
-					myAgentContractTrunk.addContract(c);
-					onWait.add(c);
-					//Ajout aux propositions à faire
-					try {
-						assert c.isViable();
-					} catch (final IncompleteContractException e) {
-						this.getMyAgent().signalException("impossible");
-					}
-					toPropose.add(c);
-				} else {//sinon on la laisse en attente
-					assert unacceptedContracts.contains(c):unacceptedContracts;
-					unacceptedContracts.remove(c);
-					onWait.add(c);
+			if (!realloc.isEmpty()){
+				final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep =
+						new HashSet<InformedCandidature<Contract, ActionSpec>>();
+				for (final Contract c : realloc) {
+					contractsToKeep.add(concerned.get(c));
 				}
-			}
+				assert this.getMyAgent().Iaccept(currentState, contractsToKeep):
+					currentState+" \n"+contractsToKeep+"\n donne -------> "+getMyAgent().getMyResultingState(currentState, contractsToKeep);
 
-			//Ajout du contrat améliorant
-			// --- > Création du contrat
-			myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
-					this.getIdentifier(),
-					realloc));
+				//MAJ du contract trunk
+				for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
+					//Pour toute action de ce contrat
+					if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
+						//on l'ajoute a la base de contrat
+						myAgentContractTrunk.addContract(c);
+						onWait.add(c);
+						//Ajout aux propositions à faire
+						try {
+							assert c.isViable();
+						} catch (final IncompleteContractException e) {
+							this.getMyAgent().signalException("impossible");
+						}
+						toPropose.add(c);
+					} else {//sinon on la laisse en attente
+						assert (!alreadyDone.add(c)||unacceptedContracts.contains(c)):unacceptedContracts;
+						unacceptedContracts.remove(c);
+						onWait.add(c);
+					}
+				}
+
+				//Ajout du contrat améliorant
+				// --- > Création du contrat
+				myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
+						this.getIdentifier(),
+						realloc));
+			}
 		}
 
 		for (final InformedCandidature<Contract, ActionSpec> c : toPropose){

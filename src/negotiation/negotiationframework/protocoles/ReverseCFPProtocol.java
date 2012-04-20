@@ -2,7 +2,6 @@ package negotiation.negotiationframework.protocoles;
 
 import java.util.ArrayList;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -15,7 +14,7 @@ Contract extends AbstractContractTransition<ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4843844714006615468L;
 
@@ -57,7 +56,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	private void separateInitiator(final ArrayList<Contract> all, final ArrayList<Contract> initiator, final ArrayList<Contract> participant){

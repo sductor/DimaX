@@ -6,20 +6,19 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.support.GimaObject;
-
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ReallocationContract;
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.support.GimaObject;
 
 
 public abstract class SocialChoiceFunction<
 ActionSpec extends AbstractActionSpecification,
 Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	private static final long serialVersionUID = 5135268337671313960L;
-	 
+
 	public enum SocialChoiceType{ Leximin, Nash, Utility};
 
 	public final  SocialChoiceType socialWelfare;
@@ -152,14 +151,14 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 			final Collection<State> a1,
 			final Collection<State> a2,
 			final UtilitaristEvaluator<State> u){
-		return getUtilitaristValue(a1, u).compareTo(getUtilitaristValue(a2, u));
+		return SocialChoiceFunction.getUtilitaristValue(a1, u).compareTo(SocialChoiceFunction.getUtilitaristValue(a2, u));
 	}
 
 	public static  <State> int nashWelfare(
 			final Collection<State> a1,
 			final Collection<State> a2,
 			final UtilitaristEvaluator<State> u){
-		return getNashValue(a1, u).compareTo(getNashValue(a2, u));
+		return SocialChoiceFunction.getNashValue(a1, u).compareTo(SocialChoiceFunction.getNashValue(a2, u));
 	}
 
 	//	public  <State> int minDiameter(
@@ -178,7 +177,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 
 
 	/*
-	 * 
+	 *
 	 */
 	public static  <State> Double getMinValue(
 			final Collection<State> as,

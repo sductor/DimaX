@@ -12,29 +12,29 @@ public class MessageCell {
 	private DcopMessage message;
 	private MessageCell next;
 
-	public MessageCell(DcopMessage obj) {
-		message = obj;
-		next = null;
+	public MessageCell(final DcopMessage obj) {
+		this.message = obj;
+		this.next = null;
 	}
 
-	public MessageCell(DcopMessage obj, MessageCell cell) {
-		message = obj;
-		next = cell;
+	public MessageCell(final DcopMessage obj, final MessageCell cell) {
+		this.message = obj;
+		this.next = cell;
 	}
 
 	public DcopMessage getMessage() {
-		return message;
+		return this.message;
 	}
 
 	public MessageCell getNext() {
-		return next;
+		return this.next;
 	}
 
-	public void setMessage(DcopMessage msg) {
-		message = msg;
+	public void setMessage(final DcopMessage msg) {
+		this.message = msg;
 	}
 
-	public void setNext(MessageCell cell) {
-		next = cell;
+	public void setNext(final MessageCell cell) {
+		this.next = cell;
 	}
 }

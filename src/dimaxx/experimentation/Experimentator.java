@@ -1,16 +1,13 @@
 package dimaxx.experimentation;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-
 import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -73,7 +70,7 @@ public final class Experimentator extends APIAgent{
 	@ProactivityInitialisation
 	public void initialise() throws CompetenceException{
 //		this.logWarning("Experimentator created for:\n"+this.myProtocol.toString(),LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());
-		this.logWarning(getDescription(),LogService.onBoth);
+		this.logWarning(this.getDescription(),LogService.onBoth);
 		this.launchSimulation();
 	}
 
@@ -97,7 +94,7 @@ public final class Experimentator extends APIAgent{
 			ExperimentationParameters nextSimu = null;
 			try {
 				//				while (!this.simuToLaunch.isEmpty()){
-				
+
 				nextSimu = this.simuToLaunch.pop();
 				Laborantin l;
 				try {
@@ -105,12 +102,12 @@ public final class Experimentator extends APIAgent{
 					ExperimentationParameters.currentlyInstanciating=true;
 					l = nextSimu.createLaborantin(this.getApi());//new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
 					ExperimentationParameters.currentlyInstanciating=false;
-					l.addObserver(getIdentifier(), SimulationEndedMessage.class);
+					l.addObserver(this.getIdentifier(), SimulationEndedMessage.class);
 					l.launchWith(this.getApi());
 					this.startActivity(l);
 					this.launchedSimu.put(l.getId(), l);
 				} catch (final IfailedException e) {
-					logMonologue("EXPERIMENTATION "+nextSimu+" \n ABORTED!!!!!!!!!!!!!!", LogService.onBoth);
+					this.logWarning("ABORTED!!!!!!!!!!!!!! : EXPERIMENTATION "+nextSimu,e, LogService.onBoth);
 					this.launchSimulation();
 				}
 
@@ -148,11 +145,11 @@ public final class Experimentator extends APIAgent{
 	 */
 
 
-	public void run(String[] args)
+	public void run(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException,  NotEnoughMachinesException, IfailedException{
 
 
-		
+
 		if (args[0].equals("scheduled")) {
 			this.initAPI(false);//SCHEDULED
 		} else if  (args[0].equals("fipa")) {
@@ -165,10 +162,10 @@ public final class Experimentator extends APIAgent{
 			throw new RuntimeException("unknonw args");
 		}
 
-		myProtocol.setMyAgent(this);
-		this.simuToLaunch = myProtocol.generateSimulation();
+		this.myProtocol.setMyAgent(this);
+		this.simuToLaunch = this.myProtocol.generateSimulation();
 		this.awaitingAnswer=this.simuToLaunch.size();
-		
+
 		if (args[1].equals("nolog")) {
 			LogService.setLog(false);
 		} else if (args[1].equals("log")) {
@@ -178,7 +175,7 @@ public final class Experimentator extends APIAgent{
 		}
 		this.launchMySelf();
 	}
-	
+
 	public String getDescription(){
 		return "Experimentator of "+this.simuToLaunch.size()+" experiences of "+ExperimentationParameters._maxSimulationTime+" seconds ";
 	}

@@ -12,7 +12,8 @@ public class SelectorDefault implements Selector {
 	// --------------------------------------------------------------------------
 	// return next message from queue
 	// --------------------------------------------------------------------------
-	public DcopMessage select(MessageQueue queue) {
+	@Override
+	public DcopMessage select(final MessageQueue queue) {
 		return queue.dequeue();
 	}
 }

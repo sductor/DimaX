@@ -102,7 +102,7 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 		};
 	}
 	/*
-	 * 
+	 *
 	 */
 
 	@Override

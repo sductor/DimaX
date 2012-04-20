@@ -45,7 +45,7 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	 * Creation date: (07/07/2002 13:12:28)
 	 */
 	public synchronized void forwardMessage(final Message m) {
-		final String a = getCommunicationComponent().getMessageReceiver(m).toString();
+		final String a = this.getCommunicationComponent().getMessageReceiver(m).toString();
 		AgentAddress ad;
 		if ( this.aquaintances.containsKey(a))
 		{ad = this.aquaintances.get(a);

@@ -6,9 +6,9 @@ import java.util.Iterator;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
-import negotiation.negotiationframework.rationality.SocialChoiceFunction.UtilitaristEvaluator;
 
-public class ReplicationSocialOptimisation extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
+public class ReplicationSocialOptimisation
+extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 
 
 
@@ -28,15 +28,17 @@ public class ReplicationSocialOptimisation extends SocialChoiceFunction<Replicat
 	 *
 	 */
 
-	public static Double getReliability(ReplicaState s, SocialChoiceType socialWelfare) {
+	public static Double getReliability(final ReplicaState s, final SocialChoiceType socialWelfare) {
 		if (socialWelfare.equals(SocialChoiceType.Leximin)){
 		assert (s.getMyDisponibility() / s.getMyCriticity() < 10);
 		return s.getMyDisponibility() / s.getMyCriticity();
 		} else if (socialWelfare.equals(SocialChoiceType.Utility)){
-			return s.getMyDisponibility() * s.getMyCriticity();			
+			return s.getMyDisponibility() * s.getMyCriticity();
 		} else if (socialWelfare.equals(SocialChoiceType.Nash)){
 			return s.getMyDisponibility();
-		} else throw new RuntimeException();
+		} else {
+			throw new RuntimeException();
+		}
 	}
 
 

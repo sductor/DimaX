@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;

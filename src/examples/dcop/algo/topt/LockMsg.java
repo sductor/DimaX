@@ -3,6 +3,10 @@ package examples.dcop.algo.topt;
 import examples.dcop.daj.DcopMessage;
 
 public class LockMsg extends DcopMessage {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6127789331346846921L;
 	int gid;
 	int val;
 	int attempt;
@@ -13,18 +17,20 @@ public class LockMsg extends DcopMessage {
 		super();
 	}
 
-	public LockMsg(int i, int v, int a, TreeNode n, boolean l) {
-		gid = i;
-		val = v;
-		attempt = a;
-		node = n;
-		lock = l;
+	public LockMsg(final int i, final int v, final int a, final TreeNode n, final boolean l) {
+		this.gid = i;
+		this.val = v;
+		this.attempt = a;
+		this.node = n;
+		this.lock = l;
 	}
 
+	@Override
 	public String getText() {
-		return (lock ? "LOCK " : "UNLOCK ") + gid + "\n";
+		return (this.lock ? "LOCK " : "UNLOCK ") + this.gid + "\n";
 	}
 
+	@Override
 	public int getSize() {
 		return 6;
 		// return 6 + 8 * node.getSize();

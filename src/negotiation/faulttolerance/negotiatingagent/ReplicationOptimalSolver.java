@@ -1,10 +1,7 @@
 package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import com.sun.corba.se.spi.ior.MakeImmutable;
 
 import negotiation.faulttolerance.experimentation.ReplicationInstanceGraph;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -13,7 +10,6 @@ import choco.Options;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
-import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
 import choco.kernel.model.Model;
 import choco.kernel.model.variables.integer.IntegerConstantVariable;
 import choco.kernel.model.variables.integer.IntegerExpressionVariable;
@@ -26,7 +22,7 @@ public class ReplicationOptimalSolver {
 	Solver s = new CPSolver();
 
 	public ReplicationOptimalSolver(
-			ReplicationInstanceGraph rig, SocialChoiceType _socialChoice) {
+			final ReplicationInstanceGraph rig, final SocialChoiceType _socialChoice) {
 		super();
 		this.rig = rig;
 		this._socialChoice = _socialChoice;
@@ -37,106 +33,111 @@ public class ReplicationOptimalSolver {
 	 */
 	ReplicationInstanceGraph rig;
 	SocialChoiceType _socialChoice;
-	
-	int nbAgents =rig.getAgentsIdentifier().size();
-	int nbHosts=rig.getHostsIdentifier().size();
-	List<ReplicaState> ags = new ArrayList(rig.getAgentStates());
-	List<HostState> hs = new ArrayList(rig.getHostsStates());
+
+	int nbAgents =this.rig.getAgentsIdentifier().size();
+	int nbHosts=this.rig.getHostsIdentifier().size();
+	List<ReplicaState> ags = new ArrayList(this.rig.getAgentStates());
+	List<HostState> hs = new ArrayList(this.rig.getHostsStates());
 
 	/*
 	 * Constants
 	 */
 
-	IntegerConstantVariable[] agentCriticity = new IntegerConstantVariable[nbAgents];
-	int[] repProcCharge = new int[nbAgents];
-	int[] repMemCharge = new int[nbAgents];
+	IntegerConstantVariable[] agentCriticity = new IntegerConstantVariable[this.nbAgents];
+	int[] repProcCharge = new int[this.nbAgents];
+	int[] repMemCharge = new int[this.nbAgents];
 
-	int[] hostLambda = new int[nbHosts];
-	int[] hostProcCap = new int[nbHosts];
-	int[] hostMemCap = new int[nbHosts];
+	int[] hostLambda = new int[this.nbHosts];
+	int[] hostProcCap = new int[this.nbHosts];
+	int[] hostMemCap = new int[this.nbHosts];
 
 	/*
 	 * Variable
 	 */
-	IntegerVariable[][] hostsMatrix = new IntegerVariable[nbHosts][nbAgents];
-	IntegerVariable[][] agentsMatrix = new IntegerVariable[nbAgents][nbHosts];
-	IntegerVariable socialWelfare = Choco.makeIntVar("welfare", 0, 10000, 
+	IntegerVariable[][] hostsMatrix = new IntegerVariable[this.nbHosts][this.nbAgents];
+	IntegerVariable[][] agentsMatrix = new IntegerVariable[this.nbAgents][this.nbHosts];
+	IntegerVariable socialWelfare = Choco.makeIntVar("welfare", 0, 10000,
 			Options.V_BOUND, Options.V_NO_DECISION, Options.V_OBJECTIVE);
-	IntegerVariable[] agentsValue = new IntegerVariable[nbAgents];
+	IntegerVariable[] agentsValue = new IntegerVariable[this.nbAgents];
 
 	public void solve(){
-		generateConstant();
-		generateVar();
-		generateConstraints();
-		s.read(m);
-		s.setValIntIterator(new DecreasingDomain());
-		s.maximize(false);
+		this.generateConstant();
+		this.generateVar();
+		this.generateConstraints();
+		this.s.read(this.m);
+		this.s.setValIntIterator(new DecreasingDomain());
+		this.s.maximize(false);
 	}
 
 	private void generateConstant(){
 
-		for (int i = 0; i < nbAgents; i++){
-			agentCriticity[i]=new IntegerConstantVariable(asInt(ags.get(i).getMyCriticity(),false));
-			repProcCharge[i]=asInt(ags.get(i).getMyProcCharge(),false);
-			repMemCharge[i]=asInt(ags.get(i).getMyMemCharge(),false);
+		for (int i = 0; i < this.nbAgents; i++){
+			this.agentCriticity[i]=new IntegerConstantVariable(this.asInt(this.ags.get(i).getMyCriticity(),false));
+			this.repProcCharge[i]=this.asInt(this.ags.get(i).getMyProcCharge(),false);
+			this.repMemCharge[i]=this.asInt(this.ags.get(i).getMyMemCharge(),false);
 		}
 
-		for (int i = 0; i < nbHosts; i++){
-			hostLambda[i]=asInt(hs.get(i).getLambda(),true);
-			hostProcCap[i]=asInt(hs.get(i).getProcChargeMax(),false);
-			hostMemCap[i]=asInt(hs.get(i).getMemChargeMax(),false);
+		for (int i = 0; i < this.nbHosts; i++){
+			this.hostLambda[i]=this.asInt(this.hs.get(i).getLambda(),true);
+			this.hostProcCap[i]=this.asInt(this.hs.get(i).getProcChargeMax(),false);
+			this.hostMemCap[i]=this.asInt(this.hs.get(i).getMemChargeMax(),false);
 		}
 	}
 
 	private void generateVar(){
-		for (int i = 0; i < nbAgents; i++){
-			for (int j = 0; j < nbHosts; j++){
-				IntegerVariable agentIhostJ = Choco.makeIntVar("agent_"+i+"_host_"+j, 0, 1, Options.V_ENUM);
-				agentsMatrix[i][j] = agentIhostJ;
-				hostsMatrix[j][i] = agentIhostJ;
-			} 
-		}
-		for (int i = 0; i < nbAgents; i++){
-			agentsValue[i] = Choco.makeIntVar("welfare", 0, 10000, 
-					Options.V_BOUND, Options.V_NO_DECISION);
-			IntegerExpressionVariable dispo = Choco.minus(1, Choco.scalar(hostLambda, agentsMatrix[i]));
-			IntegerExpressionVariable agentVal;
-			if (socialWelfare.equals(SocialChoiceType.Leximin))
-				agentVal = Choco.div(dispo,agentCriticity[i]);
-			else 
-				agentVal = Choco.mult(agentCriticity[i], dispo);
+		for (int i = 0; i < this.nbAgents; i++){
+			for (int j = 0; j < this.nbHosts; j++){
+				final IntegerVariable agentIhostJ = Choco.makeIntVar("agent_"+i+"_host_"+j, 0, 1, Options.V_ENUM);
+				this.agentsMatrix[i][j] = agentIhostJ;
+				this.hostsMatrix[j][i] = agentIhostJ;
+				assert 1<0:"implementer la prise en comte du graphe d'acéssibilité";
 				
-			m.addConstraint(Choco.eq(agentsValue[i], agentVal));
+			}
+		}
+		for (int i = 0; i < this.nbAgents; i++){
+			this.agentsValue[i] = Choco.makeIntVar("welfare", 0, 10000,
+					Options.V_BOUND, Options.V_NO_DECISION);
+			final IntegerExpressionVariable dispo = Choco.minus(1, Choco.scalar(this.hostLambda, this.agentsMatrix[i]));
+			IntegerExpressionVariable agentVal;
+			if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
+				agentVal = Choco.div(dispo,this.agentCriticity[i]);
+			} else {
+				agentVal = Choco.mult(this.agentCriticity[i], dispo);
+			}
+
+			this.m.addConstraint(Choco.eq(this.agentsValue[i], agentVal));
 		}
 	}
 
 	private void generateConstraints(){
 		//Poids
-		for (int i = 0; i < nbHosts; i++){
-			m.addConstraint(Choco.leq(Choco.scalar(repProcCharge, hostsMatrix[i]), hostProcCap[i]));
-			m.addConstraint(Choco.leq(Choco.scalar(repMemCharge, hostsMatrix[i]), hostMemCap[i]));
+		for (int i = 0; i < this.nbHosts; i++){
+			this.m.addConstraint(Choco.leq(Choco.scalar(this.repProcCharge, this.hostsMatrix[i]), this.hostProcCap[i]));
+			this.m.addConstraint(Choco.leq(Choco.scalar(this.repMemCharge, this.hostsMatrix[i]), this.hostMemCap[i]));
 		}
-		
+
 		//Optimisation social
-		if (socialWelfare.equals(SocialChoiceType.Leximin)) {
-			m.addConstraint(Choco.eq(socialWelfare, Choco.min(agentsValue)));
+		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
+			this.m.addConstraint(Choco.eq(this.socialWelfare, Choco.min(this.agentsValue)));
 		} else {
-			assert (socialWelfare.equals(SocialChoiceType.Nash) 
-					|| socialWelfare.equals(SocialChoiceType.Utility));
-			m.addConstraint(Choco.eq(socialWelfare, Choco.sum(agentsValue)));
+			assert (this.socialWelfare.equals(SocialChoiceType.Nash)
+					|| this.socialWelfare.equals(SocialChoiceType.Utility));
+			this.m.addConstraint(Choco.eq(this.socialWelfare, Choco.sum(this.agentsValue)));
 		}
 	}
 
-	public int asIntNashed(double d){
-		if (s.equals(SocialChoiceType.Nash))
+	public int asIntNashed(final double d){
+		if (this.s.equals(SocialChoiceType.Nash)) {
 			return (int) (100*Math.log(d));
-		else
+		} else {
 			return (int) (100 * d);
+		}
 	}
-	public int asInt(double d, boolean log){
-		if (log)
+	public int asInt(final double d, final boolean log){
+		if (log) {
 			return (int) (100*Math.log(d));
-		else
+		} else {
 			return (int) (100 * d);
+		}
 	}
 }

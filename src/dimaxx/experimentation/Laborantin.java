@@ -4,44 +4,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.faulttolerance.candidaturewithstatus.ObservingStatusService;
-import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
-import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
-import negotiation.faulttolerance.experimentation.Host;
-import negotiation.faulttolerance.experimentation.Replica;
-import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
-import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
-import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.shells.APIAgent;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.server.HostIdentifier;
-import dimaxx.tools.aggregator.HeavyAggregation;
-import dimaxx.tools.aggregator.HeavyDoubleAggregation;
-import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
-import dimaxx.tools.mappedcollections.HashedHashSet;
 /**
  * Laborantin manage the execution of an experience moddelled with its simulation parameters
  * it collects the results and write them
@@ -64,7 +43,7 @@ public class Laborantin extends BasicCompetentAgent {
 	APILauncherModule api;
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
-	private Map<BasicCompetentAgent, HostIdentifier> locations;
+	private final Map<BasicCompetentAgent, HostIdentifier> locations;
 
 	//	int numberOfAgentPerMAchine;
 	private final ExperimentationParameters p;
@@ -83,13 +62,13 @@ public class Laborantin extends BasicCompetentAgent {
 	// Constructor
 	//
 
-	public Laborantin(final ExperimentationParameters p, ObservingGlobalService observingService, final APILauncherModule api)
+	public Laborantin(final ExperimentationParameters p, final ObservingGlobalService observingService, final APILauncherModule api)
 			throws CompetenceException, IfailedException, NotEnoughMachinesException{
 		super("Laborantin_of_"+p.getSimulationName());
 		this.p = p;
 		this.observingService=observingService;
 		this.api=api;
-		//		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;		
+		//		this.numberOfAgentPerMAchine=numberOfAgentPerMAchine;
 		//		setLogKey(PatternObserverService._logKeyForObservation, true, false);
 
 		observingService.setMyAgent(this);
@@ -100,20 +79,20 @@ public class Laborantin extends BasicCompetentAgent {
 				this.getSimulationParameters().getSimulationName()+"\n"+this.p,LogService.onBoth);//agents.values());
 
 		p.initiateParameters();
-		Collection<? extends BasicCompetentAgent> ag = p.instanciateAgents();
-		
-		for (BasicCompetentAgent a : ag){
+		final Collection<? extends BasicCompetentAgent> ag = p.instanciateAgents();
+
+		for (final BasicCompetentAgent a : ag){
 			//					assert a.getCompetences().contains(ObservingSelfService.class);
-			agents.put(a.getIdentifier(), a);
+			this.agents.put(a.getIdentifier(), a);
 		}
 
 
 		this.locations = this.generateLocations(
 				this.api,
-				this.agents.values());		
+				this.agents.values());
 		//		System.out.println(agents);
 		//		System.out.println(api.getAvalaibleHosts());
-		assert locations!=null;
+		assert this.locations!=null;
 	}
 
 
@@ -126,8 +105,8 @@ public class Laborantin extends BasicCompetentAgent {
 	public void startSimu() {
 		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
 
-		observingService.setObservation();
-		this.addObserver(p.experimentatorId, SimulationEndedMessage.class);
+		this.observingService.setObservation();
+		this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);
 
 		APIAgent.launch(this.api,this.locations);
 		this.wwait(1000);
@@ -146,7 +125,7 @@ public class Laborantin extends BasicCompetentAgent {
 		final Map<HostIdentifier, Integer> hostsLoad = new Hashtable<HostIdentifier, Integer>();
 
 		for (final HostIdentifier h : api.getAvalaibleHosts()) {
-			if (api.getAgentsRunningOn(h).size()<p.getMaxNumberOfAgent(h)) {
+			if (api.getAgentsRunningOn(h).size()<this.p.getMaxNumberOfAgent(h)) {
 				hostsLoad.put(h, api.getAgentsRunningOn(h).size());
 			}
 		}
@@ -165,7 +144,7 @@ public class Laborantin extends BasicCompetentAgent {
 
 				HostIdentifier host = itHosts.next();
 
-				while (hostsLoad.get(host)>p.getMaxNumberOfAgent(host)){
+				while (hostsLoad.get(host)>this.p.getMaxNumberOfAgent(host)){
 					itHosts.remove();
 					if (itHosts.hasNext()) {
 						host = itHosts.next();
@@ -187,9 +166,9 @@ public class Laborantin extends BasicCompetentAgent {
 	@StepComposant()
 	@Transient
 	public boolean endSimulation(){
-		if (observingService.simulationHasEnded()){
+		if (this.observingService.simulationHasEnded()){
 			this.logMonologue("I've finished!!",LogService.onBoth);
-			observingService.writeResult();
+			this.observingService.writeResult();
 			this.wwait(10000);
 			//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
 			//					HostDisponibilityTrunk.remove(h);
@@ -223,7 +202,7 @@ public class Laborantin extends BasicCompetentAgent {
 		return this.agents.keySet();
 	}
 	public int getNbAgents() {
-		return agents.size();
+		return this.agents.size();
 	}
 
 	public ExperimentationParameters getSimulationParameters() {
@@ -232,7 +211,7 @@ public class Laborantin extends BasicCompetentAgent {
 
 
 	public ObservingGlobalService getObservingService() {
-		return observingService;
+		return this.observingService;
 	}
 
 

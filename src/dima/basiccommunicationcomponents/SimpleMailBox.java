@@ -74,7 +74,7 @@ public class SimpleMailBox extends AbstractMailBox
 	 */
 	@Override
 	public synchronized boolean writeMail(final AbstractMessage m) {
-		this.messageList.add(m); 
+		this.messageList.add(m);
 		return true; }
 
 	/**

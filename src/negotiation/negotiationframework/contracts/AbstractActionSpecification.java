@@ -10,5 +10,5 @@ import dima.introspectionbasedagents.services.information.ObservationService.Inf
  */
 public interface AbstractActionSpecification extends Information,AgentState  {
 
-	
+
 }

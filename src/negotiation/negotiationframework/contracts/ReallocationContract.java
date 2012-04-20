@@ -19,7 +19,7 @@ extends HashSet<Contract> implements
 AbstractContractTransition<ActionSpec>{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4851833906871445475L;
 	protected final AgentIdentifier creator;
@@ -218,7 +218,7 @@ AbstractContractTransition<ActionSpec>{
 	ActionSpec extends AbstractActionSpecification>
 
 	/**
-	 * 
+	 *
 	 * @param a1
 	 * @param a2
 	 * @return the map of initial states of every agent of a1 and a2
@@ -255,7 +255,7 @@ AbstractContractTransition<ActionSpec>{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param initialStates
 	 * @param alloc
 	 * @return the collection of agent spec resulting from the application of the reallocation alloc to the initialStates collection
@@ -281,7 +281,7 @@ AbstractContractTransition<ActionSpec>{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param alloc
 	 * @return the collection of action spec that result of the application of alloc
 	 * on the collection of action spec of the agent concerned by alloc' contracts

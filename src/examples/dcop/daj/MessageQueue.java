@@ -17,43 +17,45 @@ public class MessageQueue {
 	// create empty queue
 	// --------------------------------------------------------------------------
 	protected MessageQueue() {
-		head = null;
-		tail = null;
-		size = 0;
+		this.head = null;
+		this.tail = null;
+		this.size = 0;
 	}
 
 	// --------------------------------------------------------------------------
 	// returns true iff queue is empty
 	// --------------------------------------------------------------------------
 	public boolean isEmpty() {
-		return head == null;
+		return this.head == null;
 	}
 
 	// --------------------------------------------------------------------------
 	// add element to end of queue
 	// --------------------------------------------------------------------------
-	public void enqueue(DcopMessage obj) {
-		if (head == null) {
-			head = new MessageCell(obj);
-			tail = head;
+	public void enqueue(final DcopMessage obj) {
+		if (this.head == null) {
+			this.head = new MessageCell(obj);
+			this.tail = this.head;
 		}
 		else {
-			MessageCell cell = new MessageCell(obj);
-			tail.setNext(cell);
-			tail = cell;
+			final MessageCell cell = new MessageCell(obj);
+			this.tail.setNext(cell);
+			this.tail = cell;
 		}
-		size++;
+		this.size++;
 	}
 
 	// --------------------------------------------------------------------------
 	// remove element from front of queue
 	// --------------------------------------------------------------------------
 	public DcopMessage dequeue() {
-		Assertion.test(head != null, "queue is empty");
-		MessageCell cell = head;
-		head = cell.getNext();
-		if (head == null) tail = null;
-		size--;
+		Assertion.test(this.head != null, "queue is empty");
+		final MessageCell cell = this.head;
+		this.head = cell.getNext();
+		if (this.head == null) {
+			this.tail = null;
+		}
+		this.size--;
 		return cell.getMessage();
 	}
 
@@ -61,16 +63,16 @@ public class MessageQueue {
 	// return head message cell
 	// --------------------------------------------------------------------------
 	public MessageCell getCell() {
-		return head;
+		return this.head;
 	}
 
 	// --------------------------------------------------------------------------
 	// return vector of messages in queue
 	// --------------------------------------------------------------------------
 	public DcopMessage[] getMessages() {
-		DcopMessage messages[] = new DcopMessage[size];
-		MessageCell cell = head;
-		for (int i = 0; i < size; i++) {
+		final DcopMessage messages[] = new DcopMessage[this.size];
+		MessageCell cell = this.head;
+		for (int i = 0; i < this.size; i++) {
 			Assertion.test(cell != null, "queue is too short");
 			messages[i] = cell.getMessage();
 			cell = cell.getNext();
@@ -78,8 +80,8 @@ public class MessageQueue {
 		Assertion.test(cell == null, "queue is too long");
 		return messages;
 	}
-	
+
 	public int getSize() {
-		return size;
+		return this.size;
 	}
 }

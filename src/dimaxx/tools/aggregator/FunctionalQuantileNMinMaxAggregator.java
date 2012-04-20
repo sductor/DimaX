@@ -6,7 +6,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 
 	/**
 	 * ASSUME THAT THE LIST HAS BEEN SORTED
-	 * 
+	 *
 	 * @param quanValue
 	 * @param quantileNumber
 	 * @return the value of the k iem q-quantile
@@ -26,7 +26,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 
 	/**
 	 * ASSUME THAT THE LIST HAS BEEN SORTED
-	 * 
+	 *
 	 * @param e
 	 * @return
 	 */
@@ -36,7 +36,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 
 	/**
 	 * ASSUME THAT THE LIST HAS BEEN SORTED
-	 * 
+	 *
 	 * @param e
 	 * @return
 	 */
@@ -46,7 +46,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 
 	/**
 	 * ASSUME THAT THE LIST HAS BEEN SORTED
-	 * 
+	 *
 	 * @param e
 	 * @return
 	 */
@@ -57,7 +57,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 
 	/**
 	 * ASSUME THAT THE LIST HAS BEEN SORTED
-	 * 
+	 *
 	 * @param e
 	 * @return
 	 */
@@ -68,7 +68,7 @@ public class FunctionalQuantileNMinMaxAggregator {
 
 	/**
 	 * ASSUME THAT THE LIST HAS BEEN SORTED
-	 * 
+	 *
 	 * @param e
 	 * @return
 	 */

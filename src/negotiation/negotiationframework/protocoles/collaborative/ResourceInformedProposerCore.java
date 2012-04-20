@@ -26,7 +26,7 @@ PersonalState,
 InformedCandidature<Contract,ActionSpec>> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2607277289289395798L;
 	private final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose =
@@ -53,16 +53,16 @@ InformedCandidature<Contract,ActionSpec>> {
 
 	@Override
 	public boolean IWantToNegotiate(
-			PersonalState myCurrentState,
-			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
-		return !contractsToPropose.isEmpty();
+			final PersonalState myCurrentState,
+			final ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+		return !this.contractsToPropose.isEmpty();
 	}
 
 
 	@Override
 	public boolean ImAllowedToNegotiate(
-			PersonalState myCurrentState,
-			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+			final PersonalState myCurrentState,
+			final ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
 		return true;
 	}
 

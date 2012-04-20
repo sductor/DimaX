@@ -45,17 +45,17 @@ ActionSpec,PersonalState,Contract> {
 	}
 
 	public abstract Contract constructCandidature(ResourceIdentifier id);
-	
+
 	@Override
-	public boolean IWantToNegotiate(PersonalState myCurrentState,
-			ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+	public boolean IWantToNegotiate(final PersonalState myCurrentState,
+			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
 		return !myCurrentState.getMyResourceIdentifiers().containsAll(
 				this.getMyAgent().getMyInformation().getKnownAgents());
 	}
 
 	@Override
-	public boolean ImAllowedToNegotiate(PersonalState myCurrentState,
-			ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+	public boolean ImAllowedToNegotiate(final PersonalState myCurrentState,
+			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
 		return  contracts.getAllInitiatorContracts().isEmpty();
 	}
 

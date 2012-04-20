@@ -1,19 +1,15 @@
 package negotiation.faulttolerance.experimentation;
 
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
-import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
-import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
-import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -90,15 +86,15 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 					throws CompetenceException {
 		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
 	}
-	
+
 	//
 	// Behavior
 	//
-	
+
 	@ProactivityFinalisation
 	public void thisIsZiEnd(){
-		logMonologue("Ze end : "+getMyCurrentState().getMyResourceIdentifiers(), LogService.onBoth);
-		logMonologue("Ze end : "+getMyCurrentState(), LogService.onBoth);
+		this.logMonologue("Ze end : "+this.getMyCurrentState().getMyResourceIdentifiers(), LogService.onBoth);
+		this.logMonologue("Ze end : "+this.getMyCurrentState(), LogService.onBoth);
 	}
 }
 

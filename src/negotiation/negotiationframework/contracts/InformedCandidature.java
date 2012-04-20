@@ -16,7 +16,7 @@ extends MatchingCandidature<ActionSpec>
 implements AbstractContractTransition<ActionSpec>{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5411058011701987490L;
 	private final Contract candidature;
@@ -41,7 +41,7 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public Contract getCandidature() {
@@ -58,7 +58,7 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public static<
@@ -98,7 +98,7 @@ implements AbstractContractTransition<ActionSpec>{
 
 
 	/*
-	 * 
+	 *
 	 */
 
 	//	public void setConsequentContract(
@@ -115,7 +115,7 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override

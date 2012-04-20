@@ -38,18 +38,18 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 	Collection<Contract> toPutOnWait;
 	private ContractTrunk<Contract, ActionSpec, PersonalState> given;
 	GreedySelectionModule selectionModule;
-	
+
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
 	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
 
 	public SimpleSelectionCore(
 			final boolean fuseInitiatorNparticipant,
 			final boolean considerOnWait,
-			GreedySelectionType itType) {
+			final GreedySelectionType itType) {
 		super();
 		this.fuseInitiatorNparticipant = fuseInitiatorNparticipant;
 		this.considerOnWait = considerOnWait;
-		selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(getMyAgent(),itType);
+		this.selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(this.getMyAgent(),itType);
 	}
 
 	/*
@@ -91,9 +91,9 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 
 	//return contract to validate
 	protected Collection<Contract> selection(
-			PersonalState currentState,
-			List<Contract> contractsToExplore){
-		return selectionModule.greedySelection(currentState, contractsToExplore);
+			final PersonalState currentState,
+			final List<Contract> contractsToExplore){
+		return this.selectionModule.greedySelection(currentState, contractsToExplore);
 	}
 
 	//

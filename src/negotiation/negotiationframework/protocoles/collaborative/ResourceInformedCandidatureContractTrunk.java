@@ -24,7 +24,7 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	private static final long serialVersionUID = -5058077493662331641L;
 
 	/**
-	 * 
+	 *
 	 */
 
 	//	private final ContractTrunk<ReallocationContract<Contract, ActionSpec>> myLocalOptimisations;
@@ -32,7 +32,7 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 			new HashedHashSet<InformedCandidature<Contract, ActionSpec>, ReallocationContract<Contract,ActionSpec>>();
 
 	/*
-	 * 
+	 *
 	 */
 
 	public ResourceInformedCandidatureContractTrunk(
@@ -61,7 +61,7 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public ReallocationContract<Contract, ActionSpec> getBestReallocationContract(

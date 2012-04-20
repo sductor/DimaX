@@ -40,7 +40,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.disponibility = s.getMyDisponibility();
 		this.reliability = s.getMyReliability();
 		this.lastInfo = s.getMyDisponibility() == 0;
-		this.numberOfAllocatedResources=s.getMyReplicas().size();
+		this.numberOfAllocatedResources=s.getMyResourceIdentifiers().size();
 		this.status = status;
 	}
 
@@ -53,7 +53,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.disponibility = s.getMyDisponibility();
 		this.reliability = s.getMyReliability();
 		this.lastInfo = s.getMyDisponibility() == 0;
-		this.numberOfAllocatedResources=s.getMyReplicas().size();
+		this.numberOfAllocatedResources=s.getMyResourceIdentifiers().size();
 		this.status = null;
 	}
 

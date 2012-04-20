@@ -2,20 +2,15 @@ package dimaxx.experimentation;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
-import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basicagentcomponents.AgentName;
-import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
 import dimaxx.server.HostIdentifier;
 
@@ -25,13 +20,13 @@ import dimaxx.server.HostIdentifier;
  * Ces paramètres sont supposé être initialement représenté de façon légère en mémoire.
  * La méthode initiate génére un jeu de parametre fixe
  * La méthode instanciate crèè les agents à partir de ces paramètres
- * 
- * generateSimulation, et createLAborantin font partie des méthodes de protocles : 
+ *
+ * generateSimulation, et createLAborantin font partie des méthodes de protocles :
  * elle permettent à l'expérimentator de lancer un ensemble d'expériences
- * 
+ *
  * Les résultats sont transmis par la compétence ObservingSelfCompétence de chaque agent à la compétence ObservingGlobalCompetence
- * 
- * 
+ *
+ *
  * @author Sylvain Ductor
  *
  * @param <Agent> le type de laborantin associé
@@ -43,17 +38,17 @@ extends BasicAgentModule<Agent> {
 	public static final long _maxSimulationTime = 1000 * 10;
 	public static boolean currentlyInstanciating;
 	final File resultPath;
-	
+
 	//
 	// Fields
 	//
-	
+
 	private final String simulationName = ExperimentationParameters.newName();
 	protected final AgentIdentifier experimentatorId;
 
 
-	
-	public ExperimentationParameters(AgentIdentifier experimentatorId, String resultPath) {
+
+	public ExperimentationParameters(final AgentIdentifier experimentatorId, final String resultPath) {
 		super();
 		this.experimentatorId = experimentatorId;
 		this.resultPath = new File("result_"+resultPath);
@@ -68,34 +63,34 @@ extends BasicAgentModule<Agent> {
 	}
 
 	public File getResultPath() {
-		return resultPath;
+		return this.resultPath;
 	}
-	
+
 	//
 	// Abstract Methods
 	//
-	
+
 	/*
 	 * Creation
 	 */
 
 	/**
 	 * Generate parameters values
-	 * 
-	 */	
-	public abstract  void initiateParameters() throws IfailedException;	
-	
+	 *
+	 */
+	public abstract  void initiateParameters() throws IfailedException;
+
 	/**
 	 * Instanciate the agents
-	 * 
+	 *
 	 * @throws IfailedException
 	 * @throws CompetenceException
 	 */
-	
+
 	protected abstract Collection<? extends BasicCompetentAgent> instanciateAgents() throws CompetenceException;
-	
+
 	/*
-	 * 
+	 *
 	 */
 	//
 	// Methods
@@ -104,11 +99,11 @@ extends BasicAgentModule<Agent> {
 	/*
 	 * Protocol
 	 */
-	
+
 	public abstract LinkedList<ExperimentationParameters> generateSimulation();
-	
+
 	public abstract  Laborantin createLaborantin(final APILauncherModule api)throws CompetenceException, IfailedException,NotEnoughMachinesException;
-	
+
 
 	/*
 	 * Déploiement
@@ -116,7 +111,7 @@ extends BasicAgentModule<Agent> {
 
 	public abstract Integer getMaxNumberOfAgent(HostIdentifier h);
 
-	
+
 
 	//
 	// Primitive
@@ -127,7 +122,7 @@ extends BasicAgentModule<Agent> {
 		ExperimentationParameters.id++;
 		return "simu_"+ExperimentationParameters.id;
 	}
-	
+
 	@Override
 	public String toString(){
 		String result ="****************************************************************************************************************************\n";

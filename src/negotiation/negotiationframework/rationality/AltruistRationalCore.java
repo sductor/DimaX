@@ -54,7 +54,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	public Double evaluatePreference(final Collection<Contract> c) {
 		return this.myOptimiser.getUtility(c);
 	}
-	
+
 	//
 	// Delegated methods
 	//
@@ -70,7 +70,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override

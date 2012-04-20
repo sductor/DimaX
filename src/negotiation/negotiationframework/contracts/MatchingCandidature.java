@@ -138,7 +138,7 @@ extends ContractTransition<ActionSpec> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public static <Contract extends MatchingCandidature>

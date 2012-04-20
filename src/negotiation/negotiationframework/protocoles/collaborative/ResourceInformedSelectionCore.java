@@ -12,7 +12,6 @@ import java.util.Set;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.InformedCandidature;
@@ -20,7 +19,6 @@ import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
 import negotiation.negotiationframework.exploration.AllocationSolver;
-import negotiation.negotiationframework.exploration.ExhaustifHyperSetGeneration;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -46,7 +44,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	//
 
 	public ResourceInformedSelectionCore(
-			AllocationSolver solver)
+			final AllocationSolver<Contract, ActionSpec, PersonalState> solver)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
@@ -132,18 +130,10 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 							new HashSet<InformedCandidature<Contract, ActionSpec>>();
 					//				hosted.addAll(accepted);
 
-					for (final ActionSpec s : this.getMyAgent().getMyResources()){
-						//adding destruction of hosted agents
-						final InformedCandidature<Contract, ActionSpec> c =
-								this.generateDestructionContract(s.getMyAgentIdentifier());
-						c.setSpecification(this.getMyAgent().getMySpecif(this.getMyAgent().getMyCurrentState(), c));
-						c.setSpecification(s);
-						hosted.add(c);
-					}
 					assert MatchingCandidature.assertAllCreation(contracts.getAllContracts());
 					assert AbstractCommunicationProtocol.partitioning(contracts.getAllContracts(), accepted, rejected, onWait);
 					final Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts =
-							this.generateUpgradingContracts(currentState, rejected, onWait, hosted, myCore, contracts);
+							this.generateUpgradingContracts(currentState, rejected, onWait, myCore, contracts);
 					propCore.addContractsToPropose(ugradingContracts);
 					assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), accepted, rejected, onWait);
 					if (!ugradingContracts.isEmpty()){
@@ -226,7 +216,6 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			final PersonalState currentState,
 			final Collection<InformedCandidature<Contract, ActionSpec>> unacceptedContracts,
 			final Collection<InformedCandidature<Contract,ActionSpec>> onWait,
-			final Collection<InformedCandidature<Contract, ActionSpec>> hosted,
 			final InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myAgentCore,
 			final ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState> myAgentContractTrunk) {
 
@@ -241,34 +230,34 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		final Map<Contract,InformedCandidature<Contract,ActionSpec>> concerned =
 				new HashMap<Contract,InformedCandidature<Contract,ActionSpec>>();
 
-		for (InformedCandidature<Contract,ActionSpec> c : unacceptedContracts){
+		for (final InformedCandidature<Contract,ActionSpec> c : unacceptedContracts){
+			assert c.isMatchingCreation();
 			concerned.put(c.getCandidature(),c);//adding allocation candidature
 		}
-		try {
-			for (final InformedCandidature<Contract, ActionSpec> h : hosted)
-			{
-				if (h.isViable())
-				{
-					concerned.put(h.getCandidature(),h);//adding allocation candidature
-				}
-			}
-		} catch (final IncompleteContractException e) {
-			throw new RuntimeException();
+		for (final ActionSpec s : this.getMyAgent().getMyResources()){
+			final InformedCandidature<Contract, ActionSpec> d =
+					this.generateDestructionContract(s.getMyAgentIdentifier());
+			d.setSpecification(this.getMyAgent().getMySpecif(this.getMyAgent().getMyCurrentState(), d));
+			d.setSpecification(s);
+			concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}
 
 		assert ContractTransition.allComplete(concerned.values()):concerned+" "+myAgentContractTrunk;
 
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
-		solver.initiate(concerned.keySet(), currentState);
-		while (solver.hasNext()){
-			final Collection<Contract> realloc = solver.getNextSolution();
+		this.solver.initiate(concerned.keySet(), currentState);
+		while (this.solver.hasNext()){
+			final Collection<Contract> realloc = this.solver.getNextSolution();
 
 
-			final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep = new HashSet();
+			final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep =
+					new HashSet<InformedCandidature<Contract, ActionSpec>>();
 			for (final Contract c : realloc) {
 				contractsToKeep.add(concerned.get(c));
 			}
+			assert this.getMyAgent().Iaccept(currentState, contractsToKeep):
+				currentState+" \n"+contractsToKeep;
 
 			//MAJ du contract trunk
 			for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
@@ -293,7 +282,6 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 			//Ajout du contrat améliorant
 			// --- > Création du contrat
-			assert this.getMyAgent().Iaccept(this.getMyAgent().getMyCurrentState(), contractsToKeep);
 			myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
 					this.getIdentifier(),
 					realloc));

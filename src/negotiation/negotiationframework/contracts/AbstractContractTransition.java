@@ -62,7 +62,7 @@ extends DimaComponentInterface {
 	public class IncompleteContractException extends Exception{
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 7759487818635127561L;};
 		// public ContractTransition<ActionSpec> clone();

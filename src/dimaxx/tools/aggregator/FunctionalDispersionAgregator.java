@@ -33,7 +33,7 @@ public class FunctionalDispersionAgregator {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public static <Element, Analyser extends UtilitaristAnalyser<Element> & FunctionnalCompensativeAggregator<Element>>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import examples.dcop.algo.BasicAlgorithm;
 import examples.dcop.algo.LockingBasicAlgorithm;
 import examples.dcop.algo.Stats;
 import examples.dcop.daj.Channel;
@@ -19,41 +20,42 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	TreeNode center;
 	public boolean trivial;
 
-	public AlgoTOptAPO(Variable v, int tt) {
+	public AlgoTOptAPO(final Variable v, final int tt) {
 		super(v, true, 2);
-		t = tt;
-		init();
+		this.t = tt;
+		this.init();
 	}
 
-	public AlgoTOptAPO(Variable v, int tt, boolean s, int ws) {
+	public AlgoTOptAPO(final Variable v, final int tt, final boolean s, final int ws) {
 		super(v, s, ws);
-		t = tt;
-		init();
+		this.t = tt;
+		this.init();
 	}
 
 	protected void init() {
-		self.value = Helper.random.nextInt(self.domain);
-		bestSolution = null;
-		center = null;
-		trivial = false;
+		this.self.value = Helper.random.nextInt(this.self.domain);
+		this.bestSolution = null;
+		this.center = null;
+		this.trivial = false;
 	}
 
 	@Override
 	public void initialisation() {
 		// TODO Auto-generated method stub
 
-		for (Channel c : in().getChannels()) {
-			inChannelMap.put(c.getNeighbor().asInt(),c.getNeighbor().asInt());
+		for (final Channel c : this.in().getChannels()) {
+			this.inChannelMap.put(c.getNeighbor().asInt(),c.getNeighbor().asInt());
 		}
 
-		for (Channel c : out().getChannels()) {
-			outChannelMap.put(c.getNeighbor().asInt(),c.getNeighbor().asInt());
+		for (final Channel c : this.out().getChannels()) {
+			this.outChannelMap.put(c.getNeighbor().asInt(),c.getNeighbor().asInt());
 		}
 
-		if (t > 0)
-			out().broadcast(new LocalConstraintMsg(self, t));
-		out().broadcast(new ValueMsg(self, t + 1));
-		changed = true;
+		if (this.t > 0) {
+			this.out().broadcast(new LocalConstraintMsg(this.self, this.t));
+		}
+		this.out().broadcast(new ValueMsg(this.self, this.t + 1));
+		this.changed = true;
 	}
 
 	// HashMap<Integer, Integer> valTTLMap = new HashMap<Integer,
@@ -65,106 +67,113 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 
 		// if (self.id == 90)
 		// System.out.println("DEBUG");
-		int index = in().select(1);
+		final int index = this.in().select(1);
 		if (index != -1) {
 
-			setDone(false);
+			this.setDone(false);
 
-			DcopMessage msg = in(index).receive(1);
+			final DcopMessage msg = this.in(index).receive(1);
 			//				if (msg == null)
 			//					yield();
 
-			int sender = ((Channel) in(index)).getNeighbor().asInt();
+			final int sender = ((Channel) this.in(index)).getNeighbor().asInt();
 
 			if (msg instanceof ValueMsg) {
-				ValueMsg vmsg = (ValueMsg) msg;
-				Variable v = view.varMap.get(vmsg.id);
+				final ValueMsg vmsg = (ValueMsg) msg;
+				final Variable v = this.view.varMap.get(vmsg.id);
 				assert v != null;
-				if (vmsg.ttl > 1)
-					out().broadcast(vmsg.forward());
+				if (vmsg.ttl > 1) {
+					this.out().broadcast(vmsg.forward());
+				}
 				if (v.value != vmsg.value) {
 					v.value = vmsg.value;
-					if (v.fixed)
-						changed = true;
+					if (v.fixed) {
+						this.changed = true;
+					}
 				}
 			} else if (msg instanceof LocalConstraintMsg) {
-				LocalConstraintMsg lmsg = (LocalConstraintMsg) msg;
-				Integer lastTTL = conTTLMap.get(lmsg.id);
+				final LocalConstraintMsg lmsg = (LocalConstraintMsg) msg;
+				final Integer lastTTL = this.conTTLMap.get(lmsg.id);
 				if (lastTTL == null) {
-					conTTLMap.put(lmsg.id, lmsg.ttl);
-					Variable v = view.varMap.get(lmsg.id);
+					this.conTTLMap.put(lmsg.id, lmsg.ttl);
+					Variable v = this.view.varMap.get(lmsg.id);
 					if (v == null) {
-						v = new Variable(lmsg.id, lmsg.domain, view);
-						view.varMap.put(v.id, v);
+						v = new Variable(lmsg.id, lmsg.domain, this.view);
+						this.view.varMap.put(v.id, v);
 					}
 					v.fixed = false;
-					for (int[] enc : lmsg.data) {
+					for (final int[] enc : lmsg.data) {
 						if (enc[0] == v.id) {
-							Variable n = view.varMap.get(enc[2]);
+							Variable n = this.view.varMap.get(enc[2]);
 							if (n == null) {
-								n = new Variable(enc[2], enc[3], view);
-								if (lmsg.ttl <= 1)
+								n = new Variable(enc[2], enc[3], this.view);
+								if (lmsg.ttl <= 1) {
 									n.fixed = true;
-								view.varMap.put(n.id, n);
+								}
+								this.view.varMap.put(n.id, n);
 							}
 							if (!v.hasNeighbor(n.id)) {
-								Constraint c = new Constraint(v, n);
-								view.conList.add(c);
-								for (int i = 0; i < c.d1; i++)
+								final Constraint c = new Constraint(v, n);
+								this.view.conList.add(c);
+								for (int i = 0; i < c.d1; i++) {
 									for (int j = 0; j < c.d2; j++) {
 										c.f[i][j] = enc[4 + i * c.d2 + j];
 									}
+								}
 								c.cache();
 							}
 						} else {
-							Variable n = view.varMap.get(enc[0]);
+							Variable n = this.view.varMap.get(enc[0]);
 							if (n == null) {
-								n = new Variable(enc[0], enc[1], view);
-								if (lmsg.ttl <= 1)
+								n = new Variable(enc[0], enc[1], this.view);
+								if (lmsg.ttl <= 1) {
 									n.fixed = true;
-								view.varMap.put(n.id, n);
+								}
+								this.view.varMap.put(n.id, n);
 							}
 							if (!v.hasNeighbor(n.id)) {
-								Constraint c = new Constraint(n, v);
-								view.conList.add(c);
-								for (int i = 0; i < c.d1; i++)
+								final Constraint c = new Constraint(n, v);
+								this.view.conList.add(c);
+								for (int i = 0; i < c.d1; i++) {
 									for (int j = 0; j < c.d2; j++) {
 										c.f[i][j] = enc[4 + i * c.d2 + j];
 									}
+								}
 								c.cache();
 							}
 						}
 					}
-					if (lmsg.ttl > 1)
-						out().broadcast(lmsg.forward());
+					if (lmsg.ttl > 1) {
+						this.out().broadcast(lmsg.forward());
+					}
 				} else if (lastTTL < lmsg.ttl) {
-					conTTLMap.put(lmsg.id, lmsg.ttl);
-					out().broadcast(lmsg.forward());
+					this.conTTLMap.put(lmsg.id, lmsg.ttl);
+					this.out().broadcast(lmsg.forward());
 				}
 			} else if (msg instanceof LockMsg) {
-				LockMsg lkmsg = (LockMsg) msg;
-				TreeNode root = lkmsg.node;
+				final LockMsg lkmsg = (LockMsg) msg;
+				final TreeNode root = lkmsg.node;
 				if (lkmsg.lock) {
 					if (!root.mark) {
-						out(outChannelMap.get(sender)).send(
-								new ResponseMsg(self.id, lkmsg.attempt,
+						this.out(this.outChannelMap.get(sender)).send(
+								new ResponseMsg(this.self.id, lkmsg.attempt,
 										root.parent, true));
-						for (TreeNode n : root.children) {
-							out(outChannelMap.get(n.id)).send(
+						for (final TreeNode n : root.children) {
+							this.out(this.outChannelMap.get(n.id)).send(
 									new LockMsg(lkmsg.gid, lkmsg.val,
 											lkmsg.attempt, n, true));
 						}
 					} else {
-						if (lockVal == root.value) {
-							Integer att = lockSet.get(lkmsg.gid);
+						if (this.lockVal == root.value) {
+							final Integer att = this.lockSet.get(lkmsg.gid);
 							if (att == null || att < lkmsg.attempt) {
-								lockSet.put(lkmsg.gid, lkmsg.attempt);
-								out(outChannelMap.get(sender)).send(
-										new ResponseMsg(self.id,
+								this.lockSet.put(lkmsg.gid, lkmsg.attempt);
+								this.out(this.outChannelMap.get(sender)).send(
+										new ResponseMsg(this.self.id,
 												lkmsg.attempt, root.parent,
 												true));
-								for (TreeNode n : root.children) {
-									out(outChannelMap.get(n.id))
+								for (final TreeNode n : root.children) {
+									this.out(this.outChannelMap.get(n.id))
 									.send(
 											new LockMsg(lkmsg.gid,
 													lkmsg.val,
@@ -172,254 +181,260 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 													n, true));
 								}
 							}
-						} else if (lockVal == -1) {
-							Integer att = lockSet.get(lkmsg.gid);
+						} else if (this.lockVal == -1) {
+							final Integer att = this.lockSet.get(lkmsg.gid);
 							if (att == null || att < lkmsg.attempt) {
-								LockMsg l = lockMap.get(lkmsg.gid);
+								final LockMsg l = this.lockMap.get(lkmsg.gid);
 								if (l == null || l.attempt < lkmsg.attempt) {
-									if (lockMap.isEmpty())
-										lockMsgTimer = getTime();
-									lockMap.put(lkmsg.gid, lkmsg);
+									if (this.lockMap.isEmpty()) {
+										this.lockMsgTimer = this.getTime();
+									}
+									this.lockMap.put(lkmsg.gid, lkmsg);
 
 								}
 							}
-							for (TreeNode n : root.children) {
-								out(outChannelMap.get(n.id)).send(
+							for (final TreeNode n : root.children) {
+								this.out(this.outChannelMap.get(n.id)).send(
 										new LockMsg(lkmsg.gid, lkmsg.val,
 												lkmsg.attempt, n, true));
 							}
 						} else {
-							out(outChannelMap.get(sender)).send(
-									new ResponseMsg(self.id, lkmsg.attempt,
+							this.out(this.outChannelMap.get(sender)).send(
+									new ResponseMsg(this.self.id, lkmsg.attempt,
 											root.parent, false));
 						}
 					}
 				} else {
-					Integer att = lockSet.get(lkmsg.gid);
-					LockMsg l = lockMap.get(lkmsg.gid);
+					final Integer att = this.lockSet.get(lkmsg.gid);
+					final LockMsg l = this.lockMap.get(lkmsg.gid);
 					if ((att != null && att <= lkmsg.attempt)
 							|| (l != null && l.attempt <= lkmsg.attempt)) {
-						removeLock(lkmsg.gid);
+						this.removeLock(lkmsg.gid);
 					}
-					for (TreeNode n : root.children) {
-						out(outChannelMap.get(n.id)).send(
+					for (final TreeNode n : root.children) {
+						this.out(this.outChannelMap.get(n.id)).send(
 								new LockMsg(lkmsg.gid, lkmsg.val,
 										lkmsg.attempt, n, false));
 					}
 				}
 
 			} else if (msg instanceof ResponseMsg) {
-				ResponseMsg rmsg = (ResponseMsg) msg;
-				TreeNode root = rmsg.node;
+				final ResponseMsg rmsg = (ResponseMsg) msg;
+				final TreeNode root = rmsg.node;
 				if (root.parent == null) {
-					if (waiting && rmsg.attempt == attempt) {
+					if (this.waiting && rmsg.attempt == this.attempt) {
 						if (!rmsg.accept) {
 							//								System.out.println("=== " + self.id + " "
 									//										+ "UNLOCK ===");
-							if (lockBase < 16)
-								lockBase <<= 1;
-							reLockTime = getTime()
-									+ Helper.random.nextInt(reLockInterval
-											* lockBase);
-							removeLock(self.id);
-							waiting = false;
-							for (TreeNode n : root.children) {
-								out(outChannelMap.get(n.id))
+							if (this.lockBase < 16) {
+								this.lockBase <<= 1;
+							}
+							this.reLockTime = this.getTime()
+									+ Helper.random.nextInt(BasicAlgorithm.reLockInterval
+											* this.lockBase);
+							this.removeLock(this.self.id);
+							this.waiting = false;
+							for (final TreeNode n : root.children) {
+								this.out(this.outChannelMap.get(n.id))
 								.send(
-										new LockMsg(self.id,
-												view.varMap.size(),
-												attempt, n, false));
+										new LockMsg(this.self.id,
+												this.view.varMap.size(),
+												this.attempt, n, false));
 							}
 							//								DCOPApplication app = (DCOPApplication) this.node
 							//										.getNetwork().getApplication();
 							//								app.numberConflicts++;
 						} else {
-							acceptSet.add(rmsg.id);
-							if (acceptSet.size() >= view.varMap.size()) {
+							this.acceptSet.add(rmsg.id);
+							if (this.acceptSet.size() >= this.view.varMap.size()) {
 								// ///////////store the stats////////////
-								Stats st = new Stats();
-								st.gain = view.evaluate(bestSolution)
-										- view.evaluate();
+								final Stats st = new Stats();
+								st.gain = this.view.evaluate(this.bestSolution)
+										- this.view.evaluate();
 								st.varChanged = 0;
-								for (Variable v : view.varMap.values())
-									if (v.value != bestSolution.get(v.id))
+								for (final Variable v : this.view.varMap.values()) {
+									if (v.value != this.bestSolution.get(v.id)) {
 										st.varChanged++;
-										st.attempts = attempt - preAttempt;
+									}
+								}
+										st.attempts = this.attempt - this.preAttempt;
 
-										int present = getTime();
-										st.cycles = present - preCycles;
+										final int present = this.getTime();
+										st.cycles = present - this.preCycles;
 
-										st.varLocked = center.getMarkedNodeSize();
-										st.maxLockedDistance = center
+										st.varLocked = this.center.getMarkedNodeSize();
+										st.maxLockedDistance = this.center
 												.maxdistanceMarkedNode();
-										preAttempt = attempt;
+										this.preAttempt = this.attempt;
 
-										statList.add(st);
+										this.statList.add(st);
 										// ///////////////////////////////////////
-										lockBase = 1;
-										if (self.value != lockVal) {
+										this.lockBase = 1;
+										if (this.self.value != this.lockVal) {
 											//										System.out.println(self.id + " "
 											//												+ self.id + " " + self.value
 											//												+ "->" + lockVal);
-											self.value = lockVal;
-											out().broadcast(
-													new ValueMsg(self, t + 1));
+											this.self.value = this.lockVal;
+											this.out().broadcast(
+													new ValueMsg(this.self, this.t + 1));
 										}
-										waiting = false;
-										removeLock(self.id);
-										for (TreeNode n : root.children) {
-											out(outChannelMap.get(n.id)).send(
-													new CommitMsg(self.id, attempt,
+										this.waiting = false;
+										this.removeLock(this.self.id);
+										for (final TreeNode n : root.children) {
+											this.out(this.outChannelMap.get(n.id)).send(
+													new CommitMsg(this.self.id, this.attempt,
 															n));
 										}
-										reLockTime = getTime()
+										this.reLockTime = this.getTime()
 												+ 2
-												* (t + 1)
+												* (this.t + 1)
 												+ +Helper.random
-												.nextInt(2 * (t + 1));
+												.nextInt(2 * (this.t + 1));
 							}
 						}
 					}
 				} else {
-					out(outChannelMap.get(root.parent.id)).send(
+					this.out(this.outChannelMap.get(root.parent.id)).send(
 							new ResponseMsg(rmsg.id, rmsg.attempt,
 									root.parent, rmsg.accept));
 				}
 			} else if (msg instanceof CommitMsg) {
-				CommitMsg cmsg = (CommitMsg) msg;
-				TreeNode root = cmsg.node;
-				for (TreeNode n : root.children) {
-					out(outChannelMap.get(n.id)).send(
+				final CommitMsg cmsg = (CommitMsg) msg;
+				final TreeNode root = cmsg.node;
+				for (final TreeNode n : root.children) {
+					this.out(this.outChannelMap.get(n.id)).send(
 							new CommitMsg(cmsg.gid, cmsg.attempt, n));
 				}
-				Integer att = lockSet.get(cmsg.gid);
+				final Integer att = this.lockSet.get(cmsg.gid);
 				if (att == null || att != cmsg.attempt) {
 					return;
 				}
-				if (self.value != lockVal) {
-					System.out.println(cmsg.gid + " " + self.id + " "
-							+ self.value + "->" + lockVal);
-					self.value = lockVal;
-					out().broadcast(new ValueMsg(self, t + 1));
+				if (this.self.value != this.lockVal) {
+					System.out.println(cmsg.gid + " " + this.self.id + " "
+							+ this.self.value + "->" + this.lockVal);
+					this.self.value = this.lockVal;
+					this.out().broadcast(new ValueMsg(this.self, this.t + 1));
 				}
-				removeLock(cmsg.gid);
+				this.removeLock(cmsg.gid);
 
 //			} else if (msg instanceof TerminateMessage) {
 //				break;
 			}
 		} else {
-			if (getTime() == 2 * t + 1) {
-				trivial = isTrivial();
+			if (this.getTime() == 2 * this.t + 1) {
+				this.trivial = this.isTrivial();
 			}
 			// if (getTime() > 1000 && !lockSet.isEmpty())
 			// System.out.println(self.id + " " + lockSet);
 			// TODO
-			if (!lockMap.isEmpty()
-					&& getTime() - lockMsgTimer >= windowsize) {
+			if (!this.lockMap.isEmpty()
+					&& this.getTime() - this.lockMsgTimer >= this.windowsize) {
 				// output lockmap size
-				nlockReq += lockMap.size();
+				this.nlockReq += this.lockMap.size();
 				// ///////////
 				int comp = Integer.MIN_VALUE;
 				int id = Integer.MAX_VALUE;
 				LockMsg best = null;
-				for (LockMsg msg : lockMap.values()) {
+				for (final LockMsg msg : this.lockMap.values()) {
 					if (msg.val > comp || (msg.val == comp && msg.gid < id)) {
 						comp = msg.val;
 						id = msg.gid;
 						best = msg;
 					}
 				}
-				lockVal = best.node.value;
-				lockSet.put(best.gid, best.attempt);
+				this.lockVal = best.node.value;
+				this.lockSet.put(best.gid, best.attempt);
 				if (best.node.parent != null) {
-					out(outChannelMap.get(best.node.parent.id)).send(
-							new ResponseMsg(self.id, best.attempt,
+					this.out(this.outChannelMap.get(best.node.parent.id)).send(
+							new ResponseMsg(this.self.id, best.attempt,
 									best.node.parent, true));
 				} else {
-					acceptSet.add(self.id);
-					if (acceptSet.size() >= view.varMap.size()) {
+					this.acceptSet.add(this.self.id);
+					if (this.acceptSet.size() >= this.view.varMap.size()) {
 						// ///////////store the stats////////////
-						Stats st = new Stats();
-						st.gain = view.evaluate(bestSolution)
-								- view.evaluate();
+						final Stats st = new Stats();
+						st.gain = this.view.evaluate(this.bestSolution)
+								- this.view.evaluate();
 						st.varChanged = 0;
-						for (Variable v : view.varMap.values()) {
-							if (v.value != bestSolution.get(v.id))
+						for (final Variable v : this.view.varMap.values()) {
+							if (v.value != this.bestSolution.get(v.id)) {
 								st.varChanged++;
+							}
 						}
-						st.attempts = attempt - preAttempt;
+						st.attempts = this.attempt - this.preAttempt;
 
-						int present = getTime();
-						st.cycles = present - preCycles;
+						final int present = this.getTime();
+						st.cycles = present - this.preCycles;
 
-						st.varLocked = center.getMarkedNodeSize();
-						st.maxLockedDistance = center
+						st.varLocked = this.center.getMarkedNodeSize();
+						st.maxLockedDistance = this.center
 								.maxdistanceMarkedNode();
-						preAttempt = attempt;
-						statList.add(st);
+						this.preAttempt = this.attempt;
+						this.statList.add(st);
 						// ///////////////////////////////////////
-						lockBase = 1;
-						if (self.value != lockVal) {
-							System.out.println(self.id + " " + self.id
-									+ " " + self.value + "->" + lockVal);
-							self.value = lockVal;
-							out().broadcast(new ValueMsg(self, t + 1));
+						this.lockBase = 1;
+						if (this.self.value != this.lockVal) {
+							System.out.println(this.self.id + " " + this.self.id
+									+ " " + this.self.value + "->" + this.lockVal);
+							this.self.value = this.lockVal;
+							this.out().broadcast(new ValueMsg(this.self, this.t + 1));
 						}
-						waiting = false;
-						removeLock(self.id);
-						for (TreeNode n : center.children) {
-							out(outChannelMap.get(n.id)).send(
-									new CommitMsg(self.id, attempt, n));
+						this.waiting = false;
+						this.removeLock(this.self.id);
+						for (final TreeNode n : this.center.children) {
+							this.out(this.outChannelMap.get(n.id)).send(
+									new CommitMsg(this.self.id, this.attempt, n));
 						}
-						reLockTime = getTime() + 2 * (t + 1)
-								+ +Helper.random.nextInt(2 * (t + 1));
+						this.reLockTime = this.getTime() + 2 * (this.t + 1)
+								+ +Helper.random.nextInt(2 * (this.t + 1));
 					}
 				}
 
-				for (LockMsg msg : lockMap.values()) {
-					if (msg.gid == best.gid)
+				for (final LockMsg msg : this.lockMap.values()) {
+					if (msg.gid == best.gid) {
 						continue;
+					}
 					if (msg.node.parent != null) {
-						if (msg.node.value == lockVal) {
-							lockSet.put(msg.gid, msg.attempt);
-							out(outChannelMap.get(msg.node.parent.id))
+						if (msg.node.value == this.lockVal) {
+							this.lockSet.put(msg.gid, msg.attempt);
+							this.out(this.outChannelMap.get(msg.node.parent.id))
 							.send(
-									new ResponseMsg(self.id,
+									new ResponseMsg(this.self.id,
 											msg.attempt,
 											msg.node.parent, true));
 						} else {
-							out(outChannelMap.get(msg.node.parent.id))
+							this.out(this.outChannelMap.get(msg.node.parent.id))
 							.send(
-									new ResponseMsg(self.id,
+									new ResponseMsg(this.self.id,
 											msg.attempt,
 											msg.node.parent, false));
 						}
 					} else {
-						waiting = false;
-						for (TreeNode n : msg.node.children) {
-							out(outChannelMap.get(n.id)).send(
-									new LockMsg(self.id,
-											view.varMap.size(), attempt, n,
+						this.waiting = false;
+						for (final TreeNode n : msg.node.children) {
+							this.out(this.outChannelMap.get(n.id)).send(
+									new LockMsg(this.self.id,
+											this.view.varMap.size(), this.attempt, n,
 											false));
 						}
 					}
 				}
-				lockMap.clear();
+				this.lockMap.clear();
 			}
-			setDone(false);
-			if (!trivial) {
-				if (getTime() > 2 * t + 1 && changed) {
-					changed = false;
-					checkSolution();
-					if (waiting && center != null) {
+			this.setDone(false);
+			if (!this.trivial) {
+				if (this.getTime() > 2 * this.t + 1 && this.changed) {
+					this.changed = false;
+					this.checkSolution();
+					if (this.waiting && this.center != null) {
 						// System.out.println("=== " + self.id + " " +
 						// "UNLOCK ===");
-						removeLock(self.id);
-						waiting = false;
-						for (TreeNode n : center.children) {
-							out(outChannelMap.get(n.id)).send(
-									new LockMsg(self.id,
-											view.varMap.size(), attempt, n,
+						this.removeLock(this.self.id);
+						this.waiting = false;
+						for (final TreeNode n : this.center.children) {
+							this.out(this.outChannelMap.get(n.id)).send(
+									new LockMsg(this.self.id,
+											this.view.varMap.size(), this.attempt, n,
 											false));
 						}
 						//							DCOPApplication app = (DCOPApplication) this.node
@@ -427,51 +442,57 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 						//							app.numberConflicts++;
 					}
 				}
-				if (checkMove()) {
-					if (!waiting && lockVal == -1 && getTime() > reLockTime) {
-						center = constructTree();
+				if (this.checkMove()) {
+					if (!this.waiting && this.lockVal == -1 && this.getTime() > this.reLockTime) {
+						this.center = this.constructTree();
 						//							System.out.println(self.id + " " + center.getMarkedNodeSize() + "/"
 						//									+ center.getSize());
-						acceptSet.clear();
-						waiting = true;
-						attempt++;
-						if (lockMap.isEmpty())
-							lockMsgTimer = getTime();
-						int gain = view.evaluate(bestSolution)
-								- view.evaluate();
-						lockMap.put(self.id, new LockMsg(self.id, gain,
-								attempt, center, true));
-						for (TreeNode n : center.children) {
-							out(outChannelMap.get(n.id)).send(
-									new LockMsg(self.id, gain, attempt, n,
+						this.acceptSet.clear();
+						this.waiting = true;
+						this.attempt++;
+						if (this.lockMap.isEmpty()) {
+							this.lockMsgTimer = this.getTime();
+						}
+						final int gain = this.view.evaluate(this.bestSolution)
+								- this.view.evaluate();
+						this.lockMap.put(this.self.id, new LockMsg(this.self.id, gain,
+								this.attempt, this.center, true));
+						for (final TreeNode n : this.center.children) {
+							this.out(this.outChannelMap.get(n.id)).send(
+									new LockMsg(this.self.id, gain, this.attempt, n,
 											true));
 						}
 
-					} else if (!waiting && lockVal == -1
-							&& getTime() <= reLockTime) {
+					} else if (!this.waiting && this.lockVal == -1
+							&& this.getTime() <= this.reLockTime) {
 						//							DCOPApplication app = (DCOPApplication) this.node
 						//									.getNetwork().getApplication();
 						//							app.wastedCycles++;
 					}
-				} else if (bestSolution != null
-						&& view.evaluate() >= view.evaluate(bestSolution))
-					setDone(true);
-			} else
-				setDone(true);
+				} else if (this.bestSolution != null
+						&& this.view.evaluate() >= this.view.evaluate(this.bestSolution)) {
+					this.setDone(true);
+				}
+			}
+			else {
+				this.setDone(true);
 			//				yield();
+			}
 		}
 	}
 
 	private void checkSolution() {
-		for (Variable v : view.varMap.values())
+		for (final Variable v : this.view.varMap.values()) {
 			if (v.fixed && v.value == -1) {
-				bestSolution = null;
+				this.bestSolution = null;
 				return;
 			}
-		if (view.conList.size() > view.varMap.size() * view.varMap.size() / 4)
-			bestSolution = view.branchBoundSolve();
-		else
-			bestSolution = view.DPOPSolve();
+		}
+		if (this.view.conList.size() > this.view.varMap.size() * this.view.varMap.size() / 4) {
+			this.bestSolution = this.view.branchBoundSolve();
+		} else {
+			this.bestSolution = this.view.DPOPSolve();
+		}
 	}
 
 	// private boolean checkTree(TreeNode root) {
@@ -486,78 +507,86 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	// }
 
 	private TreeNode constructTree() {
-		TreeNode root = new TreeNode(self.id, bestSolution.get(self.id), false,
+		final TreeNode root = new TreeNode(this.self.id, this.bestSolution.get(this.self.id), false,
 				null);
-		if (root.value != view.varMap.get(self.id).value)
+		if (root.value != this.view.varMap.get(this.self.id).value) {
 			root.mark = true;
+		}
 
-		ArrayList<Variable> queue = new ArrayList<Variable>();
-		HashMap<Integer, TreeNode> map = new HashMap<Integer, TreeNode>();
-		queue.add(self);
-		map.put(self.id, root);
+		final ArrayList<Variable> queue = new ArrayList<Variable>();
+		final HashMap<Integer, TreeNode> map = new HashMap<Integer, TreeNode>();
+		queue.add(this.self);
+		map.put(this.self.id, root);
 		while (!queue.isEmpty()) {
-			Variable v = queue.remove(0);
-			TreeNode p = map.get(v.id);
-			for (Constraint c : v.neighbors) {
-				Variable n = c.getNeighbor(v);
+			final Variable v = queue.remove(0);
+			final TreeNode p = map.get(v.id);
+			for (final Constraint c : v.neighbors) {
+				final Variable n = c.getNeighbor(v);
 				if (!map.containsKey(n.id)) {
 					queue.add(n);
-					TreeNode child = new TreeNode(n.id, bestSolution.get(n.id),
+					final TreeNode child = new TreeNode(n.id, this.bestSolution.get(n.id),
 							n.fixed, p);
-					if (v.value != bestSolution.get(v.id)
-							|| n.value != bestSolution.get(n.id)) {
+					if (v.value != this.bestSolution.get(v.id)
+							|| n.value != this.bestSolution.get(n.id)) {
 						child.mark = true;
 						p.mark = true;
 					}
 					map.put(n.id, child);
 				} else {
-					TreeNode node = map.get(n.id);
-					if (v.value != bestSolution.get(v.id))
+					final TreeNode node = map.get(n.id);
+					if (v.value != this.bestSolution.get(v.id)) {
 						node.mark = true;
+					}
 				}
 			}
 		}
-		if (!subsetlocking)
+		if (!this.subsetlocking) {
 			root.markAll();
+		}
 		return root;
 	}
 
 	private boolean checkMove() {
-		if (bestSolution == null)
+		if (this.bestSolution == null) {
 			return false;
-		for (Variable v : view.varMap.values()) {
-			if (!bestSolution.containsKey(v.id))
-				return false;
 		}
-		int current = view.evaluate();
-		int best = view.evaluate(bestSolution);
+		for (final Variable v : this.view.varMap.values()) {
+			if (!this.bestSolution.containsKey(v.id)) {
+				return false;
+			}
+		}
+		final int current = this.view.evaluate();
+		final int best = this.view.evaluate(this.bestSolution);
 		if (current >= best) {
-			bestSolution = view.getSolution();
+			this.bestSolution = this.view.getSolution();
 			return false;
-		} else
+		} else {
 			return true;
+		}
 	}
 
 	private boolean isTrivial() {
-		HashMap<Integer, Integer> minDis = new HashMap<Integer, Integer>();
+		final HashMap<Integer, Integer> minDis = new HashMap<Integer, Integer>();
 		int maxId = 0;
-		for (Variable v : view.varMap.values())
-			if (v.id > maxId)
+		for (final Variable v : this.view.varMap.values()) {
+			if (v.id > maxId) {
 				maxId = v.id;
+			}
+		}
 				maxId++;
-				for (Variable v : view.varMap.values()) {
-					ArrayList<Variable> queue = new ArrayList<Variable>();
+				for (final Variable v : this.view.varMap.values()) {
+					final ArrayList<Variable> queue = new ArrayList<Variable>();
 					queue.add(v);
 					minDis.put(v.id * maxId + v.id, 0);
-					HashSet<Integer> visited = new HashSet<Integer>();
+					final HashSet<Integer> visited = new HashSet<Integer>();
 					visited.add(v.id);
 					while (!queue.isEmpty()) {
-						Variable var = queue.remove(0);
-						for (Constraint c : var.neighbors) {
-							Variable n = c.getNeighbor(var);
+						final Variable var = queue.remove(0);
+						for (final Constraint c : var.neighbors) {
+							final Variable n = c.getNeighbor(var);
 							if (!visited.contains(n.id)) {
 								queue.add(n);
-								int depth = minDis.get(v.id * maxId + var.id);
+								final int depth = minDis.get(v.id * maxId + var.id);
 								visited.add(n.id);
 								minDis.put(v.id * maxId + n.id, depth + 1);
 							}
@@ -566,50 +595,55 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 				}
 
 				int minD = 0;
-				for (Variable v : view.varMap.values()) {
-					int m = minDis.get(self.id * maxId + v.id);
-					if (m > minD)
+				for (final Variable v : this.view.varMap.values()) {
+					final int m = minDis.get(this.self.id * maxId + v.id);
+					if (m > minD) {
 						minD = m;
+					}
 				}
 
-				for (Constraint c : self.neighbors) {
-					Variable n = c.getNeighbor(self);
+				for (final Constraint c : this.self.neighbors) {
+					final Variable n = c.getNeighbor(this.self);
 					int d = 0;
-					for (Variable v : view.varMap.values()) {
-						int m = minDis.get(n.id * maxId + v.id);
-						if (m > d)
+					for (final Variable v : this.view.varMap.values()) {
+						final int m = minDis.get(n.id * maxId + v.id);
+						if (m > d) {
 							d = m;
+						}
 					}
 					if (d < minD)
+					 {
 						return true;
 					// if (d == minD && self.id > n.id)
 					// return true;
+					}
 				}
 				return false;
 	}
 
+	@Override
 	public String getText() {
 		String val = "";
-		for (Variable v : view.varMap.values()) {
+		for (final Variable v : this.view.varMap.values()) {
 			val += v.id + "  " + v.value + "/"
-					+ (bestSolution != null ? bestSolution.get(v.id) : "NA")
+					+ (this.bestSolution != null ? this.bestSolution.get(v.id) : "NA")
 					+ (v.fixed ? "F" : "") + "\n";
 		}
 		val += "LockSet: ";
-		for (Integer i : lockSet.keySet()) {
+		for (final Integer i : this.lockSet.keySet()) {
 			val += i + " ";
 		}
 		val += "\n";
 
 		val += "AcceptSet: ";
-		for (Integer i : acceptSet) {
+		for (final Integer i : this.acceptSet) {
 			val += i + " ";
 		}
 		val += "\n";
 
-		return val + "ID: " + self.id + "\nVal: " + self.value + "\nLockVal: "
-		+ lockVal + "\nNextLock: " + reLockTime
-		+ (isStable() ? "\nDONE" : "");
+		return val + "ID: " + this.self.id + "\nVal: " + this.self.value + "\nLockVal: "
+		+ this.lockVal + "\nNextLock: " + this.reLockTime
+		+ (this.isStable() ? "\nDONE" : "");
 	}
 
 }

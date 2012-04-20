@@ -1,22 +1,18 @@
 package negotiation.faulttolerance.experimentation;
 
-import java.util.HashSet;
 import java.util.Random;
 
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
-import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
-import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -80,7 +76,6 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 							Replica.this.getMyCurrentState().getMyCriticity(),
 							Replica.this.getMyCurrentState().getMyProcCharge(),
 							Replica.this.getMyCurrentState().getMyMemCharge(),
-							new HashSet<HostState>(),
 							Replica.this.getMyCurrentState().getSocialWelfare(),
 							this.getMyAgent().nextStateCounter));
 		}
@@ -96,7 +91,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			// m) {
 			if (Replica.this.isAlive()) {
 				super.faultObservation(m);
-				if (Replica.this.getMyCurrentState().getMyReplicas().isEmpty()) {
+				if (!Replica.this.getMyCurrentState().isValid()) {
 					this.logMonologue("this is the end my friend",LogService.onBoth);
 					Replica.this.mySelfObservationService.endSimulation();
 				}
@@ -125,9 +120,46 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		this.dynamicCrticity=dynamicCriticity;
 	}
 
+
+	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
+	public void updateMyCriticity() {
+		if (this.dynamicCrticity){
+			final Random r = new Random();
+			if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
+				// met a jour
+				final int signe = r.nextBoolean() ? 1 : -1;
+				final Double newCriticity = Math
+						.min(1.,
+								Math.max(
+										ReplicationExperimentationParameters._criticityMin,
+										this.getMyCurrentState().getMyCriticity()
+										+ signe
+										* r.nextDouble()
+										* ReplicationExperimentationParameters._criticityVariationAmplitude));
+				this.logWarning("Updating my criticity", LogService.onNone);
+				this.setNewState(
+						new ReplicaState(
+								this.getMyCurrentState(),
+								newCriticity));
+			}
+		}
+	}
+}
+
+
+
+
+
 	//
 	// Accessors
 	//
+
+//	public void setNewState(final ReplicaState s) {
+//		for (HostState h : s.getMyHosts()){
+//			getMyInformation().add(h);
+//		}
+//		super.setNewState(s);
+//	}
 
 	//	public boolean IReplicate() {
 	//		return this.replicate;
@@ -157,34 +189,6 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 
 
 
-	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
-	public void updateMyCriticity() {
-		if (this.dynamicCrticity){
-			final Random r = new Random();
-			if (r.nextDouble() <= ReplicationExperimentationParameters._criticityVariationProba) {// On
-				// met a jour
-				final int signe = r.nextBoolean() ? 1 : -1;
-				final Double newCriticity = Math
-						.min(1.,
-								Math.max(
-										ReplicationExperimentationParameters._criticityMin,
-										this.getMyCurrentState().getMyCriticity()
-										+ signe
-										* r.nextDouble()
-										* ReplicationExperimentationParameters._criticityVariationAmplitude));
-				this.logWarning("Updating my criticity", LogService.onNone);
-				this.setNewState(
-						new ReplicaState(
-								this.getIdentifier(),
-								newCriticity, this.getMyCurrentState().getMyProcCharge(),
-								this.getMyCurrentState().getMyMemCharge(), 
-								this.getMyCurrentState().getMyReplicas(),
-								this.getMyCurrentState().getSocialWelfare(),
-								this.nextStateCounter));
-			}
-		}
-	}
-}
 
 /*
  *

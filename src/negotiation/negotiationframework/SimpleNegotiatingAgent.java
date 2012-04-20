@@ -2,11 +2,9 @@ package negotiation.negotiationframework;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
-import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
@@ -60,16 +58,16 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) 
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
 				this.selectionCore).setMyAgent(this);
 		this.protocol = protocol;
 
 		this.myProposerCore = proposerCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) 
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
 				this.getMyProposerCore()).setMyAgent(this);
 		this.getMyProtocol().setMyAgent(this);
 	}
-	
+
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, false, false);

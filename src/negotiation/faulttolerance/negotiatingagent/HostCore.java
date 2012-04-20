@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;

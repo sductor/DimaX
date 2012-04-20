@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basicinterfaces.DimaComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
@@ -88,16 +87,16 @@ public class BasicIntrospectiveShell extends GimaObject {
 	// Accessors
 	//
 
-	
+
 
 
 	/**
 	 * @return the component identifer
 	 */
 	public AgentIdentifier getIdentifier() {
-		return myComponentIdentifier;
+		return this.myComponentIdentifier;
 	}
-	
+
 	/**
 	 * @return the exceptionHandler
 	 */

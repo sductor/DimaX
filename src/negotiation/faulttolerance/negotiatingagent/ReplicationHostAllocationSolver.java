@@ -1,28 +1,22 @@
 package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.exploration.ChocoAllocationSolver;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import choco.Choco;
 import choco.Options;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
-import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
 import choco.kernel.model.Model;
 import choco.kernel.model.variables.integer.IntegerConstantVariable;
-import choco.kernel.model.variables.integer.IntegerExpressionVariable;
 import choco.kernel.model.variables.integer.IntegerVariable;
-import choco.kernel.solver.Solver;
 import dima.basicagentcomponents.AgentName;
-import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.exploration.ChocoAllocationSolver;
-import negotiation.negotiationframework.rationality.SocialChoiceFunction;
-import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class ReplicationHostAllocationSolver
 extends ChocoAllocationSolver
@@ -38,8 +32,8 @@ extends ChocoAllocationSolver
 	int[] replicasProc;
 	int[] replicasMem;
 	int hostProccapacity;
-	int hostMemCapacity;	
-	int[] replicasGain = null;	
+	int hostMemCapacity;
+	int[] replicasGain = null;
 
 
 	/*
@@ -48,220 +42,260 @@ extends ChocoAllocationSolver
 
 	IntegerVariable[] replicasValue;
 
-	public ReplicationHostAllocationSolver(SocialChoiceType socialWelfare) {
+	public ReplicationHostAllocationSolver(final SocialChoiceType socialWelfare) {
 		super(socialWelfare);
 	}
 
+	@Override
 	public void initiate(
-			Collection<ReplicationCandidature> concerned, 
-			HostState currentState){
+			final Collection<ReplicationCandidature> concerned,
+			final HostState currentState){
 		try {
-			Model m = new CPModel();
-			s = new CPSolver();
+			final Model m = new CPModel();
+			this.s = new CPSolver();
 
 			this.concerned=concerned.toArray(new ReplicationCandidature[concerned.size()]);
-			int nbVariable = concerned.size();
+			final int nbVariable = concerned.size();
 
-			instanciateConstant(nbVariable, currentState);
-			instanciateVariable(m, nbVariable);
-			if (multiDim)
-				instanciateConstraints(m);	
-			else
-				instanciateConstraintKnapsack(m);
+			this.instanciateConstant(nbVariable, currentState);
+			this.instanciateVariable(m, nbVariable);
+			if (this.multiDim) {
+				this.instanciateConstraints(m);
+			} else {
+				this.instanciateConstraintKnapsack(m);
+			}
 
-			s.read(m);	
-			s.setValIntIterator(new DecreasingDomain());
+			this.s.read(m);
+			this.s.setValIntIterator(new DecreasingDomain());
 
-		} catch (IncompleteContractException e) {
-			signalException("noooooooooooooooonnnnnnnnnn",e);
+		} catch (final IncompleteContractException e) {
+			this.signalException("noooooooooooooooonnnnnnnnnn",e);
 		}
 	}
 
 	private void instanciateConstant(
-			int nbVariable, 
-			HostState currentState) throws IncompleteContractException{
+			final int nbVariable,
+			final HostState currentState) throws IncompleteContractException{
 
-		hostProccapacity =asInt(currentState.getProcChargeMax(),false);
-		hostMemCapacity = asInt(currentState.getMemChargeMax(),false);
-		replicasProc = new int[nbVariable];
-		replicasMem = new int[nbVariable];
+		this.hostProccapacity =this.asInt(currentState.getProcChargeMax(),false);
+		this.hostMemCapacity = this.asInt(currentState.getMemChargeMax(),false);
+		this.replicasProc = new int[nbVariable];
+		this.replicasMem = new int[nbVariable];
 
-		for (int i = 0; i < nbVariable; i++){		
+		for (int i = 0; i < nbVariable; i++){
 			assert this.concerned[i].getAgentInitialState().getMyMemCharge().equals(
 					this.concerned[i].getAgentResultingState().getMyMemCharge());
 			assert this.concerned[i].getAgentInitialState().getMyProcCharge().equals(
-					this.concerned[i].getAgentResultingState().getMyProcCharge());				
+					this.concerned[i].getAgentResultingState().getMyProcCharge());
 
-			replicasMem[i] = asInt(this.concerned[i].getAgentInitialState().getMyMemCharge(),false);
-			replicasProc[i] = asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
+			this.replicasMem[i] = this.asInt(this.concerned[i].getAgentInitialState().getMyMemCharge(),false);
+			this.replicasProc[i] = this.asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
 		}
 
 
 	}
 
-	private void instanciateVariable(Model m, int nbVariable) throws IncompleteContractException{
+	private void instanciateVariable(final Model m, final int nbVariable) throws IncompleteContractException{
 
-		replicas = new IntegerVariable[nbVariable];
-		socialWelfareValue =  Choco.makeIntVar("utility", 1, 1000000, Options.V_BOUND, Options.V_NO_DECISION);
+		this.replicas = new IntegerVariable[nbVariable];
+		this.socialWelfareValue =  Choco.makeIntVar("utility", 1, 1000000, Options.V_BOUND, Options.V_NO_DECISION);
 
-		if (multiDim) {
-			replicasValue = new IntegerVariable[nbVariable];
+		if (this.multiDim) {
+			this.replicasValue = new IntegerVariable[nbVariable];
 		} else {
-			replicasGain = new int[nbVariable];
+			this.replicasGain = new int[nbVariable];
 		}
 
 		//initialisation des variables replicas
-		for (int i = 0; i < nbVariable; i++){	
-			replicas[i] = Choco.makeIntVar(this.concerned[i].getAgent().toString(), 0, 1, Options.V_ENUM);
+		for (int i = 0; i < nbVariable; i++){
+			this.replicas[i] = Choco.makeIntVar(this.concerned[i].getAgent().toString(), 0, 1, Options.V_ENUM);
 
 			IntegerConstantVariable minUt, maxUt;
-			minUt = new IntegerConstantVariable(asIntNashed(Math.min(
+			minUt = new IntegerConstantVariable(this.asIntNashed(Math.min(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
 					this.concerned[i].getAgentResultingState().getMyReliability())));
-			maxUt = new IntegerConstantVariable(asIntNashed(Math.max(
+			maxUt = new IntegerConstantVariable(this.asIntNashed(Math.max(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
 					this.concerned[i].getAgentResultingState().getMyReliability())));
-			if (multiDim){
-				replicasValue[i] = Choco.makeIntVar(
-						this.concerned[i].getAgent().toString()+"__value", minUt.getValue(), maxUt.getValue(), 
+			if (this.multiDim){
+				this.replicasValue[i] = Choco.makeIntVar(
+						this.concerned[i].getAgent().toString()+"__value", minUt.getValue(), maxUt.getValue(),
 						Options.V_BOUND, Options.V_NO_DECISION);
-				m.addConstraint(Choco.eq(replicasValue[i],Choco.ifThenElse(Choco.eq(replicas[i],0), minUt, maxUt)));
+				m.addConstraint(Choco.eq(this.replicasValue[i],Choco.ifThenElse(Choco.eq(this.replicas[i],0), minUt, maxUt)));
 			} else {
-				replicasGain[i] = maxUt.getValue() - minUt.getValue();
+				this.replicasGain[i] = maxUt.getValue() - minUt.getValue();
 			}
 		}
 	}
 
-	private void instanciateConstraints(Model m) throws IncompleteContractException{
+	private void instanciateConstraints(final Model m) throws IncompleteContractException{
 
 		//Contrainte de poids
-		m.addConstraint(Choco.leq(Choco.scalar(replicasProc, replicas), hostProccapacity));
-		m.addConstraint(Choco.leq(Choco.scalar(replicasMem, replicas), hostMemCapacity));
+		m.addConstraint(Choco.leq(Choco.scalar(this.replicasProc, this.replicas), this.hostProccapacity));
+		m.addConstraint(Choco.leq(Choco.scalar(this.replicasMem, this.replicas), this.hostMemCapacity));
 
 		//Optimisation social
-		if (socialWelfare.equals(SocialChoiceType.Leximin)) {
-			m.addConstraint(Choco.eq(socialWelfareValue, Choco.min(replicasValue)));
+		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
+			m.addConstraint(Choco.eq(this.socialWelfareValue, Choco.min(this.replicasValue)));
 		} else {
-			assert (socialWelfare.equals(SocialChoiceType.Nash) 
-					|| socialWelfare.equals(SocialChoiceType.Utility));
-			m.addConstraint(Choco.eq (Choco.sum(replicasValue), socialWelfareValue));
+			assert (this.socialWelfare.equals(SocialChoiceType.Nash)
+					|| this.socialWelfare.equals(SocialChoiceType.Utility));
+			m.addConstraint(Choco.eq (Choco.sum(this.replicasValue), this.socialWelfareValue));
 		}
 
 		//Contrainte d'amélioration stricte
-		if (socialWelfare.equals(SocialChoiceType.Leximin)) {
-			int[] currentAllocation = new int[concerned.length];
-			for (int i = 0; i < concerned.length; i++){
-				currentAllocation[i] = asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
+		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
+			final int[] currentAllocation = new int[this.concerned.length];
+			for (int i = 0; i < this.concerned.length; i++){
+				currentAllocation[i] = this.asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
 			}
-			m.addConstraint(Choco.leximin(currentAllocation, replicasValue));
+			m.addConstraint(Choco.leximin(currentAllocation, this.replicasValue));
 		} else {
 			int current = 0;
-			for (ReplicationCandidature c : concerned){
-				current+=asIntNashed(c.getAgentInitialState().getMyReliability());
+			for (final ReplicationCandidature c : this.concerned){
+				current+=this.asIntNashed(c.getAgentInitialState().getMyReliability());
 			}
-			m.addConstraint(Choco.gt(socialWelfareValue, current));
+			m.addConstraint(Choco.gt(this.socialWelfareValue, current));
 		}
 	}
 
-	private void instanciateConstraintKnapsack(Model m){
-		if (socialWelfare.equals(SocialChoiceType.Nash) 
-				|| socialWelfare.equals(SocialChoiceType.Utility)){
-			IntegerVariable weightVar = 
+	private void instanciateConstraintKnapsack(final Model m){
+		if (this.socialWelfare.equals(SocialChoiceType.Nash)
+				|| this.socialWelfare.equals(SocialChoiceType.Utility)){
+			final IntegerVariable weightVar =
 					Choco.makeIntVar("weight", 0, 1000000, Options.V_BOUND, Options.V_NO_DECISION);
 			//Optimisation social & Contrainte de poids
-			m.addConstraint(Choco.knapsackProblem(socialWelfareValue, weightVar, 
-					replicas, replicasGain, replicasProc));
-			m.addConstraint(Choco.leq(weightVar, hostProccapacity));
-		} else if (socialWelfare.equals(SocialChoiceType.Leximin)) {
+			m.addConstraint(Choco.knapsackProblem(this.socialWelfareValue, weightVar,
+					this.replicas, this.replicasGain, this.replicasProc));
+			m.addConstraint(Choco.leq(weightVar, this.hostProccapacity));
+		} else if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 			//Contrainte de poids
-			m.addConstraint(Choco.leq(Choco.scalar(replicasProc, replicas), hostProccapacity));
+			m.addConstraint(Choco.leq(Choco.scalar(this.replicasProc, this.replicas), this.hostProccapacity));
 			//Optimisation social
-			m.addConstraint(Choco.eq(socialWelfareValue, Choco.min(replicasValue)));
+			m.addConstraint(Choco.eq(this.socialWelfareValue, Choco.min(this.replicasValue)));
 		}
 	}
 
-	public int asIntNashed(double d){
-		if (s.equals(SocialChoiceType.Nash))
+	public int asIntNashed(final double d){
+		if (this.s.equals(SocialChoiceType.Nash)) {
 			return (int) (100*Math.log(d));
-		else
+		} else {
 			return (int) (100 * d);
+		}
 	}
-	public int asInt(double d, boolean log){
-		if (log)
+	public int asInt(final double d, final boolean log){
+		if (log) {
 			return (int) (100*Math.log(d));
-		else
+		} else {
 			return (int) (100 * d);
+		}
 	}
 
 	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
 	 */
 
-	public static void main(String[] args){
+	public static void main(final String[] args) throws IncompleteContractException{
 
-		SocialChoiceType sw = SocialChoiceType.Leximin;
+		final SocialChoiceType sw = SocialChoiceType.Utility;
 
-		HostState me = new HostState(new ResourceIdentifier("me",77), 100, 100, 0.5, 1);
+		//me
+		HostState me = new HostState(new ResourceIdentifier("me",77), 100., 100., 0.5, 1);
+
+		//already allocated
+
+		ReplicaState ra = new ReplicaState(new AgentName("ra"), 0.2, 30., 80., sw, 1);
+		ReplicaState rb = new ReplicaState(new AgentName("rb"), 0.2, 30., 20., sw, 1);
+
+		final ReplicationCandidature ca =
+				new ReplicationCandidature(me.getMyAgentIdentifier(), ra.getMyAgentIdentifier(), true, true);
+		ca.setSpecification(me);
+		ca.setSpecification(ra);
+
+		ra = ca.getAgentResultingState();
+		me = ca.getResourceResultingState();
+
+		final ReplicationCandidature cb =
+				new ReplicationCandidature(me.getMyAgentIdentifier(), rb.getMyAgentIdentifier(), true, true);
+		cb.setSpecification(me);
+		cb.setSpecification(rb);
+
+		rb = cb.getAgentResultingState();
+		me = cb.getResourceResultingState();
 
 
-		HostState h1 = new HostState(new ResourceIdentifier("host1",77), 100, 100, 0.5, 1);
-		HostState h2 = new HostState(new ResourceIdentifier("host2",77), 100, 100, 0.5, 1);
-		HostState h3 = new HostState(new ResourceIdentifier("host3",77), 100, 100, 0.5, 1);
-		HostState h4 = new HostState(new ResourceIdentifier("host4",77), 100, 100, 0.5, 1);
+		// other hosts
 
-		ReplicaState r1 = new ReplicaState(
-				new ReplicaState(new AgentName("r1"), 1., 30., 50., new HashSet<HostState>(), sw, 1),
+		final HostState h1 = new HostState(new ResourceIdentifier("host1",77), 100, 100, 0.5, 1);
+		final HostState h2 = new HostState(new ResourceIdentifier("host2",77), 100, 100, 0.5, 1);
+		final HostState h3 = new HostState(new ResourceIdentifier("host3",77), 100, 100, 0.5, 1);
+		final HostState h4 = new HostState(new ResourceIdentifier("host4",77), 100, 100, 0.5, 1);
+
+		final ReplicaState r1 = new ReplicaState(
+				new ReplicaState(new AgentName("r1"), 1., 30., 50., sw, 1),
 				h1);
-		ReplicaState r2 = new ReplicaState(
-				new ReplicaState(new AgentName("r2"), 0.5, 40., 50., new HashSet<HostState>(), sw, 1),
+		final ReplicaState r2 = new ReplicaState(
+				new ReplicaState(new AgentName("r2"), 0.5, 40., 50.,  sw, 1),
 				h2);
-		ReplicaState r3 = new ReplicaState(
-				new ReplicaState(new AgentName("r3"), 0.3, 15., 20., new HashSet<HostState>(), sw, 1),
+		final ReplicaState r3 = new ReplicaState(
+				new ReplicaState(new AgentName("r3"), 0.3, 15., 20., sw, 1),
 				h3);
-		ReplicaState r4 = new ReplicaState(
-				new ReplicaState(new AgentName("r4"), 0.4, 30., 20., new HashSet<HostState>(), sw, 1),
+		final ReplicaState r4 = new ReplicaState(
+				new ReplicaState(new AgentName("r4"), 0.4, 30., 20., sw, 1),
 				h4);
 
-		ReplicationCandidature c1 = 
+		final ReplicationCandidature c1 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r1.getMyAgentIdentifier(), true, true);
 		c1.setSpecification(me);
 		c1.setSpecification(r1);
 
-		ReplicationCandidature c2 = 
+		final ReplicationCandidature c2 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r2.getMyAgentIdentifier(), true, true);
 		c2.setSpecification(me);
 		c2.setSpecification(r2);
 
-		ReplicationCandidature c3 = 
+		final ReplicationCandidature c3 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r3.getMyAgentIdentifier(), true, true);
 		c3.setSpecification(me);
 		c3.setSpecification(r3);
 
-		ReplicationCandidature c4 = 
+		final ReplicationCandidature c4 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r4.getMyAgentIdentifier(), true, true);
 		c4.setSpecification(me);
 		c4.setSpecification(r4);
 
-		List<ReplicationCandidature> concerned = new ArrayList<ReplicationCandidature>();
+		final ReplicationCandidature cad =
+				new ReplicationCandidature(me.getMyAgentIdentifier(), ra.getMyAgentIdentifier(), false, true);
+		cad.setSpecification(me);
+		cad.setSpecification(ra);
+
+		final ReplicationCandidature cbd =
+				new ReplicationCandidature(me.getMyAgentIdentifier(), rb.getMyAgentIdentifier(), false, true);
+		cbd.setSpecification(me);
+		cbd.setSpecification(rb);
+
+		final List<ReplicationCandidature> concerned = new ArrayList<ReplicationCandidature>();
 		concerned.add(c1);
 		concerned.add(c2);
 		concerned.add(c3);
 		concerned.add(c4);
+		concerned.add(cad);
+		concerned.add(cbd);
 
-		ReplicationHostAllocationSolver solver = 
+		final ReplicationHostAllocationSolver solver =
 				new ReplicationHostAllocationSolver(sw);
 		solver.initiate(concerned, me);
 
-		boolean best = false;
+		final boolean best = false;
 
 		//		System.out.println("Best : &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 		//		solver.getBestSolution();//System.out.println(solver.getBestSolution());
@@ -281,28 +315,34 @@ extends ChocoAllocationSolver
 						+" "+solver.s.getVar(solver.replicas[i]).getVal()
 						+" value est "+solver.s.getVar(solver.replicasValue[i]).getVal());
 			}
-			solver.getNextSolution();
+			Collection<ReplicationCandidature> sol = solver.getNextSolution();
+			System.out.println(sol);
 			System.out.println(solver.s.getVar(solver.socialWelfareValue).getVal());
+			for (ReplicationCandidature c : sol){
+				me = c.getResourceResultingState();
+			}
+			if (!me.isValid())
+				System.err.println("aaaaaaahhhh\n"+me);
 			System.out.println("*****************************");
 		}
 		System.out.println("Nb_sol : " + solver.s.getNbSolutions());
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		solver.s.solve();
-		if (solver.s.isFeasible()) {
-			do {
-				for (int i = 0; i < solver.replicas.length; i++){
-					System.out.println(solver.s.getVar(solver.replicas[i]).getName()
-							+" "+solver.s.getVar(solver.replicas[i]).getVal()
-							+" value est "+solver.s.getVar(solver.replicasValue[i]).getVal());
-				}
-				System.out.println("");
-			} while (solver.s.nextSolution());
-		}
-		System.out.println("Nb_sol : " + solver.s.getNbSolutions());
+		//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		//		solver.s.solve();
+		//		if (solver.s.isFeasible()) {
+		//			do {
+		//				for (int i = 0; i < solver.replicas.length; i++){
+		//					System.out.println(solver.s.getVar(solver.replicas[i]).getName()
+		//							+" "+solver.s.getVar(solver.replicas[i]).getVal()
+		//							+" value est "+solver.s.getVar(solver.replicasValue[i]).getVal());
+		//				}
+		//				System.out.println("");
+		//			} while (solver.s.nextSolution());
+		//		}
+		//		System.out.println("Nb_sol : " + solver.s.getNbSolutions());
 
 
 		System.out.println("Best : &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-		solver.getBestSolution();//System.out.println(solver.getBestSolution());
+		System.out.println(solver.getBestSolution());//System.out.println(solver.getBestSolution());
 		for (int i = 0; i < solver.replicas.length; i++){
 			System.out.println(solver.s.getVar(solver.replicas[i]).getName()
 					+" "+solver.s.getVar(solver.replicas[i]).getVal()
@@ -318,7 +358,7 @@ extends ChocoAllocationSolver
 //			for (int i = 0; i < nbVariable; i++){
 //				System.out.println("yooo2 "+replicasProc[i]);
 //			}
-//			System.out.println("yoo3 "+hostProccapacity);			
+//			System.out.println("yoo3 "+hostProccapacity);
 //			System.out.println("yoo "+s.getVar(poids).getVal());
 //	public static void main(String[] args){
 //		Model m = new CPModel();

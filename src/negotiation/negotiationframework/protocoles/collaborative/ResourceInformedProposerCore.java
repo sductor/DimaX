@@ -4,13 +4,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class ResourceInformedProposerCore<
@@ -24,12 +25,16 @@ ActionSpec,
 PersonalState,
 InformedCandidature<Contract,ActionSpec>> {
 
-	private Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose =
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2607277289289395798L;
+	private final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose =
 			new HashSet<InformedCandidature<Contract, ActionSpec>>();
 
 
 	public void addContractsToPropose(
-			Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose) {
+			final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose) {
 		this.contractsToPropose.addAll(contractsToPropose);
 	}
 
@@ -37,12 +42,28 @@ InformedCandidature<Contract,ActionSpec>> {
 	@Override
 	public Set<? extends InformedCandidature<Contract, ActionSpec>> getNextContractsToPropose()
 			throws NotReadyException {
-		logMonologue("proposing "+contractsToPropose, AbstractCommunicationProtocol.log_negotiationStep);
+		this.logMonologue("proposing "+this.contractsToPropose, AbstractCommunicationProtocol.log_negotiationStep);
 		final Set<InformedCandidature<Contract, ActionSpec>> result =
 				new HashSet<InformedCandidature<Contract, ActionSpec>>();
 		result.addAll(this.contractsToPropose);
 		this.contractsToPropose.clear();
 		return result;
+	}
+
+
+	@Override
+	public boolean IWantToNegotiate(
+			PersonalState myCurrentState,
+			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+		return !contractsToPropose.isEmpty();
+	}
+
+
+	@Override
+	public boolean ImAllowedToNegotiate(
+			PersonalState myCurrentState,
+			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+		return true;
 	}
 
 }

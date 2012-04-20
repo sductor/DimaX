@@ -46,10 +46,11 @@ public class Seance extends AbstractService {
 	@Override
 	public boolean equals(final AbstractService s)
 	{
-		if( this.getJour() == ((Seance)s).getJour() && this.getCreneau() == ((Seance)s).getCreneau())
+		if( this.getJour() == ((Seance)s).getJour() && this.getCreneau() == ((Seance)s).getCreneau()) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 	/**
 	 * Insert the method's description here.

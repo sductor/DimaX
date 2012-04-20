@@ -3,8 +3,6 @@ package negotiation.faulttolerance.collaborativecandidature;
 import java.util.HashSet;
 import java.util.Random;
 
-import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
@@ -16,23 +14,20 @@ import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.protocoles.collaborative.AgentInformedSelectionCore;
-import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
-import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
-import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedCandidatureContractTrunk;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
-import negotiation.negotiationframework.protocoles.status.CandidatureProposer;
-import negotiation.negotiationframework.rationality.CollaborativeCore;
-import negotiation.negotiationframework.selectioncores.GreedyBasicSelectionCore;
+import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
+import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dimaxx.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class CollaborativeReplica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedCandidature<ReplicationCandidature,ReplicationSpecification>> {
@@ -113,17 +108,17 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, InformedC
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, null,
-				new CollaborativeCore(
-						new ReplicationSocialOptimisation(socialWelfare), 
+				new AltruistRationalCore(
+						new ReplicationSocialOptimisation(socialWelfare),
 						new InformedCandidatureRationality(new ReplicaCore(),true)),
-				new AgentInformedSelectionCore(),
-				new CollaborativeCandidatureProposer(),
-		new SimpleObservationService(),
-		new OneDeciderCommunicationProtocol( new ContractTrunk(), false));
+						new AgentInformedSelectionCore(),
+						new CollaborativeCandidatureProposer(),
+						new SimpleObservationService(),
+						new OneDeciderCommunicationProtocol( new ContractTrunk(), false));
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
-		getMyProtocol().getContracts().setMyAgent(this);
+		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
 
 	//

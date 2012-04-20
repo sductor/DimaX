@@ -81,10 +81,11 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 		if (f.getHost().equals(this.getMyAgent().getIdentifier())) {
 			final HostState myState = (HostState) this.getMyAgent()
 					.getMyCurrentState();
-			if (myState.isFaulty() == true)
+			if (myState.isFaulty() == true) {
 				throw new RuntimeException(
 						"nnnnnnnooooooooooooonnnnnnnnnnnnnnn!!!!!!!!!! :\n" + f
 						+ this.getMyAgent().getMyCurrentState());
+			}
 			myState.setFaulty(true);
 			this.logWarning("I've failed!! =( Those replicas are dead : "
 					+ ((HostState) this.getMyAgent().getMyCurrentState())
@@ -96,9 +97,10 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 			//			this.resetMyUptime();
 		} else {
 			this.getMyAgent().getMyInformation().remove(f.getHost());
-			if (this.getMyAgent().getMyCurrentState().setLost(f.getHost(), true))
+			if (this.getMyAgent().getMyCurrentState().setLost(f.getHost(), true)) {
 				this.logWarning("I've lost a replica :" + f.getHost()
 						+ " !! =(",LogService.onBoth);
+			}
 			this.getMyAgent().getMyProtocol().setLost(f.getHost());
 		}
 	}
@@ -112,18 +114,20 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 		if (f.getHost().equals(this.getMyAgent().getIdentifier())) {
 			final HostState myState = (HostState) this.getMyAgent()
 					.getMyCurrentState();
-			if (myState.isFaulty() == false)
+			if (myState.isFaulty() == false) {
 				throw new RuntimeException(
 						"nnnnnnnooooooooooooonnnnnnnnnnnnnnn!!!!!!!!!! :\n" + f
 						+ "\n" + this.getMyAgent().getMyCurrentState());
+			}
 			myState.setFaulty(false);
 			this.logMonologue("I'm repaired!! =)",LogService.onBoth);
 			//
 			this.resetMyState();
 			//			this.resetMyUptime();
 			this.getMyAgent().getMyProtocol().start();
-		} else if (this.initiallyKnownAgent.contains(f.getHost()))
+		} else if (this.initiallyKnownAgent.contains(f.getHost())) {
 			this.getMyAgent().getMyInformation().add(f.getHost());
+		}
 	}
 }
 

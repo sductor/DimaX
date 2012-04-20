@@ -73,7 +73,9 @@ public class SimpleMailBox extends AbstractMailBox
 	 * Creation date: (01/03/2000 23:22:26)
 	 */
 	@Override
-	public synchronized boolean writeMail(final AbstractMessage m) {this.messageList.add(m); return true; }
+	public synchronized boolean writeMail(final AbstractMessage m) {
+		this.messageList.add(m); 
+		return true; }
 
 	/**
 	 * Insert the method's description here.

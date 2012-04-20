@@ -47,8 +47,9 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 
 	@Override
 	public void removeMethod(final MethodHandler mt){
-		if (this.isStepMethod(mt))
+		if (this.isStepMethod(mt)) {
 			super.removeMethod(mt);
+		}
 		if (this.isMessageMethod(mt)){
 			this.messageMethods.remove(this.getEnvellopeOfMethod(mt));
 			this.collectedMessage.remove(mt);
@@ -86,8 +87,9 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 			if (mt.isAnnotationPresent(MessageHandler.class)){
 				final Object resultat = mt.execute(new Object[]{m});
 
-				if (this.toRemove(mt, resultat))
+				if (this.toRemove(mt, resultat)) {
 					toRemove.add(mt);
+				}
 			}
 
 			else if (mt.isAnnotationPresent(MessageCollectionHandler.class)){
@@ -96,13 +98,16 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 				final Object resultat = mt.execute(
 						new Object[]{this.collectedMessage.get(mt)});
 
-				if (resultat != null && resultat.equals(new Boolean(true)))
+				if (resultat != null && resultat.equals(new Boolean(true))) {
 					this.collectedMessage.remove(mt);
+				}
 
-				if (this.toRemove(mt, resultat))
+				if (this.toRemove(mt, resultat)) {
 					toRemove.add(mt);
-			} else
+				}
+			} else {
 				LogService.writeException(mt.getMyComponent(), "Impossible : mauvais annotation pour "+mt);
+			}
 
 			this.getStatus().resetCurrentlyExecutedMethod();
 			this.getStatus().resetCurrentlyExecutedAgent();
@@ -142,14 +147,16 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 			//				if (((IdentifiedComponentInterface) getMyComponent()).getIdentifier().toString().equals("OBSERVER"))
 			//					LoggerManager.write(getMyComponent(), "envellope "+e+" added !");
 
-			for (final MethodHandler mtAlrea : this.messageMethods.get(e))
-				if (mtAlrea.getMyComponent().equals(mt.getMyComponent()))
+			for (final MethodHandler mtAlrea : this.messageMethods.get(e)) {
+				if (mtAlrea.getMyComponent().equals(mt.getMyComponent())) {
 					throw new RuntimeException(mt.getMyComponent()+" : "+
 							"Duplicate methods for parsing fipa message : " + e
 							+ "\n --> " + mt + "\n -->  AND "
 							+ this.messageMethods.get(e) + ")");
+				}
+			}
 
-					this.messageMethods.add(e, mt);
+			this.messageMethods.add(e, mt);
 
 		}
 	}
@@ -168,16 +175,17 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 						"Wrong parameters type for message parser method " + mt
 						+ " should be only one message class");
 				return false;
-			} else
+			} else {
 				return true;
+			}
 		} else if (mt.isAnnotationPresent(MessageCollectionHandler.class)){
 			if (mt.getParameterTypes().length == 1
 					&&
 					AbstractMessage.class.isAssignableFrom(mt.getGenericClassOfFirstArgument())
 					&&
-					(mt.getReturnType().equals(boolean.class) || mt.getReturnType().equals(Boolean.class)))
+					(mt.getReturnType().equals(boolean.class) || mt.getReturnType().equals(Boolean.class))) {
 				return true;
-			else{
+			} else{
 				LogService.writeException(
 						mt.getMyComponent(),
 						"Wrong parameters type for message parser method "
@@ -185,8 +193,9 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 								+ " should be only one message class");
 				return false;
 			}
-		} else
+		} else {
 			return true;
+		}
 	}
 	/**
 	 * Compute the envelope of a message
@@ -208,9 +217,8 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 		if (e.getClass().equals(ClassEnveloppe.class)) {
 			Class<?> m = mess.getClass();
 			while (!this.messageMethods.containsKey(e)
-					&& AbstractMessageInterface.class.isAssignableFrom(m.getClass()
-							.getSuperclass())) {
-				m = m.getClass().getSuperclass();
+					&& AbstractMessageInterface.class.isAssignableFrom(m.getSuperclass())) {
+				m = m.getSuperclass();//
 				e = new ClassEnveloppe((Class<? extends AbstractMessageInterface>) m);
 			}
 		}
@@ -218,12 +226,13 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 		/*
 		 * Recuperation de la methode
 		 */
-		if (!this.messageMethods.containsKey(e))
+		if (!this.messageMethods.containsKey(e)) {
 			//System.out.println("OOOOOOOOOOOOOOOHHHHHHHH =(\n"+messageMethods);
 			throw new UnHandledMessageException(mess);
-		else
+		} else {
 			//System.out.println("YEEEEEEEEEEAAAAAAAH =)\n"+messageMethods);
 			return this.messageMethods.get(e);
+		}
 	}
 
 	/*
@@ -231,10 +240,11 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 	 */
 
 	public static Envelope getEnvellopeOfMessage(final AbstractMessage mess) {
-		if (mess instanceof MessageInEnvelope)
+		if (mess instanceof MessageInEnvelope) {
 			return ((MessageInEnvelope) mess).getMyEnvelope();
-		else
+		} else {
 			return new ClassEnveloppe(mess);
+		}
 	}
 
 	/**
@@ -244,12 +254,10 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 
 		Envelope e = null;
 		//Searching annotation of envelope
-		for (final Annotation a : mt.getAnnotations())
+		for (final Annotation a : mt.getAnnotations()) {
 			if (a.annotationType().getEnclosingClass() != null
-			&& Envelope.class.isAssignableFrom(
-					a.annotationType().getEnclosingClass()))
-				//A annotation envelope has been found
-
+					&& Envelope.class.isAssignableFrom(
+							a.annotationType().getEnclosingClass())) {
 				if (e!=null){
 					//The method has more than one envelope!
 					LogService.writeException(
@@ -257,7 +265,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 							"Conflicting envelopes for method "+mt);
 					return null;
 
-				} else
+				} else {
 					//Getting the envelope:
 					try {
 						e = (Envelope) a.annotationType().getEnclosingClass().
@@ -270,19 +278,23 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 										+mt+" et l'annotation "+a, ex);
 						return null;
 					}
+				}
+			}
+		}
 
-		if (e!=null)
+		if (e!=null) {
 			return e;
-		else
+		} else {
 			return new ClassEnveloppe(this.getMessageTypeOfMethod(mt));
+		}
 	}
 
 	private Class<? extends AbstractMessageInterface> getMessageTypeOfMethod(final MethodHandler mt){
-		if (mt.isAnnotationPresent(MessageHandler.class))
+		if (mt.isAnnotationPresent(MessageHandler.class)) {
 			return (Class<? extends AbstractMessageInterface>) mt.getParameterTypes()[0];
-		else if (mt.isAnnotationPresent(MessageCollectionHandler.class))
+		} else if (mt.isAnnotationPresent(MessageCollectionHandler.class)) {
 			return (Class<? extends AbstractMessageInterface>) mt.getGenericClassOfFirstArgument();
-		else{
+		} else{
 			LogService.writeException(
 					mt.getMyComponent(),
 					"Inappropriate usage : the method is not a message handler:"+mt);

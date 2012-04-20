@@ -73,10 +73,11 @@ public class Simulator extends ProactiveComponentsManager {
 
 	public void startAllWithSimulation() {
 		final Vector pv = this.getProactiveObjects();
-		for (int j=0; j<this.stepNumber; j++)
+		for (int j=0; j<this.stepNumber; j++) {
 			for (int i=0; i<pv.size();i++) {
 				final ProactiveComponent pao =(ProactiveComponent)pv.elementAt(i);
 				pao.step();
 			}
+		}
 	}
 }

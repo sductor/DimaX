@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.evaluation;
+package negotiation.negotiationframework.exploration.strategic.evaluation;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
@@ -41,10 +41,12 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 	//
 
 	protected boolean societyWillAccept(final Contract c) throws NoInformationAvailableException{
-		for (final AgentIdentifier id : c.getAllParticipants())
-			if (!this.utilitaristCore.iThinkItwillAccept(id, c))
+		for (final AgentIdentifier id : c.getAllParticipants()) {
+			if (!this.utilitaristCore.iThinkItwillAccept(id, c)) {
 				return false;
-				return true;
+			}
+		}
+		return true;
 	}
 
 	/** societyWillAccept?
@@ -56,9 +58,10 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 	 **/
 	protected Double getAcceptationConfidence(final Contract c) throws NoInformationAvailableException{
 		final Double result = this.utilitaristCore.getConfidenceOfInformationAbout(c.getAllParticipants());
-		for (final AgentIdentifier id : c.getAllParticipants())
+		for (final AgentIdentifier id : c.getAllParticipants()) {
 			Math.min(result, this.utilitaristCore.evaluateContractUtility(id, c));
-				return result;
+		}
+		return result;
 	}
 
 
@@ -128,10 +131,11 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 		Double piOK;
 		final Double uOK = this.utilitaristCore.evaluateContractPersonalUtility(c);
 
-		if (this.societyWillAccept(c))
+		if (this.societyWillAccept(c)) {
 			piOK = new Double(1);
-		else
+		} else {
 			piOK = this.getAcceptationConfidence(c);
+		}
 
 		return Math.min(piOK, uOK); //équivalent car uNON = 0;
 	}
@@ -144,8 +148,10 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 		if (this.societyWillAccept(c)){
 			piNon = this.getAcceptationConfidence(c);
 			return Math.min(uOK,1 - piNon);//équivalent car 1 - piOK = 0 et uNon = O
-		} else
+		}
+		else {
 			return new Double(0);//équivalent car 1 - piNon = 0 et uNon = O
+		}
 	}
 }
 

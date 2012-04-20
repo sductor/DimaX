@@ -29,8 +29,9 @@ Serializable {
 			final double moyenne, final double ecartType) {
 		this.g = new NormalLaw(moyenne, ecartType);
 
-		for (final K individu : population)
+		for (final K individu : population) {
 			this.put(individu,  this.g.nextValue());
+		}
 	}
 
 	//Normalis�
@@ -38,16 +39,18 @@ Serializable {
 			final ZeroOneSymbolicValue moyenne,final DispersionSymbolicValue ecartType) {
 		this.g = new NormalLaw(moyenne, ecartType);
 
-		for (final K individu : population)
+		for (final K individu : population) {
 			this.put(individu,  this.g.nextNormalizedNonExtremeValue());
+		}
 	}
 	//Normalis�
 	public DistributionParameters(final Collection<K> population,
 			final Double moyenne,final DispersionSymbolicValue ecartType) {
 		this.g = new NormalLaw(moyenne, ecartType);
 
-		for (final K individu : population)
+		for (final K individu : population) {
 			this.put(individu,  this.g.nextNormalizedNonExtremeValue());
+		}
 	}
 }
 

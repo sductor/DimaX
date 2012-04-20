@@ -72,25 +72,28 @@ ObservationService {
 	public <Info extends Information> Info getInformation(
 			final Class<Info> informationType, final AgentIdentifier agentId)
 					throws NoInformationAvailableException {
-		if (this.infos.get(informationType)==null)
+		if (this.infos.get(informationType)==null) {
 			//			System.err.println("classe : "+informationType+" "+infos);
 			throw new NoInformationAvailableException();
+		}
 
 		final Info result = (Info) this.infos.get(informationType).get(agentId);
-		if (result==null)
+		if (result==null) {
 			throw new NoInformationAvailableException();
-		else
+		} else {
 			return result;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <Info extends Information> HashMap<AgentIdentifier, Info> getInformation(
 			final Class<Info> informationType) throws NoInformationAvailableException{
-		if (this.infos.get(informationType)!=null)
+		if (this.infos.get(informationType)!=null) {
 			return (InformationDataBase<Info>) this.infos.get(informationType);
-		else
+		} else {
 			throw new NoInformationAvailableException();
+		}
 	}
 
 	@Override
@@ -100,17 +103,17 @@ ObservationService {
 			this.infos.put(information.getClass(), new InformationDataBase<Information>());
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 			this.add(information.getMyAgentIdentifier());
-		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) //first info for the agent
+		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) {
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-		else { //information replacement
+		} else { //information replacement
 			//			logMonologue("replacing !!!!!!!!!"+this.infos.get(information.getClass()).get(information.getMyAgentIdentifier())+" with "+information);
 			final Information knownInfo=this.infos.get(information.getClass()).get(information.getMyAgentIdentifier());
 
-			if (information.isNewerThan(knownInfo)>1)
+			if (information.isNewerThan(knownInfo)>1) {
 				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-			else if (information.isNewerThan(knownInfo)<1){
+			} else if (information.isNewerThan(knownInfo)<1){
 				//				do nothing
-			} else if (information.isNewerThan(knownInfo)==0)
+			} else if (information.isNewerThan(knownInfo)==0) {
 				if (!information.equals(knownInfo)){
 					this.logWarning(
 							"remplacing an information with a different information of the same time :\n"+information+" and :\n "+
@@ -120,6 +123,7 @@ ObservationService {
 				}else{
 					//do nothing
 				}
+			}
 		}
 
 	}
@@ -128,9 +132,10 @@ ObservationService {
 
 	@Override
 	public  void remove(final Information information) {
-		if (this.infos.containsKey(information.getClass()))
+		if (this.infos.containsKey(information.getClass())) {
 			this.infos.get(information.getClass()).remove(
 					information.getMyAgentIdentifier());
+		}
 	}
 
 	@Override
@@ -145,10 +150,11 @@ ObservationService {
 
 	@Override
 	public String show(final Class<? extends Information> infotype){
-		if (this.infos.get(infotype)!=null)
+		if (this.infos.get(infotype)!=null) {
 			return this.infos.get(infotype).toString();
-		else
+		} else {
 			return "no info of type "+infotype;
+		}
 	}
 
 	@Override

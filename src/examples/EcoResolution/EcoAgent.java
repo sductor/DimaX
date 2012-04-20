@@ -41,14 +41,21 @@ public  abstract class EcoAgent extends BasicReactiveAgent{
 	{
 		if ( this.isSatisfied() || !this.hasGoal())
 		{
-			if ( dependant.isSatisfied()) dependant.becomeSatisfied();
-			else dependant.trySatisfaction();
-		} else if ( !this.dependantAgents.contains(dependant)) this.dependantAgents.addElement( dependant);
+			if ( dependant.isSatisfied()) {
+				dependant.becomeSatisfied();
+			} else {
+				dependant.trySatisfaction();
+			}
+		} else if ( !this.dependantAgents.contains(dependant)) {
+			this.dependantAgents.addElement( dependant);
+		}
 	}
 	public void assignGoal( final EcoAgent goal)
 	{
 		this.goalAgent = goal;
-		if ( goal != null) goal.assignDependant( this);
+		if ( goal != null) {
+			goal.assignDependant( this);
+		}
 	}
 	//************* Generic methods inherited by the subclasses
 
@@ -79,12 +86,13 @@ public  abstract class EcoAgent extends BasicReactiveAgent{
 	public abstract EcoAgent findSatisfactionPlace();
 	public void freeWithConstraint( final EcoAgent constraint)
 	{
-		if ( !this.isFree())
+		if ( !this.isFree()) {
 			for (final Enumeration e = this.bolts().elements(); e.hasMoreElements();)
 			{
 				final EcoAgent agent = (EcoAgent) e.nextElement();
 				agent.tryEscapeWithConstraint( constraint);
 			}
+		}
 	}
 	public boolean hasGoal()
 	{
@@ -95,8 +103,11 @@ public  abstract class EcoAgent extends BasicReactiveAgent{
 		for (final Enumeration e = this.dependantAgents.elements(); e.hasMoreElements();)
 		{
 			final EcoAgent agent = ( EcoAgent) e.nextElement();
-			if ( agent.isSatisfied()) agent.becomeSatisfied();
-			else agent.trySatisfaction();
+			if ( agent.isSatisfied()) {
+				agent.becomeSatisfied();
+			} else {
+				agent.trySatisfaction();
+			}
 		}
 	}
 	@Override
@@ -137,8 +148,11 @@ Tests wheter a proactive object has reached it goal or
 				this.doEscapeAggressionWithConstraint( place);
 			}
 			this.doEscapeActionWithConstraint( place);
-			if ( this.goalAgent == place) this.changeStateTo( EcoAgent.SATISFIED);
-			else this.changeStateTo( EcoAgent.TRY_SATISFACTION);
+			if ( this.goalAgent == place) {
+				this.changeStateTo( EcoAgent.SATISFIED);
+			} else {
+				this.changeStateTo( EcoAgent.TRY_SATISFACTION);
+			}
 		}
 	}
 	public void trySatisfaction()

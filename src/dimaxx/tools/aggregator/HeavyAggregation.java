@@ -90,12 +90,23 @@ UtilitaristAnalyser<Element> {
 	public double getWeightOfAggregatedElements() {
 		double sum=0;
 
-		for (final double w : this.values())
+		for (final double w : this.values()) {
 			sum+=w;
+		}
 
-				return sum;
+		return sum;
 	}
-
+//
+//	public double getWeightOfAggregatedElements() {
+//		double product=1;
+//
+//		for (final double w : this.values()?this.keySet()) {
+//			product*=w;
+//		}
+//
+//		return product;
+//	}
+	
 	@Override
 	public int getNumberOfAggregatedElements() {
 		return this.size();

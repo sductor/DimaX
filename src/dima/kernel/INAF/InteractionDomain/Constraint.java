@@ -54,11 +54,13 @@ public class Constraint
 	 */
 	public boolean isSatisfied(final AgentIdentifier proposer)
 	{
-		if (this.objectValue instanceof AbstractService)
-			if(this.operator.isEqual())
+		if (this.objectValue instanceof AbstractService) {
+			if(this.operator.isEqual()) {
 				return proposer.equals(this.objectValue);
-			else
+			} else {
 				return !proposer.equals(this.objectValue);
+			}
+		}
 		return true;
 	}
 	/**
@@ -67,11 +69,13 @@ public class Constraint
 	 */
 	public boolean isSatisfied(final AbstractService serv)
 	{
-		if (serv.getClass().isInstance(this.objectValue))
-			if(this.operator.isEqual())
+		if (serv.getClass().isInstance(this.objectValue)) {
+			if(this.operator.isEqual()) {
 				return serv.equals((AbstractService)this.objectValue);
-			else
+			} else {
 				return !serv.equals((AbstractService)this.objectValue);
+			}
+		}
 
 		return true;
 	}

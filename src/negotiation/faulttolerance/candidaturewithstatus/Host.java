@@ -1,7 +1,5 @@
 package negotiation.faulttolerance.candidaturewithstatus;
 
-import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationResultHost;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
@@ -10,13 +8,17 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.RationalCore;
+import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
+import dimaxx.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
@@ -77,18 +79,16 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	public Host(
 			final ResourceIdentifier id,
-			final double hostMaxProc, final double hostMaxMem, 
+			final double hostMaxProc, final double hostMaxMem,
 			final double lambda,
-			final HostCore myRationality,
-			final AbstractSelectionCore<ReplicationSpecification, HostState, ReplicationCandidature> participantCore,
-			final ProposerCore<
-			SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>,
-			ReplicationSpecification, HostState, ReplicationCandidature> 	proposerCore,
+			final RationalCore myRationality,
+			final SelectionCore participantCore,
+			final ProposerCore 	proposerCore,
 			final ObservationService myInformation,
 			final HostDisponibilityComputer myDispoInfo)
 					throws CompetenceException {
 		super(id, new HostState(id, hostMaxProc, hostMaxMem, lambda,-1), myRationality, participantCore, proposerCore, myInformation, new ContractTrunk());
-		getMyProtocol().getContracts().setMyAgent(this);
+		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
 }
 

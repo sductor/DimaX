@@ -324,8 +324,9 @@ public class EnglishAuctionInitiator extends AbstractRole
 
 		final Enumeration e = this.getParticipants().elements();
 
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			this.getAgent().sendMessage((AgentIdentifier) e.nextElement(), msg);
+		}
 
 		System.out.println(this.getAgent().getIdentifier() + " --> " + this.getParticipants() + " : Call For Proposal (" + this.getContract() + ")...");
 	}
@@ -347,8 +348,9 @@ public class EnglishAuctionInitiator extends AbstractRole
 
 		final Enumeration e = this.getParticipants().elements();
 
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			this.getAgent().sendMessage((AgentIdentifier) e.nextElement(), msg);
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -363,8 +365,9 @@ public class EnglishAuctionInitiator extends AbstractRole
 
 		final Enumeration e = this.getParticipants().elements();
 
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			this.getAgent().sendMessage((AgentIdentifier) e.nextElement(), msg);
+		}
 
 		System.out.println(this.getAgent().getIdentifier() + " --> " + this.getParticipants() + " : Auction is Closed...");
 	}
@@ -381,8 +384,9 @@ public class EnglishAuctionInitiator extends AbstractRole
 
 		final Enumeration e = this.getParticipants().elements();
 
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			this.getAgent().sendMessage((AgentIdentifier) e.nextElement(), msg);
+		}
 
 		System.out.println(this.getAgent().getIdentifier() + " --> " + this.getParticipants() + " : Auction is Failed...");
 	}
@@ -404,12 +408,13 @@ public class EnglishAuctionInitiator extends AbstractRole
 
 		final Enumeration e = this.getParticipants().elements();
 
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			if (!((AgentIdentifier)e.nextElement()).equals(this.getAcceptedProposer()))
 			{
 				this.getAgent().sendMessage((AgentIdentifier) e.nextElement(),msg);
 				System.out.println(" � vous de proposer : "+e.nextElement());
 			}
+		}
 
 		System.out.println(this.getAgent().getIdentifier() + " --> " + this.getParticipants() + " : The current accepted proposal is :"+this.getContract()+" the sender : "+this.getAcceptedProposer());
 	}
@@ -468,8 +473,8 @@ public class EnglishAuctionInitiator extends AbstractRole
 		{
 			this.setContract((AbstractService)this.getCurrentMessage().getContent());
 			return true;
-		}
-		else
+		} else {
 			return false;
+		}
 	}
 }

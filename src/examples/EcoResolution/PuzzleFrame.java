@@ -58,14 +58,16 @@ public class PuzzleFrame extends Frame {
 		public void actionPerformed(final java.awt.event.ActionEvent event)
 		{
 			final Object object = event.getSource();
-			if (object == PuzzleFrame.this.runButton)
+			if (object == PuzzleFrame.this.runButton) {
 				PuzzleFrame.this.runButton_ActionPerformed(event);
-			if (object == PuzzleFrame.this.stopButton)
+			}
+			if (object == PuzzleFrame.this.stopButton) {
 				PuzzleFrame.this.stopButton_ActionPerformed(event);
-			else if (object == PuzzleFrame.this.button1)
+			} else if (object == PuzzleFrame.this.button1) {
 				PuzzleFrame.this.button1_ActionPerformed(event);
-			else if (object == PuzzleFrame.this.button2)
+			} else if (object == PuzzleFrame.this.button2) {
 				PuzzleFrame.this.button2_ActionPerformed(event);
+			}
 
 
 		}
@@ -77,24 +79,27 @@ public class PuzzleFrame extends Frame {
 		public void windowDeiconified(final java.awt.event.WindowEvent event)
 		{
 			final Object object = event.getSource();
-			if (object == PuzzleFrame.this)
+			if (object == PuzzleFrame.this) {
 				PuzzleFrame.this.PuzzleFrame_WindowDeiconified(event);
+			}
 		}
 
 		@Override
 		public void windowIconified(final java.awt.event.WindowEvent event)
 		{
 			final Object object = event.getSource();
-			if (object == PuzzleFrame.this)
+			if (object == PuzzleFrame.this) {
 				PuzzleFrame.this.PuzzleFrame_WindowIconified(event);
+			}
 		}
 
 		@Override
 		public void windowClosing(final java.awt.event.WindowEvent event)
 		{
 			final Object object = event.getSource();
-			if (object == PuzzleFrame.this)
+			if (object == PuzzleFrame.this) {
 				PuzzleFrame.this.PuzzleFrame_WindowClosing(event);
+			}
 		}
 	}
 
@@ -206,7 +211,9 @@ public class PuzzleFrame extends Frame {
 		final String str = this.textField1.getText();
 		try {
 			final int i = Integer.parseInt( str);
-			if ( 2 < i ) this.resize( i);
+			if ( 2 < i ) {
+				this.resize( i);
+			}
 		} catch ( final NumberFormatException exc) {}
 		this.runButton.setEnabled(true);
 		this.stopButton.setEnabled(false);
@@ -240,14 +247,16 @@ public class PuzzleFrame extends Frame {
 	}
 	void PuzzleFrame_WindowDeiconified(final java.awt.event.WindowEvent event)
 	{
-		if ( this.active != null)
+		if ( this.active != null) {
 			this.active.resume();
+		}
 
 	}
 	void PuzzleFrame_WindowIconified(final java.awt.event.WindowEvent event)
 	{
-		if ( this.active != null)
+		if ( this.active != null) {
 			this.active.suspend();
+		}
 		this.parent.repaint();
 	}
 	public void refresh( final EcoPlace e1, final EcoPlace e2) {
@@ -283,8 +292,9 @@ public class PuzzleFrame extends Frame {
 			this.active = new Execution( this.taquin);
 			this.active.start();
 			this.taquin.support.disable();
-		} else
+		} else {
 			this.active.resume();
+		}
 	}
 	void runButton_ActionPerformed(final java.awt.event.ActionEvent event)
 	{

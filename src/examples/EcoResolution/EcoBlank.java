@@ -37,19 +37,18 @@ class EcoBlank extends EcoTile {
 	public void  doEscapeActionWithConstraint( final EcoAgent ea) {
 		final boolean b = this.isSatisfied();//on regarde si le palet etait satisfied
 		this.move( (EcoPlace) ea);
-		if ( b)
+		if ( b) {
 			this.state =  EcoAgent.TRY_SATISFACTION;
+		}
 	}
 	@Override
 	public  void  doEscapeAggressionWithConstraint( final EcoAgent constraint) {}
 	@Override
 	public  void  doSatisfactionActionOnPlace(final EcoAgent place) {}
 	public void doSatisfactionAggressionOnPlace() {
-		if ( this.place.isAdjacentTo( ( EcoPlace) this.goalAgent))
+		if ( this.place.isAdjacentTo( ( EcoPlace) this.goalAgent)) {
 			( ( EcoPlace) this.goalAgent).freeWithConstraint( null);//##############
-		//doSatisfactionActionOnPlace si liberation reussie : peut etre appel'e dans freeWithConstraint()
-		//de constraint
-		else {// on recherche une place intermediaire...
+		} else {// on recherche une place intermediaire...
 			final EcoPlace ec = ( EcoPlace) this.findSatisfactionPlace();
 			ec.freeWithConstraint( null);//constraint : eviter le goalAgent
 			this.doSatisfactionAggressionOnPlace();//>>>>>>>>>>>>refaire un doSatisfactionAggressionOnPlace
@@ -69,17 +68,23 @@ class EcoBlank extends EcoTile {
 		// deja satisfied
 		for( int i = 0; i < list.size(); i++) {
 			final EcoPlace e = ( EcoPlace) list.elementAt( i);
-			if ( e.tile.isSatisfied())// s'il existe dans "list" des places
+			if ( e.tile.isSatisfied())
+			{
 				list.removeElement( e);// dont le "tile" est satisfied,
+			}
 		}// on les retire de la list
 		if ( list.isEmpty())
+		{
 			list = sauv;//Obligation de move un EcoTile deja satisfied
+		}
 		final EcoNPuzzle etq = this.place.owner;
 		EcoPlace plusProcheDuBut = null ;
 		int d = 10000;
 		final Vector prohibitedPlaces = this.place.owner.lockedPlaces();
 		if ( prohibitedPlaces.contains( this.goalAgent))
+		{
 			prohibitedPlaces.removeElement( this.goalAgent);//
+		}
 		for( int i = 0; i < list.size(); i++) {
 			final EcoPlace aux = ( EcoPlace) list.elementAt( i);
 			final int db = etq.distanceAvoidingProhibitedPlaces( aux, ( EcoPlace) this.goalAgent,

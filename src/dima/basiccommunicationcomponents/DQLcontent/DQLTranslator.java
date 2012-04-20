@@ -52,21 +52,25 @@ public class DQLTranslator
 	private String _getNamespaceFromResource(final String url)
 	{
 		final int pound = url.lastIndexOf('#');
-		if(pound != -1)
+		if(pound != -1) {
 			return url.substring(0, pound + 1);
+		}
 		final int slash = url.lastIndexOf('/');
-		if(slash != -1)
+		if(slash != -1) {
 			return url.substring(0, slash + 1);
+		}
 		return "";
 	}
 	private String _getTagFromResource(final String url)
 	{
 		final int pound = url.lastIndexOf('#');
-		if(pound != -1)
+		if(pound != -1) {
 			return url.substring(pound + 1);
+		}
 		final int slash = url.lastIndexOf('/');
-		if(slash != -1)
+		if(slash != -1) {
 			return url.substring(slash + 1);
+		}
 		return url;
 	}
 
@@ -80,11 +84,11 @@ public class DQLTranslator
 
 	public static String tokenToKIF(String ret)
 	{
-		if(ret.startsWith("var:"))
+		if(ret.startsWith("var:")) {
 			ret = "?" + ret.substring(4);
-		else if(ret.startsWith(DQLRequest.varns))
+		} else if(ret.startsWith(DQLRequest.varns)) {
 			ret = "?" + ret.substring(DQLRequest.varns.length());
-		else {
+		} else {
 			final int rpi = ret.lastIndexOf('#');
 			ret = ret.substring(rpi+1);
 		}
@@ -97,11 +101,13 @@ public class DQLTranslator
 				Namespace.getNamespace(DQLRequest.rdfns));
 		if(ret == null) {
 			final List c = e.getChildren();
-			if(c != null && !c.isEmpty())
+			if(c != null && !c.isEmpty()) {
 				ret = ((Element) c.get(0)).getTextTrim();
+			}
 		}
-		if(ret != null)
+		if(ret != null) {
 			ret = DQLTranslator.tokenToKIF(ret);
+		}
 		return ret;
 	}
 
@@ -151,8 +157,9 @@ public class DQLTranslator
 	}*/
 		while(true) {
 			final int i = kif.indexOf("(?");
-			if(i == -1)
+			if(i == -1) {
 				break;
+			}
 			kif = kif.substring(0, i) + "(holds " + kif.substring(i + 1);
 		}
 
@@ -166,8 +173,9 @@ public class DQLTranslator
 		while(it.hasNext()) {
 			final Element c = (Element) it.next();
 			final Namespace ns = c.getNamespace();
-			if(ns.getURI().equals(DQLRequest.varns))
+			if(ns.getURI().equals(DQLRequest.varns)) {
 				v.add(c.getName());
+			}
 		}
 	}
 
@@ -275,18 +283,21 @@ public class DQLTranslator
 	{final StringBuffer ret = new StringBuffer();
 	int y;
 
-	for( y=0; y <api.indexOf("xmlns:rdf")-1; y++) // -1 to eliminate the space before xmlns:rdf
+	for( y=0; y <api.indexOf("xmlns:rdf")-1; y++) {
 		ret.append(api.charAt(y));
+	}
 
 	final StringBuffer et = new StringBuffer();
-	for(int x=0;x<api.length();x++)
+	for(int x=0;x<api.length();x++) {
 		et.append(api.charAt(x));
+	}
 
 
 	api=et.toString();
 
-	for(y = y+56;y<api.length();y++) // 56 is the number of caracter in the namespace of rdf
+	for(y = y+56;y<api.length();y++) {
 		ret.append(api.charAt(y));
+	}
 
 	return ret.toString();
 	}
@@ -301,8 +312,9 @@ public class DQLTranslator
 				final DQLProcess dp = new DQLProcess(kburl, qap, ai);
 				this.phnds.add(dp);
 				String pound = "";
-				if(!kburl.endsWith("#") || !kburl.endsWith("/"))
+				if(!kburl.endsWith("#") || !kburl.endsWith("/")) {
 					pound = "#";
+				}
 				this.response = this.response.concat("    <dql:processHandle>"+"\n"+
 						ph + "</dql:processHandle>"+"\n");
 			}
@@ -513,8 +525,9 @@ public class DQLTranslator
 						al.add(DQLTranslator.this.makeConstant(st.getObject()));
 
 						final DefaultLiteral dfl = new DefaultLiteral(DQLTranslator.this.makeSymbol(st.getPredicate()), al, true);
-						if (Boolean.getBoolean("jtp.fol.daml.DAMLParser.printDebugTriples"))
+						if (Boolean.getBoolean("jtp.fol.daml.DAMLParser.printDebugTriples")) {
 							System.out.println("[" + ++this.i + " of " + modelSize + "] " + dfl);
+						}
 						return dfl;
 					}
 					catch (final RDFException rdfxc) {
@@ -544,7 +557,9 @@ public class DQLTranslator
 
 	public Object makeConstant(final RDFNode node)
 	{
-		if (node instanceof Resource) return this.makeSymbol((Resource)node);
+		if (node instanceof Resource) {
+			return this.makeSymbol((Resource)node);
+		}
 
 		String label;
 		label = node.toString();

@@ -84,9 +84,11 @@ public class XClassifierSet implements Serializable
 		this.cllSize=0;
 		this.clSet=new XClassifier[matchSet.cllSize];
 
-		for(int i=0; i<matchSet.cllSize; i++)
-			if( matchSet.clSet[i].getAction() == action)
+		for(int i=0; i<matchSet.cllSize; i++) {
+			if( matchSet.clSet[i].getAction() == action) {
 				this.addClassifier(matchSet.clSet[i]);
+			}
+		}
 	}
 	/**
 	 * Constructs a match set out of the population. After the creation, it is checked if the match set covers all possible actions
@@ -109,8 +111,9 @@ public class XClassifierSet implements Serializable
 		this.clSet=new XClassifier[pop.cllSize+numberOfActions];
 
 		final boolean[] actionCovered =  new boolean[numberOfActions];
-		for(int i=0; i<actionCovered.length; i++)
+		for(int i=0; i<actionCovered.length; i++) {
 			actionCovered[i]=false;
+		}
 
 		for(int i=0; i<pop.cllSize; i++){
 			final XClassifier cl=pop.clSet[i];
@@ -124,7 +127,7 @@ public class XClassifierSet implements Serializable
 		boolean again;
 		do{
 			again=false;
-			for(int i=0; i<actionCovered.length; i++)
+			for(int i=0; i<actionCovered.length; i++) {
 				if(!actionCovered[i]){
 					final XClassifier newCl=new XClassifier(this.numerositySum+1, time, state, i);
 
@@ -133,6 +136,7 @@ public class XClassifierSet implements Serializable
 					pop.addedClassNumber++;//rajout� pour tenir compte de la compilation
 
 				}
+			}
 			while(pop.numerositySum > XCSConstants.maxPopSize){
 				final XClassifier cdel=pop.deleteFromPopulation();
 				// update the current match set in case a classifier was deleted out of that
@@ -179,8 +183,9 @@ public class XClassifierSet implements Serializable
 	{
 		// set pop to the actual population
 		XClassifierSet pop=this;
-		while(pop.parentSet!=null)
+		while(pop.parentSet!=null) {
 			pop=pop.parentSet;
+		}
 
 		XClassifier oldcl=null;
 		if((oldcl=pop.getIdenticalClassifier(cl))!=null){
@@ -200,17 +205,20 @@ public class XClassifierSet implements Serializable
 		int copyStep=0;
 		this.numerositySum=0;
 		int i;
-		for(i=0; i<this.cllSize-copyStep; i++)
+		for(i=0; i<this.cllSize-copyStep; i++) {
 			if(this.clSet[i+copyStep].getNumerosity()==0){
 				copyStep++;
 				i--;
 			}else{
-				if(copyStep>0)
+				if(copyStep>0) {
 					this.clSet[i]=this.clSet[i+copyStep];
+				}
 				this.numerositySum+=this.clSet[i].getNumerosity();
 			}
-		for( ; i<this.cllSize; i++)
+		}
+		for( ; i<this.cllSize; i++) {
 			this.clSet[i]=null;
+		}
 		this.cllSize -= copyStep;
 	}
 	/**
@@ -218,9 +226,11 @@ public class XClassifierSet implements Serializable
 	 */
 	private int containsClassifier(final XClassifier cl)
 	{
-		for(int i=0; i<this.cllSize; i++)
-			if(this.clSet[i]==cl)
+		for(int i=0; i<this.cllSize; i++) {
+			if(this.clSet[i]==cl) {
 				return i;
+			}
+		}
 		return -1;
 	}
 	/**
@@ -234,8 +244,9 @@ public class XClassifierSet implements Serializable
 	{
 		final double meanFitness= this.getFitnessSum()/this.numerositySum;
 		double sum=0.;
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			sum += this.clSet[i].getDelProp(meanFitness);
+		}
 
 		final double choicePoint=sum*XCSConstants.drand();
 		sum=0.;
@@ -265,18 +276,22 @@ public class XClassifierSet implements Serializable
 	private void doActionSetSubsumption()
 	{
 		XClassifierSet pop=this;
-		while(pop.parentSet!=null)
+		while(pop.parentSet!=null) {
 			pop=pop.parentSet;
+		}
 
 		XClassifier subsumer=null;
-		for(int i=0; i<this.cllSize; i++)
-			if(this.clSet[i].isSubsumer())
-				if(subsumer==null || this.clSet[i].isMoreGeneral(subsumer))
+		for(int i=0; i<this.cllSize; i++) {
+			if(this.clSet[i].isSubsumer()) {
+				if(subsumer==null || this.clSet[i].isMoreGeneral(subsumer)) {
 					subsumer=this.clSet[i];
+				}
+			}
+		}
 
 		//If a subsumer was found, subsume all more specific classifiers in the action set
-		if(subsumer!=null)
-			for(int i=0; i<this.cllSize; i++)
+		if(subsumer!=null) {
+			for(int i=0; i<this.cllSize; i++) {
 				if(subsumer.isMoreGeneral(this.clSet[i])){
 					final int num=this.clSet[i].getNumerosity();
 					subsumer.addNumerosity(num);
@@ -286,6 +301,8 @@ public class XClassifierSet implements Serializable
 					this.removeClassifier(i);
 					i--;
 				}
+			}
+		}
 	}
 	/**
 	 * Returns the classifier at the specified position.
@@ -301,8 +318,9 @@ public class XClassifierSet implements Serializable
 	{
 		double sum=0.;
 
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			sum+=this.clSet[i].getFitness();
+		}
 		return sum;
 	}
 	/**
@@ -313,9 +331,11 @@ public class XClassifierSet implements Serializable
 	 */
 	private XClassifier getIdenticalClassifier(final XClassifier newCl)
 	{
-		for(int i=0; i<this.cllSize; i++)
-			if(newCl.equals(this.clSet[i]))
+		for(int i=0; i<this.cllSize; i++) {
+			if(newCl.equals(this.clSet[i])) {
 				return this.clSet[i];
+			}
+		}
 		return null;
 	}
 	/**
@@ -332,8 +352,9 @@ public class XClassifierSet implements Serializable
 	{
 		double sum=0.;
 
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			sum+=this.clSet[i].getPrediction() * this.clSet[i].getNumerosity();
+		}
 		return sum;
 	}
 	/**
@@ -357,8 +378,9 @@ public class XClassifierSet implements Serializable
 	{
 		double sum=0.;
 
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			sum+=this.clSet[i].getTimeStamp() * this.clSet[i].getNumerosity();
+		}
 		return sum;
 	}
 	/**
@@ -369,8 +391,9 @@ public class XClassifierSet implements Serializable
 	private void increaseNumerositySum(final int nr)//private
 	{
 		this.numerositySum+=nr;
-		if(this.parentSet!=null)
+		if(this.parentSet!=null) {
 			this.parentSet.increaseNumerositySum(nr);
+		}
 	}
 	/**
 	 * Inserts both discovered classifiers keeping the maximal size of the population and possibly doing GA subsumption.
@@ -388,8 +411,9 @@ public class XClassifierSet implements Serializable
 	private void insertDiscoveredXClassifiers(final XClassifier cl1, final XClassifier cl2, final XClassifier cl1P, final XClassifier cl2P)
 	{
 		XClassifierSet pop=this;
-		while(pop.parentSet!=null)
+		while(pop.parentSet!=null) {
 			pop=pop.parentSet;
+		}
 
 		if(XCSConstants.doGASubsumption){
 			this.subsumeXClassifier(cl1, cl1P, cl2P);
@@ -399,17 +423,20 @@ public class XClassifierSet implements Serializable
 			pop.addXClassifierToPopulation(cl2);
 		}
 
-		while(pop.numerositySum > XCSConstants.maxPopSize)
+		while(pop.numerositySum > XCSConstants.maxPopSize) {
 			pop.deleteFromPopulation();
+		}
 	}
 	/**
 	 * Returns if the specified action is covered in this set.
 	 */
 	private boolean isActionCovered(final int action)
 	{
-		for(int i=0; i<this.cllSize; i++)
-			if( this.clSet[i].getAction() == action)
+		for(int i=0; i<this.cllSize; i++) {
+			if( this.clSet[i].getAction() == action) {
 				return true;
+			}
+		}
 		return false;
 	}
 	/**
@@ -419,8 +446,9 @@ public class XClassifierSet implements Serializable
 	{
 		System.out.println("Averages:");
 		System.out.println("Pre: "+this.getPredictionSum()/this.numerositySum+ " Fit: "+this.getFitnessSum()/this.numerositySum + " Tss: "+ this.getTimeStampSum()/this.numerositySum + " Num: " + this.numerositySum);
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			this.clSet[i].printXClassifier();
+		}
 	}
 	/**
 	 * Prints the classifier set to the specified print writer (which usually refers to a file).
@@ -431,8 +459,9 @@ public class XClassifierSet implements Serializable
 	{
 		pW.println("Averages:");
 		pW.println("Pre: "+this.getPredictionSum()/this.numerositySum+ " Fit: "+this.getFitnessSum()/this.numerositySum + " Tss: "+ this.getTimeStampSum()/this.numerositySum + " Num: " + this.numerositySum);
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			this.clSet[i].printXClassifier(pW);
+		}
 	}
 	/**
 	 * Removes the (possible macro-) classifier at the specified array position from the population.
@@ -443,8 +472,9 @@ public class XClassifierSet implements Serializable
 	private boolean removeClassifier(final int pos) // private
 	{
 		int i;
-		for(i=pos ; i<this.cllSize-1; i++)
+		for(i=pos ; i<this.cllSize-1; i++) {
 			this.clSet[i]=this.clSet[i+1];
+		}
 		this.clSet[i]=null;
 		this.cllSize--;
 
@@ -459,13 +489,17 @@ public class XClassifierSet implements Serializable
 	private boolean removeClassifier(final XClassifier classifier)// private
 	{
 		int i;
-		for(i=0; i<this.cllSize; i++)
-			if(this.clSet[i]==classifier)
+		for(i=0; i<this.cllSize; i++) {
+			if(this.clSet[i]==classifier) {
 				break;
-		if(i==this.cllSize)
+			}
+		}
+		if(i==this.cllSize) {
 			return false;
-		for( ; i<this.cllSize-1; i++)
+		}
+		for( ; i<this.cllSize-1; i++) {
 			this.clSet[i]=this.clSet[i+1];
+		}
 		this.clSet[i]=null;
 
 		this.cllSize--;
@@ -490,8 +524,9 @@ public class XClassifierSet implements Serializable
 	public void runGA(final int time, final String state, final int numberOfActions)
 	{
 		// Don't do a GA if the theta_GA threshold is not reached, yet
-		if( this.cllSize==0 || time-this.getTimeStampAverage() < XCSConstants.theta_GA )
+		if( this.cllSize==0 || time-this.getTimeStampAverage() < XCSConstants.theta_GA ) {
 			return;
+		}
 
 		this.setTimeStamps(time);
 
@@ -540,8 +575,9 @@ public class XClassifierSet implements Serializable
 	 */
 	private void setTimeStamps(final int time)
 	{
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			this.clSet[i].setTimeStamp(time);
+		}
 	}
 	/**
 	 * Tries to subsume a classifier in the current set.
@@ -556,9 +592,11 @@ public class XClassifierSet implements Serializable
 	{
 		//Open up a new Vector in order to chose the subsumer candidates randomly
 		final Vector choices= new Vector();
-		for(int i=0; i<this.cllSize; i++)
-			if( this.clSet[i].subsumes(cl) )
+		for(int i=0; i<this.cllSize; i++) {
+			if( this.clSet[i].subsumes(cl) ) {
 				choices.addElement(this.clSet[i]);
+			}
+		}
 
 		if(choices.size()>0){
 			final int choice=(int)(XCSConstants.drand()*choices.size());
@@ -583,8 +621,10 @@ public class XClassifierSet implements Serializable
 		}else if(cl2P!=null && cl2P.subsumes(cl)){
 			this.increaseNumerositySum(1);
 			cl2P.addNumerosity(1);
-		} else
+		}
+		else {
 			this.subsumeXClassifier(cl); //calls second subsumeXClassifier fkt!
+		}
 	}
 	/**
 	 * Special function for updating the fitnesses of the classifiers in the set.
@@ -603,8 +643,9 @@ public class XClassifierSet implements Serializable
 		}
 
 		//Next, update the fitnesses accordingly
-		for(int i=0; i<this.cllSize; i++)
+		for(int i=0; i<this.cllSize; i++) {
 			this.clSet[i].updateFitness(accuracySum, accuracies[i]);
+		}
 	}
 	/**
 	 * Updates all parameters in the current set (should be the action set).
@@ -639,7 +680,8 @@ public class XClassifierSet implements Serializable
 		}
 		this.updateFitnessSet();
 
-		if(XCSConstants.doActionSetSubsumption)
+		if(XCSConstants.doActionSetSubsumption) {
 			this.doActionSetSubsumption();
+		}
 	}
 }

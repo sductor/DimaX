@@ -51,11 +51,13 @@ public class PredictionArray implements Serializable
 			this.pa[cl.getAction()]+=cl.getPrediction()*cl.getFitness();
 			this.nr[cl.getAction()]+=cl.getFitness();
 		}
-		for(int i=0; i<size; i++)
-			if(this.nr[i]!=0)
+		for(int i=0; i<size; i++) {
+			if(this.nr[i]!=0) {
 				this.pa[i]/=this.nr[i];
-			else
+			} else {
 				this.pa[i]=0;
+			}
+		}
 	}
 	/**
 	 * Selects the action in the prediction array with the best value.
@@ -63,9 +65,11 @@ public class PredictionArray implements Serializable
 	public int bestActionWinner()
 	{
 		int ret=0;
-		for(int i=1; i<this.pa.length; i++)
-			if(this.pa[ret]<this.pa[i])
+		for(int i=1; i<this.pa.length; i++) {
+			if(this.pa[ret]<this.pa[i]) {
 				ret=i;
+			}
+		}
 		return ret;
 	}
 	/**
@@ -75,9 +79,11 @@ public class PredictionArray implements Serializable
 	{
 		int i;
 		double max;
-		for(i=1, max=this.pa[0]; i<this.pa.length; i++)
-			if(max<this.pa[i])
+		for(i=1, max=this.pa[0]; i<this.pa.length; i++) {
+			if(max<this.pa[i]) {
 				max=this.pa[i];
+			}
+		}
 		return max;
 	}
 	/**
@@ -85,8 +91,9 @@ public class PredictionArray implements Serializable
 	 */
 	public double getValue(final int i)
 	{
-		if(i>=0 && i<this.pa.length)
+		if(i>=0 && i<this.pa.length) {
 			return this.pa[i];
+		}
 		return -1.;
 	}
 	/*************** Action selection functions ****************/
@@ -98,9 +105,9 @@ public class PredictionArray implements Serializable
 	public int randomActionWinner()
 	{
 		int ret=0;
-		do
+		do {
 			ret = (int)(XCSConstants.drand()*this.pa.length);
-		while(this.nr[ret]==0);
+		} while(this.nr[ret]==0);
 		return ret;
 	}
 	/**
@@ -110,13 +117,15 @@ public class PredictionArray implements Serializable
 	{
 		double bidSum=0.;
 		int i;
-		for(i=0; i<this.pa.length; i++)
+		for(i=0; i<this.pa.length; i++) {
 			bidSum+=this.pa[i];
+		}
 
 		bidSum*=XCSConstants.drand();
 		double bidC=0.;
-		for(i=0; bidC<bidSum; i++)
+		for(i=0; bidC<bidSum; i++) {
 			bidC+=this.pa[i];
+		}
 		return i;
 	}
 }

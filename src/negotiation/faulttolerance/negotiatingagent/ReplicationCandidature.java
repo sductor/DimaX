@@ -1,6 +1,6 @@
 package negotiation.faulttolerance.negotiatingagent;
 
-import negotiation.experimentationframework.ExperimentationProtocol;
+import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -29,7 +29,7 @@ MatchingCandidature<ReplicationSpecification> {
 	public ReplicationCandidature(final ResourceIdentifier r,
 			final AgentIdentifier a, final boolean creation, final boolean isAgentCreator) {
 		super(isAgentCreator ? a : r, a, r,
-				ExperimentationProtocol._contractExpirationTime);
+				NegotiationParameters._contractExpirationTime);
 		this.setCreation(creation);
 	}
 
@@ -39,12 +39,13 @@ MatchingCandidature<ReplicationSpecification> {
 
 	@Override
 	public <State extends ReplicationSpecification>  State computeResultingState(final State s) throws IncompleteContractException {
-		if (s instanceof ReplicaState)
+		if (s instanceof ReplicaState) {
 			return (State) this.getAgentResultingState((ReplicaState)s);
-		else if (s instanceof HostState)
+		} else if (s instanceof HostState) {
 			return (State) this.getResourceResultingState((HostState) s);
-		else
+		} else {
 			throw new RuntimeException("arrrggghhhh!!!!"+s);
+		}
 	}
 	@Override
 	public ReplicationSpecification computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
@@ -71,16 +72,16 @@ MatchingCandidature<ReplicationSpecification> {
 	}
 
 	private ReplicaState getAgentResultingState(final ReplicaState fromState) throws IncompleteContractException {
-		
+
 		assert this.getSpecificationOf(this.getResource()) != null:"wtf? " + this;
 		assert fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == true:
 			"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 		assert !fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == false:
 			"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
-					
-		if (!fromState.getMyAgentIdentifier().equals(this.getAgent()))
+
+		if (!fromState.getMyAgentIdentifier().equals(this.getAgent())) {
 			return fromState;
-		else {
+		} else {
 			ReplicaState result = new ReplicaState(fromState,
 					this.getResourceInitialState()//, this.getCreationTime()
 					);
@@ -101,17 +102,17 @@ MatchingCandidature<ReplicationSpecification> {
 
 	private HostState getResourceResultingState(final HostState fromState) throws IncompleteContractException {
 
-		assert (this.getSpecificationOf(this.getAgent()) != null):"wtf? " + this;
+		assert this.getSpecificationOf(this.getAgent()) != null:"wtf? " + this;
 		assert fromState.Ihost(this.getAgent()) || this.creation == true:
 			" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"+ this.getAgent()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 		assert !fromState.Ihost(this.getAgent()) || this.creation == false:
 			" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT "+" \n contract : "+this	+ "\n --> fromState " + fromState
 			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
-		
 
-		if (!fromState.getMyAgentIdentifier().equals(this.getResource()))
+
+		if (!fromState.getMyAgentIdentifier().equals(this.getResource())) {
 			return fromState;
-		else {
+		} else {
 			HostState h =
 					new HostState(fromState,
 							this.getAgentInitialState()//, this.getCreationTime()
@@ -143,12 +144,12 @@ MatchingCandidature<ReplicationSpecification> {
 
 
 
-			//			System.out.print(fromState+"\n to "+h+" \n to ");
-			//			System.err.println("here for "+getAgent());
-			//			System.out.println("state generated with rinit : "+h);
-			//			System.out.println("state with r result : "+r1);
-			//			h.update(r1);
-			//			System.out.println("final state"+h+"\n");
+//			System.out.print(fromState+"\n to "+h+" \n to ");
+//			System.err.println("here for "+getAgent());
+//			System.out.println("state generated with rinit : "+h);
+//			System.out.println("state with r result : "+r1);
+//			h.update(r1);
+//			System.out.println("final state"+h+"\n");
 
 
 

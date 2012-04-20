@@ -86,7 +86,9 @@ public class SystematicRuleBase extends AbstractRuleBase {
 	 */
 	@Override
 	public void run() {
-		while (this.dontstop())	this.step();
+		while (this.dontstop()) {
+			this.step();
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -131,7 +133,8 @@ public class SystematicRuleBase extends AbstractRuleBase {
 		this.listFireableRules.clear();
 		final java.util.Enumeration e = this.getListOfRules().elements();
 		Rule a = new Rule();
-		while (e.hasMoreElements()) { a = (Rule)e.nextElement(); if (a.isSatisfied(this.context))
-			this.listFireableRules.add(a);  };
+		while (e.hasMoreElements()) { a = (Rule)e.nextElement(); if (a.isSatisfied(this.context)) {
+			this.listFireableRules.add(a);
+		}  };
 	}
 }

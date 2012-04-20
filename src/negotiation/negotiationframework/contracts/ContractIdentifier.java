@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import negotiation.experimentationframework.ExperimentationProtocol;
+import negotiation.negotiationframework.NegotiationParameters;
+
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
@@ -74,16 +76,19 @@ public class ContractIdentifier implements DimaComponentInterface {
 	@Override
 	public boolean equals(final Object that) {
 
-		if (that instanceof ContractIdentifier)
+		if (that instanceof ContractIdentifier) {
 			if (((ContractIdentifier) that).initiator.equals(this.initiator)
 					&& ((ContractIdentifier) that).participants
-					.equals(this.participants))
+					.equals(this.participants)) {
 				if (!((ContractIdentifier)
-						that).contractCreation.equals(this.contractCreation) )
+						that).contractCreation.equals(this.contractCreation) ) {
 					throw new
 					RuntimeException("un agent a envoyé deux prop dans la mm session!!\n"+this+that);
-				else
+				} else {
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -98,7 +103,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 				+ "),(expired?"
 				+ this.hasReachedExpirationTime()
 				+ ", will expire?"
-				+ this.willReachExpirationTime(ExperimentationProtocol._timeToCollect)
+				+ this.willReachExpirationTime(NegotiationParameters._timeToCollect)
 				+ ")";
 	}
 

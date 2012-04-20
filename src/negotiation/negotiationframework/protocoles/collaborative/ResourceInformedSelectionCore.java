@@ -2,33 +2,27 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import sun.security.action.GetLongAction;
-
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
-import dima.introspectionbasedagents.shells.NotReadyException;
-import dimaxx.tools.HyperSetGeneration;
-import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
-import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.selectioncores.GreedyBasicSelectionCore;
-import negotiation.negotiationframework.selectioncores.GreedyRouletteWheelSelectionCore;
+import negotiation.negotiationframework.exploration.ExhaustifHyperSetGeneration;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ResourceInformedSelectionCore <
 ActionSpec extends AbstractActionSpecification,
@@ -42,9 +36,21 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 	// Methods
 	//
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5994721006483536151L;
+
 	@Override
-	public ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState> select(
-			final ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState> given) {
+	public void select(
+			final ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState> given,
+			final Collection<InformedCandidature<Contract,ActionSpec>> accepted,
+			final Collection<InformedCandidature<Contract,ActionSpec>> rejected,
+			final Collection<InformedCandidature<Contract,ActionSpec>> onWait)  {
+
+		assert accepted.isEmpty();
+		assert rejected.isEmpty();
+		assert onWait.isEmpty();
 
 		// Verification de la consistance
 		assert this.getMyAgent().getMyCurrentState().isValid():
@@ -52,126 +58,143 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 		assert given.getParticipantAlreadyAcceptedContracts().isEmpty();
 
 		//objects
-		ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState> contracts = 
+		final ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState> contracts =
 				(ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState>) given;
-		InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myCore = 
-				(InformedCandidatureRationality<ActionSpec, PersonalState, Contract>) getMyAgent().getMyCore();
+		final InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myCore =
+				(InformedCandidatureRationality<ActionSpec, PersonalState, Contract>) this.getMyAgent().getMyCore();
 
 		//contract lists
-		List<InformedCandidature<Contract,ActionSpec>> allContracts = contracts.getAllContracts();		
-		Collection<InformedCandidature<Contract, ActionSpec>> accepted = 
-				new HashSet<InformedCandidature<Contract, ActionSpec>>();
-		Collection<InformedCandidature<Contract, ActionSpec>> rejected = 
-				new HashSet<InformedCandidature<Contract, ActionSpec>>();
-
+		final List<InformedCandidature<Contract,ActionSpec>> allContracts = contracts.getAllContracts();
 		PersonalState currentState = this.getMyAgent().getMyCurrentState();
-		rejected.addAll(allContracts);	
+		assert ContractTransition.allComplete(allContracts):allContracts;
 
-		if (allContracts.isEmpty())
-			logMonologue("i support everyone yeah! =)", AbstractCommunicationProtocol.log_selectionStep);
-		else {
-			if (allCreation(allContracts)){
-				assert contracts.getReallocationContracts().isEmpty();
+		rejected.addAll(allContracts);
+
+		//Beginninng//
+
+
+		if (allContracts.isEmpty()) {
+			this.logMonologue("i support everyone yeah! =)", AbstractCommunicationProtocol.log_selectionStep);
+		} else //There is new agent who want to be allocated!!!
+			if (MatchingCandidature.areAllCreation(allContracts)){//I'm not currently negotiating reallocations
+				assert contracts.getReallocationContracts().isEmpty():contracts.getReallocationContracts()+"\n ---> "+allContracts;
 
 				//Trying to accept simple candidatures
-				//accepting as many as possible
-				Collections.shuffle(allContracts);
-				for (InformedCandidature<Contract,ActionSpec> c : allContracts)
-					if (getMyAgent().Iaccept(currentState, c)){
+				//accepting as many as possible*
+				//				final RooletteWheel<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> r =
+				//						new RooletteWheel<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>(
+				//								this.getMyAgent(), allContracts);
+				this.logMonologue("trying to accept simple nego",
+						AbstractCommunicationProtocol.log_selectionStep);
+				final Iterator<InformedCandidature<Contract, ActionSpec>>r = allContracts.iterator();
+				while (r.hasNext()){
+					final InformedCandidature<Contract, ActionSpec> c = r.next();//r.popNextContract();
+					if (this.getMyAgent().Iaccept(currentState, c)){
+						this.logMonologue("i accept "+c+" (my state is "+currentState+")",
+								AbstractCommunicationProtocol.log_selectionStep);
+						rejected.remove(c);
 						accepted.add(c);
 						try {
 							currentState=c.computeResultingState(currentState);
-						} catch (IncompleteContractException e) {
-							throw new RuntimeException();
+						} catch (final IncompleteContractException e) {
+							this.signalException("impossible", e);
 						}
-					}
-
-				rejected.removeAll(accepted);
-
-				if (accepted.isEmpty()){
-
-					logMonologue("generating upgrading contracts!", AbstractCommunicationProtocol.log_selectionStep);				
-					//some unaccepted contract : generating upgrading contract and adding to propose
-
-					ResourceInformedProposerCore<Contract, ActionSpec, PersonalState> propCore =
-							(ResourceInformedProposerCore<Contract, ActionSpec, PersonalState>) getMyAgent().getMyProposerCore();
-
-					Collection<InformedCandidature<Contract, ActionSpec>> hosted = 
-							new HashSet<InformedCandidature<Contract, ActionSpec>>();
-					//				hosted.addAll(accepted);
-
-					for (final ActionSpec s : getMyAgent().getMyResources()){
-						//adding destruction of hosted agents
-						InformedCandidature<Contract, ActionSpec> c = 
-								this.generateDestructionContract(s.getMyAgentIdentifier());
-						c.setSpecification(getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), c));
-						c.setSpecification(s);
-						hosted.add(c);
-					}				
-
-					Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts = generateUpgradingContracts(currentState, rejected, hosted, myCore, contracts);
-					propCore.addContractsToPropose(ugradingContracts);
-					if (!ugradingContracts.isEmpty()){
-						logMonologue("upgrading contracts founds! "+contracts.getReallocationContracts(), AbstractCommunicationProtocol.log_selectionStep);
-						logMonologue("yyeeeeaaaaahhhhhh!!!!!",LogService.onScreen);
+					} else {
+						this.logMonologue("i refuse "+c+" (my state is "+currentState+")",
+								AbstractCommunicationProtocol.log_selectionStep);
 					}
 				}
 
-			} else {
-				//Trying to accept reallocating contracts	
+				if (accepted.isEmpty()){// I accepted noone, trying to find realloc
+
+					this.logMonologue("no contracts accepted : searching upgrading contracts! : \nhosted :"
+					+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
+					+"\n required "+rejected,
+							AbstractCommunicationProtocol.log_selectionStep);
+					//some unaccepted contract : generating upgrading contract and adding to propose
+
+					final ResourceInformedProposerCore<Contract, ActionSpec, PersonalState> propCore =
+							(ResourceInformedProposerCore<Contract, ActionSpec, PersonalState>) this.getMyAgent().getMyProposerCore();
+
+					final Collection<InformedCandidature<Contract, ActionSpec>> hosted =
+							new HashSet<InformedCandidature<Contract, ActionSpec>>();
+					//				hosted.addAll(accepted);
+
+					for (final ActionSpec s : this.getMyAgent().getMyResources()){
+						//adding destruction of hosted agents
+						final InformedCandidature<Contract, ActionSpec> c =
+								this.generateDestructionContract(s.getMyAgentIdentifier());
+						c.setSpecification(this.getMyAgent().getMySpecif(this.getMyAgent().getMyCurrentState(), c));
+						c.setSpecification(s);
+						hosted.add(c);
+					}
+					assert MatchingCandidature.assertAllCreation(contracts.getAllContracts());
+					assert AbstractCommunicationProtocol.partitioning(contracts.getAllContracts(), accepted, rejected, onWait);
+					final Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts =
+							this.generateUpgradingContracts(currentState, rejected, onWait, hosted, myCore, contracts);
+					propCore.addContractsToPropose(ugradingContracts);
+					assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), accepted, rejected, onWait);
+					if (!ugradingContracts.isEmpty()){
+						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!"+contracts.getReallocationContracts(),
+								AbstractCommunicationProtocol.log_selectionStep);
+						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!",
+								LogService.onScreen);
+					} else {
+						this.logMonologue("NO upgrading contracts founds!",
+								AbstractCommunicationProtocol.log_selectionStep);
+					}
+				}
+
+			} else {//I'm currently  negotiating reallocations
+				//Trying to accept reallocating contracts
 				assert !contracts.getReallocationContracts().isEmpty();
 
-				ReallocationContract<Contract, ActionSpec> r = 
+				final ReallocationContract<Contract, ActionSpec> r =
 						contracts.getBestRequestableReallocationContract(
-								myCore.getReferenceAllocationComparator(getMyAgent().getMyCurrentState()));
+								myCore.getReferenceAllocationComparator(this.getMyAgent().getMyCurrentState()));
 
 				if (r!=null){//upgrading contract available
-					logMonologue(
-							"heeelllll yyeeeeaaaaahhhhhh!!!!!", AbstractCommunicationProtocol.log_selectionStep);
-					logMonologue(
+					this.logMonologue(
+							"upgrading contracts applied! heeelllll yyeeeeaaaaahhhhhh!!!!!", AbstractCommunicationProtocol.log_selectionStep);
+					this.logMonologue(
 							"heeelllll yyeeeeaaaaahhhhhh!!!!!", LogService.onScreen);
-					for (Contract c : r){
+					for (final Contract c : r) {
 						try {
+							rejected.remove(contracts.getContract(c.getIdentifier()));
 							accepted.add(contracts.getContract(c.getIdentifier()));
-						} catch (UnknownContractException e) {
+						} catch (final UnknownContractException e) {
 							e.printStackTrace();
 						}
 					}
-
-					rejected.removeAll(accepted);
-
-
 				} else {
+					onWait.addAll(rejected);
 					rejected.clear();
-					logMonologue(
-							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n", AbstractCommunicationProtocol.log_selectionStep);
-				}			
+					this.logMonologue(
+							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
+							AbstractCommunicationProtocol.log_selectionStep);
+					this.logMonologue(
+							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
+							LogService.onScreen);
+				}
 			}
+
+		try {
+			for (final InformedCandidature<Contract, ActionSpec> i : accepted) {
+				if (i.isMatchingCreation()){
+					this.getMyAgent().getMyInformation().add(
+							i.computeResultingState(i.getAgent()));
+					this.observe(i.getAgent(),
+							SimpleObservationService.informationObservationKey);
+				}else{
+					this.getMyAgent().getMyInformation().remove(
+							i.computeResultingState(i.getAgent()));
+					this.stopObservation(i.getAgent(),
+							SimpleObservationService.informationObservationKey);
+				}
+			}
+		} catch (final IncompleteContractException e) {
+			this.signalException("imossible", e);
 		}
-
-		/*
-		 * Instanciating returned contract trunk 		
-		 */
-
-		ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState> returned = 
-				new ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState>(getMyAgent());
-
-		assert validityVerification(given, accepted, rejected);
-
-
-		// ACCEPTATION
-		for (final InformedCandidature<Contract, ActionSpec> c : accepted) {
-			returned.addContract(c);
-			returned.addAcceptation(this.getMyAgent().getIdentifier(), c);
-		}
-
-		// REFUS
-		for (final InformedCandidature<Contract, ActionSpec> c : rejected) {
-			returned.addContract(c);
-			returned.addRejection(this.getMyAgent().getIdentifier(), c);
-		}
-
-		return returned;
 	}
 
 
@@ -187,18 +210,20 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 	//
 
 	private Collection<InformedCandidature<Contract, ActionSpec>>  generateUpgradingContracts(
-			final PersonalState currentState, 
-			Collection<InformedCandidature<Contract, ActionSpec>> unacceptedContracts,
-			Collection<InformedCandidature<Contract, ActionSpec>> hosted,
-			InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myAgentCore,
+			final PersonalState currentState,
+			final Collection<InformedCandidature<Contract, ActionSpec>> unacceptedContracts,
+			final Collection<InformedCandidature<Contract,ActionSpec>> onWait,
+			final Collection<InformedCandidature<Contract, ActionSpec>> hosted,
+			final InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myAgentCore,
 			final ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState> myAgentContractTrunk) {
 
-		assert allCreation(unacceptedContracts):unacceptedContracts+" "+myAgentContractTrunk;
-
+		assert MatchingCandidature.assertAllCreation(unacceptedContracts):unacceptedContracts+" "+myAgentContractTrunk;
+		assert onWait.isEmpty();
+		
 		//Generating new proposals
 
 		//generating concerned : concerned is the set of atomic candidature that can be changed
-		Collection<InformedCandidature<Contract, ActionSpec>> toPropose =
+		final Collection<InformedCandidature<Contract, ActionSpec>> toPropose =
 				new ArrayList<InformedCandidature<Contract,ActionSpec>>();
 		final Collection<InformedCandidature<Contract, ActionSpec>> concerned =
 				new HashSet<InformedCandidature<Contract, ActionSpec>>();
@@ -206,71 +231,70 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 		concerned.addAll(unacceptedContracts);//adding allocation candidature
 
 		try {
-			for (InformedCandidature<Contract, ActionSpec> h : hosted){
+			for (final InformedCandidature<Contract, ActionSpec> h : hosted)
+			{
 				if (h.isViable())
+				{
 					concerned.add(h);//adding allocation candidature
-
-			}	
-		} catch (IncompleteContractException e) {
+				}
+			}
+		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
-		}	
+		}
 
-		assert allComplete(concerned):concerned+" "+myAgentContractTrunk;
+		assert ContractTransition.allComplete(concerned):concerned+" "+myAgentContractTrunk;
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		final Collection<Collection<InformedCandidature<Contract, ActionSpec>>> allocGen =
-				new HyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(concerned) {
+				new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
 			@Override
 			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
-				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc);
+				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) && !MatchingCandidature.areAllCreation(alloc);
 			}
 		}.getHyperset();
 
-		Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep = new HashSet();		
+		final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep = new HashSet();
 		for (final Collection<InformedCandidature<Contract, ActionSpec>> realloc : allocGen){
-			for (final InformedCandidature<Contract, ActionSpec> c : realloc)
+			for (final InformedCandidature<Contract, ActionSpec> c : realloc) {
 				contractsToKeep.add(c);
+			}
 		}
 
 		//MAJ du contract trunk
-		for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep)
+		for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
 			//Pour toute action de ce contrat
-			if (!c.isMatchingCreation()){//si cette action est un contrat de destruction 
+			if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
 				//on l'ajoute a la base de contrat
 				myAgentContractTrunk.addContract(c);
+				onWait.add(c);
 				//Ajout aux propositions à faire
 				try {
 					assert c.isViable();
-				} catch (IncompleteContractException e) {
-					getMyAgent().signalException("impossible");
+				} catch (final IncompleteContractException e) {
+					this.getMyAgent().signalException("impossible");
 				}
 				toPropose.add(c);
 			} else {//sinon on la laisse en attente
 				assert unacceptedContracts.contains(c):unacceptedContracts;
 				unacceptedContracts.remove(c);
+				onWait.add(c);
 			}
+		}
 
 		for (final Collection<InformedCandidature<Contract, ActionSpec>> realloc : allocGen){
 			//Ajout du contrat améliorant
 			// --- > Création du contrat
-			final ArrayList<Contract> actions = new ArrayList<Contract>();
-			assert getMyAgent().Iaccept(getMyAgent().getMyCurrentState(), realloc);
-			for (final InformedCandidature<Contract, ActionSpec> c : realloc){
-				actions.add(c.getCandidature());				
-			}
-			//-->ajout
-
-			myAgentContractTrunk.addReallocContract(
-					new ReallocationContract<Contract, ActionSpec>(
-							this.getIdentifier(),
-							actions));
-		}			
+			assert this.getMyAgent().Iaccept(this.getMyAgent().getMyCurrentState(), realloc);
+			myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
+					this.getIdentifier(),
+					InformedCandidature.toCandidatures(realloc)));
+		}
 
 		for (final InformedCandidature<Contract, ActionSpec> c : toPropose){
 			//Pour toute action de ce contrat
-			assert (!c.isMatchingCreation());//cette action est un contrat de destruction :
+			assert !c.isMatchingCreation();//cette action est un contrat de destruction :
 			//on lui associe la meilleur réalloc et on l'ajoute au contrat à proposer
-			ReallocationContract<Contract, ActionSpec> best = 
+			final ReallocationContract<Contract, ActionSpec> best =
 					myAgentContractTrunk.getBestReallocationContract(
 							c, myAgentCore.getReferenceAllocationComparator(currentState));
 			assert best!=null;
@@ -281,63 +305,6 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 
 		return toPropose;
 	}
-
-	//
-	// Validity verification
-	//
-
-	private boolean allViable(Collection<InformedCandidature<Contract, ActionSpec>> contracts) 
-			throws IncompleteContractException{
-		for (InformedCandidature<Contract, ActionSpec> c : contracts){
-			if (!c.getCandidature().isViable())
-				return false;
-		}
-		return true;
-	}
-	private boolean allCreation(Collection<InformedCandidature<Contract, ActionSpec>> contracts){
-		for (InformedCandidature<Contract, ActionSpec> c : contracts){
-			if (!c.getCandidature().isMatchingCreation())
-				return false;
-		}
-		return true;
-	}
-	private boolean allComplete(Collection<InformedCandidature<Contract, ActionSpec>> contracts){
-		for (InformedCandidature<Contract, ActionSpec> c : contracts){
-			for (AgentIdentifier id : c.getCandidature().getAllParticipants())
-				try {
-					c.getCandidature().computeResultingState(id);
-				} catch (IncompleteContractException e) {
-					return false;
-				}
-		}
-		return true;
-	}
-
-	private boolean validityVerification(
-			ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> given,
-			Collection<InformedCandidature<Contract, ActionSpec>> accepted,
-			Collection<InformedCandidature<Contract, ActionSpec>> rejected) {
-
-		for (InformedCandidature<Contract, ActionSpec> c : accepted){
-			if (rejected.contains(c))
-				return false;
-		}
-		for (InformedCandidature<Contract, ActionSpec> c : rejected){
-			if (accepted.contains(c))
-				return false;
-		}
-
-
-		return true;
-	}
-
-	private boolean allDestruction(Collection<InformedCandidature<Contract, ActionSpec>> contracts){
-		for (InformedCandidature<Contract, ActionSpec> c : contracts){
-			if (c.getCandidature().isMatchingCreation())
-				return false;
-		}
-		return true;
-	}
 }
 
 //	private boolean validityVerification(
@@ -347,13 +314,13 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 //		//		logMonologue("accepeted "+accepted+" refused "+notAccepted, LogService.onBoth);
 //
 //		// verification de validit�� d'appel
-//		final Collection<InformedCandidature<Contract, ActionSpec>> test = 
+//		final Collection<InformedCandidature<Contract, ActionSpec>> test =
 //				new ArrayList<InformedCandidature<Contract, ActionSpec>>();
 //		test.addAll(accepted);
 //		test.addAll(notAccepted);
 //		//		test.addAll(onWait);
 //
-//		final Collection<InformedCandidature<Contract, ActionSpec>> allContracts = 
+//		final Collection<InformedCandidature<Contract, ActionSpec>> allContracts =
 //				new ArrayList<InformedCandidature<Contract, ActionSpec>>();
 //		allContracts.addAll(given.getInitiatorRequestableContracts());
 //		allContracts.addAll(given.getParticipantOnWaitContracts());
@@ -376,14 +343,14 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 //public ContractTrunk<InformedCandidature<Contract, ActionSpec>,ActionSpec,  PersonalState> select(
 //		ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> cs) {
 //	assert cs instanceof ResourceInformedCandidatureContractTrunk;
-//	ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState> ct = 
+//	ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState> ct =
 //			(ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState>) cs;
-//	InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myCore = 
+//	InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myCore =
 //			(InformedCandidatureRationality<ActionSpec, PersonalState, Contract>) getMyAgent().getMyCore();
 //	ResourceUpgradingInformedProposerCore<Contract, ActionSpec, PersonalState> myProposerCore =
 //			(ResourceUpgradingInformedProposerCore<Contract, ActionSpec, PersonalState>) getMyAgent().getMyProposerCore();
 //
-//	ContractTrunk<InformedCandidature<Contract, ActionSpec>,ActionSpec,  PersonalState> returned = 
+//	ContractTrunk<InformedCandidature<Contract, ActionSpec>,ActionSpec,  PersonalState> returned =
 //			new ContractTrunk<InformedCandidature<Contract,ActionSpec>, ActionSpec, PersonalState>(getMyAgent());
 //
 //	Collection<InformedCandidature<Contract, ActionSpec>> accepted = new HashSet<InformedCandidature<Contract, ActionSpec>>();
@@ -444,7 +411,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 //			rejected.addAll(ct.getParticipantAlreadyAcceptedContracts());
 //
 //			try {
-//				ReallocationContract<Contract, ActionSpec> r = 
+//				ReallocationContract<Contract, ActionSpec> r =
 //						ct.getBestRequestableReallocationContracts(
 //								myCore.getReferenceAllocationComparator(getMyAgent().getMyCurrentState()));
 //				if (r!=null)

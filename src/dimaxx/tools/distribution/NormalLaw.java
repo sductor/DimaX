@@ -69,10 +69,12 @@ public class NormalLaw extends GimaObject {
 		result = this.moyenne +
 				Math.max(-1, Math.min(1, this.ecartType/2.6 * randNumNorm))*Math.min(1-this.moyenne, this.moyenne);
 
-		if (result==0)
+		if (result==0) {
 			result+=0.001;
-		if (result==1)
+		}
+		if (result==1) {
 			result-=0.001;
+		}
 		return result;
 	}
 
@@ -100,8 +102,9 @@ public class NormalLaw extends GimaObject {
 	 */
 	public static void main(final String[] args){
 		final NormalLaw d = new NormalLaw(0.7, 0.75);
-		for (int i = 0; i < 200; i++)
+		for (int i = 0; i < 200; i++) {
 			System.out.println(d.nextNormalizedNonExtremeValue());
+		}
 	}
 
 	///

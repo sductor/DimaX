@@ -79,8 +79,9 @@ public class ObservationManager {
 	public synchronized void unregisterAgent(final String agent_name)
 			throws InexistentNameException {
 		final Object rs = this.agent_criticities.remove(agent_name);
-		if (rs == null)
+		if (rs == null) {
 			throw new InexistentNameException(agent_name);
+		}
 	}
 
 	/**

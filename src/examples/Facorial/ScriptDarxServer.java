@@ -28,10 +28,9 @@ public class ScriptDarxServer {
 		/* the URL corresponds to the local host */
 
 		//Server
-		if (args.length > 0)
+		if (args.length > 0) {
 			Darx.main(args);
-
-		else {
+		} else {
 			arg[0] = "7002";
 			Darx.main(arg);
 		}

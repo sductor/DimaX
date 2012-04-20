@@ -89,14 +89,17 @@ public  abstract class InteractiveAgent extends BasicCommunicatingAgent //implem
 	 */
 	public static AbstractRole defaultInitParticipantRole(final InteractiveAgent agent, final FIPAACLMessage m)
 	{
-		if (m.getProtocol().equals("FIPAContractNetProtocol"))
+		if (m.getProtocol().equals("FIPAContractNetProtocol")) {
 			return new ContractNetParticipant(agent,m.getConversationId(),m.getSender(),(AbstractService)m.getContent(),m.getReplyBy(),new RandomEvaluationStrategy());
+		}
 
-		if (m.getProtocol().equals("BargainingProtocol"))
+		if (m.getProtocol().equals("BargainingProtocol")) {
 			return new BargainingParticipant(agent,m.getConversationId(),m.getSender(),(AbstractService)m.getContent(),new RandomEvaluationStrategy());
+		}
 
-		if (m.getProtocol().equals("EnglishAuctionProtocol"))
+		if (m.getProtocol().equals("EnglishAuctionProtocol")) {
 			return new EnglishAuctionParticipant(agent,m.getConversationId(),m.getSender(),(AbstractService)m.getContent(),m.getReplyBy());
+		}
 
 		return null;
 	}
@@ -109,11 +112,13 @@ public  abstract class InteractiveAgent extends BasicCommunicatingAgent //implem
 	{
 		// System.out.println("ENTRER DANS ENDROLE EVENT...");
 		// System.out.println("VALEUR DE GETROLE.. "+getRole(convId).getRoleName());
-		if(this.getRole(convId).getState().equalsIgnoreCase("failure"))
+		if(this.getRole(convId).getState().equalsIgnoreCase("failure")) {
 			this.failureRoleProcess(this.getRole(convId));
-		else if(this.getRole(convId).getState().equalsIgnoreCase("success"))
+		} else if(this.getRole(convId).getState().equalsIgnoreCase("success"))
+		{
 			this.successRoleProcess(this.getRole(convId));
-		// System.out.println("SORTIR DE END ROLE EVENT ....");
+			// System.out.println("SORTIR DE END ROLE EVENT ....");
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -132,8 +137,9 @@ public  abstract class InteractiveAgent extends BasicCommunicatingAgent //implem
 	{
 		final Vector agents = new Vector(this.getAquaintances().keySet());
 
-		for(int i=0;i<agents.size();i++)
+		for(int i=0;i<agents.size();i++) {
 			agents.set(i,new AgentName((String)agents.get(i)));
+		}
 
 		return agents;
 	}
@@ -191,13 +197,14 @@ public  abstract class InteractiveAgent extends BasicCommunicatingAgent //implem
 	{
 		final FIPAACLMessage msg = (FIPAACLMessage) m;
 
-		if (this.hasRole(msg.getConversationId()))
+		if (this.hasRole(msg.getConversationId())) {
 			this.getRole(msg.getConversationId()).addNewMessage(msg);
-		else if(msg.isCFP())
+		} else if(msg.isCFP()) {
 			// System.out.println("TROUVE CFP .....");
 			this.processCFPMessage(msg); // traiter le cas de la reception d'un nouveau appel de proposition
-		else
+		} else {
 			System.out.println("ERREUR!!! d'envoie de message ("+msg.getPerformative()+") "+this.getId()+" --> "+msg.getSender()+" : Je ne participe pas � la conversation : "+msg.getConversationId());
+		}
 	}
 	/**
 	 * Insert the method's description here.

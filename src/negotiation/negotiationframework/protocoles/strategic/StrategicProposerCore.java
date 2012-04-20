@@ -1,11 +1,11 @@
-package negotiation.negotiationframework.protocoles.strategic;
+package negotiation.negotiationframework.exploration.strategic;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 

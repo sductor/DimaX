@@ -113,11 +113,16 @@ public class MessageSend2 extends GimaObject {
 			final Class[] margs =  method2.getParameterTypes();
 			if (method2.getName().equals(methodName)) {
 				boolean t = true;
-				if (args.length==margs.length)
+				if (args.length==margs.length) {
 					//System.out.println("  while looking for "+methodName);
-					for (int j=0; j<args.length; j++) t= t && margs[j].isAssignableFrom((Class)args[j]);
+					for (int j=0; j<args.length; j++) {
+						t= t && margs[j].isAssignableFrom((Class)args[j]);
+					}
+				}
 				//if (t) System.out.println("The method " + methodName + " has been found");
-				if (t) return method2;
+				if (t) {
+					return method2;
+				}
 			}
 		}
 
@@ -191,9 +196,9 @@ public class MessageSend2 extends GimaObject {
 	 *
 	 */
 	public static Object invoke(final Object r, final String m) {
-		if (r == null)
+		if (r == null) {
 			return null;
-		else {
+		} else {
 			final MessageSend p = new MessageSend(r, m);
 			return p.invoke();
 		}
@@ -207,15 +212,16 @@ public class MessageSend2 extends GimaObject {
 	public static Object invoke(final Object r, final String m, final Object[] a) {
 		try {
 
-			if (r == null)
+			if (r == null) {
 				return null;
-			else {
+			} else {
 				Class[] c = new Class[0]; //null avant
 				//if (a==null) return invoke(r, m);
 				if (a != null) {
 					c = new Class[a.length];
-					for (int i = 0; i < a.length; i++)
+					for (int i = 0; i < a.length; i++) {
 						c[i] = a[i].getClass();
+					}
 				}
 
 				final MessageSend2 p = new MessageSend2(r, m, c);

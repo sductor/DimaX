@@ -96,8 +96,9 @@ public class Rule extends RuleBaseObject {
 	 */
 	public void executeWithoutTest() {
 		final java.util.Enumeration e = this.actions.elements();
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			((NamedAction)e.nextElement()).execute();
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -105,15 +106,18 @@ public class Rule extends RuleBaseObject {
 	 */
 	public void executeWithoutTest(final Object ctxt) {
 		final java.util.Enumeration e = this.actions.elements();
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			((NamedAction)e.nextElement()).execute(ctxt);
+		}
 	}
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (16/06/00 15:49:25)
 	 */
 	public void executeWithTest() {
-		if (!this.isSatisfied()) return;
+		if (!this.isSatisfied()) {
+			return;
+		}
 		// here, all conditions are respected
 		this.executeWithoutTest();
 	}
@@ -122,7 +126,9 @@ public class Rule extends RuleBaseObject {
 	 * Creation date: (16/06/00 15:49:25)
 	 */
 	public void executeWithTest(final Object ctxt) {
-		if (!this.isSatisfied(ctxt)) return;
+		if (!this.isSatisfied(ctxt)) {
+			return;
+		}
 		// here, all conditions are respected
 		this.executeWithoutTest(ctxt);
 	}
@@ -133,8 +139,13 @@ public class Rule extends RuleBaseObject {
 	 */
 	public boolean isSatisfied() {
 		final java.util.Enumeration e = this.conditions.elements();
-		while (e.hasMoreElements()) // for each condition in field conditions
-			if (!((NamedCondition)e.nextElement()).isSatisfied()) return false; // is it in current condition set
+		while (e.hasMoreElements())
+		{
+			if (!((NamedCondition)e.nextElement()).isSatisfied())
+			{
+				return false; // is it in current condition set
+			}
+		}
 		return true;
 	}
 	/**
@@ -144,9 +155,13 @@ public class Rule extends RuleBaseObject {
 	 */
 	public boolean isSatisfied(final Object ctxt) {
 		final java.util.Enumeration e = this.conditions.elements();
-		while (e.hasMoreElements()) // for each condition in field conditions
+		while (e.hasMoreElements())
+		{
 			if (!((NamedCondition)e.nextElement()).isSatisfied(ctxt))
+			{
 				return false; // is it in current condition set
+			}
+		}
 		return true;
 	}
 	/**

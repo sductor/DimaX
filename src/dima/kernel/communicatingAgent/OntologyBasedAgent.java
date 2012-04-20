@@ -261,8 +261,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 		while(it.hasNext())
 		{
 			o = it.next();
-			if(o instanceof DAMLDataInstance) // test if o is an instance of the instantiation of a DAML datatype
+			if(o instanceof DAMLDataInstance) {
 				continue;
+			}
 			if(instance.equals(o))
 			{
 				stmt = ((DAMLInstance) o).listProperties(property);
@@ -270,8 +271,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 				while(stmt.hasNext())
 				{
 					st = stmt.next();
-					if(( (com.hp.hpl.mesa.rdf.jena.model.Literal) st.getObject()).equals(value))
+					if(( (com.hp.hpl.mesa.rdf.jena.model.Literal) st.getObject()).equals(value)) {
 						return true;
+					}
 				}
 			}
 		}
@@ -290,8 +292,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 		while(it.hasNext())
 		{
 			damlClass = (DAMLClass) it.next();
-			if(damlClass.equals(upperClass))
+			if(damlClass.equals(upperClass)) {
 				return true;
+			}
 		}
 		System.out.println("This class does not exist in this ontology");
 		return false;
@@ -310,11 +313,13 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 		it = OntologyBasedAgent.ontoModel.listDAMLInstances();
 		while(it.hasNext())
 		{ o = it.next();
-		if(o instanceof DAMLDataInstance)
+		if(o instanceof DAMLDataInstance) {
 			continue;
+		}
 		inst = (DAMLInstance) o;
-		if(inst.equals(instance))
+		if(inst.equals(instance)) {
 			return true;
+		}
 		}
 		System.out.println("This resource does not exist in this ontology");
 		return false;
@@ -338,8 +343,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 		while(it.hasNext())
 		{
 			prop = (DAMLProperty) it.next();
-			if(prop.equals(property))
+			if(prop.equals(property)) {
 				return true;
+			}
 		}
 		System.out.println("This property does not exist in this class\n");
 		return false;
@@ -375,8 +381,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 
 			try
 			{
-				if(premise != null)
+				if(premise != null) {
 					drc.tellString(premise);
+				}
 
 				rsi = drc.ask(queryKif); // we ask the reasoner to reason about the query
 
@@ -421,13 +428,15 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 				{
 					final Map.Entry ent = (Map.Entry)it.next();
 					final Object key = ent.getKey();
-					if(key == null)
+					if(key == null) {
 						continue;
+					}
 
 					final String varname = key.toString().substring(1); //here we have the variable name
 					final Object ev = ent.getValue(); // here we have the value
-					if(ev == null)
+					if(ev == null) {
 						continue;
+					}
 					final String varval = this.unKIF(ev.toString());
 					final Vector ans =new Vector();
 					ans.add(0,varname);
@@ -460,8 +469,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 
 				final Map bindings = OntologyBasedAgent.getTopLevelBindings(rs);  // here we have a Map of the answers "variables,values"
 
-				if (allBind.contains(bindings) || bindings.isEmpty())
+				if (allBind.contains(bindings) || bindings.isEmpty()) {
 					continue;
+				}
 				Vector aset = new Vector();
 
 				final Iterator it = bindings.entrySet().iterator();
@@ -470,19 +480,22 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 				{
 					final Map.Entry ent = (Map.Entry)it.next();
 					final Object key = ent.getKey();
-					if(key == null)
+					if(key == null) {
 						continue;
+					}
 
 					final String varname = key.toString().substring(1); //here we have the variable name
 					final Object ev = ent.getValue(); // here we have the value
-					if(ev == null)
+					if(ev == null) {
 						continue;
+					}
 					final String varval = this.unKIF(ev.toString());
 					if(varval.startsWith("Anon_") ||
 							varval.startsWith("jtp.frame.") ||
 							!musts.contains(varname) &&
-							!mays.contains(varname))
+							!mays.contains(varname)) {
 						continue;
+					}
 					final Vector ans =new Vector();
 					ans.add(0,varname);
 					ans.add(1,varval);
@@ -497,8 +510,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 					boolean hadIt = false;
 					while(!hadIt && ai.hasNext()) {
 						final Vector a = (Vector) ai.next();
-						if(a.elementAt(0).toString().equals(vn))
+						if(a.elementAt(0).toString().equals(vn)) {
 							hadIt = true;
+						}
 					}
 					if(!hadIt) {
 						aset = new Vector();
@@ -507,8 +521,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 				}
 				allBind.add(bindings);
 
-				if(aset.isEmpty())
+				if(aset.isEmpty()) {
 					continue;
+				}
 				answers.addElement(aset); // here we add the Vector aset to the vector answers.
 
 			}
@@ -530,13 +545,15 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 		for(int x = 0; x < kif.length(); ++x) {
 			final char c = kif.charAt(x);
 			if(c == '|') {
-				if(kif.substring(x).startsWith("|::|"))
+				if(kif.substring(x).startsWith("|::|")) {
 					x += 3;
+				}
 			}
-			else if(c == ':' && kif.charAt(x+1) == ':')
+			else if(c == ':' && kif.charAt(x+1) == ':') {
 				++x;
-			else
+			} else {
 				ret.append(c);
+			}
 		}
 		return ret.toString();
 	}
@@ -551,7 +568,7 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 		final String request = (String) m.getContent();
 		System.out.println("Ask-One:"+"\n"+
 				"Sender: "+m.getSender()+"\n"+
-				"Receiver: "+m.getReceiver()+"\n"+
+//				"Receiver: "+m.getReceiver()+"\n"+
 				"Content: "+request+"\n"+
 				"Language: "+m.getLanguage()+"\n"+
 				"Ontology: "+m.getOntology()+"\n"+
@@ -607,7 +624,7 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 	{final String request = (String) m.getContent();
 	System.out.println("Ask-All:"+"\n"+
 			"Sender: "+m.getSender()+"\n"+
-			"Receiver: "+m.getReceiver()+"\n"+
+//			"Receiver: "+m.getReceiver()+"\n"+
 			"Content: "+request+"\n"+
 			"Language: "+m.getLanguage()+"\n"+
 			"Ontology: "+m.getOntology()+"\n"+
@@ -686,7 +703,7 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 	{final String request = (String) m.getContent();
 	System.out.println("Tell:"+"\n"+
 			"Sender: "+m.getSender()+"\n"+
-			"Receiver: "+m.getReceiver()+"\n"+
+//			"Receiver: "+m.getReceiver()+"\n"+
 			"Content: "+request+"\n"+
 			"Language: "+m.getLanguage()+"\n"+
 			"Ontology: "+m.getOntology()+"\n"+
@@ -834,8 +851,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 	if(thing.startsWith("urn:tkb#"))
 	{ ret= new StringBuffer();
 	ret.append(this.refKb+"#");
-	for(int x=8; x<thing.length();x++)
+	for(int x=8; x<thing.length();x++) {
 		ret.append(thing.charAt(x));
+	}
 	return ret.toString();
 	}
 	return thing;
@@ -881,17 +899,18 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 
 	protected static Map getBindings(ReasoningStep rs)
 	{
-		if (rs.getGoal() instanceof String)
+		if (rs.getGoal() instanceof String) {
 			rs = (ReasoningStep)rs.getSubProofs().get(0);
+		}
 		return RSUtils.getRecursiveBindings(rs, null);
 	}
 
 	protected static Set getQueryVariables(final ReasoningStep rs)
 	{
 		final Object goal = rs.getGoal();
-		if (goal instanceof CNFSentence)
+		if (goal instanceof CNFSentence) {
 			return OntologyBasedAgent.getQueryVariables((CNFSentence)goal);
-		else {
+		} else {
 			final ReasoningStep subRS = (ReasoningStep)rs.getSubProofs().get(0);
 			return OntologyBasedAgent.getQueryVariables((CNFSentence)subRS.getGoal());
 		}
@@ -904,8 +923,9 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 			final Clause cl = (Clause)i.next();
 			for (final Iterator j = cl.literals().iterator(); j.hasNext(); ) {
 				final jtp.fol.Literal lit = (jtp.fol.Literal)j.next();
-				if (lit.getArgs() instanceof Unifyable)
+				if (lit.getArgs() instanceof Unifyable) {
 					vars.addAll(((Unifyable)lit.getArgs()).getVariables(null));
+				}
 			}
 		}
 		return vars;
@@ -925,23 +945,27 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 			int x = 0;
 			while(x< request.length())
 			{
-				if(request.charAt(x)== '?')
+				if(request.charAt(x)== '?') {
 					break;
+				}
 				x++;
 			}
-			for(int y=0;y<x;y++)
+			for(int y=0;y<x;y++) {
 				buff.append(request.charAt(y));
+			}
 			while(ansit.hasNext()) {
 				final Vector a = (Vector) ansit.next();
 				buff.append(a.elementAt(1));
 
 				while(x<request.length())
-				{  if(request.charAt(x)==' '||request.charAt(x)==')')
+				{  if(request.charAt(x)==' '||request.charAt(x)==')') {
 					break;
+				}
 				x++;
 				}
-				for(;x<request.length();x++)
+				for(;x<request.length();x++) {
 					buff.append(request.charAt(x));
+				}
 
 			}
 		}

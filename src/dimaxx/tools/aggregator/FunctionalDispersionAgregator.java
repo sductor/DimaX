@@ -10,11 +10,12 @@ public class FunctionalDispersionAgregator {
 	double getVariance(final Analyser f,final Collection<Element> elements) {
 		double result = 0.;
 		final double moyenne = f.getNumericValue(f.getRepresentativeElement(elements));
-		for (final Element e : elements)
+		for (final Element e : elements) {
 			result += Math.pow(
 					f.getNumericValue(e) - moyenne,
 					2);
-				return result / elements.size();
+		}
+		return result / elements.size();
 	}
 
 	public static <Element, Analyser extends UtilitaristAnalyser<Element> & FunctionnalCompensativeAggregator<Element>>
@@ -38,12 +39,13 @@ public class FunctionalDispersionAgregator {
 	public static <Element, Analyser extends UtilitaristAnalyser<Element> & FunctionnalCompensativeAggregator<Element>>
 	double getVariance(final Analyser f,final Map<Element, Double> elements) {
 		double result = 0.;
-		for (final Element e : elements.keySet())
+		for (final Element e : elements.keySet()) {
 			result += elements.get(e) * Math.pow(
 					f.getNumericValue(e)
 					- f.getNumericValue(f.getRepresentativeElement(elements.keySet())),
 					2);
-				return result / elements.size();
+		}
+		return result / elements.size();
 	}
 
 	public static <Element, Analyser extends UtilitaristAnalyser<Element> & FunctionnalCompensativeAggregator<Element>>

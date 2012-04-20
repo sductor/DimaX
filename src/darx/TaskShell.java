@@ -280,8 +280,9 @@ public class TaskShell extends UnicastRemoteObject implements TaskShellHandle {
 	@Override
 	public void processDeliverAsyncMessage(final DarxMessage msg)
 			throws RemoteException {
-		if (this.acceptMsg(msg))
+		if (this.acceptMsg(msg)) {
 			new MessageDeliverThread(msg, this.task).start();
+		}
 	}
 
 	@Override
@@ -291,8 +292,9 @@ public class TaskShell extends UnicastRemoteObject implements TaskShellHandle {
 		if (this.acceptMsg(msg)) {
 			reply = this.task.receiveSyncMessage(msg.getContents());
 			this.replyCache.put(msg.getSenderName() + msg.getSerial(), reply);
-		} else
+		} else {
 			reply = this.replyCache.get(msg.getSenderName() + msg.getSerial());
+		}
 		// This request has already been processed : return cached reply
 		return reply;
 	}
@@ -381,8 +383,9 @@ public class TaskShell extends UnicastRemoteObject implements TaskShellHandle {
 		} catch (final UnknownReplicantException e) {
 			new_rep_info = this.policy.generateNewInfo(url, port_nb);
 		}
-		if (new_rep_info == null)
+		if (new_rep_info == null) {
 			throw new IllegalReplicationException(url, port_nb);
+		}
 		// Obtain the remote DarxServer stub corresponding to 'url' & 'port_nb'
 		final DarxServer server = this.getRemoteServerHandle(url, port_nb);
 		new_rep_info.textifyDarxName();

@@ -2,10 +2,10 @@ package negotiation.faulttolerance.experimentation;
 
 import java.util.Date;
 
-import negotiation.experimentationframework.ExperimentationResults;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import dima.basicagentcomponents.AgentIdentifier;
+import dimaxx.experimentation.ExperimentationResults;
 
 public class ReplicationResultAgent implements ExperimentationResults {
 
@@ -88,7 +88,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		return this.status;
 	}
 
-	@Override
+
 	public boolean isHost() {
 		return false;
 	}
@@ -99,7 +99,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	}
 
 	public int getNumberOfAllocatedResources() {
-		return numberOfAllocatedResources;
+		return this.numberOfAllocatedResources;
 	}
 
 }

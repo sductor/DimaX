@@ -136,8 +136,9 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 
 		DimaXTask<BasicCommunicatingAgent> darxEngine=null;
 		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
-		if (this instanceof BasicCompetentAgent)
+		if (this instanceof BasicCompetentAgent) {
 			((BasicCompetentAgent) this).setDarxEngine(darxEngine);
+		}
 
 		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
 		try	{
@@ -152,8 +153,9 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	{
 		DimaXTask<BasicCommunicatingAgent> darxEngine=null;
 		darxEngine = new  DimaXTask<BasicCommunicatingAgent>(this);
-		if (this instanceof BasicCompetentAgent)
+		if (this instanceof BasicCompetentAgent) {
 			((BasicCompetentAgent) this).setDarxEngine(darxEngine);
+		}
 
 		this.com = new DimaXCommunicationComponent<BasicCommunicatingAgent>(darxEngine);
 		try	{
@@ -334,18 +336,20 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 */
 	public void processNextMessage() {
 		final Message m = (Message) this.getMessage();
-		if (m.getType().equals("java"))
+		if (m.getType().equals("java")) {
 			m.process(this);
-		else
+		} else {
 			// System.out.println("TROUVE ACL MSG ....VERIF"+m.toString());
 			this.processAclMessage(m);
+		}
 	}
 
 	public Object processMessage(final Message m) {
-		if (m.getType().equals("java"))
+		if (m.getType().equals("java")) {
 			return m.process(this);
-		else
+		} else {
 			this.processAclMessage(m);
+		}
 		return null;
 	}
 	/**
@@ -354,6 +358,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @return boolean
 	 */
 	public boolean put(final AbstractMessage m) {
+//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) ||  m.getReceiver().equals(this.getIdentifier());
 		return this.mailBox.writeMail(m);
 	}
 	/**
@@ -362,16 +367,18 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @return Gdima.kernel.AgentAddress
 	 */
 	public void readAllMessages() {
-		while (this.hasMail())
+		while (this.hasMail()) {
 			this.readMailBox();
+		}
 	}
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (07/05/00 09:28:47)
 	 */
 	public void readMailBox() {
-		if (this.hasMail())
+		if (this.hasMail()) {
 			this.processNextMessage();
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -380,7 +387,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 */
 	@Override
 	public void receive(final Message m) {
-
+//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) || m.getReceiver().equals(this.getIdentifier()):"agent "+this.getIdentifier()+" has received "+m;
 		this.put(m);
 	}
 	/**
@@ -390,7 +397,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @param am Gdima.competences.communication.AbstractMessage
 	 */
 	public void sendAll(final Message am) {
-		this.sendMessage(this.aquaintances.values(), am);
+		this.sendMessage(this.aquaintances.values(),am);
 	}
 	/**
 	 * Insert the method's description here.
@@ -403,12 +410,13 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	public void sendMessage(final AgentIdentifier agentId, final Message am) {
 		am.setSender(this.getIdentifier());
 		am.setReceiver(agentId);
-		if (this.aquaintances.containsKey(agentId.toString()))
+		if (this.aquaintances.containsKey(agentId.toString())) {
 			this.com.sendMessage(
 					this.aquaintances.get(agentId.toString()),
 					am);
-		else
-			this.com.sendMessage(am);
+		} else {
+			this.com.sendMessage(agentId,am.clone());
+		}
 	}
 
 
@@ -422,8 +430,9 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	public void sendMessage(final Collection<AgentAddress> agents, final Message am) {
 		final Iterator<AgentAddress> iter = agents.iterator();
 		am.setSender(this.getIdentifier());
-		while (iter.hasNext())
-			this.sendMessage((iter.next()).getId(), am);
+		while (iter.hasNext()) {
+			this.sendMessage(iter.next().getId(), am);
+		}
 	}
 
 	/**

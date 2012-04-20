@@ -149,10 +149,12 @@ public class Transition2 extends AutomataObject implements Serializable
 		// System.out.println("ENTRER DANS SATISFIED ....");
 		final Enumeration e = this.getConditions().elements();
 
-		while(e.hasMoreElements())
+		while(e.hasMoreElements()) {
 			// System.out.println("ENTRER DANS NAMED CONDITION .....");
-			if(!((NamedCondition)e.nextElement()).isSatisfied())
+			if(!((NamedCondition)e.nextElement()).isSatisfied()) {
 				return false;
+			}
+		}
 		return true;
 	}
 	/**
@@ -166,9 +168,11 @@ public class Transition2 extends AutomataObject implements Serializable
 		// System.out.println("ENTRER DANS SATISFIED CONTEXT...");
 		// System.out.println(context);
 		final Enumeration e = this.getConditions().elements();
-		while(e.hasMoreElements())
-			if(!((NamedCondition)e.nextElement()).isSatisfied(context))
+		while(e.hasMoreElements()) {
+			if(!((NamedCondition)e.nextElement()).isSatisfied(context)) {
 				return false;
+			}
+		}
 		return true;
 	}
 	/**
@@ -179,8 +183,9 @@ public class Transition2 extends AutomataObject implements Serializable
 	{
 		final Enumeration e = this.getActions().elements();
 
-		while(e.hasMoreElements())
+		while(e.hasMoreElements()) {
 			((NamedAction)e.nextElement()).execute();
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -215,7 +220,8 @@ public class Transition2 extends AutomataObject implements Serializable
 	{
 		final Enumeration e = this.getActions().elements();
 
-		while(e.hasMoreElements())
+		while(e.hasMoreElements()) {
 			((NamedAction)e.nextElement()).execute(cxt);
+		}
 	}
 }

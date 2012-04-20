@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
+import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
@@ -22,6 +24,7 @@ public class BasicIntrospectiveShell extends GimaObject {
 	//
 
 	//	private final DimaComponentInterface myMainComponent;
+	private final AgentIdentifier myComponentIdentifier;
 
 	/** The,agent and its methods **/
 	private IntrospectedMethodsTrunk myMethods;
@@ -34,9 +37,10 @@ public class BasicIntrospectiveShell extends GimaObject {
 	//
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent,
+			final IdentifiedComponentInterface myComponent,
 			final IntrospectedMethodsTrunk methods) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = methods;
 		this.exceptionHandler  = new SimpleExceptionHandler();
 
@@ -44,10 +48,11 @@ public class BasicIntrospectiveShell extends GimaObject {
 	}
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent,
+			final IdentifiedComponentInterface myComponent,
 			final IntrospectedMethodsTrunk methods,
 			final SimpleExceptionHandler exceptionHandler) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = methods;
 		this.exceptionHandler = exceptionHandler;
 
@@ -59,8 +64,9 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 */
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent) {
+			final IdentifiedComponentInterface myComponent) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = new BasicIntrospectedMethodsTrunk();
 		this.exceptionHandler  = new SimpleExceptionHandler();
 
@@ -68,9 +74,10 @@ public class BasicIntrospectiveShell extends GimaObject {
 	}
 
 	public BasicIntrospectiveShell(
-			final DimaComponentInterface myComponent, final Date horloge,
+			final IdentifiedComponentInterface myComponent, final Date horloge,
 			final SimpleExceptionHandler exceptionHandler) {
 		super();
+		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = new BasicIntrospectedMethodsTrunk();
 		this.exceptionHandler = exceptionHandler;
 
@@ -81,6 +88,16 @@ public class BasicIntrospectiveShell extends GimaObject {
 	// Accessors
 	//
 
+	
+
+
+	/**
+	 * @return the component identifer
+	 */
+	public AgentIdentifier getIdentifier() {
+		return myComponentIdentifier;
+	}
+	
 	/**
 	 * @return the exceptionHandler
 	 */
@@ -134,9 +151,10 @@ public class BasicIntrospectiveShell extends GimaObject {
 	protected final Set<MethodHandler> metToRemove = new HashSet<MethodHandler>();
 	public final void postActivity(final Date creation){
 		this.executeBehaviors(PostStepComposant.class, creation);
-		for (final MethodHandler meth : this.metToRemove)
+		for (final MethodHandler meth : this.metToRemove) {
 			this.myMethods.removeMethod(meth);
-				this.metToRemove.clear();
+		}
+		this.metToRemove.clear();
 	}
 
 	public void proactivityTerminate(final Date creation){
@@ -156,17 +174,20 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 *            the agent to execute
 	 */
 	protected void executeBehaviors(final Class<? extends Annotation> annotation, final Date creation) {
-		for (final MethodHandler mt : this.myMethods.getMethods())
-			if (mt.isAnnotationPresent(annotation))
+		for (final MethodHandler mt : this.myMethods.getMethods()) {
+			if (mt.isAnnotationPresent(annotation)) {
 				try {
 					final boolean toRemove = this.myMethods.executeStepMethod(mt, creation);
-					if (toRemove)
+					if (toRemove) {
 						this.metToRemove.add(mt);
+					}
 				} catch (final Throwable e) {
 					// The exception is raised by the method
 					this.getExceptionHandler().handleException(
 							e, this.getStatus());
 				}
+			}
+		}
 
 	}
 }

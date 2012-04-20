@@ -45,16 +45,18 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	 * Creation date: (07/07/2002 13:12:28)
 	 */
 	public synchronized void forwardMessage(final Message m) {
-		final String a = m.getReceiver().toString();
+		final String a = getCommunicationComponent().getMessageReceiver(m).toString();
 		AgentAddress ad;
 		if ( this.aquaintances.containsKey(a))
 		{ad = this.aquaintances.get(a);
 		ad.receive(m);}
-		else System.err.println(
-				"From AMS : Message lost! \n"+m+" "+m.getClass()
-				+"\n sender : "+m.getSender()
-				+"\n receiver -------> "+m.getReceiver()
-				+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
+		else {
+			System.err.println(
+					"From AMS : Message lost! \n"+m+" "+m.getClass()
+					+"\n sender : "+m.getSender()
+//					+"\n receiver -------> "+m.getReceiver()
+					+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -96,8 +98,10 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 	public void step()
 	{
 		while (this.isActive())
+		{
 			this.readAllMessages();
-		//wwait(200);
+			//wwait(200);
+		}
 	}
 	public void unregister(final AgentIdentifier name) {
 		this.aquaintances.remove(name.toString());

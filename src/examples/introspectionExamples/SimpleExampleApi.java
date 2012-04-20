@@ -19,8 +19,9 @@ public class SimpleExampleApi extends APIAgent{
 	public SimpleExampleApi()
 			throws CompetenceException {
 		super("simple example agent launcher");
-		for (int i = 0; i < this.nbAgent; i++)
+		for (int i = 0; i < this.nbAgent; i++) {
 			this.agents.add(new SimpleAgent(i, this.nbAgent, this.nbTour));
+		}
 		this.agents.add(new SimpleObserverAgent(this.nbAgent));
 	}
 
@@ -38,10 +39,10 @@ public class SimpleExampleApi extends APIAgent{
 	 */
 	public static void main(final String[] args) throws CompetenceException {
 		final SimpleExampleApi apiAgent = new SimpleExampleApi();
-		//		exp.initAPI(false);//SCHEDULED
-		//		exp.initAPI(true);//FIPA
-		apiAgent.initAPI(7777,7776);//DARX LOCAL
-		//		exp.initAPI("lip6.xml");//DARX Deployed
+		apiAgent.initAPI(false);//SCHEDULED
+		//		apiAgent.initAPI(true);//FIPA
+//		apiAgent.initAPI(7777,7776);//DARX LOCAL
+		//		apiAgent.initAPI("lip6.xml");//DARX Deployed
 		apiAgent.launchMySelf();
 	}
 }

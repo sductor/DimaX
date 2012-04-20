@@ -91,22 +91,28 @@ public class MPEnvironment implements Environment, Serializable
 	{
 		MPEnvironment.conLength=length;
 		double i;
-		for(i=1.; i+Math.pow(2.,i)<=MPEnvironment.conLength; i++);//calculates the position bits in this problem
+		for(i=1.; i+Math.pow(2.,i)<=MPEnvironment.conLength; i++)
+		{
+			;//calculates the position bits in this problem
+		}
 		this.posBits=(int)(i-1);
 
-		if(this.posBits+Math.pow(2.,this.posBits) != MPEnvironment.conLength)
+		if(this.posBits+Math.pow(2.,this.posBits) != MPEnvironment.conLength) {
 			System.out.println("There are additonally "+(int)(MPEnvironment.conLength-(this.posBits+Math.pow(2.,this.posBits)))+" irrelevant Bits!");
+		}
 
 		this.currentState = new char[MPEnvironment.conLength];
 
-		if(payoffMap==0)
+		if(payoffMap==0) {
 			MPEnvironment.payoffLandscape=false;
-		else
+		} else {
 			MPEnvironment.payoffLandscape=true;
-		if(MPEnvironment.payoffLandscape)
+		}
+		if(MPEnvironment.payoffLandscape) {
 			this.maxPayoff=(int)(200 + 200 * Math.pow(2.,this.posBits));
-		else
+		} else {
 			this.maxPayoff=1000;
+		}
 
 		this.correct=false;
 		this.reset=false;
@@ -129,26 +135,32 @@ public class MPEnvironment implements Environment, Serializable
 	public double executeAction(final int action)
 	{
 		int place=this.posBits;
-		for(int i=0; i<this.posBits; i++)
-			if(this.currentState[i]=='1')
-				place+=Math.pow(2., (this.posBits-1-i));
+		for(int i=0; i<this.posBits; i++) {
+			if(this.currentState[i]=='1') {
+				place+=Math.pow(2., this.posBits-1-i);
+			}
+		}
 		int ret=0;
 		if(action == Character.digit(this.currentState[place],10)){
 			this.correct=true;
 			if(MPEnvironment.payoffLandscape){
 				ret = 300 + (place-this.posBits)*200 ;
-				if(this.currentState[place]=='1')
+				if(this.currentState[place]=='1') {
 					ret+=100;
-			} else
+				}
+			} else {
 				ret = this.maxPayoff;
+			}
 		}else{
 			this.correct=false;
 			if(MPEnvironment.payoffLandscape){
 				ret = (place-this.posBits)*200;
-				if(this.currentState[place] == '1')
+				if(this.currentState[place] == '1') {
 					ret+=100;
-			} else
+				}
+			} else {
 				ret = 0;
+			}
 		}
 		this.reset = true;
 		return ret;
@@ -202,11 +214,13 @@ public class MPEnvironment implements Environment, Serializable
 	@Override
 	public String resetState()
 	{
-		for(int i=0; i<MPEnvironment.conLength; i++)
-			if(XCSConstants.drand()<0.5)
+		for(int i=0; i<MPEnvironment.conLength; i++) {
+			if(XCSConstants.drand()<0.5) {
 				this.currentState[i]='0';
-			else
+			} else {
 				this.currentState[i]='1';
+			}
+		}
 		this.reset=false;
 		return new String(this.currentState);
 	}

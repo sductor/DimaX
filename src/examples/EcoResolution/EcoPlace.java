@@ -43,14 +43,18 @@ class EcoPlace extends EcoAgent {
 		final int ilc = this.owner.indexFirstRowColumnAllowed;
 
 		final Vector adjPlaces = new Vector();
-		if ( this.row > ilc)
+		if ( this.row > ilc) {
 			adjPlaces.addElement( this.owner.places[this.row-1][this.col]);
-		if ( this.row + 1 < this.owner.size)
+		}
+		if ( this.row + 1 < this.owner.size) {
 			adjPlaces.addElement( this.owner.places[this.row+1][this.col]);
-		if ( this.col > ilc)
+		}
+		if ( this.col > ilc) {
 			adjPlaces.addElement( this.owner.places[this.row][this.col-1]);
-		if ( this.col + 1 < this.owner.size)
+		}
+		if ( this.col + 1 < this.owner.size) {
 			adjPlaces.addElement( this.owner.places[this.row][this.col+1]);
+		}
 		return adjPlaces;
 	}
 	@Override
@@ -79,10 +83,11 @@ class EcoPlace extends EcoAgent {
 	public  EcoAgent findSatisfactionPlace() {return this;}
 	public boolean isAdjacentTo( final EcoPlace ec) {//renvoie true si ec est adjacent a "this"
 		if ( this.row == ec.row && Math.abs( this.col - ec.col) == 1 ||
-				this.col == ec.col && Math.abs( this.row - ec.row) == 1)
+				this.col == ec.col && Math.abs( this.row - ec.row) == 1) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 	@Override
 	public boolean isFree() {

@@ -32,7 +32,7 @@ extends CommunicationComponent {
 	@Override
 	public void sendMessage(final Message m) {
 
-		final AgentIdentifier id = m.getReceiver();
+		final AgentIdentifier id = getMessageReceiver(m);
 		RemoteTask remote = null;
 		try {
 			remote = this.task.findTask(id.toString());
@@ -42,10 +42,11 @@ extends CommunicationComponent {
 			return;
 		}
 
-		if(remote != null)
+		if(remote != null) {
 			this.comm.sendAsyncMessage(remote, m);
-		else
+		} else {
 			throw new RuntimeException(this+" Echec de l'envoi du message"+m);
+		}
 
 	}
 }

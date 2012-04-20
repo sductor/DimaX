@@ -100,23 +100,25 @@ Serializable {
 	@Override
 	public void suspend() {
 		for (final Enumeration en = this.replicants.elements(); en
-				.hasMoreElements();)
+				.hasMoreElements();) {
 			try {
 				((TaskShellHandle) en.nextElement()).suspend();
 			} catch (final RemoteException e) {
 				this.handleUnreachableReplicant(this.info, e);
 			}
+		}
 	}
 
 	@Override
 	public void resume() {
 		for (final Enumeration en = this.replicants.elements(); en
-				.hasMoreElements();)
+				.hasMoreElements();) {
 			try {
 				((TaskShellHandle) en.nextElement()).resume();
 			} catch (final RemoteException e) {
 				this.handleUnreachableReplicant(this.info, e);
 			}
+		}
 	}
 
 	@Override
@@ -132,13 +134,14 @@ Serializable {
 		 * MessageDeliverThread(msg, shell.task); deliver.start(); }
 		 */
 		for (final Enumeration en = this.replicants.elements(); en
-				.hasMoreElements();)
+				.hasMoreElements();) {
 			try {
 				((TaskShellHandle) en.nextElement())
 				.processDeliverAsyncMessage(msg);
 			} catch (final RemoteException e) {
 				this.handleUnreachableReplicant(this.info, e);
 			}
+		}
 	}
 
 	@Override
@@ -157,14 +160,16 @@ Serializable {
 			proc[k + 1].start();
 			k++;
 		}
-		for (k = 0; k < proc.length; k++)
+		for (k = 0; k < proc.length; k++) {
 			try {
 				proc[k].join();
-				if (proc[k].getException() != null)
+				if (proc[k].getException() != null) {
 					this.handleUnreachableReplicant(this.info, proc[k]
 							.getException());
+				}
 			} catch (final InterruptedException e) {
 			}
+		}
 		return proc[0].getReply();
 	}
 

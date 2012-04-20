@@ -42,14 +42,14 @@ public class ConstraintResource extends Constraint {
 		{
 
 			/* */ System.out.println("ENTRER SATISF CONST RES OK .....");
-			if(this.operator.isEqual())
+			if(this.operator.isEqual()) {
 				return serv.equals((Resource)this.objectValue);
-			else if (this.operator.isLittleThan()) {
+			} else if (this.operator.isLittleThan()) {
 				/* */ System.out.println("ENTRER DANS ISSATIF DE CONSTRESOURCE....");
 				return	serv.littleThan((Resource)this.objectValue);
-			}
-			else
+			} else {
 				return !serv.equals((Resource)this.objectValue);
+			}
 		}
 
 		return true;

@@ -96,18 +96,20 @@ public class SSHExecutor extends  SSHInfo {
 	}
 
 	private void init(){
-		if (this.privateKeyPath != null)
+		if (this.privateKeyPath != null) {
 			try {
 				this.jsch.addIdentity(this.privateKeyPath);
 			} catch (final JSchException e) {
 				// The user will be asked of its credentials
 			}
-		if (this.knownHostsPath != null)
+		}
+		if (this.knownHostsPath != null) {
 			try {
 				this.jsch.setKnownHosts(this.knownHostsPath);
 			} catch (final JSchException e) {
 				// The user will be asked of its credentials
 			}
+		}
 	}
 
 	//
@@ -160,8 +162,9 @@ public class SSHExecutor extends  SSHInfo {
 		if (this.isLocal()){
 			final Executor exec = new Executor();
 			return exec.execute(command);
-		} else
+		} else {
 			return this.connectWithCommand(command);
+		}
 	}
 
 	/*
@@ -185,8 +188,9 @@ public class SSHExecutor extends  SSHInfo {
 		//		this.channel.setOutputStream(System.out);
 		this.channel.connect();
 
-		if (this.hasGate())
+		if (this.hasGate()) {
 			this.execute("ssh "+this.url);
+		}
 	}
 
 	public String executeOnchannel(final String command) throws ErrorOnProcessExecutionException, JSchException, IOException{
@@ -195,8 +199,9 @@ public class SSHExecutor extends  SSHInfo {
 			final Executor exec = new Executor();
 			return exec.execute(command);
 		} else {
-			if (!this.isConnected())
+			if (!this.isConnected()) {
 				this.connectChannel();
+			}
 			return this.writeInChannel(command);
 		}
 	}
@@ -266,10 +271,11 @@ public class SSHExecutor extends  SSHInfo {
 		final InputStream out = new BufferedInputStream(this.channel.getInputStream());
 		n = out.read(b);
 		String sortie;
-		if (n > 0)
+		if (n > 0) {
 			sortie = new String(b, 0, n);
-		else
+		} else {
 			sortie = "Le processus n'a pas renvoyé de sortie";
+		}
 		return sortie;
 	}
 
@@ -337,8 +343,9 @@ class MyUserInfo implements UserInfo, UIKeyboardInteractive {
 		if (result == JOptionPane.OK_OPTION) {
 			this.passwd = this.passwordField.getText();
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override
@@ -376,10 +383,11 @@ class MyUserInfo implements UserInfo, UIKeyboardInteractive {
 			this.gbc.gridx = 1;
 			this.gbc.fill = GridBagConstraints.HORIZONTAL;
 			this.gbc.weighty = 1;
-			if (echo[i])
+			if (echo[i]) {
 				texts[i] = new JTextField(20);
-			else
+			} else {
 				texts[i] = new JPasswordField(20);
+			}
 			this.panel.add(texts[i], this.gbc);
 			this.gbc.gridy++;
 		}
@@ -388,11 +396,14 @@ class MyUserInfo implements UserInfo, UIKeyboardInteractive {
 				+ name, JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
 			final String[] response = new String[prompt.length];
-			for (int i = 0; i < prompt.length; i++)
+			for (int i = 0; i < prompt.length; i++) {
 				response[i] = texts[i].getText();
+			}
 			return response;
-		} else
+		}
+		else {
 			return null; // cancel
+		}
 	}
 }
 

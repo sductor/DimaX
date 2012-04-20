@@ -13,7 +13,8 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	 *
 	 */
 	private static final long serialVersionUID = -7910893993695270592L;
-	private BasicCommunicatingShell myShell;
+	protected BasicCommunicatingShell myShell;
+
 	protected Date creation;
 
 	public BasicIntrospectedCommunicatingAgent() {
@@ -70,6 +71,14 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 		this.creation = horloge;
 	}
 
+	//
+	// Accessor
+	//
+	
+
+	public BasicCommunicatingShell getMyShell() {
+		return myShell;
+	}
 
 	//
 	// Proactivity

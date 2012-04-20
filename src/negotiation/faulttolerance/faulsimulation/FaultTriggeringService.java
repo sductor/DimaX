@@ -10,6 +10,7 @@ import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dimaxx.experimentation.ExperimentationParameters;
 
 public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLaborantin> {
 	private static final long serialVersionUID = -5136934098832050285L;
@@ -37,7 +38,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	int i = 0;
 
 
-	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
+//	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
 	public void toggleFault() {
 		int nbMax = this.p.host_maxSimultaneousFailure.intValue();
 		if (nbMax>0){
@@ -56,13 +57,17 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 					//					this.logWarning("executing this sentence : " + sentence
 					//							+ " (" + this.i + ")",LogService.onBoth);
 					// Déclaration public
-					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents())
+					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents()) {
 						this.getMyAgent().sendMessage(id, sentence);
+					}
 
-							if (sentence instanceof FaultEvent)
-								nbMax--;// il est mort! =(
-							if (nbMax == 0)
-								break;
+					if (sentence instanceof FaultEvent)
+					{
+						nbMax--;// il est mort! =(
+					}
+					if (nbMax == 0) {
+						break;
+					}
 				}
 			}
 			this.i++;

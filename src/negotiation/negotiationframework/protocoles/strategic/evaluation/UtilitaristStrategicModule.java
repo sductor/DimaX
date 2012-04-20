@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.evaluation;
+package negotiation.negotiationframework.exploration.strategic.evaluation;
 
 import java.util.Collection;
 
@@ -32,21 +32,23 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 	public  Float getAgentBelievedStateConfidence(final AgentIdentifier id){
 		try {
 			final Opinion<? extends Information> state = this.getMyAgent().getMyInformation().getOpinion(this.getMyInfoType(), id);
-			if (!state.isCertain())
+			if (!state.isCertain()) {
 				return new Float(1 - state.getOpinionDispersion());
-			else {
+			} else {
 				final Opinion<? extends Information> global = this.getMyAgent().getMyInformation().getGlobalOpinion(this.getMyInfoType());
-				if (state.getUptime() <= global.getMinInformationDynamicity())
+				if (state.getUptime() <= global.getMinInformationDynamicity()) {
 					return new Float(1);
-				if (state.getUptime() >= global.getMaxInformationDynamicity())
+				}
+				if (state.getUptime() >= global.getMaxInformationDynamicity()) {
 					//cas jamais utilisé pcq isKnown fait le update
 					return new Float(0);
-				else
+				} else {
 					return new Float(
 							(state.getUptime() -
 									global.getMaxInformationDynamicity())/
 									(global.getMinInformationDynamicity() -
 											global.getMaxInformationDynamicity()));
+				}
 			}
 		} catch (final Exception e) {
 			this.getMyAgent().signalException("impossible on raisonne sur son propre état il doit etre au moins présent!", e);
@@ -61,8 +63,9 @@ implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 			Float confTotal=new Float(0);
 			for (final AgentIdentifier id : ids){
 				confTotal+=1 - this.getAgentBelievedStateConfidence(id);
-				if (this.getMyAgent().getMyInformation().getOpinion(this.getMyInfoType(), id).isCertain())
+				if (this.getMyAgent().getMyInformation().getOpinion(this.getMyInfoType(), id).isCertain()) {
 					nbknown++;
+				}
 			}
 			return new Double(confTotal / (ids.size() * nbknown) );
 			//		new Double(nbUnknown * getMyAgent().getMyInformation().getSystemDispersion() * ageMoyen)  / (ids.size() * (ids.size() - nbUnknown));

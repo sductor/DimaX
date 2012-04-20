@@ -104,9 +104,10 @@ public class FuzzyRule implements Serializable {
 		FuzzySubSet eProd = this.appliqueObs(itO.next().doubleValue(), itS
 				.next());
 
-		while (itS.hasNext() && itO.hasNext())
+		while (itS.hasNext() && itO.hasNext()) {
 			eProd = eProd.sousEnsembleInter(this.appliqueObs(itO.next()
 					.doubleValue(), itS.next()));
+		}
 
 		return eProd;
 	}

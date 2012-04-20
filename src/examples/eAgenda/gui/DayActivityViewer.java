@@ -59,18 +59,20 @@ public class DayActivityViewer extends JComponent {
 			tact = (TimedActivity)list.get(i);
 			time = tact.getTimeSlot();
 
-			if (time.getStartDay().compareTo(this.myDay) == 0)
+			if (time.getStartDay().compareTo(this.myDay) == 0) {
 				yStart = (int)((time.getMinuteInDay()-this.startTime*60)*oneHourPixel/60)+this.upTitleHeight;
-			else
+			} else {
 				yStart = (int)(-this.startTime*oneHourPixel)+this.upTitleHeight;
+			}
 
 			yHeight = (int)(Math.min(1440, time.getDurationRemaining(this.myDay))*oneHourPixel/60);
 
 			act = tact.getActivity();
-			if (act instanceof PersonalActivity)
+			if (act instanceof PersonalActivity) {
 				g.setColor(Color.yellow);
-			else
+			} else {
 				g.setColor(Color.green);
+			}
 			g.fillRect(3,yStart,this.getWidth()-3,yHeight);
 			g.setColor(Color.lightGray);
 			g.drawLine(3,yStart,this.getWidth(), yStart);
@@ -97,8 +99,9 @@ public class DayActivityViewer extends JComponent {
 		for (int i=0; i<cycles; i++)
 		{
 			final int y = (int)(this.upTitleHeight+i*oneHourPixel);
-			if ((this.startTime+i)%2 == 0)
+			if ((this.startTime+i)%2 == 0) {
 				g.drawString(""+(this.startTime+i), 2, y+11);
+			}
 			g.drawLine(1,y, 5, y);
 		}
 	}

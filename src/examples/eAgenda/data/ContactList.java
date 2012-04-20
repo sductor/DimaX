@@ -33,8 +33,9 @@ public class ContactList extends People {
 	@Override
 	public ArrayList getCanonicalList() {
 		final ArrayList list = new ArrayList(1);
-		for (final Iterator it = this.myPeople.iterator();it.hasNext(); )
+		for (final Iterator it = this.myPeople.iterator();it.hasNext(); ) {
 			list.addAll(((People)it.next()).getCanonicalList());
+		}
 		return list;
 	}
 

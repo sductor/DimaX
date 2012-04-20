@@ -92,7 +92,9 @@ public class ATN extends AutomataObject {
 			while (e.hasMoreElements()) {
 				final Transition t = (Transition)e.nextElement();
 				s = s.concat("		to state "+t.targetState.getStateName()+" : "+t.toString()+"\n");
-				if (!statesToDo.contains(t.targetState)) statesToDo.add(t.targetState);
+				if (!statesToDo.contains(t.targetState)) {
+					statesToDo.add(t.targetState);
+				}
 			}
 			statesDo++;
 		}

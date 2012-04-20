@@ -2,11 +2,11 @@ package negotiation.faulttolerance.candidaturewithstatus;
 
 import java.util.Collection;
 
-import negotiation.experimentationframework.ObservingStatusService;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
@@ -29,7 +29,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 		return true;
 	}
 
-	@StepComposant(ticker = ReplicationExperimentationParameters._reliabilityObservationFrequency)
+	@StepComposant(ticker = NegotiationParameters._statusObservationFrequency)
 	public void notifyMyReliability4Status() {
 		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
 		this.notify(
@@ -51,46 +51,25 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 		final ReplicaState s2 = this.getMyAgent().getMyResultingState(s, c2);
 
 		if (this.getStatus(s1).equals(AgentStateStatus.Wastefull)
-				&& this.getStatus(s2).equals(AgentStateStatus.Wastefull))
+				&& this.getStatus(s2).equals(AgentStateStatus.Wastefull)) {
 			return this.getAllocationReliabilityPreference(s, c2, c1);// ATTENTION
-		// : on
-		// inverse
-		// ici
-		// pcq
-		// ��tant
-		// wastefull
-		// il
-		// cherche
-		// a
-		// diminuer
-		// sa
-		// reliability;
-		else if (this.getStatus(s1).equals(AgentStateStatus.Wastefull))// s2
+		} else if (this.getStatus(s1).equals(AgentStateStatus.Wastefull)) {
 			// n'est
 			// pas
 			// wastefull
 			return -1;
-		else if (this.getStatus(s2).equals(AgentStateStatus.Wastefull))// s1
+		} else if (this.getStatus(s2).equals(AgentStateStatus.Wastefull)) {
 			// n'est
 			// pas
 			// wastefull
 			return 1;
-		else
+		} else {
 			// aucun contrat ne rend wastefull
 			return this.getFirstLoadSecondReliabilitAllocationPreference(s, c1,
 					c2);
+		}
 	}
 
-	@Override
-	public boolean IWantToNegotiate(final ReplicaState s) {
-		this.updateThreshold();
-		//		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
-		//				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
-		//						.getStatus(s).equals(AgentStateStatus.Wastefull))));
-		return super.IWantToNegotiate(s)
-				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
-						.getStatus(s).equals(AgentStateStatus.Wastefull));
-	}
 
 	public AgentStateStatus getMyStatus() {
 		//		if (this.getStatus(this.getMyAgent().getMyCurrentState()).equals(AgentStateStatus.Wastefull))
@@ -115,7 +94,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 		final boolean wastefull = this.getMyAgent().getMyCurrentState()
 				.getMyReliability() > this.getHigherThreshold();
 
-				if (wastefull && fragile)
+				if (wastefull && fragile) {
 					throw new RuntimeException(
 							"impossible! : " +
 									"me: "+this.getMyAgent().getMyCurrentState().getMyReliability()+
@@ -124,18 +103,19 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 									(this.getMyAgent().getMyCurrentState().getMyReliability() <= this.getLowerThreshold())
 									+" "+(this.getMyAgent().getMyCurrentState().getMyReliability() > this.getHigherThreshold())
 									+wastefull+" "+fragile+" "+(wastefull && fragile));
-				else if (full && !wastefull)
+				} else if (full && !wastefull) {
 					return AgentStateStatus.Full;
-				else if (empty && !fragile)
+				} else if (empty && !fragile) {
 					return AgentStateStatus.Empty;
-				else if (!wastefull && !fragile)
+				} else if (!wastefull && !fragile) {
 					return AgentStateStatus.Thrifty;
-				else if (wastefull && !empty)
+				} else if (wastefull && !empty) {
 					return AgentStateStatus.Wastefull;
-				else if (fragile && !full)
+				} else if (fragile && !full) {
 					return AgentStateStatus.Fragile;
-				else
+				} else {
 					throw new RuntimeException("impossible!");
+				}
 	}
 
 	/*
@@ -148,20 +128,22 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private Double higherThreshold = Double.NaN;
 
 	private Double getLowerThreshold() {
-		if (this.lowerThreshold.equals(Double.NaN))
+		if (this.lowerThreshold.equals(Double.NaN)) {
 			return Double.POSITIVE_INFINITY;
-		else
+		} else {
 			return this.lowerThreshold;
+		}
 	}
 
 	private Double getHigherThreshold() {
-		if (this.higherThreshold.equals(Double.NaN))
+		if (this.higherThreshold.equals(Double.NaN)) {
 			return Double.POSITIVE_INFINITY;
-		else
+		} else {
 			return this.higherThreshold;
+		}
 	}
 
-	private void updateThreshold(){
+	void updateThreshold(){
 		try {
 			final Opinion<ReplicaState> o = ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(ReplicaState.class);
 			//		System.out.println("updating status opinion is : "+o);
@@ -170,8 +152,8 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 			min = o.getMinElement().getMyReliability();
 			max = o.getMaxElement().getMyReliability();
 
-			this.lowerThreshold = ReplicationExperimentationParameters.alpha_low * ((mean + min)/2);
-			this.higherThreshold = ReplicationExperimentationParameters.alpha_high * ((mean + max)/2);
+			this.lowerThreshold = NegotiationParameters.alpha_low * ((mean + min)/2);
+			this.higherThreshold = NegotiationParameters.alpha_high * ((mean + max)/2);
 		} catch (final Exception e) {
 			this.getMyAgent().signalException("impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"+this.getMyAgent().getMyInformation(), e);
 			throw new RuntimeException();

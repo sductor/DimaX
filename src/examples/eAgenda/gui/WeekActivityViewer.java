@@ -30,8 +30,9 @@ public class WeekActivityViewer extends ActivityViewer implements ActionListener
 		// Start day should be a sunday
 		this.startDay = Day.forwardedDay(today, -today.getWeekDayValue());
 
-		for (int i=0;i<7;i++)
+		for (int i=0;i<7;i++) {
 			this.days[i] = new DayActivityViewer(agenda, Day.forwardedDay(this.startDay,i));
+		}
 
 		this.setupGUI();
 	}
@@ -42,15 +43,17 @@ public class WeekActivityViewer extends ActivityViewer implements ActionListener
 		if (command.equals("reward"))
 		{
 			this.startDay = Day.forwardedDay(this.startDay, -7);
-			for (int i=0;i<7;i++)
+			for (int i=0;i<7;i++) {
 				this.days[i].setDay(Day.forwardedDay(this.startDay, i));
+			}
 			this.repaint();
 		}
 		else if (command.equals("forward"))
 		{
 			this.startDay = Day.forwardedDay(this.startDay, 7);
-			for (int i=0;i<7;i++)
+			for (int i=0;i<7;i++) {
 				this.days[i].setDay(Day.forwardedDay(this.startDay, i));
+			}
 			this.repaint();
 		}
 		else if (command.equals("up"))
@@ -96,8 +99,9 @@ public class WeekActivityViewer extends ActivityViewer implements ActionListener
 
 		final JPanel daysPanel = new JPanel();
 		daysPanel.setLayout(new GridLayout(1,7,5,5));
-		for (int i=0;i<7;i++)
+		for (int i=0;i<7;i++) {
 			daysPanel.add(this.days[i]);
+		}
 
 		weekPanel.add(daysPanel, BorderLayout.CENTER);
 

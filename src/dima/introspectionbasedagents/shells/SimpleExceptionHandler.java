@@ -29,22 +29,24 @@ public class SimpleExceptionHandler extends GimaObject{
 			final Throwable e,
 			final SimpleAgentStatus status){
 		Throwable e2;
-		if (e instanceof InvocationTargetException)
+		if (e instanceof InvocationTargetException) {
 			e2 =((InvocationTargetException) e).getCause();
-		else
+		} else {
 			e2 = e;
+		}
 
-		if (status.getCurrentlyReadedMail()!=null)
+		if (status.getCurrentlyReadedMail()!=null) {
 			return this.handleExceptionOnMessage(
 					status.getCurrentlyExecutedAgent(),
 					status.getCurrentlyExecutedMethod(),
 					status.getCurrentlyReadedMail(),
 					e2);
-		else
+		} else {
 			return this.handleExceptionOnMethod(
 					status.getCurrentlyExecutedAgent(),
 					status.getCurrentlyExecutedMethod(),
 					e2);
+		}
 	}
 
 
@@ -58,10 +60,11 @@ public class SimpleExceptionHandler extends GimaObject{
 			final AbstractMessage mess,
 			final SimpleAgentStatus status){
 		String t;
-		if(mess instanceof MessageInEnvelope)
+		if(mess instanceof MessageInEnvelope) {
 			t = ((MessageInEnvelope) mess).getMyEnvelope().toString();
-		else
+		} else {
 			t =	new ClassEnveloppe(mess).toString();
+		}
 		return
 				"This mail has been added to the mail box for be handled by the agent step()"
 				+"\n --> The received message' env is :"+t;

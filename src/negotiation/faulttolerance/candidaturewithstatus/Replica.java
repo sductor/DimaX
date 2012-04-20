@@ -3,8 +3,6 @@ package negotiation.faulttolerance.candidaturewithstatus;
 import java.util.HashSet;
 import java.util.Random;
 
-import negotiation.experimentationframework.ExperimentationResults;
-import negotiation.experimentationframework.ObservingSelfService;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
@@ -14,16 +12,19 @@ import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
-import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dimaxx.experimentation.ExperimentationResults;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class Replica
 extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature> {
@@ -48,16 +49,17 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		@Override
 		protected ExperimentationResults generateMyResults() {
 			ReplicationResultAgent myInfo;
-			if (Replica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus)
+			if (Replica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus) {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
 						Replica.this.getCreationTime(),
 						((CandidatureReplicaCoreWithStatus) Replica.this
 								.getMyCore()).getMyStatus());
-			else
+			} else {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
 						Replica.this.getCreationTime());
+			}
 			return myInfo;
 		}
 	};
@@ -111,11 +113,9 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 			final Double criticity,
 			final Double procCharge,
 			final Double memCharge,
-			final RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> myRationality,
-			final AbstractSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature> participantCore,
-			final ProposerCore<
-			SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
-			ReplicationSpecification, ReplicaState, ReplicationCandidature> proposerCore,
+			final RationalCore myRationality,
+			final SelectionCore participantCore,
+			final ProposerCore proposerCore,
 			final ObservationService myInformation,
 			final boolean dynamicCriticity)
 					throws CompetenceException {
@@ -123,7 +123,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 		this.setNewState(new ReplicaState(id, criticity, procCharge, memCharge,new HashSet<HostState>(),-1));
-		getMyProtocol().getContracts().setMyAgent(this);
+		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
 
 	//

@@ -132,8 +132,9 @@ public class Enseignant extends MultiRolesAgent
 		//break;
 		//}
 		//}
-		if (this.needs.contains(agentId))
+		if (this.needs.contains(agentId)) {
 			this.needs.remove(agentId);
+		}
 
 	}
 	/**
@@ -179,8 +180,9 @@ public class Enseignant extends MultiRolesAgent
 				}
 				this.readMailBox();
 			}
-		} else
+		} else {
 			this.readMailBox();
+		}
 
 		this.wwait();
 	}

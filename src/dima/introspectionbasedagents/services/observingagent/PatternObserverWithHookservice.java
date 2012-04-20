@@ -56,19 +56,26 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 
 		me.registeredMethods =
 				new HashedHashSet<String, MethodHandler>();
-		for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(ag.getClass()))
-			if (m.isAnnotationPresent(EventHookedMethod.class))
-				if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m))
+		for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(ag.getClass())) {
+			if (m.isAnnotationPresent(EventHookedMethod.class)) {
+				if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m)) {
 					me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(ag, m));
-				else
+				} else {
 					throw new  UnrespectedCompetenceSyntaxException(me.toString());
-				for (final AgentCompetence<?> comp : BasicCompetenceShell.getNativeCompetences(ag))
-					for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(comp.getClass()))
-						if (m.isAnnotationPresent(EventHookedMethod.class))
-							if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m))
-								me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(comp, m));
-							else
-								throw new  UnrespectedCompetenceSyntaxException(me.toString());
+				}
+			}
+		}
+		for (final AgentCompetence<?> comp : BasicCompetenceShell.getNativeCompetences(ag)) {
+			for (final Method m : IntrospectionStaticPrimitivesLibrary.getAllMethods(comp.getClass())) {
+				if (m.isAnnotationPresent(EventHookedMethod.class)) {
+					if (PatternObserverWithHookservice.checkEventHookedMethodValidity(m)) {
+						me.registeredMethods.add(m.getAnnotation(EventHookedMethod.class).value().getName(), new MethodHandler(comp, m));
+					} else {
+						throw new  UnrespectedCompetenceSyntaxException(me.toString());
+					}
+				}
+			}
+		}
 	}
 
 	//
@@ -100,18 +107,19 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 	public static boolean checkEventHookedMethodValidity(final Method mt){
 		if (mt.isAnnotationPresent(EventHookedMethod.class)){
 			final Class<? extends Serializable> keyclass = mt.getAnnotation(EventHookedMethod.class).value();
-			if ((mt.getParameterTypes().length == 1
+			if (mt.getParameterTypes().length == 1
 					&& keyclass.isAssignableFrom(
-							mt.getParameterTypes()[0])))
+							mt.getParameterTypes()[0])) {
 				return true;
-			else {
+			} else {
 				LogService.writeException(
 						mt,
 						"Wrong parameters type for message parser method " + mt
 						+ " should be only one message class");
 				return false;
 			}
-		} else
+		} else {
 			return false;
+		}
 	}
 }

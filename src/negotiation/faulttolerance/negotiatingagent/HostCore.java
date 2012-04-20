@@ -1,13 +1,14 @@
 package negotiation.faulttolerance.negotiatingagent;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.replication.ReplicationHandler;
 
@@ -24,17 +25,14 @@ extends	BasicAgentCompetence<SimpleRationalAgent<ReplicationSpecification, HostS
 implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidature> {
 	private static final long serialVersionUID = -179565544489478368L;
 
-	private final boolean iWanToNegotiate;
 	private final ReplicationSocialOptimisation myOptimiser;
 
 	//
 	// Constructor
 	//
 
-	public HostCore(final boolean mirrorNegotiating, final String socialWelfare) {
-		this.iWanToNegotiate = mirrorNegotiating;
+	public HostCore(final String socialWelfare) {
 		this.myOptimiser = new ReplicationSocialOptimisation(socialWelfare);
-
 	}
 
 
@@ -46,15 +44,15 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	public int getAllocationPreference(final HostState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-		for (final ReplicationCandidature c : c1){
-			c.setSpecification(s);	
-		}	
-		for (final ReplicationCandidature c : c2){
+		for (final ReplicationCandidature c : c1) {
+			c.setSpecification(s);
+		}
+		for (final ReplicationCandidature c : c2) {
 			c.setSpecification(s);
 		}
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
-				"Preference : "+pref+" for \n "+c1+"\n"+c2, 
+				"Preference : "+pref+" for \n "+c1+"\n"+c2,
 				AllocationSocialWelfares.log_socialWelfareOrdering);
 		return pref;
 	}
@@ -62,9 +60,9 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 
 	@Override
-	public void execute(final ReplicationCandidature c) {
+	public void execute(final Collection<ReplicationCandidature> cs) {
 		try {
-			assert c.isViable():c;//this.getMyAgent().respectRights(c);
+//			assert ContractTransition.allViable(cs):cs;//this.getMyAgent().respectRights(c);
 			//		logMonologue(
 			//				"executing "+c+" from state "
 			//		+this.getMyAgent().getMyCurrentState()
@@ -75,28 +73,42 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			 *
 			 */
 
-			if (c.isMatchingCreation()) {
-				ReplicationHandler.replicate(c.getAgent());
-				this.observe(c.getAgent(), SimpleObservationService.informationObservationKey);
-				//			System.out.println(c.getResource() + " " + new Date().toString()
-				//					+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
-			} else {
-				ReplicationHandler.killReplica(c.getAgent());
-				this.stopObservation(c.getAgent(), SimpleObservationService.informationObservationKey);
-				//			System.out.println(c.getResource() + " " + new Date().toString()
-				//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+			final Collection<ReplicationCandidature> creation = new ArrayList<ReplicationCandidature>();
+			final Collection<ReplicationCandidature> destruction = new ArrayList<ReplicationCandidature>();
+
+			for (final ReplicationCandidature c : cs) {
+				if (c.isMatchingCreation()) {
+					creation.add(c);
+				} else {
+					destruction.add(c);
+				}
 			}
 
-			this.getMyAgent().setNewState(
-					c.computeResultingState(
-							this.getMyAgent().getMyCurrentState()));
-			this.getMyAgent().getMyInformation().add(c.getAgentResultingState());
-		} catch (IncompleteContractException e) {
+			for (final ReplicationCandidature c : destruction){
+				ReplicationHandler.killReplica(c.getAgent());
+				//									System.out.println(c.getResource() + " " + new Date().toString()
+				//											+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+				this.getMyAgent().setNewState(
+						c.computeResultingState(
+								this.getMyAgent().getMyCurrentState()));
+			}
+
+			for (final ReplicationCandidature c : creation){
+				ReplicationHandler.replicate(c.getAgent());
+				//									System.out.println(c.getResource() + " " + new Date().toString()
+				//											+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
+				this.getMyAgent().setNewState(
+						c.computeResultingState(
+								this.getMyAgent().getMyCurrentState()));
+			}
+		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
 		}
 	}
+
+
 
 	@Override
 	public HostState getMySpecif(
@@ -106,15 +118,9 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	}
 
 	@Override
-	public boolean IWantToNegotiate(final HostState s) {
-		return this.iWanToNegotiate;
+	public Double evaluatePreference(final Collection<ReplicationCandidature> cs) {
+		return this.myOptimiser.getUtility(cs);
 	}
-
-	@Override
-	public Double evaluatePreference(final HostState s1) {
-		return this.myOptimiser.getUtilitaristEvaluator().getUtilityValue(s1);
-	}
-
 }
 //
 

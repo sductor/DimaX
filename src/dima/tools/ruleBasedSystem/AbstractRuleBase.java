@@ -44,7 +44,9 @@ public abstract class AbstractRuleBase extends RuleBaseObject {
 	 */
 	public void addRules(final java.util.Vector lomr) {
 		final java.util.Enumeration e = lomr.elements();
-		while (e.hasMoreElements()) this.addRule((Rule)e.nextElement());
+		while (e.hasMoreElements()) {
+			this.addRule((Rule)e.nextElement());
+		}
 	}
 	/**
 	 * Insert the method's description here.
@@ -88,8 +90,9 @@ public abstract class AbstractRuleBase extends RuleBaseObject {
 	public String toString() {
 		String s = new String("Classifier :\n	Rules :\n");
 		final java.util.Enumeration e = this.listOfRules.elements();
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			s+=new String("		"+((Rule)e.nextElement()).toString()+"\n");
+		}
 		return s;
 	}
 }

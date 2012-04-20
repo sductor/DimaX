@@ -117,7 +117,9 @@ public class BoundedLinkedQueue implements BoundedChannel {
 	 * @exception IllegalArgumentException if capacity less or equal to zero
 	 **/
 	public BoundedLinkedQueue(final int capacity) {
-		if (capacity <= 0) throw new IllegalArgumentException();
+		if (capacity <= 0) {
+			throw new IllegalArgumentException();
+		}
 		this.capacity_ = capacity;
 		this.putSidePutPermits_ = capacity;
 		this.head_ =  new LinkedNode(null);
@@ -166,37 +168,45 @@ public class BoundedLinkedQueue implements BoundedChannel {
 	}
 	@Override
 	public boolean offer(final Object x, final long msecs) throws InterruptedException {
-		if (x == null) throw new IllegalArgumentException();
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (x == null) {
+			throw new IllegalArgumentException();
+		}
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 
 		synchronized(this.putGuard_) {
 
-			if (this.putSidePutPermits_ <= 0)
+			if (this.putSidePutPermits_ <= 0) {
 				synchronized(this) {
-					if (this.reconcilePutPermits() <= 0)
-						if (msecs <= 0)
+					if (this.reconcilePutPermits() <= 0) {
+						if (msecs <= 0) {
 							return false;
-						else
+						} else {
 							try {
 								long waitTime = msecs;
 								final long start = System.currentTimeMillis();
 
 								for(;;) {
 									this.wait(waitTime);
-									if (this.reconcilePutPermits() > 0)
+									if (this.reconcilePutPermits() > 0) {
 										break;
-									else {
+									} else {
 										waitTime = msecs - (System.currentTimeMillis() - start);
-										if (waitTime <= 0)
+										if (waitTime <= 0) {
 											return false;
+										}
 									}
 								}
 							}
-					catch (final InterruptedException ex) {
-						this.notify();
-						throw ex;
+							catch (final InterruptedException ex) {
+								this.notify();
+								throw ex;
+							}
+						}
 					}
 				}
+			}
 
 			this.insert(x);
 		}
@@ -208,28 +218,31 @@ public class BoundedLinkedQueue implements BoundedChannel {
 	public Object peek() {
 		synchronized(this.head_) {
 			final LinkedNode first = this.head_.next;
-			if (first != null)
+			if (first != null) {
 				return first.value;
-			else
+			} else {
 				return null;
+			}
 		}
 	}
 	@Override
 	public Object poll(final long msecs) throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		Object x = this.extract();
-		if (x != null)
+		if (x != null) {
 			return x;
-		else
+		} else {
 			synchronized(this.takeGuard_) {
 				try {
 					long waitTime = msecs;
 					final long start = msecs <= 0? 0: System.currentTimeMillis();
 					for (;;) {
 						x = this.extract();
-						if (x != null || waitTime <= 0)
+						if (x != null || waitTime <= 0) {
 							return x;
-						else {
+						} else {
 							this.takeGuard_.wait(waitTime);
 							waitTime = msecs - (System.currentTimeMillis() - start);
 						}
@@ -240,6 +253,7 @@ public class BoundedLinkedQueue implements BoundedChannel {
 					throw ex;
 				}
 			}
+		}
 	}
 	/*
 	 put and offer(ms) differ only in policy before insert/allowTake
@@ -247,26 +261,33 @@ public class BoundedLinkedQueue implements BoundedChannel {
 
 	@Override
 	public void put(final Object x) throws InterruptedException {
-		if (x == null) throw new IllegalArgumentException();
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (x == null) {
+			throw new IllegalArgumentException();
+		}
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 
 		synchronized(this.putGuard_) {
 
-			if (this.putSidePutPermits_ <= 0)
+			if (this.putSidePutPermits_ <= 0) {
 				synchronized(this) {
-					if (this.reconcilePutPermits() <= 0)
+					if (this.reconcilePutPermits() <= 0) {
 						try {
 							for(;;) {
 								this.wait();
-								if (this.reconcilePutPermits() > 0)
+								if (this.reconcilePutPermits() > 0) {
 									break;
+								}
 							}
 						}
-					catch (final InterruptedException ex) {
-						this.notify();
-						throw ex;
+						catch (final InterruptedException ex) {
+							this.notify();
+							throw ex;
+						}
 					}
 				}
+			}
 			this.insert(x);
 		}
 		// call outside of lock to loosen put/take coupling
@@ -292,7 +313,9 @@ public class BoundedLinkedQueue implements BoundedChannel {
 	 **/
 
 	public synchronized void setCapacity(final int newCapacity) {
-		if (newCapacity <= 0) throw new IllegalArgumentException();
+		if (newCapacity <= 0) {
+			throw new IllegalArgumentException();
+		}
 
 		this.takeSidePutPermits_ += newCapacity - this.capacity_;
 		this.capacity_ = newCapacity;
@@ -316,19 +339,22 @@ public class BoundedLinkedQueue implements BoundedChannel {
 	}
 	@Override
 	public Object take() throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		Object x = this.extract();
-		if (x != null)
+		if (x != null) {
 			return x;
-		else
+		} else {
 			synchronized(this.takeGuard_) {
 				try {
 					for (;;) {
 						x = this.extract();
-						if (x != null)
+						if (x != null) {
 							return x;
-						else
+						} else {
 							this.takeGuard_.wait();
+						}
 					}
 				}
 				catch(final InterruptedException ex) {
@@ -336,5 +362,6 @@ public class BoundedLinkedQueue implements BoundedChannel {
 					throw ex;
 				}
 			}
+		}
 	}
 }

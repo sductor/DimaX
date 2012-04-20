@@ -90,12 +90,14 @@ public class XCS implements Serializable
 			explore = (explore+1)%2;
 
 			final String state = this.env.resetState();
-			if(explore==1)
+			if(explore==1) {
 				exploreStepCounter=this.doOneMultiStepProblemExplore(state, exploreStepCounter);
-			else
+			} else {
 				this.doOneMultiStepProblemExploit(state, stepsToFood, sysError, exploreTrialC, exploreStepCounter);
-			if(exploreTrialC%50==0 && explore==0 && exploreTrialC>0)
+			}
+			if(exploreTrialC%50==0 && explore==0 && exploreTrialC>0) {
 				this.writePerformance(pW, stepsToFood, sysError, exploreTrialC);
+			}
 		}
 	}
 	/**
@@ -235,12 +237,14 @@ public class XCS implements Serializable
 
 			final String state = this.env.resetState();
 
-			if(explore==1)
+			if(explore==1) {
 				this.doOneSingleStepProblemExplore(state, exploreProbC);
-			else
+			} else {
 				this.doOneSingleStepProblemExploit(state, exploreProbC, correct, sysError);
-			if(exploreProbC%50==0 && explore==0 && exploreProbC>0)
+			}
+			if(exploreProbC%50==0 && explore==0 && exploreProbC>0) {
 				this.writePerformance(pW, correct, sysError, exploreProbC);
+			}
 		}
 	}
 	/**
@@ -265,10 +269,11 @@ public class XCS implements Serializable
 
 		final double reward = this.env.executeAction( actionWinner );
 
-		if(this.env.wasCorrect())
+		if(this.env.wasCorrect()) {
 			correct[counter%50]=1;
-		else
+		} else {
 			correct[counter%50]=0;
+		}
 
 		sysError[counter%50] = Math.abs(reward - predictionArray.getBestValue());
 	}
@@ -323,10 +328,12 @@ public class XCS implements Serializable
 		}
 
 		final XCS xcs=new XCS(e, args[1]);
-		if(args.length > 4)
+		if(args.length > 4) {
 			xcs.setNumberOfTrials(new Integer(args[4]).intValue());
-		if(args.length > 5)
+		}
+		if(args.length > 5) {
 			xcs.setNumberOfExperiments(new Integer(args[5]).intValue());
+		}
 		xcs.runXCS();
 		return;
 	}
@@ -390,10 +397,11 @@ public class XCS implements Serializable
 			//Initialize Population
 			this.pop=new XClassifierSet(this.env.getNrActions());
 
-			if(!this.env.isMultiStepProblem())
+			if(!this.env.isMultiStepProblem()) {
 				this.doOneSingleStepExperiment(pW);
-			else
+			} else {
 				this.doOneMultiStepExperiment(pW);
+			}
 			this.pop=null;
 		}
 	}

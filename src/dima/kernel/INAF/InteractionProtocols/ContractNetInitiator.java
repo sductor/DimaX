@@ -373,9 +373,9 @@ public class ContractNetInitiator extends AbstractRole
 	 */
 	public boolean isInitialized()
 	{
-		if (this.contract != null && this.timeOut != null && this.participants != null)
+		if (this.contract != null && this.timeOut != null && this.participants != null) {
 			return true;
-		else
+		} else
 		{
 			System.out.println("ERREUR !! "+this.getAgent()+ " : le role n'est pas correctement initialis�");
 			return false;
@@ -448,8 +448,9 @@ public class ContractNetInitiator extends AbstractRole
 
 		final Enumeration e = this.getParticipants().elements();
 
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			this.getAgent().sendMessage((AgentIdentifier) e.nextElement(), msg);
+		}
 
 		System.out.println(this.getAgent().getIdentifier() + " --> " + this.getParticipants() + " : Call For Proposal (" + this.getConversationId() + ") with contract "+this.getContract());
 	}

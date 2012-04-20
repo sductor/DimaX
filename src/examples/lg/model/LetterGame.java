@@ -20,8 +20,9 @@ public class LetterGame
 	}
 	public void dropLetter(final Letter l) throws GameException{
 		// vrifier qu'on l'a dans le deck
-		if (!this.deck.contains(l))
+		if (!this.deck.contains(l)) {
 			throw new GameException("Can't use a letter absent in the deck!");
+		}
 		this.deck.dropLetter(l);
 
 		// on pique dans la pioche pour remplacer
@@ -32,8 +33,9 @@ public class LetterGame
 	public void exchangeLetter(final Letter l) throws GameException
 	{
 		// vrifier qu'on l'a dans le deck
-		if (!this.deck.contains(l))
+		if (!this.deck.contains(l)) {
 			throw new GameException("Can't use a letter absent in the deck!");
+		}
 
 		this.deck.dropLetter(l);
 
@@ -60,9 +62,11 @@ public class LetterGame
 		final Vector all = new Vector(this.getDeck().getLetters());
 
 
-		for (int i=0;i<needed.size();i++)
-			if ( all.contains( needed.get(i) ) )
+		for (int i=0;i<needed.size();i++) {
+			if ( all.contains( needed.get(i) ) ) {
 				all.remove(needed.get(i));
+			}
+		}
 
 		System.out.println(this.getWordToComplete().getWord()+" --> Les needed sont :"+needed+" et les non needed "+all);
 
@@ -103,8 +107,9 @@ public class LetterGame
 	}
 	public void useLetter(final Letter l) throws GameException {
 		// vrifier qu'on l'a dans le deck
-		if (!this.deck.contains(l))
+		if (!this.deck.contains(l)) {
 			throw new GameException("Can't use a letter absent in the deck!");
+		}
 		// ajouter au mot (si possible)
 		try {
 			this.wordToComplete.addLetter(l);

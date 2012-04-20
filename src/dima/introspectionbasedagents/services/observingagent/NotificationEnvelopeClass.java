@@ -29,11 +29,11 @@ public class NotificationEnvelopeClass implements Envelope {
 	public NotificationEnvelopeClass(
 			final NotificationEnvelope e,
 			final MethodHandler mt){
-		if (!e.value().equals(""))
+		if (!e.value().equals("")) {
 			this.key = e.value();
-		else if (mt.getGenericClassOfFirstArgument() != null)
+		} else if (mt.getGenericClassOfFirstArgument() != null) {
 			this.key = mt.getGenericClassOfFirstArgument().getName();
-		else{
+		} else{
 			this.key = null;
 			LogService.writeWarning(mt, "Could not get notification envelope!");
 		}
@@ -71,8 +71,9 @@ public class NotificationEnvelopeClass implements Envelope {
 			//				//the key are not classes so simple equals of string
 			return this.key.equals(((NotificationEnvelopeClass) o).key);
 			//			}
-		}else
+		} else {
 			return false;
+		}
 	}
 
 	@Override

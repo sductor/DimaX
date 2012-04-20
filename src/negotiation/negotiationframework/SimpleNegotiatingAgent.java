@@ -1,16 +1,15 @@
 package negotiation.negotiationframework;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationProtocol;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
-import negotiation.negotiationframework.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
-import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -22,6 +21,7 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
+import dimaxx.experimentation.ExperimentationParameters;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
@@ -75,7 +75,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
-			AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
+			final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
 
@@ -110,14 +110,14 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	}
 
 	public SelectionCore<ActionSpec, PersonalState, Contract> getMySelectionCore() {
-		return selectionCore;
+		return this.selectionCore;
 	}
 
 	//
 	// Behavior
 	//
 
-	@StepComposant(ticker=ReplicationExperimentationProtocol._simulationTime)
+	@StepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
 	public boolean end(){
 		this.setAlive(false);

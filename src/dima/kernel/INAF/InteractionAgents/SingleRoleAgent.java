@@ -94,10 +94,11 @@ public abstract class SingleRoleAgent extends InteractiveAgent
 	@Override
 	public AbstractRole getRole(final String convId)
 	{
-		if (this.getConversationId().equals(convId))
+		if (this.getConversationId().equals(convId)) {
 			return this.getRole();
-		else
+		} else {
 			return null;
+		}
 	}
 	/**
 	 * Insert the method's description here.

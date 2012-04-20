@@ -69,9 +69,10 @@ public class HeavyDoubleAggregation extends HeavyAggregation<Double> {
 	@Override
 	public Double getRepresentativeElement(final Collection<? extends Double> elems) {
 		double result = 0;
-		for (final Double e : elems)
+		for (final Double e : elems) {
 			result += e;
-				return result;
+		}
+		return result;
 	}
 
 	@Override
@@ -79,17 +80,19 @@ public class HeavyDoubleAggregation extends HeavyAggregation<Double> {
 			final Collection<? extends AbstractCompensativeAggregation<? extends Double>> averages) {
 		final HeavyDoubleAggregation result = new HeavyDoubleAggregation();
 		result.fuse(this);
-		for (final AbstractCompensativeAggregation<? extends Double> average : averages)
+		for (final AbstractCompensativeAggregation<? extends Double> average : averages) {
 			result.fuse(average);
-				return result;
+		}
+		return result;
 	}
 
 	@Override
 	public Double getRepresentativeElement(final Map<? extends Double, Double> elems) {
 		final LightWeightedAverageDoubleAggregation result = new LightWeightedAverageDoubleAggregation();
-		for (final Double e : elems.keySet())
+		for (final Double e : elems.keySet()) {
 			result.add(e,elems.get(e));
-				return result.getRepresentativeElement();
+		}
+		return result.getRepresentativeElement();
 	}
 
 }

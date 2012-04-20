@@ -113,8 +113,9 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 			InexistentNameException {
 		// Check whether the task is known when getting its info
 		final ReplicationGroupInfo rep_gp_info = this.tasks.get(task_name);
-		if (rep_gp_info == null)
+		if (rep_gp_info == null) {
 			throw new InexistentNameException(task_name);
+		}
 		// Return the requested info
 		return rep_gp_info.getLeaderInfo();
 	}
@@ -137,8 +138,9 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 		// Check whether the task is known when getting its info
 		final ReplicationGroupInfo rep_gp_info = this.tasks.get(old_leader
 				.getTaskName());
-		if (rep_gp_info == null)
+		if (rep_gp_info == null) {
 			throw new InexistentNameException(old_leader.getTaskName());
+		}
 		// Check that the given info corresponds to the current leader
 		// If it is the case, remove previous leader & return the info
 		// concerning
@@ -146,8 +148,9 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 		// leader info should be returned
 		ReplicantInfo current_leader = rep_gp_info.getLeaderInfo();
 		if (current_leader.textifyDarxName().compareTo(
-				old_leader.textifyDarxName()) == 0)
+				old_leader.textifyDarxName()) == 0) {
 			current_leader = rep_gp_info.selectNewLeader();
+		}
 		System.out.println("Old leader was " + old_leader.textifyDarxPath());
 		System.out.println("New leader is " + current_leader.textifyDarxPath());
 		// Remove previous leader & return the info concerning the new one
@@ -177,16 +180,19 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 		// Check whether the task is known when getting its info
 		final ReplicationGroupInfo rep_gp_info = this.tasks.get(rep_info
 				.getTaskName());
-		if (rep_gp_info == null)
+		if (rep_gp_info == null) {
 			throw new InexistentNameException(rep_info.getTaskName());
+		}
 		// Change the leader ONLY if the new leader info is different from
 		// the current one
 		final ReplicantInfo current_leader_info = rep_gp_info.getLeaderInfo();
-		if (current_leader_info.textifyDarxName() != rep_info.textifyDarxName())
+		if (current_leader_info.textifyDarxName() != rep_info.textifyDarxName()) {
 			rep_gp_info.setLeader(rep_info);
-		if (NameServerImpl.debug)
+		}
+		if (NameServerImpl.debug) {
 			System.out.println(rep_info.textifyDarxPath()
 					+ "is the new leader of its group");
+		}
 	}
 
 	/**
@@ -215,16 +221,18 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 			RemoteException, UnknownReplicantException {
 		// Check whether the task is known when getting its info
 		final ReplicationGroupInfo rep_gp_info = this.tasks.get(task_name);
-		if (rep_gp_info == null)
+		if (rep_gp_info == null) {
 			throw new InexistentNameException(task_name);
+		}
 		// Retrieve the information for the new leader
 		final ReplicantInfo rep_info = rep_gp_info.getLocatedMemberInfo(url,
 				port_nb);
 		// Modify the group hierarchy with new leader
 		rep_gp_info.setLeader(rep_info.getReplicantID());
-		if (NameServerImpl.debug)
+		if (NameServerImpl.debug) {
 			System.out.println(rep_info.textifyDarxPath()
 					+ "is the new leader of its group");
+		}
 		return rep_info;
 	}
 
@@ -255,11 +263,13 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 			rep_gp_info.setTaskName(task_name);
 			rep_gp_info.addLeader(new_replicant);
 			this.tasks.put(task_name, rep_gp_info);
-		} else
+		} else {
 			rep_gp_info.addMember(new_replicant);
+		}
 		// System.out.println("Done...\n");
-		if (NameServerImpl.debug)
+		if (NameServerImpl.debug) {
 			this.displayGroups();
+		}
 	}
 
 	/**
@@ -280,8 +290,9 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 			UnknownReplicantException, InexistentNameException {
 		// Check whether the task is known when getting its info
 		final ReplicationGroupInfo rep_gp_info = this.tasks.get(task_name);
-		if (rep_gp_info == null)
+		if (rep_gp_info == null) {
 			throw new InexistentNameException(task_name);
+		}
 		// Retrieve the searched replicant info
 		final ReplicantInfo doomed_replicant = rep_gp_info
 				.getLocatedMemberInfo(url, port_nb);
@@ -289,8 +300,9 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 		rep_gp_info.removeMember(doomed_replicant);
 		System.out
 		.println(doomed_replicant.textifyDarxPath() + " unregistered");
-		if (NameServerImpl.debug)
+		if (NameServerImpl.debug) {
 			this.displayGroups();
+		}
 		return doomed_replicant;
 	}
 
@@ -308,10 +320,12 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 		// Check whether the task is known when getting its info
 		// Remove the searched replication group info if found
 		final ReplicationGroupInfo rep_gp_info = this.tasks.remove(task_name);
-		if (rep_gp_info == null)
+		if (rep_gp_info == null) {
 			throw new InexistentNameException(task_name);
-		if (NameServerImpl.debug)
+		}
+		if (NameServerImpl.debug) {
 			this.displayGroups();
+		}
 		// Return the replication group info
 		return rep_gp_info;
 	}
@@ -357,8 +371,9 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 			System.exit(0);
 		}
 		System.out.println("Darx name server ready at: " + location);
-		if (NameServerImpl.debug == true)
+		if (NameServerImpl.debug == true) {
 			System.out.println("Debug mode ON");
+		}
 	}
 
 	/**
@@ -373,7 +388,7 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 	static void analyseCommandLine(final String[] params) {
 		final int l = params.length;
 		int i = 0;
-		while (i < l)
+		while (i < l) {
 			if (params[i].compareTo("-debug") == 0) {
 				NameServerImpl.debug = true;
 				i++;
@@ -387,6 +402,7 @@ public class NameServerImpl extends UnicastRemoteObject implements NameServer {
 						+ "\n'./startnserv [-p <ns_port_number>] [-debug]'");
 				System.exit(0);
 			}
+		}
 	}
 
 }

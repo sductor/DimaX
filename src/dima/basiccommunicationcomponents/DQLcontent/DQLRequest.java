@@ -52,8 +52,9 @@ public class DQLRequest
 	{
 		final String npfx = pfx + ":";
 		final String filler = "";
-		if(!url.endsWith("/") && !url.endsWith("#"))
+		if(!url.endsWith("/") && !url.endsWith("#")) {
 			url = url + "#";
+		}
 		return res.startsWith(npfx)
 				? url + res.substring(npfx.length())
 						: res;
@@ -75,22 +76,26 @@ public class DQLRequest
 	public static String getResourceNamespace(final String url)
 	{
 		final int pound = url.lastIndexOf('#');
-		if(pound != -1)
+		if(pound != -1) {
 			return url.substring(0, pound + 1);
+		}
 		final int slash = url.lastIndexOf('/');
-		if(slash != -1)
+		if(slash != -1) {
 			return url.substring(0, slash + 1);
+		}
 		return "";
 	}
 
 	public static String getResourceTag(final String url)
 	{
 		final int pound = url.lastIndexOf('#');
-		if(pound != -1)
+		if(pound != -1) {
 			return url.substring(pound + 1);
+		}
 		final int slash = url.lastIndexOf('/');
-		if(slash != -1)
+		if(slash != -1) {
 			return url.substring(slash + 1);
+		}
 		return url;
 	}
 
@@ -125,10 +130,11 @@ public class DQLRequest
 		object = DQLRequest.unabbreviate(object, kburl);
 		this.premise = this.premise + "<rdf:Description rdf:about=\"" + source + "\">\n";
 		this.premise = this.premise + "<" + predicate;
-		if(object.startsWith("urn:") || object.startsWith("http://") || object.startsWith("file:/"))
+		if(object.startsWith("urn:") || object.startsWith("http://") || object.startsWith("file:/")) {
 			this.premise = this.premise + " rdf:resource=\"" + object + "\"/>\n";
-		else
+		} else {
 			this.premise = this.premise + ">" + object + "</" + predtag + ">\n";
+		}
 		this.premise = this.premise + "</rdf:Description>\n";
 	}
 
@@ -141,8 +147,9 @@ public class DQLRequest
 	{
 		String kburl =new String("");
 		predicate = this.addNs(predicate);
-		if(kburl.startsWith(DQLRequest.varns))
+		if(kburl.startsWith(DQLRequest.varns)) {
 			kburl = "urn:tkb#";
+		}
 		predicate = DQLRequest.abbreviate(predicate, kburl);
 		final String predns = DQLRequest.getResourceNamespace(predicate);
 		String predtag = predicate;
@@ -156,10 +163,11 @@ public class DQLRequest
 		object = DQLRequest.unabbreviate(object, kburl);
 		this.query = this.query + "<rdf:Description rdf:about=\"" + source + "\">\n";
 		this.query = this.query + "<" + predicate;
-		if(object.startsWith("urn:") || object.startsWith("http://")|| object.startsWith("file:/"))
+		if(object.startsWith("urn:") || object.startsWith("http://")|| object.startsWith("file:/")) {
 			this.query = this.query + " rdf:resource=\"" + object + "\"/>\n";
-		else
+		} else {
 			this.query = this.query + ">" + object + "</" + predtag + ">\n";
+		}
 		this.query = this.query + "</rdf:Description>\n";
 	}
 
@@ -180,15 +188,19 @@ public class DQLRequest
 	{
 		switch(state) {
 		case DQLRequest.DQL_MUSTBIND:
-			for(final Iterator i = this.mustbind.iterator(); i.hasNext(); )
-				if(((String) i.next()).equals(varname))
+			for(final Iterator i = this.mustbind.iterator(); i.hasNext(); ) {
+				if(((String) i.next()).equals(varname)) {
 					return;
+				}
+			}
 			this.mustbind.add(varname);
 			break;
 		case DQLRequest.DQL_MAYBIND:
-			for(final Iterator i = this.maybind.iterator(); i.hasNext(); )
-				if(((String) i.next()).equals(varname))
+			for(final Iterator i = this.maybind.iterator(); i.hasNext(); ) {
+				if(((String) i.next()).equals(varname)) {
 					return;
+				}
+			}
 			this.maybind.add(varname);
 			break;
 		}
@@ -201,11 +213,12 @@ public class DQLRequest
 
 	public void addAnswerKB(String kburl) throws MalformedURLException
 	{
-		if(kburl.startsWith(DQLRequest.varns))
+		if(kburl.startsWith(DQLRequest.varns)) {
 			this.answerkbs.add(kburl);
-		else {
-			if(kburl.endsWith("#"))
+		} else {
+			if(kburl.endsWith("#")) {
 				kburl = kburl.substring(0, kburl.length() - 1);
+			}
 			this.answerkbs.add(new URL(kburl));
 		}
 	}
@@ -226,8 +239,9 @@ public class DQLRequest
 		{
 			final StringBuffer ret = new StringBuffer();
 			ret.append("urn:tkb#");
-			for(int x=0; x < str.length(); x++)
+			for(int x=0; x < str.length(); x++) {
 				ret.append(str.charAt(x));
+			}
 
 			return ret.toString();
 		}
@@ -246,18 +260,21 @@ public class DQLRequest
 				!((String) this.answerkbs.elementAt(0)).startsWith(DQLRequest.varns))
 		{
 			String kburl = (String) this.answerkbs.elementAt(0);
-			if(!kburl.endsWith("#"))
+			if(!kburl.endsWith("#")) {
 				kburl = kburl + "#";
+			}
 			ret = ret + "           xmlns:tkb=\"" + kburl + "\"\n";
 		}
 		if(this.premise != null && !this.premise.equals("")) {
-			if(!this.premise.startsWith("<rdf:RDF"))
+			if(!this.premise.startsWith("<rdf:RDF")) {
 				this.premise = "<rdf:RDF>" + this.premise + "</rdf:RDF>";
+			}
 			ret = ret + "<dql:premise>\n" + this.premise + "\n" + "</dql:premise>\n";
 		}
 		if(this.query != null && !this.query.equals("")) {
-			if(!this.query.startsWith("<rdf:RDF"))
+			if(!this.query.startsWith("<rdf:RDF")) {
 				this.query = "<rdf:RDF>" + this.query + "</rdf:RDF>";
+			}
 			ret = ret + "<dql:queryPattern>\n" + this.query + "\n" +
 					"</dql:queryPattern>\n";
 		}
@@ -267,8 +284,9 @@ public class DQLRequest
 			final Iterator i = this.mustbind.iterator();
 			while(i.hasNext()) {
 				String s = (String) i.next();
-				if(s.startsWith(DQLRequest.varns))
+				if(s.startsWith(DQLRequest.varns)) {
 					s = s.substring(DQLRequest.varns.length());
+				}
 				ret = ret + "<var:" + s + "/>";
 			}
 			ret = ret + "</dql:mustBindVars>\n";
@@ -278,15 +296,17 @@ public class DQLRequest
 			final Iterator i = this.maybind.iterator();
 			while(i.hasNext()) {
 				String s = (String) i.next();
-				if(s.startsWith(DQLRequest.varns))
+				if(s.startsWith(DQLRequest.varns)) {
 					s = s.substring(DQLRequest.varns.length());
+				}
 				ret = ret + "<var:" + s + "/>";
 			}
 			ret = ret + "</dql:mayBindVars>\n";
 		}
-		if(this.maxAns != -1)
+		if(this.maxAns != -1) {
 			ret = ret + "<dql:answerSizeBound>" + this.maxAns +
-			"</dql:answerSizeBound>";
+					"</dql:answerSizeBound>";
+		}
 
 		final Iterator i = this.answerkbs.iterator();
 		if(i.hasNext())
@@ -296,18 +316,20 @@ public class DQLRequest
 				final Object o = i.next();
 				if(o instanceof String) {
 					String s = (String) o;
-					if(s.startsWith(DQLRequest.varns))
+					if(s.startsWith(DQLRequest.varns)) {
 						ret = ret + "<var:" +
 								s.substring(DQLRequest.varns.length()) + "/>";
-					else {
-						if(!s.startsWith("<rdf:RDF>"))
+					} else {
+						if(!s.startsWith("<rdf:RDF>")) {
 							s = "<rdf:RDF>" + s + "</rdf:RDF>";
+						}
 						ret = ret + s;
 					}
 				}
-				else if(o instanceof URL)
+				else if(o instanceof URL) {
 					ret = ret + "<dql:kbRef rdf:resource=\"" +
 							((URL) o).toString() + "\"/>";
+				}
 			}
 			ret = ret +"</dql:answerKBPattern>\n";
 		}

@@ -35,19 +35,21 @@ public class Day implements Comparable, Cloneable, Serializable {
 	public int compareTo(final Object o) {
 		final Day d = (Day)o;
 
-		if (this.year<d.year)
+		if (this.year<d.year) {
 			return -1;
-		else if (this.year>d.year)
+		} else if (this.year>d.year) {
 			return 1;
-		else if (this.month<d.month)
+		} else if (this.month<d.month) {
 			return -1;
-		else if (this.month>d.month)
+		} else if (this.month>d.month) {
 			return 1;
-		else if (this.day<d.day)
+		} else if (this.day<d.day) {
 			return -1;
-		else if (this.day>d.day)
+		} else if (this.day>d.day) {
 			return 1;
-		else return 0;
+		} else {
+			return 0;
+		}
 	}
 	public boolean equals(final Day d) {
 		return this.year == d.getYear() && this.month == d.getMonth() && this.day == d.getDayInMonth();

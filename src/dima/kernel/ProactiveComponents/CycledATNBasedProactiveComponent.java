@@ -42,7 +42,9 @@ public class CycledATNBasedProactiveComponent extends ATNBasedProactiveComponent
 	 */
 	@Override
 	public void step() {
-		if (this.currentState.isFinal()) this.setInitialState();
+		if (this.currentState.isFinal()) {
+			this.setInitialState();
+		}
 		this.currentState = this.currentState.crossTransition(this);
 	}
 }

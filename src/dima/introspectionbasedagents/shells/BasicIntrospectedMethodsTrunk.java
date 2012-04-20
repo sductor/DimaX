@@ -86,12 +86,14 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	protected Collection<MethodHandler> getMethods(final DimaComponentInterface o, final Class<? extends Annotation>... a){
 
 		final Collection<MethodHandler> annotatedMethods = new ArrayList<MethodHandler>();
-		for (final Method mt : IntrospectionStaticPrimitivesLibrary.getAllMethods(o.getClass()))
-			for (final Class<? extends Annotation> c : a)
+		for (final Method mt : IntrospectionStaticPrimitivesLibrary.getAllMethods(o.getClass())) {
+			for (final Class<? extends Annotation> c : a) {
 				if (mt.isAnnotationPresent(c)){
 					annotatedMethods.add(new MethodHandler(o,mt));
 					break;
 				}
+			}
+		}
 		return annotatedMethods;
 	}
 
@@ -113,12 +115,14 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 */
 	@Override
 	public void load(final DimaComponentInterface a) {
-		for (final MethodHandler mt : this.getRelevantMethods(a))
-			if (!this.checkMethodValidity(mt))
+		for (final MethodHandler mt : this.getRelevantMethods(a)) {
+			if (!this.checkMethodValidity(mt)) {
 				LogService.writeException(
 						a,"cannot add " + mt+" method not valid ");
-				else
-					this.addMethod(mt);
+			} else {
+				this.addMethod(mt);
+			}
+		}
 
 
 	}
@@ -136,8 +140,9 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 			this.status.resetCurrentlyExecutedMethod();
 			this.status.resetCurrentlyExecutedAgent();
 			return this.toRemove(mt, resultat);
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	/*
@@ -157,22 +162,26 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	}
 
 	protected void addMethod(final MethodHandler mt) {
-		if (mt.isAnnotationPresent(ProactivityInitialisation.class))
+		if (mt.isAnnotationPresent(ProactivityInitialisation.class)) {
 			this.methods.add(mt);
-		else if (mt.isAnnotationPresent(PreStepComposant.class)){
+		} else if (mt.isAnnotationPresent(PreStepComposant.class)){
 			this.methods.add(mt);
-			if (mt.getAnnotation(PreStepComposant.class).ticker() != -1)
+			if (mt.getAnnotation(PreStepComposant.class).ticker() != -1) {
 				this.addTicker(mt, mt.getAnnotation(PreStepComposant.class).ticker());
+			}
 		}else if (mt.isAnnotationPresent(StepComposant.class)){
 			this.methods.add(mt);
-			if (mt.getAnnotation(StepComposant.class).ticker() != -1)
+			if (mt.getAnnotation(StepComposant.class).ticker() != -1) {
 				this.addTicker(mt, mt.getAnnotation(StepComposant.class).ticker());
+			}
 		}else if (mt.isAnnotationPresent(PostStepComposant.class)){
 			this.methods.add(mt);
-			if (mt.getAnnotation(PostStepComposant.class).ticker() != -1)
+			if (mt.getAnnotation(PostStepComposant.class).ticker() != -1) {
 				this.addTicker(mt, mt.getAnnotation(PostStepComposant.class).ticker());
-		}else if (mt.isAnnotationPresent(ProactivityFinalisation.class))
+			}
+		}else if (mt.isAnnotationPresent(ProactivityFinalisation.class)) {
 			this.methods.add(mt);
+		}
 	}
 
 	//
@@ -189,10 +198,12 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 				LogService.writeException(mt.getMyComponent(),"StepComposant method " + mt
 						+ " can not take any argument!");
 				return false;
-			} else
+			} else {
 				return true;
-		} else
+			}
+		} else {
 			return true;
+		}
 	}
 
 	private boolean checkTransientMethodValidity(final MethodHandler mt) {
@@ -202,10 +213,12 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 				LogService.writeException(mt.getMyComponent(),"method " + mt
 						+ " must return a boolean value");
 				return false;
-			} else
+			} else {
 				return true;
-		} else
+			}
+		} else {
 			return true;
+		}
 	}
 
 	private boolean isReady(final MethodHandler m, final Date creation){
@@ -226,12 +239,13 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 			final MethodHandler mt,  final Object resultat){
 		if (mt.isAnnotationPresent(Transient.class)
 				&& resultat != null
-				&& resultat.equals(new Boolean(true)))
+				&& resultat.equals(new Boolean(true))) {
 			return true;
-		else if (mt.isAnnotationPresent(ProactivityInitialisation.class) || mt.isAnnotationPresent(ProactivityFinalisation.class))
+		} else if (mt.isAnnotationPresent(ProactivityInitialisation.class) || mt.isAnnotationPresent(ProactivityFinalisation.class)) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 
 }

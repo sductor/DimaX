@@ -31,10 +31,12 @@ public class LoneAgent extends LoneDomain {
 	public void step() {
 
 		// perception plus complexe + dcision simple
-		if (this.hasNeededLetter())
+		if (this.hasNeededLetter()) {
 			this.useLetter(); // useLetter()
-		else
+		}
+		else {
 			this.dropLetter(); // dropLetter()
+		}
 
 		this.display();
 

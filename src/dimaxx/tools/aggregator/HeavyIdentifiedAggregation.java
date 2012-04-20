@@ -150,10 +150,11 @@ class ElementIdentifier<Element extends Comparable> implements Comparable<Elemen
 
 	@Override
 	public boolean equals(final Object o){
-		if (o instanceof ElementIdentifier)
+		if (o instanceof ElementIdentifier) {
 			return this.e.equals(((ElementIdentifier) o).e) && ((ElementIdentifier) o).nbObject==this.nbObject;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	public int hashcode(){

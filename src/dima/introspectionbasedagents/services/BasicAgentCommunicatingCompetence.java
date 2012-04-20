@@ -23,9 +23,11 @@ public class BasicAgentCommunicatingCompetence<Agent extends CompetentComponent 
 	}
 
 	protected void sendMessage(final Collection<? extends AgentIdentifier> ids, final Message m){
-		for (final AgentIdentifier id :ids)
-			if (id!=this.myAgent.getIdentifier())
+		for (final AgentIdentifier id :ids) {
+			if (id!=this.myAgent.getIdentifier()) {
 				this.sendMessage(id, m);
+			}
+		}
 	}
 
 }

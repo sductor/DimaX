@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import negotiation.experimentationframework.ExperimentationProtocol;
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -107,12 +106,14 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 					HostDisponibilityComputer.getUptime(myAgentInformation,host),
 					HostDisponibilityComputer.getLambda(myAgentInformation,host),
 					!myAgentInformation.getInformation(HostState.class,host).isFaulty())) {
-				if (myAgentInformation.getInformation(HostState.class, host).isFaulty())
+				if (myAgentInformation.getInformation(HostState.class, host).isFaulty()) {
 					return new RepairEvent(host);
-				else
+				} else {
 					return new FaultEvent(host);
-			} else
+				}
+			} else {
 				return null;
+			}
 		} catch (final NoInformationAvailableException e) {
 			LogService
 			.writeException("immmmmmmmmoooooooooooooossssssssssssiiiiiiiiiiblle");
@@ -124,14 +125,15 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 			final ObservationService myAgentInformation,
 			final FaultStatusMessage event) {
 		try {
-			if (event instanceof FaultEvent)
+			if (event instanceof FaultEvent) {
 				myAgentInformation.getInformation(HostState.class,
 						event.getHost()).setFaulty(true);
-			else if (event instanceof RepairEvent)
+			} else if (event instanceof RepairEvent) {
 				myAgentInformation.getInformation(HostState.class,
 						event.getHost()).setFaulty(false);
-			else
+			} else {
 				throw new RuntimeException("impossiblle!!");
+			}
 		} catch (final NoInformationAvailableException e) {
 			LogService
 			.writeException("immmmmmmmmoooooooooooooosssssssssssiiiiiiiiiiblle");
@@ -140,10 +142,12 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 
 	public static Collection<? extends ResourceIdentifier> getHosts(final ObservationService myAgentInformation) {
 		final Collection<ResourceIdentifier> host = new ArrayList<ResourceIdentifier>();
-		for (final AgentIdentifier id : myAgentInformation.getKnownAgents())
-			if (id instanceof ResourceIdentifier)
+		for (final AgentIdentifier id : myAgentInformation.getKnownAgents()) {
+			if (id instanceof ResourceIdentifier) {
 				host.add((ResourceIdentifier) id);
-				return host;
+			}
+		}
+		return host;
 	}
 	//
 	// Primitive
@@ -192,15 +196,16 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	private  static Double getDisponibility(
 			final Map<ResourceIdentifier, Double> hosts_lambdas,
 			final Map<ResourceIdentifier, Long> hosts_uptimes) {
-		if (hosts_lambdas.isEmpty())
+		if (hosts_lambdas.isEmpty()) {
 			return 0.;
-		else {
+		} else {
 			Double panne = new Double(1);
-			for (final ResourceIdentifier h : hosts_lambdas.keySet())
+			for (final ResourceIdentifier h : hosts_lambdas.keySet()) {
 				panne *= 1 - HostDisponibilityComputer.getDisponibility(hosts_lambdas.get(h),
 						hosts_uptimes.get(h));
+			}
 
-					return 1 - panne;
+			return 1 - panne;
 		}
 	}
 
@@ -216,7 +221,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 							ReplicationExperimentationParameters._kValue, lambda,
 							ReplicationExperimentationParameters._theta);
 		case Poisson:
-			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			final long nbInterval = ReplicationExperimentationParameters._maxSimulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
 			return PoissonLaw.getPoissonLaw(lambda * nbInterval, 1);
 		default:
 			throw new RuntimeException("impossible");
@@ -228,25 +233,28 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 		switch (HostDisponibilityComputer.choosenType) {
 		case Static:
 			final Random rand = new Random();
-			if (triggerAFault)
+			if (triggerAFault) {
 				return rand.nextDouble() > lambda;
-				else
-					return rand.nextDouble() > ReplicationExperimentationParameters._lambdaRepair;
+			} else {
+				return rand.nextDouble() > ReplicationExperimentationParameters._lambdaRepair;
+			}
 		case Weibull:
-			if (triggerAFault)
+			if (triggerAFault) {
 				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
 						ReplicationExperimentationParameters._kValue, lambda,
 						ReplicationExperimentationParameters._theta);
-			else
+			} else {
 				return WeibullLaw.eventOccur(uptime / ReplicationExperimentationParameters._timeScale,
 						ReplicationExperimentationParameters._kRepair,
 						ReplicationExperimentationParameters._lambdaRepair, 0.);
+			}
 		case Poisson:
-			final long nbInterval = ExperimentationProtocol._simulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
-			if (triggerAFault)
+			final long nbInterval = ReplicationExperimentationParameters._maxSimulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			if (triggerAFault) {
 				return PoissonLaw.eventOccur(lambda * nbInterval, 1);
-			else
+			} else {
 				return PoissonLaw.eventOccur(ReplicationExperimentationParameters._lambdaRepair * nbInterval, 1);
+			}
 		default:
 			throw new RuntimeException("impossible");
 		}

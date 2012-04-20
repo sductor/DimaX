@@ -52,8 +52,9 @@ public class AgentFact extends BasicCommunicatingAgent {
 		this.nbMes = 0;
 		this.liste = new LinkedList<Integer>();
 
-		for (int i = this.n; i > 1; i--)
+		for (int i = this.n; i > 1; i--) {
 			this.liste.add(new Integer(i));
+		}
 		this.wwait(1000);
 	}
 

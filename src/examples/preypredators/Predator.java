@@ -113,24 +113,28 @@ public class Predator extends Actor implements Animal  {
 		final Vector env = this.world.getEnvironement(this);
 		switch((int) (Math.random() * 7D)){
 		case 0:
-			if(res.y > 0)
+			if(res.y > 0) {
 				res.y--;
+			}
 
 			break;
 
 		case 1:
-			if(res.x > 0)
+			if(res.x > 0) {
 				res.x--;
+			}
 			break;
 
 		case 2:
-			if(res.x < this.world.getSize())
+			if(res.x < this.world.getSize()) {
 				res.x++;
+			}
 			break;
 
 		case 3:
-			if(res.y < this.world.getSize())
+			if(res.y < this.world.getSize()) {
 				res.y++;
+			}
 			break;
 
 		case 4:
@@ -175,18 +179,23 @@ public class Predator extends Actor implements Animal  {
 		Animal target = null;
 
 		//Cherche la premiere instance de Food
-		for(int i=0; i<env.size() ; i++)
-			if(env.elementAt(i) instanceof Food)
+		for(int i=0; i<env.size() ; i++) {
+			if(env.elementAt(i) instanceof Food) {
 				target = (Food)env.elementAt(i);
+			}
+		}
 
 		// Pas a manger !!!
-		if(target == null)
+		if(target == null) {
 			return target;
+		}
 
 		//On va manger
-		for(int i=0; i<env.size() ; i++)
-			if(this.world.distance(target, this) > this.world.distance(target, (Animal)env.elementAt(i)) && env.elementAt(i) instanceof Food)
+		for(int i=0; i<env.size() ; i++) {
+			if(this.world.distance(target, this) > this.world.distance(target, (Animal)env.elementAt(i)) && env.elementAt(i) instanceof Food) {
 				target = (Food)env.elementAt(i);
+			}
+		}
 
 		return target;
 	}
@@ -223,8 +232,9 @@ public class Predator extends Actor implements Animal  {
 		int distY;
 
 		this.energy--;
-		if(this.energy == 0)
+		if(this.energy == 0) {
 			this.isAlive = false;
+		}
 
 		this.dessinerPredateur(this.pos.x,this.pos.y, Color.lightGray);
 		target = (Food)this.getTarget(env);
@@ -235,17 +245,22 @@ public class Predator extends Actor implements Animal  {
 
 			if(Math.pow(distX,2) > Math.pow(distY,2)){
 				if(distX > 0){
-					if(this.pos.getX() < this.world.getSize())
+					if(this.pos.getX() < this.world.getSize()) {
 						this.pos.x++;
-				} else if(this.pos.getX() > 0)
+					}
+				} else if(this.pos.getX() > 0) {
 					this.pos.x--;
+				}
 			} else if(distY > 0){
-				if(this.pos.getY() < this.world.getSize())
+				if(this.pos.getY() < this.world.getSize()) {
 					this.pos.y++;
-			} else if(this.pos.getY() > 0)
+				}
+			} else if(this.pos.getY() > 0) {
 				this.pos.y--;
-		} else
+			}
+		} else {
 			this.pos = this.getRandomPlace();
+		}
 		this.dessinerPredateur(this.pos.x,this.pos.y);
 	}
 }

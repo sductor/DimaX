@@ -3,9 +3,10 @@ package negotiation.negotiationframework.protocoles;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.negotiationframework.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
@@ -18,10 +19,6 @@ extends	BasicAgentCompetence<StrategicNegotiatingAgent<ActionSpec, PersonalState
 implements ProposerCore<
 StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 ActionSpec, PersonalState, Contract>  {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -5019973485455813800L;
 
 	public InactiveProposerCore() {
@@ -32,6 +29,18 @@ ActionSpec, PersonalState, Contract>  {
 	public Set<Contract> getNextContractsToPropose()
 			throws NotReadyException {
 		return new HashSet<Contract>();
+	}
+
+	@Override
+	public boolean IWantToNegotiate(PersonalState myCurrentState,
+			ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+		return false;
+	}
+
+	@Override
+	public boolean ImAllowedToNegotiate(PersonalState myCurrentState,
+			ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+		return false;
 	}
 
 }

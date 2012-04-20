@@ -69,8 +69,9 @@ public class AgentFact extends BasicCommunicatingAgent {
 	 */
 	@Override
 	public void proactivityInitialize() {
-		for (int i = 1; i < this.n; i++)
+		for (int i = 1; i < this.n; i++) {
 			this.liste.addElement(new Integer(i));
+		}
 		this.wwait(1000);
 	}
 

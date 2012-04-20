@@ -23,15 +23,16 @@ public class Ticker extends GimaObject{
 	 */
 
 	public boolean isReady(final Date creation) {
-		if (this.timeToWait==0)
+		if (this.timeToWait==0) {
 			return true;
-		else {
+		} else {
 			final int stepNumber = Ticker.getStepNumber(creation, this.timeToWait);
 			if (stepNumber>this.lastStepExecution) {
 				this.lastStepExecution=stepNumber;
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		}
 	}
 

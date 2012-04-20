@@ -96,25 +96,29 @@ public class APIAgent extends BasicCompetentAgent {
 	}
 
 	public void launch(final Collection<BasicCompetentAgent> ags, final Map<AgentIdentifier, HostIdentifier> locations) {
-		for (final BasicCompetentAgent c : ags)
+		for (final BasicCompetentAgent c : ags) {
 			c.launchWith(this.api, locations.get(c.getIdentifier()));
+		}
 	}
 
 	public  void launch(final Collection<BasicCompetentAgent> ags) {
-		for (final BasicCompetentAgent c : ags)
+		for (final BasicCompetentAgent c : ags) {
 			c.launchWith(this.api);
+		}
 	}
 
 	//
 
 	public static void launch(final APILauncherModule api, final Map<BasicCompetentAgent, HostIdentifier> locations) {
-		for (final BasicCompetentAgent c : locations.keySet())
+		for (final BasicCompetentAgent c : locations.keySet()) {
 			c.launchWith(api, locations.get(c));
+		}
 	}
 
 	public static void launch(final APILauncherModule api, final Collection<BasicCompetentAgent> ags) {
-		for (final BasicCompetentAgent c : ags)
+		for (final BasicCompetentAgent c : ags) {
 			c.launchWith(api);
+		}
 	}
 	/*
 	 *
@@ -186,10 +190,11 @@ public class APIAgent extends BasicCompetentAgent {
 		 * @throws CompetenceException
 		 */
 		private APILauncherModule(final boolean threaded) throws CompetenceException {
-			if (threaded)
+			if (threaded) {
 				this.initWithFipa();
-			else
+			} else {
 				this.initNotThreaded();
+			}
 		}
 
 		/**
@@ -241,10 +246,12 @@ public class APIAgent extends BasicCompetentAgent {
 		public Collection<AgentIdentifier> getAgentsRunningOn(final HostIdentifier h){
 			final Collection<AgentIdentifier> result =
 					new ArrayList<AgentIdentifier>();
-			for (final AgentIdentifier a : this.locations.keySet())
-				if (this.locations.get(a).equals(h))
+			for (final AgentIdentifier a : this.locations.keySet()) {
+				if (this.locations.get(a).equals(h)) {
 					result.add(a);
-					return result;
+				}
+			}
+			return result;
 		}
 
 		//
@@ -263,8 +270,9 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 
 		boolean launch(final BasicCompetentAgent c, final HostIdentifier machine){
-			if (!this.getAvalaibleHosts().contains(machine))
+			if (!this.getAvalaibleHosts().contains(machine)) {
 				throw new RuntimeException("i can not use this machine "+machine+" available machines are "+this.getAvalaibleHosts());
+			}
 
 			c.addObserver(this.getMyAgentIdentifier(), LogService.logNotificationKey);
 			c.addObserver(this.getMyAgentIdentifier(), EndActivityMessage.class);
@@ -291,8 +299,9 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 
 		boolean launch(final BasicCompetentAgent c){
-			if (this.pos==this.avalaibleHosts.size())
+			if (this.pos==this.avalaibleHosts.size()) {
 				this.pos=0;
+			}
 
 			return this.launch(c, this.avalaibleHosts.get(this.pos));
 		}
@@ -372,9 +381,9 @@ public class APIAgent extends BasicCompetentAgent {
 				final DimaXDeploymentScript machines)
 						throws JDOMException, IOException {
 			this.myLaunchType = LaunchType.DarX;
-			if (machines.getAllHosts().isEmpty())
+			if (machines.getAllHosts().isEmpty()) {
 				this.getMyAgent().signalException("no machines!!!");
-			else {
+			} else {
 				machines.launchNameServer();
 				machines.launchAllDarXServer();
 			}
@@ -390,13 +399,15 @@ public class APIAgent extends BasicCompetentAgent {
 		void start(final Collection<BasicCompetentAgent> ags){
 			final StartActivityMessage m = new StartActivityMessage();
 			for (final BasicCompetentAgent ag : ags)
-				if (this.myLaunchType.equals(LaunchType.NotThreaded))
+			{
+				if (this.myLaunchType.equals(LaunchType.NotThreaded)) {
 					ag.start(m);
-					else {
-						ag.start(m);
-						this.getMyAgent().sendMessage(ag.getIdentifier(), m);
-					}
-			//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
+				} else {
+					ag.start(m);
+					this.getMyAgent().sendMessage(ag.getIdentifier(), m);
+				}
+				//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
+			}
 		}
 
 
@@ -455,7 +466,7 @@ public class APIAgent extends BasicCompetentAgent {
 				this.toInitialize.addAll(this.toAdd);
 				this.toAdd.clear();
 
-				while (!( (this.toExecute.isEmpty() && this.toInitialize.isEmpty()) || (this.nbMaxStep!=-1 && step > this.nbMaxStep) )){
+				while (!( this.toExecute.isEmpty() && this.toInitialize.isEmpty() || this.nbMaxStep!=-1 && step > this.nbMaxStep )){
 					//LoggerManager.write("\n\n***********SIMULATION : starting step "+step+", nbAgent:"+this.size()+"***********\n\n\n");
 
 
@@ -478,7 +489,7 @@ public class APIAgent extends BasicCompetentAgent {
 
 					//AGENT STEP ACTIVITIES
 					LogService.flush();
-					for (final BasicCompetentAgent c : this.toExecute)
+					for (final BasicCompetentAgent c : this.toExecute) {
 						if (c.isAlive()){
 							if (c.isActive()){
 								c.preActivity();
@@ -486,10 +497,13 @@ public class APIAgent extends BasicCompetentAgent {
 								c.step();
 								LogService.flush();
 								c.postActivity();
-							} else
+							} else {
 								c.tryToResumeActivity();
-						} else
+							}
+						} else {
 							this.toTerminate.add(c);
+						}
+					}
 
 					//AGENT PRO ACTIVITY TERMINATION
 					LogService.flush();

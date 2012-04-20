@@ -31,8 +31,9 @@ public class Supply {
 
 	public static void main(final String[] args) {
 		final Supply sup = new Supply();
-		for (int i=0; i<100; i++)
+		for (int i=0; i<100; i++) {
 			System.out.println(Supply.pick().getLetter());
+		}
 	}
 
 }

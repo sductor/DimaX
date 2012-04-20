@@ -35,7 +35,7 @@ public  class AgendaAgent4 extends AgendaAgent0{
 		//to be implemented
 		System.out.println("PROCESS ACL OBS AGENDAAGENT 4....");
 		//  d�but partie notification
-		System.out.println("REAC: NOTIFICATION MSG ACL..."+ m.getPerformative()+ "S..."+ m.getSender()+ "  R...."+m.getReceiver());
+		System.out.println("REAC: NOTIFICATION MSG ACL..."+ m.getPerformative()+ "S..."+ m.getSender());//+ "  R...."+m.getReceiver());
 		//    ReceiveMessageEvent e= new ReceiveMessageEvent(m);
 		//    Message mesEvent = new Message("notifierEventOb", e);//,new  AgentName(((DARXCommunicationComponent)this.getCommunicationComponent()).getTask().getObsName()));
 		//    sendMessage(new  AgentName(((DARXCommunicationComponent)getCommunicationComponent()).getTask().getObsName()),mesEvent);

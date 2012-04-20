@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic;
+package negotiation.negotiationframework.exploration.strategic;
 
 import java.util.Collection;
 import java.util.Date;
@@ -9,7 +9,7 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.strategic.evaluation.AbstractStrategicEvaluationModule;
 import negotiation.negotiationframework.protocoles.strategic.exploration.AbstractStrategicExplorationModule;
 import negotiation.negotiationframework.rationality.RationalCore;
-import negotiation.negotiationframework.selectioncores.AbstractSelectionCore;
+import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
@@ -42,7 +42,7 @@ extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> {
 			final Date horloge,
 			final PersonalState myInitialState,
 			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final SimpleSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
 			final StrategicProposerCore<ActionSpec, PersonalState, Contract> myProposerCore,
 			final ObservationService myInformation,
 			final Collection<String> knownActions,
@@ -59,7 +59,7 @@ extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> {
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
 			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final AbstractSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final SimpleSelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
 			final StrategicProposerCore<ActionSpec, PersonalState, Contract> myProposerCore,
 			final ObservationService myInformation,
 			final Collection<String> knownActions,

@@ -46,9 +46,11 @@ public class World {
 	}
 	public Vector getEnvironement(final Animal an){
 		final Vector resultat = new Vector();
-		for(int i=0; i< this.animal.size(); i++)
-			if(this.distance(an, (Animal)this.animal.elementAt(i)) <= an.getDistanceView()  && (Animal)this.animal.elementAt(i) != an)
+		for(int i=0; i< this.animal.size(); i++) {
+			if(this.distance(an, (Animal)this.animal.elementAt(i)) <= an.getDistanceView()  && (Animal)this.animal.elementAt(i) != an) {
 				resultat.addElement(this.animal.elementAt(i));
+			}
+		}
 		return resultat;
 	}
 	/**
@@ -75,10 +77,12 @@ public class World {
 	 * Creation date: (08/11/00 15:13:29)
 	 */
 	public void initialiseOld(){
-		for (int i=0; i<this.nbPredator;i++)
+		for (int i=0; i<this.nbPredator;i++) {
 			this.animal.addElement(new Predator(this));
-		for (int i=0; i<this.nbFood;i++)
+		}
+		for (int i=0; i<this.nbFood;i++) {
 			this.animal.addElement(new Food(this));
+		}
 
 		final ProactiveComponentsManager pam = new ProactiveComponentsManager(this.animal);
 		pam.startAll();

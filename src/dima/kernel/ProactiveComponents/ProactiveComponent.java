@@ -103,13 +103,15 @@ Tests wheter a proactive object has reached it goal or
 	 */
 	public void proactivityLoop() {
 
-		while(this.isAlive())
+		while(this.isAlive()) {
 			if (this.isActive()){
 				this.preActivity();
 				this.step();
 				this.postActivity();
-			} else
+			} else {
 				this.tryToResumeActivity();
+			}
+		}
 	}
 	/**
 	 * This is the method containing the termination condition of a ProactiveComponent

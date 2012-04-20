@@ -50,10 +50,11 @@ public class AgentName extends AgentIdentifier {
 		// Insert code to compare the receiver and obj here.
 		// This implementation forwards the message to super.  You may replace or supplement this.
 		// NOTE: obj might be an instance of any class
-		if (obj instanceof AgentName)
+		if (obj instanceof AgentName) {
 			return this.toString().equals(((AgentName)obj).toString());
-		else
+		} else {
 			return false;
+		}
 	}
 	/**
 	 * getId method comment.

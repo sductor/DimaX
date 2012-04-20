@@ -57,8 +57,9 @@ public abstract class CaseBase {
 	 * CaseBase constructor comment.
 	 */
 	public void step(final Case newCase) {
-		if (!this.similarCaseExists(newCase))
+		if (!this.similarCaseExists(newCase)) {
 			this.updateNewCase(newCase);
+		}
 		newCase.apply();
 	}
 	/**

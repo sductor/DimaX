@@ -47,7 +47,9 @@ public class DefaultChannelCapacity {
 	 * @exception IllegalArgumentException if capacity less or equal to zero
 	 */
 	public static void set(final int capacity) {
-		if (capacity <= 0) throw new IllegalArgumentException();
+		if (capacity <= 0) {
+			throw new IllegalArgumentException();
+		}
 		DefaultChannelCapacity.defaultCapacity_.set(capacity);
 	}
 }

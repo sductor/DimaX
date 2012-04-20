@@ -18,26 +18,31 @@ public class Deck {
 	public Deck() {}
 
 	public Deck(final String str) throws Exception{
-		if(!Word.qualifies(str))
+		if(!Word.qualifies(str)) {
 			throw new Exception("Hum hum...");
+		}
 		final char[] ch = str.toCharArray();
-		for (final char element : ch)
+		for (final char element : ch) {
 			this.letters.add(new Letter(element));
+		}
 	}
 
 	public boolean contains(final Letter l) {
 		final char c = l.getLetter();
 		boolean ret = false;
-		for(final Enumeration e=this.letters.elements(); e.hasMoreElements();)
-			if (((Letter)e.nextElement()).getLetter() == c)
+		for(final Enumeration e=this.letters.elements(); e.hasMoreElements();) {
+			if (((Letter)e.nextElement()).getLetter() == c) {
 				ret = true;
+			}
+		}
 
 		return ret;
 	}
 
 	public void addLetter(final Letter l) throws GameException{
-		if (this.letters.size() >= this.size)
+		if (this.letters.size() >= this.size) {
 			throw new GameException("Deck full!");
+		}
 		this.letters.add(l);
 	}
 
@@ -51,8 +56,9 @@ public class Deck {
 				removed = true;
 			}
 		}
-		if (removed = false)
+		if (removed = false) {
 			throw new GameException("Can't drop a letter that is absent!");
+		}
 	}
 
 	@Override
@@ -60,8 +66,9 @@ public class Deck {
 	{
 		String str = new String("");
 
-		for(final Enumeration e=this.letters.elements(); e.hasMoreElements();)
+		for(final Enumeration e=this.letters.elements(); e.hasMoreElements();) {
 			str = str + ((Letter)e.nextElement()).getLetter() + " ";
+		}
 
 		return str;
 	}

@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.exploration;
+package negotiation.negotiationframework.exploration.strategic.exploration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,10 +89,11 @@ implements AbstractStrategicExplorationModule<AbstractContractTransition<ActionS
 				if (myComparator.strategiclyCompare(best, bestVoisin)>0){
 					//					System.out.println("!!!!!!!!! Is the best node ever");
 					//.myUtility.isRational : Je ne suis pas interesse par les contrat qui n'augment pas mon uilité
-					for (final Action move : lastBestMoves)
+					for (final Action move : lastBestMoves) {
 						best.add(move);
-							lastBestMoves.clear();
-							//					System.out.println("!!!!!!!!! Best = "+best);
+					}
+					lastBestMoves.clear();
+					//					System.out.println("!!!!!!!!! Best = "+best);
 				} else {
 					//on stocke mle chemin dominé
 					//					System.out.println("!!!!!!!!! Not the best node, lastMove  : "+lastBestMoves);

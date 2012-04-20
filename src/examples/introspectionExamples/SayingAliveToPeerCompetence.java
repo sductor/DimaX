@@ -64,7 +64,8 @@ public class SayingAliveToPeerCompetence extends BasicAgentCommunicatingCompeten
 
 	public void sayAliveToPeer(){
 		final FipaACLMessage m = new FipaACLMessage(Performative.Inform, "I'm alive! =)", SayingAliveProtocol.class);
-		if (this.myPeer!=null)
+		if (this.myPeer!=null) {
 			this.sendMessage(this.myPeer, m);
+		}
 	}
 }

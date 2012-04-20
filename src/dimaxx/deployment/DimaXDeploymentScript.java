@@ -72,8 +72,9 @@ public class DimaXDeploymentScript extends HostsPark{
 	}
 
 	public void launchAllDarXServer() {
-		for (final RemoteHostExecutor host : this.getHosts())
+		for (final RemoteHostExecutor host : this.getHosts()) {
 			this.launchDarXServer(host);
+		}
 	}
 
 	//

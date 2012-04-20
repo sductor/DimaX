@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.protocoles.strategic.exploration;
+package negotiation.negotiationframework.exploration.strategic.exploration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,8 +46,9 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 		final Random rand = new Random();
 		final int prof = rand.nextInt(knownActions.size()*knownAgents.size());
 		final AllocationTransition<MatchingCandidature<ActionSpec>, ActionSpec> c = this.getEmptyContract();
-		for (int i = 0; i < prof; i++)
+		for (int i = 0; i < prof; i++) {
 			c.add(this.getNeighbors(c, knownAgents, knownActions).next());
+		}
 		return c;
 	}
 
@@ -66,24 +67,28 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 
 		public AllocationNeighbors(final AllocationTransition<MatchingCandidature<ActionSpec>, ActionSpec> contractToExplore,
 				final Collection<AgentIdentifier> knownAgents) {
-			for (final AgentIdentifier ag : knownAgents)
+			for (final AgentIdentifier ag : knownAgents) {
 				if (ag instanceof ResourceIdentifier){
 					this.knownHosts.add((ResourceIdentifier) ag);
 					knownAgents.remove(ag);
 				}
+			}
 
 			//The neighbors are the deals resulting from the add of actions (an action can represent an allocation or a desallocation)
 			//max is thus initialized this way : it contains all the action still possible (the action of contract to explore have already been executed)
 			this.min = new HashedHashList<AgentIdentifier, ResourceIdentifier>();
-			for (final AgentIdentifier id : knownAgents)
+			for (final AgentIdentifier id : knownAgents) {
 				this.min.put(id, new ArrayList<ResourceIdentifier>());
+			}
 
-					for (final AgentIdentifier id : contractToExplore.getAllParticipants()){
-						for (final MatchingCandidature<ActionSpec> c : contractToExplore.getAssociatedActions(id))
-							this.min.get(id).add(c.getResource());
-								if (this.min.get(id).containsAll(this.knownHosts))
-									this.min.remove(id);
-					}
+			for (final AgentIdentifier id : contractToExplore.getAllParticipants()){
+				for (final MatchingCandidature<ActionSpec> c : contractToExplore.getAssociatedActions(id)) {
+					this.min.get(id).add(c.getResource());
+				}
+				if (this.min.get(id).containsAll(this.knownHosts)) {
+					this.min.remove(id);
+				}
+			}
 		}
 
 		@Override
@@ -95,7 +100,7 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 		public MatchingCandidature<ActionSpec> next() {
 			//Selection aléatoir d'un agent et d'un des hôtes vers lequel il peut encore faire une action
 			final Random rand = new Random();
-			final AgentIdentifier replicaToadd = (new ArrayList<AgentIdentifier>(this.min.keySet())).get(rand.nextInt(this.min.size()));
+			final AgentIdentifier replicaToadd = new ArrayList<AgentIdentifier>(this.min.keySet()).get(rand.nextInt(this.min.size()));
 
 
 			final List<ResourceIdentifier> availableHosts = new ArrayList<ResourceIdentifier>(this.knownHosts);
@@ -106,8 +111,9 @@ implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionS
 					new MatchingCandidature<ActionSpec>(MatchingAllocationNeighborhood.this.getMyAgent().getIdentifier(),replicaToadd,	choosenHost,MatchingAllocationNeighborhood.validityTime);
 			//mis a jour des listes
 			this.min.get(replicaToadd).add(choosenHost);
-			if (this.min.get(replicaToadd).containsAll(this.knownHosts))
+			if (this.min.get(replicaToadd).containsAll(this.knownHosts)) {
 				this.min.remove(replicaToadd);
+			}
 			this.last = move;
 			return move;
 		}

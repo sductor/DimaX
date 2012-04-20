@@ -28,7 +28,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import negotiation.negotiationframework.AbstractCommunicationProtocol.SimpleContractEnvellope;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SimpleContractProposal;
 
 /* import dimaxx.server.Logger; */
 
@@ -136,7 +136,7 @@ public class RemoteTask implements Serializable {
 		try {
 			this.handle.deliverAsyncMessage(msg);
 		} catch (final RemoteException e) {
-			Logger.exception(this, "Asynchronous message not delivered "+msg.getContents()+"\n -->"+((SimpleContractEnvellope)msg.getContents()).getMyContract().getClass(), e);
+			Logger.exception(this, "Asynchronous message not delivered "+msg.getContents()+"\n -->"+((SimpleContractProposal)msg.getContents()).getMyContract().getClass(), e);
 			try {
 				Logger.exception(this, "Trying emission once more...");
 				// Take a nap
@@ -354,8 +354,9 @@ public class RemoteTask implements Serializable {
 					.lookup(nserver_name);
 			// Request new leader election
 			this.leader_info = nserver.selectAnotherLeader(this.leader_info);
-			if (this.leader_info == null)
+			if (this.leader_info == null) {
 				throw new DarxException();
+			}
 			System.out.println("NS elected "
 					+ this.leader_info.textifyDarxPath());
 			// Retrieve the reference to the new leader & set it as leader

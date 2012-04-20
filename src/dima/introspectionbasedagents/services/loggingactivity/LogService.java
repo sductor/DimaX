@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -51,12 +52,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	 */
 
 	//Order or the log to be written to screen
-	public  boolean activateCommtoScreen = false;
+	public  boolean activateCommSendtoScreen = false;
+	public  boolean activateCommReceivtoScreen = false;
 	public  boolean activateExceptoScreen = true;
-	public static  Boolean activateMonotoScreen = null;
+	public static  Boolean activateMonotoScreen = true;
 	//Order or the log to be written in specific files
-	public static Boolean activateMonoToFiles = null;
-	public boolean activateCommtoFiles = false;
+	public static Boolean activateMonoToFiles = true;
+	public boolean activateCommSendtoFiles = true;
+	public boolean activateCommReceivtoFiles = false;
 	public  boolean activateExceptoFile = true;
 
 	/***********************************************************************
@@ -100,17 +103,19 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	// Accessors
 	//
 
-	public static void setLog(boolean b) {
-		activateMonotoScreen = b;
-		activateMonoToFiles = b;
+	public static void setLog(final boolean b) {
+		LogService.activateMonotoScreen = b;
+		LogService.activateMonoToFiles = b;
 	}
-	
+
 	@Override
 	public void addLogKey(final String key, final boolean toScreen, final boolean toFile){
 		if (this.keysToScreen.put(key,toScreen)!=null || this.keysToFiles.put(key, toFile)!=null)
+		{
 			this.logWarning("Already known key! "+key,LogService.onBoth);
-		//		else
-		//			System.out.println("will log "+key+" on : "+(toScreen?"screen ":" ")+(toFile?"file":""));
+			//		else
+			//			System.out.println("will log "+key+" on : "+(toScreen?"screen ":" ")+(toFile?"file":""));
+		}
 	}
 
 	@Override
@@ -118,8 +123,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		this.keysToScreen.put(key,toScreen);
 		this.keysToFiles.put(key, toFile);
 	}
-	public void setCommtoScreen(final boolean commtoScreen) {
-		this.activateCommtoScreen = commtoScreen;
+	public void setCommtoScreen(
+			boolean activateCommSendtoScreen, 
+			boolean activateCommReceivtoScreen) {
+		this.activateCommSendtoScreen = activateCommSendtoScreen;
+		this.activateCommReceivtoScreen = activateCommReceivtoScreen;
 	}
 
 	public void setExceptoScreen(final boolean exceptoScreen) {
@@ -127,15 +135,18 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	public void setMonotoScreen(final boolean monotoScreen) {
-		this.activateMonotoScreen = monotoScreen;
+		LogService.activateMonotoScreen = monotoScreen;
 	}
 
 	public void setToFiles(final boolean toFiles) {
-		this.activateMonoToFiles = toFiles;
+		LogService.activateMonoToFiles = toFiles;
 	}
 
-	public void setCommtoFiles(final boolean commtoFiles) {
-		this.activateCommtoFiles = commtoFiles;
+	public void setCommtoFiles(
+			boolean activateCommSendtoFiles, 
+			boolean activateCommReceivtoFiles) {
+		this.activateCommSendtoFiles = activateCommSendtoFiles;
+		this.activateCommReceivtoFiles = activateCommReceivtoFiles;
 	}
 
 	public void setMyMessageLogFile(final File myMessageLogFile) {
@@ -165,40 +176,66 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@Override
 	public Boolean  logMonologue(final String text, final String key) {
 		final LogNotification log = new LogMonologue(this.getIdentifier(),text);
-		if (this.toScreen(key)&&this.activateMonotoScreen)
+		if (this.toScreen(key)&&LogService.activateMonotoScreen) {
 			System.out.println(log.generateLogToScreen());
+		}
 		//			System.out.println("*** * From "+this.getMyAgent().getIdentifier()
 		//					+ ":\n       ----> "+text+" ("+details+")");
-		if (this.toFile(key)&&this.activateMonoToFiles)
+		if (this.toFile(key)&&LogService.activateMonoToFiles) {
 			return this.getMyAgent().notify(log,LogService.logNotificationKey);
+		}
 		return true;
 	}
 
 	// Communication
 
+	
 	public Boolean logCommunication(final Message am, final MessageStatus s){
-		//		if (!(am instanceof LogNotification) ||
-		//				(!(am instanceof NotificationMessage) && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
-		//			LogNotification log = new LogCommunication(getIdentifier(), am, s);
-		//			if (commtoScreen )
-		//				System.out.println(log.generateLogToScreen());
-		//			if (commtoFiles)
-		//				return this.notify(log,logNotificationKey);
-		//		}
+		if ((am instanceof LogNotification) ||
+				(am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
+			//do nothing;
+		} else {
+//			assert commValidityVerif(am);
+			LogNotification log = new LogCommunication(getIdentifier(), am, s);
+			if (s.equals(MessageStatus.MessageSended) || s.equals(MessageStatus.MessageLocallySended)){
+				if (activateCommSendtoScreen )
+					System.out.println(log.generateLogToScreen());
+				if (activateCommSendtoFiles)
+					return this.notify(log,logNotificationKey);
+			} else {
+				if (activateCommReceivtoScreen )
+					System.out.println(log.generateLogToScreen());
+				if (activateCommReceivtoFiles)
+					return this.notify(log,logNotificationKey);
+			}
+		}
 		return true;
 	}
+	
+	public Collection<Message> received=null;
+	public boolean commValidityVerif(Message m){
+		if (received==null){
+			received = new HashSet<Message>();
+		}
+		assert !received.contains(m);
+		received.add(m);
+		return true;
+	}
+	
 	//EXCEPTION
 
 
 	@Override
 	public Boolean signalException(final String text) {
 		final LogNotification log = new LogException(this.getIdentifier(),text);
-		if (this.activateExceptoScreen)
+		if (this.activateExceptoScreen) {
 			System.err.println(log.generateLogToScreen());
+		}
 		//			System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 		//					+"!!!!EXCEPTION!!!!:\n       ----> "+text);
-		if (this.activateExceptoFile)
+		if (this.activateExceptoFile) {
 			return this.notify(log,LogService.logNotificationKey);
+		}
 		return true;
 	}
 
@@ -207,12 +244,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		final LogNotification log = new LogException(this.getIdentifier(),text,e);
 		if (this.activateExceptoScreen){
 			System.err.println(log.generateLogToScreen());
-			if (e!=null)
+			if (e!=null) {
 				e.printStackTrace();
-			else
+			}
+			else {
 				System.err.println("exception is null!!!!");
-			//			System.err.println("From "+this.getMyAgent().getIdentifier()
-			//					+"!!!!EXCEPTION!!!!:\n       ----> "+text);
+				//			System.err.println("From "+this.getMyAgent().getIdentifier()
+				//					+"!!!!EXCEPTION!!!!:\n       ----> "+text);
+			}
 		}
 		if (this.activateExceptoFile){
 			this.notify(log,LogService.logNotificationKey);
@@ -281,12 +320,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@Override
 	public Boolean logWarning(final String text, final String key) {
 		final LogNotification log = new LogWarning(this.getIdentifier(),text);
-		if (this.toScreen(key)&&this.activateExceptoScreen)
+		if (this.toScreen(key)&&this.activateExceptoScreen) {
 			System.err.println(log.generateLogToScreen());
+		}
 		//			System.err.println("*** * From "+this.getMyAgent().getIdentifier()
 		//					+"!!!!WARNING!!!!:\n       ----> "+text+" ("+details+")");
-		if (this.toFile(key)&&this.activateExceptoFile)
+		if (this.toFile(key)&&this.activateExceptoFile) {
 			return this.notify(log,LogService.logNotificationKey);
+		}
 		return true;
 	}
 
@@ -300,8 +341,9 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			//					+"!!!!WARNING!!!!:\n       ----> "+text);
 			e.printStackTrace();
 		}
-		if (this.toFile(key)&&this.activateExceptoFile)
+		if (this.toFile(key)&&this.activateExceptoFile) {
 			return this.notify(log,LogService.logNotificationKey);
+		}
 		return true;
 	}
 
@@ -314,8 +356,9 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public void receiveLogNotif(final NotificationMessage<LogNotification> n){
 		final LogNotification log = n.getNotification();
 
-		if (!LogService.logSetted)
+		if (!LogService.logSetted) {
 			LogService.setLogConfiguration();
+		}
 
 		if (log instanceof LogMonologue){
 			final File agentFile = new File(LogService.getMyPath()+log.getCaller()+".log");
@@ -397,13 +440,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 
 	public static String getDimaXDir() {
-		if (System.getProperty("user.dir").endsWith("/bin") || System.getProperty("user.dir").endsWith("/src"))
+		if (System.getProperty("user.dir").endsWith("/bin") || System.getProperty("user.dir").endsWith("/src")) {
 			return
 					System.getProperty("user.dir").substring
 					(0,	System.getProperty("user.dir").length() - 4)+"/";
-		else
+		} else {
 			return
 					System.getProperty("user.dir")+"/";
+		}
 	}
 
 	public static synchronized void logOnFile(final File output, final String text,
@@ -424,11 +468,13 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		if (toScreen)
-			if (!red)
+		if (toScreen) {
+			if (!red) {
 				System.out.println("\n"+text);
-			else
+			} else {
 				System.err.println("\n"+text);
+			}
+		}
 
 	}
 
@@ -447,10 +493,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 			pw.flush();
 			pw.close();
-			if (e!=null)
+			if (e!=null) {
 				e.printStackTrace(pw);
-			else
+			} else {
 				pw.println("exception is null!!");
+			}
 		} catch (final IOException io) {
 			io.printStackTrace();
 		}
@@ -471,7 +518,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	protected static void setLogConfiguration() {
 		if (!LogService.logSetted){
-			LogService.myPath =(LogService.getDimaXDir()+"log/"+(new Date()).toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
+			LogService.myPath =(LogService.getDimaXDir()+"log/"+new Date().toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
 
 			new File(LogService.getMyPath()).mkdirs();
 
@@ -494,18 +541,18 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 
 	private boolean toScreen(final String key){
-		if (this.keysToScreen.containsKey(key))
+		if (this.keysToScreen.containsKey(key)) {
 			return this.keysToScreen.get(key);
-		else{
+		} else{
 			this.logWarning("Unknown log key!!!!! "+key,LogService.onBoth);
 			return false;
 		}
 	}
 
 	private boolean toFile(final String key){
-		if (this.keysToFiles.containsKey(key))
+		if (this.keysToFiles.containsKey(key)) {
 			return this.keysToFiles.get(key);
-		else{
+		} else{
 			this.logWarning("Unknown log key!!!!! "+key,LogService.onBoth);
 			return false;
 		}
@@ -586,9 +633,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	protected void sendMessage(final Collection<? extends AgentIdentifier> ids, final Message m){
-		for (final AgentIdentifier id :ids)
-			if (id!=this.myAgent.getIdentifier())
+		for (final AgentIdentifier id :ids) {
+			if (id!=this.myAgent.getIdentifier()) {
 				this.sendMessage(id, m);
+			}
+		}
 	}
 	//
 	// Accessors
@@ -615,7 +664,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public void setActive(final boolean active) {
+	public void activateCompetence(final boolean active) {
 		this.active = active;
 	}
 	@Override

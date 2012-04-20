@@ -153,7 +153,9 @@ public class NamedAction extends AbstractAction {
 		String s = new String(this.name+"(");
 		if (this.defaultArgs!=null) {
 			s = s.concat(this.defaultArgs[0].toString());
-			for (int i=1;i<this.defaultArgs.length;i++) s = s.concat(", "+this.defaultArgs[i].toString());
+			for (int i=1;i<this.defaultArgs.length;i++) {
+				s = s.concat(", "+this.defaultArgs[i].toString());
+			}
 		}
 		s = s.concat(")");
 		return s;

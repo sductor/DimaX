@@ -4,23 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
-import negotiation.negotiationframework.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
-import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
-import dima.basicagentcomponents.AgentIdentifier;
+import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ResourceInformedCandidatureContractTrunk<
@@ -58,12 +51,13 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 
 	public void addReallocContract(final ReallocationContract<Contract, ActionSpec> realloc){
 		assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
-		for (final Contract c : realloc)
+		for (final Contract c : realloc) {
 			try {
-				this.upgradingContracts.add(getContract(c.getIdentifier()),realloc);
+				this.upgradingContracts.add(this.getContract(c.getIdentifier()),realloc);
 			} catch (final UnknownContractException e) {
 				throw new RuntimeException(e);
 			}
+		}
 	}
 
 	/*
@@ -71,58 +65,57 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	 */
 
 	public ReallocationContract<Contract, ActionSpec> getBestReallocationContract(
-			InformedCandidature<Contract, ActionSpec> c,
-			Comparator<Collection<Contract>> pref){
-		LinkedList<ReallocationContract<Contract, ActionSpec>> upCont = 
-				new LinkedList<ReallocationContract<Contract, ActionSpec>>(upgradingContracts.get(c));
-		if (upCont.isEmpty())
+			final InformedCandidature<Contract, ActionSpec> c,
+			final Comparator<Collection<Contract>> pref){
+		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
+				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.get(c));
+		if (upCont.isEmpty()) {
 			return null;
-		else
+		} else {
 			return Collections.max(upCont,pref);
+		}
 	}
 
 	public ReallocationContract<Contract, ActionSpec> getBestRequestableReallocationContract(
-			Comparator<Collection<Contract>> pref){
-		LinkedList<ReallocationContract<Contract, ActionSpec>> upCont = 
-				new LinkedList<ReallocationContract<Contract, ActionSpec>>(upgradingContracts.getAllValues());
+			final Comparator<Collection<Contract>> pref){
+		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
+				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.getAllValues());
 		Collections.sort(upCont,pref);
-		while (!upCont.isEmpty())
-			if (isRequestable(upCont.getFirst()))
+		while (!upCont.isEmpty()) {
+			if (this.isRequestable(upCont.getFirst())) {
 				return upCont.getFirst();
-			else
+			} else {
 				upCont.pop();
+			}
+		}
 		return null;
 	}
 
 	public Collection<ReallocationContract<Contract, ActionSpec>> getReallocationContracts(){
-		return upgradingContracts.getAllValues();
+		return this.upgradingContracts.getAllValues();
 	}
 	//
 	// Primitive
 	//
 
-	private boolean isRequestable(ReallocationContract<Contract, ActionSpec> r){
+	private boolean isRequestable(final ReallocationContract<Contract, ActionSpec> r){
 		assert this.containsAllKey(r.getIdentifiers());
-		for (Contract c : r){
+		for (final Contract c : r){
 			assert this.getAllContracts().contains(c);
 			try {
-				if (!c.isMatchingCreation()){
-					if (!isRequestable(this.getContract(c.getIdentifier()))){
-//						logMonologue(r + " is not requestable !! =( because of "+c, AbstractCommunicationProtocol.log_selectionStep);
+				if (!c.isMatchingCreation()) {
+					if (!this.isRequestable(this.getContract(c.getIdentifier()))) {
+						//						logMonologue(r + " is not requestable !! =( because of "+c, AbstractCommunicationProtocol.log_selectionStep);
 						return false;
 					}
 				}
-//				if (!(!c.isMatchingCreation() || isRequestable(this.getContract(c.getIdentifier())))){
-//					logMonologue(r + " is not requestable !! =( because of "+c, AbstractCommunicationProtocol.log_selectionStep);
-//					return false;
-//				}
-			} catch (UnknownContractException e) {
+			} catch (final UnknownContractException e) {
 				throw new RuntimeException();
 			}
 		}
-		logMonologue("CONTRACT TRUNK say \n"+r + "\n ----------------------------------- is requestable yoooouhouuu!! =)", AbstractCommunicationProtocol.log_selectionStep);
+		this.logMonologue("CONTRACT TRUNK say \n"+r + "\n ----------------------------------- is requestable yoooouhouuu!! =)", AbstractCommunicationProtocol.log_selectionStep);
 		return true;
-	}	
+	}
 
 	//
 	// Overrided
@@ -132,16 +125,17 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	@Override
 	public void remove(final  InformedCandidature<Contract, ActionSpec> c) {
 		super.remove(c);
-		Collection<ReallocationContract<Contract, ActionSpec>> toRemove = 
+		final Collection<ReallocationContract<Contract, ActionSpec>> toRemove =
 				new ArrayList<ReallocationContract<Contract,ActionSpec>>();
-		toRemove.addAll(upgradingContracts.get(c));
-		for (ReallocationContract<Contract, ActionSpec> r : toRemove){
-			upgradingContracts.removeAvalue(r);		
+		toRemove.addAll(this.upgradingContracts.get(c));
+		for (final ReallocationContract<Contract, ActionSpec> r : toRemove) {
+			this.upgradingContracts.removeAvalue(r);
 		}
 	}
 
+	@Override
 	public String toString(){
-		return super.toString()+"\n up --> "+upgradingContracts;
+		return super.toString()+"\n current upgrading contract are : \n "+this.upgradingContracts;
 	}
 }
 
@@ -164,7 +158,7 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 //	super.addRejection(id, c);
 ////	for (ReallocationContract<Contract, ActionSpec> r : upgradingContracts.get(c)){
 ////		//			System.err.println("yooooooooooo111111111111111111111111111"+r.getIdentifiers());
-////		upgradingContracts.removeAvalue(r);	
+////		upgradingContracts.removeAvalue(r);
 ////	}
 //}
 
@@ -188,24 +182,24 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 //	 *
 //	 */
 //
-//	
+//
 //	@Override
 //	public void addContract(final InformedCandidature<Contract, ActionSpec> c) {
-//		
+//
 //	}
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //	@Override
 //	public void addContract(final InformedCandidature<Contract, ActionSpec> c) {
 //		for (final ReallocationContract<Contract, ActionSpec> r : c.getPossibleContracts()){
@@ -242,7 +236,7 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 //	}
 //
 //	@Override
-//	public void removeRejection(final AgentIdentifier id, final InformedCandidature<Contract, ActionSpec> c) {	
+//	public void removeRejection(final AgentIdentifier id, final InformedCandidature<Contract, ActionSpec> c) {
 //		for (final ReallocationContract<Contract, ActionSpec> r : c.getPossibleContracts()){
 //			this.myLocalOptimisations.removeRejection(id,r);
 //		}
@@ -250,7 +244,7 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 //	}
 //
 //	/*
-//	 * 
+//	 *
 //	 */
 //
 //	@Override

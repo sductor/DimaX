@@ -118,6 +118,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 				if (accepted.isEmpty()){// I accepted noone, trying to find realloc
 
+					assert currentState.equals(getMyAgent().getMyCurrentState());
 					this.logMonologue("no contracts accepted : searching upgrading contracts! : \nhosted :"
 							+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
 							+"\n required "+rejected,
@@ -127,14 +128,15 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					final ResourceInformedProposerCore<Contract, ActionSpec, PersonalState> propCore =
 							(ResourceInformedProposerCore<Contract, ActionSpec, PersonalState>) this.getMyAgent().getMyProposerCore();
 
-					final Collection<InformedCandidature<Contract, ActionSpec>> hosted =
-							new HashSet<InformedCandidature<Contract, ActionSpec>>();
-					//				hosted.addAll(accepted);
+//					final Collection<InformedCandidature<Contract, ActionSpec>> hosted =
+//							new HashSet<InformedCandidature<Contract, ActionSpec>>();
+
+					
 
 					assert MatchingCandidature.assertAllCreation(contracts.getAllContracts());
 					assert AbstractCommunicationProtocol.partitioning(contracts.getAllContracts(), accepted, rejected, onWait);
 					final Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts =
-							this.generateUpgradingContracts(currentState, rejected, onWait, myCore, contracts);
+							this.generateUpgradingContracts(rejected, onWait, myCore, contracts);
 					propCore.addContractsToPropose(ugradingContracts);
 					assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), accepted, rejected, onWait);
 					if (!ugradingContracts.isEmpty()){
@@ -214,7 +216,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	//
 
 	private Collection<InformedCandidature<Contract, ActionSpec>>  generateUpgradingContracts(
-			final PersonalState currentState,
+//			final PersonalState currentState,
 			final Collection<InformedCandidature<Contract, ActionSpec>> unacceptedContracts,
 			final Collection<InformedCandidature<Contract,ActionSpec>> onWait,
 			final InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myAgentCore,
@@ -235,17 +237,22 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			assert c.isMatchingCreation();
 			concerned.put(c.getCandidature(),c);//adding allocation candidature
 		}
-		for (final AgentIdentifier s : currentState.getMyResourceIdentifiers()){
+
+		for (final ActionSpec s : getMyAgent().getMyResources()){
 			final InformedCandidature<Contract, ActionSpec> d =
-					this.generateDestructionContract(s);
-			d.setSpecification(this.getMyAgent().getMySpecif(currentState, d));
-			try {
-				d.setSpecification(getMyAgent().getResource(s));
-			} catch (NoInformationAvailableException e) {
-				this.signalException("uuuuuhh impossible!!",e);
-			}
-			concerned.put(d.getCandidature(),d);//adding destruction candidature
+					this.generateDestructionContract(s.getMyAgentIdentifier());
+				d.setSpecification(this.getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), d));
+				d.setSpecification(s);
+				concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}
+		//		for (final ActionSpec s : this.getMyAgent().getMyResources()){
+		//			//adding destruction of hosted agents
+		//			final InformedCandidature<Contract, ActionSpec> c =
+		//					this.generateDestructionContract(s.getMyAgentIdentifier());
+		//			c.setSpecification(this.getMyAgent().getMySpecif(this.getMyAgent().getMyCurrentState(), c));
+		//			c.setSpecification(s);
+		//			concerned.put(c.getCandidature(),c);//adding destruction candidature
+		//		}
 		//		for (final ActionSpec s : this.getMyAgent().getMyResources()){
 		//			final InformedCandidature<Contract, ActionSpec> d =
 		//					this.generateDestructionContract(s.getMyAgentIdentifier());
@@ -258,7 +265,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
-		this.solver.initiate(concerned.keySet(), currentState);
+		this.solver.initiate(concerned.keySet());
 		Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
 				new HashSet<InformedCandidature<Contract,ActionSpec>>();
 		while (this.solver.hasNext()){
@@ -269,8 +276,12 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				for (final Contract c : realloc) {
 					contractsToKeep.add(concerned.get(c));
 				}
-				assert this.getMyAgent().Iaccept(currentState, contractsToKeep):
-					currentState+" \n"+contractsToKeep+"\n donne -------> "+getMyAgent().getMyResultingState(currentState, contractsToKeep);
+				assert this.getMyAgent().Iaccept(getMyAgent().getMyCurrentState(), contractsToKeep):
+					getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
+					+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
+					+"\n-------------->"+
+					(getMyAgent().getMyCore().getAllocationPreference(getMyAgent().getMyCurrentState(), contractsToKeep, 
+							new ArrayList<InformedCandidature<Contract, ActionSpec>>()) > 0);
 
 				//MAJ du contract trunk
 				for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
@@ -280,11 +291,11 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 						myAgentContractTrunk.addContract(c);
 						onWait.add(c);
 						//Ajout aux propositions à faire
-						try {
-							assert c.isViable();
-						} catch (final IncompleteContractException e) {
-							this.getMyAgent().signalException("impossible");
-						}
+						//						try { NON CAR L'HOTE PEUT ENVOYER DES DEMANDES DE TUAGE, DES FOIS QUE L4AGENT POURRAIT SE RETOURNER!!
+						//							assert c.isViable();
+						//						} catch (final IncompleteContractException e) {
+						//							this.getMyAgent().signalException("impossible");
+						//						}
 						toPropose.add(c);
 					} else {//sinon on la laisse en attente
 						assert (!alreadyDone.add(c)||unacceptedContracts.contains(c)):unacceptedContracts;
@@ -307,7 +318,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			//on lui associe la meilleur réalloc et on l'ajoute au contrat à proposer
 			final ReallocationContract<Contract, ActionSpec> best =
 					myAgentContractTrunk.getBestReallocationContract(
-							c, myAgentCore.getReferenceAllocationComparator(currentState));
+							c, myAgentCore.getReferenceAllocationComparator(getMyAgent().getMyCurrentState()));
 			assert best!=null;
 			c.getPossibleContracts().clear();
 			//en ajoutant le best des realloc qui ont été généré à l'itération précédente

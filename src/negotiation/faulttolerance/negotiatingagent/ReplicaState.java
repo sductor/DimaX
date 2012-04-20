@@ -38,8 +38,8 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	 *
 	 */
 
-	private Set<HostState> myReplicas=null;
-	private Double myDisponibility;
+	private final Set<HostState> myReplicas;
+	private final Double myDisponibility;
 
 	private final SocialChoiceType socialWelfare;
 	//
@@ -80,28 +80,29 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	}
 
 	// Clone with modification of replicas
-	public ReplicaState(
-			final ReplicaState init,
-			final HostState newRep
-			//			,final Long creationTime
-			) {
-		this(init.getMyAgentIdentifier(),
-				init.myCriticity,
-				new HashSet<HostState>(init.myReplicas),
-				init.myProcCharge,
-				init.myMemCharge,
-				0.,
-				init.socialWelfare,
-				init.getStateCounter()+1);
-
-		//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
-
-		if (this.myReplicas.contains(newRep)) {
-			this.myReplicas.remove(newRep);
+	public ReplicaState allocate (final HostState newRep) {
+		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
+		HashSet<HostState> rep = new HashSet<HostState>(this.myReplicas);
+		
+		if (rep.contains(newRep)) {
+			rep.remove(newRep);
 		} else {
-			this.myReplicas.add(newRep);
+			rep.add(newRep);
 		}
-		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
+		
+		double myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
+		
+		return new ReplicaState(this.getMyAgentIdentifier(),
+				this.myCriticity,
+				rep,
+				this.myProcCharge,
+				this.myMemCharge,
+				myDisponibility,
+				this.socialWelfare,
+				this.getStateCounter()+1);
+
+
+		
 	}
 
 	// private constructor for opinions

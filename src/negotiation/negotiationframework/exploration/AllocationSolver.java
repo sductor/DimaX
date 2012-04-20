@@ -19,9 +19,7 @@ PersonalState extends ActionSpec> {
 	 * @param socialWelfare : l'opérateur social a optimise
 	 * @throws IncompleteContractException
 	 */
-	public abstract void initiate(
-			Collection<Contract> concerned,
-			PersonalState currentState);
+	public abstract void initiate(Collection<Contract> concerned);
 
 	public abstract Collection<Contract> getBestSolution();
 

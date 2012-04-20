@@ -39,9 +39,7 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 	 * @see negotiation.negotiationframework.exploration.AllocationSolver#initiate(java.util.List, PersonalState, java.lang.String)
 	 */
 	@Override
-	public abstract void initiate(
-			Collection<Contract> concerned,
-			PersonalState currentState);
+	public abstract void initiate(Collection<Contract> concerned);
 
 	@Override
 	public void setTimeLimit(final int millisec) {

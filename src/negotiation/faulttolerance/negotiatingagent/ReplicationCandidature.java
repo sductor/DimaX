@@ -82,20 +82,11 @@ MatchingCandidature<ReplicationSpecification> {
 		if (!fromState.getMyAgentIdentifier().equals(this.getAgent())) {
 			return fromState;
 		} else {
-			ReplicaState result = new ReplicaState(fromState,
-					this.getResourceInitialState()//, this.getCreationTime()
-					);
-			//on cree n nouveau state a partir de r
-			final HostState h = new HostState(this.getResourceInitialState(), result//, this.getCreationTime()
-					);
-			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
-			result = new ReplicaState(result,
-					this.getResourceInitialState()//, this.getCreationTime()
-					);
-			//on remet ce nouveau state dans r
-			result = new ReplicaState(result, h//, this.getCreationTime()
-					);
-			return result;
+			HostState h = getResourceInitialState().allocate(fromState);
+			ReplicaState r =fromState.allocate(h);
+			assert r.getMyResourceIdentifiers().size()==fromState.getMyResourceIdentifiers().size()+(this.creation?1:-1):
+				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();
+			return r;
 		}
 
 	}
@@ -109,38 +100,52 @@ MatchingCandidature<ReplicationSpecification> {
 			" : ooohhhhhhhhhhhhhhhhh  =( "+(this.creation?"agent already created!":"CAN NOT DESTRUCT ")+" \n contract : "+this	+ "\n --> fromState " + fromState
 			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
 
-
+		
 		if (!fromState.getMyAgentIdentifier().equals(this.getResource())) {
 			return fromState;
 		} else {
-			HostState h =
-					new HostState(fromState,
-							this.getAgentInitialState()//, this.getCreationTime()
-							);
-			//on cree n nouveau state a partir de h
-			final ReplicaState r1 =
-					new ReplicaState(
-							this.getAgentInitialState(), h//, this.getCreationTime()
-					);
-			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
-			h = new HostState(h,
-					this.getAgentInitialState()//, this.getCreationTime()
-					);
-			//on remet ce nouveau state dans h
-			h = new HostState(h, r1//, this.getCreationTime()
-					);
-
-			return h;
+			HostState r = fromState.allocate(getAgentInitialState());
+			assert r.getMyResourceIdentifiers().size()==fromState.getMyResourceIdentifiers().size()+(this.creation?1:-1):
+				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();
+			return r;
 		}
 	}
 }
 
+// ancien    getAgentResultingState
+//			ReplicaState result = new ReplicaState(fromState,
+//					this.getResourceInitialState()//, this.getCreationTime()
+//					);
+//			//on cree n nouveau state a partir de r
+//			final HostState h = new HostState(this.getResourceInitialState(), result//, this.getCreationTime()
+//					);
+//			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
+//			result = new ReplicaState(result,
+//					this.getResourceInitialState()//, this.getCreationTime()
+//					);
+//			//on remet ce nouveau state dans r
+//			result = new ReplicaState(result, h//, this.getCreationTime()
+//					);
 
 
 
-
-
-
+//	ancien	getResourceResultingState	
+//			HostState h =
+//					new HostState(fromState,
+//							this.getAgentInitialState()//, this.getCreationTime()
+//							);
+//			//on cree n nouveau state a partir de h
+//			final ReplicaState r1 =
+//					new ReplicaState(
+//							this.getAgentInitialState(), h//, this.getCreationTime()
+//					);
+//			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
+//			h = new HostState(h,
+//					this.getAgentInitialState()//, this.getCreationTime()
+//					);
+//			//on remet ce nouveau state dans h
+//			h = new HostState(h, r1//, this.getCreationTime()
+//					);
 
 
 

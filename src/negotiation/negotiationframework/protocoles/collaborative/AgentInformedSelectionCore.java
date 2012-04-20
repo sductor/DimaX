@@ -14,17 +14,15 @@ import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
-public class AgentInformedSelectionCore <
+public class AgentInformedSelectionCore  <
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends MatchingCandidature<ActionSpec>>
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
-implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
-
-	/**
-	 * 
-	 */
+implements SelectionCore<
+SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
+ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>{
 	private static final long serialVersionUID = -9125593876913236812L;
 
 	@Override

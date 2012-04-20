@@ -49,7 +49,7 @@ public class HeavyDoubleAggregation extends HeavyAggregation<Double> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override

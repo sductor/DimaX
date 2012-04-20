@@ -10,7 +10,6 @@ import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
-import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.AgentCompetence;
@@ -84,8 +83,9 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 
 
+	@Override
 	public BasicCompetenceShell<BasicCompetentAgent> getMyShell() {
-		return (BasicCompetenceShell<BasicCompetentAgent>) myShell;
+		return (BasicCompetenceShell<BasicCompetentAgent>) this.myShell;
 	}
 
 	public Date getCreationTime() {
@@ -121,7 +121,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 
 	public Collection<Class<? extends AgentCompetence<BasicCompetentAgent>>> getCompetences(){
-		return getMyShell().loadedCompetence;
+		return this.getMyShell().loadedCompetence;
 	}
 
 	//

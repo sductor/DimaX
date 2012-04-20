@@ -19,7 +19,7 @@ extends BasicAgentModule<StrategicNegotiatingAgent<ActionSpec, PersonalState, Co
 implements AbstractUtilitaristStrategicCore<Contract, ActionSpec>{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 7253845916258288308L;
 

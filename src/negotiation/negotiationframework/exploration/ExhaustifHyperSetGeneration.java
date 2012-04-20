@@ -12,7 +12,7 @@ public abstract class ExhaustifHyperSetGeneration<T> {
 	private final Collection<Collection<T>>  hyperset;
 
 	/*
-	 * 
+	 *
 	 */
 
 	public ExhaustifHyperSetGeneration(final List<T> elems){
@@ -25,13 +25,13 @@ public abstract class ExhaustifHyperSetGeneration<T> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public abstract boolean toKeep(Collection<T> elem);
 
 	/*
-	 * 
+	 *
 	 */
 
 	//
@@ -128,3 +128,14 @@ public abstract class ExhaustifHyperSetGeneration<T> {
 		}
 	}
 }
+
+
+//return new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(
+//		new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
+//
+//	@Override
+//	public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
+//		return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc)
+//				&& !MatchingCandidature.areAllCreation(alloc);
+//	}
+//}.getHyperset();

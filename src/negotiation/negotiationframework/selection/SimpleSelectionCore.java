@@ -24,12 +24,13 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  * @param <ActionSpec>
  */
 public class SimpleSelectionCore<
+Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 ActionSpec extends AbstractActionSpecification,
 PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>
-implements SelectionCore<ActionSpec, PersonalState, Contract> {
+BasicAgentCompetence<Agent>
+implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
 	Collection<Contract> toAccept;
@@ -37,18 +38,18 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 	Collection<Contract> toPutOnWait;
 	private ContractTrunk<Contract, ActionSpec, PersonalState> given;
 	GreedySelectionModule selectionModule;
-	
+
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
 	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
 
 	public SimpleSelectionCore(
 			final boolean fuseInitiatorNparticipant,
 			final boolean considerOnWait,
-			GreedySelectionType itType) {
+			final GreedySelectionType itType) {
 		super();
 		this.fuseInitiatorNparticipant = fuseInitiatorNparticipant;
 		this.considerOnWait = considerOnWait;
-		selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(getMyAgent(),itType);
+		this.selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(this.getMyAgent(),itType);
 	}
 
 	/*
@@ -90,9 +91,9 @@ implements SelectionCore<ActionSpec, PersonalState, Contract> {
 
 	//return contract to validate
 	protected Collection<Contract> selection(
-			PersonalState currentState,
-			List<Contract> contractsToExplore){
-		return selectionModule.greedySelection(currentState, contractsToExplore);
+			final PersonalState currentState,
+			final List<Contract> contractsToExplore){
+		return this.selectionModule.greedySelection(currentState, contractsToExplore);
 	}
 
 	//

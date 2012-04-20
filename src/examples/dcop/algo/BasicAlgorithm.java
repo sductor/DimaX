@@ -19,68 +19,72 @@ public abstract class BasicAlgorithm extends Program {
 	protected Variable self;
 	protected int lock;
 	private boolean done;
-	
+
 	protected HashMap<Integer, Integer> inChannelMap;
 	protected HashMap<Integer, Integer> outChannelMap;
-	
+
 	public int preAttempt;
 	public ArrayList<Stats> statList;
 	public int nlockReq;
 	public int preCycles;
 
-	public BasicAlgorithm(Variable v) {
-		view = new Graph();
-		self = new Variable(v.id, v.domain, view);
-		view.varMap.put(self.id, self);
-		for (Constraint c : v.neighbors) {
-			Variable n = c.getNeighbor(v);
-			Variable nn = new Variable(n.id, n.domain, view);
+	public BasicAlgorithm(final Variable v) {
+		this.view = new Graph();
+		this.self = new Variable(v.id, v.domain, this.view);
+		this.view.varMap.put(this.self.id, this.self);
+		for (final Constraint c : v.neighbors) {
+			final Variable n = c.getNeighbor(v);
+			final Variable nn = new Variable(n.id, n.domain, this.view);
 			nn.fixed = true;
-			view.varMap.put(nn.id, nn);
+			this.view.varMap.put(nn.id, nn);
 			Constraint cc;
-			if (v == c.first)
-				cc = new Constraint(self, nn);
-			else
-				cc = new Constraint(nn, self);
-			for (int i = 0; i < cc.d1; i++)
+			if (v == c.first) {
+				cc = new Constraint(this.self, nn);
+			} else {
+				cc = new Constraint(nn, this.self);
+			}
+			for (int i = 0; i < cc.d1; i++) {
 				for (int j = 0; j < cc.d2; j++) {
 					cc.f[i][j] = c.f[i][j];
 				}
+			}
 			cc.cache();
-			view.conList.add(cc);
+			this.view.conList.add(cc);
 		}
-		
-		lock = -1;
-		lockBase = 1;
-		reLockTime = Helper.random.nextInt(reLockInterval * lockBase * 4);
-		done=false;
-		
-		inChannelMap = new HashMap<Integer, Integer>();
-		outChannelMap = new HashMap<Integer, Integer>();
-		statList = new ArrayList<Stats>();
-		preAttempt = 0;		
-		preCycles = 0;
-		nlockReq = 0;
+
+		this.lock = -1;
+		this.lockBase = 1;
+		this.reLockTime = Helper.random.nextInt(BasicAlgorithm.reLockInterval * this.lockBase * 4);
+		this.done=false;
+
+		this.inChannelMap = new HashMap<Integer, Integer>();
+		this.outChannelMap = new HashMap<Integer, Integer>();
+		this.statList = new ArrayList<Stats>();
+		this.preAttempt = 0;
+		this.preCycles = 0;
+		this.nlockReq = 0;
 
 	}
-	
-	public void setDone(boolean done) {
-		if (done) System.out.println("from "+self.id+" !!!!!!!!!!!!!!!!!!!!!! "+getValue());
+
+	public void setDone(final boolean done) {
+		if (done) {
+			System.out.println("from "+this.self.id+" !!!!!!!!!!!!!!!!!!!!!! "+this.getValue());
+		}
 		this.done = done;
-		node.notify(done, stabilityNotificationKey);
+		this.node.notify(done, BasicAlgorithm.stabilityNotificationKey);
 	}
 	public int getValue(){
-		return self.value;
+		return this.self.value;
 	}
-	
+
 	public int getID() {
-		return self.id;
+		return this.self.id;
 	}
-	
+
 	public boolean isStable() {
-		return done;
+		return this.done;
 	}
-	
+
 	@Override
 	abstract protected void main();
 

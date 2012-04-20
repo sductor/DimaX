@@ -1,22 +1,18 @@
 package dimaxx.experimentation;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
-import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
@@ -56,7 +52,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 
 	/**
-	 * 
+	 *
 	 * @return true when the simulation is ended
 	 * must ensure every agent is destroyed!!!
 	 */
@@ -70,7 +66,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 
 	public Collection<AgentIdentifier> getAliveAgents() {
-		return remainingAgent;
+		return this.remainingAgent;
 	}
 
 
@@ -81,7 +77,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 	@ProactivityInitialisation
 	public final void initiateAgents(){
-		for (final AgentIdentifier id : getMyAgent().agents.keySet()) {
+		for (final AgentIdentifier id : this.getMyAgent().agents.keySet()) {
 			//			if (id instanceof ResourceIdentifier) {
 			//				this.remainingHost.add(id);
 			//			} else {
@@ -98,17 +94,17 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		final LinkedList<ExperimentationResults> results =
 				l.getNotification().getResults();
 
-		assert verification(results);
+		assert this.verification(results);
 
 		for (final ExperimentationResults r : results) {
 			this.updateInfo(r);
 
 			if (r.isLastInfo()){
-				setAgentHasEnded(r.getId());
+				this.setAgentHasEnded(r.getId());
 
 				this.logMonologue(r.getId()
 						+" has finished!, " +
-						"\n * remaining agents "+remainingAgent.size()
+						"\n * remaining agents "+this.remainingAgent.size()
 						//					+"\n * remaining hosts "+remainingHost.size()
 						,LogService.onFile);
 			}
@@ -120,9 +116,9 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 	}
 
-	public void setAgentHasEnded(AgentIdentifier id){
+	public void setAgentHasEnded(final AgentIdentifier id){
 //		getMyAgent().logMonologue("agent is dead "+id, LogService.onBoth);
-		remainingAgent.remove(id);
+		this.remainingAgent.remove(id);
 	}
 
 	//
@@ -130,18 +126,18 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	//
 
 	public static int getNumberOfTimePoints() {
-		return (int) (ExperimentationParameters._maxSimulationTime / _state_snapshot_frequency);
+		return (int) (ExperimentationParameters._maxSimulationTime / ObservingGlobalService._state_snapshot_frequency) +1;//le +1 est l'état initial
 	}
 
 	public static int getTimeStep(final ExperimentationResults ag) {
 		return Math
 				.max(0,
-						(int) (ag.getUptime() / _state_snapshot_frequency) - 1);
+						(int) (ag.getUptime() / ObservingGlobalService._state_snapshot_frequency) - 1);
 	}
 
 	public static Long geTime(final int i) {
-		return (i + 1)
-				* _state_snapshot_frequency;
+		return (i)
+				* ObservingGlobalService._state_snapshot_frequency;
 	}
 
 	public long getMaxSimulationTime() {
@@ -193,8 +189,8 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 				+entry+"  max ;\t "
 				//				+entry+" sum ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
-		for (int i = 0; i < getNumberOfTimePoints(); i++){
-			result += geTime(i)/1000.+" ;\t ";
+		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++){
+			result += ObservingGlobalService.geTime(i)/1000.+" ;\t ";
 			if (variable[i].getWeightOfAggregatedElements()>significatifPercent*totalNumber) {
 				result +=
 						variable[i].getMinElement()+";\t " +
@@ -215,8 +211,8 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	public static  String getMeanTimeEvolutionObs(final ExperimentationParameters p, final String entry, final LightAverageDoubleAggregation[] variable,
 			final double significatifPercent, final int totalNumber){
 		String result = "t (seconds);\t "+entry+" ;\t percent of agent aggregated=\n";
-		for (int i = 0; i < getNumberOfTimePoints(); i++){
-			result += geTime(i)/1000.+" ;\t ";
+		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++){
+			result += ObservingGlobalService.geTime(i)/1000.+" ;\t ";
 			if (variable[i].getNumberOfAggregatedElements()>significatifPercent*totalNumber) {
 				result+=variable[i].getRepresentativeElement()+";\t (" +
 						(double) variable[i].getNumberOfAggregatedElements()/(double)  totalNumber+")\n";
@@ -238,21 +234,22 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	//VERIFICATION
 	HashSet<AgentIdentifier> alreadyReceived=null;
 	ArrayList<HashSet<AgentIdentifier>> received=null;
-	public boolean verification(LinkedList<ExperimentationResults> results ){
-		if (alreadyReceived==null){ //firstTime
-			alreadyReceived= new HashSet<AgentIdentifier>();
-			received = new ArrayList<HashSet<AgentIdentifier>>();
-			for (int i = 0; i < getNumberOfTimePoints(); i++)
-				received.add(new HashSet<AgentIdentifier>());
+	public boolean verification(final LinkedList<ExperimentationResults> results ){
+		if (this.alreadyReceived==null){ //firstTime
+			this.alreadyReceived= new HashSet<AgentIdentifier>();
+			this.received = new ArrayList<HashSet<AgentIdentifier>>();
+			for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
+				this.received.add(new HashSet<AgentIdentifier>());
+			}
 		}
 
 		//		assert !received.get(i).contains(ag.getId());
 		//		received.get(i).add(ag.getId());
 
-		ExperimentationResults resultType= results.getLast();
-		assert (!alreadyReceived.contains(resultType.getId())):"argh! already received"+resultType.getId();
-		alreadyReceived.add(resultType.getId());
-		assert (results.size()<=getNumberOfTimePoints()):"arg : "+results.size();
+		final ExperimentationResults resultType= results.getLast();
+		assert (!this.alreadyReceived.contains(resultType.getId())):"argh! already received"+resultType.getId();
+		this.alreadyReceived.add(resultType.getId());
+		assert (results.size()<=ObservingGlobalService.getNumberOfTimePoints()):"arg : "+results.size();
 //		String result ="Agent has sended results \n"+resultType.getId()+"   "+_state_snapshot_frequency+" :";
 //		for (final ExperimentationResults r : results){
 //			result+=r.getUptime()+"  "+getTimeStep(r)+"\n";

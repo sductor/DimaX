@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.contracts.ContractTransition;
-import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.replication.ReplicationHandler;
@@ -31,7 +31,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	// Constructor
 	//
 
-	public HostCore(final String socialWelfare) {
+	public HostCore(final SocialChoiceType socialWelfare) {
 		this.myOptimiser = new ReplicationSocialOptimisation(socialWelfare);
 	}
 
@@ -53,7 +53,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
 				"Preference : "+pref+" for \n "+c1+"\n"+c2,
-				AllocationSocialWelfares.log_socialWelfareOrdering);
+				SocialChoiceFunction.log_socialWelfareOrdering);
 		return pref;
 	}
 

@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 
 import negotiation.negotiationframework.NegotiationParameters;
-
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 

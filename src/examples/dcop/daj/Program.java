@@ -16,8 +16,8 @@ public abstract class Program {
 	// --------------------------------------------------------------------------
 	// set program node to `n`
 	// --------------------------------------------------------------------------
-	protected void setNode(Node n) {
-		node = n;
+	protected void setNode(final Node n) {
+		this.node = n;
 	}
 
 	// --------------------------------------------------------------------------
@@ -36,35 +36,35 @@ public abstract class Program {
 	// return output channel set
 	// --------------------------------------------------------------------------
 	final public OutChannelSet out() {
-		return node.getOut();
+		return this.node.getOut();
 	}
 
 	// --------------------------------------------------------------------------
 	// return output channel numbered `i`
 	// --------------------------------------------------------------------------
-	final public OutChannel out(int i) {
-		return node.getOut().getChannel(i);
+	final public OutChannel out(final int i) {
+		return this.node.getOut().getChannel(i);
 	}
 
 	// --------------------------------------------------------------------------
 	// return input channel set
 	// --------------------------------------------------------------------------
 	final public InChannelSet in() {
-		return node.getIn();
+		return this.node.getIn();
 	}
 
 	// --------------------------------------------------------------------------
 	// return input channel numbered `i`
 	// --------------------------------------------------------------------------
-	final public InChannel in(int i) {
-		return node.getIn().getChannel(i);
+	final public InChannel in(final int i) {
+		return this.node.getIn().getChannel(i);
 	}
 
 	// --------------------------------------------------------------------------
 	// get number of scheduling operations for this node
 	// --------------------------------------------------------------------------
 	public int getTime() {
-		return node.getSwitches();
+		return this.node.getSwitches();
 	}
 
 //	// --------------------------------------------------------------------------

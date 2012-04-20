@@ -5,10 +5,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
-import negotiation.negotiationframework.rationality.SocialChoiceFunctions.UtilitaristEvaluator;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 
-public class ReplicationSocialOptimisation extends AllocationSocialWelfares<ReplicationSpecification, ReplicationCandidature>{
+public class ReplicationSocialOptimisation
+extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 
 
 
@@ -19,7 +19,7 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 
 	public ReplicationSocialOptimisation(
 			//			final CompetentComponent myAgent,
-			final String socialWelfare) {
+			final SocialChoiceType socialWelfare) {
 		super(//myAgent,
 				socialWelfare);
 	}
@@ -28,11 +28,17 @@ public class ReplicationSocialOptimisation extends AllocationSocialWelfares<Repl
 	 *
 	 */
 
-	public static Double getReliability(final Double dispo, final Double criti) {
-		if (dispo / criti > 10) {
-			System.out.println("aargh " + dispo + " " + criti);
+	public static Double getReliability(final ReplicaState s, final SocialChoiceType socialWelfare) {
+		if (socialWelfare.equals(SocialChoiceType.Leximin)){
+		assert (s.getMyDisponibility() / s.getMyCriticity() < 10);
+		return s.getMyDisponibility() / s.getMyCriticity();
+		} else if (socialWelfare.equals(SocialChoiceType.Utility)){
+			return s.getMyDisponibility() * s.getMyCriticity();
+		} else if (socialWelfare.equals(SocialChoiceType.Nash)){
+			return s.getMyDisponibility();
+		} else {
+			throw new RuntimeException();
 		}
-		return dispo / criti;
 	}
 
 

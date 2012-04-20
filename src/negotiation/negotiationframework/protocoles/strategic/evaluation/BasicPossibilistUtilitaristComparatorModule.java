@@ -66,7 +66,7 @@ implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 
 
 	/*
-	 * 
+	 *
 	 */
 
 	/**

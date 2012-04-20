@@ -6,29 +6,33 @@ public class DPOPTreeNode extends TreeNode {
 
 	public int gid;
 	public int reward;
-	
-	public DPOPTreeNode(int i, int g, int val, boolean f, TreeNode p) {
+
+	public DPOPTreeNode(final int i, final int g, final int val, final boolean f, final TreeNode p) {
 		super(i, val, f, p);
-		mat = null;
-		reward = 0;
-		gid = g;
+		this.mat = null;
+		this.reward = 0;
+		this.gid = g;
 	}
 
+	@Override
 	public String toString() {
-		return "" + id + " " + value + " " + (fixed ? "*" : "-") + " " + reward
-				+ "\n" + mat + "\n";
+		return "" + this.id + " " + this.value + " " + (this.fixed ? "*" : "-") + " " + this.reward
+				+ "\n" + this.mat + "\n";
 	}
-	
+
+	@Override
 	public int hashCode() {
 		return this.gid;
 	}
-	
-	public boolean equals(Object obj) {
+
+	@Override
+	public boolean equals(final Object obj) {
 		if (obj instanceof DPOPTreeNode) {
-			DPOPTreeNode n = (DPOPTreeNode) obj;
+			final DPOPTreeNode n = (DPOPTreeNode) obj;
 			return this.gid == n.gid && this.id == n.id;
-		} else
-			return false;		
+		} else {
+			return false;
+		}
 	}
 
 }

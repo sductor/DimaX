@@ -2,7 +2,6 @@ package negotiation.faulttolerance.candidaturewithstatus;
 
 import java.util.Collection;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
@@ -85,9 +84,9 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 
 	public AgentStateStatus getStatus(final ReplicaState s) {
 		final boolean empty = this.getMyAgent().getMyCurrentState()
-				.getMyReplicas().size() <= 1;
+				.getMyResourceIdentifiers().size() <= 1;
 		final boolean full = this.getMyAgent().getMyCurrentState()
-				.getMyReplicas().size() == this.getMyAgent().getMyInformation()
+				.getMyResourceIdentifiers().size() == this.getMyAgent().getMyInformation()
 				.getKnownAgents().size();
 		final boolean fragile = this.getMyAgent().getMyCurrentState()
 				.getMyReliability() <= this.getLowerThreshold();

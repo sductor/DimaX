@@ -28,7 +28,7 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 	 */
 
 	/**
-	 * 
+	 *
 	 * @param s etat initial de l'agent
 	 * @param c1 premiere collection de contrat proposé
 	 * @param c2 deuxieme collection de contrat composé

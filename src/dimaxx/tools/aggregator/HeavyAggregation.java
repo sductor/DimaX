@@ -10,9 +10,9 @@ import java.util.TreeMap;
 /**
  * Collection of elements mapped to their weight Delegate all aggregation
  * functions.
- * 
+ *
  * @author Sylvain Ductor
- * 
+ *
  * @param <Element>
  */
 public abstract class HeavyAggregation<Element extends Object> extends
@@ -23,7 +23,7 @@ AbstractMinMaxAggregation<Element>, AbstractQuantileAggregation<Element>,
 UtilitaristAnalyser<Element> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 4326518157900844655L;
 
@@ -44,7 +44,7 @@ UtilitaristAnalyser<Element> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public Double add(final Element e) {
@@ -55,7 +55,7 @@ UtilitaristAnalyser<Element> {
 		return super.put(o, this.containsKey(o)?weight+this.get(o):weight);
 	}
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
@@ -84,7 +84,7 @@ UtilitaristAnalyser<Element> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	public double getWeightOfAggregatedElements() {
@@ -106,14 +106,14 @@ UtilitaristAnalyser<Element> {
 //
 //		return product;
 //	}
-	
+
 	@Override
 	public int getNumberOfAggregatedElements() {
 		return this.size();
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override

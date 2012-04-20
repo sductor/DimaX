@@ -65,7 +65,7 @@ public class Enseignant extends MultiRolesAgent
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (11/04/2003 13:40:29)
-	 * @param c dima.kernel.communicatingAgent.domain.Contract
+	 * @param socialWelfareValue dima.kernel.communicatingAgent.domain.Contract
 	 */
 	@Override
 	public void addContract(final AgentIdentifier contractant, final AbstractService proposal)
@@ -101,7 +101,7 @@ public class Enseignant extends MultiRolesAgent
 	 * Insert the method's description here.
 	 * Creation date: (09/04/2003 13:36:44)
 	 * @return boolean
-	 * @param c dima.kernel.communicatingAgent.domain.Contract
+	 * @param socialWelfareValue dima.kernel.communicatingAgent.domain.Contract
 	 */
 	public boolean isNeeded(final AgentIdentifier agentId)
 	{
@@ -118,7 +118,7 @@ public class Enseignant extends MultiRolesAgent
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (15/04/2003 11:48:54)
-	 * @param c dima.kernel.communicatingAgent.domain.Contract
+	 * @param socialWelfareValue dima.kernel.communicatingAgent.domain.Contract
 	 */
 	public void removeNeed(final AgentIdentifier agentId)
 	{

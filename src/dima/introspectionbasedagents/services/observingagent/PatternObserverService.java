@@ -3,7 +3,6 @@ package dima.introspectionbasedagents.services.observingagent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;

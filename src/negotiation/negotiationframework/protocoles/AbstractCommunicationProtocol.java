@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import negotiation.faulttolerance.candidaturewithstatus.Host;
+import negotiation.faulttolerance.experimentation.Host;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
@@ -23,7 +23,6 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
@@ -54,13 +53,13 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	PersonalState extends ActionSpec,
 	Contract extends AbstractContractTransition<ActionSpec>>
 	extends AgentCompetence<Agent>{
-		
+
 		public Set<? extends Contract> getNextContractsToPropose()
 				throws NotReadyException;
 
 		public boolean IWantToNegotiate(PersonalState myCurrentState,
 				ContractTrunk<Contract, ActionSpec, PersonalState> contracts);
-		
+
 		public boolean ImAllowedToNegotiate(PersonalState myCurrentState,
 				ContractTrunk<Contract, ActionSpec, PersonalState> contracts);
 
@@ -68,10 +67,11 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	}
 
 	public interface SelectionCore<
+	Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 	ActionSpec extends AbstractActionSpecification,
 	PersonalState extends ActionSpec,
 	Contract extends AbstractContractTransition<ActionSpec>>
-	extends	AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
+	extends	AgentCompetence<Agent> {
 
 		// Select contract to accept/wait/reject for a participant
 		// Select contract to request/cancel for a initiator
@@ -116,6 +116,12 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.contracts = contracts;
 	}
 
+	@Override
+	public void setMyAgent(final SimpleNegotiatingAgent<ActionSpec, State, Contract> ag) throws UnrespectedCompetenceSyntaxException {
+		super.setMyAgent(ag);
+		this.getContracts().setMyAgent(ag);
+	}
+
 	//
 	// Accessors
 	//
@@ -135,16 +141,16 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// @role(NegotiationInitiatorRole.class)
 	@StepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
-		if (this.isActive() && 
-				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),contracts)
-				&& this.getMyAgent().getMyProposerCore().ImAllowedToNegotiate(this.getMyAgent().getMyCurrentState(), contracts)) {
+		if (this.isActive() &&
+				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),this.contracts)
+				&& this.getMyAgent().getMyProposerCore().ImAllowedToNegotiate(this.getMyAgent().getMyCurrentState(), this.contracts)) {
 			try {
 				final Collection<? extends Contract> cs =
 						this.getMyAgent().getMyProposerCore()
 						.getNextContractsToPropose();
 				for (final Contract c : cs){
 					this.logMonologue("**************> I propose "+c,AbstractCommunicationProtocol.log_negotiationStep);
-										
+
 					this.sendMessage(
 							c.getNotInitiatingParticipants(),
 							new SimpleContractProposal(Performative.Propose, c));//, (Collection<Information>) this.getMyAgent().getMyResources()));
@@ -185,8 +191,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 			assert AbstractCommunicationProtocol.partitioning(
 					this.getContracts().getAllContracts(),
-					toAccept, toReject,toPutOnWait):
-						"->"+toAccept+"\n->"+toReject+"\n->"+toPutOnWait;
+					toAccept, toReject,toPutOnWait):"->"+toAccept+"\n->"+toReject+"\n->"+toPutOnWait;
 
 					//
 					// Answering
@@ -334,8 +339,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		this.logMonologue("I've received proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);
 		delta.getMyContract().setSpecification(this.getMyAgent().getMySpecif(delta.getMyContract()));
 		this.contracts.addContract(contract);
-//		for (Information i : delta.attachedInfos)
-//			getMyAgent().getMyInformation().add(i);
+		//		for (Information i : delta.attachedInfos)
+		//			getMyAgent().getMyInformation().add(i);
 	}
 	//Updating contract spec
 	//		for (final AgentIdentifier id : contract.getAllParticipants())
@@ -536,18 +541,18 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		private static final long serialVersionUID = 7442568804092112906L;
 
 		final Contract myContract;
-//		final Collection<Information> attachedInfos;
+		//		final Collection<Information> attachedInfos;
 
 		public SimpleContractProposal(final Performative performative
 				,final Contract myContract
-//				,Collection<Information> attachedInfos
+				//				,Collection<Information> attachedInfos
 				) {
 			super(performative, AbstractCommunicationProtocol.class);
 			assert myContract != null;
 			myContract.setSpecification(AbstractCommunicationProtocol.this.getMyAgent().getMySpecif(myContract));
 			// this.myContract = (Contract) myContract.clone();
 			this.myContract = myContract;
-//			this.attachedInfos=attachedInfos;
+			//			this.attachedInfos=attachedInfos;
 		}
 
 		public Contract getMyContract() {

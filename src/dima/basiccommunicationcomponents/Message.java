@@ -24,19 +24,19 @@ public class Message extends AbstractMessage implements Serializable {
 	private String type ="java";
 	private AgentIdentifier receiver;
 	private Object[] args;
-	
-	private int messageId;
+
+	private final int messageId;
 	private static int messageIdCount=0;
-	
+
 	/**
 	 * Message constructor comment.
 	 */
 	public Message() {
 		super();
 		this.type = "java";
-		
-		messageId=messageIdCount;
-		messageIdCount++;
+
+		this.messageId=Message.messageIdCount;
+		Message.messageIdCount++;
 	}
 	/**
 	 * Insert the method's description here.
@@ -48,8 +48,8 @@ public class Message extends AbstractMessage implements Serializable {
 	public Message(final String  msgContent) {
 		this.content=msgContent;
 		this.type = "java";
-		messageId=messageIdCount;
-		messageIdCount++;
+		this.messageId=Message.messageIdCount;
+		Message.messageIdCount++;
 	}
 //	/**
 //	 * Insert the method's description here.
@@ -76,8 +76,8 @@ public class Message extends AbstractMessage implements Serializable {
 		this.content=msgContent;
 		this.args = paras;
 		this.type = "java";
-		messageId=messageIdCount;
-		messageIdCount++;
+		this.messageId=Message.messageIdCount;
+		Message.messageIdCount++;
 	}
 	/**
 	 * Insert the method's description here.
@@ -202,7 +202,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 */
 	@Override
 	public void setSender(final dima.basicagentcomponents.AgentIdentifier newSender) {
-		assert sender==null || (sender.equals(newSender));
+		assert this.sender==null || (this.sender.equals(newSender));
 		this.sender = newSender;
 	}
 	/**
@@ -211,7 +211,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 * @param newSender Gdima.basicagentcomponents.AgentIdentifier
 	 */
 	public void setSender(final String newSender) {
-		assert sender==null || (sender.toString().equals(newSender));
+		assert this.sender==null || (this.sender.toString().equals(newSender));
 		this.sender = new AgentName(newSender);
 	}
 	/**
@@ -224,6 +224,7 @@ public class Message extends AbstractMessage implements Serializable {
 	}
 
 
+	@Override
 	public Message clone(){
 		return this;
 //		Message m = new Message((String) content, args);
@@ -233,7 +234,7 @@ public class Message extends AbstractMessage implements Serializable {
 //		m.messageId=this.messageId;
 //		return m;
 	}
-	
+
 	/**
 	 * Returns a String that represents the value of this object.
 	 *
@@ -247,7 +248,7 @@ public class Message extends AbstractMessage implements Serializable {
 		// return super.toString();
 		return "MESSAGE of "+ this.getClass()
 				+ " (hash : "
-				+ this.hashCode()+" count : "+messageId
+				+ this.hashCode()+" count : "+this.messageId
 				+ ")\n"
 				+ "from    : "
 				+ this.getSender()
@@ -260,7 +261,7 @@ public class Message extends AbstractMessage implements Serializable {
 				+ (this.getArgs() != null ? this.getArgs().length != 0 : false)
 				+ "\n" + "details : " + this.description();
 	}
-	
+
 
 	public String description() {
 		return "";

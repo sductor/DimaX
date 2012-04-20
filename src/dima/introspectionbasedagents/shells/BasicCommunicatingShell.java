@@ -5,7 +5,6 @@ import java.util.Date;
 
 import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basiccommunicationcomponents.AbstractMessage;
-import dima.basicinterfaces.DimaComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;

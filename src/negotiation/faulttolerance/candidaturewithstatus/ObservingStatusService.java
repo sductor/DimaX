@@ -9,7 +9,6 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.support.GimaObject;
-import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.Laborantin;
 import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;

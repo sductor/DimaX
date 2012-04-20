@@ -20,7 +20,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	// Fields
 	//
 
-	private final AllocationSocialWelfares<ActionSpec, Contract> myOptimiser;
+	private final SocialChoiceFunction<ActionSpec, Contract> myOptimiser;
 	private final RationalCore<ActionSpec, PersonalState, Contract>  myPersonalCore;
 
 	//
@@ -28,7 +28,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	public AltruistRationalCore(
-			final AllocationSocialWelfares<ActionSpec, Contract> opt,
+			final SocialChoiceFunction<ActionSpec, Contract> opt,
 			final RationalCore<ActionSpec, PersonalState, Contract> rationality) {
 		this.myOptimiser = opt;
 		this.myPersonalCore= rationality;
@@ -54,7 +54,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	public Double evaluatePreference(final Collection<Contract> c) {
 		return this.myOptimiser.getUtility(c);
 	}
-	
+
 	//
 	// Delegated methods
 	//
@@ -70,7 +70,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override

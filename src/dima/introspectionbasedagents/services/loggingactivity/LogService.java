@@ -124,8 +124,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		this.keysToFiles.put(key, toFile);
 	}
 	public void setCommtoScreen(
-			boolean activateCommSendtoScreen, 
-			boolean activateCommReceivtoScreen) {
+			final boolean activateCommSendtoScreen,
+			final boolean activateCommReceivtoScreen) {
 		this.activateCommSendtoScreen = activateCommSendtoScreen;
 		this.activateCommReceivtoScreen = activateCommReceivtoScreen;
 	}
@@ -143,8 +143,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	public void setCommtoFiles(
-			boolean activateCommSendtoFiles, 
-			boolean activateCommReceivtoFiles) {
+			final boolean activateCommSendtoFiles,
+			final boolean activateCommReceivtoFiles) {
 		this.activateCommSendtoFiles = activateCommSendtoFiles;
 		this.activateCommReceivtoFiles = activateCommReceivtoFiles;
 	}
@@ -189,39 +189,43 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	// Communication
 
-	
+
 	public Boolean logCommunication(final Message am, final MessageStatus s){
 		if ((am instanceof LogNotification) ||
 				(am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
 			//do nothing;
 		} else {
 //			assert commValidityVerif(am);
-			LogNotification log = new LogCommunication(getIdentifier(), am, s);
+			final LogNotification log = new LogCommunication(this.getIdentifier(), am, s);
 			if (s.equals(MessageStatus.MessageSended) || s.equals(MessageStatus.MessageLocallySended)){
-				if (activateCommSendtoScreen )
+				if (this.activateCommSendtoScreen ) {
 					System.out.println(log.generateLogToScreen());
-				if (activateCommSendtoFiles)
-					return this.notify(log,logNotificationKey);
+				}
+				if (this.activateCommSendtoFiles) {
+					return this.notify(log,LogService.logNotificationKey);
+				}
 			} else {
-				if (activateCommReceivtoScreen )
+				if (this.activateCommReceivtoScreen ) {
 					System.out.println(log.generateLogToScreen());
-				if (activateCommReceivtoFiles)
-					return this.notify(log,logNotificationKey);
+				}
+				if (this.activateCommReceivtoFiles) {
+					return this.notify(log,LogService.logNotificationKey);
+				}
 			}
 		}
 		return true;
 	}
-	
+
 	public Collection<Message> received=null;
-	public boolean commValidityVerif(Message m){
-		if (received==null){
-			received = new HashSet<Message>();
+	public boolean commValidityVerif(final Message m){
+		if (this.received==null){
+			this.received = new HashSet<Message>();
 		}
-		assert !received.contains(m);
-		received.add(m);
+		assert !this.received.contains(m);
+		this.received.add(m);
 		return true;
 	}
-	
+
 	//EXCEPTION
 
 

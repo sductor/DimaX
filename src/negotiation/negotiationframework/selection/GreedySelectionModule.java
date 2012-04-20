@@ -3,19 +3,15 @@ package negotiation.negotiationframework.selection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.BasicAgentModule;
-import dima.support.GimaObject;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import dima.basicinterfaces.DimaComponentInterface;
+import dima.introspectionbasedagents.services.BasicAgentModule;
 
 public class GreedySelectionModule<
 ActionSpec extends AbstractActionSpecification,
@@ -29,8 +25,8 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	GreedySelectionType itType;
 
 	public GreedySelectionModule(
-			SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> ag,
-			GreedySelectionType itType) {
+			final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> ag,
+			final GreedySelectionType itType) {
 		super(ag);
 		this.itType=itType;
 	}
@@ -46,7 +42,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 		final Collection<Contract> toValidate = new ArrayList<Contract>();
 		Iterator<Contract> itContract;
-		switch (itType){ 
+		switch (this.itType){
 		case Greedy :
 			itContract = new GreedyIterator(contractsToExplore);
 			break;
@@ -68,7 +64,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 		while (itContract.hasNext()) {// this.getMyAgent().respectMyRights(currentState)
 			// &&
-			Contract currentContract = itContract.next();
+			final Contract currentContract = itContract.next();
 			if (this.getMyAgent().Iaccept(currentState,currentContract)){
 				toValidate.add(currentContract);
 				currentState =
@@ -98,29 +94,33 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 	public class GreedyIterator implements Iterator<Contract>, DimaComponentInterface{
 
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 4199330742934099050L;
 		final List<Contract> contractsToExplore;
 		int count=-1;
 
-		public GreedyIterator(List<Contract> cs){
-			contractsToExplore=cs;
-			Collections.sort(contractsToExplore, Collections.reverseOrder(getMyAgent().getMyPreferenceComparator()));
+		public GreedyIterator(final List<Contract> cs){
+			this.contractsToExplore=cs;
+			Collections.sort(this.contractsToExplore, Collections.reverseOrder(GreedySelectionModule.this.getMyAgent().getMyPreferenceComparator()));
 		}
 
 
 		@Override
 		public boolean hasNext() {
-			return count<contractsToExplore.size();
+			return this.count<this.contractsToExplore.size();
 		}
 
 		@Override
 		public Contract next() {
-			count++;
-			return contractsToExplore.get(count);		
+			this.count++;
+			return this.contractsToExplore.get(this.count);
 		}
 
 		@Override
 		public void remove() {
-			contractsToExplore.remove(count);		
+			this.contractsToExplore.remove(this.count);
 		}
 
 	}
@@ -128,29 +128,33 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 	public class RandomIterator  implements Iterator<Contract>, DimaComponentInterface{
 
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = -194332049051755246L;
 		final List<Contract> contractsToExplore;
 		int count=-1;
 
-		public RandomIterator(List<Contract> cs){
-			contractsToExplore=cs;
-			Collections.shuffle(contractsToExplore);
+		public RandomIterator(final List<Contract> cs){
+			this.contractsToExplore=cs;
+			Collections.shuffle(this.contractsToExplore);
 		}
 
 
 		@Override
 		public boolean hasNext() {
-			return count<contractsToExplore.size();
+			return this.count<this.contractsToExplore.size();
 		}
 
 		@Override
 		public Contract next() {
-			count++;
-			return contractsToExplore.get(count);		
+			this.count++;
+			return this.contractsToExplore.get(this.count);
 		}
 
 		@Override
 		public void remove() {
-			contractsToExplore.remove(count);		
+			this.contractsToExplore.remove(this.count);
 		}
 
 	}
@@ -158,6 +162,10 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 	public class RooletteWheelIterator implements Iterator<Contract>, DimaComponentInterface {
 
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = -6677689550030424329L;
 		List<Contract> contracts;
 		List<Contract> initContract;
 
@@ -168,11 +176,12 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		public RooletteWheelIterator(final List<Contract> contracts) {
 			super();
 			this.contracts=new ArrayList<Contract>(contracts);
-			initContract = contracts;
+			this.initContract = contracts;
 			this.currentContract=-1;
-			
-			for (Contract c : contracts)
-				sumPref+=getMyAgent().evaluatePreference(c);
+
+			for (final Contract c : contracts) {
+				this.sumPref+=GreedySelectionModule.this.getMyAgent().evaluatePreference(c);
+			}
 		}
 
 		@Override
@@ -183,17 +192,17 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		@Override
 		public Contract next() {
 
-			currentContract = 0;
-			final Double boule= sumPref * this.rand.nextDouble();
-			Double wheel=getMyAgent().evaluatePreference(contracts.get(currentContract));
+			this.currentContract = 0;
+			final Double boule= this.sumPref * this.rand.nextDouble();
+			Double wheel=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
 
 			while (boule>wheel) {
-				this.currentContract++; 
-				wheel+=getMyAgent().evaluatePreference(contracts.get(currentContract));
+				this.currentContract++;
+				wheel+=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
 			}
 
 			//Suppression du contrat
-			sumPref-=getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
+			this.sumPref-=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
 			this.contracts.remove(this.currentContract);
 
 			return this.contracts.get(this.currentContract);
@@ -201,7 +210,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 		@Override
 		public void remove() {
-			initContract.remove(currentContract);	
+			this.initContract.remove(this.currentContract);
 		}
 	}
 }

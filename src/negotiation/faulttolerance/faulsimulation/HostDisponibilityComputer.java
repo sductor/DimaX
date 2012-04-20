@@ -15,6 +15,7 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.tools.distribution.PoissonLaw;
 import dimaxx.tools.distribution.WeibullLaw;
 
@@ -221,7 +222,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 							ReplicationExperimentationParameters._kValue, lambda,
 							ReplicationExperimentationParameters._theta);
 		case Poisson:
-			final long nbInterval = ReplicationExperimentationParameters._maxSimulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			final long nbInterval = ExperimentationParameters._maxSimulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
 			return PoissonLaw.getPoissonLaw(lambda * nbInterval, 1);
 		default:
 			throw new RuntimeException("impossible");
@@ -249,7 +250,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 						ReplicationExperimentationParameters._lambdaRepair, 0.);
 			}
 		case Poisson:
-			final long nbInterval = ReplicationExperimentationParameters._maxSimulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
+			final long nbInterval = ExperimentationParameters._maxSimulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
 			if (triggerAFault) {
 				return PoissonLaw.eventOccur(lambda * nbInterval, 1);
 			} else {

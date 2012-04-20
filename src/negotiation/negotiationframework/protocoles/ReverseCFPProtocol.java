@@ -2,7 +2,6 @@ package negotiation.negotiationframework.protocoles;
 
 import java.util.ArrayList;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -15,15 +14,18 @@ Contract extends AbstractContractTransition<ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4843844714006615468L;
 
+	public ReverseCFPProtocol()
+					throws UnrespectedCompetenceSyntaxException {
+		super(new ContractTrunk<Contract, ActionSpec, State>());
+	}
 	public ReverseCFPProtocol(
-			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a,
 			final ContractTrunk<Contract, ActionSpec, State> contracts)
 					throws UnrespectedCompetenceSyntaxException {
-		super(a, contracts);
+		super(contracts);
 	}
 
 	@Override
@@ -54,7 +56,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	private void separateInitiator(final ArrayList<Contract> all, final ArrayList<Contract> initiator, final ArrayList<Contract> participant){

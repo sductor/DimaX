@@ -56,10 +56,10 @@ public class CommunicationComponent extends AgentAddress implements Communicatio
 		return null;
 	}
 
-	public AgentIdentifier getMessageReceiver(Message m){
+	public AgentIdentifier getMessageReceiver(final Message m){
 		return m.getReceiver();
 	}
-	
+
 	@Override
 	public void sendMessage(final AgentIdentifier id, final AbstractMessageInterface m) {
 		m.setReceiver(id);

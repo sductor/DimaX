@@ -3,6 +3,10 @@ package examples.dcop.algo.topt;
 import examples.dcop.daj.DcopMessage;
 
 public class CommitMsg extends DcopMessage {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 3917948316844096929L;
 	int gid;
 	int attempt;
 	TreeNode node;
@@ -11,16 +15,18 @@ public class CommitMsg extends DcopMessage {
 		super();
 	}
 
-	public CommitMsg(int i, int a, TreeNode n) {
-		gid = i;
-		attempt = a;
-		node = n;
+	public CommitMsg(final int i, final int a, final TreeNode n) {
+		this.gid = i;
+		this.attempt = a;
+		this.node = n;
 	}
 
+	@Override
 	public String getText() {
-		return ("COMMIT ") + gid + "\n";
+		return ("COMMIT ") + this.gid + "\n";
 	}
 
+	@Override
 	public int getSize() {
 		return 5;
 	}

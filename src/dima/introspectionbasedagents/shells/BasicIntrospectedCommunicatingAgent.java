@@ -74,10 +74,10 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	//
 	// Accessor
 	//
-	
+
 
 	public BasicCommunicatingShell getMyShell() {
-		return myShell;
+		return this.myShell;
 	}
 
 	//

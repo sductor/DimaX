@@ -6,7 +6,6 @@ import java.util.Date;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.protocoles.strategic.evaluation.AbstractStrategicEvaluationModule;
 import negotiation.negotiationframework.protocoles.strategic.exploration.AbstractStrategicExplorationModule;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selection.SimpleSelectionCore;

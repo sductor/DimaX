@@ -2,9 +2,11 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -16,11 +18,12 @@ import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
-import negotiation.negotiationframework.exploration.ExhaustifHyperSetGeneration;
+import negotiation.negotiationframework.exploration.AllocationSolver;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
@@ -30,16 +33,23 @@ PersonalState extends ActionSpec,
 Contract extends MatchingCandidature<ActionSpec>>
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
-implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
+implements SelectionCore<
+SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
+ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
+	private static final long serialVersionUID = 5994721006483536151L;
 
+	final AllocationSolver<Contract, ActionSpec, PersonalState> solver;
 	//
 	// Methods
 	//
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5994721006483536151L;
+	public ResourceInformedSelectionCore(
+			final AllocationSolver<Contract, ActionSpec, PersonalState> solver)
+					throws UnrespectedCompetenceSyntaxException {
+		super();
+		this.solver = solver;
+	}
+
 
 	@Override
 	public void select(
@@ -108,8 +118,8 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 				if (accepted.isEmpty()){// I accepted noone, trying to find realloc
 
 					this.logMonologue("no contracts accepted : searching upgrading contracts! : \nhosted :"
-					+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
-					+"\n required "+rejected,
+							+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
+							+"\n required "+rejected,
 							AbstractCommunicationProtocol.log_selectionStep);
 					//some unaccepted contract : generating upgrading contract and adding to propose
 
@@ -120,18 +130,10 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 							new HashSet<InformedCandidature<Contract, ActionSpec>>();
 					//				hosted.addAll(accepted);
 
-					for (final ActionSpec s : this.getMyAgent().getMyResources()){
-						//adding destruction of hosted agents
-						final InformedCandidature<Contract, ActionSpec> c =
-								this.generateDestructionContract(s.getMyAgentIdentifier());
-						c.setSpecification(this.getMyAgent().getMySpecif(this.getMyAgent().getMyCurrentState(), c));
-						c.setSpecification(s);
-						hosted.add(c);
-					}
 					assert MatchingCandidature.assertAllCreation(contracts.getAllContracts());
 					assert AbstractCommunicationProtocol.partitioning(contracts.getAllContracts(), accepted, rejected, onWait);
 					final Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts =
-							this.generateUpgradingContracts(currentState, rejected, onWait, hosted, myCore, contracts);
+							this.generateUpgradingContracts(currentState, rejected, onWait, myCore, contracts);
 					propCore.addContractsToPropose(ugradingContracts);
 					assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), accepted, rejected, onWait);
 					if (!ugradingContracts.isEmpty()){
@@ -205,6 +207,7 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 
 	protected abstract InformedCandidature<Contract, ActionSpec> generateDestructionContract(AgentIdentifier id);
 
+
 	//
 	// Primitives
 	//
@@ -213,81 +216,75 @@ implements SelectionCore<ActionSpec, PersonalState, InformedCandidature<Contract
 			final PersonalState currentState,
 			final Collection<InformedCandidature<Contract, ActionSpec>> unacceptedContracts,
 			final Collection<InformedCandidature<Contract,ActionSpec>> onWait,
-			final Collection<InformedCandidature<Contract, ActionSpec>> hosted,
 			final InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myAgentCore,
 			final ResourceInformedCandidatureContractTrunk<Contract, ActionSpec, PersonalState> myAgentContractTrunk) {
 
 		assert MatchingCandidature.assertAllCreation(unacceptedContracts):unacceptedContracts+" "+myAgentContractTrunk;
 		assert onWait.isEmpty();
-		
+
 		//Generating new proposals
 
 		//generating concerned : concerned is the set of atomic candidature that can be changed
 		final Collection<InformedCandidature<Contract, ActionSpec>> toPropose =
 				new ArrayList<InformedCandidature<Contract,ActionSpec>>();
-		final Collection<InformedCandidature<Contract, ActionSpec>> concerned =
-				new HashSet<InformedCandidature<Contract, ActionSpec>>();
+		final Map<Contract,InformedCandidature<Contract,ActionSpec>> concerned =
+				new HashMap<Contract,InformedCandidature<Contract,ActionSpec>>();
 
-		concerned.addAll(unacceptedContracts);//adding allocation candidature
-
-		try {
-			for (final InformedCandidature<Contract, ActionSpec> h : hosted)
-			{
-				if (h.isViable())
-				{
-					concerned.add(h);//adding allocation candidature
-				}
-			}
-		} catch (final IncompleteContractException e) {
-			throw new RuntimeException();
+		for (final InformedCandidature<Contract,ActionSpec> c : unacceptedContracts){
+			assert c.isMatchingCreation();
+			concerned.put(c.getCandidature(),c);//adding allocation candidature
+		}
+		for (final ActionSpec s : this.getMyAgent().getMyResources()){
+			final InformedCandidature<Contract, ActionSpec> d =
+					this.generateDestructionContract(s.getMyAgentIdentifier());
+			d.setSpecification(this.getMyAgent().getMySpecif(this.getMyAgent().getMyCurrentState(), d));
+			d.setSpecification(s);
+			concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}
 
-		assert ContractTransition.allComplete(concerned):concerned+" "+myAgentContractTrunk;
+		assert ContractTransition.allComplete(concerned.values()):concerned+" "+myAgentContractTrunk;
+
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
-		final Collection<Collection<InformedCandidature<Contract, ActionSpec>>> allocGen =
-				new ExhaustifHyperSetGeneration<InformedCandidature<Contract, ActionSpec>>(new ArrayList<InformedCandidature<Contract, ActionSpec>>(concerned)) {
-			@Override
-			public boolean toKeep(final Collection<InformedCandidature<Contract, ActionSpec>> alloc) {
-				return ResourceInformedSelectionCore.this.getMyAgent().Iaccept(currentState,alloc) && !MatchingCandidature.areAllCreation(alloc);
-			}
-		}.getHyperset();
+		this.solver.initiate(concerned.keySet(), currentState);
+		while (this.solver.hasNext()){
+			final Collection<Contract> realloc = this.solver.getNextSolution();
 
-		final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep = new HashSet();
-		for (final Collection<InformedCandidature<Contract, ActionSpec>> realloc : allocGen){
-			for (final InformedCandidature<Contract, ActionSpec> c : realloc) {
-				contractsToKeep.add(c);
-			}
-		}
 
-		//MAJ du contract trunk
-		for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
-			//Pour toute action de ce contrat
-			if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
-				//on l'ajoute a la base de contrat
-				myAgentContractTrunk.addContract(c);
-				onWait.add(c);
-				//Ajout aux propositions à faire
-				try {
-					assert c.isViable();
-				} catch (final IncompleteContractException e) {
-					this.getMyAgent().signalException("impossible");
+			final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep =
+					new HashSet<InformedCandidature<Contract, ActionSpec>>();
+			for (final Contract c : realloc) {
+				contractsToKeep.add(concerned.get(c));
+			}
+			assert this.getMyAgent().Iaccept(currentState, contractsToKeep):
+				currentState+" \n"+contractsToKeep;
+
+			//MAJ du contract trunk
+			for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
+				//Pour toute action de ce contrat
+				if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
+					//on l'ajoute a la base de contrat
+					myAgentContractTrunk.addContract(c);
+					onWait.add(c);
+					//Ajout aux propositions à faire
+					try {
+						assert c.isViable();
+					} catch (final IncompleteContractException e) {
+						this.getMyAgent().signalException("impossible");
+					}
+					toPropose.add(c);
+				} else {//sinon on la laisse en attente
+					assert unacceptedContracts.contains(c):unacceptedContracts;
+					unacceptedContracts.remove(c);
+					onWait.add(c);
 				}
-				toPropose.add(c);
-			} else {//sinon on la laisse en attente
-				assert unacceptedContracts.contains(c):unacceptedContracts;
-				unacceptedContracts.remove(c);
-				onWait.add(c);
 			}
-		}
 
-		for (final Collection<InformedCandidature<Contract, ActionSpec>> realloc : allocGen){
 			//Ajout du contrat améliorant
 			// --- > Création du contrat
-			assert this.getMyAgent().Iaccept(this.getMyAgent().getMyCurrentState(), realloc);
 			myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
 					this.getIdentifier(),
-					InformedCandidature.toCandidatures(realloc)));
+					realloc));
 		}
 
 		for (final InformedCandidature<Contract, ActionSpec> c : toPropose){

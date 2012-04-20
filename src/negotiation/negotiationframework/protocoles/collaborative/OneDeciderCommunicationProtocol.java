@@ -2,7 +2,6 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.InformedCandidature;
@@ -16,19 +15,10 @@ Contract extends InformedCandidature<Contract,ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7022976048693084925L;
 	boolean ImDecider;
-
-	public OneDeciderCommunicationProtocol(
-			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a,
-			final ContractTrunk<Contract, ActionSpec, State> contracts,
-			final boolean iMDecider)
-					throws UnrespectedCompetenceSyntaxException {
-		super(a, contracts);
-		this.ImDecider = iMDecider;
-	}
 
 	//	public boolean negotiationAsInitiatorHasStarted() {
 	//		if (ImDecider)
@@ -38,10 +28,9 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	//	}
 
 	public OneDeciderCommunicationProtocol(
-			final ContractTrunk<Contract, ActionSpec, State> contracts,
 			final boolean iMDecider)
 					throws UnrespectedCompetenceSyntaxException {
-		super(contracts);
+		super((iMDecider?new ResourceInformedCandidatureContractTrunk():new ContractTrunk()));
 		this.ImDecider = iMDecider;
 	}
 

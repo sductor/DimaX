@@ -2,14 +2,12 @@ package negotiation.negotiationframework;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
-import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
-import negotiation.negotiationframework.rationality.AllocationSocialWelfares;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -22,6 +20,7 @@ import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.experimentation.ObservingSelfService;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
@@ -38,7 +37,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	private final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol;
 
 	@Competence()
-	private final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore;
+	private final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore;
 
 	@Competence
 	private final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> myProposerCore;
@@ -51,28 +50,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
 			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
-			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
-			final ObservationService myInformation,
-			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts)
-					throws CompetenceException {
-		super(id, myInitialState, myRationality, myInformation);
-
-		this.selectionCore = selectionCore;
-		this.selectionCore.setMyAgent(this);
-		this.protocol = new ReverseCFPProtocol<ActionSpec, PersonalState, Contract>(this, contracts);
-
-
-		this.myProposerCore = proposerCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
-		.setMyAgent(this);
-
-	}
-	public SimpleNegotiatingAgent(
-			final AgentIdentifier id,
-			final PersonalState myInitialState,
-			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+			final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
 			final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
@@ -80,21 +58,23 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
-		this.selectionCore.setMyAgent(this);
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
+				this.selectionCore).setMyAgent(this);
 		this.protocol = protocol;
 
-
 		this.myProposerCore = proposerCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
-		.setMyAgent(this);
-
+		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
+				this.getMyProposerCore()).setMyAgent(this);
+		this.getMyProtocol().setMyAgent(this);
 	}
+
 	@ProactivityInitialisation
 	public void initialisation(){
-		this.addLogKey(AllocationSocialWelfares.log_socialWelfareOrdering, false, false);
+		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, false, false);
 		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, true);
 		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, true);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
+		this.addLogKey(ObservingSelfService.observationLog, false, true);
 	}
 
 	//
@@ -109,7 +89,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		return this.myProposerCore;
 	}
 
-	public SelectionCore<ActionSpec, PersonalState, Contract> getMySelectionCore() {
+	public SelectionCore<? extends SimpleNegotiatingAgent,ActionSpec, PersonalState, Contract> getMySelectionCore() {
 		return this.selectionCore;
 	}
 
@@ -140,7 +120,28 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 
 
 
-
+//
+//public SimpleNegotiatingAgent(
+//		final AgentIdentifier id,
+//		final PersonalState myInitialState,
+//		final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
+//		final SelectionCore<ActionSpec, PersonalState, Contract> selectionCore,
+//		final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
+//		final ObservationService myInformation,
+//		final ContractTrunk<Contract, ActionSpec, PersonalState> contracts)
+//				throws CompetenceException {
+//	super(id, myInitialState, myRationality, myInformation);
+//
+//	this.selectionCore = selectionCore;
+//	this.selectionCore.setMyAgent(this);
+//	this.protocol = new ReverseCFPProtocol<ActionSpec, PersonalState, Contract>(this, contracts);
+//
+//
+//	this.myProposerCore = proposerCore;
+//	((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>) this.getMyProposerCore())
+//	.setMyAgent(this);
+//
+//}
 
 
 

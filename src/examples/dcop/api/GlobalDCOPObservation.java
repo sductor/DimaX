@@ -4,12 +4,9 @@ import java.util.HashMap;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.Laborantin;
 import dimaxx.experimentation.ObservingGlobalService;
@@ -18,6 +15,11 @@ import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import examples.dcop.algo.BasicAlgorithm;
 
 public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -2038579825092274298L;
 
 	HashMap<AgentIdentifier,Boolean> appIsStable = new HashMap<AgentIdentifier, Boolean>();
 
@@ -28,10 +30,12 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 	// Accessors
 	//
 
+	@Override
 	public boolean simulationHasEnded(){
-		for (Boolean b : appIsStable.values()){
-			if (b == false)
+		for (final Boolean b : this.appIsStable.values()){
+			if (b == false) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -42,7 +46,7 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 	@MessageHandler
 	@NotificationEnvelope(BasicAlgorithm.stabilityNotificationKey)
 	public void receiveStability(final NotificationMessage<Boolean> m){
-		appIsStable.put(m.getSender(), m.getNotification());
+		this.appIsStable.put(m.getSender(), m.getNotification());
 	}
 
 	@Override
@@ -62,13 +66,13 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 	}
 
 	@Override
-	protected void updateInfo(ExperimentationResults notification) {
+	protected void updateInfo(final ExperimentationResults notification) {
 		final DcopExperimentationResult dexp = (DcopExperimentationResult) notification;
-		int i = ObservingGlobalService.getTimeStep(dexp);
+		final int i = ObservingGlobalService.getTimeStep(dexp);
 		if (i < ObservingGlobalService.getNumberOfTimePoints()) {
 			this.agentsValueEvolution[i].add((double)dexp.value);
 		}
-		
+
 	}
 
 
@@ -78,7 +82,7 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 //		LogService.logOnFile(getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 //				.getQuantileTimeEvolutionObs(getMyAgent().getSimulationParameters(),"reliability",
 //						this.agentsValueEvolution, 0.75 * (
-//								getMyAgent().getNbAgents() / 
+//								getMyAgent().getNbAgents() /
 //								getMyAgent().getNbAgents()),
 //								getMyAgent().getNbAgents()), true,
 //								false);

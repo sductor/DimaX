@@ -3,14 +3,13 @@ package negotiation.faulttolerance.negotiatingagent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
@@ -19,6 +18,7 @@ import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 
 public class ReplicaState  extends SimpleAgentState implements ReplicationSpecification {
+
 	private static final long serialVersionUID = 1557592274895646282L;
 
 	//
@@ -39,39 +39,44 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	 */
 
 	private Set<HostState> myReplicas=null;
-	private final Double myDisponibility;
+	private Double myDisponibility;
 
+	private final SocialChoiceType socialWelfare;
 	//
 	// Constructors
 	//
 
-	// initial
-	//	protected ReplicaState(
-	//			final AgentIdentifier myAgent,
-	//			final Double myCriticity,
-	//			final Double myProcCharge,
-	//			final Double myMemCharge) {
-	//		super(myAgent);
-	//		this.myReplicas = new ArrayList<ResourceIdentifier>();
-	//		this.myCriticity = myCriticity;
-	//		this.myProcCharge = myProcCharge;
-	//		this.myMemCharge = myMemCharge;
-	////		remainingDispo=0.;
-	//	}
 
 	public ReplicaState(
 			final AgentIdentifier myAgent,
 			final Double myCriticity,
 			final Double myProcCharge,
 			final Double myMemCharge,
-			final Set<HostState> myReps,
+			final SocialChoiceType socialWelfare,
 			final int stateNumber) {
 		super(myAgent,stateNumber);
 		this.myCriticity = myCriticity;
 		this.myProcCharge = myProcCharge;
 		this.myMemCharge = myMemCharge;
-		this.myReplicas = myReps;
-		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
+		this.myReplicas = new HashSet<HostState>();
+		this.socialWelfare = socialWelfare;
+		this.myDisponibility=0.;
+	}
+
+	// Clone with modification of criticity
+	public ReplicaState(
+			final ReplicaState init,
+			final double criti
+			//			,final Long creationTime
+			) {
+		this(init.getMyAgentIdentifier(),
+				criti,
+				init.myReplicas,
+				init.myProcCharge,
+				init.myMemCharge,
+				init.myDisponibility,
+				init.socialWelfare,
+				init.getStateCounter()+1);
 	}
 
 	// Clone with modification of replicas
@@ -80,43 +85,44 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 			final HostState newRep
 			//			,final Long creationTime
 			) {
-		super(init.getMyAgentIdentifier(),// creationTime,
+		this(init.getMyAgentIdentifier(),
+				init.myCriticity,
+				new HashSet<HostState>(init.myReplicas),
+				init.myProcCharge,
+				init.myMemCharge,
+				0.,
+				init.socialWelfare,
 				init.getStateCounter()+1);
 
 		//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
 
-		this.myCriticity = init.getMyCriticity();
-		this.myProcCharge = init.getMyProcCharge();
-		this.myMemCharge = init.getMyMemCharge();
-		//
-		this.myReplicas = new HashSet<HostState>();
-		this.myReplicas.addAll(init.myReplicas);
-		//
 		if (this.myReplicas.contains(newRep)) {
 			this.myReplicas.remove(newRep);
 		} else {
 			this.myReplicas.add(newRep);
 		}
-		//
 		this.myDisponibility=HostDisponibilityComputer.getDisponibility(this.myReplicas);
 	}
 
 	// private constructor for opinions
-	private ReplicaState(
+	public ReplicaState(
 			final AgentIdentifier myAgent,
 			final Double myCriticity,
+			final Set<HostState> myReplicas,
 			final Double myProcCharge,
 			final Double myMemCharge,
-			final Double dispo,
+			final Double myDispo,
+			final SocialChoiceType socialWelfare,
 			//			final Long creationTime,
 			final int stateNumber) {
 		super(myAgent,// creationTime,
 				stateNumber);
-		this.myReplicas = null;
+		this.myReplicas = myReplicas;
 		this.myCriticity = myCriticity;
 		this.myProcCharge = myProcCharge;
 		this.myMemCharge = myMemCharge;
-		this.myDisponibility=dispo;
+		this.myDisponibility=myDispo;
+		this.socialWelfare = socialWelfare;
 	}
 
 	//
@@ -136,8 +142,8 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 	public Double getMyReliability(){
 		return ReplicationSocialOptimisation.getReliability(
-				this.myDisponibility,
-				this.myCriticity);
+				this,
+				this.socialWelfare);
 	}
 
 
@@ -161,23 +167,26 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	 *
 	 */
 
-
-	public Set<HostState> getMyReplicas() {
-		//		if (myReplicas==null)
-		//			return new ArrayList<HostState>();
-		//		else
+	public Collection<HostState> getMyHosts() {
 		return this.myReplicas;
 	}
+
 	@Override
 	public Collection<ResourceIdentifier> getMyResourceIdentifiers() {
 		//		if (myReplicas==null)
 		//			return new ArrayList<HostState>();
 		//		else
-		final Collection<ResourceIdentifier> result = new ArrayList();
-		for (final HostState h : this.myReplicas) {
-			result.add(h.getMyAgentIdentifier());
+		//		return this.myReplicas;
+		//	}/
+		if (this.myReplicas==null) {
+			return new ArrayList<ResourceIdentifier>();
+		} else{
+			final Collection<ResourceIdentifier> result = new ArrayList();
+			for (final HostState h : this.myReplicas) {
+				result.add(h.getMyAgentIdentifier());
+			}
+			return result;
 		}
-		return result;
 	}
 
 	@Override
@@ -185,28 +194,31 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		return HostState.class;
 	}
 
+	public SocialChoiceType getSocialWelfare() {
+		return this.socialWelfare;
+	}
 	/*
 	 *
 	 */
 
-	public ResourceIdentifier getOneReplica() {
-		final int num = new Random().nextInt(this.getMyReplicas().size());
-		final Iterator<HostState> itRep = this.getMyReplicas()
-				.iterator();
-		HostState h = itRep.next();
-		for (int i = 1; i < num; i++) {
-			h = itRep.next();
-		}
-		// logMonologue("removing wastefull host!!!"+h);//+"\n"+getMyAgent().getMyCurrentState());
-		if (h == null) {
-			throw new RuntimeException("aarrrggh");
-		}
-		return h.getMyAgentIdentifier();
-	}
+	//	public ResourceIdentifier getOneReplica() {
+	//		final int num = new Random().nextInt(this.getMyReplicas().size());
+	//		final Iterator<HostState> itRep = this.getMyReplicas()
+	//				.iterator();
+	//		HostState h = itRep.next();
+	//		for (int i = 1; i < num; i++) {
+	//			h = itRep.next();
+	//		}
+	//		// logMonologue("removing wastefull host!!!"+h);//+"\n"+getMyAgent().getMyCurrentState());
+	//		if (h == null) {
+	//			throw new RuntimeException("aarrrggh");
+	//		}
+	//		return h.getMyAgentIdentifier();
+	//	}
 
 	@Override
 	public boolean isValid() {
-		return !this.getMyReplicas().isEmpty();
+		return !this.getMyResourceIdentifiers().isEmpty();
 	}
 
 	/*
@@ -277,9 +289,11 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		final ReplicaState rep = new ReplicaState(
 				SimpleOpinionService.globaLAgentIdentifer,
 				meanCrit.getRepresentativeElement(),
+				null,
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
 				meanDisp.getRepresentativeElement(),// this.getCreationTime(),
+				this.socialWelfare,
 				-1);
 		return rep;
 	}
@@ -308,9 +322,11 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 		final ReplicaState rep = new ReplicaState(
 				SimpleOpinionService.globaLAgentIdentifer,
 				meanCrit.getRepresentativeElement(),
+				null,
 				meanProc.getRepresentativeElement(),
 				meanMem.getRepresentativeElement(),
 				meanDisp.getRepresentativeElement(), //this.getCreationTime(),
+				this.socialWelfare,
 				-1);
 		return rep;
 	}
@@ -347,5 +363,6 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				+ "\n * creation time "+ this.getCreationTime();
 		// +"\n status "+this.getMyStateStatus();
 	}
+
 
 }

@@ -5,6 +5,10 @@ import examples.dcop.dcop.Constraint;
 import examples.dcop.dcop.Variable;
 
 public class NeighborMsg extends DcopMessage {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -212952221871390354L;
 	int id;
 	int ttl;
 	int[] neighbors;
@@ -13,31 +17,33 @@ public class NeighborMsg extends DcopMessage {
 		super();
 	}
 
-	public NeighborMsg(Variable v, int t) {
+	public NeighborMsg(final Variable v, final int t) {
 		super();
-		id = v.id;
-		neighbors = new int[v.neighbors.size()];
+		this.id = v.id;
+		this.neighbors = new int[v.neighbors.size()];
 		int i = 0;
-		for (Constraint c : v.neighbors) {
-			neighbors[i] = c.getNeighbor(v).id;
+		for (final Constraint c : v.neighbors) {
+			this.neighbors[i] = c.getNeighbor(v).id;
 			i++;
 		}
-		ttl = t;
+		this.ttl = t;
 	}
 
+	@Override
 	public String getText() {
-		return ("NEIGHBOR " + id + ";TTL " + ttl);
+		return ("NEIGHBOR " + this.id + ";TTL " + this.ttl);
 	}
 
 	public NeighborMsg forward() {
-		NeighborMsg msg = new NeighborMsg();
+		final NeighborMsg msg = new NeighborMsg();
 		msg.id = this.id;
 		msg.ttl = this.ttl - 1;
 		msg.neighbors = this.neighbors;
 		return msg;
 	}
 
+	@Override
 	public int getSize() {
-		return 9 + neighbors.length * 4;
+		return 9 + this.neighbors.length * 4;
 	}
 }

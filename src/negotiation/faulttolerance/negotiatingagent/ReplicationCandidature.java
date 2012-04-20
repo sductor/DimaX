@@ -74,9 +74,9 @@ MatchingCandidature<ReplicationSpecification> {
 	private ReplicaState getAgentResultingState(final ReplicaState fromState) throws IncompleteContractException {
 
 		assert this.getSpecificationOf(this.getResource()) != null:"wtf? " + this;
-		assert fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == true:
+		assert fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == true:
 			"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
-		assert !fromState.getMyReplicas().contains(this.getSpecificationOf(this.getResource())) || this.creation == false:
+		assert !fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == false:
 			"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 
 		if (!fromState.getMyAgentIdentifier().equals(this.getAgent())) {
@@ -106,7 +106,7 @@ MatchingCandidature<ReplicationSpecification> {
 		assert fromState.Ihost(this.getAgent()) || this.creation == true:
 			" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"+ this.getAgent()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 		assert !fromState.Ihost(this.getAgent()) || this.creation == false:
-			" : ooohhhhhhhhhhhhhhhhh  =( CAN NOT DESTRUCT "+" \n contract : "+this	+ "\n --> fromState " + fromState
+			" : ooohhhhhhhhhhhhhhhhh  =( "+(this.creation?"agent already created!":"CAN NOT DESTRUCT ")+" \n contract : "+this	+ "\n --> fromState " + fromState
 			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
 
 
@@ -118,7 +118,9 @@ MatchingCandidature<ReplicationSpecification> {
 							this.getAgentInitialState()//, this.getCreationTime()
 							);
 			//on cree n nouveau state a partir de h
-			final ReplicaState r1 = new ReplicaState(this.getAgentInitialState(), h//, this.getCreationTime()
+			final ReplicaState r1 =
+					new ReplicaState(
+							this.getAgentInitialState(), h//, this.getCreationTime()
 					);
 			//On supprime le state qu'on vient d'ajouter dans le but de le mettre a jour
 			h = new HostState(h,

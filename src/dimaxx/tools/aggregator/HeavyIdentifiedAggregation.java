@@ -7,9 +7,9 @@ import java.util.TreeMap;
 /**
  * Collection of elements mapped to their weight Delegate all aggregation
  * functions.
- * 
+ *
  * @author Sylvain Ductor
- * 
+ *
  * @param <Element>
  */
 public abstract class HeavyIdentifiedAggregation<Element extends Comparable> extends HeavyAggregation<Element>
@@ -41,7 +41,7 @@ UtilitaristAnalyser<Element> {
 	//	}
 
 	/*
-	 * 
+	 *
 	 */
 	@Override
 	public Double put(final Element o, final Double weight) {
@@ -67,7 +67,7 @@ UtilitaristAnalyser<Element> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
@@ -97,7 +97,7 @@ UtilitaristAnalyser<Element> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override
@@ -106,7 +106,7 @@ UtilitaristAnalyser<Element> {
 	}
 
 	/*
-	 * 
+	 *
 	 */
 
 	@Override

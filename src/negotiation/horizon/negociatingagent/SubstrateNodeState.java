@@ -1,5 +1,6 @@
 package negotiation.horizon.negociatingagent;
 
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,6 +42,8 @@ public class SubstrateNodeState extends SimpleAgentState implements
     private final List<LinkParameters> ifacesParams;
     private final List<LinkParameters> availableIfacesParams;
     private final List<SubstrateNodeState> pairedNodes;
+    // TODO classe interne
+    
     private final HashedHashSet<VirtualNetworkState, Integer> nodesHosted;
 
     /**
@@ -229,3 +232,13 @@ public class SubstrateNodeState extends SimpleAgentState implements
     }
 
 }
+=======
+public class SubstrateNodeState extends HorizonSpecification {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2415474717777657012L;
+
+}
+>>>>>>> ff05a2abd98b6bd6d7d50c25d4150cd3add7b19a

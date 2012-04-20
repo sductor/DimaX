@@ -9,7 +9,8 @@ import java.util.Set;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 
-public class HorizonContract extends ContractTransition<HorizonSpecification> {
+public class HorizonContract extends
+ ContractTransition<HorizonSpecification> {
 
     /**
      * Serial version identifier.

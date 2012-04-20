@@ -1,5 +1,6 @@
 package negotiation.horizon.negociatingagent;
 
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -82,5 +83,13 @@ public class VirtualNodeState extends AbstractSingleNodeState {
     public boolean isValid() {
 	return (this.host != null);
     }
+=======
+public class VirtualNodeState extends HorizonSpecification {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2721088186118421802L;
+>>>>>>> ff05a2abd98b6bd6d7d50c25d4150cd3add7b19a
 
 }

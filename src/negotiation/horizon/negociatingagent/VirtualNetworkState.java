@@ -31,10 +31,12 @@ public class VirtualNetworkState extends SimpleAgentState implements
      */
     private final List<VirtualNode> nodes;
 
+    private static int virtualNodeNumber = 0;
+
     /**
      * Represents the links between all the VirtualNodes and their parameters.
      */
-    private ReflexiveAdjacencyMap<VirtualNode, LinkParameters> links;
+    private ReflexiveAdjacencyMap<VirtualNodeIdentifier, LinkParameters> links;
 
     /**
      * Constructs a new VirtualNetworkState using the topology information
@@ -183,6 +185,40 @@ public class VirtualNetworkState extends SimpleAgentState implements
 	return true; // TODO retourner toujours true ?
     }
 
+    public class VirtualNodeIdentifier {
+	private final AgentIdentifier myVirtualNetworkIdentifier;
+	private final int number;
+
+	private VirtualNodeIdentifier(final AgentIdentifier myAgent,
+		final int number) {
+	    this.myVirtualNetworkIdentifier = myAgent;
+	    this.number = number;
+	}
+	
+	@Override
+	public int hashCode(){
+	    int a = this.number, b = this.myVirtualNetworkIdentifier.hashCode();
+	    return ((a+b) * (a+b) + 3*a + b)/2;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+	    if (obj instanceof VirtualNodeIdentifier){
+		return ((VirtualNodeIdentifier) obj).getMyVirtualNetworkIdentifier().equals(this.myVirtualNetworkIdentifier)
+		&& ((VirtualNodeIdentifier) obj).getNumber() == this.number;
+	    }
+	}
+
+	private AgentIdentifier getMyVirtualNetworkIdentifier() {
+	    return myVirtualNetworkIdentifier;
+	}
+
+	private int getNumber() {
+	    return number;
+	}
+	
+    }
+
     private class VirtualNode {
 
 	/**
@@ -190,21 +226,13 @@ public class VirtualNetworkState extends SimpleAgentState implements
 	 */
 	private static final long serialVersionUID = 6804972846662200779L;
 
-	private final int identifier;
 	private final SingleNodeParameters param;
-	private final AgentIdentifier myAgent;
 	private ResourceIdentifier myHost;
 
-	public VirtualNode(final AgentIdentifier myAgent, final int identifier,
-		final SingleNodeParameters param) {
+	public VirtualNode(final SingleNodeParameters param,
+		final ResourceIdentifier host) {
 	    this.param = param;
-	    this.identifier = identifier;
-	    this.myAgent = myAgent;
-	    this.myHost = null;
-	}
-
-	public int getIdentifier() {
-	    return this.identifier;
+	    this.myHost = host;
 	}
 
 	public SingleNodeParameters getParam() {
@@ -213,10 +241,6 @@ public class VirtualNetworkState extends SimpleAgentState implements
 
 	public ResourceIdentifier getMyHost() {
 	    return this.myHost;
-	}
-
-	public void setMyHost(ResourceIdentifier host) {
-	    this.myHost = host;
 	}
 
 	@Override
@@ -232,5 +256,4 @@ public class VirtualNetworkState extends SimpleAgentState implements
 		return false;
 	}
     }
-
 }

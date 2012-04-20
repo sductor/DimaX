@@ -2,6 +2,7 @@ package negotiation.horizon.negociatingagent;
 
 import java.util.Collection;
 
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -33,8 +34,16 @@ public class VirtualNetworkCore
 
     @Override
     public void execute(HorizonContract c) {
-	this.getMyAgent().setNewState(
-		c.computeResultingState(this.getMyAgent().getMyCurrentState()));
+	try{
+	    assert (c.isViable());
+
+	    this.getMyAgent().setNewState(
+		    c.computeResultingState(this.getMyAgent()
+			    .getMyCurrentState()));
+
+	} catch (IncompleteContractException e) {
+	    throw new RuntimeException("Should never occur");
+	}
     }
 
     @Override

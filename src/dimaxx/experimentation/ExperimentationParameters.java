@@ -100,7 +100,7 @@ extends BasicAgentModule<Agent> {
 	 * Protocol
 	 */
 
-	public abstract LinkedList<ExperimentationParameters> generateSimulation();
+	public abstract LinkedList<ExperimentationParameters<Laborantin>> generateSimulation();
 
 	public abstract  Laborantin createLaborantin(final APILauncherModule api)throws CompetenceException, IfailedException,NotEnoughMachinesException;
 

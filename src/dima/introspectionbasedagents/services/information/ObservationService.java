@@ -35,6 +35,12 @@ public interface ObservationService extends AgentCompetence<BasicCompetentAgent>
 
 	public <Info extends Information> Info getMyInformation(Class<Info> informationType);
 
+	public <Info extends Information> boolean hasMyInformation(Class<Info> informationType);
+	
+	public <Info extends Information> boolean hasInformation(Class<Info> informationType);
+	
+	public <Info extends Information> boolean hasInformation(Class<Info> informationType, AgentIdentifier agentId);
+
 	public <Info extends Information> HashMap<AgentIdentifier, Info> getInformation(Class<Info> informationType) throws NoInformationAvailableException;
 
 	public void add(Information information);

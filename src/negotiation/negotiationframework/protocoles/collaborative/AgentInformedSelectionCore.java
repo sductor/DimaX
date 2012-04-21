@@ -83,9 +83,6 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>{
 
 
 		assert this.validityVerification(contracts, toAccept, toReject);
-
-
-
 	}
 
 	private boolean validityVerification(

@@ -77,7 +77,7 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 							Replica.this.getMyCurrentState().getMyProcCharge(),
 							Replica.this.getMyCurrentState().getMyMemCharge(),
 							Replica.this.getMyCurrentState().getSocialWelfare(),
-							this.getMyAgent().nextStateCounter));
+							this.getMyAgent().getMyCurrentState().getStateCounter()+1));
 		}
 
 		@Override

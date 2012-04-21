@@ -27,7 +27,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	private final double lambda;
 	private  boolean faulty;
 
-	// Take all fields
+	// Take all fields	
 	public HostState(
 			final ResourceIdentifier myAgent,
 			final double hostMaxProc,
@@ -41,11 +41,23 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				stateNumber);
 	}
 
-	
+	public HostState(
+			final ResourceIdentifier myAgent,
+			final double hostMaxProc,
+			final double hostMaxMem,
+			final double lambda) {
+		this(myAgent,
+				new HashSet<AgentIdentifier>(), lambda,
+				hostMaxProc, 0., hostMaxMem, 0.,
+				false, 
+				-1);
+	}
+
+
 	public HostState allocate(final ReplicaState newRep){
 		HashSet<AgentIdentifier> rep =new HashSet<AgentIdentifier>(this.myReplicatedAgents);
 		Double procCurrentCharge, memCurrentCharge;
-		
+
 		if (rep.contains(newRep.getMyAgentIdentifier())) {
 			rep.remove(newRep.getMyAgentIdentifier());
 			procCurrentCharge=this.procCurrentCharge-newRep.getMyProcCharge();
@@ -55,7 +67,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 			procCurrentCharge=this.procCurrentCharge+newRep.getMyProcCharge();
 			memCurrentCharge=this.memCurrentCharge+newRep.getMyMemCharge();
 		}
-		
+
 		return new HostState(this.getMyAgentIdentifier(),
 				rep,
 				this.getLambda(),
@@ -66,7 +78,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 				this.isFaulty(),
 				this.getStateCounter()+1);
 	}
-	
+
 	// private universal constructor
 	private HostState(final ResourceIdentifier myAgent,
 			final Set<AgentIdentifier> myReplicatedAgents,
@@ -291,7 +303,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		if (o instanceof HostState) {
 			final HostState that = (HostState) o;
 			return that.getMyAgentIdentifier().equals(
-					this.getMyAgentIdentifier());
+					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
 		} else {
 			return false;
 		}
@@ -305,18 +317,14 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	@Override
 	public String toString() {
 		return "\nHOST="+ this.getMyAgentIdentifier()
-				//				+ "\n Date "+ this.getCreationTime()
-				+ "\n --> charge : "+ this.getCurrentProcCharge()+", "+this.getCurrentMemCharge()
 				+ "\n --> current charge % = "+100*this.getMyCharge()
+				+ "\n --> charge : "+ this.getCurrentProcCharge()+", "+this.getCurrentMemCharge()
 				+ "\n --> capacity : "+ this.getProcChargeMax()+", "+this.getMemChargeMax()
-				//				+ "\n * dispo  : "
-				//				+ NegotiatingHost.this.myFaultAwareService
-				//						.getDisponibility(this.getMyAgentIdentifier())
 				+ "\n --> lambda : "+this.lambda+
-				"\n --> agents : " + this.getMyResourceIdentifiers()//myReplicatedAgents//getMyAgentIdentifiers()//
+				"\n --> agents : " + this.getMyResourceIdentifiers()
 				+ "\n --> faulty? : " + this.isFaulty()
-				+"\n valid ? : "+this.isValid()
-				+"\n --> creation time : "+this.getCreationTime();
+				+"\n --> creation time : "+this.getCreationTime()+"#"+getStateCounter()
+				+"\n valid ? : "+this.isValid();
 	}
 
 

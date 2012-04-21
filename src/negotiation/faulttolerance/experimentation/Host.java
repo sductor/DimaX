@@ -58,7 +58,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
 					Host.this.getMyCurrentState().getProcChargeMax(),
 					Host.this.getMyCurrentState().getMemChargeMax(),
-					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().nextStateCounter));
+					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().getMyCurrentState().getStateCounter()+1));
 			//			this.resetMyUptime();
 		}
 

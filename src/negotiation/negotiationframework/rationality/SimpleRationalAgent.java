@@ -29,8 +29,6 @@ extends BasicCompetentAgent {
 	// Fields
 	//
 
-	//numérotes les états de l'agents pour pouvoir les ordonner
-	public int nextStateCounter=0;
 
 	@Competence
 	private final ObservationService myInformation;
@@ -100,9 +98,11 @@ extends BasicCompetentAgent {
 		final Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
 		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers()) {
 			try {
-				myResources.add((ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id));
+				ActionSpec ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
+				myResources.add(ress);
 			} catch (final NoInformationAvailableException e) {
-				this.signalException("uuuuuhh impossible!!",e);
+				this.signalException("uuuuuhh impossible!!"+this.getMyCurrentState(),e);
 			}
 		}
 		return myResources;
@@ -113,16 +113,30 @@ extends BasicCompetentAgent {
 	}
 
 	public void setNewState(final PersonalState s) {
-		this.nextStateCounter++;
+		assert this.myInformation.hasMyInformation(this.myStateType)?verifyStateValidity(s):true;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
-		assert this.getMyCurrentState().equals(s);
+		assert this.getMyCurrentState().equals(s):this.getMyCurrentState()+"\n"+s+"\n---------"+(s.isNewerThan(getMyCurrentState())>0);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 		this.notify(this.getMyCurrentState(), SimpleObservationService.informationObservationKey);
 	}
 
 
+	public boolean verifyStateValidity(final PersonalState s){
+		assert (s.isNewerThan(getMyCurrentState())>0):this.getMyCurrentState()+"\n"+s;
+		for (AgentIdentifier id : s.getMyResourceIdentifiers()){
+			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+			ActionSpec ress;
+			try {
+				ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
+			} catch (NoInformationAvailableException e) {
+				assert 1<0:e;
+			}
+		}
+		return true;
+	}
 	// public Collection<AgentIdentifier> getKnownAgents() {
 	// return this.myInformation.getKnownAgents();
 	// }
@@ -195,9 +209,9 @@ extends BasicCompetentAgent {
 	}
 
 	public boolean isAnImprovment(final PersonalState s, final Collection<? extends Contract> c) {
-			final Collection<Contract> a2 = new ArrayList<Contract>();
-			return isPersonalyValid(s, c)
-					&& this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) > 0;
+		final Collection<Contract> a2 = new ArrayList<Contract>();
+		return isPersonalyValid(s, c)
+				&& this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) > 0;
 	}
 
 
@@ -208,11 +222,11 @@ extends BasicCompetentAgent {
 	}
 
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
-			final Collection<Contract> a2 = new ArrayList<Contract>();
-			return isPersonalyValid(s, c)
-					&&  this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) >= 0;
+		final Collection<Contract> a2 = new ArrayList<Contract>();
+		return isPersonalyValid(s, c)
+				&&  this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) >= 0;
 	}
-	
+
 	/*
 	 * 
 	 */
@@ -225,7 +239,7 @@ extends BasicCompetentAgent {
 	public boolean isPersonalyValid(final PersonalState s,Contract c) {
 		return getMyResultingState(s,c).isValid();
 	}
-	
+
 	public boolean isSociallyValid(final PersonalState s, final Collection<? extends Contract> cs) throws IncompleteContractException{
 		return ContractTransition.respectRights((Collection<Contract>) cs,s);
 	}
@@ -235,7 +249,7 @@ extends BasicCompetentAgent {
 		a.add(c);
 		return ContractTransition.respectRights((Collection<Contract>) a,s);
 	}
-	
+
 	/*
 	 * Utility
 	 */

@@ -18,14 +18,6 @@ MatchingCandidature<ReplicationSpecification> {
 	// Constructors
 	//
 
-	//	public ReplicationCandidature(final ResourceIdentifier r,
-	//			final AgentIdentifier a, final boolean creation) {
-	//		super(creation ? a : r, a, r,
-	//				ReplicationExperimentationProtocol._contractExpirationTime);
-	//		this.setCreation(creation);
-	//
-	//	}
-
 	public ReplicationCandidature(final ResourceIdentifier r,
 			final AgentIdentifier a, final boolean creation, final boolean isAgentCreator) {
 		super(isAgentCreator ? a : r, a, r,
@@ -33,9 +25,9 @@ MatchingCandidature<ReplicationSpecification> {
 		this.setCreation(creation);
 	}
 
-	/*
-	 *
-	 */
+	//
+	// Methods
+	//
 
 	@Override
 	public <State extends ReplicationSpecification>  State computeResultingState(final State s) throws IncompleteContractException {
@@ -47,6 +39,7 @@ MatchingCandidature<ReplicationSpecification> {
 			throw new RuntimeException("arrrggghhhh!!!!"+s);
 		}
 	}
+	
 	@Override
 	public ReplicationSpecification computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
 		return this.computeResultingState(this.getSpecificationOf(id));
@@ -67,6 +60,7 @@ MatchingCandidature<ReplicationSpecification> {
 	public ReplicaState getAgentInitialState() throws IncompleteContractException{
 		return (ReplicaState) this.getSpecificationOf(this.getAgent());
 	}
+	
 	public HostState getResourceInitialState() throws IncompleteContractException{
 		return (HostState) this.getSpecificationOf(this.getResource());
 	}
@@ -82,13 +76,11 @@ MatchingCandidature<ReplicationSpecification> {
 		if (!fromState.getMyAgentIdentifier().equals(this.getAgent())) {
 			return fromState;
 		} else {
-			HostState h = getResourceInitialState().allocate(fromState);
-			ReplicaState r =fromState.allocate(h);
+			ReplicaState r =fromState.allocate(getResourceInitialState());
 			assert r.getMyResourceIdentifiers().size()==fromState.getMyResourceIdentifiers().size()+(this.creation?1:-1):
 				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();
 			return r;
 		}
-
 	}
 
 	private HostState getResourceResultingState(final HostState fromState) throws IncompleteContractException {

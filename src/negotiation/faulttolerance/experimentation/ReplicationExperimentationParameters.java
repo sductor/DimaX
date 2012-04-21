@@ -106,10 +106,15 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * k bas => eventOccur tot et pour tout le monde
 	 */
 
+	public enum DisponibilityComputationType {Static, Weibull, Poisson}
+	public static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
+	
 	public static final long _host_maxFaultfrequency = 500;//10 * ReplicationExperimentationProtocol._timeToCollect;// 2*_simulationTime;//
 	public static final long _timeScale = 10 * ReplicationExperimentationParameters._host_maxFaultfrequency;
-	public static final double _kValue = 7;
 	public static final double _lambdaRepair = 1;
+	
+//	WEIBULL : OLD
+	public static final double _kValue = 7;
 	public static final double _kRepair = .001;
 	public static final double _theta = 0;// _host_maxFaultfrequency;//0.2;
 

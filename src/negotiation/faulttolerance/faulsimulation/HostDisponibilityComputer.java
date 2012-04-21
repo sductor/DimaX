@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters.DisponibilityComputationType;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -188,11 +189,6 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	// Primitive : dispo computation
 	//
 
-	private enum DisponibilityComputationType {
-		Static, Weibull, Poisson
-	}
-
-	private  static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
 
 	private  static Double getDisponibility(
 			final Map<ResourceIdentifier, Double> hosts_lambdas,
@@ -211,7 +207,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	}
 
 	private static Double getDisponibility(final Double lambda, final long uptime) {
-		switch (HostDisponibilityComputer.choosenType) {
+		switch (ReplicationExperimentationParameters.choosenType) {
 		case Static:
 			return lambda;
 		case Weibull:
@@ -231,7 +227,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 
 	private  static boolean eventOccur(final long uptime, final Double lambda,
 			final boolean triggerAFault) {
-		switch (HostDisponibilityComputer.choosenType) {
+		switch (ReplicationExperimentationParameters.choosenType) {
 		case Static:
 			final Random rand = new Random();
 			if (triggerAFault) {

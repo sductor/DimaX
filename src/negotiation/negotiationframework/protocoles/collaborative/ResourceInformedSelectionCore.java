@@ -239,6 +239,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		}
 
 		for (final ActionSpec s : getMyAgent().getMyResources()){
+			
 			final InformedCandidature<Contract, ActionSpec> d =
 					this.generateDestructionContract(s.getMyAgentIdentifier());
 				d.setSpecification(this.getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), d));
@@ -276,12 +277,13 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				for (final Contract c : realloc) {
 					contractsToKeep.add(concerned.get(c));
 				}
-				assert this.getMyAgent().Iaccept(getMyAgent().getMyCurrentState(), contractsToKeep):
+				assert this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep):
 					getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
 					+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
 					+"\n-------------->"+
 					(getMyAgent().getMyCore().getAllocationPreference(getMyAgent().getMyCurrentState(), contractsToKeep, 
-							new ArrayList<InformedCandidature<Contract, ActionSpec>>()) > 0);
+							new ArrayList<InformedCandidature<Contract, ActionSpec>>()))+" ------------------- "
+					+getMyAgent().isPersonalyValid(getMyAgent().getMyCurrentState(), contractsToKeep);
 
 				//MAJ du contract trunk
 				for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {

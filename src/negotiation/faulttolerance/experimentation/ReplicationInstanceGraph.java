@@ -153,12 +153,9 @@ extends BasicAgentModule<ReplicationLaborantin>{
 			this.agents.put(id,
 					new ReplicaState(id,
 							Math.min(ReplicationExperimentationParameters._criticityMin+ agentCriticity.get(id), 1),
-							new HashSet(),
 							agentProcessor.get(id),
 							agentMemory.get(id),
-							0.,
-							p._socialWelfare,
-							-1));
+							p._socialWelfare));
 		}
 
 		for (final ResourceIdentifier hostId : this.hosts.keySet()){
@@ -166,8 +163,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 					new HostState(hostId,
 							this.kAccessible * hostProcCapacity.get(hostId),
 							this.kAccessible * hostMemCapacity.get(hostId),
-							fault.get(hostId),
-							-1));
+							fault.get(hostId)));
 		}
 	}
 

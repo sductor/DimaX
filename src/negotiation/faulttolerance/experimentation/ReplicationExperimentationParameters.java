@@ -108,12 +108,12 @@ ExperimentationParameters<ReplicationLaborantin> {
 
 	public enum DisponibilityComputationType {Static, Weibull, Poisson}
 	public static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
-	
+
 	public static final long _host_maxFaultfrequency = 500;//10 * ReplicationExperimentationProtocol._timeToCollect;// 2*_simulationTime;//
 	public static final long _timeScale = 10 * ReplicationExperimentationParameters._host_maxFaultfrequency;
 	public static final double _lambdaRepair = 1;
-	
-//	WEIBULL : OLD
+
+	//	WEIBULL : OLD
 	public static final double _kValue = 7;
 	public static final double _kRepair = .001;
 	public static final double _theta = 0;// _host_maxFaultfrequency;//0.2;
@@ -379,16 +379,16 @@ ExperimentationParameters<ReplicationLaborantin> {
 						new ReverseCFPProtocol(),
 						this.dynamicCriticity);
 
+				//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
+				//				rep.addObserver(h,
+				//						SimpleObservationService.informationObservationKey);
+				//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
+				//			}
 			}
 
 
 			rep.getMyInformation().addAll(this.rig.getAccessibleHost(replicaId));
 
-			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
-				rep.addObserver(h,
-						SimpleObservationService.informationObservationKey);
-				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
-			}
 
 			result.put(rep.getId(),rep);
 			//			getMyAgent().myInformationService.add(rep.getMyCurrentState());
@@ -419,14 +419,14 @@ ExperimentationParameters<ReplicationLaborantin> {
 			}
 
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
-				hostAg.addObserver(ag,
-						SimpleObservationService.informationObservationKey);
 
 				ReplicationHandler.replicate(ag);
 
 				hostAg.getMyInformation().add(this.rig.getAgentState(ag));
-//				this.logMonologue(hostAg + "  ->I have initially replicated "
-//						+ ag,LogService.onBoth);
+				hostAg.addObserver(ag,
+						SimpleObservationService.informationObservationKey);
+				//				this.logMonologue(hostAg + "  ->I have initially replicated "
+				//						+ ag,LogService.onBoth);
 			}
 
 			result.put(hostAg.getId(),hostAg);

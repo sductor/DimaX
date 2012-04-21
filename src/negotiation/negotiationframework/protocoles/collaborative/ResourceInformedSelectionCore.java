@@ -239,7 +239,8 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		}
 
 		for (final ActionSpec s : getMyAgent().getMyResources()){
-			
+			assert s.getMyResourceIdentifiers().contains(getIdentifier());
+			assert getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(s.getMyAgentIdentifier());
 			final InformedCandidature<Contract, ActionSpec> d =
 					this.generateDestructionContract(s.getMyAgentIdentifier());
 				d.setSpecification(this.getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), d));
@@ -277,13 +278,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				for (final Contract c : realloc) {
 					contractsToKeep.add(concerned.get(c));
 				}
-				assert this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep):
-					getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
-					+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
-					+"\n-------------->"+
-					(getMyAgent().getMyCore().getAllocationPreference(getMyAgent().getMyCurrentState(), contractsToKeep, 
-							new ArrayList<InformedCandidature<Contract, ActionSpec>>()))+" ------------------- "
-					+getMyAgent().isPersonalyValid(getMyAgent().getMyCurrentState(), contractsToKeep);
+				assert isImprovment(contractsToKeep);
 
 				//MAJ du contract trunk
 				for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
@@ -328,6 +323,20 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		}
 
 		return toPropose;
+	}
+
+
+	private boolean isImprovment(
+			Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep) {
+		assert getMyAgent().isPersonalyValid(getMyAgent().getMyCurrentState(), contractsToKeep);
+//		assert getMyAgent().evaluatePreference(new ArrayList<InformedCandidature<Contract,ActionSpec>>())<getMyAgent().evaluatePreference(contractsToKeep):getMyAgent().evaluatePreference()+" "+getMyAgent().evaluatePreference(contractsToKeep);
+		assert this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep):
+			getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
+			+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
+			+"\n-------------->"+
+			(getMyAgent().getMyCore().getAllocationPreference(getMyAgent().getMyCurrentState(), contractsToKeep, 
+					new ArrayList<InformedCandidature<Contract, ActionSpec>>()));
+		return true;
 	}
 }
 

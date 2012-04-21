@@ -102,7 +102,7 @@ extends BasicCompetentAgent {
 				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
 				myResources.add(ress);
 			} catch (final NoInformationAvailableException e) {
-				this.signalException("uuuuuhh impossible!!"+this.getMyCurrentState(),e);
+				this.signalException("uuuuuhh impossible!! pas totalement vrai : l'info doit etre manuellement ajouté!"+this.getMyCurrentState(),e);
 			}
 		}
 		return myResources;
@@ -126,13 +126,13 @@ extends BasicCompetentAgent {
 	public boolean verifyStateValidity(final PersonalState s){
 		assert (s.isNewerThan(getMyCurrentState())>0):this.getMyCurrentState()+"\n"+s;
 		for (AgentIdentifier id : s.getMyResourceIdentifiers()){
-			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+//			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 			ActionSpec ress;
 			try {
 				ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
 			} catch (NoInformationAvailableException e) {
-				assert 1<0:e;
+//				assert 1<0:e;
 			}
 		}
 		return true;

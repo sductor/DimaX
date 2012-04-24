@@ -93,14 +93,14 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 50;
-	public static final int startingNbHosts = 5;
+	public static final int startingNbAgents = 10;
+	public static final int startingNbHosts = 4;
 	
-	public static final int simultaneousCandidature = 30;
+	public static final int simultaneousCandidature = Math.max(startingNbHosts/3,30);
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
-	private static final boolean withOptimal = false;
+	private static final boolean withOptimal = true;
 
 	/* FAULTS
 	 *
@@ -560,10 +560,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 			0.7,
 			1.});
 	static List<Double> doubleParameters5 = Arrays.asList(new Double[]{
-			0.1,
-			0.33,
-			0.66,
-			1.});
+//			0.1,
+			0.33
+			,0.66
+//			,1.
+			});
 	static List<Double> doubleParameters2 = Arrays.asList(new Double[]{
 			0.,
 			0.5,
@@ -586,7 +587,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	//
 
 	static boolean varyProtocol=false;
-	static boolean  varyOptimizers=false;
+	static boolean  varyOptimizers=true;
 
 	static boolean varyAgentsAndhosts=false;
 
@@ -635,7 +636,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Moyen,//load dispersion
-				4.,//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean
+				((double)startingNbAgents)/((double)startingNbHosts),//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion

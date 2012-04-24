@@ -107,7 +107,7 @@ public final class Experimentator extends APIAgent{
 					this.startActivity(l);
 					this.launchedSimu.put(l.getId(), l);
 				} catch (final IfailedException e) {
-					this.logWarning("ABORTED!!!!!!!!!!!!!! : EXPERIMENTATION "+nextSimu,e, LogService.onBoth);
+					this.logWarning("ABORTED!!!!!!!!!!!!!! : EXPERIMENTATION "+nextSimu, LogService.onBoth);
 					this.launchSimulation();
 				}
 

@@ -57,8 +57,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public  boolean activateExceptoScreen = true;
 	public static  Boolean activateMonotoScreen = true;
 	//Order or the log to be written in specific files
-	public static Boolean activateMonoToFiles = true;
-	public boolean activateCommSendtoFiles = true;
+	public static Boolean activateMonoToFiles = false;
+	public boolean activateCommSendtoFiles = false;
 	public boolean activateCommReceivtoFiles = false;
 	public  boolean activateExceptoFile = true;
 
@@ -104,7 +104,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 
 	public static void setLog(final boolean b) {
-		LogService.activateMonotoScreen = b;
+//		LogService.activateMonotoScreen = b;
 		LogService.activateMonoToFiles = b;
 	}
 
@@ -512,7 +512,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	private static boolean logSetted=false;
-	private static String myPath;
+//	private final static String myPath=;
 	//myPath = getDimaXDir()+"log/"+getHostIdentifier()+"#"+DimaXServer.getCreationTime()+"/";
 	private static  File myExceptionLogFile;
 	private static  File myWarningLogFile;
@@ -522,7 +522,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	protected static void setLogConfiguration() {
 		if (!LogService.logSetted){
-			LogService.myPath =(LogService.getDimaXDir()+"log/"+new Date().toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
+//			LogService.myPath =;
 
 			new File(LogService.getMyPath()).mkdirs();
 
@@ -537,7 +537,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	public static String getMyPath() {
-		return LogService.myPath;
+		return (LogService.getDimaXDir()+"log/"+new Date().toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
 	}
 
 	//

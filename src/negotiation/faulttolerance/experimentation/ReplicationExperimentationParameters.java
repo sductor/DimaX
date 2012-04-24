@@ -94,10 +94,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 50;
-	public static final int startingNbHosts = 20;
+	public static final int startingNbAgents = 8;
+	public static final int startingNbHosts = 3;
 	
-	public static final int simultaneousCandidature = Math.max(startingNbHosts/3,30);
+	public static final int simultaneousCandidature = Math.max(startingNbHosts/3,10);
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;

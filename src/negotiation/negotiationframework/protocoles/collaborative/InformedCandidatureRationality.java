@@ -119,8 +119,7 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 
 	@Override
 	public void setMyAgent(
-			final SimpleRationalAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>> ag)
-					throws UnrespectedCompetenceSyntaxException {
+			final SimpleRationalAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>> ag) {
 		this.referenceRationality.setMyAgent((SimpleRationalAgent<ActionSpec, PersonalState, Contract>) ag);
 	}
 

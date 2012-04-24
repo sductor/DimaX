@@ -117,7 +117,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	}
 
 	@Override
-	public void setMyAgent(final SimpleNegotiatingAgent<ActionSpec, State, Contract> ag) throws UnrespectedCompetenceSyntaxException {
+	public void setMyAgent(final SimpleNegotiatingAgent<ActionSpec, State, Contract> ag) {
 		super.setMyAgent(ag);
 		this.getContracts().setMyAgent(ag);
 	}

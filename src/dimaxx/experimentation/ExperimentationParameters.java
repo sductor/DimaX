@@ -35,10 +35,10 @@ public abstract class ExperimentationParameters<Agent extends Laborantin>
 extends BasicAgentModule<Agent> {
 	private static final long serialVersionUID = -1735965270944987539L;
 
-	public static final long _maxSimulationTime = 1000 * 10;
 	public static boolean currentlyInstanciating;
 	final File resultPath;
 
+	public static final long _maxSimulationTime = 1000 * 10;
 	//
 	// Fields
 	//

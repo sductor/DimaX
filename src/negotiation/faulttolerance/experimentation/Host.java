@@ -93,7 +93,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	@ProactivityFinalisation
 	public void thisIsZiEnd(){
-		this.logMonologue("Ze end : "+this.getMyCurrentState().getMyResourceIdentifiers(), LogService.onBoth);
+		this.logMonologue("Ze end : "+this.getMyCurrentState().getMyResourceIdentifiers()+this.getMyCurrentState(), LogService.onBoth);
 //		this.logMonologue("Ze end : "+this.getMyCurrentState(), LogService.onBoth);
 	}
 }

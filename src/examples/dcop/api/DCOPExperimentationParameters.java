@@ -91,8 +91,8 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 	//
 
 	@Override
-	public LinkedList<ExperimentationParameters> generateSimulation() {
-		final LinkedList<ExperimentationParameters> expPs = new LinkedList<ExperimentationParameters>();
+	public LinkedList<ExperimentationParameters<Laborantin>> generateSimulation() {
+		final LinkedList<ExperimentationParameters<Laborantin>> expPs = new LinkedList<ExperimentationParameters<Laborantin>>();
 		expPs.add(new DCOPExperimentationParameters(this.experimentatorId, this.filename, "conf/1.dcop", 1, "TOPT"));
 		return expPs;
 	}

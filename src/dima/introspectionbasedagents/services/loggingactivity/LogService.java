@@ -653,7 +653,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public void setMyAgent(final Agent ag) throws UnrespectedCompetenceSyntaxException {
+	public void setMyAgent(final Agent ag)  {
 		this.myAgent=ag;
 	}
 

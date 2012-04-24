@@ -128,10 +128,10 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					final ResourceInformedProposerCore<Contract, ActionSpec, PersonalState> propCore =
 							(ResourceInformedProposerCore<Contract, ActionSpec, PersonalState>) this.getMyAgent().getMyProposerCore();
 
-//					final Collection<InformedCandidature<Contract, ActionSpec>> hosted =
-//							new HashSet<InformedCandidature<Contract, ActionSpec>>();
+					//					final Collection<InformedCandidature<Contract, ActionSpec>> hosted =
+					//							new HashSet<InformedCandidature<Contract, ActionSpec>>();
 
-					
+
 
 					assert MatchingCandidature.assertAllCreation(contracts.getAllContracts());
 					assert AbstractCommunicationProtocol.partitioning(contracts.getAllContracts(), accepted, rejected, onWait);
@@ -188,13 +188,13 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				if (i.isMatchingCreation()){
 					this.getMyAgent().getMyInformation().add(
 							i.computeResultingState(i.getAgent()));
-					this.observe(i.getAgent(),
-							SimpleObservationService.informationObservationKey);
+//					this.observe(i.getAgent(),
+//							SimpleObservationService.informationObservationKey);
 				}else{
 					this.getMyAgent().getMyInformation().remove(
 							i.computeResultingState(i.getAgent()));
-					this.stopObservation(i.getAgent(),
-							SimpleObservationService.informationObservationKey);
+//					this.stopObservation(i.getAgent(),
+//							SimpleObservationService.informationObservationKey);
 				}
 			}
 		} catch (final IncompleteContractException e) {
@@ -216,7 +216,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	//
 
 	private Collection<InformedCandidature<Contract, ActionSpec>>  generateUpgradingContracts(
-//			final PersonalState currentState,
+			//			final PersonalState currentState,
 			final Collection<InformedCandidature<Contract, ActionSpec>> unacceptedContracts,
 			final Collection<InformedCandidature<Contract,ActionSpec>> onWait,
 			final InformedCandidatureRationality<ActionSpec, PersonalState, Contract> myAgentCore,
@@ -243,9 +243,9 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			assert getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(s.getMyAgentIdentifier());
 			final InformedCandidature<Contract, ActionSpec> d =
 					this.generateDestructionContract(s.getMyAgentIdentifier());
-				d.setSpecification(this.getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), d));
-				d.setSpecification(s);
-				concerned.put(d.getCandidature(),d);//adding destruction candidature
+			d.setSpecification(this.getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), d));
+			d.setSpecification(s);
+			concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}
 		//		for (final ActionSpec s : this.getMyAgent().getMyResources()){
 		//			//adding destruction of hosted agents
@@ -278,34 +278,35 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				for (final Contract c : realloc) {
 					contractsToKeep.add(concerned.get(c));
 				}
-				assert isImprovment(contractsToKeep);
-
-				//MAJ du contract trunk
-				for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
-					//Pour toute action de ce contrat
-					if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
-						//on l'ajoute a la base de contrat
-						myAgentContractTrunk.addContract(c);
-						onWait.add(c);
-						//Ajout aux propositions à faire
-						//						try { NON CAR L'HOTE PEUT ENVOYER DES DEMANDES DE TUAGE, DES FOIS QUE L4AGENT POURRAIT SE RETOURNER!!
-						//							assert c.isViable();
-						//						} catch (final IncompleteContractException e) {
-						//							this.getMyAgent().signalException("impossible");
-						//						}
-						toPropose.add(c);
-					} else {//sinon on la laisse en attente
-						assert (!alreadyDone.add(c)||unacceptedContracts.contains(c)):unacceptedContracts;
-						unacceptedContracts.remove(c);
-						onWait.add(c);
+				//				assert isImprovment(contractsToKeep);
+				if (this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep)){
+					//MAJ du contract trunk
+					for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
+						//Pour toute action de ce contrat
+						if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
+							//on l'ajoute a la base de contrat
+							myAgentContractTrunk.addContract(c);
+							onWait.add(c);
+							//Ajout aux propositions à faire
+							//						try { NON CAR L'HOTE PEUT ENVOYER DES DEMANDES DE TUAGE, DES FOIS QUE L4AGENT POURRAIT SE RETOURNER!!
+							//							assert c.isViable();
+							//						} catch (final IncompleteContractException e) {
+							//							this.getMyAgent().signalException("impossible");
+							//						}
+							toPropose.add(c);
+						} else {//sinon on la laisse en attente
+							assert (!alreadyDone.add(c)||unacceptedContracts.contains(c)):unacceptedContracts;
+							unacceptedContracts.remove(c);
+							onWait.add(c);
+						}
 					}
-				}
 
-				//Ajout du contrat améliorant
-				// --- > Création du contrat
-				myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
-						this.getIdentifier(),
-						realloc));
+					//Ajout du contrat améliorant
+					// --- > Création du contrat
+					myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
+							this.getIdentifier(),
+							realloc));
+				}
 			}
 		}
 
@@ -329,7 +330,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	private boolean isImprovment(
 			Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep) {
 		assert getMyAgent().isPersonalyValid(getMyAgent().getMyCurrentState(), contractsToKeep);
-//		assert getMyAgent().evaluatePreference(new ArrayList<InformedCandidature<Contract,ActionSpec>>())<getMyAgent().evaluatePreference(contractsToKeep):getMyAgent().evaluatePreference()+" "+getMyAgent().evaluatePreference(contractsToKeep);
+		//		assert getMyAgent().evaluatePreference(new ArrayList<InformedCandidature<Contract,ActionSpec>>())<getMyAgent().evaluatePreference(contractsToKeep):getMyAgent().evaluatePreference()+" "+getMyAgent().evaluatePreference(contractsToKeep);
 		assert this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep):
 			getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
 			+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)

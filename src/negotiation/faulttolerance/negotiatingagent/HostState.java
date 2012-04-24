@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -117,8 +118,11 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	}
 
 	public Double getMyCharge() {
-		return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
-				this.getCurrentProcCharge() / this.getProcChargeMax());
+		if (ReplicationExperimentationParameters.multiDim)
+			return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
+					this.getCurrentProcCharge() / this.getProcChargeMax());
+		else
+			return this.getCurrentMemCharge() / this.getMemChargeMax();
 	}
 
 	public boolean ImSurcharged() {

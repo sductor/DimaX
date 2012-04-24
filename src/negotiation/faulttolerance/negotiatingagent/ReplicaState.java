@@ -15,6 +15,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
@@ -142,20 +143,10 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	// Accessors
 	//
 
-	//pas propre!!! camarche uniquement pcq le h ne change pas de lambda
-	//	public boolean update(HostState h){
-	//		if (myReplicas.contains(h)){
-	//			//removing previous h
-	//			myReplicas.remove(h);
-	//			//adding new h
-	//			return 	myReplicas.add(h);
-	//		} else
-	//			throw new RuntimeException();
-	//	}
-
 	public Double getMyReliability(){
 		return ReplicationSocialOptimisation.getReliability(
-				this,
+				getMyDisponibility(),
+				getMyCriticity(),
 				this.socialWelfare);
 	}
 
@@ -183,21 +174,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	public Collection<ResourceIdentifier> getMyResourceIdentifiers() {
 		return this.myReplicas;
 	}
-		//		if (myReplicas==null)
-		//			return new ArrayList<HostState>();
-		//		else
-		//		return this.myReplicas;
-		//	}/
-//		if (this.myReplicas==null) {
-//			return new ArrayList<ResourceIdentifier>();
-//		} else{
-//			final Collection<ResourceIdentifier> result = new ArrayList();
-//			for (final HostState h : this.myReplicas) {
-//				result.add(h.getMyAgentIdentifier());
-//			}
-//			return result;
-//		}
-//	}
+
 
 	@Override
 	public Class<? extends Information> getMyResourcesClass() {
@@ -210,21 +187,6 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	/*
 	 *
 	 */
-
-	//	public ResourceIdentifier getOneReplica() {
-	//		final int num = new Random().nextInt(this.getMyReplicas().size());
-	//		final Iterator<HostState> itRep = this.getMyReplicas()
-	//				.iterator();
-	//		HostState h = itRep.next();
-	//		for (int i = 1; i < num; i++) {
-	//			h = itRep.next();
-	//		}
-	//		// logMonologue("removing wastefull host!!!"+h);//+"\n"+getMyAgent().getMyCurrentState());
-	//		if (h == null) {
-	//			throw new RuntimeException("aarrrggh");
-	//		}
-	//		return h.getMyAgentIdentifier();
-	//	}
 
 	@Override
 	public boolean isValid() {
@@ -264,14 +226,6 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 	 * Opinion
 	 */
 
-	//	@Override
-	//	public int compareTo(final Information<AgentState> o) {
-	//		if (o instanceof ReplicaState) {
-	//			final ReplicaState e = (ReplicaState) o;
-	//			return this.getMyReliability().compareTo(e.getMyReliability());
-	//		} else
-	//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-	//	}
 
 	@Override
 	public Double getNumericValue(final Information o) {
@@ -389,6 +343,58 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 				+"\n valid ? : "+this.isValid();
 		// +"\n status "+this.getMyStateStatus();
 	}
-
-
 }
+
+
+
+
+
+//	@Override
+//	public int compareTo(final Information<AgentState> o) {
+//		if (o instanceof ReplicaState) {
+//			final ReplicaState e = (ReplicaState) o;
+//			return this.getMyReliability().compareTo(e.getMyReliability());
+//		} else
+//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+//	}
+
+//	public ResourceIdentifier getOneReplica() {
+//		final int num = new Random().nextInt(this.getMyReplicas().size());
+//		final Iterator<HostState> itRep = this.getMyReplicas()
+//				.iterator();
+//		HostState h = itRep.next();
+//		for (int i = 1; i < num; i++) {
+//			h = itRep.next();
+//		}
+//		// logMonologue("removing wastefull host!!!"+h);//+"\n"+getMyAgent().getMyCurrentState());
+//		if (h == null) {
+//			throw new RuntimeException("aarrrggh");
+//		}
+//		return h.getMyAgentIdentifier();
+//	}
+//		if (myReplicas==null)
+//			return new ArrayList<HostState>();
+//		else
+//		return this.myReplicas;
+//	}/
+//if (this.myReplicas==null) {
+//	return new ArrayList<ResourceIdentifier>();
+//} else{
+//	final Collection<ResourceIdentifier> result = new ArrayList();
+//	for (final HostState h : this.myReplicas) {
+//		result.add(h.getMyAgentIdentifier());
+//	}
+//	return result;
+//}
+//}
+
+//pas propre!!! camarche uniquement pcq le h ne change pas de lambda
+//public boolean update(HostState h){
+//	if (myReplicas.contains(h)){
+//		//removing previous h
+//		myReplicas.remove(h);
+//		//adding new h
+//		return 	myReplicas.add(h);
+//	} else
+//		throw new RuntimeException();
+//}

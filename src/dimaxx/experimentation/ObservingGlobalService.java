@@ -27,7 +27,8 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	// Fields
 	//
 
-	protected HashSet<ReplicationResultAgent> finalStates = new HashSet();
+	private HashSet<ExperimentationResults> finalStates = new HashSet<ExperimentationResults>();
+
 
 	final Collection<AgentIdentifier> remainingAgent=new ArrayList<AgentIdentifier>();
 	//	final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
@@ -36,7 +37,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	// Constants
 	//
 
-	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 2;
+	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 5;
 
 	//
 	// Abstract
@@ -115,9 +116,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 			}
 		}
 
-		if (results.getLast() instanceof ReplicationResultAgent) {
-			this.finalStates.add((ReplicationResultAgent) results.getLast());
-		}
+			this.finalStates.add(results.getLast());
 
 	}
 
@@ -126,6 +125,10 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		this.remainingAgent.remove(id);
 	}
 
+	public HashSet<ExperimentationResults> getFinalStates() {
+		return finalStates;
+	}
+	
 	//
 	// Time Primitives
 	//
@@ -145,9 +148,9 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 				* ObservingGlobalService._state_snapshot_frequency;
 	}
 
-	public long getMaxSimulationTime() {
-		return ExperimentationParameters._maxSimulationTime;
-	}
+//	public long getMaxSimulationTime() {
+//		return _maxSimulationTime;
+//	}
 
 	//
 	// Writing Primitives

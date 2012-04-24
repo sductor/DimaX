@@ -20,6 +20,7 @@ import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.experimentation.ObservingSelfService;
 
 public class SimpleNegotiatingAgent<
@@ -71,10 +72,10 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, false, false);
-		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, true);
-		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, true);
+		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, false);
+		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, false);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
-		this.addLogKey(ObservingSelfService.observationLog, false, true);
+		this.addLogKey(ObservingSelfService.observationLog, false, false);
 	}
 
 	//

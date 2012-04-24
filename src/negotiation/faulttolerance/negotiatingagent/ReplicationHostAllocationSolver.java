@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.faulttolerance.experimentation.ReplicationOptimalSolver;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.exploration.ChocoAllocationSolver;
@@ -23,7 +25,6 @@ extends ChocoAllocationSolver
 <ReplicationCandidature, ReplicationSpecification, HostState>{
 	private static final long serialVersionUID = 161669049253111527L;
 
-	final boolean multiDim = true;
 
 	/*
 	 * Constants
@@ -57,7 +58,7 @@ extends ChocoAllocationSolver
 
 			this.instanciateConstant(nbVariable);
 			this.instanciateVariable(m, nbVariable);
-			if (this.multiDim) {
+			if (ReplicationExperimentationParameters.multiDim){
 				this.instanciateConstraints(m);
 			} else {
 				this.instanciateConstraintKnapsack(m);
@@ -75,8 +76,8 @@ extends ChocoAllocationSolver
 
 		assert nbVariable>0;
 		
-		this.hostProccapacity =this.asInt(this.concerned[0].getResourceInitialState().getProcChargeMax(),false);
-		this.hostMemCapacity = this.asInt(this.concerned[0].getResourceInitialState().getMemChargeMax(),false);
+		this.hostProccapacity =ReplicationOptimalSolver.asInt(this.concerned[0].getResourceInitialState().getProcChargeMax(),false);
+		this.hostMemCapacity = ReplicationOptimalSolver.asInt(this.concerned[0].getResourceInitialState().getMemChargeMax(),false);
 		this.replicasProc = new int[nbVariable];
 		this.replicasMem = new int[nbVariable];
 
@@ -87,8 +88,8 @@ extends ChocoAllocationSolver
 			assert this.concerned[i].getAgentInitialState().getMyProcCharge().equals(
 					this.concerned[i].getAgentResultingState().getMyProcCharge());
 
-			this.replicasMem[i] = this.asInt(this.concerned[i].getAgentInitialState().getMyMemCharge(),false);
-			this.replicasProc[i] = this.asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
+			this.replicasMem[i] = ReplicationOptimalSolver.asInt(this.concerned[i].getAgentInitialState().getMyMemCharge(),false);
+			this.replicasProc[i] = ReplicationOptimalSolver.asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
 		}
 	}
 
@@ -97,7 +98,7 @@ extends ChocoAllocationSolver
 		this.replicas = new IntegerVariable[nbVariable];
 		this.socialWelfareValue =  Choco.makeIntVar("utility", 1, 1000000, Options.V_BOUND, Options.V_NO_DECISION);
 
-		if (this.multiDim) {
+		if (ReplicationExperimentationParameters.multiDim){
 			this.replicasValue = new IntegerVariable[nbVariable];
 		} else {
 			this.replicasGain = new int[nbVariable];
@@ -108,13 +109,13 @@ extends ChocoAllocationSolver
 			this.replicas[i] = Choco.makeIntVar(this.concerned[i].getAgent().toString(), 0, 1, Options.V_ENUM);
 
 			IntegerConstantVariable minUt, maxUt;
-			minUt = new IntegerConstantVariable(this.asIntNashed(Math.min(
+			minUt = new IntegerConstantVariable(ReplicationOptimalSolver.asIntNashed(Math.min(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
-					this.concerned[i].getAgentResultingState().getMyReliability())));
-			maxUt = new IntegerConstantVariable(this.asIntNashed(Math.max(
+					this.concerned[i].getAgentResultingState().getMyReliability()),socialWelfare));
+			maxUt = new IntegerConstantVariable(ReplicationOptimalSolver.asIntNashed(Math.max(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
-					this.concerned[i].getAgentResultingState().getMyReliability())));
-			if (this.multiDim){
+					this.concerned[i].getAgentResultingState().getMyReliability()),socialWelfare));
+			if (ReplicationExperimentationParameters.multiDim){
 				this.replicasValue[i] = Choco.makeIntVar(
 						this.concerned[i].getAgent().toString()+"__value", minUt.getValue(), maxUt.getValue(),
 						Options.V_BOUND, Options.V_NO_DECISION);
@@ -144,13 +145,13 @@ extends ChocoAllocationSolver
 		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 			final int[] currentAllocation = new int[this.concerned.length];
 			for (int i = 0; i < this.concerned.length; i++){
-				currentAllocation[i] = this.asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
+				currentAllocation[i] = ReplicationOptimalSolver.asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
 			}
 			m.addConstraint(Choco.leximin(currentAllocation, this.replicasValue));
 		} else {
 			int current = 0;
 			for (final ReplicationCandidature c : this.concerned){
-				current+=this.asIntNashed(c.getAgentInitialState().getMyReliability());
+				current+=ReplicationOptimalSolver.asIntNashed(c.getAgentInitialState().getMyReliability(),socialWelfare);
 			}
 			m.addConstraint(Choco.gt(this.socialWelfareValue, current));
 		}
@@ -173,20 +174,7 @@ extends ChocoAllocationSolver
 		}
 	}
 
-	public int asIntNashed(final double d){
-		if (this.s.equals(SocialChoiceType.Nash)) {
-			return (int) (100*Math.log(d));
-		} else {
-			return (int) (100 * d);
-		}
-	}
-	public int asInt(final double d, final boolean log){
-		if (log) {
-			return (int) (100 * Math.log(d));
-		} else {
-			return (int) (100 * (d+0.01));
-		}
-	}
+
 
 	/*
 	 *

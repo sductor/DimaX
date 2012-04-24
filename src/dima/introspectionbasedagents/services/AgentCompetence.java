@@ -15,7 +15,7 @@ public interface AgentCompetence<Agent extends CompetentComponent> extends Activ
 
 	Agent getMyAgent();
 
-	void setMyAgent(Agent ag) throws UnrespectedCompetenceSyntaxException;
+	void setMyAgent(Agent ag) ;
 
 	void die();
 

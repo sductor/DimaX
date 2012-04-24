@@ -31,6 +31,7 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ReplicationObservingGlobalService extends ObservingGlobalService<ReplicationLaborantin>{
 
+	private static final long serialVersionUID = -6071939423880629421L;
 
 	//
 	// Fields
@@ -39,7 +40,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -6071939423880629421L;
+	boolean imTheOpt=false;
+	Integer time=null;
 	/*
 	 * Agent
 	 */
@@ -167,6 +169,11 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 	@Override
 	protected synchronized void writeResult() {
+		if (imTheOpt)
+			LogService.logOnFile(
+				this.getMyAgent().getSimulationParameters().getResultPath(),"OPTIMAL RESULT : "+time,
+						true, false);
+			
 		LogService.logOnFile(
 				this.getMyAgent().getSimulationParameters().getResultPath(),
 				"launched :\n--> " + new Date().toString() + "\n "

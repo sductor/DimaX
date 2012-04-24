@@ -91,23 +91,25 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 	//
 
 	public void solve(){
-		this.generateConstant();
-		this.generateVar();
-		this.generateConstraints();
+		if (!_socialChoice.equals(SocialChoiceType.Nash)){
+			this.generateConstant();
+			this.generateVar();
+			this.generateConstraints();
 
-		//
+			//
 
-		Solver s = new CPSolver();
-		s.read(this.m);
-		s.setValIntIterator(new DecreasingDomain());
-		logMonologue("solving optimal...", LogService.onBoth);
-		s.maximize(true);
-		logMonologue("done!...", LogService.onBoth);
+			Solver s = new CPSolver();
+			s.read(this.m);
+			s.setValIntIterator(new DecreasingDomain());
+			logMonologue("solving optimal...", LogService.onBoth);
+			s.maximize(true);
+			logMonologue("done!...", LogService.onBoth);
 
 
-		//
+			//
 
-		writeResults(s);
+			writeResults(s);
+		}
 	}
 
 	private void writeResults(Solver s) {
@@ -123,7 +125,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 
 		String alloc="";
 		for (int j = 0; j < this.nbHosts; j++){
-					ResourceIdentifier hId = hs[j].getMyAgentIdentifier();
+			ResourceIdentifier hId = hs[j].getMyAgentIdentifier();
 			alloc+="\n "+hId+" has allocated ";
 			for (int i = 0; i < this.nbAgents; i++){
 				assert s.getVar(hostsMatrix[j][i]).getVal()==s.getVar(agentsMatrix[i][j]).getVal();
@@ -138,6 +140,8 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 
 		ReplicationObservingGlobalService rogs = new ReplicationObservingGlobalService();
 		rogs.setMyAgent(getMyAgent());
+		rogs.imTheOpt=true;
+		rogs.time=s.getTimeCount();
 		rogs.initiate();
 
 		for (ReplicaState r : finalRepAlloc.values()){

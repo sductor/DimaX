@@ -266,9 +266,9 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		}
 		result += "Leximin solution : "+lex+"\n Utility solution "+sum+"\n Nash solution "+nash;
 		
-		result+="\n Agent %of allocated resources : ";
+		result+="\n Agent percent of allocated resources : ";
 		for (ReplicationResultAgent r : reliaStates){
-			result+= (r.numberOfAllocatedResources/getMyAgent().getSimulationParameters().nbHosts)*100+"%, ";
+			result+= ((double)r.numberOfAllocatedResources/(double)getMyAgent().getSimulationParameters().nbHosts)*100+"%, ";
 		}
 
 

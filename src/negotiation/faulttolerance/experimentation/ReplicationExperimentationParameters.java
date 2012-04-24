@@ -1,5 +1,6 @@
 package negotiation.faulttolerance.experimentation;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -231,7 +232,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	@Override
 	public ReplicationExperimentationParameters clone(){
 		return new ReplicationExperimentationParameters(
-				this.getResultPath().toString(),
+				this.getProtocolId(),
 				this.experimentatorId,
 				this.nbAgents,
 				this.nbHosts,
@@ -617,17 +618,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 
 	static ReplicationExperimentationParameters getDefaultParameters() {
 		return new ReplicationExperimentationParameters(
-				ExperimentationParameters._maxSimulationTime / 60000
-				+ "mins"
-				+ (ReplicationExperimentationParameters.varyAgentSelection==true?"varyAgentSelection":"")
-				+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
-				+ (ReplicationExperimentationParameters.varyProtocol?"varyProtocol":"")
-				+ (ReplicationExperimentationParameters.varyHostDispo?"varyHostDispo":"")
-				+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
-				+ (ReplicationExperimentationParameters.varyOptimizers?"varyOptimizers":"")
-				+ (ReplicationExperimentationParameters.varyAccessibleHost?"varyAccessibleHost":"")
-				+ (ReplicationExperimentationParameters.varyAgentLoad?"varyAgentLoad":"")
-				+ (ReplicationExperimentationParameters.varyHostCapacity?"varyHostCapacity":""),
+				getProtocolId(),
 				new AgentName("ziReplExp"),
 				ReplicationExperimentationParameters.startingNbAgents,
 				ReplicationExperimentationParameters.startingNbHosts,
@@ -648,10 +639,25 @@ ExperimentationParameters<ReplicationLaborantin> {
 				ReplicationExperimentationParameters.doubleParameters2.get(0));
 	}
 
+	private static String getProtocolId() {
+		return ExperimentationParameters._maxSimulationTime / 1000
+		+ "secs"
+		+ (ReplicationExperimentationParameters.varyAgentSelection==true?"varyAgentSelection":"")
+		+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
+		+ (ReplicationExperimentationParameters.varyProtocol?"varyProtocol":"")
+		+ (ReplicationExperimentationParameters.varyHostDispo?"varyHostDispo":"")
+		+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
+		+ (ReplicationExperimentationParameters.varyOptimizers?"varyOptimizers":"")
+		+ (ReplicationExperimentationParameters.varyAccessibleHost?"varyAccessibleHost":"")
+		+ (ReplicationExperimentationParameters.varyAgentLoad?"varyAgentLoad":"")
+		+ (ReplicationExperimentationParameters.varyHostCapacity?"varyHostCapacity":"");
+	}
+
 	@Override
 	public LinkedList<ExperimentationParameters<ReplicationLaborantin>> generateSimulation() {
 		//		final String usedProtocol, agentSelection, hostSelection;
 		//		f.mkdirs();
+		new File(LogService.getMyPath()+"result_"+getProtocolId()+"/").mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new HashSet<ReplicationExperimentationParameters>();
 		simuToLaunch.add(ReplicationExperimentationParameters.getDefaultParameters());

@@ -94,8 +94,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 100;
-	public static final int startingNbHosts = 25;
+	public static final int startingNbAgents = 15;
+	public static final int startingNbHosts = 7;
 	
 	public static final int simultaneousCandidature = Math.min(startingNbHosts/3,5);
 	public static final boolean completGraph = true;

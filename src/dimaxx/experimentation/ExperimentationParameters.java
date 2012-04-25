@@ -41,7 +41,7 @@ extends BasicAgentModule<Agent> {
 	final File resultPath;
 
 //	public static final long _maxSimulationTime = 1000 * 30;
-	public static final long _maxSimulationTime = 60000 * 10;
+	public static final long _maxSimulationTime = 60000 * 1;
 	//
 	// Fields
 	//

@@ -15,6 +15,7 @@ import choco.Options;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
+import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
 import choco.kernel.model.Model;
 import choco.kernel.model.variables.integer.IntegerConstantVariable;
 import choco.kernel.model.variables.integer.IntegerExpressionVariable;
@@ -22,8 +23,12 @@ import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.solver.Solver;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
+import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.experimentation.IfailedException;
+import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
 
 public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLaborantin> {
 
@@ -39,7 +44,9 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 		ags = rig.getAgentStates().toArray(new ReplicaState[nbAgents]);
 		hs = rig.getHostsStates().toArray(new HostState[nbHosts]);
 		accesibilityGraph = new boolean[nbAgents][nbHosts];
-
+		
+//		charge = new IntegerExpressionVariable[this.nbHosts];
+//		numberOfRep = new IntegerExpressionVariable[this.nbAgents];
 
 		for (int i = 0; i < this.nbAgents; i++){
 			for (int j = 0; j < this.nbHosts; j++){
@@ -47,20 +54,46 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 				ResourceIdentifier hId = hs[j].getMyAgentIdentifier();
 				assert ags[i].getMyResourceIdentifiers().isEmpty();
 				assert hs[j].getMyResourceIdentifiers().isEmpty();
-				assert ReplicationExperimentationParameters.completGraph?rig.getAccessibleAgent(hId).contains(agId)==true:true;
 				assert rig.getAccessibleAgent(hId).contains(agId)==rig.getAccessibleHost(agId).contains(hId):"\n"+rig.getAccessibleAgent(hId)+"\n"+rig.getAccessibleHost(agId);
 				accesibilityGraph[i][j] =  rig.getAccessibleAgent(hId).contains(agId);
+				assert ReplicationExperimentationParameters.completGraph?accesibilityGraph[i][j]==true:true;
 			}
 		}
 	}
 
+	private ReplicationOptimalSolver(ReplicationExperimentationParameters p) {
+		super();
+		this._socialChoice = p._socialWelfare;
+
+		ReplicationInstanceGraph rig = p.rig;
+		nbAgents =rig.getAgentsIdentifier().size();
+		nbHosts=rig.getHostsIdentifier().size();
+		ags = rig.getAgentStates().toArray(new ReplicaState[nbAgents]);
+		hs = rig.getHostsStates().toArray(new HostState[nbHosts]);
+		accesibilityGraph = new boolean[nbAgents][nbHosts];
+		
+//		charge = new IntegerExpressionVariable[this.nbHosts];
+//		numberOfRep = new IntegerExpressionVariable[this.nbAgents];
+
+		for (int i = 0; i < this.nbAgents; i++){
+			for (int j = 0; j < this.nbHosts; j++){
+				AgentIdentifier agId = ags[i].getMyAgentIdentifier();
+				ResourceIdentifier hId = hs[j].getMyAgentIdentifier();
+				assert ags[i].getMyResourceIdentifiers().isEmpty();
+				assert hs[j].getMyResourceIdentifiers().isEmpty();
+				assert rig.getAccessibleAgent(hId).contains(agId)==rig.getAccessibleHost(agId).contains(hId):"\n"+rig.getAccessibleAgent(hId)+"\n"+rig.getAccessibleHost(agId);
+				accesibilityGraph[i][j] =  rig.getAccessibleAgent(hId).contains(agId);
+				assert ReplicationExperimentationParameters.completGraph?accesibilityGraph[i][j]==true:true;
+			}
+		}
+	}
 	/*
 	 * Instance
 	 */
 	SocialChoiceType _socialChoice;
 
-	int nbAgents;
-	int nbHosts;
+	final int nbAgents;
+	final int nbHosts;
 	ReplicaState[] ags;
 	HostState[] hs;
 
@@ -83,6 +116,9 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 
 	IntegerVariable[][] hostsMatrix;
 	IntegerVariable[][] agentsMatrix;
+	
+	//
+	
 	IntegerVariable socialWelfareOpt;
 	IntegerExpressionVariable[] agentsValue;
 
@@ -102,17 +138,21 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 			s.read(this.m);
 			s.setValIntIterator(new DecreasingDomain());
 			logMonologue("solving optimal...", LogService.onBoth);
-			s.maximize(true);
+			s.solve();
+			int firstTime=s.getTimeCount();
+			assert s.isFeasible();
+//			s.setObjective(s.getVar(this.socialWelfareOpt));
+//			s.maximize(false);
+			int optimalTime=s.getTimeCount();
 			logMonologue("done!...", LogService.onBoth);
-
 
 			//
 
-			writeResults(s);
+			writeResults(s,firstTime,optimalTime);
 		}
 	}
 
-	private void writeResults(Solver s) {
+	private void writeResults(Solver s, int firstTime, int optimalTime) {
 		Map<AgentIdentifier, ReplicaState> finalRepAlloc = new HashMap<AgentIdentifier, ReplicaState>();
 		Map<ResourceIdentifier, HostState> finalHostAlloc = new HashMap<ResourceIdentifier, HostState>();
 
@@ -134,6 +174,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 					alloc+=agId+" , ";
 					boolean allocOk = ReplicationInstanceGraph.allocateAgents(getMyAgent(), agId, hId, finalRepAlloc, finalHostAlloc);
 					assert allocOk;
+					
 				}
 			}
 		}
@@ -141,7 +182,8 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 		ReplicationObservingGlobalService rogs = new ReplicationObservingGlobalService();
 		rogs.setMyAgent(getMyAgent());
 		rogs.imTheOpt=true;
-		rogs.time=s.getTimeCount();
+		rogs.firsttime=firstTime;
+		rogs.optimalTime=optimalTime;
 		rogs.initiate();
 
 		for (ReplicaState r : finalRepAlloc.values()){
@@ -156,8 +198,13 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 			rogs.updateInfo(hostRes);
 			rogs.getFinalStates().add(hostRes);
 		}
-		logMonologue("Optimal found!! Time : "+s.getTimeCount()/1000+"\n"+alloc, LogService.onBoth);
-		rogs.writeResult();
+		logMonologue("First Time : "+firstTime/1000+"Optimal Time : "+optimalTime/1000
+				+" The optimal allocation is : \n"+alloc
+				+"\n"+finalHostAlloc.values()+"\n"+finalRepAlloc.values(), LogService.onBoth);
+//		rogs.writeResult();
+		
+		System.out.println(rogs.analyseOptimal());
+		
 	}
 
 	//
@@ -175,25 +222,25 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 		hostMemCap = new int[this.nbHosts];
 
 		for (int i = 0; i < this.nbAgents; i++){
-			this.agentCriticity[i]=new IntegerConstantVariable(this.asInt(this.ags[i].getMyCriticity(),false));
+			this.agentCriticity[i]=Choco.constant(this.asInt(this.ags[i].getMyCriticity(),false));
 			this.repProcCharge[i]=this.asInt(this.ags[i].getMyProcCharge(),false);
 			this.repMemCharge[i]=this.asInt(this.ags[i].getMyMemCharge(),false);
+//			System.out.println("crit proc rep de agent "+i+" "+this.agentCriticity[i]+" "+this.repProcCharge[i]+" "+this.repMemCharge[i]+"\n"+ags[i]);
 		}
 
 		for (int i = 0; i < this.nbHosts; i++){
 			this.hostLambda[i]=this.asInt(this.hs[i].getLambda(),true);
 			this.hostProcCap[i]=this.asInt(this.hs[i].getProcChargeMax(),false);
 			this.hostMemCap[i]=this.asInt(this.hs[i].getMemChargeMax(),false);
+//			System.out.println("lambde proc rep de host "+i+" "+this.hostLambda[i]+" "+this.hostProcCap[i]+" "+this.hostMemCap[i]+"\n"+hs[i]);
 		}
 	}
 
 	private void generateVar(){
-		agentsValue = new IntegerExpressionVariable[this.nbAgents];
-
-		hostsMatrix = new IntegerVariable[this.nbHosts][this.nbAgents];
-		agentsMatrix = new IntegerVariable[this.nbAgents][this.nbHosts];
 
 		//matrice d'allocation
+		hostsMatrix = new IntegerVariable[this.nbHosts][this.nbAgents];
+		agentsMatrix = new IntegerVariable[this.nbAgents][this.nbHosts];
 		for (int i = 0; i < this.nbAgents; i++){
 			for (int j = 0; j < this.nbHosts; j++){
 				AgentIdentifier agId = ags[i].getMyAgentIdentifier();
@@ -206,13 +253,13 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 		}
 
 		//utilité des agents
+		agentsValue = new IntegerExpressionVariable[this.nbAgents];
 		for (int i = 0; i < this.nbAgents; i++){
 			final IntegerExpressionVariable dispo = Choco.minus(1, Choco.scalar(this.hostLambda, this.agentsMatrix[i]));
 			if (this._socialChoice.equals(SocialChoiceType.Leximin)) {
 				this.agentsValue[i] = Choco.div(dispo,this.agentCriticity[i]);
 			} else {
-				assert (this._socialChoice.equals(SocialChoiceType.Nash)
-						|| this._socialChoice.equals(SocialChoiceType.Utility)):_socialChoice;
+				assert this._socialChoice.equals(SocialChoiceType.Utility):_socialChoice;
 				this.agentsValue[i] = Choco.mult(dispo,this.agentCriticity[i]);
 			}
 		}
@@ -221,25 +268,26 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 				Options.V_BOUND, Options.V_NO_DECISION, Options.V_OBJECTIVE);
 	}
 
+	
 	private void generateConstraints(){
 		//Poids
-		for (int i = 0; i < this.nbHosts; i++){
+		for (int j = 0; j < this.nbHosts; j++){
 			if (ReplicationExperimentationParameters.multiDim) 
-				this.m.addConstraint(Choco.leq(Choco.scalar(this.repProcCharge, this.hostsMatrix[i]), this.hostProcCap[i]));
-			this.m.addConstraint(Choco.leq(Choco.scalar(this.repMemCharge, this.hostsMatrix[i]), this.hostMemCap[i]));
+				this.m.addConstraint(Choco.leq(Choco.scalar(this.repProcCharge, this.hostsMatrix[j]), this.hostProcCap[j]));
+			this.m.addConstraint(Choco.leq(Choco.scalar(this.repMemCharge, this.hostsMatrix[j]), this.hostMemCap[j]));
 		}
 
 		//Survie
 		for (int i = 0; i < this.nbAgents; i++){
 			this.m.addConstraint(Choco.gt(Choco.sum(this.agentsMatrix[i]),0));
+//			this.m.addConstraint(Choco.eq(Choco.min(this.agentsMatrix[i]),1));
 		}
 
-		//Optimisation social
+//		//Optimisation social
 		if (this._socialChoice.equals(SocialChoiceType.Leximin)) {
 			this.m.addConstraint(Choco.eq(this.socialWelfareOpt, Choco.min(this.agentsValue)));
 		} else {
-			assert (this._socialChoice.equals(SocialChoiceType.Nash)
-					|| this._socialChoice.equals(SocialChoiceType.Utility)):_socialChoice;
+			assert this._socialChoice.equals(SocialChoiceType.Utility):_socialChoice;
 			this.m.addConstraint(Choco.eq(this.socialWelfareOpt, Choco.sum(this.agentsValue)));
 		}
 	}
@@ -255,9 +303,17 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 	}
 	public static int asInt(final double d, final boolean log){
 		if (log) {
-			return (int) (100*(Math.log(d+0.01)));
+			return (int) (Math.log(100*(d+0.01)));
 		} else {
 			return (int) (100 * (d+0.01));
 		}
+	}
+	
+	public static void main(String[] args) throws IfailedException, CompetenceException, NotEnoughMachinesException{
+		ReplicationExperimentationParameters p = ReplicationExperimentationParameters.getDefaultParameters();
+		ReplicationLaborantin rl = new ReplicationLaborantin(p, null);		
+		p.initiateParameters();
+		ReplicationOptimalSolver ros = new ReplicationOptimalSolver(p);
+		ros.solve();
 	}
 }

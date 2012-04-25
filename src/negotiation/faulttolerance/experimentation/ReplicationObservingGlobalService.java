@@ -41,7 +41,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	 *
 	 */
 	boolean imTheOpt=false;
-	Integer time=null;
+	Integer optimalTime=null;
+	Integer firsttime=null;
 	/*
 	 * Agent
 	 */
@@ -171,7 +172,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	protected synchronized void writeResult() {
 		if (imTheOpt)
 			LogService.logOnFile(
-				this.getMyAgent().getSimulationParameters().getResultPath(),"OPTIMAL RESULT : "+time,
+				this.getMyAgent().getSimulationParameters().getResultPath(),"First Result : "+firsttime+", OPTIMAL RESULT : "+optimalTime,
 						true, false);
 			
 		LogService.logOnFile(
@@ -374,6 +375,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 	boolean endRequestSended= false;
+
 	@Override
 	public boolean simulationHasEnded(){
 		if (this.getAliveAgents().size()==0){

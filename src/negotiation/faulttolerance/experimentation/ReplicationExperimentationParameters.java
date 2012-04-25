@@ -94,14 +94,14 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 8;
-	public static final int startingNbHosts = 3;
+	public static final int startingNbAgents = 100;
+	public static final int startingNbHosts = 25;
 	
-	public static final int simultaneousCandidature = Math.max(startingNbHosts/3,10);
+	public static final int simultaneousCandidature = Math.min(startingNbHosts/3,5);
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
-	private static final boolean withOptimal = true;
+	private static final boolean withOptimal = false;
 
 	/* FAULTS
 	 *
@@ -557,8 +557,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 			0.5,
 			1.});
 	static List<Double> doubleParameters4 = Arrays.asList(new Double[]{
-			0.4,
-			0.7,
+			0.3,
+			0.6,
 			1.});
 	static List<Double> doubleParameters5 = Arrays.asList(new Double[]{
 //			0.1,
@@ -590,7 +590,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=true;
 
-	static boolean varyAgentsAndhosts=false;
+	static boolean varyAgentsAndhosts=true;
 
 	static boolean varyAccessibleHost=false;
 
@@ -822,7 +822,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationParameters.doubleParameters5){
+			for (final Double v : ReplicationExperimentationParameters.doubleParameters4){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
 				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);

@@ -94,11 +94,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 100;
-	public static final int startingNbHosts = 30;
+	public static final int startingNbAgents = 2000;
+	public static final int startingNbHosts = 600;
 	
-	public  int simultaneousCandidature = Math.min(nbHosts,50);
-	public  int simultaneousAcceptation = Math.min(nbAgents,10);
+	public  int simultaneousCandidature = Math.min(nbHosts,100);
+	public  int simultaneousAcceptation = Math.min(nbAgents,30);
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -563,7 +563,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			0.6,
 			1.});
 	static List<Double> doubleParameters5 = Arrays.asList(new Double[]{
-//			0.1,
+			0.1,
 			0.33
 			,0.66
 //			,1.

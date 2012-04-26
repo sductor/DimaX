@@ -94,11 +94,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 50;
-	public static final int startingNbHosts = 10;
+	public static final int startingNbAgents = 100;
+	public static final int startingNbHosts = 30;
 	
-	public static final int simultaneousCandidature = Math.min(startingNbHosts,50);
-	public static final int simultaneousAcceptation = Math.min(startingNbAgents,10);
+	public  int simultaneousCandidature = Math.min(nbHosts,50);
+	public  int simultaneousAcceptation = Math.min(nbAgents,10);
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -546,7 +546,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			NegotiationParameters.key4mirrorProto,
 			NegotiationParameters.key4CentralisedstatusProto,
 			NegotiationParameters.key4statusProto});
-	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility,  SocialChoiceType.Nash});//SocialChoiceType.Leximin,
+	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin, SocialChoiceType.Nash});//
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect

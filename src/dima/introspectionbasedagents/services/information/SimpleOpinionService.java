@@ -867,6 +867,11 @@ SimpleObservationService implements OpinionService {
 				return (int) (this.getCreationTime()-that.getCreationTime());
 			}
 
+			@Override
+			public Double getProd() {
+				return null;
+			}
+
 		}
 
 	}

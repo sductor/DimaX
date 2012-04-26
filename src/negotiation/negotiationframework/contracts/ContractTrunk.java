@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dimaxx.tools.mappedcollections.HashedHashSet;
@@ -36,6 +37,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	protected final HashedHashSet<AgentIdentifier, Contract> rejectedContracts =
 			new HashedHashSet<AgentIdentifier, Contract>();
 
+	
 	//
 	//
 	//
@@ -186,6 +188,18 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		return l;
 	}
 
+	/*
+	 * 
+	 */
+	
+	/**
+	 * 
+	 * @return contract locked by the contract trunk, they can not be removed see {@link AtMostCContractSelectioner}
+	 */
+	public Collection<Contract> getLockedContracts(){
+		return new ArrayList<Contract>();
+	}
+	
 	/*
 	 *
 	 */

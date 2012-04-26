@@ -19,7 +19,7 @@ ActionSpec extends AbstractActionSpecification,
 Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	private static final long serialVersionUID = 5135268337671313960L;
 
-	public enum SocialChoiceType{ Utility, Leximin, Nash };
+	public enum SocialChoiceType{ Utility, Leximin,	 Nash };
 
 	public final  SocialChoiceType socialWelfare;
 	//	public final CompetentComponent myAgent;

@@ -182,7 +182,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 		ReplicationObservingGlobalService rogs = new ReplicationObservingGlobalService();
 		rogs.setMyAgent(getMyAgent());
 		rogs.imTheOpt=true;
-		rogs.firsttime=firstTime;
+		rogs.firstoptimaltime=firstTime;
 		rogs.optimalTime=optimalTime;
 		rogs.initiate();
 
@@ -193,7 +193,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 			rogs.getFinalStates().add(agRes);
 		}
 		for (HostState h : finalHostAlloc.values()){
-			ReplicationResultHost hostRes = new ReplicationResultHost(h, new Date());
+			ReplicationResultHost hostRes = new ReplicationResultHost(h,0 ,0, new Date());
 			hostRes.setLastInfo();
 			rogs.updateInfo(hostRes);
 			rogs.getFinalStates().add(hostRes);

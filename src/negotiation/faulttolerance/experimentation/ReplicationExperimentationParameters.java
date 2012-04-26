@@ -94,10 +94,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 15;
-	public static final int startingNbHosts = 7;
+	public static final int startingNbAgents = 50;
+	public static final int startingNbHosts = 10;
 	
-	public static final int simultaneousCandidature = Math.min(startingNbHosts/3,5);
+	public static final int simultaneousCandidature = Math.min(startingNbHosts,50);
+	public static final int simultaneousAcceptation = Math.min(startingNbAgents,10);
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -427,7 +428,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 				hostAg = new CollaborativeHost(
 						hostId,
 						this.rig.getHostState(hostId),
-						this._socialWelfare);
+						this._socialWelfare,
+						simultaneousAcceptation);
 			} else {
 				hostAg = new Host(
 						hostId,
@@ -544,7 +546,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			NegotiationParameters.key4mirrorProto,
 			NegotiationParameters.key4CentralisedstatusProto,
 			NegotiationParameters.key4statusProto});
-	static List<SocialChoiceType> welfare = Arrays.asList(SocialChoiceType.values());
+	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility,  SocialChoiceType.Nash});//SocialChoiceType.Leximin,
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
@@ -597,10 +599,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 	static boolean varyAgentSelection=false;
 	static boolean varyHostSelection=false;
 
-	static boolean varyHostDispo=true;
+	static boolean varyHostDispo=false;
 	static boolean varyHostFaultDispersion=false;
 
-	static boolean varyAgentLoad=true;
+	static boolean varyAgentLoad=false;
 	static boolean varyAgentLoadDispersion=false;
 
 	static boolean varyHostCapacity=false;
@@ -623,7 +625,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 				ReplicationExperimentationParameters.startingNbAgents,
 				ReplicationExperimentationParameters.startingNbHosts,
 				1.,//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
-				ReplicationExperimentationParameters.doubleParameters.get(1),//dispo mean
+				0.7,//dispo mean
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Moyen,//load dispersion

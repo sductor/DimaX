@@ -156,28 +156,26 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	// Writing Primitives
 	//
 
+	/**
+	 * Give the agregated values of a parameter
+	 */
 	public static String getQuantilePointObs(
 			final String entry,
-			final Collection<Double> agent_values, final double significatifPercent, final int totalNumber){
-		String result ="t (seconds);\t "+
-				entry+" min;\t "
+			final HeavyAggregation<Double> variable, final double significatifPercent, final int totalNumber){
+		String result =entry+" min;\t "
 				+entry+" firstTercile;\t "
 				+entry+"  mediane;\t  "
 				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
-				//				+entry+" sum ;\t "
+				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
-		final HeavyAggregation<Double> variable = new HeavyDoubleAggregation();
-		for (final Double d :  agent_values) {
-			variable.add(d);
-		}
 		if (!variable.isEmpty() && variable.getWeightOfAggregatedElements()>(int) (significatifPercent*totalNumber)) {
 			result += variable.getMinElement()+";\t " +
 					variable.getQuantile(1,3)+";\t " +
 					variable.getMediane()+";\t " +
 					variable.getQuantile(2,3)+";\t " +
 					variable.getMaxElement()+";\t " +
-					//							variable.getSum()+";\t " +
+					variable.getProd()+";\t " +
 					variable.getRepresentativeElement()+";\t " +
 					variable.getWeightOfAggregatedElements()/totalNumber+"\n";
 		} else {
@@ -187,7 +185,15 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		return result;
 	}
 
-	public static  String getQuantileTimeEvolutionObs(final ExperimentationParameters p, final String entry,
+	/**
+	 * Give the agregated values of a parameter through the time
+	 * @param entry
+	 * @param variable
+	 * @param significatifPercent
+	 * @param totalNumber
+	 * @return
+	 */
+	public static  String getQuantileTimeEvolutionObs( final String entry,
 			final HeavyAggregation<Double>[] variable, final double significatifPercent, final int totalNumber){
 		String result ="t (seconds);\t "+
 				entry+" min;\t "
@@ -216,7 +222,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		return result;
 	}
 
-	public static  String getMeanTimeEvolutionObs(final ExperimentationParameters p, final String entry, final LightAverageDoubleAggregation[] variable,
+	public static  String getMeanTimeEvolutionObs(final String entry, final LightAverageDoubleAggregation[] variable,
 			final double significatifPercent, final int totalNumber){
 		String result = "t (seconds);\t "+entry+" ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++){

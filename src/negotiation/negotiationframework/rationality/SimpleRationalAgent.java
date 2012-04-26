@@ -25,6 +25,8 @@ Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicCompetentAgent {
 	private static final long serialVersionUID = -6248384713199838544L;
 
+	public static final String stateChangement = "my state has changed!!";
+
 	//
 	// Fields
 	//
@@ -120,6 +122,7 @@ extends BasicCompetentAgent {
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 		this.notify(this.getMyCurrentState(), SimpleObservationService.informationObservationKey);
+		this.notify(this.getMyCurrentState());
 	}
 
 

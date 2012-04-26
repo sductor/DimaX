@@ -16,7 +16,7 @@ public interface ObservationService extends AgentCompetence<BasicCompetentAgent>
 	// Acquaintance
 	//
 
-	public Set<AgentIdentifier> getKnownAgents();
+	public Set<? extends AgentIdentifier> getKnownAgents();
 
 	public void add(AgentIdentifier agentId);
 

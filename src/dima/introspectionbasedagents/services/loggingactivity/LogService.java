@@ -97,6 +97,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		this.addLogKey(LogService.darxKey,false,true);
 	}
 	static {
+		myPath=(LogService.getDimaXDir()+"log/"+new Date().toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
 		LogService.setLogConfiguration();
 	}
 	//
@@ -104,7 +105,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 
 	public static void setLog(final boolean b) {
-//		LogService.activateMonotoScreen = b;
+		//		LogService.activateMonotoScreen = b;
 		LogService.activateMonoToFiles = b;
 	}
 
@@ -195,21 +196,23 @@ implements AgentCompetence<Agent>, CompetentComponent{
 				(am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
 			//do nothing;
 		} else {
-//			assert commValidityVerif(am);
-			final LogNotification log = new LogCommunication(this.getIdentifier(), am, s);
-			if (s.equals(MessageStatus.MessageSended) || s.equals(MessageStatus.MessageLocallySended)){
-				if (this.activateCommSendtoScreen ) {
-					System.out.println(log.generateLogToScreen());
-				}
-				if (this.activateCommSendtoFiles) {
-					return this.notify(log,LogService.logNotificationKey);
-				}
-			} else {
-				if (this.activateCommReceivtoScreen ) {
-					System.out.println(log.generateLogToScreen());
-				}
-				if (this.activateCommReceivtoFiles) {
-					return this.notify(log,LogService.logNotificationKey);
+			//			assert commValidityVerif(am);
+			if (this.activateCommSendtoScreen || this.activateCommSendtoFiles || this.activateCommReceivtoScreen || this.activateCommReceivtoFiles){
+				final LogNotification log = new LogCommunication(this.getIdentifier(), am, s);
+				if (s.equals(MessageStatus.MessageSended) || s.equals(MessageStatus.MessageLocallySended)){
+					if (this.activateCommSendtoScreen ) {
+						System.out.println(log.generateLogToScreen());
+					}
+					if (this.activateCommSendtoFiles) {
+						return this.notify(log,LogService.logNotificationKey);
+					}
+				} else {
+					if (this.activateCommReceivtoScreen ) {
+						System.out.println(log.generateLogToScreen());
+					}
+					if (this.activateCommReceivtoFiles) {
+						return this.notify(log,LogService.logNotificationKey);
+					}
 				}
 			}
 		}
@@ -511,8 +514,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		}
 	}
 
+	private final static String myPath;
 	private static boolean logSetted=false;
-//	private final static String myPath=;
 	//myPath = getDimaXDir()+"log/"+getHostIdentifier()+"#"+DimaXServer.getCreationTime()+"/";
 	private static  File myExceptionLogFile;
 	private static  File myWarningLogFile;
@@ -522,7 +525,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	protected static void setLogConfiguration() {
 		if (!LogService.logSetted){
-//			LogService.myPath =;
+			//			LogService.myPath =;
 
 			new File(LogService.getMyPath()).mkdirs();
 
@@ -536,8 +539,9 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		}
 	}
 
+
 	public static String getMyPath() {
-		return (LogService.getDimaXDir()+"log/"+new Date().toString().replace(" ", "_").replace(":", "-") +"/").replaceAll(":", "_");
+		return myPath;
 	}
 
 	//
@@ -649,6 +653,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	@Override
 	public AgentIdentifier getIdentifier(){
+		assert this.getMyAgent()!=null:this;
 		return this.getMyAgent().getIdentifier();
 	}
 

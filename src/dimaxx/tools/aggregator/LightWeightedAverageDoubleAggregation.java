@@ -6,6 +6,7 @@ extends LightAverageDoubleAggregation {
 	private static final long serialVersionUID = 5702510745579722877L;
 
 	protected Double weight = 0.;
+	
 
 
 	public boolean add(final Double value, final Double weight) {

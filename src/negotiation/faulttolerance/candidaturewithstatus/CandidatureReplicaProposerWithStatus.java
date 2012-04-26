@@ -18,6 +18,7 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.protocoles.AtMostKCandidaturesProposer;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import negotiation.negotiationframework.protocoles.status.DestructionOrder;
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
@@ -103,7 +104,7 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 
 	@Override
 	public ReplicationCandidature constructCandidature(final ResourceIdentifier id) {
-		return new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true);
+		return new ReplicationCandidature((ResourceIdentifier) id,this.getMyAgent().getIdentifier(),true,true);
 
 	}
 

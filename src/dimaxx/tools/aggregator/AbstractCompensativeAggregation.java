@@ -7,5 +7,7 @@ DimaComponentInterface {
 
 	public abstract Element getRepresentativeElement();
 
+	public Double getProd();
+	
 	public int getNumberOfAggregatedElements();
 }

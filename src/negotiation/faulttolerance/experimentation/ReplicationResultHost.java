@@ -1,10 +1,12 @@
 package negotiation.faulttolerance.experimentation;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.experimentation.ExperimentationResults;
 
 public class ReplicationResultHost implements ExperimentationResults {
@@ -15,6 +17,10 @@ public class ReplicationResultHost implements ExperimentationResults {
 	private static final long serialVersionUID = 4602509671903952286L;
 
 	private final long creation;
+	
+	private long firstModifTime;
+	private long lastModifTime=-1;
+	private long lastModifTime_temp;
 
 	final ResourceIdentifier id;
 	final Double charge;
@@ -23,7 +29,7 @@ public class ReplicationResultHost implements ExperimentationResults {
 	final boolean isFaulty;
 	boolean lastInfo;
 
-	public ReplicationResultHost(final HostState s,
+	public ReplicationResultHost(final HostState s, long firstModifTime, long lastModifTime,
 			final Date agentCreationTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
@@ -32,6 +38,9 @@ public class ReplicationResultHost implements ExperimentationResults {
 		this.isFaulty = s.isFaulty();
 		this.id = s.getMyAgentIdentifier();
 		this.lastInfo = false;
+		this.firstModifTime=firstModifTime;
+		this.lastModifTime_temp=lastModifTime;
+		
 	}
 
 	@Override
@@ -42,6 +51,19 @@ public class ReplicationResultHost implements ExperimentationResults {
 	@Override
 	public AgentIdentifier getId() {
 		return this.id;
+	}
+
+	public long getFirstModifTime() {
+		return firstModifTime;
+	}
+
+	public long getLastModifTime() {
+//		assert lastModifTime!=-1:this;
+		return lastModifTime;
+	}
+
+	public boolean isFaulty() {
+		return isFaulty;
 	}
 
 	@Override
@@ -56,7 +78,24 @@ public class ReplicationResultHost implements ExperimentationResults {
 
 	@Override
 	public void setLastInfo() {
+//		assert lastModifTime_temp!=-1:this;
+		lastModifTime=lastModifTime_temp;
 		this.lastInfo=true;
 
+	}
+	
+	@Override
+	public String toString(){
+		String result ="****************************************************************************************************************************\n";
+		result+= "Host result :\n";
+		for (final Field f : this.getClass().getDeclaredFields()) {
+			try {
+				result += f.getName()+" : "+f.get(this)+"\n";
+			} catch (final Exception e) {
+				LogService.writeException("immmmmmmmpppppppppoooooooossssssssiiiiiiiiiibbbbllllllllllle",e);
+			}
+		}
+		result+="**************";
+		return result;
 	}
 }

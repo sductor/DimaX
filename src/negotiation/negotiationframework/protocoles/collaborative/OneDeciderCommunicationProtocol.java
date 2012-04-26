@@ -1,6 +1,7 @@
 package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -35,7 +36,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	@Override
-	protected void answerAccepted(final ArrayList<Contract> toAccept) {
+	protected void answerAccepted(final Collection<Contract> toAccept) {
 		if (this.ImDecider) {
 			this.confirmContract(toAccept, Receivers.EveryParticipant);
 		} else {
@@ -44,7 +45,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	@Override
-	protected void answerRejected(final ArrayList<Contract> toReject) {
+	protected void answerRejected(final Collection<Contract> toReject) {
 		if (this.ImDecider) {
 			this.cancelContract(toReject, Receivers.EveryParticipant);
 		} else {
@@ -53,7 +54,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	@Override
-	protected void putOnWait(final ArrayList<Contract> toPutOnWait) {
+	protected void putOnWait(final Collection<Contract> toPutOnWait) {
 		// Do nothing
 	}
 }

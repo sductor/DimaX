@@ -42,7 +42,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	 */
 	boolean imTheOpt=false;
 	Integer optimalTime=null;
-	Integer firsttime=null;
+	Integer firstoptimaltime=null;
 	/*
 	 * Agent
 	 */
@@ -55,6 +55,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	/* Quantile */
 	HeavyDoubleAggregation[] agentsSaturationEvolution;
 	/* Point */
+	HeavyDoubleAggregation firstReplicationtime;
+	HeavyDoubleAggregation lastReplicationtime;
 	// Map<AgentIdentifier, Double> firstReplicationtime =
 	// new HashMap<AgentIdentifier, Double>();
 	// Map<AgentIdentifier, Double> lifeTime =
@@ -93,6 +95,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		this.hostsChargeEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.faulty = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsSaturationEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		firstReplicationtime = new HeavyDoubleAggregation();
+		lastReplicationtime = new HeavyDoubleAggregation();
 
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
 			this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
@@ -137,6 +141,10 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						i < ObservingGlobalService.getNumberOfTimePoints();
 						i++) {
 					this.updateAnHostValue(h, i);
+					if (h.getLastModifTime()!=-1){
+						lastReplicationtime.add(new Double(h.getLastModifTime()));
+						firstReplicationtime.add(new Double(h.getFirstModifTime()));
+					}
 				}
 			}
 		} else {
@@ -172,9 +180,9 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	protected synchronized void writeResult() {
 		if (imTheOpt)
 			LogService.logOnFile(
-				this.getMyAgent().getSimulationParameters().getResultPath(),"First Result : "+firsttime+", OPTIMAL RESULT : "+optimalTime,
-						true, false);
-			
+					this.getMyAgent().getSimulationParameters().getResultPath(),"First Result : "+firstoptimaltime+", OPTIMAL RESULT : "+optimalTime,
+					true, false);
+
 		LogService.logOnFile(
 				this.getMyAgent().getSimulationParameters().getResultPath(),
 				"launched :\n--> " + new Date().toString() + "\n "
@@ -182,13 +190,13 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						+ this.getMyAgent().getSimulationParameters() + "\n results are :",
 						true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantileTimeEvolutionObs(this.getMyAgent().getSimulationParameters(),"reliability",
+				.getQuantileTimeEvolutionObs("reliability",
 						this.agentsReliabilityEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantileTimeEvolutionObs(this.getMyAgent().getSimulationParameters(),"disponibilite",
+				.getQuantileTimeEvolutionObs("disponibilite",
 						this.agentsDispoEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
@@ -196,30 +204,37 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		// Taux de survie = moyenne pond��r�� des (wi, li) | li ��� {0,1} agent
 		// mort/vivant
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getMeanTimeEvolutionObs(this.getMyAgent().getSimulationParameters(),"survie : moyenne ponderee des (wi, mort/vivant)", this.criticite,
+				.getMeanTimeEvolutionObs("survie : moyenne ponderee des (wi, mort/vivant)", this.criticite,
 						0.75 * (this.getAliveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
-		// Writing.log(this.p.f, getQuantilePointObs("First Replication Time",
-		// firstReplicationtime.values(),0.75*p.nbAgents), true, false);
-		// Writing.log(this.p.f, getQuantilePointObs("Life Time",
-		// lifeTime.values(),0.75*p.nbAgents), true, false);
-		// Writing.log(this.p.f, getQuantilePointObs("Time Since Last Action",
-		// lastAction.values(),0.75*p.nbAgents), true, false);
-		// Writing.log(this.p.f, getQuantilePointObs("Protocol Execution Time",
-		// protocoleExecutiontime.values(),0.75*p.nbAgents), true, false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+				.getQuantilePointObs("First Replication Time",
+						firstReplicationtime,0.75*this.getMyAgent()
+						.getSimulationParameters().nbHosts, this.getMyAgent()
+						.getSimulationParameters().nbHosts), true, false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+				.getQuantilePointObs(
+						"Time Since Last Action",
+						lastReplicationtime,
+						0.75*this.getMyAgent().getSimulationParameters().nbHosts, this.getMyAgent()
+						.getSimulationParameters().nbHosts), true, false);
+		//		 Writing.log(this.p.f, getQuantilePointObs("Life Time",
+		//		 lifeTime.values(),0.75*p.nbAgents), true, false);
+		//		 Writing.log(this.p.f, getQuantilePointObs("Protocol Execution Time",
+		//		 protocoleExecutiontime.values(),0.75*p.nbAgents), true, false);
 		/**/
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantileTimeEvolutionObs(this.getMyAgent().getSimulationParameters(),"charge",
+				.getQuantileTimeEvolutionObs("charge",
 						this.hostsChargeEvolution, 0.75,
 						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantileTimeEvolutionObs(this.getMyAgent().getSimulationParameters(),"agentSaturation",
+				.getQuantileTimeEvolutionObs("agentSaturation",
 						this.agentsSaturationEvolution, 0.75,
 						this.getMyAgent().getSimulationParameters().nbAgents), true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getMeanTimeEvolutionObs(this.getMyAgent().getSimulationParameters(),"percent of hosts that are alive",
+				.getMeanTimeEvolutionObs("percent of hosts that are alive",
 						this.faulty, 0.75,
 						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), "Optimal? "+this.analyseOptimal(), true, false);
@@ -227,9 +242,9 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			this.getMyAgent().myStatusObserver.writeStatusResult();
 		}
 
-//		this.logWarning(this.getIdentifier()+" OOOOOOOOOKKKKKKKKKKKK?????????\n"+
-//				analyseOptimal()+" for protocol "+getMyAgent().getSimulationParameters()._usedProtocol,
-//				LogService.onBoth);
+		//		this.logWarning(this.getIdentifier()+" OOOOOOOOOKKKKKKKKKKKK?????????\n"+
+		//				analyseOptimal()+" for protocol "+getMyAgent().getSimulationParameters()._usedProtocol,
+		//				LogService.onBoth);
 
 	}
 
@@ -266,7 +281,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			Collections.sort(lex);
 		}
 		result += "Leximin solution : "+lex+"\n Utility solution "+sum+"\n Nash solution "+nash;
-		
+
 		result+="\n Agent percent of allocated resources : ";
 		for (ReplicationResultAgent r : reliaStates){
 			result+= ((double)r.numberOfAllocatedResources/(double)getMyAgent().getSimulationParameters().nbHosts)*100+"%, ";

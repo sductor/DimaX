@@ -46,7 +46,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 			Collection<Contract> toPutOnWait) {
 		List<Contract> all = cs.getParticipantOnWaitContracts();
 		all.remove(cs.getLockedContracts());
-		int nbContracts = all.size();
+		int nbContracts = all.size()+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size();
 		if (nbContracts>c){			
 			Collection<Contract> notAnalysed = new ArrayList<Contract>();
 			for (int i = 0; i < nbContracts-c; i++){
@@ -54,6 +54,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 				notAnalysed.add(all.get(toRemove));
 				all.remove(toRemove);
 			}
+		 assert !all.isEmpty() || getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size()>=c;
 			getMyAgent().getMyProtocol().answerRejected(notAnalysed);
 		}
 

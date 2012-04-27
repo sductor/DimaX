@@ -18,19 +18,19 @@ public class ReplicationResultHost implements ExperimentationResults {
 
 	private final long creation;
 	
-	private long firstModifTime;
-	private long lastModifTime=-1;
-	private long lastModifTime_temp;
+	private long firstModifTime=-1;
+	private long lastModifTime;
 
 	final ResourceIdentifier id;
 	final Double charge;
+	int nbOfModif;
 	// final Double lambda;
 
 	final boolean isFaulty;
 	boolean lastInfo;
 
 	public ReplicationResultHost(final HostState s, long firstModifTime, long lastModifTime,
-			final Date agentCreationTime) {
+			final Date agentCreationTime, int initialStateCounter) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
 		this.charge = s.getMyCharge();
@@ -38,8 +38,12 @@ public class ReplicationResultHost implements ExperimentationResults {
 		this.isFaulty = s.isFaulty();
 		this.id = s.getMyAgentIdentifier();
 		this.lastInfo = false;
+		nbOfModif = s.getStateCounter()-initialStateCounter;
+		assert !(this.firstModifTime==1) || nbOfModif==0;
+		assert !(nbOfModif==0) || (firstModifTime==-1 && lastModifTime==-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
+		assert (nbOfModif==0) || (firstModifTime!=-1 && lastModifTime!=-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
 		this.firstModifTime=firstModifTime;
-		this.lastModifTime_temp=lastModifTime;
+		this.lastModifTime=lastModifTime;
 		
 	}
 
@@ -58,7 +62,6 @@ public class ReplicationResultHost implements ExperimentationResults {
 	}
 
 	public long getLastModifTime() {
-//		assert lastModifTime!=-1:this;
 		return lastModifTime;
 	}
 
@@ -78,8 +81,6 @@ public class ReplicationResultHost implements ExperimentationResults {
 
 	@Override
 	public void setLastInfo() {
-//		assert lastModifTime_temp!=-1:this;
-		lastModifTime=lastModifTime_temp;
 		this.lastInfo=true;
 
 	}

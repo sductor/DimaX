@@ -169,7 +169,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 				+entry+"  max ;\t "
 				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
-		if (!variable.isEmpty() && variable.getWeightOfAggregatedElements()>(int) (significatifPercent*totalNumber)) {
+		if (variable.getWeightOfAggregatedElements()> (significatifPercent*totalNumber)) {
 			result += variable.getMinElement()+";\t " +
 					variable.getQuantile(1,3)+";\t " +
 					variable.getMediane()+";\t " +
@@ -179,7 +179,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 					variable.getRepresentativeElement()+";\t " +
 					variable.getWeightOfAggregatedElements()/totalNumber+"\n";
 		} else {
-			result += "-;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
+			result += "--;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
 		}
 
 		return result;

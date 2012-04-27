@@ -39,6 +39,8 @@ extends BasicCompetentAgent {
 	public RationalCore<ActionSpec, PersonalState, Contract> myCore;
 
 	public Class<? extends AgentState> myStateType;
+	public final int initialStateNumber;
+
 	//
 	// Constructor
 	//
@@ -55,10 +57,10 @@ extends BasicCompetentAgent {
 		this.myCore.setMyAgent(this);
 		this.myInformation = myInformation;
 		this.myInformation.setMyAgent(this);
-		if (myInitialState!=null) {
-			this.myStateType = myInitialState.getClass();
-			this.setNewState(myInitialState);
-		}
+		assert myInitialState!=null;
+		this.myStateType = myInitialState.getClass();
+		this.setNewState(myInitialState);
+		initialStateNumber=myInitialState.getStateCounter();
 	}
 
 
@@ -129,13 +131,13 @@ extends BasicCompetentAgent {
 	public boolean verifyStateValidity(final PersonalState s){
 		assert (s.isNewerThan(getMyCurrentState())>0):this.getMyCurrentState()+"\n"+s;
 		for (AgentIdentifier id : s.getMyResourceIdentifiers()){
-//			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+			//			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 			ActionSpec ress;
 			try {
 				ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
 			} catch (NoInformationAvailableException e) {
-//				assert 1<0:e;
+				//				assert 1<0:e;
 			}
 		}
 		return true;

@@ -94,11 +94,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 2000;
-	public static final int startingNbHosts = 600;
+	public static final int startingNbAgents = 20;
+	public static final int startingNbHosts = 6;
 	
-	public  int simultaneousCandidature = Math.min(nbHosts,100);
-	public  int simultaneousAcceptation = Math.min(nbAgents,30);
+	public  int simultaneousCandidature = 100;
+	public  int simultaneousAcceptation = 30;
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -188,6 +188,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.set_hostSelection(hostSelection);
 		this.dynamicCriticity = dynamicCriticty;
 		this.setMaxSimultFailure(host_maxSimultaneousFailurePercent);
+		simultaneousCandidature = Math.min(nbHosts,simultaneousCandidature);
+		simultaneousAcceptation = Math.min(nbAgents,simultaneousAcceptation);
 	}
 
 	@Override

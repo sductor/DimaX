@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
 
+import com.jcraft.jsch.KnownHosts;
+
 import sun.security.action.GetLongAction;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -34,7 +36,7 @@ ActionSpec,PersonalState,Contract> {
 	private static final long serialVersionUID = -5315491050460219982L;
 
 	public final int k;
-	public final LinkedList<ResourceIdentifier> myHosts = new LinkedList<ResourceIdentifier>();
+	public final LinkedList<ResourceIdentifier> myKnownHosts = new LinkedList<ResourceIdentifier>();
 		
 	public AtMostKCandidaturesProposer(int k) throws UnrespectedCompetenceSyntaxException {
 		super();
@@ -45,14 +47,17 @@ ActionSpec,PersonalState,Contract> {
 	public Set<Contract> getNextContractsToPropose()
 			throws NotReadyException {
 
-		if (myHosts.isEmpty()){
-			myHosts.addAll((Collection<ResourceIdentifier>) this.getMyAgent().getMyInformation().getKnownAgents());
-			myHosts.remove(getMyAgent().getIdentifier());
-			myHosts.removeAll(getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
-			Collections.shuffle(myHosts);
+		if (myKnownHosts.isEmpty()){
+			myKnownHosts.addAll((Collection<ResourceIdentifier>) this.getMyAgent().getMyInformation().getKnownAgents());
+			myKnownHosts.remove(getMyAgent().getIdentifier());
+			myKnownHosts.removeAll(getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
+			Collections.shuffle(myKnownHosts);
+			
 		}
-		
-		Iterator<ResourceIdentifier> itMyHosts = myHosts.iterator();
+
+		myKnownHosts.removeAll(getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
+		assert KnownHostValidityVerification();
+		Iterator<ResourceIdentifier> itMyHosts = myKnownHosts.iterator();
 		final Set<Contract> candidatures = new HashSet<Contract>();
 		
 		while (itMyHosts.hasNext() && candidatures.size()<k){
@@ -61,7 +66,7 @@ ActionSpec,PersonalState,Contract> {
 			candidatures.add(c);
 			itMyHosts.remove();
 		}
-		
+		assert candidatureValidityVerification(candidatures);
 		return candidatures;
 	}
 
@@ -78,6 +83,26 @@ ActionSpec,PersonalState,Contract> {
 	public boolean ImAllowedToNegotiate(final PersonalState myCurrentState,
 			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
 		return  contracts.getAllInitiatorContracts().isEmpty();
+	}
+
+	private boolean KnownHostValidityVerification(){
+		for (AgentIdentifier id : myKnownHosts){
+			assert id instanceof ResourceIdentifier:id;
+			assert !getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(id):
+				id+"\n "+getMyAgent().getMyCurrentState().getMyResourceIdentifiers()+"\n "+this.getMyAgent().getMyInformation().getKnownAgents();
+		}
+		return true;
+	}
+	private boolean candidatureValidityVerification(Set<Contract> candidatures){
+		LinkedList<ResourceIdentifier> allHosts = new LinkedList<ResourceIdentifier>();
+		allHosts.addAll((Collection<ResourceIdentifier>) this.getMyAgent().getMyInformation().getKnownAgents());
+		allHosts.remove(getMyAgent().getIdentifier());
+		
+		assert !candidatures.isEmpty() ||  
+		getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size()==allHosts.size():
+			k+"\n "+getMyAgent().getMyCurrentState().getMyResourceIdentifiers()+"--> CurrentState \n  "+allHosts+"--> allHosts\n "+myKnownHosts;
+		
+		return true;
 	}
 }
 

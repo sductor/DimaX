@@ -2,14 +2,12 @@ package dima.basicagentcomponents;
 
 import java.math.BigInteger;
 
-import dima.basiccommunicationcomponents.CommunicationObject;
-
 /**
- * Provides a unique mean of identify Agents.
+ * Provides a unique means of identify Agents.
  * 
  * @author Vincent Letard
  */
-public class AgentUniqueIdentifier extends CommunicationObject {
+public class AgentUniqueIdentifier extends AgentIdentifier {
 
     /**
      * Serial version identifier.
@@ -20,6 +18,7 @@ public class AgentUniqueIdentifier extends CommunicationObject {
      * The next identifier to be allocated.
      */
     private static BigInteger nextId = BigInteger.ZERO;
+
     /**
      * The identifier of this Agent.
      */
@@ -38,8 +37,8 @@ public class AgentUniqueIdentifier extends CommunicationObject {
     public boolean equals(Object obj) {
 	if (obj instanceof AgentUniqueIdentifier) {
 	    return ((AgentUniqueIdentifier) obj).myId.equals(this.myId);
-	}
-	return false;
+	} else
+	    return false;
     }
 
     @Override
@@ -50,5 +49,19 @@ public class AgentUniqueIdentifier extends CommunicationObject {
     @Override
     public String toString() {
 	return this.myId.toString();
+    }
+
+    @Override
+    public BigInteger getId() {
+	return this.myId;
+    }
+
+    /**
+     * This method is not supported for AgentUniqueIdentifier, but could be for
+     * subclasses.
+     */
+    @Override
+    public void setId(Object id) {
+	throw new UnsupportedOperationException();
     }
 }

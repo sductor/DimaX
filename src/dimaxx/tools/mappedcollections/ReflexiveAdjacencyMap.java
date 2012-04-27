@@ -19,6 +19,7 @@ import java.util.Set;
  * @param <P>
  *            type of the parameters associated with links
  */
+// Note : this class should extend some AdjacencyMap generic class
 public class ReflexiveAdjacencyMap<V, P> {
 
     /**
@@ -67,7 +68,8 @@ public class ReflexiveAdjacencyMap<V, P> {
      *            Parameters of the association.
      * @return <code>true</code> if the ReflexiveAdjacencyMap did not already
      *         contain the association or if the existing association is similar
-     *         to one to be added.
+     *         to one to be added, <code>false</code> if such an association
+     *         already exists with a different parameter.
      */
     public boolean add(final V obj1, final V obj2, final P param) {
 	assert (this.checkAssociation(obj1, obj2));
@@ -203,8 +205,26 @@ public class ReflexiveAdjacencyMap<V, P> {
 		obj1.hashCode(), obj2.hashCode())));
     }
 
+    /**
+     * Returns a {@link Set} of the elements linked by this AdjacencyMap.
+     * 
+     * @return the Set of the keys of the AdjacencyMap
+     */
     public Set<V> keySet() {
 	return adjacency.keySet();
+    }
+
+    public static ReflexiveAdjacencyMap unmodifiableReflexiveAdjacencyMap(){
+
+    }
+
+    private final class UnmodifiableReflexiveAdjacencyMap extends
+	    ReflexiveAdjacencyMap {
+
+	private UnmodifiableReflexiveAdjacencyMap() {
+	    super();
+	}
+
     }
 }
 

@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import sun.security.action.GetLongAction;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -35,10 +37,14 @@ public abstract class ExperimentationParameters<Agent extends Laborantin>
 extends BasicAgentModule<Agent> {
 	private static final long serialVersionUID = -1735965270944987539L;
 
-	public static final long _maxSimulationTime = 1000 * 10;
 	public static boolean currentlyInstanciating;
 	final File resultPath;
 
+//	public static final long _maxSimulationTime = 1000 * 10;
+//	public static final long _maxSimulationTime = 1000 * 30;
+//	public static final long _maxSimulationTime = 60000 * 1;
+	public static final long _maxSimulationTime = 60000 * 10;
+//	public static final long _maxSimulationTime = 60000 * 45;
 	//
 	// Fields
 	//
@@ -48,10 +54,10 @@ extends BasicAgentModule<Agent> {
 
 
 
-	public ExperimentationParameters(final AgentIdentifier experimentatorId, final String resultPath) {
+	public ExperimentationParameters(final AgentIdentifier experimentatorId, final String protocolId) {
 		super();
 		this.experimentatorId = experimentatorId;
-		this.resultPath = new File("result_"+resultPath);
+		this.resultPath = new File(LogService.getMyPath()+"result_"+protocolId+"/"+getSimulationName());
 	}
 
 	//
@@ -100,7 +106,8 @@ extends BasicAgentModule<Agent> {
 	 * Protocol
 	 */
 
-	public abstract LinkedList<ExperimentationParameters<Laborantin>> generateSimulation();
+	//Le directory est crée à la main ici : voir replExpParam
+	public abstract LinkedList<ExperimentationParameters<Agent>> generateSimulation();
 
 	public abstract  Laborantin createLaborantin(final APILauncherModule api)throws CompetenceException, IfailedException,NotEnoughMachinesException;
 

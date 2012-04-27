@@ -9,12 +9,18 @@ import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.RationalCore;
+import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
 
@@ -26,6 +32,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	// Fields
 	//
+	private long firstModifTime=-1;
+	private long lastModifTime=-1;
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
@@ -38,8 +46,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		@Override
 		protected ExperimentationResults generateMyResults() {
 			return new ReplicationResultHost(
-					Host.this.getMyCurrentState(),
-					Host.this.getCreationTime());
+					Host.this.getMyCurrentState(),firstModifTime,lastModifTime,
+					Host.this.getCreationTime(),initialStateNumber);
 		}
 	};
 
@@ -58,7 +66,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
 					Host.this.getMyCurrentState().getProcChargeMax(),
 					Host.this.getMyCurrentState().getMemChargeMax(),
-					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().nextStateCounter));
+					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().getMyCurrentState().getStateCounter()+1));
 			//			this.resetMyUptime();
 		}
 
@@ -87,15 +95,21 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
 	}
 
+	
+	@EventHookedMethod(HostState.class)
+	public void updateStateStatus(HostState h){
+		firstModifTime=getUptime();		
+		lastModifTime=getUptime();
+	}
 	//
 	// Behavior
 	//
 
-	@ProactivityFinalisation
-	public void thisIsZiEnd(){
-		this.logMonologue("Ze end : "+this.getMyCurrentState().getMyResourceIdentifiers(), LogService.onBoth);
-		this.logMonologue("Ze end : "+this.getMyCurrentState(), LogService.onBoth);
-	}
+//	@ProactivityFinalisation
+//	public void thisIsZiEnd(){
+//		this.logMonologue("Ze end : "+this.getMyCurrentState().getMyResourceIdentifiers()+this.getMyCurrentState(), LogService.onBoth);
+////		this.logMonologue("Ze end : "+this.getMyCurrentState(), LogService.onBoth);
+//	}
 }
 
 

@@ -40,7 +40,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public void setMyAgent(final Agent ag) throws UnrespectedCompetenceSyntaxException {
+	public void setMyAgent(final Agent ag)  {
 		this.myAgent=ag;
 	}
 

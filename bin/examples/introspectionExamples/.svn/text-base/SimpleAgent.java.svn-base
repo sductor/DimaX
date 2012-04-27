@@ -1,0 +1,82 @@
+package examples.simpleExample;
+
+import java.util.Date;
+
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicagentcomponents.AgentName;
+import dimaxx.kernel.BasicDimaXAgent;
+import dimaxx.kernel.introspectiveexecution.DimaXAgentExecutor.MessageHandler;
+import dimaxx.kernel.introspectiveexecution.DimaXAgentExecutor.TransientStepComposant;
+import dimaxx.libraries.competences.loggingactivity.LogMonologue;
+import dimaxx.ontologies.FipaACLMessage.FipaACLMessage;
+import dimaxx.ontologies.FipaACLMessage.Performative;
+import dimaxx.ontologies.FipaACLMessage.FipaACLEnveloppe.FipaACLEnvellopeHandler;
+import dimaxx.server.CreationProtocol;
+
+public class SimpleAgent extends BasicDimaXAgent {
+
+	private static final long serialVersionUID = 2884537638583904242L;
+
+	int myId;
+	int nbAgent;
+	int nbTour = 5;
+
+	public SimpleAgent(final int id, final int nbA) {
+		super(SimpleAgent.getsimpleId(id));
+		this.myId = id;
+		this.nbAgent = nbA;
+		if (this.nbAgent < 2)
+			this.observationService.notify(new LogMonologue(
+					"JE SUIS TOUT SEUL!! Ca va pas le faire!!!"));
+	}
+
+	public SimpleAgent(final int id, final int nbA, final int nbTour) {
+		super(SimpleAgent.getsimpleId(id));
+		this.myId = id;
+		this.nbAgent = nbA;
+		this.nbTour = nbTour;
+		if (this.nbAgent < 2)
+			this.observationService.notify(new LogMonologue(
+					"JE SUIS TOUT SEUL!! Ca va pas le faire!!!"));
+	}
+
+	public static AgentIdentifier getsimpleId(final int num) {
+		return new AgentName("SimpleAgentNumber_" + num);
+	}
+
+	@MessageHandler
+	@TransientStepComposant(100)
+	@FipaACLEnvellopeHandler(performative = Performative.Inform, content = CreationProtocol.AppLaunch, protocol = CreationProtocol.class, attachementSignature = { Date.class })
+	@Override
+	public boolean applicationStart(final FipaACLMessage init) {
+		if (this.myId == 0) {
+			final SimpleMessage m = new SimpleMessage();
+			this.sendMessage(SimpleAgent.getsimpleId(1), m);
+			this.observationService.notify(new LogMonologue(
+					"First message sended:\n" + m.description()));
+			this.observationService.notify(m);
+		}
+		return true;
+	}
+
+	@MessageHandler(1000)
+	public synchronized void parseTheSimpleMessages(final SimpleMessage m) {
+		if (this.myId == 0) {
+			this.nbTour--;
+			if (this.nbTour == 0) {
+				this.observationService.notify(new LogMonologue(
+						"AGENT 0 : Experiment Over!"));
+				System.exit(1);// this will exit all the JVMs
+				return;
+			}
+		}
+
+		this.observationService.notify(new LogMonologue("I've received :\n"
+				+ m.description() + "\n" + "         => I'm sending to : "
+				+ SimpleAgent.getsimpleId((this.myId + 1) % this.nbAgent)));
+		m.incremente();
+		this.sendMessage(SimpleAgent
+				.getsimpleId((this.myId + 1) % this.nbAgent), m);
+		this.observationService.notify(m);
+	}
+}

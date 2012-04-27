@@ -28,14 +28,14 @@ extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 	 *
 	 */
 
-	public static Double getReliability(final ReplicaState s, final SocialChoiceType socialWelfare) {
+	public static Double getReliability(final double utility, double rights, final SocialChoiceType socialWelfare) {
 		if (socialWelfare.equals(SocialChoiceType.Leximin)){
-		assert (s.getMyDisponibility() / s.getMyCriticity() < 10);
-		return s.getMyDisponibility() / s.getMyCriticity();
+		assert (utility / rights < 10);
+		return utility / rights;
 		} else if (socialWelfare.equals(SocialChoiceType.Utility)){
-			return s.getMyDisponibility() * s.getMyCriticity();
+			return utility * rights;
 		} else if (socialWelfare.equals(SocialChoiceType.Nash)){
-			return s.getMyDisponibility();
+			return utility;
 		} else {
 			throw new RuntimeException();
 		}

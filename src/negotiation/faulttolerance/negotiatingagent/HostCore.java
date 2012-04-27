@@ -2,6 +2,7 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.RationalCore;
@@ -86,9 +87,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 			for (final ReplicationCandidature c : destruction){
 				ReplicationHandler.killReplica(c.getAgent());
-				//									System.out.println(c.getResource() + " " + new Date().toString()
-				//											+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onFile);
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -96,9 +95,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 			for (final ReplicationCandidature c : creation){
 				ReplicationHandler.replicate(c.getAgent());
-				//									System.out.println(c.getResource() + " " + new Date().toString()
-				//											+ "  ->I have replicated " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
+				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onFile);
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));

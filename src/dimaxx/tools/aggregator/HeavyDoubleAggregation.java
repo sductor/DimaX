@@ -61,6 +61,10 @@ public class HeavyDoubleAggregation extends HeavyAggregation<Double> {
 		return this.myAverageInfo.getSum();
 	}
 
+	public Double getProd() {
+		return myAverageInfo.getProd();
+	}
+
 	@Override
 	public double getWeightOfAggregatedElements() {
 		return this.myAverageInfo.getWeightOfAggregatedElement();

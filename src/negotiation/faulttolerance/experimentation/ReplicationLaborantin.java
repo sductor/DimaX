@@ -10,7 +10,9 @@ import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.experimentation.Experimentator;
 import dimaxx.experimentation.IfailedException;

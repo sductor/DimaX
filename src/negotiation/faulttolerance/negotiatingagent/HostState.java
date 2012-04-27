@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -27,7 +28,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	private final double lambda;
 	private  boolean faulty;
 
-	// Take all fields
+	// Take all fields	
 	public HostState(
 			final ResourceIdentifier myAgent,
 			final double hostMaxProc,
@@ -37,34 +38,46 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		this(myAgent,
 				new HashSet<AgentIdentifier>(), lambda,
 				hostMaxProc, 0., hostMaxMem, 0.,
-				false, //new Date().getTime(),
+				false, 
 				stateNumber);
 	}
 
-	// take previous state
-	public HostState(final HostState init, final ReplicaState newRep){//, final Long creationTime) {
-		this(init.getMyAgentIdentifier(),
-				new HashSet<AgentIdentifier>(),
-				init.getLambda(),
-				init.getProcChargeMax(),
-				init.getCurrentProcCharge()
-				+ (init.myReplicatedAgents.contains(newRep.getMyAgentIdentifier()) ?
-						-newRep.getMyProcCharge() : newRep	.getMyProcCharge()),
-						init.getMemChargeMax(),
-						init.getCurrentMemCharge()
-						+ (init.myReplicatedAgents.contains(newRep.getMyAgentIdentifier()) ?
-								-newRep.getMyMemCharge() : newRep.getMyMemCharge()),
-								init.isFaulty(),// creationTime,
-								init.getStateCounter()+1);
+	public HostState(
+			final ResourceIdentifier myAgent,
+			final double hostMaxProc,
+			final double hostMaxMem,
+			final double lambda) {
+		this(myAgent,
+				new HashSet<AgentIdentifier>(), lambda,
+				hostMaxProc, 0., hostMaxMem, 0.,
+				false, 
+				-1);
+	}
 
-		//		assert newRep.getMyResourceIdentifiers().contains(this.getMyAgentIdentifier());
 
-		this.myReplicatedAgents.addAll(init.myReplicatedAgents);
-		if (this.myReplicatedAgents.contains(newRep.getMyAgentIdentifier())) {
-			this.myReplicatedAgents.remove(newRep.getMyAgentIdentifier());
+	public HostState allocate(final ReplicaState newRep){
+		HashSet<AgentIdentifier> rep =new HashSet<AgentIdentifier>(this.myReplicatedAgents);
+		Double procCurrentCharge, memCurrentCharge;
+
+		if (rep.contains(newRep.getMyAgentIdentifier())) {
+			rep.remove(newRep.getMyAgentIdentifier());
+			procCurrentCharge=this.procCurrentCharge-newRep.getMyProcCharge();
+			memCurrentCharge=this.memCurrentCharge-newRep.getMyMemCharge();
 		} else {
-			this.myReplicatedAgents.add(newRep.getMyAgentIdentifier());
+			rep.add(newRep.getMyAgentIdentifier());
+			procCurrentCharge=this.procCurrentCharge+newRep.getMyProcCharge();
+			memCurrentCharge=this.memCurrentCharge+newRep.getMyMemCharge();
 		}
+
+		return new HostState(this.getMyAgentIdentifier(),
+				rep,
+				this.getLambda(),
+				this.getProcChargeMax(),
+				procCurrentCharge,
+				this.getMemChargeMax(),
+				memCurrentCharge,
+				this.isFaulty(),
+				this.getStateCounter()+1);
 	}
 
 	// private universal constructor
@@ -82,7 +95,6 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		this.memCurrentCharge = memCurrentCharge;
 		this.lambda = lambda;
 		this.faulty = faulty;
-//		assert this.isValid();
 	}
 
 	//
@@ -106,8 +118,11 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	}
 
 	public Double getMyCharge() {
-		return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
-				this.getCurrentProcCharge() / this.getProcChargeMax());
+		if (ReplicationExperimentationParameters.multiDim)
+			return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
+					this.getCurrentProcCharge() / this.getProcChargeMax());
+		else
+			return this.getCurrentMemCharge() / this.getMemChargeMax();
 	}
 
 	public boolean ImSurcharged() {
@@ -292,7 +307,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		if (o instanceof HostState) {
 			final HostState that = (HostState) o;
 			return that.getMyAgentIdentifier().equals(
-					this.getMyAgentIdentifier());
+					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
 		} else {
 			return false;
 		}
@@ -306,18 +321,14 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	@Override
 	public String toString() {
 		return "\nHOST="+ this.getMyAgentIdentifier()
-				//				+ "\n Date "+ this.getCreationTime()
-				+ "\n --> charge : "+ this.getCurrentProcCharge()+", "+this.getCurrentMemCharge()
 				+ "\n --> current charge % = "+100*this.getMyCharge()
+				+ "\n --> charge : "+ this.getCurrentProcCharge()+", "+this.getCurrentMemCharge()
 				+ "\n --> capacity : "+ this.getProcChargeMax()+", "+this.getMemChargeMax()
-				//				+ "\n * dispo  : "
-				//				+ NegotiatingHost.this.myFaultAwareService
-				//						.getDisponibility(this.getMyAgentIdentifier())
 				+ "\n --> lambda : "+this.lambda+
-				"\n --> agents : " + this.getMyResourceIdentifiers()//myReplicatedAgents//getMyAgentIdentifiers()//
+				"\n --> agents : " + this.getMyResourceIdentifiers()
 				+ "\n --> faulty? : " + this.isFaulty()
-				+"\n valid ? : "+this.isValid()
-				+"\n --> creation time : "+this.getCreationTime();
+				+"\n --> creation time : "+this.getCreationTime()+"#"+getStateCounter()
+				+"\n valid ? : "+this.isValid();
 	}
 
 

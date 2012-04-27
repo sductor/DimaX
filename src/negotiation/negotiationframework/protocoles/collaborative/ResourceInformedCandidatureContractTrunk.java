@@ -49,6 +49,11 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	//
 
 
+	@Override
+	public Collection<InformedCandidature<Contract, ActionSpec>> getLockedContracts(){
+		return upgradingContracts.keySet();
+	}
+	
 	public void addReallocContract(final ReallocationContract<Contract, ActionSpec> realloc){
 		assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
 		for (final Contract c : realloc) {

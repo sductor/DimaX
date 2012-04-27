@@ -1,6 +1,7 @@
 package negotiation.negotiationframework.protocoles;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
@@ -29,7 +30,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	@Override
-	protected void answerAccepted(final ArrayList<Contract> toAccept) {
+	protected void answerAccepted(final Collection<Contract> toAccept) {
 		final ArrayList<Contract> initiator = new ArrayList<Contract>();
 		final ArrayList<Contract> participant = new ArrayList<Contract>();
 
@@ -42,7 +43,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	@Override
-	protected void answerRejected(final ArrayList<Contract> toReject) {
+	protected void answerRejected(final Collection<Contract> toReject) {
 		final ArrayList<Contract> initiator = new ArrayList<Contract>();
 		final ArrayList<Contract> participant = new ArrayList<Contract>();
 
@@ -51,7 +52,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	}
 
 	@Override
-	protected void putOnWait(final ArrayList<Contract> toPutOnWait) {
+	protected void putOnWait(final Collection<Contract> toPutOnWait) {
 		// Do nothing
 	}
 
@@ -59,7 +60,7 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 	 *
 	 */
 
-	private void separateInitiator(final ArrayList<Contract> all, final ArrayList<Contract> initiator, final ArrayList<Contract> participant){
+	private void separateInitiator(final Collection<Contract> all, final Collection<Contract> initiator, final Collection<Contract> participant){
 		assert initiator.isEmpty();
 		assert participant.isEmpty();
 

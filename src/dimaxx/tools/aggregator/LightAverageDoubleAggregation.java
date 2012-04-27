@@ -7,6 +7,7 @@ AbstractCompensativeAggregation<Double> {
 
 	protected Double sum = 0.;
 	protected Integer cardinal = 0;
+	protected Double prod=1.;
 
 	public boolean add(final Double value) {
 		this.sum += value;
@@ -17,6 +18,7 @@ AbstractCompensativeAggregation<Double> {
 	public boolean remove(final Double value) {
 		this.sum -= value;
 		this.cardinal--;
+		this.prod *=value;
 		return true;
 	}
 
@@ -46,6 +48,13 @@ AbstractCompensativeAggregation<Double> {
 		}
 	}
 
+	public Double getProd() {
+		if (this.cardinal == 0) {
+			return Double.NaN;
+		} else {
+			return this.prod;
+		}
+	}
 	/*
 	 *
 	 */

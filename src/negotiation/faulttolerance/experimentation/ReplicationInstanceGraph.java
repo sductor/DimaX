@@ -31,7 +31,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 	 */
 	private static final long serialVersionUID = -1869273198805540149L;
 
-	private final int kAccessible;
+//	private final int kAccessible;
 
 	private final Map<AgentIdentifier, ReplicaState> agents =
 			new HashMap<AgentIdentifier, ReplicaState>();
@@ -51,7 +51,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 			final ReplicationLaborantin ag, final ReplicationExperimentationParameters p)
 					throws IfailedException {
 		super(ag);
-		this.kAccessible = p.agentAccessiblePerHost;
+//		this.kAccessible = p.agentAccessiblePerHost;
 
 	}
 
@@ -153,22 +153,19 @@ extends BasicAgentModule<ReplicationLaborantin>{
 			this.agents.put(id,
 					new ReplicaState(id,
 							Math.min(ReplicationExperimentationParameters._criticityMin+ agentCriticity.get(id), 1),
-							new HashSet(),
 							agentProcessor.get(id),
 							agentMemory.get(id),
-							0.,
-							p._socialWelfare,
-							-1));
+							p._socialWelfare));
 		}
 
 		for (final ResourceIdentifier hostId : this.hosts.keySet()){
 			this.hosts.put(hostId,
 					new HostState(hostId,
-							this.kAccessible * hostProcCapacity.get(hostId),
-							this.kAccessible * hostMemCapacity.get(hostId),
-							fault.get(hostId),
-							-1));
+							hostProcCapacity.get(hostId),
+							hostMemCapacity.get(hostId),
+							fault.get(hostId)));
 		}
+//		System.out.println(hosts.values());
 	}
 
 	void setVoisinage(){
@@ -177,30 +174,39 @@ extends BasicAgentModule<ReplicationLaborantin>{
 		this.accAgents =
 				new HashedHashSet<ResourceIdentifier, AgentIdentifier>();
 
-		final List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>(this.hosts.keySet());
-		final List<AgentIdentifier> replicasIdentifier = new ArrayList<AgentIdentifier>(this.agents.keySet());
-
-		Collections.shuffle(hostsIdentifier);
-		Collections.shuffle(replicasIdentifier);
-		Iterator<ResourceIdentifier> hotId = hostsIdentifier.iterator();
-		for (final AgentIdentifier agId : replicasIdentifier){
-			if (!hotId.hasNext()) {
-				hotId = hostsIdentifier.iterator();
+		if (ReplicationExperimentationParameters.completGraph){
+			for (final AgentIdentifier agId : this.agents.keySet()){
+				for (final ResourceIdentifier h : this.hosts.keySet()) {
+					this.addAcquaintance(agId, h);
+				}
 			}
-			this.addAcquaintance(
-					agId,
-					hotId.next());
-		}
+		}else{
+			final List<ResourceIdentifier> hostsIdentifier = new ArrayList<ResourceIdentifier>(this.hosts.keySet());
+			final List<AgentIdentifier> replicasIdentifier = new ArrayList<AgentIdentifier>(this.agents.keySet());
 
-		Collections.shuffle(hostsIdentifier);
-		for (final ResourceIdentifier h : hostsIdentifier) {
+			Collections.shuffle(hostsIdentifier);
 			Collections.shuffle(replicasIdentifier);
-			final Iterator<AgentIdentifier> agId = replicasIdentifier.iterator();
-			/* Adding acquaintance for host within latence */
-			while (this.getAccessibleAgent(h).size()<this.kAccessible) {
-				this.addAcquaintance(agId.next(), h);
+			Iterator<ResourceIdentifier> hotId = hostsIdentifier.iterator();
+			for (final AgentIdentifier agId : replicasIdentifier){
+				if (!hotId.hasNext()) {
+					hotId = hostsIdentifier.iterator();
+				}
+				this.addAcquaintance(
+						agId,
+						hotId.next());
+			}
+
+			Collections.shuffle(hostsIdentifier);
+			for (final ResourceIdentifier h : hostsIdentifier) {
+				Collections.shuffle(replicasIdentifier);
+				final Iterator<AgentIdentifier> agId = replicasIdentifier.iterator();
+				/* Adding acquaintance for host within latence */
+				while (this.getAccessibleAgent(h).size()<this.getMyAgent().getSimulationParameters().agentAccessiblePerHost) {
+					this.addAcquaintance(agId.next(), h);
+				}
 			}
 		}
+		
 	}
 
 	void initialRep() throws IfailedException{
@@ -273,7 +279,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 	private void addAcquaintance(final AgentIdentifier ag, final ResourceIdentifier h){
 		this.accHosts.add(ag,h);
 		this.accAgents.add(h, ag);
-		assert this.accAgents.get(h).size() <= this.kAccessible:this.accAgents;
+//		assert this.accAgents.get(h).size() <= this.kAccessible:this.accAgents;
 	}
 }
 

@@ -15,16 +15,24 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
-import negotiation.negotiationframework.protocoles.CandidatureProposer;
+import negotiation.negotiationframework.protocoles.AtMostKCandidaturesProposer;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import negotiation.negotiationframework.protocoles.status.DestructionOrder;
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
-public class CandidatureReplicaProposerWithStatus extends CandidatureProposer<ReplicationSpecification, ReplicaState, ReplicationCandidature>
+public class CandidatureReplicaProposerWithStatus extends AtMostKCandidaturesProposer<ReplicationSpecification, ReplicaState, ReplicationCandidature>
 implements
 ProposerCore<
 SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
 ReplicationSpecification, ReplicaState, ReplicationCandidature> {
+	public CandidatureReplicaProposerWithStatus(int k)
+			throws UnrespectedCompetenceSyntaxException {
+		super(k);
+	}
+
+
 	private static final long serialVersionUID = -5315491050460219982L;
 
 
@@ -96,7 +104,7 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 
 	@Override
 	public ReplicationCandidature constructCandidature(final ResourceIdentifier id) {
-		return new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true);
+		return new ReplicationCandidature((ResourceIdentifier) id,this.getMyAgent().getIdentifier(),true,true);
 
 	}
 

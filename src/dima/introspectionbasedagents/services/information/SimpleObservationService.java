@@ -67,6 +67,28 @@ ObservationService {
 	 * Information
 	 */
 
+	@Override
+	public <Info extends Information> boolean hasInformation(
+			Class<Info> informationType) {
+		try {
+			getInformation(informationType);
+			return true;
+		} catch (NoInformationAvailableException e) {
+			return false;
+		}		
+	}
+
+	@Override
+	public <Info extends Information> boolean hasInformation(
+			Class<Info> informationType, 
+			final AgentIdentifier agentId) {
+		try {
+			getInformation(informationType,agentId);
+			return true;
+		} catch (NoInformationAvailableException e) {
+			return false;
+		}		
+	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public <Info extends Information> Info getInformation(
@@ -102,16 +124,15 @@ ObservationService {
 		if (!this.infos.containsKey(information.getClass())){//new information type
 			this.infos.put(information.getClass(), new InformationDataBase<Information>());
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-			this.add(information.getMyAgentIdentifier());
 		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) {
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 		} else { //information replacement
 			//			logMonologue("replacing !!!!!!!!!"+this.infos.get(information.getClass()).get(information.getMyAgentIdentifier())+" with "+information);
 			final Information knownInfo=this.infos.get(information.getClass()).get(information.getMyAgentIdentifier());
 
-			if (information.isNewerThan(knownInfo)>1) {
+			if (information.isNewerThan(knownInfo)>0) {
 				((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
-			} else if (information.isNewerThan(knownInfo)<1){
+			} else if (information.isNewerThan(knownInfo)<0){
 				//				do nothing
 			} else if (information.isNewerThan(knownInfo)==0) {
 				if (!information.equals(knownInfo)){
@@ -146,6 +167,12 @@ ObservationService {
 			LogService.writeException("impossibleddd", e);
 			return null;
 		}
+	}
+
+	@Override
+	public <Info extends Information> boolean hasMyInformation(
+			Class<Info> informationType) {
+		return hasInformation(informationType, this.getIdentifier());
 	}
 
 	@Override
@@ -193,6 +220,7 @@ ObservationService {
 
 
 	}
+
 }
 
 

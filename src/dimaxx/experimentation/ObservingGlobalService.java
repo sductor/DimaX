@@ -13,6 +13,7 @@ import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
@@ -26,7 +27,8 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	// Fields
 	//
 
-	protected HashSet<ReplicationResultAgent> finalStates = new HashSet();
+	private HashSet<ExperimentationResults> finalStates = new HashSet<ExperimentationResults>();
+
 
 	final Collection<AgentIdentifier> remainingAgent=new ArrayList<AgentIdentifier>();
 	//	final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
@@ -35,7 +37,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	// Constants
 	//
 
-	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 2;
+	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 10;
 
 	//
 	// Abstract
@@ -43,7 +45,11 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 
 	public abstract void initiate();
 
-	protected abstract void setObservation();
+	protected void setObservation() {
+		for (final BasicCompetentAgent ag : this.getMyAgent().getAgents()) {
+			ag.addObserver(this.getIdentifier(), ActivityLog.class);
+		}
+	}
 
 	//	protected abstract void updateHostInfo(ExperimentationResults notification);
 	//
@@ -110,9 +116,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 			}
 		}
 
-		if (results.getLast() instanceof ReplicationResultAgent) {
-			this.finalStates.add((ReplicationResultAgent) results.getLast());
-		}
+			this.finalStates.add(results.getLast());
 
 	}
 
@@ -121,6 +125,10 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		this.remainingAgent.remove(id);
 	}
 
+	public HashSet<ExperimentationResults> getFinalStates() {
+		return finalStates;
+	}
+	
 	//
 	// Time Primitives
 	//
@@ -140,46 +148,52 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 				* ObservingGlobalService._state_snapshot_frequency;
 	}
 
-	public long getMaxSimulationTime() {
-		return ExperimentationParameters._maxSimulationTime;
-	}
+//	public long getMaxSimulationTime() {
+//		return _maxSimulationTime;
+//	}
 
 	//
 	// Writing Primitives
 	//
 
+	/**
+	 * Give the agregated values of a parameter
+	 */
 	public static String getQuantilePointObs(
 			final String entry,
-			final Collection<Double> agent_values, final double significatifPercent, final int totalNumber){
-		String result ="t (seconds);\t "+
-				entry+" min;\t "
+			final HeavyAggregation<Double> variable, final double significatifPercent, final int totalNumber){
+		String result =entry+" min;\t "
 				+entry+" firstTercile;\t "
 				+entry+"  mediane;\t  "
 				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
-				//				+entry+" sum ;\t "
+				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
-		final HeavyAggregation<Double> variable = new HeavyDoubleAggregation();
-		for (final Double d :  agent_values) {
-			variable.add(d);
-		}
-		if (!variable.isEmpty() && variable.getWeightOfAggregatedElements()>(int) (significatifPercent*totalNumber)) {
+		if (variable.getWeightOfAggregatedElements()> (significatifPercent*totalNumber)) {
 			result += variable.getMinElement()+";\t " +
 					variable.getQuantile(1,3)+";\t " +
 					variable.getMediane()+";\t " +
 					variable.getQuantile(2,3)+";\t " +
 					variable.getMaxElement()+";\t " +
-					//							variable.getSum()+";\t " +
+					variable.getProd()+";\t " +
 					variable.getRepresentativeElement()+";\t " +
 					variable.getWeightOfAggregatedElements()/totalNumber+"\n";
 		} else {
-			result += "-;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
+			result += "--;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
 		}
 
 		return result;
 	}
 
-	public static  String getQuantileTimeEvolutionObs(final ExperimentationParameters p, final String entry,
+	/**
+	 * Give the agregated values of a parameter through the time
+	 * @param entry
+	 * @param variable
+	 * @param significatifPercent
+	 * @param totalNumber
+	 * @return
+	 */
+	public static  String getQuantileTimeEvolutionObs( final String entry,
 			final HeavyAggregation<Double>[] variable, final double significatifPercent, final int totalNumber){
 		String result ="t (seconds);\t "+
 				entry+" min;\t "
@@ -208,7 +222,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		return result;
 	}
 
-	public static  String getMeanTimeEvolutionObs(final ExperimentationParameters p, final String entry, final LightAverageDoubleAggregation[] variable,
+	public static  String getMeanTimeEvolutionObs(final String entry, final LightAverageDoubleAggregation[] variable,
 			final double significatifPercent, final int totalNumber){
 		String result = "t (seconds);\t "+entry+" ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++){

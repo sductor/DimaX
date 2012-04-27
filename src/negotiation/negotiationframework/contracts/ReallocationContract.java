@@ -213,10 +213,6 @@ AbstractContractTransition<ActionSpec>{
 	// Primitives
 	//
 
-	public static
-	<Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification>
-
 	/**
 	 *
 	 * @param a1
@@ -224,6 +220,9 @@ AbstractContractTransition<ActionSpec>{
 	 * @return the map of initial states of every agent of a1 and a2
 	 * @throws IncompleteContractException
 	 */
+	public static
+	<Contract extends AbstractContractTransition<ActionSpec>,
+	ActionSpec extends AbstractActionSpecification>
 	Map<AgentIdentifier, ActionSpec> getInitialStates(
 			final Collection<Contract> a1,
 			final Collection<Contract> a2) throws IncompleteContractException{
@@ -290,7 +289,6 @@ AbstractContractTransition<ActionSpec>{
 	public static
 	<Contract extends AbstractContractTransition<ActionSpec>,
 	ActionSpec extends AbstractActionSpecification>
-
 	Collection<ActionSpec> getResultingAllocation(
 			final Collection<Contract> alloc) throws IncompleteContractException{
 		return ReallocationContract.getResultingAllocation(ReallocationContract.getInitialStates(alloc, new ArrayList<Contract>()),alloc);

@@ -21,12 +21,13 @@ public class CollaborativeReplica extends Replica {
 			final AgentIdentifier id,
 			final ReplicaState myState,
 			final SocialChoiceType socialWelfare,
+			final int simulateanousKCadidature,
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, myState,
 				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),new InformedCandidatureRationality(new ReplicaCore(),true)),
 				new AgentInformedSelectionCore(),
-				new CollaborativeCandidatureProposer(),
+				new CollaborativeCandidatureProposer(simulateanousKCadidature),
 				new SimpleObservationService(),
 				new OneDeciderCommunicationProtocol(false),dynamicCriticity);
 	}

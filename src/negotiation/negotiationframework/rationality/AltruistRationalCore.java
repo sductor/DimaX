@@ -85,8 +85,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 
 	@Override
 	public void setMyAgent(
-			final SimpleRationalAgent<ActionSpec, PersonalState, Contract> ag)
-					throws UnrespectedCompetenceSyntaxException {
+			final SimpleRationalAgent<ActionSpec, PersonalState, Contract> ag) {
 		this.myPersonalCore.setMyAgent(ag);
 	}
 

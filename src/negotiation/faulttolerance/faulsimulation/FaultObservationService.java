@@ -51,13 +51,13 @@ BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>
 	// Accessors
 	//
 
-	public Double getDisponibility(final ResourceIdentifier host) {
-		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),host);
-	}
-
-	public Double getDisponibility(final Collection<ResourceIdentifier> hosts) {
-		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),hosts);
-	}
+//	public Double getDisponibility(final ResourceIdentifier host) {
+//		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),host);
+//	}
+//
+//	public Double getDisponibility(final Collection<ResourceIdentifier> hosts) {
+//		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),hosts);
+//	}
 
 	//
 	// Abstract methods

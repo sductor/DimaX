@@ -87,7 +87,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 			for (final ReplicationCandidature c : destruction){
 				ReplicationHandler.killReplica(c.getAgent());
-				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onFile);
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -95,7 +95,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 			for (final ReplicationCandidature c : creation){
 				ReplicationHandler.replicate(c.getAgent());
-				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
+				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onFile);
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));

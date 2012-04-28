@@ -97,8 +97,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public static final int startingNbAgents = 500;
 	public static final int startingNbHosts = 200;
 	
-	public  int simultaneousCandidature = 100;
-	public  int simultaneousAcceptation = 30;
+	public  int simultaneousCandidature = 30;
+	public  int simultaneousAcceptation = 10;
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -548,7 +548,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			NegotiationParameters.key4mirrorProto,
 			NegotiationParameters.key4CentralisedstatusProto,
 			NegotiationParameters.key4statusProto});
-	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin, SocialChoiceType.Nash});//
+	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Nash});//SocialChoiceType.Leximin, 
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect

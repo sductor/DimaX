@@ -119,7 +119,11 @@ extends ChocoAllocationSolver
 				this.replicasValue[i] = Choco.makeIntVar(
 						this.concerned[i].getAgent().toString()+"__value", minUt.getValue(), maxUt.getValue(),
 						Options.V_BOUND, Options.V_NO_DECISION);
-				m.addConstraint(Choco.eq(this.replicasValue[i],Choco.ifThenElse(Choco.eq(this.replicas[i],0), minUt, maxUt)));
+				m.addConstraint(Choco.eq(
+						this.replicasValue[i],
+						Choco.ifThenElse(
+								Choco.eq(this.replicas[i],0), 
+								minUt, maxUt)));
 			} else {
 				this.replicasGain[i] = maxUt.getValue() - minUt.getValue();
 			}

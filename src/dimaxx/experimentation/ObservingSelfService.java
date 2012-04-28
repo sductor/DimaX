@@ -43,9 +43,7 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	}
 
 
-	@StepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
-	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
 	public boolean endSimulation(){
 		this.l.getResults().getLast().setLastInfo();

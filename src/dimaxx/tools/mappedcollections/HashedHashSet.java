@@ -62,7 +62,7 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	/**
 	 * Fonction coûteuse
 	 * @param value
-	 * @return
+	 * @return the set a key that mapped this value
 	 */
 	public Collection<K> removeAvalue(final V item) {
 		final Collection<K> relevantKeys = new ArrayList<K>();

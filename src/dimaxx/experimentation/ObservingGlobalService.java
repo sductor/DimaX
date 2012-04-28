@@ -110,7 +110,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	public final void receiveResult(final NotificationMessage<ActivityLog> l){
 
 		final LinkedList<ExperimentationResults> results =
-				l.getNotification().getResults();
+				new LinkedList(l.getNotification().getResults());
 
 		assert this.verification(results);
 

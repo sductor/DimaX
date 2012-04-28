@@ -272,6 +272,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
+		try {
 		this.solver.initiate(concerned.keySet());
 		Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
 				new HashSet<InformedCandidature<Contract,ActionSpec>>();
@@ -328,6 +329,9 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			c.getPossibleContracts().add(best);
 		}
 
+		}catch (Exception e){
+			signalException("solver failed",e); 
+		}
 		return toPropose;
 	}
 

@@ -51,6 +51,7 @@ extends ChocoAllocationSolver
 	public void initiate(final Collection<ReplicationCandidature> concerned){
 		try {
 			final Model m = new CPModel();
+			if (s!=null) s.clear();
 			this.s = new CPSolver();
 
 			this.concerned=concerned.toArray(new ReplicationCandidature[concerned.size()]);
@@ -157,7 +158,12 @@ extends ChocoAllocationSolver
 			for (final ReplicationCandidature c : this.concerned){
 				current+=ReplicationOptimalSolver.asIntNashed(c.getAgentInitialState().getMyReliability(),socialWelfare);
 			}
+			try {
 			m.addConstraint(Choco.gt(this.socialWelfareValue, current));
+			} catch (ArrayIndexOutOfBoundsException e) {
+				signalException(this.socialWelfareValue+" "+current,e);
+				throw new RuntimeException();
+			}
 		}
 	}
 

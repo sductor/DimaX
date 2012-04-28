@@ -139,11 +139,11 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 			if (h.isLastInfo()) {
-					if (h.nbOfModif!=0){
-						lastReplicationtime.add(new Double(h.getLastModifTime()));
-						firstReplicationtime.add(new Double(h.getFirstModifTime()));
-					}
-					nbOfStateModif.add(new Double(h.nbOfModif));
+				if (h.nbOfModif!=0){
+					lastReplicationtime.add(new Double(h.getLastModifTime()));
+					firstReplicationtime.add(new Double(h.getFirstModifTime()));
+				}
+				nbOfStateModif.add(new Double(h.nbOfModif));
 				for (i = ObservingGlobalService.getTimeStep(h) + 1;
 						i < ObservingGlobalService.getNumberOfTimePoints();
 						i++) {
@@ -399,31 +399,46 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 	boolean endRequestSended= false;
+	boolean shouldHAveEndedActivated=false ;
 
 	@Override
 	public boolean simulationHasEnded(){
-		if (this.getAliveAgents().size()==0){
-			this.logMonologue("Every agent has finished!!",LogService.onBoth);
+		if (super.simulationHasEnded()){
+			this.logMonologue("ALL AGENTS DIED!!!",LogService.onBoth);
 			return true;
+		}else if (this.getAliveAgents().size()==0){
+			if (!endRequestSended){
+			this.logMonologue("Every agent has finished!!...killing....",LogService.onBoth);
+				for (final AgentIdentifier r : getAllAgents()) {
+					this.sendMessage(r, new SimulationEndedMessage());
+				}
+			}
+			this.endRequestSended=true;
+			return false;
 		}else {
-			if (!this.endRequestSended){
-				if (this.getMyAgent().getUptime()>2*ExperimentationParameters._maxSimulationTime){
+			if (!this.shouldHAveEndedActivated){
+				if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+60000){
 					this.signalException("i should have end!!!!(rem ag, rem host)="+this.getAliveAgents());
-					for (final AgentIdentifier r : this.getAliveAgents()) {
-						this.sendMessage(r, new SimulationEndedMessage());
-					}
-					this.endRequestSended=true;
-				} 
-//				else if (this.getAliveAgents().size()==this.remainingHost){
-//					this.logMonologue("all agents lost! ending ..",LogService.onBoth);
-//					for (final AgentIdentifier r : this.getAliveAgents()) {
+					shouldHAveEndedActivated=true;
+//					for (final AgentIdentifier r : this.getAllAgents()) {
 //						this.sendMessage(r, new SimulationEndedMessage());
 //					}
 //					this.endRequestSended=true;
-//				}
+				} 
+				//				else if (this.getAliveAgents().size()==this.remainingHost){
+				//					this.logMonologue("all agents lost! ending ..",LogService.onBoth);
+				//					for (final AgentIdentifier r : this.getAliveAgents()) {
+				//						this.sendMessage(r, new SimulationEndedMessage());
+				//					}
+				//					this.endRequestSended=true;
+				//				}
 			}
 
 			return false;
 		}
 	}
+
+	//
+	// 
+	//
 }

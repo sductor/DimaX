@@ -95,7 +95,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 */
 
 	public static final int startingNbAgents = 500;
-	public static final int startingNbHosts = 100;
+	public static final int startingNbHosts = 200;
 	
 	public  int simultaneousCandidature = 100;
 	public  int simultaneousAcceptation = 30;
@@ -350,7 +350,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		for (final HostState h : this.rig.getHostsStates()){
 			initialisationStatus+=h.getMyAgentIdentifier()+"  has allocated  "+h.getMyResourceIdentifiers()+"\n";
 		}
-		this.logMonologue(initialisationStatus, LogService.onBoth);
+		this.logMonologue(initialisationStatus, LogService.onFile);
 	}
 
 

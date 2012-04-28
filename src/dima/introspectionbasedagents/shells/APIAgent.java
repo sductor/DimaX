@@ -254,6 +254,9 @@ public class APIAgent extends BasicCompetentAgent {
 			return result;
 		}
 
+		public Collection<AgentIdentifier> getAllAgents(){
+			return locations.keySet();
+		}
 		//
 		// Launch method
 		//

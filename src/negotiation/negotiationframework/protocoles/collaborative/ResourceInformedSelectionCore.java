@@ -177,9 +177,9 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					this.logMonologue(
 							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
 							AbstractCommunicationProtocol.log_selectionStep);
-					this.logMonologue(
-							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
-							LogService.onScreen);
+//					this.logMonologue(
+//							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
+//							LogService.onScreen);
 				}
 			}
 

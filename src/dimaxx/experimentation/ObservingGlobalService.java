@@ -30,6 +30,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	private HashSet<ExperimentationResults> finalStates = new HashSet<ExperimentationResults>();
 
 
+	final Collection<AgentIdentifier> allAgent=new ArrayList<AgentIdentifier>();
 	final Collection<AgentIdentifier> remainingAgent=new ArrayList<AgentIdentifier>();
 	//	final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
 
@@ -62,7 +63,13 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	 * @return true when the simulation is ended
 	 * must ensure every agent is destroyed!!!
 	 */
-	protected abstract boolean simulationHasEnded();
+	protected boolean simulationHasEnded(){
+		for (AgentIdentifier myAgent : allAgent){
+			if (getMyAgent().api.getAllAgents().contains(myAgent))
+				return false;
+		}
+		return true;
+	}
 
 	protected abstract void writeResult();
 
@@ -76,6 +83,10 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	}
 
 
+	public Collection<AgentIdentifier> getAllAgents() {
+		return allAgent;
+	}
+
 
 	//
 	// Behavior
@@ -87,6 +98,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 			//			if (id instanceof ResourceIdentifier) {
 			//				this.remainingHost.add(id);
 			//			} else {
+			this.allAgent.add(id);
 			this.remainingAgent.add(id);
 			//			}
 		}
@@ -116,19 +128,19 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 			}
 		}
 
-			this.finalStates.add(results.getLast());
+		this.finalStates.add(results.getLast());
 
 	}
 
 	public void setAgentHasEnded(final AgentIdentifier id){
-//		getMyAgent().logMonologue("agent is dead "+id, LogService.onBoth);
+		//		getMyAgent().logMonologue("agent is dead "+id, LogService.onBoth);
 		this.remainingAgent.remove(id);
 	}
 
 	public HashSet<ExperimentationResults> getFinalStates() {
 		return finalStates;
 	}
-	
+
 	//
 	// Time Primitives
 	//
@@ -148,9 +160,9 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 				* ObservingGlobalService._state_snapshot_frequency;
 	}
 
-//	public long getMaxSimulationTime() {
-//		return _maxSimulationTime;
-//	}
+	//	public long getMaxSimulationTime() {
+	//		return _maxSimulationTime;
+	//	}
 
 	//
 	// Writing Primitives
@@ -263,12 +275,12 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		final ExperimentationResults resultType= results.getLast();
 		assert (!this.alreadyReceived.contains(resultType.getId())):"argh! already received"+resultType.getId();
 		this.alreadyReceived.add(resultType.getId());
-		assert (results.size()<=ObservingGlobalService.getNumberOfTimePoints()):"arg : "+results.size();
-//		String result ="Agent has sended results \n"+resultType.getId()+"   "+_state_snapshot_frequency+" :";
-//		for (final ExperimentationResults r : results){
-//			result+=r.getUptime()+"  "+getTimeStep(r)+"\n";
-//		}
-//		getMyAgent().logMonologue(result, LogService.onBoth);
+		assert (results.size()<=ObservingGlobalService.getNumberOfTimePoints()):"arg : "+results.size()+"\n"+results;
+		//		String result ="Agent has sended results \n"+resultType.getId()+"   "+_state_snapshot_frequency+" :";
+		//		for (final ExperimentationResults r : results){
+		//			result+=r.getUptime()+"  "+getTimeStep(r)+"\n";
+		//		}
+		//		getMyAgent().logMonologue(result, LogService.onBoth);
 		return true;
 	}
 }

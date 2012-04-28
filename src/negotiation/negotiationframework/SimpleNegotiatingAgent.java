@@ -1,5 +1,8 @@
 package negotiation.negotiationframework;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -9,8 +12,12 @@ import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PostStepComposant;
+import dima.introspectionbasedagents.annotations.PreStepComposant;
+import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
@@ -22,6 +29,7 @@ import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.experimentation.ObservingSelfService;
+import dimaxx.experimentation.SimulationEndedMessage;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
@@ -98,13 +106,59 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	// Behavior
 	//
 
-	@StepComposant(ticker=ExperimentationParameters._maxSimulationTime)
-	@Transient
-	public boolean end(){
-		this.setAlive(false);
-		return true;
+//	@StepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+//	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+//	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+//	@Transient
+//	public boolean end(){
+////		this.setAlive(false);
+//		this.setActive(false);
+//		return true;
+//	}
+	
+//	@ProactivityFinalisation
+//	public boolean waitForEveryone(){
+//		logMonologue("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", LogService.onBoth);
+//		wwait(60000);
+//		return true;
+//	}
+	
+	@MessageHandler
+	public void simulationEndORder(final SimulationEndedMessage s){
+//		logMonologue("yooo1", LogService.onBoth);
+		if (this.isAlive()) {
+			this.setActive(false);
+			this.setAlive(false);
+		}
 	}
-
+	
+	public void tryToResumeActivity(){
+//		if (hasAppliStarted()) logMonologue("yooo2", LogService.onBoth);
+		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
+		while (this.getMailBox().hasMail()){
+			final AbstractMessage m = this.getMailBox().readMail();
+			if (m instanceof SimulationEndedMessage) {
+				this.setAlive(false);
+				this.setActive(false);
+			} else {
+				messages.add(m);
+			}
+		}
+		for (final AbstractMessage m : messages) {
+			this.getMailBox().writeMail(m);
+		}
+		wwait(1000);
+	}
+	
+//	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+//	@Transient
+//	public boolean end(){
+//		this.setActive(false);
+//		this.setAlive(false);
+//		Thread.yield();
+//		wwait(60000);
+//		return true;
+//	}
 	@MessageHandler()
 	public void hereThereAre(final ShowYourPocket m) {
 		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "

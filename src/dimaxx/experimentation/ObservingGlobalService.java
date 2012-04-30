@@ -38,7 +38,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	// Constants
 	//
 
-	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 10;
+	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 90;
 
 	//
 	// Abstract

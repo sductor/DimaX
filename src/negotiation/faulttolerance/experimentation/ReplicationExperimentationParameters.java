@@ -94,8 +94,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 100;
-	public static final int startingNbHosts = 30;
+	public static final int startingNbAgents = 2000;
+	public static final int startingNbHosts = 600;
 	
 	public  int simultaneousCandidature = 15;
 	public  int simultaneousAcceptation = 10;
@@ -140,7 +140,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public static final double _criticityMin = 0.1;
 	public static final double _criticityVariationProba = 20. / 100.;// 20%
 	public static final double _criticityVariationAmplitude = 30. / 100.;// 10%
-	public static final long _criticity_update_frequency = 2*NegotiationParameters._timeToCollect;// (long)
+	public static final long _criticity_update_frequency = 4*NegotiationParameters._timeToCollect;// (long)
 
 	// public static final double _dispoMax = 0.7;
 	// public static final double _dispoVariationProba = 0./100.;
@@ -614,7 +614,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	static boolean varyAgentCriticityDispersion=false;
 
 	static boolean varyFault=false;
-	static int dynamicCriticityKey=-1; //-1 never dynamics, 1 always dynamics, 0 both
+	static int dynamicCriticityKey=0; //-1 never dynamics, 1 always dynamics, 0 both
 
 	//
 	// Default values

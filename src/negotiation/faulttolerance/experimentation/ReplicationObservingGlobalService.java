@@ -47,7 +47,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	 * Agent
 	 */
 	/* Quantile */
-	HeavyDoubleAggregation[] agentsReliabilityEvolution;
+	HeavyDoubleAggregation[] agentsExpectedReliabilityEvolution;
+	HeavyDoubleAggregation[] agentsMinReliabilityEvolution;
 	/* Mean */
 	LightWeightedAverageDoubleAggregation[] criticite;
 	/* Disponibility */
@@ -90,7 +91,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 	@Override
 	public void initiate() {
-		this.agentsReliabilityEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsExpectedReliabilityEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsMinReliabilityEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsDispoEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.criticite = new LightWeightedAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.hostsChargeEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
@@ -103,7 +105,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
 			this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
 			this.agentsSaturationEvolution[i] = new HeavyDoubleAggregation();
-			this.agentsReliabilityEvolution[i] = new HeavyDoubleAggregation();
+			this.agentsExpectedReliabilityEvolution[i] = new HeavyDoubleAggregation();
+			this.agentsMinReliabilityEvolution[i] = new HeavyDoubleAggregation();
 			this.agentsDispoEvolution[i] = new HeavyDoubleAggregation();
 			this.criticite[i] = new LightWeightedAverageDoubleAggregation();
 			this.faulty[i] = new LightAverageDoubleAggregation();
@@ -159,7 +162,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 					(double)ag.getNumberOfAllocatedResources()/
 					(getMyAgent().getSimulationParameters().completGraph?
 							this.getMyAgent().getSimulationParameters().nbHosts:this.getMyAgent().getSimulationParameters().agentAccessiblePerHost));
-			this.agentsReliabilityEvolution[i].add(ag.getReliability());
+			this.agentsExpectedReliabilityEvolution[i].add(ag.getReliability(SocialChoiceType.Utility));
+			this.agentsMinReliabilityEvolution[i].add(ag.getReliability(SocialChoiceType.Leximin));
 			this.agentsDispoEvolution[i].add(ag.getDisponibility());
 			this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
 			if (this.getMyAgent().myStatusObserver!=null && this.getMyAgent().myStatusObserver.iObserveStatus()) {
@@ -194,7 +198,13 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantileTimeEvolutionObs("reliability",
-						this.agentsReliabilityEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
+						this.agentsExpectedReliabilityEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
+								.getSimulationParameters().nbAgents), this.getMyAgent()
+								.getSimulationParameters().nbAgents), true,
+								false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+				.getQuantileTimeEvolutionObs("reliability",
+						this.agentsMinReliabilityEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
@@ -281,15 +291,17 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		}
 
 		double sum=0;
+		double criti=0;
 		double nash=1;
 		LinkedList<Double> lex = new LinkedList<Double>();
 		for (ReplicationResultAgent r : reliaStates){
 			sum+=ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Utility);
+			criti+=r.getCriticity();
 			nash*=ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Nash);
 			lex.addLast(ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Leximin));
 			Collections.sort(lex);
 		}
-		result += "Leximin solution : "+lex+"\n Utility solution "+sum+"\n Nash solution "+nash;
+		result += "Leximin solution : "+lex+"\n Sum solution "+sum+"\n Mean Solution : "+sum/criti+"\n Nash solution "+nash;
 
 		result+="\n Agent percent of allocated resources : ";
 		for (ReplicationResultAgent r : reliaStates){

@@ -189,7 +189,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 					variable.getMaxElement()+";\t " +
 					variable.getProd()+";\t " +
 					variable.getRepresentativeElement()+";\t " +
-					variable.getWeightOfAggregatedElements()/totalNumber+"\n";
+					"("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
 		} else {
 			result += "--;\t-;\t-;\t-;\t-;\t-  ("+variable.getWeightOfAggregatedElements()/totalNumber+")\n";
 		}
@@ -213,7 +213,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 				+entry+"  mediane;\t  "
 				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
-				//				+entry+" sum ;\t "
+						+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++){
 			result += ObservingGlobalService.geTime(i)/1000.+" ;\t ";
@@ -224,7 +224,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 								variable[i].getMediane()+";\t " +
 								variable[i].getQuantile(2,3)+";\t " +
 								variable[i].getMaxElement()+";\t " +
-								//						variable[i].getSum()+";\t " +
+								variable[i].getProd()+";\t " +
 								variable[i].getRepresentativeElement()+";\t (" +
 								variable[i].getWeightOfAggregatedElements()/totalNumber+")\n";
 			} else {

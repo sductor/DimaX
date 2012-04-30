@@ -203,7 +203,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				}
 			}
 		} catch (final IncompleteContractException e) {
-			this.signalException("imossible", e);
+			this.signalException("solver failed!!!!!!!!!!!!!!!!!!!!", e);
 		}
 	}
 

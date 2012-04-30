@@ -94,15 +94,16 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 2000;
-	public static final int startingNbHosts = 600;
+	public static final int startingNbAgents =10000;
+	public static final int startingNbHosts = 1000;
 	
-	public  int simultaneousCandidature = 15;
-	public  int simultaneousAcceptation = 10;
+	public  int simultaneousCandidature = 100;
+	public  int simultaneousAcceptation = 20;
 	public static final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
-	private static final boolean withOptimal = false;
+	private static final boolean withOptimal = true;
+	private static final int maxOptimal = 100;
 
 	/* FAULTS
 	 *
@@ -189,7 +190,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.dynamicCriticity = dynamicCriticty;
 		this.setMaxSimultFailure(host_maxSimultaneousFailurePercent);
 		simultaneousCandidature = Math.min(nbHosts,simultaneousCandidature);
-		simultaneousAcceptation = Math.min(nbAgents,simultaneousAcceptation);
+		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)));
 	}
 
 	@Override
@@ -321,7 +322,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			try{
 				iFailed=false;
 				this.rig.setVoisinage();
-				if (withOptimal) ros = new ReplicationOptimalSolver(getMyAgent());
+				if (withOptimal && nbAgents*nbHosts<maxOptimal) ros = new ReplicationOptimalSolver(getMyAgent());
 				this.rig.initialRep();
 			} catch (final IfailedException e) {
 				iFailed=true;
@@ -548,7 +549,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			NegotiationParameters.key4mirrorProto,
 			NegotiationParameters.key4CentralisedstatusProto,
 			NegotiationParameters.key4statusProto});
-	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Nash});//SocialChoiceType.Leximin, 
+	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin,SocialChoiceType.Nash});// 
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
@@ -576,6 +577,12 @@ ExperimentationParameters<ReplicationLaborantin> {
 			1.});
 	static List<Double> doubleParameters3 = Arrays.asList(new Double[]{
 			0.,
+			0.25,
+			0.5,
+			0.75,
+			1.});
+	static List<Double> doubleParameters6 = Arrays.asList(new Double[]{
+			0.1,
 			0.25,
 			0.5,
 			0.75,
@@ -614,7 +621,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	static boolean varyAgentCriticityDispersion=false;
 
 	static boolean varyFault=false;
-	static int dynamicCriticityKey=0; //-1 never dynamics, 1 always dynamics, 0 both
+	static int dynamicCriticityKey=-1; //-1 never dynamics, 1 always dynamics, 0 both
 
 	//
 	// Default values
@@ -826,7 +833,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationParameters.doubleParameters4){
+			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
 				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);

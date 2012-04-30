@@ -12,13 +12,14 @@ AbstractCompensativeAggregation<Double> {
 	public boolean add(final Double value) {
 		this.sum += value;
 		this.cardinal++;
+		this.prod *=value;
 		return true;
 	}
 
 	public boolean remove(final Double value) {
 		this.sum -= value;
 		this.cardinal--;
-		this.prod *=value;
+		this.prod /=value;
 		return true;
 	}
 

@@ -1,0 +1,16 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!EXCEPTION ** FROM AGENT #HOST_MANAGER##simu_13#HostManager_268:77negotiation.negotiationframework.contracts.UnknownContractException: 
+Contract (1335788597312   30 Apr 2012 12:23:17 GMT) (init : #HOST_MANAGER##simu_13#HostManager_268:77, part : [#simu_13#DomainAgent_1063, #HOST_MANAGER##simu_13#HostManager_268:77]),(expired?false, will expire?false) On Hostctkarch(Mon Apr 30 14:25:10 CEST 2012 - 1335788710672):
+facing unknonw contract!!!!! 
+Contract (1335788597312   30 Apr 2012 12:23:17 GMT) (init : #HOST_MANAGER##simu_13#HostManager_268:77, part : [#simu_13#DomainAgent_1063, #HOST_MANAGER##simu_13#HostManager_268:77]),(expired?false, will expire?false)
+receivedContract?false
+alreadyCancelled?false
+alreadyExecuted?false lost contracts are : 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!EXCEPTION ** FROM AGENT #HOST_MANAGER##simu_13#HostManager_268:77negotiation.negotiationframework.contracts.UnknownContractException: 
+Contract (1335788597313   30 Apr 2012 12:23:17 GMT) (init : #HOST_MANAGER##simu_13#HostManager_268:77, part : [#simu_13#DomainAgent_1447, #HOST_MANAGER##simu_13#HostManager_268:77]),(expired?false, will expire?false) On Hostctkarch(Mon Apr 30 14:25:10 CEST 2012 - 1335788710673):
+facing unknonw contract!!!!! 
+Contract (1335788597313   30 Apr 2012 12:23:17 GMT) (init : #HOST_MANAGER##simu_13#HostManager_268:77, part : [#simu_13#DomainAgent_1447, #HOST_MANAGER##simu_13#HostManager_268:77]),(expired?false, will expire?false)
+receivedContract?false
+alreadyCancelled?false
+alreadyExecuted?false lost contracts are : 
+

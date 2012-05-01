@@ -99,11 +99,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 	
 	public  int simultaneousCandidature = 100;
 	public  int simultaneousAcceptation = 20;
-	public static final boolean completGraph = true;
+	public final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
-	private static final boolean withOptimal = true;
-	private static final int maxOptimal = 100;
+	private  boolean withOptimal = true;
+	private final int maxOptimal = 50;
 
 	/* FAULTS
 	 *
@@ -189,6 +189,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.set_hostSelection(hostSelection);
 		this.dynamicCriticity = dynamicCriticty;
 		this.setMaxSimultFailure(host_maxSimultaneousFailurePercent);
+		withOptimal=withOptimal&&nbAgents*nbHosts<maxOptimal;
 		simultaneousCandidature = Math.min(nbHosts,simultaneousCandidature);
 		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)));
 	}
@@ -322,7 +323,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			try{
 				iFailed=false;
 				this.rig.setVoisinage();
-				if (withOptimal && nbAgents*nbHosts<maxOptimal) ros = new ReplicationOptimalSolver(getMyAgent());
+				if (withOptimal) ros = new ReplicationOptimalSolver(getMyAgent());
 				this.rig.initialRep();
 			} catch (final IfailedException e) {
 				iFailed=true;

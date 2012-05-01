@@ -174,7 +174,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 		this.accAgents =
 				new HashedHashSet<ResourceIdentifier, AgentIdentifier>();
 
-		if (ReplicationExperimentationParameters.completGraph){
+		if (getMyAgent().getSimulationParameters().completGraph){
 			for (final AgentIdentifier agId : this.agents.keySet()){
 				for (final ResourceIdentifier h : this.hosts.keySet()) {
 					this.addAcquaintance(agId, h);

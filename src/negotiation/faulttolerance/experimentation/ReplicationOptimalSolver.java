@@ -56,7 +56,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 				assert hs[j].getMyResourceIdentifiers().isEmpty();
 				assert rig.getAccessibleAgent(hId).contains(agId)==rig.getAccessibleHost(agId).contains(hId):"\n"+rig.getAccessibleAgent(hId)+"\n"+rig.getAccessibleHost(agId);
 				accesibilityGraph[i][j] =  rig.getAccessibleAgent(hId).contains(agId);
-				assert ReplicationExperimentationParameters.completGraph?accesibilityGraph[i][j]==true:true;
+				assert getMyAgent().getSimulationParameters().completGraph?accesibilityGraph[i][j]==true:true;
 			}
 		}
 	}
@@ -83,7 +83,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 				assert hs[j].getMyResourceIdentifiers().isEmpty();
 				assert rig.getAccessibleAgent(hId).contains(agId)==rig.getAccessibleHost(agId).contains(hId):"\n"+rig.getAccessibleAgent(hId)+"\n"+rig.getAccessibleHost(agId);
 				accesibilityGraph[i][j] =  rig.getAccessibleAgent(hId).contains(agId);
-				assert ReplicationExperimentationParameters.completGraph?accesibilityGraph[i][j]==true:true;
+				assert getMyAgent().getSimulationParameters().completGraph?accesibilityGraph[i][j]==true:true;
 			}
 		}
 	}
@@ -142,7 +142,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 			int firstTime=0;//s.getTimeCount();
 //			assert s.isFeasible();
 			s.setObjective(s.getVar(this.socialWelfareOpt));
-			s.minimize(true);
+			s.minimize(false);
 			int optimalTime=s.getTimeCount();
 			logMonologue("done!...", LogService.onBoth);
 
@@ -197,17 +197,18 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 			rogs.getFinalStates().add(agRes);
 		}
 		for (HostState h : finalHostAlloc.values()){
-			ReplicationResultHost hostRes = new ReplicationResultHost(h,0 ,0, new Date(),0);
+			ReplicationResultHost hostRes = new ReplicationResultHost(h,0 , new Date(),0);
 			hostRes.setLastInfo();
 			rogs.updateInfo(hostRes);
 			rogs.getFinalStates().add(hostRes);
 		}
 		logMonologue("First Time : "+firstTime/1000+"Optimal Time : "+optimalTime/1000
-				+" The optimal allocation is : \n"+alloc
-				+"\n"+finalHostAlloc.values()+"\n"+finalRepAlloc.values(), LogService.onBoth);
-//		rogs.writeResult();
+//				+" The optimal allocation is : \n"+alloc
+//				+"\n"+finalHostAlloc.values()+"\n"+finalRepAlloc.values()
+				, LogService.onBoth);
+		rogs.writeResult();
 		
-		System.out.println(rogs.analyseOptimal());
+//		System.out.println(rogs.analyseOptimal());
 		
 	}
 

@@ -56,7 +56,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	/* Quantile */
 	HeavyDoubleAggregation[] agentsSaturationEvolution;
 	/* Point */
-	HeavyDoubleAggregation firstReplicationtime;
+//	HeavyDoubleAggregation firstReplicationtime;
 	HeavyDoubleAggregation lastReplicationtime;
 	HeavyDoubleAggregation nbOfStateModif;
 	// Map<AgentIdentifier, Double> firstReplicationtime =
@@ -98,7 +98,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		this.hostsChargeEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.faulty = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsSaturationEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
-		firstReplicationtime = new HeavyDoubleAggregation();
+//		firstReplicationtime = new HeavyDoubleAggregation();
 		lastReplicationtime = new HeavyDoubleAggregation();
 		nbOfStateModif = new HeavyDoubleAggregation();
 
@@ -144,7 +144,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			if (h.isLastInfo()) {
 				if (h.nbOfModif!=0){
 					lastReplicationtime.add(new Double(h.getLastModifTime()));
-					firstReplicationtime.add(new Double(h.getFirstModifTime()));
+//					firstReplicationtime.add(new Double(h.getFirstModifTime()));
 				}
 				nbOfStateModif.add(new Double(h.nbOfModif));
 				for (i = ObservingGlobalService.getTimeStep(h) + 1;
@@ -222,11 +222,11 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
-		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantilePointObs("First Replication Time",
-						firstReplicationtime,
-						0.75, 
-						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
+//		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+//				.getQuantilePointObs("First Replication Time",
+//						firstReplicationtime,
+//						0.75, 
+//						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantilePointObs(
 						"Time Since Last Action",

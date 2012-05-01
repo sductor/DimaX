@@ -18,7 +18,7 @@ public class ReplicationResultHost implements ExperimentationResults {
 
 	private final long creation;
 	
-	private long firstModifTime=-1;
+//	private long firstModifTime=-1;
 	private long lastModifTime;
 
 	final ResourceIdentifier id;
@@ -29,7 +29,8 @@ public class ReplicationResultHost implements ExperimentationResults {
 	final boolean isFaulty;
 	boolean lastInfo;
 
-	public ReplicationResultHost(final HostState s, long firstModifTime, long lastModifTime,
+	public ReplicationResultHost(final HostState s, //long firstModifTime, 
+			long lastModifTime,
 			final Date agentCreationTime, int initialStateCounter) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
@@ -39,10 +40,10 @@ public class ReplicationResultHost implements ExperimentationResults {
 		this.id = s.getMyAgentIdentifier();
 		this.lastInfo = false;
 		nbOfModif = s.getStateCounter()-initialStateCounter;
-		assert !(this.firstModifTime==1) || nbOfModif==0;
-		assert !(nbOfModif==0) || (firstModifTime==-1 && lastModifTime==-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
-		assert (nbOfModif==0) || (firstModifTime!=-1 && lastModifTime!=-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
-		this.firstModifTime=firstModifTime;
+//		assert !(this.firstModifTime==1) || nbOfModif==0;
+//		assert !(nbOfModif==0) || ((firstModifTime==-2 || firstModifTime==-1) && lastModifTime==-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
+//		assert (nbOfModif==0) || (firstModifTime!=-2 && firstModifTime!=-1 && lastModifTime!=-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
+//		this.firstModifTime=firstModifTime;
 		this.lastModifTime=lastModifTime;
 		
 	}
@@ -57,9 +58,9 @@ public class ReplicationResultHost implements ExperimentationResults {
 		return this.id;
 	}
 
-	public long getFirstModifTime() {
-		return firstModifTime;
-	}
+//	public long getFirstModifTime() {
+//		return firstModifTime;
+//	}
 
 	public long getLastModifTime() {
 		return lastModifTime;

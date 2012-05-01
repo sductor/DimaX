@@ -5,10 +5,6 @@ import java.util.Date;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class SimpleExperimentationResults implements ExperimentationResults {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -7742603893643304869L;
 
 	final AgentIdentifier myAgentIdentifier;

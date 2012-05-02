@@ -329,7 +329,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			c.getPossibleContracts().add(best);
 		}
 
-		}catch (Exception e){
+		}catch (Throwable e){
 			signalException("solver failed",e); 
 		}
 		return toPropose;

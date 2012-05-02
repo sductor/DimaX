@@ -98,7 +98,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public static int startingNbAgents =-1;
 	
 	public  int simultaneousCandidature = 30;
-	public  int simultaneousAcceptation = 30;
+	public  int simultaneousAcceptation = 20;
 	public final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -640,7 +640,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Moyen,//load dispersion
-				10.,//((double)startingNbAgents)/((double)startingNbHosts),//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean
+				5.,//((double)startingNbAgents)/((double)startingNbHosts),//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion

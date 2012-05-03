@@ -162,7 +162,6 @@ extends ChocoAllocationSolver
 			m.addConstraint(Choco.gt(this.socialWelfareValue, current));
 			} catch (ArrayIndexOutOfBoundsException e) {
 				signalException(this.socialWelfareValue+" "+current,e);
-				throw new RuntimeException();
 			}
 		}
 	}

@@ -2,11 +2,13 @@ package negotiation.horizon.negociatingagent;
 
 import java.util.Collection;
 
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
-public class SubstrateNodeCore extends
+public class SubstrateNodeCore
+	extends
 	BasicAgentCompetence<SimpleRationalAgent<HorizonSpecification, SubstrateNodeState, HorizonContract>>
 	implements
 	RationalCore<HorizonSpecification, SubstrateNodeState, HorizonContract> {
@@ -17,21 +19,23 @@ public class SubstrateNodeCore extends
     private static final long serialVersionUID = -4617793988428190194L;
 
     @Override
-    public boolean IWantToNegotiate(SubstrateNodeState s) {
-	// TODO Auto-generated method stub
-	return false;
-    }
-
-    @Override
-    public Double evaluatePreference(SubstrateNodeState s1) {
+    public Double evaluatePreference(Collection<HorizonContract> cs) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
     @Override
-    public void execute(HorizonContract c) {
-	// TODO Auto-generated method stub
-	
+    public void execute(Collection<HorizonContract> contracts) {
+	SubstrateNodeState myState = this.getMyAgent().getMyCurrentState();
+
+	try {
+	    for (HorizonContract c : contracts) {
+		myState = c.computeResultingState(myState);
+	    }
+	} catch (IncompleteContractException e) {
+	    throw new RuntimeException(e);
+	}
+	this.getMyAgent().setNewState(myState);
     }
 
     @Override

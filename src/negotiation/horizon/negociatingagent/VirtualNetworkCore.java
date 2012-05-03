@@ -6,10 +6,8 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition.Inc
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class VirtualNetworkCore
-	// extends BasicAgentCompetence<VirtualNetwork>
 	extends
 	BasicAgentCompetence<SimpleRationalAgent<HorizonSpecification, VirtualNetworkState, HorizonContract>>
 	implements
@@ -21,29 +19,23 @@ public class VirtualNetworkCore
     private static final long serialVersionUID = -3189589813751237257L;
 
     @Override
-    public boolean IWantToNegotiate(VirtualNetworkState s) {
-	// TODO Tant qu'il existe un contrat de meilleure utilité.
-	return false;
-    }
-
-    @Override
-    public Double evaluatePreference(VirtualNetworkState s1) {
+    public Double evaluatePreference(Collection<HorizonContract> cs) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
     @Override
-    public void execute(HorizonContract c) {
-	try{
-	    assert (c.isViable());
+    public void execute(Collection<HorizonContract> contracts) {
+	VirtualNetworkState myState = this.getMyAgent().getMyCurrentState();
 
-	    this.getMyAgent().setNewState(
-		    c.computeResultingState(this.getMyAgent()
-			    .getMyCurrentState()));
-
+	try {
+	    for (HorizonContract c : contracts) {
+		myState = c.computeResultingState(myState);
+	    }
 	} catch (IncompleteContractException e) {
-	    throw new RuntimeException("Should never occur");
+	    throw new RuntimeException(e);
 	}
+	this.getMyAgent().setNewState(myState);
     }
 
     @Override
@@ -58,14 +50,6 @@ public class VirtualNetworkCore
 	    HorizonContract c) {
 	// TODO Auto-generated method stub
 	return null;
-    }
-
-    @Override
-    public void setMyAgent(
-	    SimpleRationalAgent<HorizonSpecification, VirtualNetworkState, HorizonContract> ag)
-	    throws UnrespectedCompetenceSyntaxException {
-	// TODO Auto-generated method stub
-
     }
 
 }

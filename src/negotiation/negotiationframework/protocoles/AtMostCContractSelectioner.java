@@ -47,7 +47,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 		List<Contract> all = cs.getParticipantOnWaitContracts();
 		all.remove(cs.getLockedContracts());
 		int nbContracts = all.size()+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size();
-		if (nbContracts>c){			
+		if (nbContracts>c && !all.isEmpty()){			
 			Collection<Contract> notAnalysed = new ArrayList<Contract>();
 			for (int i = 0; i < nbContracts-c; i++){
 				int toRemove =rand.nextInt(all.size());

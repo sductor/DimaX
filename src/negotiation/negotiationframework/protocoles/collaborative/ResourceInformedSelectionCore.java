@@ -152,35 +152,40 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 			} else {//I'm currently  negotiating reallocations
 				//Trying to accept reallocating contracts
-				assert !contracts.getReallocationContracts().isEmpty();
+				assert !contracts.getReallocationContracts().isEmpty() || !contracts.getContractToCancel().isEmpty();
 
-				final ReallocationContract<Contract, ActionSpec> r =
-						contracts.getBestRequestableReallocationContract(
-								myCore.getReferenceAllocationComparator(this.getMyAgent().getMyCurrentState()));
+				if (!contracts.getReallocationContracts().isEmpty()){
+					final ReallocationContract<Contract, ActionSpec> r =
+							contracts.getBestRequestableReallocationContract(
+									myCore.getReferenceAllocationComparator(this.getMyAgent().getMyCurrentState()));
 
-				if (r!=null){//upgrading contract available
-					this.logMonologue(
-							"upgrading contracts applied! heeelllll yyeeeeaaaaahhhhhh!!!!!", AbstractCommunicationProtocol.log_selectionStep);
-					this.logMonologue(
-							"heeelllll yyeeeeaaaaahhhhhh!!!!!", LogService.onScreen);
-					for (final Contract c : r) {
-						try {
-							rejected.remove(contracts.getContract(c.getIdentifier()));
-							accepted.add(contracts.getContract(c.getIdentifier()));
-						} catch (final UnknownContractException e) {
-							e.printStackTrace();
+					if (r!=null){//upgrading contract available
+						this.logMonologue(
+								"upgrading contracts applied! heeelllll yyeeeeaaaaahhhhhh!!!!!", AbstractCommunicationProtocol.log_selectionStep);
+						this.logMonologue(
+								"heeelllll yyeeeeaaaaahhhhhh!!!!!", LogService.onScreen);
+						for (final Contract c : r) {
+							try {
+								rejected.remove(contracts.getContract(c.getIdentifier()));
+								accepted.add(contracts.getContract(c.getIdentifier()));
+							} catch (final UnknownContractException e) {
+								e.printStackTrace();
+							}
 						}
+					} else {
+						onWait.addAll(rejected);
+						rejected.clear();
+						this.logMonologue(
+								"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
+								AbstractCommunicationProtocol.log_selectionStep);
+						//					this.logMonologue(
+						//							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
+						//							LogService.onScreen);
 					}
-				} else {
-					onWait.addAll(rejected);
-					rejected.clear();
-					this.logMonologue(
-							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
-							AbstractCommunicationProtocol.log_selectionStep);
-					this.logMonologue(
-							"booooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n",
-							LogService.onScreen);
 				}
+
+//				rejected.addAll(contracts.getContractToCancel());
+//				contracts.getContractToCancel().clear();
 			}
 
 		try {
@@ -188,17 +193,17 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				if (i.isMatchingCreation()){
 					this.getMyAgent().getMyInformation().add(
 							i.computeResultingState(i.getAgent()));
-//					this.observe(i.getAgent(),
-//							SimpleObservationService.informationObservationKey);
+					//					this.observe(i.getAgent(),
+					//							SimpleObservationService.informationObservationKey);
 				}else{
 					this.getMyAgent().getMyInformation().remove(
 							i.computeResultingState(i.getAgent()));
-//					this.stopObservation(i.getAgent(),
-//							SimpleObservationService.informationObservationKey);
+					//					this.stopObservation(i.getAgent(),
+					//							SimpleObservationService.informationObservationKey);
 				}
 			}
 		} catch (final IncompleteContractException e) {
-			this.signalException("imossible", e);
+			this.signalException("solver failed!!!!!!!!!!!!!!!!!!!!", e);
 		}
 	}
 
@@ -267,6 +272,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
+		try {
 		this.solver.initiate(concerned.keySet());
 		Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
 				new HashSet<InformedCandidature<Contract,ActionSpec>>();
@@ -323,6 +329,9 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			c.getPossibleContracts().add(best);
 		}
 
+		}catch (Throwable e){
+			signalException("solver failed",e); 
+		}
 		return toPropose;
 	}
 

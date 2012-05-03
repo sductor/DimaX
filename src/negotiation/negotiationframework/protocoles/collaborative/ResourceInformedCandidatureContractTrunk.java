@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
+
+import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
@@ -30,6 +34,8 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	//	private final ContractTrunk<ReallocationContract<Contract, ActionSpec>> myLocalOptimisations;
 	HashedHashSet<InformedCandidature<Contract, ActionSpec>, ReallocationContract<Contract, ActionSpec>> upgradingContracts=
 			new HashedHashSet<InformedCandidature<Contract, ActionSpec>, ReallocationContract<Contract,ActionSpec>>();
+	Collection<InformedCandidature<Contract, ActionSpec>> toCancel=
+			new ArrayList<InformedCandidature<Contract,ActionSpec>>();
 
 	/*
 	 *
@@ -51,9 +57,15 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 
 	@Override
 	public Collection<InformedCandidature<Contract, ActionSpec>> getLockedContracts(){
-		return upgradingContracts.keySet();
+		Collection<InformedCandidature<Contract, ActionSpec>>  lock = new ArrayList<InformedCandidature<Contract,ActionSpec>>(upgradingContracts.keySet());
+		lock.addAll(toCancel);
+		return lock;
 	}
-	
+
+	public Collection<InformedCandidature<Contract, ActionSpec>> getContractToCancel() {
+		return toCancel;
+	}
+
 	public void addReallocContract(final ReallocationContract<Contract, ActionSpec> realloc){
 		assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
 		for (final Contract c : realloc) {
@@ -85,20 +97,22 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 			final Comparator<Collection<Contract>> pref){
 		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
 				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.getAllValues());
-		Collections.sort(upCont,pref);
-		while (!upCont.isEmpty()) {
-			if (this.isRequestable(upCont.getFirst())) {
-				return upCont.getFirst();
-			} else {
-				upCont.pop();
-			}
+		Iterator<ReallocationContract<Contract, ActionSpec>> itUpCont = upCont.iterator();
+		while (itUpCont.hasNext()){
+			if (!this.isRequestable(itUpCont.next()))
+				itUpCont.remove();
 		}
-		return null;
+		try {
+			return Collections.max(upCont,pref);
+		}	catch (NoSuchElementException e){
+			return null;
+		}
 	}
 
 	public Collection<ReallocationContract<Contract, ActionSpec>> getReallocationContracts(){
 		return this.upgradingContracts.getAllValues();
 	}
+	
 	//
 	// Primitive
 	//
@@ -130,11 +144,22 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	@Override
 	public void remove(final  InformedCandidature<Contract, ActionSpec> c) {
 		super.remove(c);
+		if (toCancel.contains(c))
+			toCancel.remove(c);
 		final Collection<ReallocationContract<Contract, ActionSpec>> toRemove =
 				new ArrayList<ReallocationContract<Contract,ActionSpec>>();
 		toRemove.addAll(this.upgradingContracts.get(c));
 		for (final ReallocationContract<Contract, ActionSpec> r : toRemove) {
-			this.upgradingContracts.removeAvalue(r);
+			Collection<InformedCandidature<Contract, ActionSpec>> concernedKeys =
+					this.upgradingContracts.removeAvalue(r);
+			//adding lost key to cancel
+			for (InformedCandidature<Contract, ActionSpec> k : concernedKeys){
+				if (k.getInitiator().equals(getMyAgentIdentifier()) && !upgradingContracts.containsKey(k)){
+					assert !k.isMatchingCreation();
+					toCancel.add(k);
+				}
+			}
+
 		}
 	}
 
@@ -145,6 +170,15 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 }
 
 
+//		Collections.sort(upCont,pref);
+//		while (!upCont.isEmpty()) {
+//			if (this.isRequestable(upCont.getFirst())) {
+//				return upCont.getFirst();
+//			} else {
+//				upCont.pop();
+//			}
+//		}
+//		return null;
 
 //@Override
 //public void addContract(final InformedCandidature<Contract, ActionSpec> c){

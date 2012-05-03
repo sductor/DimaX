@@ -6,8 +6,11 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
+import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public abstract class ObservingSelfService
@@ -39,20 +42,16 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 		this.l.add(this.generateMyResults());
 	}
 
-	@ProactivityFinalisation()
-	public void endSimulation(){
+
+	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	@Transient
+	public boolean endSimulation(){
 		this.l.getResults().getLast().setLastInfo();
 		this.logMonologue("this is the end my friend",ObservingSelfService.observationLog);
 		this.notify(this.l);
 		this.getMyAgent().sendNotificationNow();
-		this.getMyAgent().wwait(1000);
-	}
-
-	@MessageHandler
-	public void simulationEndORder(final SimulationEndedMessage s){
-		if (this.getMyAgent().isAlive()) {
-			this.getMyAgent().setAlive(false);
-		}
+		getMyAgent().setActive(false);
+		return true;
 	}
 
 

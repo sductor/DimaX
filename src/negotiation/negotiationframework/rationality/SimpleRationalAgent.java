@@ -59,8 +59,8 @@ extends BasicCompetentAgent {
 		this.myInformation.setMyAgent(this);
 		assert myInitialState!=null;
 		this.myStateType = myInitialState.getClass();
-		this.setNewState(myInitialState);
 		initialStateNumber=myInitialState.getStateCounter();
+		this.setNewState(myInitialState);
 	}
 
 

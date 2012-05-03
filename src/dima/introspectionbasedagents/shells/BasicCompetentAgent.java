@@ -37,6 +37,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public static int nbCompetentAgent=0;
 	DimaXTask<BasicCompetentAgent> darxEngine=null;
 	APILauncherModule myApi;
+	boolean isActive=true;
 
 
 	//
@@ -112,7 +113,11 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	@Override
 	public boolean isActive() {
-		return this.appliHasStarted;
+		return this.appliHasStarted&&isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 
 	public void setDarxEngine(final DimaXTask darxEngine) {

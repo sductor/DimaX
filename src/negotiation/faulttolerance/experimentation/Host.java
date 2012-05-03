@@ -32,7 +32,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	// Fields
 	//
-	private long firstModifTime=-1;
+//	private long firstModifTime=-2;
 	private long lastModifTime=-1;
 
 	@Competence
@@ -46,7 +46,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		@Override
 		protected ExperimentationResults generateMyResults() {
 			return new ReplicationResultHost(
-					Host.this.getMyCurrentState(),firstModifTime,lastModifTime,
+					Host.this.getMyCurrentState(),//firstModifTime,
+					lastModifTime,
 					Host.this.getCreationTime(),initialStateNumber);
 		}
 	};
@@ -95,21 +96,28 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
 	}
 
-	
+
 	@EventHookedMethod(HostState.class)
 	public void updateStateStatus(HostState h){
-		firstModifTime=getUptime();		
+//		if (firstModifTime==-2){
+//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
+//			firstModifTime=-1;	
+//		}else if (firstModifTime==-1){
+//			assert h.getStateCounter()==initialStateNumber+1;
+//			firstModifTime=getUptime();		
+//		}
+//		
 		lastModifTime=getUptime();
 	}
 	//
 	// Behavior
 	//
 
-//	@ProactivityFinalisation
-//	public void thisIsZiEnd(){
-//		this.logMonologue("Ze end : "+this.getMyCurrentState().getMyResourceIdentifiers()+this.getMyCurrentState(), LogService.onBoth);
-////		this.logMonologue("Ze end : "+this.getMyCurrentState(), LogService.onBoth);
-//	}
+	//	@ProactivityFinalisation
+	//	public void thisIsZiEnd(){
+	//		this.logMonologue("Ze end : "+this.getMyCurrentState().getMyResourceIdentifiers()+this.getMyCurrentState(), LogService.onBoth);
+	////		this.logMonologue("Ze end : "+this.getMyCurrentState(), LogService.onBoth);
+	//	}
 }
 
 

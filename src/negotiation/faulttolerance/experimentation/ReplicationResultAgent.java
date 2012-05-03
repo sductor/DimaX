@@ -3,7 +3,9 @@ package negotiation.faulttolerance.experimentation;
 import java.util.Date;
 
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.experimentation.ExperimentationResults;
 
@@ -20,7 +22,6 @@ public class ReplicationResultAgent implements ExperimentationResults {
 
 	final Double criticity;
 	final Double disponibility;
-	final Double reliability;
 
 	final int numberOfAllocatedResources;
 	//	public void setiAmDead(final boolean iAmDead) {
@@ -38,7 +39,6 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.myAgentIdentifier = s.getMyAgentIdentifier();
 		this.criticity = s.getMyCriticity();
 		this.disponibility = s.getMyDisponibility();
-		this.reliability = s.getMyReliability();
 		this.lastInfo = s.getMyDisponibility() == 0;
 		this.numberOfAllocatedResources=s.getMyResourceIdentifiers().size();
 		this.status = status;
@@ -51,7 +51,6 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.myAgentIdentifier = s.getMyAgentIdentifier();
 		this.criticity = s.getMyCriticity();
 		this.disponibility = s.getMyDisponibility();
-		this.reliability = s.getMyReliability();
 		this.lastInfo = s.getMyDisponibility() == 0;
 		this.numberOfAllocatedResources=s.getMyResourceIdentifiers().size();
 		this.status = null;
@@ -70,8 +69,8 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		return this.disponibility;
 	}
 
-	public double getReliability() {
-		return this.reliability;
+	public double getReliability(SocialChoiceType welfare) {
+		return ReplicationSocialOptimisation.getReliability(getDisponibility(), getCriticity(), welfare);
 	}
 
 	@Override

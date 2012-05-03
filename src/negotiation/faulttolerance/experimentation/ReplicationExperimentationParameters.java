@@ -94,15 +94,16 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbAgents = 500;
 	public static final int startingNbHosts = 100;
+	public static int startingNbAgents =-1;
 	
-	public  int simultaneousCandidature = 100;
-	public  int simultaneousAcceptation = 30;
-	public static final boolean completGraph = true;
+	public  int simultaneousCandidature = 30;
+	public  int simultaneousAcceptation = 15;
+	public final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
-	private static final boolean withOptimal = false;
+	private  boolean withOptimal = true;
+	private final int maxOptimal = 50;
 
 	/* FAULTS
 	 *
@@ -140,7 +141,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public static final double _criticityMin = 0.1;
 	public static final double _criticityVariationProba = 20. / 100.;// 20%
 	public static final double _criticityVariationAmplitude = 30. / 100.;// 10%
-	public static final long _criticity_update_frequency = 2*NegotiationParameters._timeToCollect;// (long)
+	public static final long _criticity_update_frequency = 4*NegotiationParameters._timeToCollect;// (long)
 
 	// public static final double _dispoMax = 0.7;
 	// public static final double _dispoVariationProba = 0./100.;
@@ -188,8 +189,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.set_hostSelection(hostSelection);
 		this.dynamicCriticity = dynamicCriticty;
 		this.setMaxSimultFailure(host_maxSimultaneousFailurePercent);
+		startingNbAgents =(int)((startingNbHosts * hostCapacityMean)/agentLoadMean);
+		withOptimal=withOptimal&&nbAgents*nbHosts<maxOptimal;
 		simultaneousCandidature = Math.min(nbHosts,simultaneousCandidature);
-		simultaneousAcceptation = Math.min(nbAgents,simultaneousAcceptation);
+//		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)+1));
 	}
 
 	@Override
@@ -350,7 +353,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		for (final HostState h : this.rig.getHostsStates()){
 			initialisationStatus+=h.getMyAgentIdentifier()+"  has allocated  "+h.getMyResourceIdentifiers()+"\n";
 		}
-		this.logMonologue(initialisationStatus, LogService.onBoth);
+		this.logMonologue(initialisationStatus, LogService.onFile);
 	}
 
 
@@ -548,7 +551,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			NegotiationParameters.key4mirrorProto,
 			NegotiationParameters.key4CentralisedstatusProto,
 			NegotiationParameters.key4statusProto});
-	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin, SocialChoiceType.Nash});//
+	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin,SocialChoiceType.Nash});// 
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
@@ -576,6 +579,12 @@ ExperimentationParameters<ReplicationLaborantin> {
 			1.});
 	static List<Double> doubleParameters3 = Arrays.asList(new Double[]{
 			0.,
+			0.25,
+			0.5,
+			0.75,
+			1.});
+	static List<Double> doubleParameters6 = Arrays.asList(new Double[]{
+			0.1,
 			0.25,
 			0.5,
 			0.75,
@@ -631,7 +640,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Moyen,//load dispersion
-				((double)startingNbAgents)/((double)startingNbHosts),//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean
+				5.,//((double)startingNbAgents)/((double)startingNbHosts),//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
@@ -763,7 +772,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	@Override
 	public Integer getMaxNumberOfAgent(final HostIdentifier id) {
 		return new Integer((int) this.nbSimuPerMAchine*
-				(ReplicationExperimentationParameters.startingNbAgents + ReplicationExperimentationParameters.startingNbHosts)+1);
+				(nbAgents + nbHosts)+1);
+//				(ReplicationExperimentationParameters.startingNbAgents + ReplicationExperimentationParameters.startingNbHosts)+1);
 		//		return new Integer(10);
 	}
 
@@ -826,10 +836,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationParameters.doubleParameters4){
+			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
-				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);
+//				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
+//				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);
+				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
 				result.add(n);
 			}
 		}

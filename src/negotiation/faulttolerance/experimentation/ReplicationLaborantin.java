@@ -70,6 +70,8 @@ public class ReplicationLaborantin extends Laborantin {
 
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, IfailedException, NotEnoughMachinesException{
+//		System.out.println(1<<10000);
+		
 		final Experimentator exp = new Experimentator(ReplicationExperimentationParameters.getDefaultParameters());
 		exp.run(args);
 	}

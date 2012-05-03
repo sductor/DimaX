@@ -50,6 +50,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 		if (nbContracts>c && !all.isEmpty()){			
 			Collection<Contract> notAnalysed = new ArrayList<Contract>();
 			for (int i = 0; i < nbContracts-c; i++){
+				if (all.isEmpty()) break;
 				int toRemove =rand.nextInt(all.size());
 				notAnalysed.add(all.get(toRemove));
 				all.remove(toRemove);

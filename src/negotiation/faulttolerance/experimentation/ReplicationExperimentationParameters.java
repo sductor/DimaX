@@ -95,10 +95,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 */
 
 	public static final int startingNbHosts = 100;
-	public static int startingNbAgents =1000;
+	public static int startingNbAgents =5000;
 	
 	public  int simultaneousCandidature = 100;
-	public  int simultaneousAcceptation = 10;
+	public  int simultaneousAcceptation = 15;
 	public final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -839,9 +839,9 @@ ExperimentationParameters<ReplicationLaborantin> {
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
 				final ReplicationExperimentationParameters n =  p.clone();
-//				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
+				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
 //				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);
-				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
+//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
 				result.add(n);
 			}
 		}

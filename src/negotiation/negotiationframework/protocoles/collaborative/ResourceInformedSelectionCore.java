@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -42,6 +43,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 	final AllocationSolver<Contract, ActionSpec, PersonalState> solver;
 	final int kMax;
+	Random rand = new Random();
 	
 	//
 	// Methods
@@ -275,13 +277,13 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 		assert ContractTransition.allComplete(concerned.values()):concerned+" "+myAgentContractTrunk;
 
-		List<Contract> kConcerned = new ArrayList<Contract>(concerned.keySet());
-		Collections.shuffle(kConcerned);
-		Iterator<Contract> itConcerned = kConcerned.iterator();
+		Set<Contract> kConcerned = new HashSet<Contract>();
+		List<Contract> allConcerned = new ArrayList<Contract>(concerned.keySet());
 		
-		while (itConcerned.hasNext() && kConcerned.size()>kMax){
-			itConcerned.next();
-			itConcerned.remove();
+		while (kConcerned.size()<kMax && !allConcerned.isEmpty()){
+			int nextInt = rand.nextInt(allConcerned.size());
+			kConcerned.add(allConcerned.get(nextInt));
+			allConcerned.remove(nextInt);
 		}
 
 		

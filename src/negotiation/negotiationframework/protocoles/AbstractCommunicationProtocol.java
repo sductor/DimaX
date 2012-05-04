@@ -585,14 +585,14 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		if (alreadyCancelled.contains(e.getId()))
 			alreadyCancelled.remove(e.getId());
 		else {
-
-			this.signalException("facing unknonw contract!!!!! " + e.getId()
-					+"\nreceivedContract?"+receivedContract.contains(e.getId())
-					+"\nalreadyCancelled?"+alreadyCancelled.contains(e.getId())
-					+"\nalreadyExecuted?"+alreadyExecuted.contains(e.getId())
-					+ " lost contracts are : ",e);// + this.losts, e);
-			this.sendMessage(e.getId().getParticipants(), new ShowYourPocket(
-					this.getIdentifier(), "facing an unknown contract"));
+			this.signalException("facing unknonw contract!!!!! ");
+//			this.signalException("facing unknonw contract!!!!! " + e.getId()
+//					+"\nreceivedContract?"+receivedContract.contains(e.getId())
+//					+"\nalreadyCancelled?"+alreadyCancelled.contains(e.getId())
+//					+"\nalreadyExecuted?"+alreadyExecuted.contains(e.getId())
+//					+ " lost contracts are : ",e);// + this.losts, e);
+//			this.sendMessage(e.getId().getParticipants(), new ShowYourPocket(
+//					this.getIdentifier(), "facing an unknown contract"));
 		}
 	}
 

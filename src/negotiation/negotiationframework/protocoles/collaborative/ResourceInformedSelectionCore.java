@@ -2,6 +2,7 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,15 +41,19 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	private static final long serialVersionUID = 5994721006483536151L;
 
 	final AllocationSolver<Contract, ActionSpec, PersonalState> solver;
+	final int kMax;
+	
 	//
 	// Methods
 	//
 
 	public ResourceInformedSelectionCore(
-			final AllocationSolver<Contract, ActionSpec, PersonalState> solver)
+			final AllocationSolver<Contract, ActionSpec, PersonalState> solver,
+			final int kMax)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
+		this.kMax=kMax;
 	}
 
 
@@ -270,10 +275,19 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 		assert ContractTransition.allComplete(concerned.values()):concerned+" "+myAgentContractTrunk;
 
+		List<Contract> kConcerned = new ArrayList<Contract>(concerned.keySet());
+		Collections.shuffle(kConcerned);
+		Iterator<Contract> itConcerned = kConcerned.iterator();
+		
+		while (itConcerned.hasNext() && kConcerned.size()>kMax){
+			itConcerned.next();
+			itConcerned.remove();
+		}
 
+		
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		try {
-		this.solver.initiate(concerned.keySet());
+		this.solver.initiate(kConcerned);
 		Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
 				new HashSet<InformedCandidature<Contract,ActionSpec>>();
 		while (this.solver.hasNext()){

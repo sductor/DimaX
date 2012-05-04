@@ -94,10 +94,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 70;
+	public static final int startingNbHosts = 100;
 	public static int startingNbAgents =1000;
 	
-	public  int simultaneousCandidature = 5;
+	public  int simultaneousCandidature = 100;
 	public  int simultaneousAcceptation = 10;
 	public final boolean completGraph = true;
 
@@ -584,6 +584,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			0.75,
 			1.});
 	static List<Double> doubleParameters6 = Arrays.asList(new Double[]{
+			0.01,
 			0.1,
 			0.25,
 			0.5,
@@ -772,8 +773,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	@Override
 	public Integer getMaxNumberOfAgent(final HostIdentifier id) {
 		return new Integer((int) this.nbSimuPerMAchine*
-				(nbAgents + nbHosts)+1);
-//				(ReplicationExperimentationParameters.startingNbAgents + ReplicationExperimentationParameters.startingNbHosts)+1);
+//				(nbAgents + nbHosts)+1);
+				(ReplicationExperimentationParameters.startingNbAgents + ReplicationExperimentationParameters.startingNbHosts)+1);
 		//		return new Integer(10);
 	}
 

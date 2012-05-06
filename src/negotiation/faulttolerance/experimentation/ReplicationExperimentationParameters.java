@@ -98,7 +98,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public static int startingNbAgents =1000;
 	
 	public  int simultaneousCandidature = 100;
-	public  int simultaneousAcceptation = 15;
+	public  int simultaneousAcceptation = 20;
 	public final boolean completGraph = true;
 
 	public static final boolean multiDim=true;

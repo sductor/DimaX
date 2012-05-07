@@ -94,7 +94,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 24;
+	public static final int startingNbHosts = 18;
 	public static int startingNbAgents =1000;
 	
 	public  int simultaneousCandidature = 100;

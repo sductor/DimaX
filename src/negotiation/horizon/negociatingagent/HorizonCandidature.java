@@ -71,7 +71,7 @@ public class HorizonCandidature extends
 
     public VirtualNetworkState computeResultingState(final VirtualNetworkState s) {
 	if (this.getAllParticipants().contains(s.getMyAgentIdentifier())) {
-	    return new VirtualNetworkState(s, this.node, this.getResource());
+	    return new VirtualNetworkState(s, this.getSpecificationOf(getAgent()), this.getResource());
 	} else
 	    return s;
     }

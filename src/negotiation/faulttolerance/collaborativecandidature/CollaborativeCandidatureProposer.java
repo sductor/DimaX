@@ -22,7 +22,7 @@ extends AtMostKCandidaturesProposer<ReplicationSpecification, ReplicaState, Info
 	@Override
 	public InformedCandidature<ReplicationCandidature,ReplicationSpecification> constructCandidature(
 			final ResourceIdentifier id) {
-		final InformedCandidature c = new InformedCandidature(new ReplicationCandidature((ResourceIdentifier)id,this.getMyAgent().getIdentifier(),true,true));
+		final InformedCandidature c = new InformedCandidature(new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true));
 //		c.getPossibleContracts().addAll(((CollaborativeAgent)getMyAgent()).getCrt().getPossible(c));
 		c.setSpecification(this.getMyAgent().getMySpecif(c));
 		return c;

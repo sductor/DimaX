@@ -8,6 +8,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import negotiation.negotiationframework.rationality.AgentState;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dimaxx.experimentation.ExperimentationParameters;
@@ -137,13 +139,13 @@ AbstractContractTransition<ActionSpec> {
 	}
 
 	@Override
-	public <State extends ActionSpec> boolean isViable(final State... initialStates)
+	public <State extends AgentState> boolean isViable(final State... initialStates)
 			throws IncompleteContractException {
 		return this.isViable(Arrays.asList(initialStates));
 	}
 
 	@Override
-	public <State extends ActionSpec> boolean isViable(
+	public <State extends AgentState> boolean isViable(
 			final Collection<State> initialStates)
 					throws IncompleteContractException {
 		final Collection<AgentIdentifier> agents =
@@ -196,7 +198,7 @@ AbstractContractTransition<ActionSpec> {
 	public static <
 	Contract extends AbstractContractTransition<ActionSpec>,
 	ActionSpec extends AbstractActionSpecification,
-	State extends ActionSpec>
+	State extends AgentState>
 	Boolean respectRights(final Collection<Contract> cs, final Collection<State> initialStates) throws IncompleteContractException {
 		final ReallocationContract<Contract, ActionSpec> reall =
 				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
@@ -212,7 +214,7 @@ AbstractContractTransition<ActionSpec> {
 	public static <
 	Contract extends AbstractContractTransition<ActionSpec>,
 	ActionSpec extends AbstractActionSpecification,
-	State extends ActionSpec>
+	State extends AgentState>
 	Boolean respectRights(final Collection<Contract> cs, final State... initialStates) throws IncompleteContractException {
 		return ContractTransition.respectRights(cs, Arrays.asList(initialStates));
 	}

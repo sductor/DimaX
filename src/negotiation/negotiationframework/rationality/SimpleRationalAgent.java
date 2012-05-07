@@ -20,7 +20,7 @@ import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleRationalAgent<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicCompetentAgent {
 	private static final long serialVersionUID = -6248384713199838544L;

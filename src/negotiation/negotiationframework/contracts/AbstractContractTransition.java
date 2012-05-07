@@ -2,6 +2,8 @@ package negotiation.negotiationframework.contracts;
 
 import java.util.Collection;
 
+import negotiation.negotiationframework.rationality.AgentState;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
@@ -23,10 +25,10 @@ extends DimaComponentInterface {
 	ActionSpec getSpecificationOf(AgentIdentifier id) throws IncompleteContractException;
 
 	//Attention retourne l'état tel quel si l'agent n'est pas concerné
-	public <State extends ActionSpec> State computeResultingState(AgentIdentifier id)
+	public <State extends AgentState> State computeResultingState(AgentIdentifier id)
 			throws IncompleteContractException;
 
-	public <State extends ActionSpec> State computeResultingState(final State s)
+	public <State extends AgentState> State computeResultingState(final State s)
 			throws IncompleteContractException;
 
 	//	public <State extends ActionSpec> State computeResultingState(AgentIdentifier id, Collection<State> initialStates)
@@ -55,9 +57,9 @@ extends DimaComponentInterface {
 
 	public boolean isInitiallyValid()	throws IncompleteContractException;
 
-	public <State extends ActionSpec> boolean isViable(State... initialStates)	throws IncompleteContractException;
+	public <State extends AgentState> boolean isViable(State... initialStates)	throws IncompleteContractException;
 
-	public <State extends ActionSpec> boolean isViable(Collection<State> initialStates)	throws IncompleteContractException;
+	public <State extends AgentState> boolean isViable(Collection<State> initialStates)	throws IncompleteContractException;
 
 	public class IncompleteContractException extends Exception{
 

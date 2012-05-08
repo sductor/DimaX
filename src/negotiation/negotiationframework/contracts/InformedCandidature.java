@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
+import negotiation.negotiationframework.rationality.AgentState;
+
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class InformedCandidature<
@@ -119,7 +121,7 @@ implements AbstractContractTransition<ActionSpec>{
 	 */
 
 	@Override
-	public <State extends ActionSpec> State computeResultingState(final State s) throws IncompleteContractException {
+	public <State extends AgentState> State computeResultingState(final State s) throws IncompleteContractException {
 		return this.candidature.computeResultingState(s);
 	}
 
@@ -248,13 +250,13 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 	@Override
-	public <State extends ActionSpec> boolean isViable(final State... initialStates)
+	public <State extends AgentState> boolean isViable(final State... initialStates)
 			throws IncompleteContractException {
 		return this.candidature.isViable(initialStates);
 	}
 
 	@Override
-	public <State extends ActionSpec> boolean isViable(
+	public <State extends AgentState> boolean isViable(
 			final Collection<State> initialStates)
 					throws IncompleteContractException {
 		return this.candidature.isViable(initialStates);

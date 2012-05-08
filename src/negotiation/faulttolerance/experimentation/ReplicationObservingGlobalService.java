@@ -290,6 +290,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				reliaStates.add((ReplicationResultAgent)er);
 		}
 
+		double min = Double.POSITIVE_INFINITY;
 		double sum=0;
 		double criti=0;
 		double nash=1;
@@ -298,15 +299,17 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			sum+=ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Utility);
 			criti+=r.getCriticity();
 			nash*=ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Nash);
-			lex.addLast(ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Leximin));
-			Collections.sort(lex);
+			min = Math.min(min, ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Leximin));
+//			lex.addLast(ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Leximin));
+//			Collections.sort(lex);
 		}
-		result += "Leximin solution : "+lex+"\n Sum solution "+sum+"\n Mean Solution : "+sum/criti+"\n Nash solution "+nash;
+		result += //"Leximin solution : "+lex
+				"min sol "+min+"\n Sum solution "+sum+"\n Mean Solution : "+sum/criti+"\n Nash solution "+nash;
 
-		result+="\n Agent percent of allocated resources : ";
-		for (ReplicationResultAgent r : reliaStates){
-			result+= ((double)r.numberOfAllocatedResources/(double)getMyAgent().getSimulationParameters().nbHosts)*100+"%, ";
-		}
+//		result+="\n Agent percent of allocated resources : ";
+//		for (ReplicationResultAgent r : reliaStates){
+//			result+= ((double)r.numberOfAllocatedResources/(double)getMyAgent().getSimulationParameters().nbHosts)*100+"%, ";
+//		}
 
 
 		Comparator<ReplicationResultAgent> reliaComp = new Comparator<ReplicationResultAgent>() {

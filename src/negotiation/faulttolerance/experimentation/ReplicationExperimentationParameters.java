@@ -674,7 +674,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		new File(LogService.getMyPath()+"result_"+getProtocolId()+"/").mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new HashSet<ReplicationExperimentationParameters>();
-//		simuToLaunch.add(ReplicationExperimentationParameters.getDefaultParameters());
+		simuToLaunch.add(ReplicationExperimentationParameters.getDefaultParameters());
 		if (ReplicationExperimentationParameters.varyAgentsAndhosts) {
 			simuToLaunch = this.varyAgentsAndhosts(simuToLaunch);
 		}

@@ -3,6 +3,7 @@ package negotiation.faulttolerance.negotiatingagent;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class ReplicationCandidature extends
@@ -30,7 +31,7 @@ MatchingCandidature<ReplicationSpecification> {
 	//
 
 	@Override
-	public <State extends ReplicationSpecification>  State computeResultingState(final State s) throws IncompleteContractException {
+	public <State extends AgentState>  State computeResultingState(final State s) throws IncompleteContractException {
 		if (s instanceof ReplicaState) {
 			return (State) this.getAgentResultingState((ReplicaState)s);
 		} else if (s instanceof HostState) {

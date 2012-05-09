@@ -2,11 +2,13 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -40,15 +42,20 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	private static final long serialVersionUID = 5994721006483536151L;
 
 	final AllocationSolver<Contract, ActionSpec, PersonalState> solver;
+	final int kMax;
+	Random rand = new Random();
+
 	//
 	// Methods
 	//
 
 	public ResourceInformedSelectionCore(
-			final AllocationSolver<Contract, ActionSpec, PersonalState> solver)
+			final AllocationSolver<Contract, ActionSpec, PersonalState> solver,
+			final int kMax)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
+		this.kMax=kMax;
 	}
 
 
@@ -184,8 +191,8 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					}
 				}
 
-//				rejected.addAll(contracts.getContractToCancel());
-//				contracts.getContractToCancel().clear();
+				//				rejected.addAll(contracts.getContractToCancel());
+				//				contracts.getContractToCancel().clear();
 			}
 
 		try {
@@ -238,11 +245,14 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		final Map<Contract,InformedCandidature<Contract,ActionSpec>> concerned =
 				new HashMap<Contract,InformedCandidature<Contract,ActionSpec>>();
 
+		List<Contract> dealloc = new ArrayList<Contract>();
 		for (final InformedCandidature<Contract,ActionSpec> c : unacceptedContracts){
 			assert c.isMatchingCreation();
 			concerned.put(c.getCandidature(),c);//adding allocation candidature
+			dealloc.add(c.getCandidature());
 		}
 
+		List<Contract> alloc = new ArrayList<Contract>();
 		for (final ActionSpec s : getMyAgent().getMyResources()){
 			assert s.getMyResourceIdentifiers().contains(getIdentifier());
 			assert getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(s.getMyAgentIdentifier());
@@ -250,6 +260,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					this.generateDestructionContract(s.getMyAgentIdentifier());
 			d.setSpecification(this.getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), d));
 			d.setSpecification(s);
+			alloc.add(d.getCandidature());
 			concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}
 		//		for (final ActionSpec s : this.getMyAgent().getMyResources()){
@@ -270,64 +281,106 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 		assert ContractTransition.allComplete(concerned.values()):concerned+" "+myAgentContractTrunk;
 
+		Set<Contract> kConcerned = new HashSet<Contract>();
+		int nextInt;
+		//		List<Contract> allConcerned = new ArrayList<Contract>(concerned.keySet());
+
+		//Adding one alloc
+		if (!alloc.isEmpty()){
+			nextInt = rand.nextInt(alloc.size());
+			kConcerned.add(alloc.get(nextInt));
+			alloc.remove(alloc.get(nextInt));
+		}
+
+		//Adding one dealloc
+		if (!dealloc.isEmpty()){
+			nextInt = rand.nextInt(dealloc.size());
+			kConcerned.add(dealloc.get(nextInt));
+			dealloc.remove(dealloc.get(nextInt));
+		}
+
+		while (kConcerned.size()<kMax){// && !allConcerned.isEmpty()){
+			if (dealloc.isEmpty() && alloc.isEmpty()){
+				break;
+			} else if (dealloc.isEmpty() && !alloc.isEmpty()){
+				nextInt = rand.nextInt(alloc.size());
+				kConcerned.add(alloc.get(nextInt));
+				alloc.remove(nextInt);
+			} else if (!dealloc.isEmpty() && alloc.isEmpty()){
+				nextInt = rand.nextInt(dealloc.size());
+				kConcerned.add(dealloc.get(nextInt));
+				dealloc.remove(nextInt);
+			} else {
+				if (rand.nextBoolean()){
+					nextInt = rand.nextInt(alloc.size());
+					kConcerned.add(alloc.get(nextInt));
+					alloc.remove(nextInt);					
+				} else {
+					nextInt = rand.nextInt(dealloc.size());
+					kConcerned.add(dealloc.get(nextInt));
+					dealloc.remove(nextInt);					
+				}
+			}			
+		}
+
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		try {
-		this.solver.initiate(concerned.keySet());
-		Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
-				new HashSet<InformedCandidature<Contract,ActionSpec>>();
-		while (this.solver.hasNext()){
-			final Collection<Contract> realloc = this.solver.getNextSolution();
-			if (!realloc.isEmpty()){
-				final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep =
-						new HashSet<InformedCandidature<Contract, ActionSpec>>();
-				for (final Contract c : realloc) {
-					contractsToKeep.add(concerned.get(c));
-				}
-				//				assert isImprovment(contractsToKeep);
-				if (this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep)){
-					//MAJ du contract trunk
-					for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
-						//Pour toute action de ce contrat
-						if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
-							//on l'ajoute a la base de contrat
-							myAgentContractTrunk.addContract(c);
-							onWait.add(c);
-							//Ajout aux propositions à faire
-							//						try { NON CAR L'HOTE PEUT ENVOYER DES DEMANDES DE TUAGE, DES FOIS QUE L4AGENT POURRAIT SE RETOURNER!!
-							//							assert c.isViable();
-							//						} catch (final IncompleteContractException e) {
-							//							this.getMyAgent().signalException("impossible");
-							//						}
-							toPropose.add(c);
-						} else {//sinon on la laisse en attente
-							assert (!alreadyDone.add(c)||unacceptedContracts.contains(c)):unacceptedContracts;
-							unacceptedContracts.remove(c);
-							onWait.add(c);
-						}
+			this.solver.initiate(kConcerned);
+			Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
+					new HashSet<InformedCandidature<Contract,ActionSpec>>();
+			while (this.solver.hasNext()){
+				final Collection<Contract> realloc = this.solver.getNextSolution();
+				if (!realloc.isEmpty()){
+					final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep =
+							new HashSet<InformedCandidature<Contract, ActionSpec>>();
+					for (final Contract c : realloc) {
+						contractsToKeep.add(concerned.get(c));
 					}
+					//				assert isImprovment(contractsToKeep);
+					if (this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep)){
+						//MAJ du contract trunk
+						for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
+							//Pour toute action de ce contrat
+							if (!c.isMatchingCreation()){//si cette action est un contrat de destruction
+								//on l'ajoute a la base de contrat
+								myAgentContractTrunk.addContract(c);
+								onWait.add(c);
+								//Ajout aux propositions à faire
+								//						try { NON CAR L'HOTE PEUT ENVOYER DES DEMANDES DE TUAGE, DES FOIS QUE L4AGENT POURRAIT SE RETOURNER!!
+								//							assert c.isViable();
+								//						} catch (final IncompleteContractException e) {
+								//							this.getMyAgent().signalException("impossible");
+								//						}
+								toPropose.add(c);
+							} else {//sinon on la laisse en attente
+								assert (!alreadyDone.add(c)||unacceptedContracts.contains(c)):unacceptedContracts;
+								unacceptedContracts.remove(c);
+								onWait.add(c);
+							}
+						}
 
-					//Ajout du contrat améliorant
-					// --- > Création du contrat
-					myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
-							this.getIdentifier(),
-							realloc));
+						//Ajout du contrat améliorant
+						// --- > Création du contrat
+						myAgentContractTrunk.addReallocContract(new ReallocationContract<Contract, ActionSpec>(
+								this.getIdentifier(),
+								realloc));
+					}
 				}
 			}
-		}
 
-		for (final InformedCandidature<Contract, ActionSpec> c : toPropose){
-			//Pour toute action de ce contrat
-			assert !c.isMatchingCreation();//cette action est un contrat de destruction :
-			//on lui associe la meilleur réalloc et on l'ajoute au contrat à proposer
-			final ReallocationContract<Contract, ActionSpec> best =
-					myAgentContractTrunk.getBestReallocationContract(
-							c, myAgentCore.getReferenceAllocationComparator(getMyAgent().getMyCurrentState()));
-			assert best!=null;
-			c.getPossibleContracts().clear();
-			//en ajoutant le best des realloc qui ont été généré à l'itération précédente
-			c.getPossibleContracts().add(best);
-		}
+			for (final InformedCandidature<Contract, ActionSpec> c : toPropose){
+				//Pour toute action de ce contrat
+				assert !c.isMatchingCreation();//cette action est un contrat de destruction :
+				//on lui associe la meilleur réalloc et on l'ajoute au contrat à proposer
+				final ReallocationContract<Contract, ActionSpec> best =
+						myAgentContractTrunk.getBestReallocationContract(
+								c, myAgentCore.getReferenceAllocationComparator(getMyAgent().getMyCurrentState()));
+				assert best!=null;
+				c.getPossibleContracts().clear();
+				//en ajoutant le best des realloc qui ont été généré à l'itération précédente
+				c.getPossibleContracts().add(best);
+			}
 
 		}catch (Throwable e){
 			signalException("solver failed",e); 

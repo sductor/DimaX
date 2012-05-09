@@ -94,11 +94,11 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 100;
-	public static int startingNbAgents =-1;
+	public static final int startingNbHosts = 24;
+	public static int startingNbAgents =1000;
 	
-	public  int simultaneousCandidature = 30;
-	public  int simultaneousAcceptation = 15;
+	public  int simultaneousCandidature = 100;
+	public  int simultaneousAcceptation = 10;
 	public final boolean completGraph = true;
 
 	public static final boolean multiDim=true;
@@ -181,7 +181,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.agentLoadDispersion=agentLoadDispersion;
 		this.agentCriticityMean=agentCriticityMean;
 		this.agentCriticityDispersion=agentCriticityDispersion;
-		this.hostCapacityMean=hostCapacityMean;
+		this.hostCapacityMean=0.3*nbAgents;//hostCapacityMean;
 		this.hostCapacityDispersion=hostcapacityDispersion;
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;
@@ -189,7 +189,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.set_hostSelection(hostSelection);
 		this.dynamicCriticity = dynamicCriticty;
 		this.setMaxSimultFailure(host_maxSimultaneousFailurePercent);
-		startingNbAgents =(int)((startingNbHosts * hostCapacityMean)/agentLoadMean);
+//		startingNbAgents =(int)((startingNbHosts * hostCapacityMean)/agentLoadMean);
 		withOptimal=withOptimal&&nbAgents*nbHosts<maxOptimal;
 		simultaneousCandidature = Math.min(nbHosts,simultaneousCandidature);
 //		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)+1));
@@ -584,6 +584,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 			0.75,
 			1.});
 	static List<Double> doubleParameters6 = Arrays.asList(new Double[]{
+			0.01,
 			0.1,
 			0.25,
 			0.5,
@@ -640,7 +641,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Moyen,//load dispersion
-				5.,//((double)startingNbAgents)/((double)startingNbHosts),//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean
+				((double)startingNbAgents)/((double)startingNbHosts),//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean2.5,//
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
@@ -772,8 +773,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	@Override
 	public Integer getMaxNumberOfAgent(final HostIdentifier id) {
 		return new Integer((int) this.nbSimuPerMAchine*
-				(nbAgents + nbHosts)+1);
-//				(ReplicationExperimentationParameters.startingNbAgents + ReplicationExperimentationParameters.startingNbHosts)+1);
+//				(nbAgents + nbHosts)+1);
+				(ReplicationExperimentationParameters.startingNbAgents + ReplicationExperimentationParameters.startingNbHosts)+1);
 		//		return new Integer(10);
 	}
 
@@ -838,9 +839,9 @@ ExperimentationParameters<ReplicationLaborantin> {
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
 				final ReplicationExperimentationParameters n =  p.clone();
-//				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
+				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
 //				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);
-				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
+//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
 				result.add(n);
 			}
 		}

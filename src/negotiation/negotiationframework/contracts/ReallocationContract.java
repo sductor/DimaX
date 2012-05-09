@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import negotiation.negotiationframework.rationality.AgentState;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
@@ -129,7 +131,7 @@ AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public <State extends ActionSpec> State computeResultingState(final State s) throws IncompleteContractException {
+	public <State extends AgentState> State computeResultingState(final State s) throws IncompleteContractException {
 		final Set<Contract> contractOfS = this.actions.get(s.getMyAgentIdentifier());
 		State s2 = s;
 		for (final Contract m : contractOfS) {
@@ -140,19 +142,19 @@ AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public <State extends ActionSpec> State  computeResultingState(final AgentIdentifier id)
+	public <State extends AgentState> State  computeResultingState(final AgentIdentifier id)
 			throws IncompleteContractException {
 		return (State) this.computeResultingState(this.getSpecificationOf(id));
 	}
 
 	@Override
-	public<State extends ActionSpec>  boolean isViable(final State... s) throws IncompleteContractException{
+	public<State extends AgentState>  boolean isViable(final State... s) throws IncompleteContractException{
 		return this.isViable(Arrays.asList(s));
 	}
 
 
 	@Override
-	public <State extends ActionSpec> boolean isViable(
+	public <State extends AgentState> boolean isViable(
 			final Collection<State> initialStates)
 					throws IncompleteContractException {
 		for (final Contract c : this) {

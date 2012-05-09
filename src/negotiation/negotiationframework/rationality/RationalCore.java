@@ -8,7 +8,7 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface RationalCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
 AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {

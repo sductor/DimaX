@@ -31,13 +31,13 @@ public class CollaborativeHost extends Host{
 				myId,
 				myState,
 				new InformedCandidatureRationality(new HostCore(socialWelfare),false),
-				new AtMostCContractSelectioner(maxCAccepts, new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare)){
+				new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare),maxCAccepts){
 					private static final long serialVersionUID = -1578866978817500691L;
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {
 						return new InformedCandidature(new ReplicationCandidature(myId,id,false,false));
 					}
-				}),//new GreedyBasicSelectionCore(true, false),//
+				},//new GreedyBasicSelectionCore(true, false),//
 				new ResourceInformedProposerCore(),
 				new SimpleObservationService(),
 				new OneDeciderCommunicationProtocol(true) );

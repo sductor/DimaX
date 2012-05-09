@@ -14,14 +14,11 @@ import dima.introspectionbasedagents.services.information.ObservationService.Inf
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 
 /**
- * The state of a SubstrateNode. The fields inherited from
- * {@link _AbstractSingleNodeState} represent the level of service provided by
- * the SubstrateNode.
+ * The state of a SubstrateNode (provided resources, available resources).
  * 
  * @author Vincent Letard
  */
-public class SubstrateNodeState extends SimpleAgentState implements
-	HorizonSpecification {
+public class SubstrateNodeState extends SimpleAgentState {
 
     /**
      * Serial version identifier.
@@ -30,17 +27,25 @@ public class SubstrateNodeState extends SimpleAgentState implements
 
     /**
      * Parameters of this SubstrateNode.
+     * 
+     * @uml.property name="nodeParams"
+     * @uml.associationEnd
      */
     private final SingleNodeParameters nodeParams;
 
     /**
      * Remaining parameters after the VirtualNodes are instantiated.
+     * 
+     * @uml.property name="availableNodeParams"
+     * @uml.associationEnd
      */
     private final SingleNodeParameters availableNodeParams;
     /**
      * List of the {@link LinkParameters} of each network interface of the node.
      * Contains as much items as there are network interfaces. This List is an
      * unmodifiable list since these parameters are not expected to change.
+     * 
+     * @uml.property name="ifacesParams"
      */
     private final List<LinkParameters> ifacesParams;
     // private final List<LinkParameters> availableIfacesParams;
@@ -51,6 +56,10 @@ public class SubstrateNodeState extends SimpleAgentState implements
      * here.
      */
     private final Set<VirtualNetworkIdentifier> nodesHostedNetworks;
+
+    private final int nbHostedNodes; // XXX Une allocation par construction
+
+    // d'objet ?
 
     /**
      * Constructs a new SubstrateNodeState using the provided parameters.
@@ -83,6 +92,7 @@ public class SubstrateNodeState extends SimpleAgentState implements
 	// this.availableIfacesParams = this.ifacesParams;
 	this.nodesHostedNetworks = Collections
 		.unmodifiableSet(new HashSet<VirtualNetworkIdentifier>());
+	this.nbHostedNodes = 0;
 	// this.pairedNodes = Collections.unmodifiableList(pairedNodes);
     }
 
@@ -98,7 +108,9 @@ public class SubstrateNodeState extends SimpleAgentState implements
 	    this.availableNodeParams = new SingleNodeParameters(
 		    initial.availableNodeParams.getProcessor()
 			    - params.getProcessor(),
-		    initial.availableNodeParams.getRam() - params.getRam());
+		    initial.availableNodeParams.getRam() - params.getRam(),
+		    initial.availableNodeParams.getSecurity()
+			    - params.getSecurity(), this.getMyAgentIdentifier());
 
 	    if (initial.nodesHostedNetworks.contains(nodeNetwork))
 		this.nodesHostedNetworks = initial.nodesHostedNetworks;
@@ -109,11 +121,14 @@ public class SubstrateNodeState extends SimpleAgentState implements
 		this.nodesHostedNetworks = Collections
 			.unmodifiableSet(newNetworkSet);
 	    }
+	    this.nbHostedNodes = initial.nbHostedNodes + 1;
 	} else {
 	    this.availableNodeParams = new SingleNodeParameters(
 		    initial.availableNodeParams.getProcessor()
 			    + params.getProcessor(),
-		    initial.availableNodeParams.getRam() + params.getRam());
+		    initial.availableNodeParams.getRam() + params.getRam(),
+		    initial.availableNodeParams.getSecurity()
+			    + params.getSecurity(), this.getMyAgentIdentifier());
 
 	    Set<VirtualNetworkIdentifier> newNetworkSet = new HashSet<VirtualNetworkIdentifier>(
 		    initial.nodesHostedNetworks);
@@ -123,6 +138,7 @@ public class SubstrateNodeState extends SimpleAgentState implements
 	    }
 	    this.nodesHostedNetworks = Collections
 		    .unmodifiableSet(newNetworkSet);
+	    this.nbHostedNodes = initial.nbHostedNodes - 1;
 	}
     }
 
@@ -201,14 +217,26 @@ public class SubstrateNodeState extends SimpleAgentState implements
     // this.availableNodeParams = availableNodeParams;
     // }
 
+    /**
+     * @return
+     * @uml.property name="nodeParams"
+     */
     public SingleNodeParameters getNodeParams() {
 	return nodeParams;
     }
 
+    /**
+     * @return
+     * @uml.property name="availableNodeParams"
+     */
     public SingleNodeParameters getAvailableNodeParams() {
 	return availableNodeParams;
     }
 
+    /**
+     * @return
+     * @uml.property name="ifacesParams"
+     */
     public List<LinkParameters> getIfacesParams() {
 	return ifacesParams;
     }
@@ -232,10 +260,33 @@ public class SubstrateNodeState extends SimpleAgentState implements
 	return this.availableNodeParams.isValid();
     }
 
+    private Double getMyCharge() {
+	return (double) Math.max(this.nodeParams.getProcessor()
+		- this.availableNodeParams.getProcessor(), this.nodeParams
+		.getRam()
+		- this.availableNodeParams.getRam());
+    }
+
+    private Double getMyCriticity() {
+	return this.getMyCharge();
+    }
+
+    private Double getMyDisponibility() {
+	if (0 == this.nbHostedNodes)
+	    return Double.POSITIVE_INFINITY;
+	else
+	    return 1. / this.nbHostedNodes; // XXX ..en gros
+    }
+
+    private Double getMyReliability() {
+	return 1 - ((1 - this.getMyCriticity()) * this.getMyDisponibility());
+    }
+
     @Override
     public Double getNumericValue(Information e) {
-	// TODO Auto-generated method stub
-	return null;
+	assert (e instanceof SubstrateNodeState);
+	// TODO ne pas implémenter ..?
+	return ((SubstrateNodeState) e).getMyReliability();
     }
 
     @Override

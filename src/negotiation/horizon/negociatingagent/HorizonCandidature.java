@@ -2,16 +2,21 @@ package negotiation.horizon.negociatingagent;
 
 import negotiation.horizon.negociatingagent.VirtualNetworkState.VirtualNodeIdentifier;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class HorizonCandidature extends
-	MatchingCandidature<HorizonSpecification> {
+	MatchingCandidature<SingleNodeParameters> {
 
     /**
-     * Serial version iiddentifier.
+     * Serial version identifier.
      */
     private static final long serialVersionUID = 5688344205746523199L;
 
+    /**
+     * @uml.property name="node"
+     * @uml.associationEnd
+     */
     private final VirtualNodeIdentifier node;
 
     public HorizonCandidature(final VirtualNetworkIdentifier intiator,
@@ -22,6 +27,10 @@ public class HorizonCandidature extends
 	this.node = node;
     }
 
+    /**
+     * @return
+     * @uml.property name="node"
+     */
     public VirtualNodeIdentifier getNode() {
 	return this.node;
     }
@@ -41,44 +50,61 @@ public class HorizonCandidature extends
 	return (SubstrateNodeIdentifier) super.getResource();
     }
 
-    public VirtualNetworkState getSpecificationOf(
-	    final VirtualNetworkIdentifier id)
-	    throws IncompleteContractException {
-	return (VirtualNetworkState) super.getSpecificationOf(id);
-    }
+    // public SingleNodeParameters getSpecificationOf(
+    // final VirtualNetworkIdentifier id)
+    // throws IncompleteContractException {
+    // return super.getSpecificationOf(id);
+    // }
 
-    public SubstrateNodeState getSpecificationOf(
-	    final SubstrateNodeIdentifier id)
-	    throws IncompleteContractException {
-	return (SubstrateNodeState) super.getSpecificationOf(id);
-    }
+    // public SubstrateNodeState getSpecificationOf(
+    // final SubstrateNodeIdentifier id)
+    // throws IncompleteContractException {
+    // return (SubstrateNodeState) super.getSpecificationOf(id);
+    // }
 
     @Override
-    public HorizonSpecification computeResultingState(AgentIdentifier id)
+    public AgentState computeResultingState(AgentIdentifier id)
 	    throws IncompleteContractException {
 	return this.computeResultingState(this.getSpecificationOf(id));
     }
 
-    public SubstrateNodeState computeResultingState(final SubstrateNodeState s)
-	    throws IncompleteContractException {
-	if (s.getMyAgentIdentifier().equals(this.getResource()))
-	    return new SubstrateNodeState(s, this.getAgent(), this
-		    .getSpecificationOf(this.getAgent()).getNodeParams(
-			    this.node), this.isMatchingCreation());
-	else
-	    return s;
-    }
-
-    public VirtualNetworkState computeResultingState(final VirtualNetworkState s) {
-	if (this.getAllParticipants().contains(s.getMyAgentIdentifier())) {
-	    return new VirtualNetworkState(s, this.getSpecificationOf(getAgent()), this.getResource());
-	} else
-	    return s;
-    }
+    // public SubstrateNodeState computeResultingState(final SubstrateNodeState
+    // s)
+    // throws IncompleteContractException {
+    // if (s.getMyAgentIdentifier().equals(this.getResource()))
+    // return new SubstrateNodeState(s, this.getAgent(), this
+    // .getSpecificationOf(this.getAgent()).getNodeParams(
+    // this.node), this.isMatchingCreation());
+    // else
+    // return s;
+    // }
+    //
+    // public VirtualNetworkState computeResultingState(final
+    // VirtualNetworkState s) {
+    // if (this.getAllParticipants().contains(s.getMyAgentIdentifier())) {
+    // return new VirtualNetworkState(s, this.node, this.getResource());
+    // } else
+    // return s;
+    // }
 
     @Override
-    public <State extends HorizonSpecification> State computeResultingState(
-	    State s) throws IncompleteContractException {
-	throw new RuntimeException("Unexpected behavior");
+    public <State extends AgentState> State computeResultingState(State s)
+	    throws IncompleteContractException {
+	if (s instanceof SubstrateNodeState) {
+	    if (s.getMyAgentIdentifier().equals(this.getResource()))
+		return (State) new SubstrateNodeState((SubstrateNodeState) s,
+			this.getAgent(), this.getSpecificationOf(this
+				.getResource()), this.isMatchingCreation());
+	    else
+		return s;
+	} else if (s instanceof VirtualNetworkState) {
+	    if (this.getAllParticipants().contains(s.getMyAgentIdentifier())) {
+		return (State) new VirtualNetworkState((VirtualNetworkState) s,
+			this.node, this.getResource(), this
+				.getSpecificationOf(this.getAgent()));
+	    } else
+		return s;
+	} else
+	    throw new IllegalArgumentException();
     }
 }

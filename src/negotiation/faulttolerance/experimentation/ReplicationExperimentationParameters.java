@@ -181,7 +181,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.agentLoadDispersion=agentLoadDispersion;
 		this.agentCriticityMean=agentCriticityMean;
 		this.agentCriticityDispersion=agentCriticityDispersion;
-		this.hostCapacityMean=41.5;//0.30*nbAgents;//hostCapacityMean;
+		this.hostCapacityMean=hostCapacityMean;//41.5;//0.30*nbAgents;//hostCapacityMean;
 		this.hostCapacityDispersion=hostcapacityDispersion;
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;
@@ -617,7 +617,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	static boolean varyAgentLoad=false;
 	static boolean varyAgentLoadDispersion=false;
 
-	static boolean varyHostCapacity=false;
+	static boolean varyHostCapacity=true;
 	static boolean varyHostCapacityDispersion=false;
 
 	static boolean varyAgentCriticity=false;
@@ -674,7 +674,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		new File(LogService.getMyPath()+"result_"+getProtocolId()+"/").mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new HashSet<ReplicationExperimentationParameters>();
-		simuToLaunch.add(ReplicationExperimentationParameters.getDefaultParameters());
+//		simuToLaunch.add(ReplicationExperimentationParameters.getDefaultParameters());
 		if (ReplicationExperimentationParameters.varyAgentsAndhosts) {
 			simuToLaunch = this.varyAgentsAndhosts(simuToLaunch);
 		}
@@ -923,7 +923,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		}
 		return result;
 	}
-	private Collection<ReplicationExperimentationParameters> varyHostCapacity(final Collection<ReplicationExperimentationParameters> exps){
+	private Collection<ReplicationExperimentationParameters> varyHostCapacity2(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationParameters.doubleParameters){
@@ -935,6 +935,20 @@ ExperimentationParameters<ReplicationLaborantin> {
 		return result;
 	}
 
+	private Collection<ReplicationExperimentationParameters> varyHostCapacity(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps) {
+			
+				final ReplicationExperimentationParameters n = p.clone();
+				n.hostCapacityMean=0.30*n.nbAgents;
+				result.add(n);
+				final ReplicationExperimentationParameters n2 = p.clone();
+				n2.hostCapacityMean=0.15*n2.nbAgents;
+				result.add(n2);
+			
+		}
+		return result;
+	}
 	private Collection<ReplicationExperimentationParameters> varyHostCapacityDispersion(
 			final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();

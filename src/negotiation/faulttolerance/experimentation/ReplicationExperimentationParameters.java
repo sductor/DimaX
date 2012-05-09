@@ -181,7 +181,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.agentLoadDispersion=agentLoadDispersion;
 		this.agentCriticityMean=agentCriticityMean;
 		this.agentCriticityDispersion=agentCriticityDispersion;
-		this.hostCapacityMean=0.30*nbAgents;//hostCapacityMean;
+		this.hostCapacityMean=41.5;//0.30*nbAgents;//hostCapacityMean;
 		this.hostCapacityDispersion=hostcapacityDispersion;
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;

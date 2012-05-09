@@ -96,7 +96,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 
 	public static final int startingNbHosts = 24;
 	public static int startingNbAgents =1000;
-	
+
 	public  int simultaneousCandidature = 100;
 	public  int simultaneousAcceptation = 10;
 	public final boolean completGraph = true;
@@ -189,10 +189,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 		this.set_hostSelection(hostSelection);
 		this.dynamicCriticity = dynamicCriticty;
 		this.setMaxSimultFailure(host_maxSimultaneousFailurePercent);
-//		startingNbAgents =(int)((startingNbHosts * hostCapacityMean)/agentLoadMean);
+		//		startingNbAgents =(int)((startingNbHosts * hostCapacityMean)/agentLoadMean);
 		withOptimal=withOptimal&&nbAgents*nbHosts<maxOptimal;
 		simultaneousCandidature = Math.min(nbHosts,simultaneousCandidature);
-//		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)+1));
+		//		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)+1));
 	}
 
 	@Override
@@ -451,8 +451,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 				ReplicationHandler.replicate(ag);
 
 				hostAg.getMyInformation().add(this.rig.getAgentState(ag));
-//				hostAg.addObserver(ag,
-//						SimpleObservationService.informationObservationKey);
+				//				hostAg.addObserver(ag,
+				//						SimpleObservationService.informationObservationKey);
 				//				this.logMonologue(hostAg + "  ->I have initially replicated "
 				//						+ ag,LogService.onBoth);
 			}
@@ -571,8 +571,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 			0.1,
 			0.33
 			,0.66
-//			,1.
-			});
+			//			,1.
+	});
 	static List<Double> doubleParameters2 = Arrays.asList(new Double[]{
 			0.,
 			0.5,
@@ -602,7 +602,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	//
 
 	static boolean varyProtocol=false;
-	static boolean  varyOptimizers=true;
+	static boolean  varyOptimizers=false;
 
 	static boolean varyAgentsAndhosts=true;
 
@@ -655,16 +655,16 @@ ExperimentationParameters<ReplicationLaborantin> {
 
 	private static String getProtocolId() {
 		return ExperimentationParameters._maxSimulationTime / 1000
-		+ "secs"
-		+ (ReplicationExperimentationParameters.varyAgentSelection==true?"varyAgentSelection":"")
-		+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
-		+ (ReplicationExperimentationParameters.varyProtocol?"varyProtocol":"")
-		+ (ReplicationExperimentationParameters.varyHostDispo?"varyHostDispo":"")
-		+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
-		+ (ReplicationExperimentationParameters.varyOptimizers?"varyOptimizers":"")
-		+ (ReplicationExperimentationParameters.varyAccessibleHost?"varyAccessibleHost":"")
-		+ (ReplicationExperimentationParameters.varyAgentLoad?"varyAgentLoad":"")
-		+ (ReplicationExperimentationParameters.varyHostCapacity?"varyHostCapacity":"");
+				+ "secs"
+				+ (ReplicationExperimentationParameters.varyAgentSelection==true?"varyAgentSelection":"")
+				+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
+				+ (ReplicationExperimentationParameters.varyProtocol?"varyProtocol":"")
+				+ (ReplicationExperimentationParameters.varyHostDispo?"varyHostDispo":"")
+				+ (ReplicationExperimentationParameters.varyHostSelection?"varyHostSelection":"")
+				+ (ReplicationExperimentationParameters.varyOptimizers?"varyOptimizers":"")
+				+ (ReplicationExperimentationParameters.varyAccessibleHost?"varyAccessibleHost":"")
+				+ (ReplicationExperimentationParameters.varyAgentLoad?"varyAgentLoad":"")
+				+ (ReplicationExperimentationParameters.varyHostCapacity?"varyHostCapacity":"");
 	}
 
 	@Override
@@ -773,7 +773,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	@Override
 	public Integer getMaxNumberOfAgent(final HostIdentifier id) {
 		return new Integer((int) this.nbSimuPerMAchine*
-//				(nbAgents + nbHosts)+1);
+				//				(nbAgents + nbHosts)+1);
 				(ReplicationExperimentationParameters.startingNbAgents + ReplicationExperimentationParameters.startingNbHosts)+1);
 		//		return new Integer(10);
 	}
@@ -834,16 +834,34 @@ ExperimentationParameters<ReplicationLaborantin> {
 		}
 		return result;
 	}
-	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts(final Collection<ReplicationExperimentationParameters> exps){
+	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts2(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
-//				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);
-//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
+				//				n.nbHosts=(int)(v*ReplicationExperimentationParameters.startingNbHosts);
+				//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
 				result.add(n);
 			}
+		}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyAgentsAndhosts(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps) {
+			final ReplicationExperimentationParameters n =  p.clone();
+			n.nbAgents=50;
+			result.add(n);
+			final ReplicationExperimentationParameters n2 =  p.clone();
+			n2.nbAgents=80;
+			result.add(n2);
+			final ReplicationExperimentationParameters n3 =  p.clone();
+			n3.nbAgents=150;
+			result.add(n3);
+			final ReplicationExperimentationParameters n4 =  p.clone();
+			n4.nbAgents=300;
+			result.add(n4);
 		}
 		return result;
 	}

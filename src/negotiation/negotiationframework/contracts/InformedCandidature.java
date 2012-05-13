@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import negotiation.negotiationframework.rationality.AgentState;
-
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class InformedCandidature<
@@ -126,7 +125,7 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 	@Override
-	public ActionSpec computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
+	public AgentState computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
 		return this.candidature.computeResultingState(id);
 	}
 

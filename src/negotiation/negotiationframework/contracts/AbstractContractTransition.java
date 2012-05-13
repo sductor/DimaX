@@ -3,7 +3,6 @@ package negotiation.negotiationframework.contracts;
 import java.util.Collection;
 
 import negotiation.negotiationframework.rationality.AgentState;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
@@ -25,7 +24,7 @@ extends DimaComponentInterface {
 	ActionSpec getSpecificationOf(AgentIdentifier id) throws IncompleteContractException;
 
 	//Attention retourne l'état tel quel si l'agent n'est pas concerné
-	public <State extends AgentState> State computeResultingState(AgentIdentifier id)
+	public AgentState computeResultingState(AgentIdentifier id)
 			throws IncompleteContractException;
 
 	public <State extends AgentState> State computeResultingState(final State s)

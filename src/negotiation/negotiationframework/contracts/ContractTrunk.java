@@ -10,6 +10,7 @@ import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dimaxx.tools.mappedcollections.HashedHashSet;
@@ -17,7 +18,7 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 public class ContractTrunk<
 Contract extends AbstractContractTransition<ActionSpec>,
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec>
+PersonalState extends AgentState>
 extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
 
 	/**

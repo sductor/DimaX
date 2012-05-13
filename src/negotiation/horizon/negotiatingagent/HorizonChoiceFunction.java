@@ -30,7 +30,7 @@ public class HorizonChoiceFunction
     }
 
     @Override
-    public negotiation.negotiationframework.rationality.SocialChoiceFunction.UtilitaristEvaluator<HorizonParameters<HorizonIdentifier>> getUtilitaristEvaluator() {
+    public UtilitaristEvaluator<HorizonParameters<HorizonIdentifier>> getUtilitaristEvaluator() {
 	// TODO Auto-generated method stub
 	return null;
     }

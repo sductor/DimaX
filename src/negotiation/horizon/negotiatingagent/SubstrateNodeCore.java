@@ -14,6 +14,8 @@ public class SubstrateNodeCore
 	implements
 	RationalCore<HorizonParameters<HorizonIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>> {
 
+    
+    
     /**
      * Serial version identifier.
      */
@@ -22,7 +24,7 @@ public class SubstrateNodeCore
     @Override
     public Double evaluatePreference(
 	    Collection<ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>> cs) {
-
+	return 
     }
 
     @Override

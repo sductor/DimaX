@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import negotiation.negotiationframework.rationality.AgentState;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dimaxx.experimentation.ExperimentationParameters;
@@ -130,7 +129,7 @@ AbstractContractTransition<ActionSpec> {
 			throw new IncompleteContractException();
 		} else {
 			for (final AgentIdentifier id : this.actors) {
-				if (!this.getSpecificationOf(id).isValid()) {
+				if (!this.computeResultingState(id).isValid()) {
 					return false;
 				}
 			}

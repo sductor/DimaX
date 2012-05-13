@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import negotiation.negotiationframework.rationality.AgentState;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
@@ -142,9 +141,9 @@ AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public <State extends AgentState> State  computeResultingState(final AgentIdentifier id)
+	public AgentState computeResultingState(final AgentIdentifier id)
 			throws IncompleteContractException {
-		return (State) this.computeResultingState(this.getSpecificationOf(id));
+		return this.computeResultingState(this.getSpecificationOf(id));
 	}
 
 	@Override
@@ -225,10 +224,10 @@ AbstractContractTransition<ActionSpec>{
 	public static
 	<Contract extends AbstractContractTransition<ActionSpec>,
 	ActionSpec extends AbstractActionSpecification>
-	Map<AgentIdentifier, ActionSpec> getInitialStates(
+	Map<AgentIdentifier, AgentState> getInitialStates(
 			final Collection<Contract> a1,
 			final Collection<Contract> a2) throws IncompleteContractException{
-		final Map<AgentIdentifier, ActionSpec> result = new HashMap<AgentIdentifier, ActionSpec>();
+		final Map<AgentIdentifier, AgentState> result = new HashMap<AgentIdentifier, AgentState>();
 		final Collection<Contract> allContract = new ArrayList<Contract>();
 		allContract.addAll(a1);
 		allContract.addAll(a2);
@@ -266,11 +265,11 @@ AbstractContractTransition<ActionSpec>{
 	<Contract extends AbstractContractTransition<ActionSpec>,
 	ActionSpec extends AbstractActionSpecification>
 
-	Collection<ActionSpec> getResultingAllocation(
-			final Map<AgentIdentifier, ActionSpec> initialStates,
+	Collection<AgentState> getResultingAllocation(
+			final Map<AgentIdentifier, AgentState> initialStates,
 			final Collection<Contract> alloc) throws IncompleteContractException{
-		final Map<AgentIdentifier, ActionSpec> meAsMap =
-				new HashMap<AgentIdentifier, ActionSpec>();
+		final Map<AgentIdentifier, AgentState> meAsMap =
+				new HashMap<AgentIdentifier, AgentState>();
 		meAsMap.putAll(initialStates);
 
 		for (final Contract c : alloc) {
@@ -291,7 +290,7 @@ AbstractContractTransition<ActionSpec>{
 	public static
 	<Contract extends AbstractContractTransition<ActionSpec>,
 	ActionSpec extends AbstractActionSpecification>
-	Collection<ActionSpec> getResultingAllocation(
+	Collection<AgentState> getResultingAllocation(
 			final Collection<Contract> alloc) throws IncompleteContractException{
 		return ReallocationContract.getResultingAllocation(ReallocationContract.getInitialStates(alloc, new ArrayList<Contract>()),alloc);
 	}

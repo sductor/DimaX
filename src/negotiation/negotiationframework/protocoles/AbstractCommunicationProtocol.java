@@ -13,17 +13,17 @@ import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.UnknownContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.Protocol;
-import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
+import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 /**
@@ -38,7 +38,7 @@ import dima.introspectionbasedagents.shells.NotReadyException;
  */
 public abstract class AbstractCommunicationProtocol<
 ActionSpec extends AbstractActionSpecification,
-State extends ActionSpec,
+State extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	private static final long serialVersionUID = 7728287555094295894L;
@@ -50,7 +50,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	public interface ProposerCore
 	<Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 	ActionSpec extends AbstractActionSpecification,
-	PersonalState extends ActionSpec,
+	PersonalState extends AgentState,
 	Contract extends AbstractContractTransition<ActionSpec>>
 	extends AgentCompetence<Agent>{
 
@@ -69,7 +69,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	public interface SelectionCore<
 	Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 	ActionSpec extends AbstractActionSpecification,
-	PersonalState extends ActionSpec,
+	PersonalState extends AgentState,
 	Contract extends AbstractContractTransition<ActionSpec>>
 	extends	AgentCompetence<Agent> {
 

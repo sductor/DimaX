@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import negotiation.horizon.negociatingagent.SingleNodeParameters;
+import negotiation.horizon.negotiatingagent.HorizonParameters;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -32,8 +32,8 @@ public class HorizonExperimentationParameters extends
     public HorizonExperimentationParameters(AgentIdentifier experimentatorId,
 	    String protocolId, final int nbVirtualNetworks,
 	    final int nbVirtualNodesperNetwork, final int nbSubstrateNodes,
-	    final SingleNodeParameters hostCapacity,
-	    final SingleNodeParameters virtualNodeCapacity) {
+	    final HorizonParameters hostCapacity,
+	    final HorizonParameters virtualNodeCapacity) {
 	super(experimentatorId, protocolId);
 	this.nbSubstrateNodes = nbSubstrateNodes;
 	this.nbVirtualNetworks = nbVirtualNetworks;
@@ -64,7 +64,7 @@ public class HorizonExperimentationParameters extends
     static HorizonExperimentationParameters getDefaultParameters() {
 	return new HorizonExperimentationParameters(new AgentName(
 		"HorizonExperimentator"), getProtocolId(), 1, 3, 4,
-		new SingleNodeParameters(10, 3), new SingleNodeParameters(2, 1));
+		new HorizonParameters(10, 3), new HorizonParameters(2, 1));
     }
 
     @Override

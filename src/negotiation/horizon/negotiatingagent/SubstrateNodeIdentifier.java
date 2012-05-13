@@ -1,4 +1,4 @@
-package negotiation.horizon.negociatingagent;
+package negotiation.horizon.negotiatingagent;
 
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 
@@ -7,7 +7,8 @@ import negotiation.negotiationframework.contracts.ResourceIdentifier;
  * 
  * @author Vincent Letard
  */
-public class SubstrateNodeIdentifier extends ResourceIdentifier {
+public class SubstrateNodeIdentifier extends ResourceIdentifier implements
+	HorizonIdentifier {
 
     /**
      * Serial version identifier.

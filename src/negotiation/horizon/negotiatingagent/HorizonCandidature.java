@@ -1,12 +1,12 @@
-package negotiation.horizon.negociatingagent;
+package negotiation.horizon.negotiatingagent;
 
-import negotiation.horizon.negociatingagent.VirtualNetworkState.VirtualNodeIdentifier;
+import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class HorizonCandidature extends
-	MatchingCandidature<SingleNodeParameters> {
+	MatchingCandidature<HorizonParameters<HorizonIdentifier>> {
 
     /**
      * Serial version identifier.

@@ -1,9 +1,8 @@
-package negotiation.horizon.negociatingagent;
+package negotiation.horizon.negotiatingagent;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +30,7 @@ public class SubstrateNodeState extends SimpleAgentState {
      * @uml.property name="nodeParams"
      * @uml.associationEnd
      */
-    private final SingleNodeParameters nodeParams;
+    private final HorizonParameters<SubstrateNodeIdentifier> nodeParams;
 
     /**
      * Remaining parameters after the VirtualNodes are instantiated.
@@ -39,17 +38,7 @@ public class SubstrateNodeState extends SimpleAgentState {
      * @uml.property name="availableNodeParams"
      * @uml.associationEnd
      */
-    private final SingleNodeParameters availableNodeParams;
-    /**
-     * List of the {@link LinkParameters} of each network interface of the node.
-     * Contains as much items as there are network interfaces. This List is an
-     * unmodifiable list since these parameters are not expected to change.
-     * 
-     * @uml.property name="ifacesParams"
-     */
-    private final List<LinkParameters> ifacesParams;
-    // private final List<LinkParameters> availableIfacesParams;
-    // private final List<SubstrateNodeState> pairedNodes;
+    private final HorizonParameters<SubstrateNodeIdentifier> availableNodeParams;
 
     /**
      * The Set of VirtualNetworks that have at least one VirtualNode hosted
@@ -57,9 +46,11 @@ public class SubstrateNodeState extends SimpleAgentState {
      */
     private final Set<VirtualNetworkIdentifier> nodesHostedNetworks;
 
-    private final int nbHostedNodes; // XXX Une allocation par construction
-
-    // d'objet ?
+    // Une seule allocation/destruction par construction d'objet
+    /**
+     * Number of VirtualNodes currently instantiated.
+     */
+    private final int nbHostedNodes;
 
     /**
      * Constructs a new SubstrateNodeState using the provided parameters.
@@ -74,12 +65,8 @@ public class SubstrateNodeState extends SimpleAgentState {
      *            interface of this SubstrateNode
      */
     public SubstrateNodeState(final AgentIdentifier myAgent,
-	    final int stateNumber, final SingleNodeParameters nodeParams,
-	    final List<LinkParameters> ifacesParams /*
-						     * , final
-						     * List<SubstrateNodeState>
-						     * pairedNodes
-						     */) {
+	    final int stateNumber,
+	    final HorizonParameters<SubstrateNodeIdentifier> nodeParams) {
 	super(myAgent, stateNumber);
 
 	if (!nodeParams.isValid()) {
@@ -87,30 +74,48 @@ public class SubstrateNodeState extends SimpleAgentState {
 		    "Substrate node parameters must be valid.");
 	}
 	this.nodeParams = nodeParams;
-	this.ifacesParams = Collections.unmodifiableList(ifacesParams);
 	this.availableNodeParams = nodeParams;
-	// this.availableIfacesParams = this.ifacesParams;
 	this.nodesHostedNetworks = Collections
 		.unmodifiableSet(new HashSet<VirtualNetworkIdentifier>());
 	this.nbHostedNodes = 0;
-	// this.pairedNodes = Collections.unmodifiableList(pairedNodes);
     }
 
+    /**
+     * Constructs a new instance of SubstrateNodeState by performing
+     * adding/deleting one instantiated VirtualNode from the initial state.
+     * 
+     * @param initial
+     *            Initial SubstrateNodeState
+     * @param nodeNetwork
+     *            Identifier of the VirtualNetwork where belongs the
+     *            added/deleted node
+     * @param params
+     *            Parameters of the allocation (negative if deletion)
+     * @param creation
+     *            Is it a creation or a deletion ?
+     */
     public SubstrateNodeState(final SubstrateNodeState initial,
 	    final VirtualNetworkIdentifier nodeNetwork,
-	    final SingleNodeParameters params, final boolean creation) {
+	    final HorizonParameters<HorizonIdentifier> params,
+	    final boolean creation) {
 	super(initial.getMyAgentIdentifier(), initial.getStateCounter() + 1);
 
-	this.ifacesParams = initial.ifacesParams;
 	this.nodeParams = initial.nodeParams;
 
 	if (creation) {
-	    this.availableNodeParams = new SingleNodeParameters(
-		    initial.availableNodeParams.getProcessor()
-			    - params.getProcessor(),
-		    initial.availableNodeParams.getRam() - params.getRam(),
-		    initial.availableNodeParams.getSecurity()
-			    - params.getSecurity(), this.getMyAgentIdentifier());
+	    this.availableNodeParams = new HorizonParameters<SubstrateNodeIdentifier>(
+		    this.getMyAgentIdentifier(),
+		    new NodeParameters(initial.availableNodeParams
+			    .getNodeParameters().getProcessor()
+			    - params.getNodeParameters().getProcessor(),
+			    initial.availableNodeParams.getNodeParameters()
+				    .getRam()
+				    - params.getNodeParameters().getRam(),
+			    initial.availableNodeParams.getNodeParameters()
+				    .getAvailability()
+				    - params.getNodeParameters()
+					    .getAvailability()),
+		    initial.availableNodeParams.getInterfacesParameters());
 
 	    if (initial.nodesHostedNetworks.contains(nodeNetwork))
 		this.nodesHostedNetworks = initial.nodesHostedNetworks;
@@ -123,12 +128,19 @@ public class SubstrateNodeState extends SimpleAgentState {
 	    }
 	    this.nbHostedNodes = initial.nbHostedNodes + 1;
 	} else {
-	    this.availableNodeParams = new SingleNodeParameters(
-		    initial.availableNodeParams.getProcessor()
-			    + params.getProcessor(),
-		    initial.availableNodeParams.getRam() + params.getRam(),
-		    initial.availableNodeParams.getSecurity()
-			    + params.getSecurity(), this.getMyAgentIdentifier());
+	    this.availableNodeParams = new HorizonParameters<SubstrateNodeIdentifier>(
+		    this.getMyAgentIdentifier(),
+		    new NodeParameters(initial.availableNodeParams
+			    .getNodeParameters().getProcessor()
+			    + params.getNodeParameters().getProcessor(),
+			    initial.availableNodeParams.getNodeParameters()
+				    .getRam()
+				    + params.getNodeParameters().getRam(),
+			    initial.availableNodeParams.getNodeParameters()
+				    .getAvailability()
+				    + params.getNodeParameters()
+					    .getAvailability()),
+		    initial.availableNodeParams.getInterfacesParameters());
 
 	    Set<VirtualNetworkIdentifier> newNetworkSet = new HashSet<VirtualNetworkIdentifier>(
 		    initial.nodesHostedNetworks);
@@ -217,33 +229,13 @@ public class SubstrateNodeState extends SimpleAgentState {
     // this.availableNodeParams = availableNodeParams;
     // }
 
-    /**
-     * @return
-     * @uml.property name="nodeParams"
-     */
-    public SingleNodeParameters getNodeParams() {
+    public HorizonParameters<SubstrateNodeIdentifier> getNodeParams() {
 	return nodeParams;
     }
 
-    /**
-     * @return
-     * @uml.property name="availableNodeParams"
-     */
-    public SingleNodeParameters getAvailableNodeParams() {
+    public HorizonParameters<SubstrateNodeIdentifier> getAvailableNodeParams() {
 	return availableNodeParams;
     }
-
-    /**
-     * @return
-     * @uml.property name="ifacesParams"
-     */
-    public List<LinkParameters> getIfacesParams() {
-	return ifacesParams;
-    }
-
-    // public List<LinkParameters> getAvailableIfacesParams() {
-    // return availableIfacesParams;
-    // }
 
     @Override
     public Set<VirtualNetworkIdentifier> getMyResourceIdentifiers() {
@@ -261,16 +253,20 @@ public class SubstrateNodeState extends SimpleAgentState {
     }
 
     private Double getMyCharge() {
-	return (double) Math.max(this.nodeParams.getProcessor()
-		- this.availableNodeParams.getProcessor(), this.nodeParams
-		.getRam()
-		- this.availableNodeParams.getRam());
+	return (double) Math
+		.max(this.nodeParams.getNodeParameters().getProcessor()
+			- this.availableNodeParams.getNodeParameters()
+				.getProcessor(), this.nodeParams
+			.getNodeParameters().getRam()
+			- this.availableNodeParams.getNodeParameters().getRam());
     }
 
+    // TODO supprimer
     private Double getMyCriticity() {
 	return this.getMyCharge();
     }
 
+    // TODO supprimer
     private Double getMyDisponibility() {
 	if (0 == this.nbHostedNodes)
 	    return Double.POSITIVE_INFINITY;
@@ -278,42 +274,37 @@ public class SubstrateNodeState extends SimpleAgentState {
 	    return 1. / this.nbHostedNodes; // XXX ..en gros
     }
 
+    // TODO supprimer
     private Double getMyReliability() {
 	return 1 - ((1 - this.getMyCriticity()) * this.getMyDisponibility());
     }
 
     @Override
     public Double getNumericValue(Information e) {
-	assert (e instanceof SubstrateNodeState);
-	// TODO ne pas implémenter ..?
-	return ((SubstrateNodeState) e).getMyReliability();
+	throw new UnsupportedOperationException();
     }
 
     @Override
     public AbstractCompensativeAggregation<Information> fuse(
 	    Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-	// TODO Auto-generated method stub
-	return null;
+	throw new UnsupportedOperationException();
     }
 
     @Override
     public Information getRepresentativeElement(
 	    Collection<? extends Information> elems) {
-	// TODO Auto-generated method stub
-	return null;
+	throw new UnsupportedOperationException();
     }
 
     @Override
     public Information getRepresentativeElement(
 	    Map<? extends Information, Double> elems) {
-	// TODO Auto-generated method stub
-	return null;
+	throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean setLost(ResourceIdentifier h, boolean isLost) {
 	throw new UnsupportedOperationException();
-	// TODO Remove this method
     }
 
 }

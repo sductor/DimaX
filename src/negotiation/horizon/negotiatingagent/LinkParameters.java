@@ -1,4 +1,4 @@
-package negotiation.horizon.negociatingagent;
+package negotiation.horizon.negotiatingagent;
 
 import negotiation.horizon.Interval;
 import dima.support.GimaObject;
@@ -14,6 +14,7 @@ public class LinkParameters extends GimaObject {
      * Indication on the packet loss rate for the current node (percentage).
      * 
      * @uml.property name="packetLossRate"
+     * @uml.associationEnd
      */
     private final Interval<Float> packetLossRate;
 
@@ -21,6 +22,7 @@ public class LinkParameters extends GimaObject {
      * Packets routing delay in milliseconds.
      * 
      * @uml.property name="delay"
+     * @uml.associationEnd
      */
     private final Interval<Integer> delay;
 
@@ -28,6 +30,7 @@ public class LinkParameters extends GimaObject {
      * Variation of the delay in milliseconds.
      * 
      * @uml.property name="jitter"
+     * @uml.associationEnd
      */
     private final Interval<Integer> jitter;
 
@@ -35,6 +38,7 @@ public class LinkParameters extends GimaObject {
      * Bit rate of the bandwidth in kbit/s.
      * 
      * @uml.property name="bandwidth"
+     * @uml.associationEnd
      */
     private final Interval<Integer> bandwidth;
 
@@ -83,5 +87,12 @@ public class LinkParameters extends GimaObject {
     public String toString() {
 	return "(plr=" + this.packetLossRate + ", d=" + this.delay + ", j="
 		+ this.jitter + ", b=" + this.bandwidth + ")";
+    }
+
+    public boolean isValid() {
+	return this.bandwidth.getLower() >= 0 && this.delay.getLower() >= 0
+		&& this.jitter.getLower() >= 0
+		&& this.packetLossRate.getLower() >= 0
+		&& this.packetLossRate.getUpper() <= 100;
     }
 }

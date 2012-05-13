@@ -1,4 +1,4 @@
-package negotiation.horizon.negociatingagent;
+package negotiation.horizon.negotiatingagent;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
-import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.UtilitaristAnalyser;
@@ -37,8 +37,7 @@ public class VirtualNetworkState extends SimpleAgentState {
     private Map<Set<VirtualNodeIdentifier>, LinkParameters> links;
 
     public VirtualNetworkState(final VirtualNetworkIdentifier myAgent,
-	    final int stateNumber,
-	    final List<SingleNodeParameters> nodesParams,
+	    final int stateNumber, final List<NodeParameters> nodesParams,
 	    final List<Integer[]> links, final List<LinkParameters> linksParams)
 	    throws IllegalArgumentException {
 	super(myAgent, stateNumber);
@@ -64,8 +63,9 @@ public class VirtualNetworkState extends SimpleAgentState {
 	List<VirtualNodeIdentifier> orderedVNList = new LinkedList<VirtualNodeIdentifier>();
 
 	int i = 0;
-	for (SingleNodeParameters param : nodesParams) {
-	    VirtualNodeIdentifier newVNId = new VirtualNodeIdentifier(i);
+	for (HorizonParameters<VirtualNodeIdentifier> param : nodesParams) {
+	    VirtualNodeIdentifier newVNId = this.getMyAgentIdentifier().new VirtualNodeIdentifier(
+		    i);
 	    nodesMap.put(newVNId, new VirtualNode(param, null));
 	    orderedVNList.add(newVNId);
 
@@ -117,7 +117,7 @@ public class VirtualNetworkState extends SimpleAgentState {
     public VirtualNetworkState(final VirtualNetworkState initial,
 	    final VirtualNodeIdentifier reallocatedNode,
 	    final SubstrateNodeIdentifier newHost,
-	    final SingleNodeParameters params) {
+	    final HorizonParameters<HorizonIdentifier> params) {
 	super(initial.getMyAgentIdentifier(), initial.getStateCounter() + 1);
 	assert (this.nodes.get(reallocatedNode).param.equals(params));
 	assert (this.nodes.containsKey(reallocatedNode));
@@ -163,7 +163,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	return this.nodes.keySet().equals(this.links.keySet());
     }
 
-    public SingleNodeParameters getNodeParams(final VirtualNodeIdentifier id) {
+    public HorizonParameters getNodeParams(final VirtualNodeIdentifier id) {
 	return this.nodes.get(id).getParam();
     }
 
@@ -206,40 +206,6 @@ public class VirtualNetworkState extends SimpleAgentState {
 	return this.isValid() ? 1. : 0.;
     }
 
-    private Double getMyDisponibility() {
-
-    }
-
-    private Double getMyReliability() {
-	return this.getMyCriticity();
-    }
-
-    @Override
-    public static Double getNumericValue(Information s) {
-	assert (s instanceof VirtualNetworkState);
-	return ((VirtualNetworkState) s).getMyReliability();
-    }
-
-    @Override
-    public AbstractCompensativeAggregation<Information> fuse(
-	    Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-	throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Information getRepresentativeElement(
-	    Collection<? extends Information> elems) {
-	// TODO Auto-generated method stub
-	return null;
-    }
-
-    @Override
-    public Information getRepresentativeElement(
-	    Map<? extends Information, Double> elems) {
-	// TODO Auto-generated method stub
-	return null;
-    }
-
     @Override
     public Set<SubstrateNodeIdentifier> getMyResourceIdentifiers() {
 	assert (!this.nodes.values().contains(null));
@@ -256,6 +222,34 @@ public class VirtualNetworkState extends SimpleAgentState {
     }
 
     @Override
+    public boolean setLost(ResourceIdentifier h, boolean isLost) {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Double getNumericValue(Information e) {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public AbstractCompensativeAggregation<Information> fuse(
+	    Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Information getRepresentativeElement(
+	    Collection<? extends Information> elems) {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Information getRepresentativeElement(
+	    Map<? extends Information, Double> elems) {
+	throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean isValid() {
 	assert (!this.nodes.values().contains(null));
 	for (VirtualNode node : this.nodes.values()) {
@@ -264,26 +258,6 @@ public class VirtualNetworkState extends SimpleAgentState {
 	    }
 	}
 	return true;
-    }
-
-    /**
-     * Extension of an AgentUniqueIdentifier for clarity with VirtualNodes.
-     * 
-     * @author Vincent Letard
-     */
-    public class VirtualNodeIdentifier extends AgentName {
-	/**
-	 * Serial version identifier.
-	 */
-	private static final long serialVersionUID = -6126319326448434675L;
-
-	// TODO Est-ce nécessaire ? Si oui, supprimer le constructeur sans
-	// argument.
-	// private final VirtualNetworkIdentifier myVirtualNetworkIdentifier;
-
-	private VirtualNodeIdentifier(final int number) {
-	    super(VirtualNode.class.getSimpleName() + number);
-	}
     }
 
     /**
@@ -304,7 +278,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	 * @uml.property name="param"
 	 * @uml.associationEnd
 	 */
-	private final SingleNodeParameters param;
+	private final HorizonParameters param;
 
 	/**
 	 * Identifier of the SubstrateNode hosting this VirtualNode.
@@ -314,7 +288,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	 */
 	private final SubstrateNodeIdentifier myHost;
 
-	public VirtualNode(final SingleNodeParameters param,
+	public VirtualNode(final HorizonParameters param,
 		final SubstrateNodeIdentifier host) {
 	    this.param = param;
 	    this.myHost = host;
@@ -330,7 +304,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	 * @return
 	 * @uml.property name="param"
 	 */
-	public SingleNodeParameters getParam() {
+	public HorizonParameters getParam() {
 	    return this.param;
 	}
 
@@ -351,11 +325,5 @@ public class VirtualNetworkState extends SimpleAgentState {
 	public Double getNumericValue(VirtualNode e) {
 	    return this.getMyReliability();
 	}
-    }
-
-    @Override
-    public boolean setLost(ResourceIdentifier h, boolean isLost) {
-	throw new UnsupportedOperationException();
-	// TODO Remove this method
     }
 }

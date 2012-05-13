@@ -4,20 +4,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import negotiation.horizon.experimentation.VirtualNetwork;
-import negotiation.horizon.negociatingagent.HorizonCandidature;
-import negotiation.horizon.negociatingagent.HorizonContract;
-import negotiation.horizon.negociatingagent.HorizonSpecification;
-import negotiation.horizon.negociatingagent.VirtualNetworkIdentifier;
-import negotiation.horizon.negociatingagent.VirtualNetworkState;
+import negotiation.horizon.negotiatingagent.HorizonCandidature;
+import negotiation.horizon.negotiatingagent.HorizonParameters;
+import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
+import negotiation.horizon.negotiatingagent.VirtualNetworkState;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AtMostKCandidaturesProposer;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class VirtualNetworkContractProposer
 	extends
-	AtMostKCandidaturesProposer<HorizonSpecification, VirtualNetworkState, HorizonContract> {
+	AtMostKCandidaturesProposer<HorizonParameters, VirtualNetworkState, ReallocationContract<HorizonCandidature, HorizonParameters>> {
 
     /**
      * Serial version identifier.

@@ -1,4 +1,4 @@
-package negotiation.horizon.negociatingagent;
+package negotiation.horizon.negotiatingagent;
 
 import java.util.Collection;
 

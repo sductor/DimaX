@@ -1,14 +1,17 @@
 package negotiation.horizon.experimentation;
 
-import negotiation.horizon.negociatingagent.HorizonContract;
-import negotiation.horizon.negociatingagent.HorizonSpecification;
-import negotiation.horizon.negociatingagent.SubstrateNodeIdentifier;
-import negotiation.horizon.negociatingagent.SubstrateNodeState;
+import negotiation.horizon.negotiatingagent.HorizonCandidature;
+import negotiation.horizon.negotiatingagent.HorizonIdentifier;
+import negotiation.horizon.negotiatingagent.HorizonParameters;
+import negotiation.horizon.negotiatingagent.SubstrateNodeIdentifier;
+import negotiation.horizon.negotiatingagent.SubstrateNodeState;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.RationalCore;
+import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 
@@ -20,12 +23,15 @@ import dima.introspectionbasedagents.services.information.ObservationService;
  */
 public class SubstrateNode
 	extends
-	SimpleNegotiatingAgent<HorizonSpecification, SubstrateNodeState, HorizonContract> {
+	SimpleNegotiatingAgent<HorizonParameters<HorizonIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>> {
 
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = -9069889310850887134L;
+
+    @Competence
+    private final LinkHandler linkHandler;
 
     /**
      * Instantiates a new SubstrateNode.
@@ -40,11 +46,11 @@ public class SubstrateNode
     public SubstrateNode(
 	    final SubstrateNodeIdentifier id,
 	    final SubstrateNodeState myInitialState,
-	    final RationalCore<HorizonSpecification, SubstrateNodeState, HorizonContract> myRationality,
-	    final SelectionCore<SubstrateNode, HorizonSpecification, SubstrateNodeState, HorizonContract> selectionCore,
-	    final ProposerCore<SubstrateNode, HorizonSpecification, SubstrateNodeState, HorizonContract> proposerCore,
+	    final RationalCore<HorizonParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<SubstrateNodeIdentifier>>> myRationality,
+	    final SelectionCore<SubstrateNode, HorizonParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<SubstrateNodeIdentifier>>> selectionCore,
+	    final ProposerCore<SubstrateNode, HorizonParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<SubstrateNodeIdentifier>>> proposerCore,
 	    final ObservationService myInformation,
-	    final AbstractCommunicationProtocol<HorizonSpecification, SubstrateNodeState, HorizonContract> protocol)
+	    final AbstractCommunicationProtocol<HorizonParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<SubstrateNodeIdentifier>>> protocol)
 	    throws CompetenceException {
 	super(id, myInitialState, myRationality, selectionCore, proposerCore,
 		myInformation, protocol);

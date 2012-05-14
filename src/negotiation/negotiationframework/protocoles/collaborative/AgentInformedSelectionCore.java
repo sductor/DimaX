@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.InformedCandidature;
@@ -16,7 +16,7 @@ import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public class AgentInformedSelectionCore  <
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends MatchingCandidature<ActionSpec>>
 extends

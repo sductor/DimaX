@@ -3,7 +3,7 @@ package negotiation.negotiationframework.protocoles.collaborative;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -11,7 +11,7 @@ import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class OneDeciderCommunicationProtocol <
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 State extends AgentState,
 Contract extends InformedCandidature<Contract,ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{

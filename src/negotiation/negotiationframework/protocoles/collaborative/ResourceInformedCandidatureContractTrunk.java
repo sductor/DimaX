@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
@@ -23,7 +23,7 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ResourceInformedCandidatureContractTrunk<
 Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState>
 extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState>{
 	private static final long serialVersionUID = -5058077493662331641L;

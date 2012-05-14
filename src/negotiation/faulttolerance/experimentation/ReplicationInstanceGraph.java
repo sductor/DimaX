@@ -252,7 +252,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 			final Map<AgentIdentifier, ReplicaState> agents,
 			final Map<ResourceIdentifier, HostState> hosts){
 		try {
-			final MatchingCandidature c = new ReplicationCandidature(
+			final ReplicationCandidature c = new ReplicationCandidature(
 					h,
 					r,
 					true,true);

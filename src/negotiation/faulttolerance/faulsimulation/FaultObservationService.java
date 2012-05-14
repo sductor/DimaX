@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -18,7 +18,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
  * Service used by the agent to be concious of the system state
  */
 public abstract class FaultObservationService<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>> extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {

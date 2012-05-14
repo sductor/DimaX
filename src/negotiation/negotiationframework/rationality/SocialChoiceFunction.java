@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ReallocationContract;
@@ -15,7 +15,7 @@ import dima.support.GimaObject;
 
 
 public abstract class SocialChoiceFunction<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	private static final long serialVersionUID = 5135268337671313960L;
 
@@ -41,9 +41,9 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	// Abstract Method
 	//
 
-	public abstract Comparator<ActionSpec> getComparator();
+	public abstract <State extends AgentState>  Comparator<State> getComparator();
 
-	public abstract UtilitaristEvaluator<ActionSpec> getUtilitaristEvaluator();
+	public abstract <State extends AgentState>  UtilitaristEvaluator<State> getUtilitaristEvaluator();
 
 	//
 	// Methods
@@ -52,7 +52,7 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 	public double getUtility(final Collection<Contract> cs){
 
 		try {
-			final Collection<ActionSpec> as = this.cleanStates(ReallocationContract.getResultingAllocation(cs));
+			final Collection<AgentState> as = this.cleanStates(ReallocationContract.getResultingAllocation(cs));
 
 			if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 				return SocialChoiceFunction.getMinValue(as,  this.getComparator(), this.getUtilitaristEvaluator());
@@ -74,11 +74,11 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 			final Collection<Contract> c2) {
 
 		try {
-			final Map<AgentIdentifier, ActionSpec> initialStates =ReallocationContract.getInitialStates(c1, c2);
+			final Map<AgentIdentifier, AgentState> initialStates =ReallocationContract.getInitialStates(c1, c2);
 
-			final Collection<ActionSpec> s1 =
+			final Collection<AgentState> s1 =
 					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c1));
-			final Collection<ActionSpec> s2 =
+			final Collection<AgentState> s2 =
 					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c2));
 
 			assert s1.size()==s2.size();
@@ -100,10 +100,11 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 		}
 	}
 
-	protected Collection<ActionSpec> cleanStates(
-			final Collection<ActionSpec> res) {
-		return res;
-	}
+	protected abstract <State extends AgentState> Collection<State> cleanStates(
+			final Collection<State> res) ;
+//			{
+//		return res;
+//	}
 
 	//
 	// Social Welfare

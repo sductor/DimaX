@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 
 public class ReplicationSocialOptimisation
@@ -47,10 +48,13 @@ extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 	 * @throws IncompleteContractException
 	 */
 	@Override
-	protected Collection<ReplicationSpecification> cleanStates(
-			final Collection<ReplicationSpecification> res) {
-		final Iterator<ReplicationSpecification> itState = res.iterator();
+	protected <State extends AgentState> Collection<State> cleanStates(
+			final Collection<State> res) {
+		
+		final Iterator<State> itState = res.iterator();
 		while (itState.hasNext()) {
+			State s = itState.next();
+			assert s instanceof ReplicationSpecification:s;
 			if (!(itState.next() instanceof ReplicaState)) {
 				itState.remove();
 			}

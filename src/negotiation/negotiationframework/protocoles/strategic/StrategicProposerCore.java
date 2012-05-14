@@ -3,14 +3,14 @@ package negotiation.negotiationframework.exploration.strategic;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 
 public class StrategicProposerCore<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends	BasicAgentCompetence<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>

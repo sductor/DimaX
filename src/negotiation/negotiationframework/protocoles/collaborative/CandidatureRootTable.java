@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
@@ -12,7 +12,7 @@ import dima.introspectionbasedagents.services.BasicAgentModule;
 
 public class CandidatureRootTable<
 Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecification>
+ActionSpec extends AbstractActionSpecif>
 extends BasicAgentModule<SimpleNegotiatingAgent<?, ActionSpec, Contract>> {
 
 	/**

@@ -31,6 +31,16 @@ MatchingCandidature<ReplicationSpecification> {
 	//
 
 	@Override
+	public ReplicationSpecification getInitialState(AgentIdentifier id)
+			throws negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException {
+		return getSpecificationOf(id);
+	}
+
+	public void setSpecification(ReplicationSpecification s){
+		setSpecificationNInitialState(s, s);
+	}
+	
+	@Override
 	public <State extends AgentState>  State computeResultingState(final State s) throws IncompleteContractException {
 		if (s instanceof ReplicaState) {
 			return (State) this.getAgentResultingState((ReplicaState)s);
@@ -103,6 +113,7 @@ MatchingCandidature<ReplicationSpecification> {
 			return r;
 		}
 	}
+
 }
 
 // ancien    getAgentResultingState

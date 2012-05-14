@@ -6,7 +6,7 @@ import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
-public interface AbstractContractTransition<ActionSpec extends AbstractActionSpecification>
+public interface AbstractContractTransition<ActionSpec extends AbstractActionSpecif>
 extends DimaComponentInterface {
 
 	public ContractIdentifier getIdentifier();
@@ -19,15 +19,17 @@ extends DimaComponentInterface {
 
 	public Collection<AgentIdentifier> getAllInvolved();
 
-	public void setSpecification(ActionSpec s);
+	public void setSpecificationNInitialState(AgentState state, ActionSpec spec);
 
 	ActionSpec getSpecificationOf(AgentIdentifier id) throws IncompleteContractException;
 
+	public <State extends AgentState> State getInitialState(AgentIdentifier id)  throws IncompleteContractException;
+	
 	//Attention retourne l'état tel quel si l'agent n'est pas concerné
 	public AgentState computeResultingState(AgentIdentifier id)
 			throws IncompleteContractException;
 
-	public <State extends AgentState, Spec extends ActionSpec> State computeResultingState(final Spec s)
+	public <State extends AgentState> State computeResultingState(final State s)
 			throws IncompleteContractException;
 
 	//	public <State extends ActionSpec> State computeResultingState(AgentIdentifier id, Collection<State> initialStates)

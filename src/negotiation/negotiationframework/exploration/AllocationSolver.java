@@ -2,14 +2,14 @@ package negotiation.negotiationframework.exploration;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 
 public interface AllocationSolver
 <Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState> {
 
 	/**

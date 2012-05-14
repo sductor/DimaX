@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -88,7 +89,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 
 	@Override
-	public ReplicaState getMySpecif(
+	public ReplicaState computeMySpecif(
 			final ReplicaState s,
 			final ReplicationCandidature c) {
 		return s;
@@ -105,7 +106,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 		Double min = Double.POSITIVE_INFINITY;
 		Double max = Double.NEGATIVE_INFINITY;
 
-		for (final ReplicationSpecification r : this.getMyAgent().getMyResources()) {
+		for (final AgentState r : this.getMyAgent().getMyResources()) {
 			min = Math.min(min, ((HostState) r).getMyCharge());
 			max = Math.max(max, ((HostState) r).getMyCharge());
 		}

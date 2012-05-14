@@ -2,14 +2,15 @@ package negotiation.negotiationframework.rationality;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class AltruistRationalCore<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicAgentCompetence<SimpleRationalAgent<ActionSpec,PersonalState,Contract>>
@@ -43,9 +44,9 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 			final Collection<Contract> c1,
 			final Collection<Contract> c2) {
 		for (final Contract c : c1) {
-			c.setSpecification(s);
+			c.setSpecificationNInitialState(s,getMyAgent().computeMySpecif(c));
 		}	for (final Contract c : c2) {
-			c.setSpecification(s);
+			c.setSpecificationNInitialState(s,getMyAgent().computeMySpecif(c));
 		}
 		return this.myOptimiser.getSocialPreference(c1, c2);
 	}
@@ -60,8 +61,8 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	@Override
-	public ActionSpec getMySpecif(final PersonalState s, final Contract c) {
-		return this.myPersonalCore.getMySpecif(s, c);
+	public ActionSpec computeMySpecif(final PersonalState s, final Contract c) {
+		return this.myPersonalCore.computeMySpecif(s, c);
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.Set;
 import negotiation.faulttolerance.experimentation.Host;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTransition;
@@ -37,7 +37,7 @@ import dima.introspectionbasedagents.shells.NotReadyException;
  * @param <ActionSpec>
  */
 public abstract class AbstractCommunicationProtocol<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 State extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
@@ -49,7 +49,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	public interface ProposerCore
 	<Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-	ActionSpec extends AbstractActionSpecification,
+	ActionSpec extends AbstractActionSpecif,
 	PersonalState extends AgentState,
 	Contract extends AbstractContractTransition<ActionSpec>>
 	extends AgentCompetence<Agent>{
@@ -68,7 +68,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	public interface SelectionCore<
 	Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-	ActionSpec extends AbstractActionSpecification,
+	ActionSpec extends AbstractActionSpecif,
 	PersonalState extends AgentState,
 	Contract extends AbstractContractTransition<ActionSpec>>
 	extends	AgentCompetence<Agent> {
@@ -344,7 +344,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final Contract contract = delta.getMyContract();
 		assert receivedContract.add(contract.getIdentifier());
 		this.logMonologue("I've received proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);
-		delta.getMyContract().setSpecification(this.getMyAgent().getMySpecif(delta.getMyContract()));
+		delta.getMyContract().setSpecificationNInitialState(
+				this.getMyAgent().getMyCurrentState(),this.getMyAgent().computeMySpecif(delta.getMyContract()));
 		this.contracts.addContract(contract);
 		//		for (Information i : delta.attachedInfos)
 		//			getMyAgent().getMyInformation().add(i);
@@ -551,7 +552,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				) {
 			super(performative, AbstractCommunicationProtocol.class);
 			assert myContract != null;
-			myContract.setSpecification(AbstractCommunicationProtocol.this.getMyAgent().getMySpecif(myContract));
+			myContract.setSpecificationNInitialState(
+					AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState(),
+					AbstractCommunicationProtocol.this.getMyAgent().computeMySpecif(myContract));
 			// this.myContract = (Contract) myContract.clone();
 			this.myContract = myContract;
 			//			this.attachedInfos=attachedInfos;

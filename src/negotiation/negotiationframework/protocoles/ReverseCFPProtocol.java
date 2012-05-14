@@ -3,14 +3,14 @@ package negotiation.negotiationframework.protocoles;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class ReverseCFPProtocol <
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 State extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{

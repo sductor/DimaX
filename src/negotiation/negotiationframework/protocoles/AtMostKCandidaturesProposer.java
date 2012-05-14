@@ -13,7 +13,7 @@ import com.jcraft.jsch.KnownHosts;
 import sun.security.action.GetLongAction;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -25,7 +25,7 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public  abstract class AtMostKCandidaturesProposer<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
@@ -63,7 +63,9 @@ ActionSpec,PersonalState,Contract> {
 		
 		while (itMyHosts.hasNext() && candidatures.size()<k){
 			final Contract c = this.constructCandidature(itMyHosts.next());
-			c.setSpecification(this.getMyAgent().getMySpecif(c));
+			c.setSpecificationNInitialState(
+					this.getMyAgent().getMyCurrentState(),
+					this.getMyAgent().computeMySpecif(c));
 			candidatures.add(c);
 			itMyHosts.remove();
 		}

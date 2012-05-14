@@ -14,7 +14,7 @@ import dima.basicagentcomponents.AgentName;
 import dimaxx.experimentation.ExperimentationParameters;
 
 public abstract class ContractTransition<
-ActionSpec extends AbstractActionSpecification> implements
+ActionSpec extends AbstractActionSpecif> implements
 AbstractContractTransition<ActionSpec> {
 	public long getValidityTime() {
 		return this.validityTime;
@@ -32,9 +32,8 @@ AbstractContractTransition<ActionSpec> {
 
 	protected final List<AgentIdentifier> actors;
 
-	private final Map<AgentIdentifier, ActionSpec> specs = new Hashtable<AgentIdentifier, ActionSpec>(); // non
-	// functionnal
-	// properties
+	private final Map<AgentIdentifier, ActionSpec> specs = new Hashtable<AgentIdentifier, ActionSpec>(); 
+	private final Map<AgentIdentifier, AgentState> initState = new Hashtable<AgentIdentifier, AgentState>(); 
 
 	//
 	// Constructor
@@ -100,13 +99,15 @@ AbstractContractTransition<ActionSpec> {
 	}
 
 	@Override
-	public void setSpecification(final ActionSpec s) {
+	public void setSpecificationNInitialState(final AgentState state, final ActionSpec s) {
 		assert s!=null;
+		assert state != null;
 		assert !this.specs.containsKey(s.getMyAgentIdentifier()) || s.isNewerThan(this.specs.get(s.getMyAgentIdentifier()))>=0:
 			s+" "+this.specs.get(s.getMyAgentIdentifier());
 
 		if (this.actors.contains(s.getMyAgentIdentifier())) {
 			this.specs.put(s.getMyAgentIdentifier(), s);
+			this.initState.put(s.getMyAgentIdentifier(), state);
 		} else {
 			throw new RuntimeException("unappropriate specification set");
 		}
@@ -180,7 +181,7 @@ AbstractContractTransition<ActionSpec> {
 		return true;
 	}
 
-	public static <Contract extends AbstractContractTransition<ActionSpec>, ActionSpec extends AbstractActionSpecification>
+	public static <Contract extends AbstractContractTransition<ActionSpec>, ActionSpec extends AbstractActionSpecif>
 	Boolean respectRights(final Collection<Contract> cs) throws IncompleteContractException {
 		final ReallocationContract<Contract, ActionSpec> reall =
 				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
@@ -196,7 +197,7 @@ AbstractContractTransition<ActionSpec> {
 
 	public static <
 	Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification,
+	ActionSpec extends AbstractActionSpecif,
 	State extends AgentState>
 	Boolean respectRights(final Collection<Contract> cs, final Collection<State> initialStates) throws IncompleteContractException {
 		final ReallocationContract<Contract, ActionSpec> reall =
@@ -212,7 +213,7 @@ AbstractContractTransition<ActionSpec> {
 	}
 	public static <
 	Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification,
+	ActionSpec extends AbstractActionSpecif,
 	State extends AgentState>
 	Boolean respectRights(final Collection<Contract> cs, final State... initialStates) throws IncompleteContractException {
 		return ContractTransition.respectRights(cs, Arrays.asList(initialStates));

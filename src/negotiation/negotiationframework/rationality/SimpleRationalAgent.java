@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTransition;
@@ -19,7 +19,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleRationalAgent<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicCompetentAgent {
@@ -98,7 +98,7 @@ extends BasicCompetentAgent {
 		}
 	}
 
-	public Collection<AgentState> getMyResources(){
+	public Collection<? extends AgentState> getMyResources(){
 		final Collection<AgentState> myResources = new ArrayList<AgentState>();
 		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers()) {
 			try {
@@ -156,12 +156,12 @@ extends BasicCompetentAgent {
 	 */
 
 
-	public ActionSpec getMySpecif(final PersonalState s, final Contract c){
-		return this.myCore.getMySpecif(s, c);
+	public ActionSpec computeMySpecif(final PersonalState s, final Contract c){
+		return this.myCore.computeMySpecif(s, c);
 	}
 
-	public ActionSpec getMySpecif(final Contract c){
-		return this.myCore.getMySpecif(this.getMyCurrentState(), c);
+	public ActionSpec computeMySpecif(final Contract c){
+		return this.myCore.computeMySpecif(this.getMyCurrentState(), c);
 	}
 
 	public PersonalState getMyResultingState(final PersonalState s, final Contract c) {

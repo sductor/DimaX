@@ -2,12 +2,13 @@ package negotiation.negotiationframework.rationality;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface RationalCore<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
@@ -19,7 +20,7 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 
 	//	public PersonalState getMyResultingState(PersonalState s, Contract c);
 	//
-	public ActionSpec getMySpecif(PersonalState s, Contract c);
+	public ActionSpec computeMySpecif(PersonalState s, Contract c);
 
 	public void execute(Collection<Contract> contracts);
 
@@ -33,6 +34,7 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 	 * @param c1 premiere collection de contrat proposé
 	 * @param c2 deuxieme collection de contrat composé
 	 * @return un entier indiquant si l'état résultant de c1 a partir de s est meilleurs que celui réusltant de c2
+	 * @throws IncompleteContractException 
 	 */
 	public int getAllocationPreference(PersonalState s,
 			Collection<Contract> c1, Collection<Contract> c2);

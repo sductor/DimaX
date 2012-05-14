@@ -3,7 +3,7 @@ package negotiation.negotiationframework.protocoles;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
@@ -13,7 +13,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class InactiveProposerCore<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends	BasicAgentCompetence<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>

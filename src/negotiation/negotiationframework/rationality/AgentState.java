@@ -18,6 +18,7 @@ public interface AgentState extends Information {
 	public Class<? extends Information> getMyResourcesClass();
 
 
+	//droit = satisfaction
 	public boolean isValid();
 
 	// Return true if action had an effect

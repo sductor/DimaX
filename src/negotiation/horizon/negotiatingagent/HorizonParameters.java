@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import negotiation.horizon.AbstractInformation;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
@@ -13,7 +13,7 @@ import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
  * @author Vincent Letard
  */
 public class HorizonParameters<Identifier extends HorizonIdentifier> extends
-	AbstractInformation implements AbstractActionSpecification {
+	AbstractInformation implements AbstractActionSpecif {
 
     /**
      * Serial version identifier.

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import choco.cp.solver.CPSolver;
 import choco.kernel.model.variables.integer.IntegerVariable;
@@ -14,8 +15,8 @@ import dima.introspectionbasedagents.services.BasicAgentModule;
 
 public abstract class ChocoAllocationSolver<
 Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec> extends BasicAgentModule implements AllocationSolver<Contract, ActionSpec, PersonalState> {
+ActionSpec extends AbstractActionSpecif,
+PersonalState extends AgentState> extends BasicAgentModule implements AllocationSolver<Contract, ActionSpec, PersonalState> {
 
 	/**
 	 *

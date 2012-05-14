@@ -46,10 +46,10 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		for (final ReplicationCandidature c : c1) {
-			c.setSpecification(s);
+			c.setSpecificationNInitialState(s,s);
 		}
 		for (final ReplicationCandidature c : c2) {
-			c.setSpecification(s);
+			c.setSpecificationNInitialState(s,s);
 		}
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
@@ -108,7 +108,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 
 	@Override
-	public HostState getMySpecif(
+	public HostState computeMySpecif(
 			final HostState s,
 			final ReplicationCandidature c) {
 		return s;

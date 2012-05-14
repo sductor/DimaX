@@ -6,7 +6,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import negotiation.negotiationframework.rationality.AgentState;
@@ -15,7 +17,7 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ReallocationContract<
 Contract extends AbstractContractTransition<ActionSpec>,
-ActionSpec extends AbstractActionSpecification>
+ActionSpec extends AbstractActionSpecif>
 extends HashSet<Contract> implements
 AbstractContractTransition<ActionSpec>{
 
@@ -50,6 +52,7 @@ AbstractContractTransition<ActionSpec>{
 		}
 
 		final Map<AgentIdentifier, ActionSpec> result =	new HashMap<AgentIdentifier, ActionSpec>();
+		final Map<AgentIdentifier, AgentState> resultState =	new HashMap<AgentIdentifier, AgentState>();
 
 		for (final Contract c : actions){
 			for (final AgentIdentifier id : c.getAllParticipants()) {
@@ -57,9 +60,11 @@ AbstractContractTransition<ActionSpec>{
 					if (result.containsKey(id)){
 						if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1) {
 							result.put(id,c.getSpecificationOf(id));
+							resultState.put(id,c.getInitialState(id));
 						}
 					} else {
 						result.put(id,c.getSpecificationOf(id));
+						resultState.put(id,c.getInitialState(id));
 					}
 				} catch (final IncompleteContractException e) {}
 			}
@@ -68,7 +73,7 @@ AbstractContractTransition<ActionSpec>{
 		for (final Contract c : this.actions.getAllValues()){
 			for (final AgentIdentifier id : c.getAllParticipants()) {
 				if (result.containsKey(id)) {
-					c.setSpecification(result.get(id));
+					c.setSpecificationNInitialState(resultState.get(id),result.get(id));
 				}
 			}
 		}
@@ -116,9 +121,9 @@ AbstractContractTransition<ActionSpec>{
 	}
 
 	@Override
-	public void setSpecification(final ActionSpec s) {
-		for (final Contract a : this.actions.get(s.getMyAgentIdentifier())) {
-			a.setSpecification(s);
+	public void setSpecificationNInitialState(AgentState state, ActionSpec spec) {
+		for (final Contract a : this.actions.get(state.getMyAgentIdentifier())) {
+			a.setSpecificationNInitialState(state,spec);;
 		}
 	}
 
@@ -130,9 +135,9 @@ AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public <State extends AgentState, Spec extends ActionSpec> State computeResultingState(final Spec s) throws IncompleteContractException {
+	public <State extends AgentState> State computeResultingState(final State s) throws IncompleteContractException {
 		final Set<Contract> contractOfS = this.actions.get(s.getMyAgentIdentifier());
-		Spec s2 = s;
+		State s2 = s;
 		for (final Contract m : contractOfS) {
 			s2 = m.computeResultingState(s2);
 		}
@@ -143,7 +148,7 @@ AbstractContractTransition<ActionSpec>{
 	@Override
 	public AgentState computeResultingState(final AgentIdentifier id)
 			throws IncompleteContractException {
-		return this.computeResultingState(this.getSpecificationOf(id));
+		return this.computeResultingState(this.getInitialState(id));
 	}
 
 	@Override
@@ -214,6 +219,31 @@ AbstractContractTransition<ActionSpec>{
 	// Primitives
 	//
 
+	@Override
+	public <State extends AgentState> State getInitialState(AgentIdentifier id)
+			throws IncompleteContractException {
+		assert initialStateVerif(id);
+		if (this.isEmpty())
+			throw new NoSuchElementException();
+		else{
+			Iterator<Contract> cIt = this.iterator();
+			return cIt.next().getInitialState(id);
+		}
+	}
+
+
+	
+	private <State extends AgentState> boolean initialStateVerif(AgentIdentifier id) throws IncompleteContractException{
+		if (!this.isEmpty()){
+			Iterator<Contract> cIt = this.iterator();
+			State initS = cIt.next().getInitialState(id);
+			while (cIt.hasNext()){
+				State s = cIt.next().getInitialState(id);
+				assert initS.equals(s):initS+" "+s;
+			}
+		}
+		return true;
+	}
 	/**
 	 *
 	 * @param a1
@@ -223,11 +253,12 @@ AbstractContractTransition<ActionSpec>{
 	 */
 	public static
 	<Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification>
+	ActionSpec extends AbstractActionSpecif>
 	Map<AgentIdentifier, AgentState> getInitialStates(
 			final Collection<Contract> a1,
 			final Collection<Contract> a2) throws IncompleteContractException{
 		final Map<AgentIdentifier, AgentState> result = new HashMap<AgentIdentifier, AgentState>();
+		final Map<AgentIdentifier, ActionSpec> resultSpec = new HashMap<AgentIdentifier, ActionSpec>();
 		final Collection<Contract> allContract = new ArrayList<Contract>();
 		allContract.addAll(a1);
 		allContract.addAll(a2);
@@ -237,18 +268,20 @@ AbstractContractTransition<ActionSpec>{
 				if (result.containsKey(id)){
 					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1) {
 						//						assert 1<0;//						System.out.println("remplacing a fresher state");
-						result.put(id,c.getSpecificationOf(id));
+						result.put(id,c.getInitialState(id));
+						resultSpec.put(id, c.getSpecificationOf(id));
 					}
 				} else {
-					result.put(id,c.getSpecificationOf(id));
+					result.put(id,c.getInitialState(id));
+					resultSpec.put(id, c.getSpecificationOf(id));
 				}
 			}
 		}
 
-		//updating each contract with the freshest state
+		//updating each contract with the freshest spec
 		for (final Contract cOld : allContract) {
 			for (final AgentIdentifier id : cOld.getAllParticipants()) {
-				cOld.setSpecification(result.get(id));
+				cOld.setSpecificationNInitialState(result.get(id),resultSpec.get(id));
 			}
 		}
 		return result;
@@ -263,7 +296,7 @@ AbstractContractTransition<ActionSpec>{
 	 */
 	public static
 	<Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification>
+	ActionSpec extends AbstractActionSpecif>
 
 	Collection<AgentState> getResultingAllocation(
 			final Map<AgentIdentifier, AgentState> initialStates,
@@ -289,7 +322,7 @@ AbstractContractTransition<ActionSpec>{
 	 */
 	public static
 	<Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification>
+	ActionSpec extends AbstractActionSpecif>
 	Collection<AgentState> getResultingAllocation(
 			final Collection<Contract> alloc) throws IncompleteContractException{
 		return ReallocationContract.getResultingAllocation(ReallocationContract.getInitialStates(alloc, new ArrayList<Contract>()),alloc);
@@ -321,6 +354,8 @@ AbstractContractTransition<ActionSpec>{
 		}
 		return myIds;
 	}
+
+
 
 
 }

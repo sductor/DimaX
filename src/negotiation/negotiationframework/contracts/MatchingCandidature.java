@@ -5,7 +5,7 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public abstract class MatchingCandidature<
-ActionSpec extends AbstractActionSpecification>
+ActionSpec extends AbstractActionSpecif>
 extends ContractTransition<ActionSpec> {
 
 	/**
@@ -64,9 +64,9 @@ extends ContractTransition<ActionSpec> {
 	@Override
 	public boolean isInitiallyValid() throws IncompleteContractException{
 		final boolean agentContainsResource =
-				this.getSpecificationOf(this.getAgent()).getMyResourceIdentifiers().contains(this.getResource());
+				this.getInitialState(this.getAgent()).getMyResourceIdentifiers().contains(this.getResource());
 		final boolean ressourceContainsAgent =
-				this.getSpecificationOf(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
+				this.getInitialState(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
 		assert  agentContainsResource && ressourceContainsAgent || !agentContainsResource && !ressourceContainsAgent:
 			"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
 		assert this.isMatchingCreation()?!agentContainsResource:agentContainsResource:" creation impossible : creation?"

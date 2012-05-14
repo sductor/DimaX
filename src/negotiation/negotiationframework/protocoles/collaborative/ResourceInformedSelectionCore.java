@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.Set;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -32,7 +32,7 @@ import dima.introspectionbasedagents.services.information.SimpleObservationServi
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ResourceInformedSelectionCore <
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends MatchingCandidature<ActionSpec>>
 extends
@@ -259,8 +259,9 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			assert getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(s.getMyAgentIdentifier());
 			final InformedCandidature<Contract, ActionSpec> d =
 					this.generateDestructionContract(s.getMyAgentIdentifier());
-			d.setSpecification(this.getMyAgent().getMySpecif(getMyAgent().getMyCurrentState(), d));
-			d.setSpecification(s);
+			d.setSpecificationNInitialState(
+					this.getMyAgent().getMyCurrentState(),this.getMyAgent().computeMySpecif(getMyAgent().getMyCurrentState(), d));
+			d.setSpecificationNInitialState(s,null);//OOOOOOOOOOOOOOOHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH!!!!!!!!!!!!!!
 			alloc.add(d.getCandidature());
 			concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}

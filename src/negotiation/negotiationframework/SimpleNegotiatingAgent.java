@@ -3,7 +3,7 @@ package negotiation.negotiationframework;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
@@ -26,7 +26,7 @@ import dimaxx.experimentation.ObservingSelfService;
 import dimaxx.experimentation.SimulationEndedMessage;
 
 public class SimpleNegotiatingAgent<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {

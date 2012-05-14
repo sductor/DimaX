@@ -8,6 +8,6 @@ import dima.introspectionbasedagents.services.information.ObservationService.Inf
  * @author ductors
  * 
  */
-public interface AbstractActionSpecification extends Information {
+public interface AbstractActionSpecif extends Information {
 
 }

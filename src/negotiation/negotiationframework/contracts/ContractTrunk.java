@@ -17,7 +17,7 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ContractTrunk<
 Contract extends AbstractContractTransition<ActionSpec>,
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState>
 extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
 

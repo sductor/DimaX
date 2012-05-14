@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
@@ -15,7 +15,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class InformedCandidatureRationality<
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends MatchingCandidature<ActionSpec>>
 extends BasicAgentCompetence<
@@ -40,9 +40,9 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 	 */
 
 	@Override
-	public ActionSpec getMySpecif(final PersonalState s,
+	public ActionSpec computeMySpecif(final PersonalState s,
 			final InformedCandidature<Contract, ActionSpec> c) {
-		return this.referenceRationality.getMySpecif(s, c.getCandidature());
+		return this.referenceRationality.computeMySpecif(s, c.getCandidature());
 	}
 
 	//	public ActionSpec getMySimpleSpecif(final PersonalState s, final Contract c) {

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -26,7 +26,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  */
 public class SimpleSelectionCore<
 Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-ActionSpec extends AbstractActionSpecification,
+ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends

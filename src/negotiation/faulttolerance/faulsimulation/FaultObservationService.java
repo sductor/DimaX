@@ -8,6 +8,7 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -19,7 +20,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
  */
 public abstract class FaultObservationService<
 ActionSpec extends AbstractActionSpecif,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>> extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
 	private static final long serialVersionUID = 2339746438446977252L;

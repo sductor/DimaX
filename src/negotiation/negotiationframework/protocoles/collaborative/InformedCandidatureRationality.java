@@ -7,6 +7,7 @@ import java.util.Comparator;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -15,7 +16,7 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 
 public class InformedCandidatureRationality<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends MatchingCandidature<ActionSpec>>
 extends BasicAgentCompetence<
 SimpleRationalAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>

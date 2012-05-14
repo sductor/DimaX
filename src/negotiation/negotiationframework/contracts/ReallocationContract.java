@@ -130,9 +130,9 @@ AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public <State extends AgentState> State computeResultingState(final State s) throws IncompleteContractException {
+	public <State extends AgentState, Spec extends ActionSpec> State computeResultingState(final Spec s) throws IncompleteContractException {
 		final Set<Contract> contractOfS = this.actions.get(s.getMyAgentIdentifier());
-		State s2 = s;
+		Spec s2 = s;
 		for (final Contract m : contractOfS) {
 			s2 = m.computeResultingState(s2);
 		}

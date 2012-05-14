@@ -27,7 +27,7 @@ extends DimaComponentInterface {
 	public AgentState computeResultingState(AgentIdentifier id)
 			throws IncompleteContractException;
 
-	public <State extends AgentState> State computeResultingState(final State s)
+	public <State extends AgentState, Spec extends ActionSpec> State computeResultingState(final Spec s)
 			throws IncompleteContractException;
 
 	//	public <State extends ActionSpec> State computeResultingState(AgentIdentifier id, Collection<State> initialStates)

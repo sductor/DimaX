@@ -98,11 +98,11 @@ extends BasicCompetentAgent {
 		}
 	}
 
-	public Collection<ActionSpec> getMyResources(){
-		final Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
+	public Collection<AgentState> getMyResources(){
+		final Collection<AgentState> myResources = new ArrayList<AgentState>();
 		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers()) {
 			try {
-				ActionSpec ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				AgentState ress = (AgentState) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
 				myResources.add(ress);
 			} catch (final NoInformationAvailableException e) {
@@ -132,9 +132,9 @@ extends BasicCompetentAgent {
 		assert (s.isNewerThan(getMyCurrentState())>0):this.getMyCurrentState()+"\n"+s;
 		for (AgentIdentifier id : s.getMyResourceIdentifiers()){
 			//			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
-			ActionSpec ress;
+			AgentState ress;
 			try {
-				ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				ress = (AgentState) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
 			} catch (NoInformationAvailableException e) {
 				//				assert 1<0:e;

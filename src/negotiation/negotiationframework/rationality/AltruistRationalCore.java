@@ -10,7 +10,7 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 
 public class AltruistRationalCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicAgentCompetence<SimpleRationalAgent<ActionSpec,PersonalState,Contract>>
 implements RationalCore<ActionSpec, PersonalState, Contract>{

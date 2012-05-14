@@ -23,6 +23,7 @@ import negotiation.negotiationframework.contracts.UnknownContractException;
 import negotiation.negotiationframework.exploration.AllocationSolver;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -32,7 +33,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ResourceInformedSelectionCore <
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends MatchingCandidature<ActionSpec>>
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>>
@@ -253,7 +254,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 		}
 
 		List<Contract> alloc = new ArrayList<Contract>();
-		for (final ActionSpec s : getMyAgent().getMyResources()){
+		for (final AgentState s : getMyAgent().getMyResources()){
 			assert s.getMyResourceIdentifiers().contains(getIdentifier());
 			assert getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(s.getMyAgentIdentifier());
 			final InformedCandidature<Contract, ActionSpec> d =

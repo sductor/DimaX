@@ -8,12 +8,13 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class InactiveProposerCore<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends	BasicAgentCompetence<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>
 implements ProposerCore<

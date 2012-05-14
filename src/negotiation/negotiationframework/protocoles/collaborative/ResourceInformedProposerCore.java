@@ -11,13 +11,14 @@ import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class ResourceInformedProposerCore<
 Contract extends MatchingCandidature<ActionSpec>,
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec>
+PersonalState extends AgentState>
 extends BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>>>
 implements ProposerCore<
 SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,

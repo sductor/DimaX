@@ -18,6 +18,7 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -25,7 +26,7 @@ import dima.introspectionbasedagents.shells.NotReadyException;
 
 public  abstract class AtMostKCandidaturesProposer<
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
 BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec,PersonalState,Contract>>

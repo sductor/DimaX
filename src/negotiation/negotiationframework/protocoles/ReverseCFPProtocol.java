@@ -6,11 +6,12 @@ import java.util.Collection;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class ReverseCFPProtocol <
 ActionSpec extends AbstractActionSpecification,
-State extends ActionSpec,
+State extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 

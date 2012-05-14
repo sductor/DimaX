@@ -18,12 +18,13 @@ import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
+import negotiation.negotiationframework.rationality.AgentState;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ResourceInformedCandidatureContractTrunk<
 Contract extends MatchingCandidature<ActionSpec>,
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec>
+PersonalState extends AgentState>
 extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState>{
 	private static final long serialVersionUID = -5058077493662331641L;
 

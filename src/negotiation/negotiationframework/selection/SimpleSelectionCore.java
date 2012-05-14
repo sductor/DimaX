@@ -9,6 +9,7 @@ import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
@@ -26,7 +27,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 public class SimpleSelectionCore<
 Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
 ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends
 BasicAgentCompetence<Agent>

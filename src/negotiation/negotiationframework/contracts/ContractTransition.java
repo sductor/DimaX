@@ -131,6 +131,7 @@ AbstractContractTransition<ActionSpec> {
 		} else {
 			for (final AgentIdentifier id : this.actors) {
 				if (!this.computeResultingState(id).isValid()) {
+					System.out.println("res : "+computeResultingState(id));
 					return false;
 				}
 			}

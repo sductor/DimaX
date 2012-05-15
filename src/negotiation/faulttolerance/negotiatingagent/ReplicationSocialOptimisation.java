@@ -59,9 +59,18 @@ extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 				itState.remove();
 			}
 		}
+		assert cleanStateVerif(res);
 		return res;
 	}
 
+	private boolean cleanStateVerif(Collection<? extends AgentState> res){
+		final Iterator<? extends AgentState> itState = res.iterator();
+		while (itState.hasNext()) {
+			AgentState s = itState.next();
+			assert s instanceof ReplicationSpecification:s;
+		}
+		return true;		
+	}
 
 	@Override
 	public Comparator<ReplicationSpecification> getComparator() {
@@ -84,7 +93,7 @@ extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 		return new UtilitaristEvaluator<ReplicationSpecification>() {
 			@Override
 			public Double getUtilityValue(final ReplicationSpecification o) {
-				assert o instanceof ReplicaState;
+				assert o instanceof ReplicaState:o;
 
 				final ReplicaState s = (ReplicaState) o;
 				return s.getMyReliability();

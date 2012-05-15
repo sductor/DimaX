@@ -3,9 +3,11 @@ package negotiation.negotiationframework.rationality;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
@@ -80,7 +82,8 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c1));
 			final Collection<AgentState> s2 =
 					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c2));
-
+			cleanStateVerif(s1);
+			cleanStateVerif(s2);
 			assert s1.size()==s2.size();
 
 			if (this.socialWelfare.equals(SocialChoiceType.Leximin)){
@@ -99,7 +102,14 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 			throw new RuntimeException();
 		}
 	}
-
+	private boolean cleanStateVerif(Collection<? extends AgentState> res){
+		final Iterator<? extends AgentState> itState = res.iterator();
+		while (itState.hasNext()) {
+			AgentState s = itState.next();
+			assert s instanceof ReplicationSpecification:s;
+		}
+		return true;		
+	}
 	protected abstract <State extends AgentState> Collection<State> cleanStates(
 			final Collection<State> res) ;
 //			{

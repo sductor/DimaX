@@ -130,7 +130,7 @@ AbstractContractTransition<ActionSpec> {
 			throw new IncompleteContractException();
 		} else {
 			for (final AgentIdentifier id : this.actors) {
-				if (!this.computeResultingState(id).isValid()) {
+				if (!this.getInitialState(id).isValid()) {
 					System.out.println("res : "+computeResultingState(id));
 					return false;
 				}

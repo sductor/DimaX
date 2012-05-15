@@ -43,6 +43,8 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 	final AllocationSolver<Contract, ActionSpec, PersonalState> solver;
 	final int kMax;
+	final long maxComputingTime;
+	
 	Random rand = new Random();
 
 	//
@@ -51,11 +53,13 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 	public ResourceInformedSelectionCore(
 			final AllocationSolver<Contract, ActionSpec, PersonalState> solver,
-			final int kMax)
+			final int kMax,
+			long maxComputingTime)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
 		this.kMax=kMax;
+		this.maxComputingTime=maxComputingTime;
 	}
 
 

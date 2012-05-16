@@ -245,4 +245,8 @@ public class SubstrateNodeState extends SimpleAgentState {
 	throw new UnsupportedOperationException();
     }
 
+    public boolean isEmpty() {
+	return this.nodesHostedNetworks.size() == 0;
+    }
+
 }

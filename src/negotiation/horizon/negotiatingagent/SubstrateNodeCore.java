@@ -2,65 +2,89 @@ package negotiation.horizon.negotiatingagent;
 
 import java.util.Collection;
 
+import negotiation.horizon.experimentation.SubstrateNode;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public class SubstrateNodeCore
 	extends
-	BasicAgentCompetence<SimpleRationalAgent<HorizonParameters<HorizonIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>>>
+	BasicAgentCompetence<SimpleRationalAgent<HorizonSpecification, SubstrateNodeState, HorizonContract>>
 	implements
-	RationalCore<HorizonParameters<HorizonIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>> {
+	RationalCore<HorizonSpecification, SubstrateNodeState, HorizonContract> {
 
-    private final SubstrateChoiceFunction myChoiceFunction;
-    
+    // private final _SubstrateChoiceFunction myChoiceFunction;
+
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = -4617793988428190194L;
 
     @Override
-    public Double evaluatePreference(
-	    Collection<ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>> cs) {
-	return 
+    public SubstrateNode getMyAgent() {
+	return (SubstrateNode) super.getMyAgent();
     }
 
     @Override
-    public void execute(
-	    Collection<ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>> contracts) {
-	SubstrateNodeState myState = this.getMyAgent().getMyCurrentState();
+    public SubstrateNodeIdentifier getIdentifier() {
+	return (SubstrateNodeIdentifier) super.getIdentifier();
+    }
 
+    @Override
+    public SubstrateNodeSpecification computeMySpecif(
+	    final SubstrateNodeState s, final HorizonContract c) {
+	return this.computeMySpecif();
+    }
+
+    public SubstrateNodeSpecification computeMySpecif() {
+	return new SubstrateNodeSpecification(this.getIdentifier(), this
+		.getMyAgent().myMeasureHandler.getMeasurableParameters());
+    }
+
+    @Override
+    public Double evaluatePreference(Collection<HorizonContract> cs) {
+	int preference = 0;
+	Collection<AgentState> resultingAlloc;
 	try {
-	    for (ReallocationContract<HorizonCandidature, HorizonParameters> c : contracts) {
-		myState = c.computeResultingState(myState);
-	    }
+	    resultingAlloc = ReallocationContract.getResultingAllocation(cs);
 	} catch (IncompleteContractException e) {
 	    throw new RuntimeException(e);
 	}
-	this.getMyAgent().setNewState(myState);
+	for (AgentState s : resultingAlloc) {
+	    if (s instanceof SubstrateNodeState
+		    && ((SubstrateNodeState) s).isEmpty())
+		preference++;
+	}
+	return new Double(preference);
     }
 
     @Override
-    public int getAllocationPreference(
-	    SubstrateNodeState s,
-	    Collection<ReallocationContract<HorizonCandidature, HorizonParameters>> c1,
-	    Collection<ReallocationContract<HorizonCandidature, HorizonParameters>> c2) {
-	// TODO Auto-generated method stub
-	return 0;
-    }
-
-    @Override
-    public HorizonParameters getMySpecif(SubstrateNodeState s,
-	    ReallocationContract<HorizonCandidature, HorizonParameters> c) {
+    public void execute(Collection<HorizonContract> contracts) {
 	try {
-	    return c.getSpecificationOf(this.getIdentifier());
+	    this.getMyAgent().setNewState(ReallocationContract.computeResultingState(this.getMyAgent().getMyCurrentState(), contracts));
 	} catch (IncompleteContractException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	    return null;
+	    throw new RuntimeException(e);
 	}
     }
 
+    @Override
+    public int getAllocationPreference(final SubstrateNodeState s,
+	    final Collection<HorizonContract> c1,
+	    final Collection<HorizonContract> c2) {
+	final SubstrateNodeSpecification mySpecif = this.computeMySpecif();
+	for (final HorizonContract c : c1) {
+	    c.setSpecificationNInitialState(s, mySpecif);
+	}
+	for (final HorizonContract c : c2) {
+	    c.setSpecificationNInitialState(s, mySpecif);
+	}
+
+	// this.logMonologue("Preference : " + pref + " for \n " + c1 + "\n" +
+	// c2, SocialChoiceFunction.log_socialWelfareOrdering);
+	return this.evaluatePreference(c1).compareTo(
+		this.evaluatePreference(c2));
+    }
 }

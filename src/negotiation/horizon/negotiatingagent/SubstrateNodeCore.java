@@ -14,7 +14,7 @@ public class SubstrateNodeCore
 	implements
 	RationalCore<HorizonParameters<HorizonIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, HorizonParameters<HorizonIdentifier>>> {
 
-    
+    private final SubstrateChoiceFunction myChoiceFunction;
     
     /**
      * Serial version identifier.

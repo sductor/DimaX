@@ -6,33 +6,24 @@ import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class HorizonCandidature extends
-	MatchingCandidature<HorizonParameters<HorizonIdentifier>> {
+	MatchingCandidature<HorizonSpecification> {
 
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = 5688344205746523199L;
 
-    /**
-     * @uml.property name="node"
-     * @uml.associationEnd
-     */
-    private final VirtualNodeIdentifier node;
+    private VirtualNetworkState vnInitialState = null;
+    private SubstrateNodeState snInitialState = null;
 
     public HorizonCandidature(final VirtualNetworkIdentifier intiator,
 	    final VirtualNetworkIdentifier agent,
-	    final VirtualNodeIdentifier node,
 	    final SubstrateNodeIdentifier resource, final long validityTime) {
 	super(intiator, agent, resource, validityTime);
-	this.node = node;
     }
 
-    /**
-     * @return
-     * @uml.property name="node"
-     */
-    public VirtualNodeIdentifier getNode() {
-	return this.node;
+    private VirtualNodeIdentifier getNode() throws IncompleteContractException {
+	return this.getSpecificationOf(this.getAgent()).getNode();
     }
 
     @Override
@@ -50,22 +41,20 @@ public class HorizonCandidature extends
 	return (SubstrateNodeIdentifier) super.getResource();
     }
 
-    // public SingleNodeParameters getSpecificationOf(
-    // final VirtualNetworkIdentifier id)
-    // throws IncompleteContractException {
-    // return super.getSpecificationOf(id);
-    // }
+    public VirtualNetworkSpecification getSpecificationOf(
+	    VirtualNetworkIdentifier id) throws IncompleteContractException {
+	return (VirtualNetworkSpecification) super.getSpecificationOf(id);
+    }
 
-    // public SubstrateNodeState getSpecificationOf(
-    // final SubstrateNodeIdentifier id)
-    // throws IncompleteContractException {
-    // return (SubstrateNodeState) super.getSpecificationOf(id);
-    // }
+    public SubstrateNodeSpecification getSpecificationOf(
+	    SubstrateNodeIdentifier id) throws IncompleteContractException {
+	return (SubstrateNodeSpecification) super.getSpecificationOf(id);
+    }
 
     @Override
     public AgentState computeResultingState(AgentIdentifier id)
 	    throws IncompleteContractException {
-	return this.computeResultingState(this.getSpecificationOf(id));
+	return this.computeResultingState(this.getInitialState(id));
     }
 
     // public SubstrateNodeState computeResultingState(final SubstrateNodeState
@@ -93,18 +82,35 @@ public class HorizonCandidature extends
 	if (s instanceof SubstrateNodeState) {
 	    if (s.getMyAgentIdentifier().equals(this.getResource()))
 		return (State) new SubstrateNodeState((SubstrateNodeState) s,
-			this.getAgent(), this.getSpecificationOf(this
-				.getResource()), this.isMatchingCreation());
+			this.getAgent(), this.getInitialState(this.getAgent())
+				.getNodeParams(this.getNode())
+				.getAllocableParams(), this
+				.isMatchingCreation());
 	    else
 		return s;
 	} else if (s instanceof VirtualNetworkState) {
 	    if (this.getAllParticipants().contains(s.getMyAgentIdentifier())) {
+		final VirtualNodeIdentifier node = this.getNode();
 		return (State) new VirtualNetworkState((VirtualNetworkState) s,
-			this.node, this.getResource(), this
-				.getSpecificationOf(this.getAgent()));
+			node, this.getResource(), this.getInitialState(
+				this.getAgent()).getNodeParams(node));
 	    } else
 		return s;
 	} else
 	    throw new IllegalArgumentException();
+    }
+
+    @Override
+    public <State extends AgentState> State getInitialState(AgentIdentifier id)
+	    throws negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException {
+	throw new IllegalArgumentException();
+    }
+
+    public VirtualNetworkState getInitialState(final VirtualNetworkIdentifier id) {
+	return this.vnInitialState;
+    }
+
+    public SubstrateNodeState getInitialState(final SubstrateNodeIdentifier id) {
+	return this.snInitialState;
     }
 }

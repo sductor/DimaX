@@ -9,7 +9,7 @@ import dima.support.GimaObject;
  * can be specified among those in the enumeration Interval.Order
  * 
  * @param <T>
- *            type of the interval, must extend Comparable<T> and Serializable.
+ *            type of the interval, must extend Comparable<T> & Serializable.
  * 
  * @author Vincent Letard
  */
@@ -44,6 +44,16 @@ public class Interval<T extends Comparable<T> & Serializable> extends
 	lexInf, lexSup
     }
 
+    /**
+     * Define an Interval between inf and sup bounds.
+     * 
+     * @param inf
+     *            Lower bound of the Interval
+     * @param sup
+     *            Upper bound of the Interval
+     * @param order
+     *            Sort ordering
+     */
     public Interval(final T inf, final T sup, final Order order) {
 	if (inf.compareTo(sup) > 0)
 	    throw new IllegalArgumentException();
@@ -82,7 +92,8 @@ public class Interval<T extends Comparable<T> & Serializable> extends
 		return this.inf.compareTo(i.inf);
 
 	default:
-	    throw new RuntimeException("Order method lacking for " + this.order);
+	    throw new RuntimeException("Sort method lacking for " + this.order
+		    + " order.");
 	}
     }
 

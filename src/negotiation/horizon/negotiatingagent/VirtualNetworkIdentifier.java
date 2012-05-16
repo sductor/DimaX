@@ -1,6 +1,7 @@
 package negotiation.horizon.negotiatingagent;
 
 import negotiation.horizon.experimentation.VirtualNetwork;
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 
 /**
@@ -36,25 +37,41 @@ public class VirtualNetworkIdentifier extends AgentName implements
      * @author Vincent Letard
      */
     public class VirtualNodeIdentifier extends AgentName implements
-	    HorizonIdentifier {
+	    HorizonIdentifier, Comparable<VirtualNodeIdentifier> {
 	/**
 	 * Serial version identifier.
 	 */
 	private static final long serialVersionUID = -6126319326448434675L;
 
+	private final int number;
+	private final VirtualNetworkIdentifier myVNId = VirtualNetworkIdentifier.this;
+
 	public VirtualNodeIdentifier(final int number) {
 	    super(VirtualNetworkIdentifier.this.getId() + "_VirtualNode"
 		    + number);
+	    this.number = number;
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
-	    return VirtualNetworkIdentifier.this.equals(obj);
+	    if (!(obj instanceof VirtualNodeIdentifier))
+		return false;
+	    return this.number == ((VirtualNodeIdentifier) obj).number
+		    && this.myVNId.equals(((VirtualNodeIdentifier) obj).myVNId);
 	}
 
 	@Override
 	public int hashCode() {
 	    return VirtualNetworkIdentifier.this.hashCode();
+	}
+
+	@Override
+	public int compareTo(VirtualNodeIdentifier arg0) {
+	    return this.number - arg0.number;
+	}
+
+	public AgentIdentifier getMyNetwork() {
+	    return this.myVNId;
 	}
     }
 }

@@ -13,6 +13,8 @@ public class VirtualNetworkCore
 	implements
 	RationalCore<HorizonSpecification, VirtualNetworkState, HorizonContract> {
 
+    private final VNetChoiceFunction myChoiceFunction;
+    
     /**
      * Serial version identifier.
      */

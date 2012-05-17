@@ -1,7 +1,5 @@
 package negotiation.horizon;
 
-import java.io.Serializable;
-
 import dima.support.GimaObject;
 
 /**
@@ -13,12 +11,14 @@ import dima.support.GimaObject;
  * 
  * @author Vincent Letard
  */
-public class Interval<T extends Comparable<T> & Serializable> extends
-	GimaObject implements Comparable<Interval<T>> {
+public class Interval<T extends Comparable<T>> extends GimaObject implements
+	Comparable<Interval<T>> {
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = -2768862502506003799L;
+
+    public final static Interval<?> EMPTY_INTERVAL = new Interval<Float>();
 
     /**
      * Lower bound.
@@ -41,7 +41,7 @@ public class Interval<T extends Comparable<T> & Serializable> extends
      * @author Vincent Letard
      */
     public enum Order {
-	lexInf, lexSup
+	lexInf, lexSup, strict
     }
 
     /**
@@ -62,9 +62,23 @@ public class Interval<T extends Comparable<T> & Serializable> extends
 	this.order = order;
     }
 
+    private Interval() {
+	this.inf = null;
+	this.sup = null;
+	this.order = null;
+    }
+
     @Override
     public boolean equals(final Object obj) {
 	if (obj.getClass().equals(Interval.class)) {
+	    if (this == EMPTY_INTERVAL) {
+		if ((Interval<T>) obj == EMPTY_INTERVAL)
+		    return true;
+		else
+		    return false;
+	    } else if ((Interval<T>) obj == EMPTY_INTERVAL) {
+		return false;
+	    }
 	    return this.inf.equals(((Interval<T>) obj).inf)
 		    && this.sup.equals(((Interval<T>) obj).sup);
 	} else
@@ -75,6 +89,9 @@ public class Interval<T extends Comparable<T> & Serializable> extends
 
     @Override
     public int compareTo(Interval<T> i) {
+	if (this == EMPTY_INTERVAL || i == EMPTY_INTERVAL)
+	    return 0;
+
 	int cmp;
 	switch (this.order) {
 	case lexInf:
@@ -90,7 +107,14 @@ public class Interval<T extends Comparable<T> & Serializable> extends
 		return cmp;
 	    else
 		return this.inf.compareTo(i.inf);
-
+	case strict:
+	    cmp = this.sup.compareTo(i.inf);
+	    if (cmp < 0)
+		return cmp;
+	    cmp = this.inf.compareTo(i.sup);
+	    if (cmp > 0)
+		return cmp;
+	    return 0;
 	default:
 	    throw new RuntimeException("Sort method lacking for " + this.order
 		    + " order.");
@@ -101,8 +125,11 @@ public class Interval<T extends Comparable<T> & Serializable> extends
      * Gives the value of the lower bound of this Interval.
      * 
      * @return the lower bound of the interval
+     * @throws EmptyIntervalException
      */
-    public T getLower() {
+    public T getLower() throws EmptyIntervalException {
+	if (this == EMPTY_INTERVAL)
+	    throw new EmptyIntervalException();
 	return this.inf;
     }
 
@@ -110,13 +137,38 @@ public class Interval<T extends Comparable<T> & Serializable> extends
      * Gives the value of the upper bound of this Interval.
      * 
      * @return the upper bound of the interval
+     * @throws EmptyIntervalException
      */
-    public T getUpper() {
+    public T getUpper() throws EmptyIntervalException {
+	if (this == EMPTY_INTERVAL)
+	    throw new EmptyIntervalException();
 	return this.sup;
     }
 
     @Override
     public String toString() {
+	if (this == EMPTY_INTERVAL)
+	    return "[ empty ]";
 	return "[" + this.inf.toString() + ", " + this.sup.toString() + "]";
+    }
+
+    public static <T extends Comparable<T>> Interval<T> inter(Interval<T> i1,
+	    Interval<T> i2) {
+	if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL
+		|| i1.sup.compareTo(i2.inf) < 0 || i1.inf.compareTo(i2.sup) > 0) {
+	    return (Interval<T>) EMPTY_INTERVAL;
+	} else if (!i1.order.equals(i2.order)) {
+	    throw new IllegalArgumentException();
+	} else if (i1.inf.compareTo(i2.inf) < 0) {
+	    if (i1.sup.compareTo(i2.sup) > 0)
+		return i2;
+	    else
+		return new Interval<T>(i2.inf, i1.sup, i1.order);
+	} else {
+	    if (i1.sup.compareTo(i2.sup) < 0)
+		return i1;
+	    else
+		return new Interval<T>(i1.inf, i2.sup, i1.order);
+	}
     }
 }

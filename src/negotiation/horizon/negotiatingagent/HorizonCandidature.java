@@ -1,6 +1,7 @@
 package negotiation.horizon.negotiatingagent;
 
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
+import negotiation.horizon.parameters.HorizonMeasurableParameters;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -24,6 +25,11 @@ public class HorizonCandidature extends
 
     private VirtualNodeIdentifier getNode() throws IncompleteContractException {
 	return this.getSpecificationOf(this.getAgent()).getNode();
+    }
+
+    private HorizonMeasurableParameters getQoS()
+	    throws IncompleteContractException {
+	return this.getSpecificationOf(this.getResource()).getParams();
     }
 
     @Override
@@ -92,8 +98,7 @@ public class HorizonCandidature extends
 	    if (this.getAllParticipants().contains(s.getMyAgentIdentifier())) {
 		final VirtualNodeIdentifier node = this.getNode();
 		return (State) new VirtualNetworkState((VirtualNetworkState) s,
-			node, this.getResource(), this.getInitialState(
-				this.getAgent()).getNodeParams(node));
+			node, this.getResource(), this.getQoS());
 	    } else
 		return s;
 	} else

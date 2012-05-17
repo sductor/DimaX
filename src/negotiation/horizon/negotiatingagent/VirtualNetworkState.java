@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import negotiation.horizon.negotiatingagent.HorizonPreferenceFunction.Service;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.horizon.parameters.HorizonAllocableParameters;
 import negotiation.horizon.parameters.HorizonMeasurableParameters;
@@ -41,6 +42,8 @@ public class VirtualNetworkState extends SimpleAgentState {
      */
     private final Map<VirtualNodeIdentifier, VirtualNode> nodes;
 
+    private final Service service;
+
     // /**
     // * Represents the links between all the VirtualNodes and their parameters.
     // */
@@ -58,8 +61,8 @@ public class VirtualNetworkState extends SimpleAgentState {
 	    final List<MachineMeasurableParameters> nodesPreferenceParams,
 	    final List<UnorderedPair<Integer>> links,
 	    final List<LinkAllocableParameters> linksRequiredParams,
-	    final List<LinkMeasurableParameters> linksPreferenceParams)
-	    throws IllegalArgumentException {
+	    final List<LinkMeasurableParameters> linksPreferenceParams,
+	    final Service myPreferredQoS) throws IllegalArgumentException {
 	super(myAgent, stateNumber);
 
 	if (links.size() != linksRequiredParams.size()
@@ -130,6 +133,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	}
 
 	this.nodes = Collections.unmodifiableMap(nodesMap);
+	this.service = myPreferredQoS;
 
 	// XXX Note : a priori inutilisé
 	// this.links = Collections.unmodifiableMap(linksMap);
@@ -149,7 +153,8 @@ public class VirtualNetworkState extends SimpleAgentState {
      */
     public VirtualNetworkState(final VirtualNetworkState initial,
 	    final VirtualNodeIdentifier reallocatedNode,
-	    final SubstrateNodeIdentifier newHost, final NodeParameters params) {
+	    final SubstrateNodeIdentifier newHost,
+	    final HorizonMeasurableParameters params) {
 	super(initial.getMyAgentIdentifier(), initial.getStateCounter() + 1);
 	assert (this.nodes.get(reallocatedNode).param.equals(params));
 	assert (this.nodes.containsKey(reallocatedNode));
@@ -160,8 +165,9 @@ public class VirtualNetworkState extends SimpleAgentState {
 		initial.nodes);
 
 	newNodesMap.put(reallocatedNode, new VirtualNode(this.nodes
-		.get(reallocatedNode), newHost));
+		.get(reallocatedNode), newHost, params));
 	this.nodes = Collections.unmodifiableMap(newNodesMap);
+	this.service = initial.service;
     }
 
     // public VirtualNetworkState(final VirtualNetworkState initial,
@@ -306,6 +312,11 @@ public class VirtualNetworkState extends SimpleAgentState {
 	private final NodeParameters param;
 
 	/**
+	 * Parameters provided by the current host.
+	 */
+	private final HorizonMeasurableParameters currentAllocation;
+
+	/**
 	 * Identifier of the SubstrateNode hosting this VirtualNode.
 	 */
 	private final SubstrateNodeIdentifier myHost;
@@ -313,12 +324,15 @@ public class VirtualNetworkState extends SimpleAgentState {
 	public VirtualNode(final NodeParameters param) {
 	    this.param = param;
 	    this.myHost = null;
+	    this.currentAllocation = null;
 	}
 
 	public VirtualNode(final VirtualNode initial,
-		final SubstrateNodeIdentifier newHost) {
+		final SubstrateNodeIdentifier newHost,
+		final HorizonMeasurableParameters params) {
 	    this.param = initial.param;
 	    this.myHost = newHost;
+	    this.currentAllocation = params;
 	}
 
 	/**
@@ -330,6 +344,15 @@ public class VirtualNetworkState extends SimpleAgentState {
 	    return this.param;
 	}
 
+	public HorizonMeasurableParameters getCurrentAllocation()
+		throws NodeNotInstanciatedException {
+	    assert ((this.myHost == null) == (this.currentAllocation == null));
+	    if (this.myHost == null)
+		throw new NodeNotInstanciatedException();
+	    else
+		return this.currentAllocation;
+	}
+
 	/**
 	 * Returns the current host of this VirtualNode.
 	 * 
@@ -338,5 +361,35 @@ public class VirtualNetworkState extends SimpleAgentState {
 	public SubstrateNodeIdentifier getMyHost() {
 	    return this.myHost;
 	}
+    }
+
+    public class NodeNotInstanciatedException extends Exception {
+
+	/**
+	 * Serial version identifier.
+	 */
+	private static final long serialVersionUID = 3482865179834602964L;
+
+    }
+
+    public Service getQoS() {
+	return this.service;
+    }
+
+    public List<HorizonMeasurableParameters> getNodesPreferences() {
+	List<HorizonMeasurableParameters> nodesPrefs = new ArrayList<HorizonMeasurableParameters>();
+	for (VirtualNode node : this.nodes.values()) {
+	    nodesPrefs.add(node.getParam().getMeasurableParams());
+	}
+	return nodesPrefs;
+    }
+
+    public List<HorizonMeasurableParameters> getNodesCurrentService()
+	    throws NodeNotInstanciatedException {
+	List<HorizonMeasurableParameters> nodesPrefs = new ArrayList<HorizonMeasurableParameters>();
+	for (VirtualNode node : this.nodes.values()) {
+	    nodesPrefs.add(node.getCurrentAllocation());
+	}
+	return nodesPrefs;
     }
 }

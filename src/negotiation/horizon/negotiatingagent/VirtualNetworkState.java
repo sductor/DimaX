@@ -42,7 +42,7 @@ public class VirtualNetworkState extends SimpleAgentState {
      */
     private final Map<VirtualNodeIdentifier, VirtualNode> nodes;
 
-    private final Service service;
+    private final Service serviceName;
 
     // /**
     // * Represents the links between all the VirtualNodes and their parameters.
@@ -133,7 +133,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	}
 
 	this.nodes = Collections.unmodifiableMap(nodesMap);
-	this.service = myPreferredQoS;
+	this.serviceName = myPreferredQoS;
 
 	// XXX Note : a priori inutilisé
 	// this.links = Collections.unmodifiableMap(linksMap);
@@ -167,7 +167,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	newNodesMap.put(reallocatedNode, new VirtualNode(this.nodes
 		.get(reallocatedNode), newHost, params));
 	this.nodes = Collections.unmodifiableMap(newNodesMap);
-	this.service = initial.service;
+	this.serviceName = initial.serviceName;
     }
 
     // public VirtualNetworkState(final VirtualNetworkState initial,
@@ -373,7 +373,7 @@ public class VirtualNetworkState extends SimpleAgentState {
     }
 
     public Service getQoS() {
-	return this.service;
+	return this.serviceName;
     }
 
     public List<HorizonMeasurableParameters> getNodesPreferences() {

@@ -1,7 +1,7 @@
 package negotiation.horizon.experimentation;
 
-import negotiation.horizon.negotiatingagent.InterfacesParameters;
-import negotiation.horizon.negotiatingagent.SubstrateNodeIdentifier;
+import negotiation.horizon.parameters.InterfacesParameters;
+import negotiation.horizon.parameters.NetworkLinkParameters;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
 public class LinkHandler extends BasicAgentCompetence<SubstrateNode> {
@@ -15,5 +15,13 @@ public class LinkHandler extends BasicAgentCompetence<SubstrateNode> {
      * Defined parameters of each link connected to the machine. Intend to be
      * replaced by real and dynamic measures.
      */
-    private InterfacesParameters<SubstrateNodeIdentifier> links;
+    private InterfacesParameters<NetworkLinkParameters> links;
+
+    public LinkHandler(final InterfacesParameters<NetworkLinkParameters> links) {
+	this.links = links;
+    }
+
+    public InterfacesParameters<NetworkLinkParameters> getLinkState() {
+	return this.links;
+    }
 }

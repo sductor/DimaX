@@ -312,6 +312,28 @@ AbstractContractTransition<ActionSpec>{
 		}
 		return meAsMap.values();
 	}
+	
+	/**
+	 * Computes the resulting state by performing the allocation specified by the Collection of Contract on the initial state provided.
+	 * @param <Contract> Type of Contract dealt here
+	 * @param <ActionSpec> Specification associated with this type of Contract
+	 * @param <State> State being computed
+	 * @param initialState The State from which starts the computation
+	 * @param alloc The allocation describing actions to apply to the State
+	 * @return the resulting State of the allocation
+	 * @throws IncompleteContractException if there some Contract of the allocation is not well completed
+	 */
+	public static <Contract extends AbstractContractTransition<ActionSpec>,
+	ActionSpec extends AbstractActionSpecif,
+	State extends AgentState>
+	State computeResultingState(final State initialState, final Collection<Contract> alloc)
+	throws IncompleteContractException{
+	    	State result = initialState;
+		for (final Contract c : alloc) {
+			result = c.computeResultingState(result);
+		}
+		return result;
+	}
 
 	/**
 	 *

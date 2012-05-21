@@ -1,5 +1,6 @@
 package negotiation.horizon.experimentation;
 
+import negotiation.horizon.negotiatingagent.SubstrateNodeIdentifier;
 import negotiation.horizon.parameters.HorizonMeasurableParameters;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
@@ -10,13 +11,14 @@ public class MeasureHandler extends BasicAgentCompetence<SubstrateNode> {
      */
     private static final long serialVersionUID = -641940585284016641L;
 
-    private HorizonMeasurableParameters currentParams;
+    private HorizonMeasurableParameters<SubstrateNodeIdentifier> currentParams;
 
-    public MeasureHandler(final HorizonMeasurableParameters params) {
+    public MeasureHandler(
+	    final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
 	this.currentParams = params;
     }
 
-    public HorizonMeasurableParameters getMeasurableParameters() {
+    public HorizonMeasurableParameters<SubstrateNodeIdentifier> getMeasurableParameters() {
 	return this.currentParams;
     }
 }

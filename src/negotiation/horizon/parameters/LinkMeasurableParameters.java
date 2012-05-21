@@ -1,5 +1,7 @@
 package negotiation.horizon.parameters;
 
+import jtp.util.UnexpectedException;
+import negotiation.horizon.EmptyIntervalException;
 import negotiation.horizon.Interval;
 
 public class LinkMeasurableParameters implements LinkParameters {
@@ -56,5 +58,17 @@ public class LinkMeasurableParameters implements LinkParameters {
     public String toString() {
 	return "(plr=" + this.packetLossRate + ", d=" + this.delay + ", j="
 		+ this.jitter + ")";
+    }
+
+    public boolean satisfies(final LinkMeasurableParameters value) {
+	try {
+	    return this.delay.getUpper() <= value.delay.getUpper()
+		    && this.jitter.getUpper() <= value.jitter.getUpper()
+		    && this.packetLossRate.getUpper() <= value.packetLossRate
+			    .getUpper();
+	} catch (EmptyIntervalException e) {
+	    assert false;
+	    throw new UnexpectedException(e);
+	}
     }
 }

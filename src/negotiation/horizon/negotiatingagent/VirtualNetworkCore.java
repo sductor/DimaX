@@ -5,7 +5,9 @@ import java.util.Collection;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class VirtualNetworkCore
 	extends
@@ -14,16 +16,20 @@ public class VirtualNetworkCore
 	RationalCore<HorizonSpecification, VirtualNetworkState, HorizonContract> {
 
     private final HorizonPreferenceFunction myChoiceFunction;
-    
+
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = -3189589813751237257L;
 
+    public VirtualNetworkCore(final SocialChoiceType socialWelfare)
+	    throws UnrespectedCompetenceSyntaxException {
+	this.myChoiceFunction = new HorizonPreferenceFunction(socialWelfare);
+    }
+
     @Override
     public Double evaluatePreference(Collection<HorizonContract> cs) {
-	// TODO Auto-generated method stub
-	return null;
+	return this.myChoiceFunction.getUtility(cs);
     }
 
     @Override
@@ -43,15 +49,16 @@ public class VirtualNetworkCore
     @Override
     public int getAllocationPreference(VirtualNetworkState s,
 	    Collection<HorizonContract> c1, Collection<HorizonContract> c2) {
-	// TODO Auto-generated method stub
-	return 0;
+	return this.myChoiceFunction.getSocialPreference(c1, c2);
     }
 
     @Override
-    public HorizonSpecification getMySpecif(VirtualNetworkState s,
+    public HorizonSpecification computeMySpecif(VirtualNetworkState s,
 	    HorizonContract c) {
-	// TODO Auto-generated method stub
-	return null;
+	try {
+	    return c.getSpecificationOf(s.getMyAgentIdentifier());
+	} catch (IncompleteContractException e) {
+	    throw new RuntimeException(e);
+	}
     }
-
 }

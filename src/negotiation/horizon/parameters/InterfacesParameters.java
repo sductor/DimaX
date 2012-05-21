@@ -6,9 +6,8 @@ import java.util.Map;
 import negotiation.horizon.negotiatingagent.HorizonIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
-public class InterfacesParameters<Links extends LinkParameters> extends
-	HashMap<HorizonIdentifier/* TODO remonter le paramètre ? */, Links>
-	implements DimaComponentInterface {
+public class InterfacesParameters<Identifier extends HorizonIdentifier, Links extends LinkParameters>
+	extends HashMap<Identifier, Links> implements DimaComponentInterface {
 
     /**
      * Serial version identifier.
@@ -26,44 +25,65 @@ public class InterfacesParameters<Links extends LinkParameters> extends
 	return str.toString();
     }
 
-    public static InterfacesParameters<LinkAllocableParameters> add(
-	    InterfacesParameters<LinkAllocableParameters> ifacesParams1,
-	    InterfacesParameters<LinkAllocableParameters> ifacesParams2) {
-	final InterfacesParameters<LinkAllocableParameters> newIfacesParams = new InterfacesParameters<LinkAllocableParameters>();
-	for (Map.Entry<HorizonIdentifier, LinkAllocableParameters> entry : ifacesParams1
+    /**
+     * Adds the parameters of each element of the maps to build a new one.
+     * 
+     * @param ifacesParams1
+     *            first map
+     * @param ifacesParams2
+     *            second map
+     * @return the map resulting of the addition of all the parameters in their
+     *         respective entries in the maps.
+     */
+    public static <Identifier extends /* ResourceIdentifier & */HorizonIdentifier> InterfacesParameters<Identifier, LinkAllocableParameters> add(
+	    InterfacesParameters<Identifier, LinkAllocableParameters> ifacesParams1,
+	    InterfacesParameters<Identifier, LinkAllocableParameters> ifacesParams2) {
+	final InterfacesParameters<Identifier, LinkAllocableParameters> newIfacesParams = new InterfacesParameters<Identifier, LinkAllocableParameters>();
+	for (Map.Entry<Identifier, LinkAllocableParameters> entry : ifacesParams1
 		.entrySet()) {
-	    HorizonIdentifier key = entry.getKey();
+	    Identifier key = entry.getKey();
 	    if (ifacesParams2.containsKey(key))
 		newIfacesParams.put(key, entry.getValue().add(
 			ifacesParams2.get(key)));
 	    else
 		newIfacesParams.put(key, entry.getValue());
 	}
-	for (Map.Entry<HorizonIdentifier, LinkAllocableParameters> entry : ifacesParams2
+	for (Map.Entry<Identifier, LinkAllocableParameters> entry : ifacesParams2
 		.entrySet()) {
-	    HorizonIdentifier key = entry.getKey();
+	    Identifier key = entry.getKey();
 	    if (!ifacesParams1.containsKey(key))
 		newIfacesParams.put(key, entry.getValue());
 	}
 	return newIfacesParams;
     }
 
-    public static InterfacesParameters<LinkAllocableParameters> subtract(
-	    InterfacesParameters<LinkAllocableParameters> ifacesParams1,
-	    InterfacesParameters<LinkAllocableParameters> ifacesParams2) {
-	final InterfacesParameters<LinkAllocableParameters> newIfacesParams = new InterfacesParameters<LinkAllocableParameters>();
-	for (Map.Entry<HorizonIdentifier, LinkAllocableParameters> entry : ifacesParams1
+    /**
+     * Subtracts the parameters of each element of the second map from the first
+     * one to build a new one.
+     * 
+     * @param ifacesParams1
+     *            first map
+     * @param ifacesParams2
+     *            second map
+     * @return the map resulting of the subtraction of all the parameters in
+     *         their respective entries in the maps.
+     */
+    public static <Identifier extends /* ResourceIdentifier & */HorizonIdentifier> InterfacesParameters<Identifier, LinkAllocableParameters> subtract(
+	    InterfacesParameters<Identifier, LinkAllocableParameters> ifacesParams1,
+	    InterfacesParameters<Identifier, LinkAllocableParameters> ifacesParams2) {
+	final InterfacesParameters<Identifier, LinkAllocableParameters> newIfacesParams = new InterfacesParameters<Identifier, LinkAllocableParameters>();
+	for (Map.Entry<Identifier, LinkAllocableParameters> entry : ifacesParams1
 		.entrySet()) {
-	    HorizonIdentifier key = entry.getKey();
+	    Identifier key = entry.getKey();
 	    if (ifacesParams2.containsKey(key))
 		newIfacesParams.put(key, entry.getValue().subtract(
 			ifacesParams2.get(key)));
 	    else
 		newIfacesParams.put(key, entry.getValue());
 	}
-	for (Map.Entry<HorizonIdentifier, LinkAllocableParameters> entry : ifacesParams2
+	for (Map.Entry<Identifier, LinkAllocableParameters> entry : ifacesParams2
 		.entrySet()) {
-	    HorizonIdentifier key = entry.getKey();
+	    Identifier key = entry.getKey();
 	    if (!ifacesParams1.containsKey(key))
 		throw new IllegalArgumentException(
 			"Cannot subtract without a value.");

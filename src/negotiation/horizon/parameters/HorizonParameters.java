@@ -1,8 +1,9 @@
 package negotiation.horizon.parameters;
 
+import negotiation.horizon.negotiatingagent.HorizonIdentifier;
 import dima.support.GimaObject;
 
-public abstract class HorizonParameters<MParam extends MachineParameters, LParam extends LinkParameters>
+public abstract class HorizonParameters<Identifier extends HorizonIdentifier, MParam extends MachineParameters, LParam extends LinkParameters>
 	extends GimaObject {
 
     /**
@@ -10,16 +11,16 @@ public abstract class HorizonParameters<MParam extends MachineParameters, LParam
      */
     private static final long serialVersionUID = -7266253903347536222L;
 
-    private final InterfacesParameters<LParam> ifacesParams;
+    private final InterfacesParameters<Identifier, LParam> ifacesParams;
     private final MParam machineParams;
 
     protected HorizonParameters(final MParam machineParams,
-	    final InterfacesParameters<LParam> ifacesParam) {
+	    final InterfacesParameters<Identifier, LParam> ifacesParam) {
 	this.machineParams = machineParams;
 	this.ifacesParams = ifacesParam;
     }
 
-    public InterfacesParameters<LParam> getInterfacesParameters() {
+    public InterfacesParameters<Identifier, LParam> getInterfacesParameters() {
 	return this.ifacesParams;
     }
 

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jtp.util.UnexpectedException;
+import negotiation.horizon.EmptyIntervalException;
+import negotiation.horizon.Interval;
 import negotiation.horizon.negotiatingagent.HorizonPreferenceFunction.Service;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.horizon.parameters.HorizonAllocableParameters;
@@ -26,10 +29,12 @@ import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.support.GimaObject;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
+import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.mappedcollections.SymmetricBinaryAdjacencyMap;
 import dimaxx.tools.mappedcollections.UnorderedPair;
 
-public class VirtualNetworkState extends SimpleAgentState {
+public class VirtualNetworkState extends SimpleAgentState implements
+	Comparable<VirtualNetworkState> {
 
     /**
      * Serial version identifier.
@@ -42,7 +47,7 @@ public class VirtualNetworkState extends SimpleAgentState {
      */
     private final Map<VirtualNodeIdentifier, VirtualNode> nodes;
 
-    private final Service service;
+    private final Service serviceName;
 
     // /**
     // * Represents the links between all the VirtualNodes and their parameters.
@@ -80,9 +85,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	final List<VirtualNodeIdentifier> idList = new ArrayList<VirtualNodeIdentifier>(
 		nbnodes);
 	for (int i = 0; i < nbnodes; i++)
-	    idList
-		    .add(this.getMyAgentIdentifier().new VirtualNodeIdentifier(
-			    i));
+	    idList.add(this.getMyAgentIdentifier().new VirtualNodeIdentifier());
 
 	final SymmetricBinaryAdjacencyMap<VirtualNodeIdentifier, NetworkLinkParameters> linksMap = new SymmetricBinaryAdjacencyMap<VirtualNodeIdentifier, NetworkLinkParameters>();
 
@@ -111,8 +114,8 @@ public class VirtualNetworkState extends SimpleAgentState {
 
 	for (int i = 0; i < nbnodes; i++) {
 	    VirtualNodeIdentifier id = idList.get(i);
-	    InterfacesParameters<LinkAllocableParameters> ifacesAllocable = new InterfacesParameters<LinkAllocableParameters>();
-	    InterfacesParameters<LinkMeasurableParameters> ifacesMeasurable = new InterfacesParameters<LinkMeasurableParameters>();
+	    InterfacesParameters<VirtualNodeIdentifier, LinkAllocableParameters> ifacesAllocable = new InterfacesParameters<VirtualNodeIdentifier, LinkAllocableParameters>();
+	    InterfacesParameters<VirtualNodeIdentifier, LinkMeasurableParameters> ifacesMeasurable = new InterfacesParameters<VirtualNodeIdentifier, LinkMeasurableParameters>();
 
 	    for (VirtualNodeIdentifier idPaired : linksMap.getPaired(id)) {
 		ifacesAllocable.put(idPaired, linksMap.get(
@@ -122,18 +125,24 @@ public class VirtualNetworkState extends SimpleAgentState {
 			new UnorderedPair<VirtualNodeIdentifier>(id, idPaired))
 			.getMeasurableParams());
 	    }
-	    VirtualNode test = nodesMap.put(idList.get(i), new VirtualNode(
-		    new NodeParameters(new HorizonAllocableParameters(
-			    nodesRequiredParams.get(i), ifacesAllocable),
-			    new HorizonMeasurableParameters(
-				    nodesPreferenceParams.get(i),
-				    ifacesMeasurable))));
+	    VirtualNode test = nodesMap
+		    .put(
+			    idList.get(i),
+			    new VirtualNode(
+				    new NodeParameters<VirtualNodeIdentifier>(
+					    new HorizonAllocableParameters<VirtualNodeIdentifier>(
+						    nodesRequiredParams.get(i),
+						    ifacesAllocable),
+					    new HorizonMeasurableParameters<VirtualNodeIdentifier>(
+						    nodesPreferenceParams
+							    .get(i),
+						    ifacesMeasurable))));
 
 	    assert (test == null);
 	}
 
 	this.nodes = Collections.unmodifiableMap(nodesMap);
-	this.service = myPreferredQoS;
+	this.serviceName = myPreferredQoS;
 
 	// XXX Note : a priori inutilisé
 	// this.links = Collections.unmodifiableMap(linksMap);
@@ -154,7 +163,7 @@ public class VirtualNetworkState extends SimpleAgentState {
     public VirtualNetworkState(final VirtualNetworkState initial,
 	    final VirtualNodeIdentifier reallocatedNode,
 	    final SubstrateNodeIdentifier newHost,
-	    final HorizonMeasurableParameters params) {
+	    final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
 	super(initial.getMyAgentIdentifier(), initial.getStateCounter() + 1);
 	assert (this.nodes.get(reallocatedNode).param.equals(params));
 	assert (this.nodes.containsKey(reallocatedNode));
@@ -167,7 +176,7 @@ public class VirtualNetworkState extends SimpleAgentState {
 	newNodesMap.put(reallocatedNode, new VirtualNode(this.nodes
 		.get(reallocatedNode), newHost, params));
 	this.nodes = Collections.unmodifiableMap(newNodesMap);
-	this.service = initial.service;
+	this.serviceName = initial.serviceName;
     }
 
     // public VirtualNetworkState(final VirtualNetworkState initial,
@@ -201,7 +210,8 @@ public class VirtualNetworkState extends SimpleAgentState {
     // return this.nodes.keySet().equals(this.links.keySet());
     // }
 
-    public NodeParameters getNodeParams(final VirtualNodeIdentifier id) {
+    public NodeParameters<VirtualNodeIdentifier> getNodeParams(
+	    final VirtualNodeIdentifier id) {
 	return this.nodes.get(id).getParam();
     }
 
@@ -250,6 +260,11 @@ public class VirtualNetworkState extends SimpleAgentState {
 	return myResIds;
     }
 
+    /**
+     * Resources of the VirtualNetwork are SubstrateNodes.
+     * 
+     * @return the type of the State of the Resources
+     */
     @Override
     public Class<? extends Information> getMyResourcesClass() {
 	return SubstrateNodeState.class;
@@ -283,13 +298,23 @@ public class VirtualNetworkState extends SimpleAgentState {
 	throw new UnsupportedOperationException();
     }
 
+    /**
+     * Tests the validity of this VirtualNetworkState according to the rights of
+     * the agent.
+     * 
+     * @return <code>true</code> if this State satisfies the rights of the agent
+     *         (SLA).
+     */
     @Override
     public boolean isValid() {
+	// The map associating VirtualNodesIdentifiers to VirtualNode has no
+	// reason to contain null values.
 	assert (!this.nodes.values().contains(null));
+
 	for (VirtualNode node : this.nodes.values()) {
-	    if (null == node.getMyHost()) {
+	    if (!node.isValid())
 		return false;
-	    }
+
 	}
 	return true;
     }
@@ -309,27 +334,43 @@ public class VirtualNetworkState extends SimpleAgentState {
 	/**
 	 * Parameters levels requested by the SLA.
 	 */
-	private final NodeParameters param;
+	private final NodeParameters<VirtualNodeIdentifier> param;
 
 	/**
 	 * Parameters provided by the current host.
 	 */
-	private final HorizonMeasurableParameters currentAllocation;
+	private final HorizonMeasurableParameters<SubstrateNodeIdentifier> currentAllocation;
 
 	/**
 	 * Identifier of the SubstrateNode hosting this VirtualNode.
 	 */
 	private final SubstrateNodeIdentifier myHost;
 
-	public VirtualNode(final NodeParameters param) {
+	public VirtualNode(final NodeParameters<VirtualNodeIdentifier> param) {
 	    this.param = param;
 	    this.myHost = null;
 	    this.currentAllocation = null;
 	}
 
-	public VirtualNode(final VirtualNode initial,
+	public boolean isValid() {
+	    if (this.myHost == null)
+		return false;
+	    for (Map.Entry<VirtualNodeIdentifier, LinkMeasurableParameters> link : this.param
+		    .getMeasurableParams().getInterfacesParameters().entrySet()) {
+		if (!this.currentAllocation.getInterfacesParameters()
+			.get(
+				VirtualNetworkState.this.nodes.get(link
+					.getKey()).myHost).satisfies(
+				link.getValue()))
+		    return false;
+	    }
+	    return true;
+	}
+
+	public VirtualNode(
+		final VirtualNode initial,
 		final SubstrateNodeIdentifier newHost,
-		final HorizonMeasurableParameters params) {
+		final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
 	    this.param = initial.param;
 	    this.myHost = newHost;
 	    this.currentAllocation = params;
@@ -340,11 +381,11 @@ public class VirtualNetworkState extends SimpleAgentState {
 	 * 
 	 * @return the value of the field param
 	 */
-	public NodeParameters getParam() {
+	public NodeParameters<VirtualNodeIdentifier> getParam() {
 	    return this.param;
 	}
 
-	public HorizonMeasurableParameters getCurrentAllocation()
+	public HorizonMeasurableParameters<SubstrateNodeIdentifier> getCurrentAllocation()
 		throws NodeNotInstanciatedException {
 	    assert ((this.myHost == null) == (this.currentAllocation == null));
 	    if (this.myHost == null)
@@ -361,6 +402,132 @@ public class VirtualNetworkState extends SimpleAgentState {
 	public SubstrateNodeIdentifier getMyHost() {
 	    return this.myHost;
 	}
+
+	public Double evaluatePacketLossRateUtility() {
+	    final HeavyDoubleAggregation aggreg = new HeavyDoubleAggregation();
+
+	    for (Map.Entry<VirtualNodeIdentifier, LinkMeasurableParameters> demanded : this.param
+		    .getMeasurableParams().getInterfacesParameters().entrySet()) {
+
+		Interval<Float> obtainedPacketLossRate = this.currentAllocation
+			.getInterfacesParameters().get(
+				VirtualNetworkState.this.nodes.get(demanded
+					.getKey()).myHost).getPacketLossRate();
+		Interval<Float> demandedPacketLossRate = Interval.inter(
+			obtainedPacketLossRate, demanded.getValue()
+				.getPacketLossRate());
+		Double packetLossRateEval;
+		try {
+		    packetLossRateEval = 1. / (obtainedPacketLossRate
+			    .getLower() + 1);
+		} catch (final EmptyIntervalException e) {
+		    throw new UnexpectedException(e);
+		}
+		try {
+		    packetLossRateEval /= (demandedPacketLossRate.getUpper()
+			    - demandedPacketLossRate.getLower() + 1);
+		} catch (EmptyIntervalException e) {
+		    packetLossRateEval *= 1;
+		}
+		aggreg.add(packetLossRateEval);
+	    }
+	    return aggreg.getMediane();
+	}
+
+	public Double evaluateDelayUtility() {
+	    final HeavyDoubleAggregation aggreg = new HeavyDoubleAggregation();
+
+	    for (Map.Entry<VirtualNodeIdentifier, LinkMeasurableParameters> demanded : this.param
+		    .getMeasurableParams().getInterfacesParameters().entrySet()) {
+
+		Interval<Integer> obtainedDelay = this.currentAllocation
+			.getInterfacesParameters().get(
+				VirtualNetworkState.this.nodes.get(demanded
+					.getKey()).myHost).getDelay();
+		Interval<Integer> satisfyingDelay = Interval.inter(
+			obtainedDelay, demanded.getValue().getDelay());
+		Double delayEval;
+		try {
+		    delayEval = 1. / (obtainedDelay.getLower() + 1);
+		} catch (final EmptyIntervalException e) {
+		    throw new UnexpectedException(e);
+		}
+		try {
+		    delayEval /= (satisfyingDelay.getUpper()
+			    - satisfyingDelay.getLower() + 1);
+		} catch (EmptyIntervalException e) {
+		    delayEval *= 1;
+		}
+		aggreg.add(delayEval);
+	    }
+
+	    return aggreg.getMediane();
+	}
+
+	public Double evaluateJitterUtility() {
+	    HeavyDoubleAggregation aggreg = new HeavyDoubleAggregation();
+
+	    for (Map.Entry<VirtualNodeIdentifier, LinkMeasurableParameters> demanded : this.param
+		    .getMeasurableParams().getInterfacesParameters().entrySet()) {
+
+		Interval<Integer> obtainedJitter = this.currentAllocation
+			.getInterfacesParameters().get(
+				VirtualNetworkState.this.nodes.get(demanded
+					.getKey()).myHost).getJitter();
+		Interval<Integer> satisfyingJitter = Interval.inter(
+			obtainedJitter, demanded.getValue().getJitter());
+		Double jitterEval;
+		try {
+		    jitterEval = 1. / (obtainedJitter.getLower() + 1);
+		} catch (final EmptyIntervalException e) {
+		    throw new UnexpectedException(e);
+		}
+		try {
+		    jitterEval /= (satisfyingJitter.getUpper()
+			    - satisfyingJitter.getLower() + 1);
+		} catch (EmptyIntervalException e) {
+		    jitterEval *= 1;
+		}
+		aggreg.add(jitterEval);
+	    }
+	    return aggreg.getMediane();
+	}
+
+	public Double evaluateAvailabilityUtility() {
+	    Interval<Integer> obtainedAvailability = this.currentAllocation
+		    .getMachineParameters().getAvailability();
+	    Interval<Integer> satisfyingAvailability = Interval.inter(
+		    obtainedAvailability, this.param.getMeasurableParams()
+			    .getMachineParameters().getAvailability());
+	    Double availabilityEval;
+	    try {
+		availabilityEval = 1. - (1. / (obtainedAvailability.getUpper() + 1));
+	    } catch (final EmptyIntervalException e) {
+		throw new UnexpectedException(e);
+	    }
+	    try {
+		availabilityEval /= (satisfyingAvailability.getUpper()
+			- satisfyingAvailability.getLower() + 1);
+	    } catch (EmptyIntervalException e) {
+		availabilityEval *= 1;
+	    }
+	    return availabilityEval;
+	}
+
+	public Double evaluateUtility() {
+	    final HeavyDoubleAggregation aggreg = new HeavyDoubleAggregation();
+	    final Service serviceType = VirtualNetworkState.this.serviceName;
+	    aggreg.add(this.evaluatePacketLossRateUtility()
+		    / serviceType.getPriority(1));
+	    aggreg
+		    .add(this.evaluateDelayUtility()
+			    / serviceType.getPriority(2));
+	    aggreg.add(this.evaluateJitterUtility()
+		    / serviceType.getPriority(3));
+	    aggreg.add(this.evaluateAvailabilityUtility()
+		    / serviceType.getPriority(4));
+	    return aggreg.getMediane();
+	}
     }
 
     public class NodeNotInstanciatedException extends Exception {
@@ -373,23 +540,74 @@ public class VirtualNetworkState extends SimpleAgentState {
     }
 
     public Service getQoS() {
-	return this.service;
+	return this.serviceName;
     }
 
-    public List<HorizonMeasurableParameters> getNodesPreferences() {
-	List<HorizonMeasurableParameters> nodesPrefs = new ArrayList<HorizonMeasurableParameters>();
+    public List<HorizonMeasurableParameters<VirtualNodeIdentifier>> getNodesPreferences() {
+	List<HorizonMeasurableParameters<VirtualNodeIdentifier>> nodesPrefs = new ArrayList<HorizonMeasurableParameters<VirtualNodeIdentifier>>();
 	for (VirtualNode node : this.nodes.values()) {
 	    nodesPrefs.add(node.getParam().getMeasurableParams());
 	}
 	return nodesPrefs;
     }
 
-    public List<HorizonMeasurableParameters> getNodesCurrentService()
+    public List<HorizonMeasurableParameters<SubstrateNodeIdentifier>> getNodesCurrentService()
 	    throws NodeNotInstanciatedException {
-	List<HorizonMeasurableParameters> nodesPrefs = new ArrayList<HorizonMeasurableParameters>();
+	List<HorizonMeasurableParameters<SubstrateNodeIdentifier>> nodesPrefs = new ArrayList<HorizonMeasurableParameters<SubstrateNodeIdentifier>>();
 	for (VirtualNode node : this.nodes.values()) {
 	    nodesPrefs.add(node.getCurrentAllocation());
 	}
 	return nodesPrefs;
+    }
+
+    public int getNodesCount() {
+	return this.nodes.size();
+    }
+
+    public Double evaluateUtility() {
+	final HeavyDoubleAggregation aggregation = new HeavyDoubleAggregation();
+	for (VirtualNode node : this.nodes.values()) {
+	    aggregation.add(node.evaluateUtility());
+	}
+	return aggregation.getMediane();
+    }
+
+    public int compareTo(final VirtualNetworkState state) {
+	HeavyDoubleAggregation[][] aggregs = {
+		{ new HeavyDoubleAggregation(), new HeavyDoubleAggregation(),
+			new HeavyDoubleAggregation(),
+			new HeavyDoubleAggregation() },
+		{ new HeavyDoubleAggregation(), new HeavyDoubleAggregation(),
+			new HeavyDoubleAggregation(),
+			new HeavyDoubleAggregation() } };
+
+	for (VirtualNode node : this.nodes.values()) {
+	    aggregs[0][0].add(node.evaluatePacketLossRateUtility());
+	    aggregs[0][1].add(node.evaluateDelayUtility());
+	    aggregs[0][2].add(node.evaluateJitterUtility());
+	    aggregs[0][3].add(node.evaluateAvailabilityUtility());
+	}
+
+	for (VirtualNode node : state.nodes.values()) {
+	    aggregs[1][0].add(node.evaluatePacketLossRateUtility());
+	    aggregs[1][1].add(node.evaluateDelayUtility());
+	    aggregs[1][2].add(node.evaluateJitterUtility());
+	    aggregs[1][3].add(node.evaluateAvailabilityUtility());
+	}
+
+	List<Integer> comparedValues = new ArrayList<Integer>();
+	comparedValues.add(aggregs[0][0].getMediane().compareTo(
+		aggregs[1][0].getMediane()));
+	comparedValues.add(aggregs[0][1].getMediane().compareTo(
+		aggregs[1][1].getMediane()));
+	comparedValues.add(aggregs[0][2].getMediane().compareTo(
+		aggregs[1][2].getMediane()));
+	comparedValues.add(aggregs[0][3].getMediane().compareTo(
+		aggregs[1][3].getMediane()));
+	for (int value : this.serviceName.sort(comparedValues)) {
+	    if (value != 0)
+		return value;
+	}
+	return 0;
     }
 }

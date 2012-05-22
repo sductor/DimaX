@@ -1,9 +1,11 @@
 package negotiation.horizon.experimentation;
 
 import negotiation.horizon.negotiatingagent.HorizonCandidature;
-import negotiation.horizon.negotiatingagent.HorizonParameters;
+import negotiation.horizon.negotiatingagent.HorizonContract;
+import negotiation.horizon.negotiatingagent.HorizonSpecification;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
 import negotiation.horizon.negotiatingagent.VirtualNetworkState;
+import negotiation.horizon.parameters.NodeParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -21,7 +23,7 @@ import dima.introspectionbasedagents.services.information.ObservationService;
  */
 public class VirtualNetwork
 	extends
-	SimpleNegotiatingAgent<HorizonParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, HorizonParameters<VirtualNetworkIdentifier>>> {
+	SimpleNegotiatingAgent<HorizonSpecification, VirtualNetworkState, HorizonContract> {
 
     /**
      * Serial version identifier.
@@ -43,11 +45,11 @@ public class VirtualNetwork
     public VirtualNetwork(
 	    final VirtualNetworkIdentifier id,
 	    final VirtualNetworkState myInitialState,
-	    final RationalCore<HorizonParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, HorizonParameters>> myRationality,
-	    final SelectionCore<VirtualNetwork, HorizonParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, HorizonParameters>> selectionCore,
-	    final ProposerCore<VirtualNetwork, HorizonParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, HorizonParameters>> proposerCore,
+	    final RationalCore<NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> myRationality,
+	    final SelectionCore<VirtualNetwork, NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> selectionCore,
+	    final ProposerCore<VirtualNetwork, NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> proposerCore,
 	    final ObservationService myInformation,
-	    final AbstractCommunicationProtocol<HorizonParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, HorizonParameters>> protocol)
+	    final AbstractCommunicationProtocol<NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> protocol)
 	    throws CompetenceException {
 	super(id, myInitialState, myRationality, selectionCore, proposerCore,
 		myInformation, protocol);

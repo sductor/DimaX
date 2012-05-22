@@ -1,19 +1,21 @@
 package negotiation.horizon.parameters;
 
+import negotiation.horizon.negotiatingagent.HorizonIdentifier;
 import dima.support.GimaObject;
 
 /**
  * @author Vincent Letard
  */
-public class NodeParameters extends GimaObject /* AbstractInformation */{
+public class NodeParameters<Identifier extends HorizonIdentifier> extends
+	GimaObject /* AbstractInformation */{
 
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = 8142462973752131803L;
 
-    private final HorizonAllocableParameters allocableParams;
-    private final HorizonMeasurableParameters measurableParams;
+    private final HorizonAllocableParameters<Identifier> allocableParams;
+    private final HorizonMeasurableParameters<Identifier> measurableParams;
 
     // /**
     // * Static parameters with null values.
@@ -28,8 +30,9 @@ public class NodeParameters extends GimaObject /* AbstractInformation */{
     /**
      * Constructs a new instance of SingleNodeParameters.
      */
-    public NodeParameters(final HorizonAllocableParameters allocableParams,
-	    final HorizonMeasurableParameters measurableParams) {
+    public NodeParameters(
+	    final HorizonAllocableParameters<Identifier> allocableParams,
+	    final HorizonMeasurableParameters<Identifier> measurableParams) {
 	this.allocableParams = allocableParams;
 	this.measurableParams = measurableParams;
     }
@@ -53,11 +56,11 @@ public class NodeParameters extends GimaObject /* AbstractInformation */{
     /**
      * @return the value of the field allocableParameters
      */
-    public HorizonAllocableParameters getAllocableParams() {
+    public HorizonAllocableParameters<Identifier> getAllocableParams() {
 	return this.allocableParams;
     }
 
-    public HorizonMeasurableParameters getMeasurableParams() {
+    public HorizonMeasurableParameters<Identifier> getMeasurableParams() {
 	return this.measurableParams;
     }
 

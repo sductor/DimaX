@@ -1,7 +1,6 @@
 package negotiation.horizon.negotiatingagent;
 
 import negotiation.horizon.experimentation.VirtualNetwork;
-import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 
 /**
@@ -22,6 +21,8 @@ public class VirtualNetworkIdentifier extends AgentName implements
      */
     private static final String denomination = VirtualNetwork.class
 	    .getSimpleName();
+
+    private int nodeNumber = 0;
 
     public VirtualNetworkIdentifier(final int number) {
 	super(denomination + number);
@@ -46,10 +47,21 @@ public class VirtualNetworkIdentifier extends AgentName implements
 	private final int number;
 	private final VirtualNetworkIdentifier myVNId = VirtualNetworkIdentifier.this;
 
+	@Deprecated
 	public VirtualNodeIdentifier(final int number) {
-	    super(VirtualNetworkIdentifier.this.getId() + "_VirtualNode"
-		    + number);
+	    super(VirtualNetworkIdentifier.this.getId() + "_"
+		    + VirtualNodeIdentifier.class.getSimpleName() + number);
 	    this.number = number;
+	    if (myVNId.nodeNumber <= number)
+		myVNId.nodeNumber = number + 1;
+	}
+
+	public VirtualNodeIdentifier() {
+	    super(VirtualNetworkIdentifier.this.getId() + "_"
+		    + VirtualNodeIdentifier.class.getSimpleName()
+		    + VirtualNetworkIdentifier.this.nodeNumber);
+	    this.number = myVNId.nodeNumber;
+	    myVNId.nodeNumber++;
 	}
 
 	@Override
@@ -62,7 +74,7 @@ public class VirtualNetworkIdentifier extends AgentName implements
 
 	@Override
 	public int hashCode() {
-	    return VirtualNetworkIdentifier.this.hashCode();
+	    return myVNId.hashCode();
 	}
 
 	@Override
@@ -70,7 +82,7 @@ public class VirtualNetworkIdentifier extends AgentName implements
 	    return this.number - arg0.number;
 	}
 
-	public AgentIdentifier getMyNetwork() {
+	public VirtualNetworkIdentifier getMyNetwork() {
 	    return this.myVNId;
 	}
     }

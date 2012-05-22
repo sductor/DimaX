@@ -27,7 +27,9 @@ public class SubstrateNodeState extends SimpleAgentState {
     /**
      * Remaining parameters after the VirtualNodes are instantiated.
      */
-    private final HorizonAllocableParameters availableNodeParams;
+    private final HorizonAllocableParameters<SubstrateNodeIdentifier> availableNodeParams;
+
+    private final int energyConsumptionCoef;
 
     // XXX Nécessaire uniquement si on permet la modification dynamique des
     // paramètres des réseaux virtuels.
@@ -38,6 +40,9 @@ public class SubstrateNodeState extends SimpleAgentState {
      */
     private final Map<VirtualNetworkIdentifier, Integer> nodesHostedNetworks;
 
+    // private final Map<VirtualNodeIdentifier, SubstrateNodeIdentifier>
+    // associatedLinks;
+
     /**
      * Constructs a new SubstrateNodeState using the provided parameters.
      * 
@@ -46,9 +51,14 @@ public class SubstrateNodeState extends SimpleAgentState {
      * @param stateNumber
      * @param nodeParams
      *            All available parameters on this SubstrateNode
+     * @param energyConsumptionCoef
+     *            An indicator of the energy consumption of the machine
      */
-    public SubstrateNodeState(final SubstrateNodeIdentifier myAgent,
-	    final int stateNumber, final HorizonAllocableParameters nodeParams) {
+    public SubstrateNodeState(
+	    final SubstrateNodeIdentifier myAgent,
+	    final int stateNumber,
+	    final HorizonAllocableParameters<SubstrateNodeIdentifier> nodeParams,
+	    final int energyConsumptionCoef) {
 	super(myAgent, stateNumber);
 
 	if (!nodeParams.isValid()) {
@@ -59,11 +69,15 @@ public class SubstrateNodeState extends SimpleAgentState {
 
 	this.nodesHostedNetworks = Collections
 		.unmodifiableMap(new HashMap<VirtualNetworkIdentifier, Integer>());
+	if (energyConsumptionCoef < 0)
+	    throw new IllegalArgumentException();
+	this.energyConsumptionCoef = energyConsumptionCoef;
     }
 
     /**
      * Constructs a new instance of SubstrateNodeState by performing
-     * adding/deleting one instantiated VirtualNode from the initial state.
+     * adding/deleting one instantiated VirtualNode from the initial state. The
+     * instance created is not valid (in the sense of isValid) since the
      * 
      * @param initial
      *            Initial SubstrateNodeState
@@ -77,7 +91,8 @@ public class SubstrateNodeState extends SimpleAgentState {
      */
     public SubstrateNodeState(final SubstrateNodeState initial,
 	    final VirtualNetworkIdentifier vnId,
-	    final HorizonAllocableParameters params, final boolean creation) {
+	    final HorizonAllocableParameters<SubstrateNodeIdentifier> params,
+	    final boolean creation) {
 	super(initial.getMyAgentIdentifier(), initial.getStateCounter() + 1);
 	assert (params.isValid());
 
@@ -112,6 +127,7 @@ public class SubstrateNodeState extends SimpleAgentState {
 	    }
 	}
 	this.nodesHostedNetworks = Collections.unmodifiableMap(newMap);
+	this.energyConsumptionCoef = initial.energyConsumptionCoef;
     }
 
     // /**
@@ -189,7 +205,7 @@ public class SubstrateNodeState extends SimpleAgentState {
     // this.availableNodeParams = availableNodeParams;
     // }
 
-    public HorizonAllocableParameters getAvailableNodeParams() {
+    public HorizonAllocableParameters<SubstrateNodeIdentifier> getAvailableNodeParams() {
 	return availableNodeParams;
     }
 
@@ -247,6 +263,11 @@ public class SubstrateNodeState extends SimpleAgentState {
 
     public boolean isEmpty() {
 	return this.nodesHostedNetworks.size() == 0;
+    }
+
+    public Double evaluateUtility() {
+	return this.nodesHostedNetworks.isEmpty() ? 1
+		: 1. / (this.energyConsumptionCoef + 1);
     }
 
 }

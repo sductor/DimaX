@@ -1,5 +1,7 @@
 package negotiation.horizon.parameters;
 
+import negotiation.horizon.Interval;
+
 public class MachineMeasurableParameters implements MachineParameters {
 
     /**
@@ -10,13 +12,13 @@ public class MachineMeasurableParameters implements MachineParameters {
     /**
      * Level of security of the node.
      */
-    private final Integer availability;
+    private final Interval<Integer> availability;
 
-    public MachineMeasurableParameters(final Integer availability) {
+    public MachineMeasurableParameters(final Interval<Integer> availability) {
 	this.availability = availability;
     }
 
-    public Integer getAvailability() {
+    public Interval<Integer> getAvailability() {
 	return this.availability;
     }
 

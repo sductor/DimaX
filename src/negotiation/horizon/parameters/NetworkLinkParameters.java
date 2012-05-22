@@ -1,8 +1,7 @@
 package negotiation.horizon.parameters;
 
-import dima.support.GimaObject;
 
-public class NetworkLinkParameters extends GimaObject {
+public class NetworkLinkParameters implements LinkParameters {
     /**
      * Serial version identifier.
      */

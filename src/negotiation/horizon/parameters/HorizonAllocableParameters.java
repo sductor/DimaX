@@ -1,7 +1,10 @@
 package negotiation.horizon.parameters;
 
-public class HorizonAllocableParameters extends
-	HorizonParameters<MachineAllocableParameters, LinkAllocableParameters>
+import negotiation.horizon.negotiatingagent.HorizonIdentifier;
+
+public class HorizonAllocableParameters<Identifier extends HorizonIdentifier>
+	extends
+	HorizonParameters<Identifier, MachineAllocableParameters, LinkAllocableParameters>
 	implements AllocableParameters {
 
     /**
@@ -9,8 +12,9 @@ public class HorizonAllocableParameters extends
      */
     private static final long serialVersionUID = 2458579262649743840L;
 
-    public HorizonAllocableParameters(MachineAllocableParameters machineParams,
-	    InterfacesParameters<LinkAllocableParameters> ifacesParam) {
+    public HorizonAllocableParameters(
+	    MachineAllocableParameters machineParams,
+	    InterfacesParameters<Identifier, LinkAllocableParameters> ifacesParam) {
 	super(machineParams, ifacesParam);
     }
 
@@ -26,16 +30,20 @@ public class HorizonAllocableParameters extends
 	return true;
     }
 
-    public HorizonAllocableParameters add(HorizonAllocableParameters params) {
-	return new HorizonAllocableParameters(this.getMachineParameters().add(
-		params.getMachineParameters()), InterfacesParameters.add(this
-		.getInterfacesParameters(), params.getInterfacesParameters()));
+    public HorizonAllocableParameters<Identifier> add(
+	    HorizonAllocableParameters<Identifier> params) {
+	return new HorizonAllocableParameters<Identifier>(this
+		.getMachineParameters().add(params.getMachineParameters()),
+		InterfacesParameters.add(this.getInterfacesParameters(), params
+			.getInterfacesParameters()));
     }
 
-    public HorizonAllocableParameters subtract(HorizonAllocableParameters params) {
-	return new HorizonAllocableParameters(this.getMachineParameters()
-		.subtract(params.getMachineParameters()), InterfacesParameters
-		.subtract(this.getInterfacesParameters(), params
-			.getInterfacesParameters()));
+    public HorizonAllocableParameters<Identifier> subtract(
+	    HorizonAllocableParameters<Identifier> params) {
+	return new HorizonAllocableParameters<Identifier>(
+		this.getMachineParameters().subtract(
+			params.getMachineParameters()), InterfacesParameters
+			.subtract(this.getInterfacesParameters(), params
+				.getInterfacesParameters()));
     }
 }

@@ -9,10 +9,10 @@ public class SubstrateNodeSpecification extends HorizonSpecification {
      */
     private static final long serialVersionUID = -1464884496624059098L;
     private final SubstrateNodeIdentifier agentId;
-    private final HorizonMeasurableParameters measuredParams;
+    private final HorizonMeasurableParameters<SubstrateNodeIdentifier> measuredParams;
 
     public SubstrateNodeSpecification(final SubstrateNodeIdentifier id,
-	    final HorizonMeasurableParameters params) {
+	    final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
 	this.agentId = id;
 	this.measuredParams = params;
     }
@@ -22,7 +22,7 @@ public class SubstrateNodeSpecification extends HorizonSpecification {
 	return this.agentId;
     }
 
-    public HorizonMeasurableParameters getParams() {
+    public HorizonMeasurableParameters<SubstrateNodeIdentifier> getParams() {
 	return this.measuredParams;
     }
 

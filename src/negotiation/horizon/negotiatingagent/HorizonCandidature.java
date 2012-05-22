@@ -1,5 +1,6 @@
 package negotiation.horizon.negotiatingagent;
 
+import jtp.util.UnexpectedException;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.horizon.parameters.HorizonMeasurableParameters;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
@@ -23,11 +24,16 @@ public class HorizonCandidature extends
 	super(intiator, agent, resource, validityTime);
     }
 
-    private VirtualNodeIdentifier getNode() throws IncompleteContractException {
-	return this.getSpecificationOf(this.getAgent()).getNode();
+    public VirtualNodeIdentifier getNode() {
+	try {
+	    return this.getSpecificationOf(this.getAgent()).getNode();
+	} catch (final IncompleteContractException e) {
+	    // The agent must have filled its specification.
+	    throw new UnexpectedException(e);
+	}
     }
 
-    private HorizonMeasurableParameters getQoS()
+    private HorizonMeasurableParameters<SubstrateNodeIdentifier> getQoS()
 	    throws IncompleteContractException {
 	return this.getSpecificationOf(this.getResource()).getParams();
     }
@@ -87,11 +93,9 @@ public class HorizonCandidature extends
 	    throws IncompleteContractException {
 	if (s instanceof SubstrateNodeState) {
 	    if (s.getMyAgentIdentifier().equals(this.getResource()))
-		return (State) new SubstrateNodeState((SubstrateNodeState) s,
-			this.getAgent(), this.getInitialState(this.getAgent())
-				.getNodeParams(this.getNode())
-				.getAllocableParams(), this
-				.isMatchingCreation());
+		// That must be done in the class HorizonContract, impossible
+		// here because of a lack of information
+		throw new UnsupportedOperationException();
 	    else
 		return s;
 	} else if (s instanceof VirtualNetworkState) {

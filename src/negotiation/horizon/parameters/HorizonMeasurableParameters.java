@@ -1,12 +1,14 @@
 package negotiation.horizon.parameters;
 
+import negotiation.horizon.negotiatingagent.HorizonIdentifier;
+
 /**
  * 
  * @author Vincent Letard
  */
-public class HorizonMeasurableParameters
+public class HorizonMeasurableParameters<Identifier extends HorizonIdentifier>
 	extends
-	HorizonParameters<MachineMeasurableParameters, LinkMeasurableParameters> {
+	HorizonParameters<Identifier, MachineMeasurableParameters, LinkMeasurableParameters> {
 
     /**
      * Serial version identifier.
@@ -15,7 +17,7 @@ public class HorizonMeasurableParameters
 
     public HorizonMeasurableParameters(
 	    final MachineMeasurableParameters machineParams,
-	    final InterfacesParameters<LinkMeasurableParameters> ifacesParams) {
+	    final InterfacesParameters<Identifier, LinkMeasurableParameters> ifacesParams) {
 	super(machineParams, ifacesParams);
     }
 }

@@ -5,18 +5,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import negotiation.horizon.EmptyIntervalException;
-import negotiation.horizon.Interval;
-import negotiation.horizon.negotiatingagent.VirtualNetworkState.NodeNotInstanciatedException;
-import negotiation.horizon.parameters.HorizonMeasurableParameters;
-import negotiation.horizon.parameters.InterfacesParameters;
-import negotiation.horizon.parameters.LinkMeasurableParameters;
 import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
-import dimaxx.tools.aggregator.HeavyDoubleAggregation;
-import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 
 public class HorizonPreferenceFunction extends
 	SocialChoiceFunction<HorizonSpecification, HorizonContract> {
@@ -37,8 +28,21 @@ public class HorizonPreferenceFunction extends
 		    availability };
 	}
 
-	public <Type extends Comparable<Type>> List<Type> sort(
-		final List<Type> values) throws IllegalArgumentException {
+	/**
+	 * Sorts a list of values in the same order as the constructor arguments
+	 * according to their importance for this service.
+	 * 
+	 * @param <Type>
+	 *            Comparable type of the values in the list
+	 * @param values
+	 *            The list of the values in initial order
+	 * @return a list sorted by parameter importance
+	 * @throws IllegalArgumentException
+	 *             if the size of the list does not correspond to the number
+	 *             of parameters
+	 */
+	public <Type> List<Type> sort(final List<Type> values)
+		throws IllegalArgumentException {
 	    if (values.size() != this.priorities.length)
 		throw new IllegalArgumentException();
 
@@ -50,6 +54,15 @@ public class HorizonPreferenceFunction extends
 	    return result;
 	}
 
+	/**
+	 * Gives the relative priority of the i-th parameter for this service
+	 * type. The highest is the priority the lowest is the returned integer.
+	 * 
+	 * @param i
+	 *            the number of the parameter : 1 is packetLossRate, 2 is
+	 *            delay, 3 is jitter, 4 is availability
+	 * @return an inversely proportional to the priority integer
+	 */
 	public int getPriority(final int i) {
 	    return this.priorities[i];
 	}
@@ -60,8 +73,7 @@ public class HorizonPreferenceFunction extends
      */
     private static final long serialVersionUID = -2775977866055120559L;
 
-    public HorizonPreferenceFunction(final SocialChoiceType socialWelfare,
-	    final Service service) {
+    public HorizonPreferenceFunction(final SocialChoiceType socialWelfare) {
 	super(socialWelfare);
     }
 
@@ -73,108 +85,112 @@ public class HorizonPreferenceFunction extends
 
 	    @Override
 	    public Double getUtilityValue(AgentState s) {
-		if (!(s instanceof VirtualNetworkState) || !s.isValid())
+		if (!s.isValid())
 		    throw new IllegalArgumentException();
 
-		final Service qos = ((VirtualNetworkState) s).getQoS();
-		final List<HorizonMeasurableParameters> prefs = ((VirtualNetworkState) s)
-			.getNodesPreferences();
-		List<HorizonMeasurableParameters> allocated;
-		try {
-		    allocated = ((VirtualNetworkState) s)
-			    .getNodesCurrentService();
-		} catch (NodeNotInstanciatedException e) {
-		    throw new RuntimeException(e);
-		}
-
-		assert (prefs.size() == allocated.size());
-
-		Iterator<HorizonMeasurableParameters> itPrefs = prefs
-			.iterator();
-		Iterator<HorizonMeasurableParameters> itAllocated = allocated
-			.iterator();
-
-		final HeavyDoubleAggregation bag = new HeavyDoubleAggregation();
-		while (itPrefs.hasNext() && itAllocated.hasNext())
-		    bag.add(HorizonPreferenceFunction.this.getUtility(itPrefs
-			    .next(), itAllocated.next(), qos));
-		return bag.getRepresentativeElement();
+		if (s instanceof VirtualNetworkState) {
+		    return ((VirtualNetworkState) s).evaluateUtility();
+		} else if (s instanceof SubstrateNodeState) {
+		    return ((SubstrateNodeState) s).evaluateUtility();
+		} else
+		    throw new IllegalArgumentException();
 	    }
 	};
     }
 
-    private Double getUtility(final HorizonMeasurableParameters pref,
-	    final HorizonMeasurableParameters alloc, final Service qos) {
-	final HeavyDoubleAggregation packetLossRateBag = new HeavyDoubleAggregation();
-	final HeavyDoubleAggregation delayBag = new HeavyDoubleAggregation();
-	final HeavyDoubleAggregation jitterBag = new HeavyDoubleAggregation();
-
-	InterfacesParameters<LinkMeasurableParameters> linksAlloc = alloc
-		.getInterfacesParameters();
-	for (Map.Entry<HorizonIdentifier, LinkMeasurableParameters> prefEntry : pref
-		.getInterfacesParameters().entrySet()) {
-	    assert (linksAlloc.containsKey(prefEntry.getKey()));
-	    LinkMeasurableParameters prefLink = prefEntry.getValue(), allocLink = linksAlloc
-		    .get(prefEntry.getKey());
-	    {
-		Interval<Float> i = Interval.inter(allocLink
-			.getPacketLossRate(), prefLink.getPacketLossRate());
-		try {
-		    packetLossRateBag
-			    .add((double) (i.getUpper() - i.getLower())
-				    / (prefLink.getPacketLossRate().getUpper() - prefLink
-					    .getPacketLossRate().getLower()));
-		} catch (EmptyIntervalException e) {
-		    packetLossRateBag.add(0.);
-		}
-	    }
-	    {
-		Interval<Integer> i = Interval.inter(allocLink.getDelay(),
-			prefLink.getDelay());
-		try {
-		    delayBag.add((double) (i.getUpper() - i.getLower())
-			    / (prefLink.getDelay().getUpper() - prefLink
-				    .getDelay().getLower()));
-		} catch (EmptyIntervalException e) {
-		    delayBag.add(0.);
-		}
-	    }
-	    {
-		Interval<Integer> i = Interval.inter(allocLink.getJitter(),
-			prefLink.getJitter());
-		try {
-		    jitterBag.add((double) (i.getUpper() - i.getLower())
-			    / (prefLink.getJitter().getUpper() - prefLink
-				    .getJitter().getLower()));
-		} catch (EmptyIntervalException e) {
-		    jitterBag.add(0.);
-		}
-	    }
-	}
-	final LightWeightedAverageDoubleAggregation utilityBag = new LightWeightedAverageDoubleAggregation();
-	utilityBag.add(packetLossRateBag.getRepresentativeElement(), qos
-		.getPriority(0));
-	utilityBag.add(delayBag.getRepresentativeElement(), qos.getPriority(1));
-	utilityBag
-		.add(jitterBag.getRepresentativeElement(), qos.getPriority(2));
-	utilityBag.add(
-		((double) alloc.getMachineParameters().getAvailability())
-			/ ((double) pref.getMachineParameters()
-				.getAvailability()), qos.getPriority(3));
-
-	return utilityBag.getRepresentativeElement();
-    }
+    // private Double getUtility(final HorizonMeasurableParameters pref,
+    // final HorizonMeasurableParameters alloc, final Service qos) {
+    // final HeavyDoubleAggregation packetLossRateBag = new
+    // HeavyDoubleAggregation();
+    // final HeavyDoubleAggregation delayBag = new HeavyDoubleAggregation();
+    // final HeavyDoubleAggregation jitterBag = new HeavyDoubleAggregation();
+    //
+    // InterfacesParameters<LinkMeasurableParameters> linksAlloc = alloc
+    // .getInterfacesParameters();
+    // for (Map.Entry<HorizonIdentifier, LinkMeasurableParameters> prefEntry :
+    // pref
+    // .getInterfacesParameters().entrySet()) {
+    // assert (linksAlloc.containsKey(prefEntry.getKey()));
+    // LinkMeasurableParameters prefLink = prefEntry.getValue(), allocLink =
+    // linksAlloc
+    // .get(prefEntry.getKey());
+    // {
+    // Interval<Float> i = Interval.inter(allocLink
+    // .getPacketLossRate(), prefLink.getPacketLossRate());
+    // try {
+    // packetLossRateBag
+    // .add((double) (i.getUpper() - i.getLower())
+    // / (prefLink.getPacketLossRate().getUpper() - prefLink
+    // .getPacketLossRate().getLower()));
+    // } catch (EmptyIntervalException e) {
+    // packetLossRateBag.add(0.);
+    // }
+    // }
+    // {
+    // Interval<Integer> i = Interval.inter(allocLink.getDelay(),
+    // prefLink.getDelay());
+    // try {
+    // delayBag.add((double) (i.getUpper() - i.getLower())
+    // / (prefLink.getDelay().getUpper() - prefLink
+    // .getDelay().getLower()));
+    // } catch (EmptyIntervalException e) {
+    // delayBag.add(0.);
+    // }
+    // }
+    // {
+    // Interval<Integer> i = Interval.inter(allocLink.getJitter(),
+    // prefLink.getJitter());
+    // try {
+    // jitterBag.add((double) (i.getUpper() - i.getLower())
+    // / (prefLink.getJitter().getUpper() - prefLink
+    // .getJitter().getLower()));
+    // } catch (EmptyIntervalException e) {
+    // jitterBag.add(0.);
+    // }
+    // }
+    // }
+    // final LightWeightedAverageDoubleAggregation utilityBag = new
+    // LightWeightedAverageDoubleAggregation();
+    // utilityBag.add(packetLossRateBag.getRepresentativeElement(), qos
+    // .getPriority(0));
+    // utilityBag.add(delayBag.getRepresentativeElement(), qos.getPriority(1));
+    // utilityBag
+    // .add(jitterBag.getRepresentativeElement(), qos.getPriority(2));
+    // utilityBag.add(
+    // ((double) alloc.getMachineParameters().getAvailability())
+    // / ((double) pref.getMachineParameters()
+    // .getAvailability()), qos.getPriority(3));
+    //
+    // return utilityBag.getRepresentativeElement();
+    // }
 
     @Override
     protected <State extends AgentState> Collection<State> cleanStates(
 	    Collection<State> res) {
-	// TODO Auto-generated method stub
-	return null;
+	return res;
     }
 
     @Override
     public <State extends AgentState> Comparator<State> getComparator() {
-	// TODO Auto-generated method stub
-	return null;
+	return new Comparator<State>() {
+
+	    @Override
+	    public int compare(State o1, State o2) {
+		if (o1 instanceof SubstrateNodeState
+			&& o2 instanceof SubstrateNodeState) {
+		    return HorizonPreferenceFunction.this
+			    .getUtilitaristEvaluator().getUtilityValue(o1)
+			    .compareTo(
+				    HorizonPreferenceFunction.this
+					    .getUtilitaristEvaluator()
+					    .getUtilityValue(o2));
+		} else if (o1 instanceof VirtualNetworkState
+			&& o2 instanceof VirtualNetworkState) {
+		    return ((VirtualNetworkState) o1)
+			    .compareTo((VirtualNetworkState) o2);
+		} else
+		    throw new IllegalArgumentException();
+	    }
+	};
     }
 }

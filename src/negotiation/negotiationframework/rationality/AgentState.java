@@ -15,7 +15,7 @@ public interface AgentState extends Information {
 
 	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers();
 
-	public Class<? extends Information> getMyResourcesClass();
+	public Class<? extends AgentState> getMyResourcesClass();
 
 
 	//droit = satisfaction

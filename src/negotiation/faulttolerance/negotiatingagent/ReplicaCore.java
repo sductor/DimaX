@@ -12,9 +12,9 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public  class ReplicaCore
 extends
-BasicAgentCompetence<SimpleRationalAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>>
+BasicAgentCompetence<SimpleRationalAgent<ReplicaState, ReplicationCandidature>>
 implements
-RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
+RationalCore<ReplicaState, ReplicationCandidature>  {
 	private static final long serialVersionUID = 3436030307737036668L;
 
 	//
@@ -89,10 +89,10 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 
 	@Override
-	public ReplicaState computeMySpecif(
+	public void setMySpecif(
 			final ReplicaState s,
 			final ReplicationCandidature c) {
-		return s;
+//		return new NoActionSpec();
 	}
 
 

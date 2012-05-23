@@ -8,11 +8,10 @@ import negotiation.negotiationframework.contracts.AbstractContractTransition.Inc
 import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface RationalCore<
-ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
+Contract extends AbstractContractTransition>
 extends
-AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
+AgentCompetence<SimpleRationalAgent<PersonalState, Contract>> {
 
 	/*
 	 *
@@ -20,7 +19,7 @@ AgentCompetence<SimpleRationalAgent<ActionSpec, PersonalState, Contract>> {
 
 	//	public PersonalState getMyResultingState(PersonalState s, Contract c);
 	//
-	public ActionSpec computeMySpecif(PersonalState s, Contract c);
+	public void setMySpecif(PersonalState s, Contract c);
 
 	public void execute(Collection<Contract> contracts);
 

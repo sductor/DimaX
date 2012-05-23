@@ -10,7 +10,6 @@ import java.util.Set;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -18,15 +17,16 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.protocoles.AtMostKCandidaturesProposer;
 import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
 import negotiation.negotiationframework.protocoles.status.DestructionOrder;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
-public class CandidatureReplicaProposerWithStatus extends AtMostKCandidaturesProposer<ReplicationSpecification, ReplicaState, ReplicationCandidature>
+public class CandidatureReplicaProposerWithStatus extends AtMostKCandidaturesProposer<ReplicaState, ReplicationCandidature>
 implements
 ProposerCore<
-SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>,
-ReplicationSpecification, ReplicaState, ReplicationCandidature> {
+SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature>,
+ReplicaState, ReplicationCandidature> {
 	public CandidatureReplicaProposerWithStatus(int k)
 			throws UnrespectedCompetenceSyntaxException {
 		super(k);
@@ -62,7 +62,7 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 						.getInformation(
 								HostState.class,
 								destructionCandidature.getResource());
-				destructionCandidature.setSpecification(host);
+				destructionCandidature.setInitialState(host);
 
 				if (this.getMyAgent().getMyResultingState(nextState,
 						destructionCandidature).isValid()
@@ -110,13 +110,14 @@ ReplicationSpecification, ReplicaState, ReplicationCandidature> {
 
 
 	@Override
-	public boolean IWantToNegotiate(final ReplicaState s,
-			final ContractTrunk<ReplicationCandidature, ReplicationSpecification, ReplicaState> contracts) {
+	public boolean IWantToNegotiate(
+			final ContractTrunk<ReplicationCandidature> contracts) {
 		((CandidatureReplicaCoreWithStatus)this.getMyAgent().getMyCore()).updateThreshold();
 		//		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
 		//				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
 		//						.getStatus(s).equals(AgentStateStatus.Wastefull))));
-		return super.IWantToNegotiate(s,contracts)
+		ReplicaState s = getMyAgent().getMyCurrentState();
+		return super.IWantToNegotiate(contracts)
 				&& (((CandidatureReplicaCoreWithStatus)this.getMyAgent().getMyCore()).getStatus(s).equals(AgentStateStatus.Fragile) ||
 						((CandidatureReplicaCoreWithStatus)this.getMyAgent().getMyCore())
 						.getStatus(s).equals(AgentStateStatus.Wastefull));

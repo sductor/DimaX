@@ -16,36 +16,34 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class ResourceInformedProposerCore<
-Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecif,
+Contract extends MatchingCandidature,
 PersonalState extends AgentState>
-extends BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>>>
+extends BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
 implements ProposerCore<
-SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>>,
-ActionSpec,
+SimpleNegotiatingAgent< PersonalState, InformedCandidature<Contract>>,
 PersonalState,
-InformedCandidature<Contract,ActionSpec>> {
+InformedCandidature<Contract>> {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -2607277289289395798L;
-	private final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose =
-			new HashSet<InformedCandidature<Contract, ActionSpec>>();
+	private final Collection<InformedCandidature<Contract>> contractsToPropose =
+			new HashSet<InformedCandidature<Contract>>();
 
 
 	public void addContractsToPropose(
-			final Collection<InformedCandidature<Contract, ActionSpec>> contractsToPropose) {
+			final Collection<InformedCandidature<Contract>> contractsToPropose) {
 		this.contractsToPropose.addAll(contractsToPropose);
 	}
 
 
 	@Override
-	public Set<? extends InformedCandidature<Contract, ActionSpec>> getNextContractsToPropose()
+	public Set<? extends InformedCandidature<Contract>> getNextContractsToPropose()
 			throws NotReadyException {
 		this.logMonologue("proposing "+this.contractsToPropose, AbstractCommunicationProtocol.log_negotiationStep);
-		final Set<InformedCandidature<Contract, ActionSpec>> result =
-				new HashSet<InformedCandidature<Contract, ActionSpec>>();
+		final Set<InformedCandidature<Contract>> result =
+				new HashSet<InformedCandidature<Contract>>();
 		result.addAll(this.contractsToPropose);
 		this.contractsToPropose.clear();
 		return result;
@@ -54,16 +52,14 @@ InformedCandidature<Contract,ActionSpec>> {
 
 	@Override
 	public boolean IWantToNegotiate(
-			final PersonalState myCurrentState,
-			final ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+			final ContractTrunk<InformedCandidature<Contract>> contracts) {
 		return !this.contractsToPropose.isEmpty();
 	}
 
 
 	@Override
 	public boolean ImAllowedToNegotiate(
-			final PersonalState myCurrentState,
-			final ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, PersonalState> contracts) {
+			final ContractTrunk<InformedCandidature<Contract>> contracts) {
 		return true;
 	}
 

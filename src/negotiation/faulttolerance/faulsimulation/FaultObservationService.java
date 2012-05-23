@@ -18,11 +18,8 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 /**
  * Service used by the agent to be concious of the system state
  */
-public abstract class FaultObservationService<
-ActionSpec extends AbstractActionSpecif,
-PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>> extends
-BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
+public abstract class FaultObservationService extends
+BasicAgentCompetence<SimpleNegotiatingAgent<?, ?>> {
 	private static final long serialVersionUID = 2339746438446977252L;
 
 	//

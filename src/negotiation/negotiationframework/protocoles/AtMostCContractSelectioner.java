@@ -15,16 +15,16 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.rationality.AgentState;
 
 public class AtMostCContractSelectioner<
-Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
+Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
 ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
+Contract extends AbstractContractTransition>
 extends
 BasicAgentCompetence<Agent>
-implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
+implements SelectionCore<Agent,PersonalState, Contract> {
 
 	final int c;
-	final SelectionCore<Agent,ActionSpec, PersonalState, Contract>  myCore;
+	final SelectionCore<Agent,PersonalState, Contract>  myCore;
 
 	Random rand = new Random();
 
@@ -42,7 +42,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 	}
 
 	@Override
-	public void select(ContractTrunk<Contract, ActionSpec, PersonalState> cs,
+	public void select(ContractTrunk<Contract> cs,
 			Collection<Contract> toAccept, Collection<Contract> toReject,
 			Collection<Contract> toPutOnWait) {
 		List<Contract> all = cs.getParticipantOnWaitContracts();

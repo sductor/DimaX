@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import negotiation.faulttolerance.experimentation.Host;
+import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
@@ -36,11 +36,8 @@ import dima.introspectionbasedagents.shells.NotReadyException;
  * @param <Contract>
  * @param <ActionSpec>
  */
-public abstract class AbstractCommunicationProtocol<
-ActionSpec extends AbstractActionSpecif,
-State extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
+public abstract class AbstractCommunicationProtocol<Contract extends AbstractContractTransition>
+extends Protocol<SimpleNegotiatingAgent<?, Contract>> {
 	private static final long serialVersionUID = 7728287555094295894L;
 
 	//
@@ -48,35 +45,31 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	//
 
 	public interface ProposerCore
-	<Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-	ActionSpec extends AbstractActionSpecif,
+	<Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
 	PersonalState extends AgentState,
-	Contract extends AbstractContractTransition<ActionSpec>>
+	Contract extends AbstractContractTransition>
 	extends AgentCompetence<Agent>{
 
 		public Set<? extends Contract> getNextContractsToPropose()
 				throws NotReadyException;
 
-		public boolean IWantToNegotiate(PersonalState myCurrentState,
-				ContractTrunk<Contract, ActionSpec, PersonalState> contracts);
+		public boolean IWantToNegotiate(ContractTrunk<Contract> contracts);
 
-		public boolean ImAllowedToNegotiate(PersonalState myCurrentState,
-				ContractTrunk<Contract, ActionSpec, PersonalState> contracts);
+		public boolean ImAllowedToNegotiate(ContractTrunk<Contract> contracts);
 
 
 	}
 
 	public interface SelectionCore<
-	Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-	ActionSpec extends AbstractActionSpecif,
+	Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
 	PersonalState extends AgentState,
-	Contract extends AbstractContractTransition<ActionSpec>>
+	Contract extends AbstractContractTransition>
 	extends	AgentCompetence<Agent> {
 
 		// Select contract to accept/wait/reject for a participant
 		// Select contract to request/cancel for a initiator
 		public void select(
-				ContractTrunk<Contract, ActionSpec, PersonalState> cs,
+				ContractTrunk<Contract> cs,
 				Collection<Contract> toAccept,
 				Collection<Contract> toReject,
 				Collection<Contract> toPutOnWait);
@@ -95,7 +88,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// Fields
 	//
 
-	private final ContractTrunk<Contract, ActionSpec, State> contracts;
+	private final ContractTrunk<Contract> contracts;
 
 
 	//
@@ -104,20 +97,20 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 
 	public AbstractCommunicationProtocol(
-			final SimpleNegotiatingAgent<ActionSpec, State, Contract> a,
-			final ContractTrunk<Contract, ActionSpec, State> contracts) throws UnrespectedCompetenceSyntaxException {
+			final SimpleNegotiatingAgent<?, Contract> a,
+			final ContractTrunk<Contract> contracts) throws UnrespectedCompetenceSyntaxException {
 		super(a);
 		this.contracts = contracts;
 	}
 
 	public AbstractCommunicationProtocol(
-			final ContractTrunk<Contract, ActionSpec, State> contracts) throws UnrespectedCompetenceSyntaxException {
+			final ContractTrunk<Contract> contracts) throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.contracts = contracts;
 	}
 
 	@Override
-	public void setMyAgent(final SimpleNegotiatingAgent<ActionSpec, State, Contract> ag) {
+	public void setMyAgent(final SimpleNegotiatingAgent<?, Contract> ag) {
 		super.setMyAgent(ag);
 		this.getContracts().setMyAgent(ag);
 	}
@@ -126,7 +119,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	// Accessors
 	//
 
-	public ContractTrunk<Contract, ActionSpec, State> getContracts() {
+	public ContractTrunk<Contract> getContracts() {
 		return this.contracts;
 	}
 
@@ -142,8 +135,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	@StepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
 		if (this.isActive() &&
-				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),this.contracts)
-				&& this.getMyAgent().getMyProposerCore().ImAllowedToNegotiate(this.getMyAgent().getMyCurrentState(), this.contracts)) {
+				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.contracts)
+				&& this.getMyAgent().getMyProposerCore().ImAllowedToNegotiate(this.contracts)) {
 			try {
 				final Collection<? extends Contract> cs =
 						this.getMyAgent().getMyProposerCore()
@@ -156,6 +149,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	private void proposeContracts(final Collection<? extends Contract> cs) {
 		for (final Contract c : cs){
 			this.logMonologue("**************> I propose "+c,AbstractCommunicationProtocol.log_negotiationStep);
+			
+			this.getMyAgent().setMySpecif(c);
+			c.setInitialState(this.getMyAgent().getMyCurrentState());
 
 			send(c, Receivers.NotInitiatingParticipant, new SimpleContractProposal(Performative.Propose, c));
 			//, (Collection<Information>) this.getMyAgent().getMyResources()));
@@ -187,6 +183,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 					"initiating selection with following contracts :\n"+this.getContracts(),
 					AbstractCommunicationProtocol.log_selectionStep);
 
+			assert ContractTransition.allComplete(getContracts().getAllContracts());
+			
 			this.getMyAgent().getMySelectionCore().select(this.getContracts(), toAccept, toReject, toPutOnWait);
 
 			//
@@ -344,8 +342,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		final Contract contract = delta.getMyContract();
 		assert receivedContract.add(contract.getIdentifier());
 		this.logMonologue("I've received proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);
-		delta.getMyContract().setSpecificationNInitialState(
-				this.getMyAgent().getMyCurrentState(),this.getMyAgent().computeMySpecif(delta.getMyContract()));
+		
+		delta.getMyContract().setInitialState(this.getMyAgent().getMyCurrentState());
+		this.getMyAgent().setMySpecif(delta.getMyContract());
+		
 		this.contracts.addContract(contract);
 		//		for (Information i : delta.attachedInfos)
 		//			getMyAgent().getMyInformation().add(i);
@@ -552,9 +552,9 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 				) {
 			super(performative, AbstractCommunicationProtocol.class);
 			assert myContract != null;
-			myContract.setSpecificationNInitialState(
-					AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState(),
-					AbstractCommunicationProtocol.this.getMyAgent().computeMySpecif(myContract));
+			AbstractCommunicationProtocol.this.getMyAgent().setMySpecif(myContract);
+			myContract.setInitialState(
+					AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState());
 			// this.myContract = (Contract) myContract.clone();
 			this.myContract = myContract;
 			//			this.attachedInfos=attachedInfos;
@@ -603,7 +603,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 
 	// @role(NegotiationParticipant.class)
 
-	public static <Contract extends AbstractContractTransition<?>>
+	public static <Contract extends AbstractContractTransition>
 	boolean partitioning(
 			final Collection<Contract> all,
 			final Collection<Contract> accepted,
@@ -637,10 +637,10 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		return true;
 	}
 
-	public static <Contract extends AbstractContractTransition<?>>
+	public static <Contract extends AbstractContractTransition>
 	boolean allRequestable(
 			final Collection<Contract> all,
-			final ContractTrunk<Contract, ?, ?> ct){
+			final ContractTrunk<Contract> ct){
 		for (final Contract c : all) {
 			assert ct.getRequestableContracts().contains(c);
 		}

@@ -15,10 +15,9 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 
 public class GreedySelectionModule<
-ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>{
+Contract extends AbstractContractTransition>
+extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 	private static final long serialVersionUID = 438513006322441185L;
 
 	public enum GreedySelectionType { Greedy, Random, RooletteWheel};
@@ -26,7 +25,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	GreedySelectionType itType;
 
 	public GreedySelectionModule(
-			final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> ag,
+			final SimpleNegotiatingAgent<PersonalState, Contract> ag,
 			final GreedySelectionType itType) {
 		super(ag);
 		this.itType=itType;

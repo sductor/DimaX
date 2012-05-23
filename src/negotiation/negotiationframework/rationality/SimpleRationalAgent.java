@@ -19,9 +19,8 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleRationalAgent<
-ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
+Contract extends AbstractContractTransition>
 extends BasicCompetentAgent {
 	private static final long serialVersionUID = -6248384713199838544L;
 
@@ -36,7 +35,7 @@ extends BasicCompetentAgent {
 	private final ObservationService myInformation;
 
 	@Competence
-	public RationalCore<ActionSpec, PersonalState, Contract> myCore;
+	public RationalCore<PersonalState, Contract> myCore;
 
 	public Class<? extends AgentState> myStateType;
 	public final int initialStateNumber;
@@ -49,7 +48,7 @@ extends BasicCompetentAgent {
 	public SimpleRationalAgent(
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
-			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
+			final RationalCore<PersonalState, Contract> myRationality,
 			final ObservationService myInformation)
 					throws CompetenceException {
 		super(id);
@@ -72,7 +71,7 @@ extends BasicCompetentAgent {
 		return this.myInformation;
 	}
 
-	public RationalCore<ActionSpec, PersonalState, Contract> getMyCore() {
+	public RationalCore<PersonalState, Contract> getMyCore() {
 		return this.myCore;
 	}
 
@@ -112,8 +111,8 @@ extends BasicCompetentAgent {
 		return myResources;
 	}
 
-	public ActionSpec getResource(AgentIdentifier id) throws NoInformationAvailableException{
-		return (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+	public AgentState getResource(AgentIdentifier id) throws NoInformationAvailableException{
+		return this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 	}
 
 	public void setNewState(final PersonalState s) {
@@ -156,12 +155,12 @@ extends BasicCompetentAgent {
 	 */
 
 
-	public ActionSpec computeMySpecif(final PersonalState s, final Contract c){
-		return this.myCore.computeMySpecif(s, c);
+	public void setMySpecif(final PersonalState s, final Contract c){
+		this.myCore.setMySpecif(s, c);
 	}
 
-	public ActionSpec computeMySpecif(final Contract c){
-		return this.myCore.computeMySpecif(this.getMyCurrentState(), c);
+	public  void setMySpecif(final Contract c){
+		this.myCore.setMySpecif(this.getMyCurrentState(), c);
 	}
 
 	public PersonalState getMyResultingState(final PersonalState s, final Contract c) {

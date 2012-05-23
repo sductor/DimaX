@@ -25,15 +25,14 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public  abstract class AtMostKCandidaturesProposer<
-ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
+Contract extends AbstractContractTransition>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec,PersonalState,Contract>>
+BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState,Contract>>
 implements
 ProposerCore
-<SimpleNegotiatingAgent<ActionSpec,PersonalState,Contract>,
-ActionSpec,PersonalState,Contract> {
+<SimpleNegotiatingAgent<PersonalState,Contract>,
+PersonalState,Contract> {
 	private static final long serialVersionUID = -5315491050460219982L;
 
 	public final int k;
@@ -63,9 +62,6 @@ ActionSpec,PersonalState,Contract> {
 		
 		while (itMyHosts.hasNext() && candidatures.size()<k){
 			final Contract c = this.constructCandidature(itMyHosts.next());
-			c.setSpecificationNInitialState(
-					this.getMyAgent().getMyCurrentState(),
-					this.getMyAgent().computeMySpecif(c));
 			candidatures.add(c);
 			itMyHosts.remove();
 		}
@@ -76,15 +72,13 @@ ActionSpec,PersonalState,Contract> {
 	public abstract Contract constructCandidature(ResourceIdentifier id);
 
 	@Override
-	public boolean IWantToNegotiate(final PersonalState myCurrentState,
-			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
-		return !myCurrentState.getMyResourceIdentifiers().containsAll(
+	public boolean IWantToNegotiate(final ContractTrunk<Contract> contracts) {
+		return !getMyAgent().getMyCurrentState().getMyResourceIdentifiers().containsAll(
 				this.getMyAgent().getMyInformation().getKnownAgents());
 	}
 
 	@Override
-	public boolean ImAllowedToNegotiate(final PersonalState myCurrentState,
-			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+	public boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
 		return  contracts.getAllInitiatorContracts().isEmpty();
 	}
 

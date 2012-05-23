@@ -12,8 +12,8 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 public class ReverseCFPProtocol <
 ActionSpec extends AbstractActionSpecif,
 State extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
+Contract extends AbstractContractTransition>
+extends AbstractCommunicationProtocol<Contract>{
 
 	/**
 	 *
@@ -22,10 +22,10 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
 	public ReverseCFPProtocol()
 					throws UnrespectedCompetenceSyntaxException {
-		super(new ContractTrunk<Contract, ActionSpec, State>());
+		super(new ContractTrunk<Contract>());
 	}
 	public ReverseCFPProtocol(
-			final ContractTrunk<Contract, ActionSpec, State> contracts)
+			final ContractTrunk<Contract> contracts)
 					throws UnrespectedCompetenceSyntaxException {
 		super(contracts);
 	}

@@ -26,10 +26,9 @@ import dimaxx.experimentation.ObservingSelfService;
 import dimaxx.experimentation.SimulationEndedMessage;
 
 public class SimpleNegotiatingAgent<
-ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
+Contract extends AbstractContractTransition>
+extends SimpleRationalAgent<PersonalState, Contract> {
 	private static final long serialVersionUID = 3480283369532419102L;
 
 	//
@@ -37,13 +36,13 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	//
 
 	@Competence()
-	private final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol;
+	private final AbstractCommunicationProtocol<Contract> protocol;
 
 	@Competence()
-	private final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore;
+	private final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore;
 
-	@Competence
-	private final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> myProposerCore;
+	@Competence()
+	private final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> myProposerCore;
 
 	//
 	// Constructors
@@ -52,21 +51,21 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public SimpleNegotiatingAgent(
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
-			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore,
-			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
+			final RationalCore<PersonalState, Contract> myRationality,
+			final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore,
+			final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
-			final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
+			final AbstractCommunicationProtocol<Contract> protocol)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
+		((AgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>)
 				this.selectionCore).setMyAgent(this);
 		this.protocol = protocol;
 
 		this.myProposerCore = proposerCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
+		((AgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>)
 				this.getMyProposerCore()).setMyAgent(this);
 		this.getMyProtocol().setMyAgent(this);
 	}
@@ -84,15 +83,15 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	// Accessors
 	//
 
-	public AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> getMyProtocol() {
+	public AbstractCommunicationProtocol<Contract> getMyProtocol() {
 		return this.protocol;
 	}
 
-	public ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> getMyProposerCore() {
+	public ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> getMyProposerCore() {
 		return this.myProposerCore;
 	}
 
-	public SelectionCore<? extends SimpleNegotiatingAgent,ActionSpec, PersonalState, Contract> getMySelectionCore() {
+	public SelectionCore<? extends SimpleNegotiatingAgent,PersonalState, Contract> getMySelectionCore() {
 		return this.selectionCore;
 	}
 

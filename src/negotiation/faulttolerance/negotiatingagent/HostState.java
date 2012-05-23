@@ -7,6 +7,7 @@ import java.util.Set;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
@@ -14,7 +15,7 @@ import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 
-public class HostState extends SimpleAgentState implements ReplicationSpecification {
+public class HostState extends SimpleAgentState {
 	private static final long serialVersionUID = 4107771452086657790L;
 
 	private  final Set<AgentIdentifier> myReplicatedAgents;
@@ -136,7 +137,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	}
 
 	@Override
-	public Class<? extends Information> getMyResourcesClass() {
+	public Class<? extends AgentState> getMyResourcesClass() {
 		return ReplicaState.class;
 	}
 

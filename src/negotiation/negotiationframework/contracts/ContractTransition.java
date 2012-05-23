@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +12,12 @@ import java.util.Map;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 
-public abstract class ContractTransition<
-ActionSpec extends AbstractActionSpecif> implements
-AbstractContractTransition<ActionSpec> {
+public abstract class ContractTransition implements
+AbstractContractTransition {
 	public long getValidityTime() {
 		return this.validityTime;
 	}
@@ -32,7 +34,7 @@ AbstractContractTransition<ActionSpec> {
 
 	protected final List<AgentIdentifier> actors;
 
-	private final Map<AgentIdentifier, ActionSpec> specs = new Hashtable<AgentIdentifier, ActionSpec>(); 
+	private Map<AgentIdentifier, AbstractActionSpecif> specs = null; 
 	private final Map<AgentIdentifier, AgentState> initState = new Hashtable<AgentIdentifier, AgentState>(); 
 
 	//
@@ -87,27 +89,67 @@ AbstractContractTransition<ActionSpec> {
 	/*
 	 *
 	 */
-
 	@Override
-	public ActionSpec getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException{
-		if (!this.specs.containsKey(id)) {
+	public AgentState getInitialState(final AgentIdentifier id) throws IncompleteContractException{
+		if (!this.initState.containsKey(id)) {
 			throw new IncompleteContractException();
 		} else {
-			return this.specs.get(id);
+			return this.initState.get(id);
 		}
+	}
+
+	@Override
+	public AbstractActionSpecif getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
+
+			if (specs==null){
+				return new NullActionSpec();
+			} else if (!this.specs.containsKey(id)) {
+				throw new IncompleteContractException();
+			} else {
+				return this.specs.get(id);
+			}
 
 	}
 
 	@Override
-	public void setSpecificationNInitialState(final AgentState state, final ActionSpec s) {
+	public <ActionSpec extends AbstractActionSpecif> void setSpecification(final ActionSpec s) {
+		
 		assert s!=null;
-		assert state != null;
+		
+		if (s instanceof NullActionSpec)
+			return;
+		
+		if (specs == null){
+			specs=new HashMap<AgentIdentifier, AbstractActionSpecif>();
+		}
+		
+		assert specs.isEmpty()?true:((specs.values().iterator().next()).getClass().isAssignableFrom(s.getClass()));
 		assert !this.specs.containsKey(s.getMyAgentIdentifier()) || s.isNewerThan(this.specs.get(s.getMyAgentIdentifier()))>=0:
 			s+" "+this.specs.get(s.getMyAgentIdentifier());
 
 		if (this.actors.contains(s.getMyAgentIdentifier())) {
 			this.specs.put(s.getMyAgentIdentifier(), s);
-			this.initState.put(s.getMyAgentIdentifier(), state);
+		} else {
+			throw new RuntimeException("unappropriate specification set");
+		}
+
+		try {
+			if (!ExperimentationParameters.currentlyInstanciating) {
+				assert this.isInitiallyValid():this;
+			}
+		} catch (final IncompleteContractException e){/*ok!*/}
+	}
+
+	/**
+	 * If the application does not require specification, this methods is to be used instead of setSpecificationNInitialState
+	 * @param state
+	 * @param s
+	 */
+	public <State extends AgentState> void setInitialState(final State state) {
+		assert state != null;
+
+		if (this.actors.contains(state.getMyAgentIdentifier())) {
+			this.initState.put(state.getMyAgentIdentifier(), state);
 		} else {
 			throw new RuntimeException("unappropriate specification set");
 		}
@@ -125,8 +167,10 @@ AbstractContractTransition<ActionSpec> {
 
 	@Override
 	public boolean isInitiallyValid()
-			throws IncompleteContractException {
-		if (!this.specs.keySet().containsAll(this.actors)) {
+			throws IncompleteContractException {		
+		if (this.specs!=null && !this.specs.keySet().containsAll(this.actors)) {
+			throw new IncompleteContractException();
+		} else if (!this.initState.keySet().containsAll(actors)){
 			throw new IncompleteContractException();
 		} else {
 			for (final AgentIdentifier id : this.actors) {
@@ -182,134 +226,193 @@ AbstractContractTransition<ActionSpec> {
 		return true;
 	}
 
-	public static <Contract extends AbstractContractTransition<ActionSpec>, ActionSpec extends AbstractActionSpecif>
-	Boolean respectRights(final Collection<Contract> cs) throws IncompleteContractException {
-		final ReallocationContract<Contract, ActionSpec> reall =
-				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
-
-		for (final AgentIdentifier id : reall.getAllParticipants()) {
-			if (!reall.computeResultingState(id).isValid()) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	public static <
-	Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecif,
-	State extends AgentState>
-	Boolean respectRights(final Collection<Contract> cs, final Collection<State> initialStates) throws IncompleteContractException {
-		final ReallocationContract<Contract, ActionSpec> reall =
-				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
-
-		for (final AgentIdentifier id : reall.getAllParticipants()) {
-			if (!reall.computeResultingState(id).isValid()) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-	public static <
-	Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecif,
-	State extends AgentState>
-	Boolean respectRights(final Collection<Contract> cs, final State... initialStates) throws IncompleteContractException {
-		return ContractTransition.respectRights(cs, Arrays.asList(initialStates));
-	}
-	/*
-	 *
-	 */
-
 	@Override
-	public ContractIdentifier getIdentifier() {
-		return new ContractIdentifier(this.creator, this.creationTime,
-				this.validityTime, this.actors);
+	public <State extends AgentState> State computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
+		return (State) this.computeResultingState(this.getInitialState(id));
 	}
 
 	/*
-	 *
+	 * 
 	 */
 
-	@Override
-	public long getUptime() {
-		return new Date().getTime() - this.creationTime.getTime();
-	}
-	@Override
-	public long getCreationTime() {
-		return this.creationTime.getTime();
-	}
+	 public static <Contract extends AbstractContractTransition, ActionSpec extends AbstractActionSpecif>
+	 Boolean respectRights(final Collection<Contract> cs) throws IncompleteContractException {
+		 final ReallocationContract<Contract> reall =
+				 new ReallocationContract<Contract>(new AgentName("dummy"), cs);
 
-	@Override
-	public boolean hasReachedExpirationTime() {
-		return this.getUptime() > this.validityTime;
-	}
+		 for (final AgentIdentifier id : reall.getAllParticipants()) {
+			 if (!reall.computeResultingState(id).isValid()) {
+				 return false;
+			 }
+		 }
 
-	@Override
-	public boolean willReachExpirationTime(final long t) {
-		return this.getUptime() + t > this.validityTime;
-	}
+		 return true;
+	 }
 
-	/*
-	 *
-	 */
+	 public static <
+	 Contract extends AbstractContractTransition,
+	 ActionSpec extends AbstractActionSpecif,
+	 State extends AgentState>
+	 Boolean respectRights(final Collection<Contract> cs, final Collection<State> initialStates) throws IncompleteContractException {
+		 final ReallocationContract<Contract> reall =
+				 new ReallocationContract<Contract>(new AgentName("dummy"), cs);
+
+		 for (final AgentIdentifier id : reall.getAllParticipants()) {
+			 if (!reall.computeResultingState(id).isValid()) {
+				 return false;
+			 }
+		 }
+
+		 return true;
+	 }
+	 public static <
+	 Contract extends AbstractContractTransition,
+	 ActionSpec extends AbstractActionSpecif,
+	 State extends AgentState>
+	 Boolean respectRights(final Collection<Contract> cs, final State... initialStates) throws IncompleteContractException {
+		 return ContractTransition.respectRights(cs, Arrays.asList(initialStates));
+	 }
+	 /*
+	  *
+	  */
+
+	 @Override
+	 public ContractIdentifier getIdentifier() {
+		 return new ContractIdentifier(this.creator, this.creationTime,
+				 this.validityTime, this.actors);
+	 }
+
+	 /*
+	  *
+	  */
+
+	 @Override
+	 public long getUptime() {
+		 return new Date().getTime() - this.creationTime.getTime();
+	 }
+	 @Override
+	 public long getCreationTime() {
+		 return this.creationTime.getTime();
+	 }
+
+	 @Override
+	 public boolean hasReachedExpirationTime() {
+		 return this.getUptime() > this.validityTime;
+	 }
+
+	 @Override
+	 public boolean willReachExpirationTime(final long t) {
+		 return this.getUptime() + t > this.validityTime;
+	 }
+
+	 /*
+	  *
+	  */
 
 
-	//
-	// Primitive
-	//
+	 //
+	 // Primitive
+	 //
 
-	@Override
-	public boolean equals(final Object o) {
-		if (o instanceof ContractTransition) {
-			@SuppressWarnings("unchecked")
-			final ContractTransition<ActionSpec> that = (ContractTransition<ActionSpec>) o;
-			return that.getIdentifier().equals(this.getIdentifier());
-		}
-		return false;
-	}
+	 @Override
+	 public boolean equals(final Object o) {
+		 if (o instanceof ContractTransition) {
+			 @SuppressWarnings("unchecked")
+			 final ContractTransition that = (ContractTransition) o;
+			 return that.getIdentifier().equals(this.getIdentifier());
+		 }
+		 return false;
+	 }
 
-	@Override
-	public int hashCode() {
-		return this.getIdentifier().hashCode();
-	}
+	 @Override
+	 public int hashCode() {
+		 return this.getIdentifier().hashCode();
+	 }
 
-	//
-	// Assertion
-	//
+	 //
+	 // Assertion
+	 //
 
 
-	public static <Contract extends AbstractContractTransition>
-	boolean allViable(final Collection<Contract> contracts)
-			throws IncompleteContractException{
-		for (final Contract c : contracts) {
-			assert c.isViable():c;
-		}
+	 public static <Contract extends AbstractContractTransition>
+	 boolean allViable(final Collection<Contract> contracts)
+			 throws IncompleteContractException{
+		 for (final Contract c : contracts) {
+			 assert c.isViable():c;
+		 }
 
-		return true;
-	}
+		 return true;
+	 }
 
-	public static <Contract extends AbstractContractTransition<?>>
-	boolean stillValid(final Collection<Contract> cs){
-		for (final Contract c : cs) {
-			assert !c.hasReachedExpirationTime();
-		}
-		return true;
-	}
+	 public static <Contract extends AbstractContractTransition>
+	 boolean stillValid(final Collection<Contract> cs){
+		 for (final Contract c : cs) {
+			 assert !c.hasReachedExpirationTime();
+		 }
+		 return true;
+	 }
 
-	public static <Contract extends AbstractContractTransition<?>>
-	boolean allComplete(final Collection<Contract> contracts){
-		for (final Contract c : contracts) {
-			for (final AgentIdentifier id : c.getAllParticipants()) {
-				try {
-					c.computeResultingState(id);
-				} catch (final IncompleteContractException e) {
-					assert 1<0:c;
-				}
+	 public static <Contract extends AbstractContractTransition>
+	 boolean allComplete(final Collection<Contract> contracts){
+		 for (final Contract c : contracts) {
+			 for (final AgentIdentifier id : c.getAllParticipants()) {
+				 try {
+					 c.computeResultingState(id);
+				 } catch (final IncompleteContractException e) {
+					 assert 1<0:c;
+				 }
+			 }
+		 }
+		 return true;
+	 }
+	 
+	 //
+	 // Sublcasses
+	 //
+	 
+
+		public class NullActionSpec implements AbstractActionSpecif{
+
+			@Override
+			public AgentIdentifier getMyAgentIdentifier() {
+				return null;
 			}
-		}
-		return true;
-	}
+
+			@Override
+			public long getUptime() {
+				return 0;
+			}
+
+			@Override
+			public Long getCreationTime() {
+				return null;
+			}
+
+			@Override
+			public int isNewerThan(Information that) {
+				return 0;
+			}
+
+			@Override
+			public Double getNumericValue(Information e) {
+				return null;
+			}
+
+			@Override
+			public Information getRepresentativeElement(
+					Collection<? extends Information> elems) {
+				return null;
+			}
+
+			@Override
+			public Information getRepresentativeElement(
+					Map<? extends Information, Double> elems) {		
+				return null;
+			}
+
+			@Override
+			public AbstractCompensativeAggregation<Information> fuse(
+					Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
+				return null;
+			}}
 }

@@ -8,8 +8,7 @@ import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 
 public interface AllocationSolver
-<Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecif,
+<Contract extends MatchingCandidature,
 PersonalState extends AgentState> {
 
 	/**

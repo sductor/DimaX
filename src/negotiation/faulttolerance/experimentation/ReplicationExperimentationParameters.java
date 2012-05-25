@@ -95,10 +95,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-		public static final int startingNbHosts = 24;
-		public static int startingNbAgents =1000;
-//	public static final int startingNbHosts = 5;
-//	public static int startingNbAgents =10;
+	public static final int startingNbHosts = 24;
+	public static int startingNbAgents =5000;
+	//	public static final int startingNbHosts = 5;
+	//	public static int startingNbAgents =10;
 
 
 	public  int simultaneousCandidature = 100;
@@ -592,7 +592,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	static List<Double> doubleParameters6 = Arrays.asList(new Double[]{
 			//			0.01,
 			0.1,
-//			0.25,
+			//			0.25,
 			0.5,
 			//			0.75,
 			//			1.
@@ -607,7 +607,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	//
 	// Variation configuration
 	//
-	
+
 	public static final int iterationNumber=10;
 
 	static boolean varyProtocol=false;
@@ -857,30 +857,30 @@ ExperimentationParameters<ReplicationLaborantin> {
 				n.nbAgents=(v);
 				result.add(n);	
 			}
-			
-//			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
-//				final ReplicationExperimentationParameters n =  p.clone();
-//				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
-////				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
-//				result.add(n);	
-//			}
-				
-				//				
-//
-//				final ReplicationExperimentationParameters n1 =  p.clone();
-//				n1.nbAgents=50;
-//				result.add(n1);
-//				final ReplicationExperimentationParameters n2 =  p.clone();
-//				n2.nbAgents=80;
-//				result.add(n2);
-//				final ReplicationExperimentationParameters n3 =  p.clone();
-//				n3.nbAgents=150;
-//				result.add(n3);
-//				final ReplicationExperimentationParameters n4 =  p.clone();
-//				n4.nbAgents=300;
-//				result.add(n4);
-				
-			
+
+			//			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
+			//				final ReplicationExperimentationParameters n =  p.clone();
+			//				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
+			////				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
+			//				result.add(n);	
+			//			}
+
+			//				
+			//
+			//				final ReplicationExperimentationParameters n1 =  p.clone();
+			//				n1.nbAgents=50;
+			//				result.add(n1);
+			//				final ReplicationExperimentationParameters n2 =  p.clone();
+			//				n2.nbAgents=80;
+			//				result.add(n2);
+			//				final ReplicationExperimentationParameters n3 =  p.clone();
+			//				n3.nbAgents=150;
+			//				result.add(n3);
+			//				final ReplicationExperimentationParameters n4 =  p.clone();
+			//				n4.nbAgents=300;
+			//				result.add(n4);
+
+
 		}
 		return result;
 	}
@@ -952,31 +952,35 @@ ExperimentationParameters<ReplicationLaborantin> {
 		}
 		return result;
 	}
-	private Collection<ReplicationExperimentationParameters> varyHostCapacity2(final Collection<ReplicationExperimentationParameters> exps){
-		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationParameters.doubleParameters){
-				final ReplicationExperimentationParameters n = p.clone();
-				n.hostCapacityMean=v;
-				result.add(n);
-			}
-		}
-		return result;
-	}
+	//	private Collection<ReplicationExperimentationParameters> varyHostCapacity2(final Collection<ReplicationExperimentationParameters> exps){
+	//		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+	//		for (final ReplicationExperimentationParameters p : exps) {
+	//			for (final Double v : ReplicationExperimentationParameters.doubleParameters){
+	//				final ReplicationExperimentationParameters n = p.clone();
+	//				n.hostCapacityMean=v;
+	//				result.add(n);
+	//			}
+	//		}
+	//		return result;
+	//	}
 
 	private Collection<ReplicationExperimentationParameters> varyHostCapacity(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		List<Double> capacitiesList = Arrays.asList(new Double[]{0.10,0.30,0.60,1.});
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : capacitiesList){
-			//variant resources capacity
-			final ReplicationExperimentationParameters n = p.clone();
-			n.hostCapacityMean=v*p.nbAgents;
-			result.add(n);
-			//fixed resources capacity
-			final ReplicationExperimentationParameters n2 = p.clone();
-			n2.hostCapacityMean=((double)startingNbAgents/(double)startingNbHosts);
-			result.add(n2);
+				//variant resources capacity
+				final ReplicationExperimentationParameters n = p.clone();
+				n.hostCapacityMean=v*p.nbAgents;
+				if (n.hostCapacityMean>n.nbAgents/n.nbHosts){					
+					result.add(n);
+				}
+				//fixed resources capacity
+				final ReplicationExperimentationParameters n2 = p.clone();
+				n2.hostCapacityMean=((double)startingNbAgents/(double)startingNbHosts);
+				if (n2.hostCapacityMean>n2.nbAgents/n2.nbHosts){		
+					result.add(n2);
+				}
 			}
 		}
 		return result;

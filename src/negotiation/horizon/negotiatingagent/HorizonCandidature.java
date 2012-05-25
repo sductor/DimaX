@@ -7,8 +7,7 @@ import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
-public class HorizonCandidature extends
-	MatchingCandidature<HorizonSpecification> {
+public class HorizonCandidature extends MatchingCandidature {
 
     /**
      * Serial version identifier.
@@ -20,8 +19,10 @@ public class HorizonCandidature extends
 
     public HorizonCandidature(final VirtualNetworkIdentifier intiator,
 	    final VirtualNetworkIdentifier agent,
+	    final VirtualNodeIdentifier node,
 	    final SubstrateNodeIdentifier resource, final long validityTime) {
 	super(intiator, agent, resource, validityTime);
+	this.setSpecification(new VirtualNetworkSpecification(node));
     }
 
     public VirtualNodeIdentifier getNode() {
@@ -89,7 +90,7 @@ public class HorizonCandidature extends
     // }
 
     @Override
-    public <State extends AgentState> State computeResultingState(State s)
+    public AgentState computeResultingState(State s)
 	    throws IncompleteContractException {
 	if (s instanceof SubstrateNodeState) {
 	    if (s.getMyAgentIdentifier().equals(this.getResource()))

@@ -1,15 +1,13 @@
 package negotiation.horizon.experimentation;
 
-import negotiation.horizon.negotiatingagent.HorizonCandidature;
 import negotiation.horizon.negotiatingagent.HorizonContract;
 import negotiation.horizon.negotiatingagent.HorizonSpecification;
 import negotiation.horizon.negotiatingagent.SubstrateNodeIdentifier;
 import negotiation.horizon.negotiatingagent.SubstrateNodeState;
 import negotiation.horizon.parameters.AllocableParameters;
+import negotiation.horizon.parameters.HorizonAllocableParameters;
 import negotiation.horizon.parameters.HorizonMeasurableParameters;
-import negotiation.horizon.parameters.NodeParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -34,7 +32,7 @@ public class SubstrateNode
     private static final long serialVersionUID = -9069889310850887134L;
 
     // Probably never used.
-    private final AllocableParameters nativeParameters;
+    private final AllocableParameters nativeMachineParameters;
 
     // @Competence
     // private final LinkHandler linkHandler;
@@ -55,14 +53,20 @@ public class SubstrateNode
     public SubstrateNode(
 	    final SubstrateNodeIdentifier id,
 	    final SubstrateNodeState myInitialState,
-	    final RationalCore<NodeParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, NodeParameters<SubstrateNodeIdentifier>>> myRationality,
-	    final SelectionCore<SubstrateNode, NodeParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, NodeParameters<SubstrateNodeIdentifier>>> selectionCore,
-	    final ProposerCore<SubstrateNode, NodeParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, NodeParameters<SubstrateNodeIdentifier>>> proposerCore,
+	    final HorizonAllocableParameters<SubstrateNodeIdentifier> nativeParameters,
+	    final int energyConsumptionCoef,
+	    final MeasureHandler measureHandler,
+	    final RationalCore<HorizonSpecification, SubstrateNodeState, HorizonContract> myRationality,
+	    final SelectionCore<SubstrateNode, HorizonSpecification, SubstrateNodeState, HorizonContract> selectionCore,
+	    final ProposerCore<SubstrateNode, HorizonSpecification, SubstrateNodeState, HorizonContract> proposerCore,
 	    final ObservationService myInformation,
-	    final AbstractCommunicationProtocol<NodeParameters<SubstrateNodeIdentifier>, SubstrateNodeState, ReallocationContract<HorizonCandidature, NodeParameters<SubstrateNodeIdentifier>>> protocol)
+	    final AbstractCommunicationProtocol<HorizonSpecification, SubstrateNodeState, HorizonContract> protocol)
 	    throws CompetenceException {
-	super(id, myInitialState, myRationality, selectionCore, proposerCore,
-		myInformation, protocol);
+	super(id, new SubstrateNodeState(id, 0, nativeParameters,
+		energyConsumptionCoef), myRationality, selectionCore,
+		proposerCore, myInformation, protocol);
+	this.nativeMachineParameters = nativeParameters.getMachineParameters();
+	this.myMeasureHandler = measureHandler;
     }
 
     @Override
@@ -72,7 +76,7 @@ public class SubstrateNode
 	return (SubstrateNodeIdentifier) super.getIdentifier();
     }
 
-    public HorizonMeasurableParameters getMeasurableParameters() {
-
+    public HorizonMeasurableParameters<SubstrateNodeIdentifier> getMeasurableParameters() {
+	return this.myMeasureHandler.performMeasures();
     }
 }

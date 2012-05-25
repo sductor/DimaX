@@ -183,14 +183,14 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 	//
 
 	public static void main(final String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, NotEnoughMachinesException, IfailedException{
-		final Experimentator exp = new Experimentator(new DCOPExperimentationParameters(new AgentName("ziDcopExperimentator"),"dcopResult"));
+		final Experimentator exp = new Experimentator(new DCOPExperimentationParameters(new AgentName("ziDcopExperimentator"),"dcopResult"), null, 1);
 		exp.run(args);
 	}
 
 	@Override
 	public Laborantin createLaborantin(final APILauncherModule api) throws CompetenceException,
 			IfailedException, NotEnoughMachinesException {
-		return new Laborantin(this,new GlobalDCOPObservation(),api);
+		return new Laborantin(this,new GlobalDCOPObservation(this),api);
 	}
 
 }

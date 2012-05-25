@@ -172,7 +172,7 @@ public class Laborantin extends BasicCompetentAgent {
 			this.wwait(10000);
 			//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
 			//					HostDisponibilityTrunk.remove(h);
-			this.notify(new SimulationEndedMessage());
+			this.notify(new SimulationEndedMessage(observingService));
 			this.sendNotificationNow();
 			//				this.logMonologue("notifications Sended", onBoth);
 

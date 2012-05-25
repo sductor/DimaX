@@ -1,6 +1,8 @@
 package dimaxx.experimentation;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -11,6 +13,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
@@ -42,17 +45,20 @@ public final class Experimentator extends APIAgent{
 	 *
 	 */
 
+	public LinkedList<ExperimentationParameters> allSimu=new LinkedList();
 	public LinkedList<ExperimentationParameters> simuToLaunch;
+	final ExperimentLogger el;
+	int iteartiontime;
 
-	public final Map<AgentIdentifier, Laborantin> launchedSimu =
-			new HashMap<AgentIdentifier, Laborantin>();
+//	public final Map<AgentIdentifier, Laborantin> launchedSimu =
+//			new HashMap<AgentIdentifier, Laborantin>();
 	public int awaitingAnswer;
 
 	//
 	// Constructor
 	//
 
-	public Experimentator(final ExperimentationParameters myProtocol) throws CompetenceException {
+	public Experimentator(final ExperimentationParameters myProtocol, ExperimentLogger el, int iteartiontime) throws CompetenceException {
 		super(myProtocol.experimentatorId);
 		//		this.machines = new MachineNetwork(machines);
 		//		Writing.log(
@@ -60,6 +66,8 @@ public final class Experimentator extends APIAgent{
 		//				myProtocol.getDescription(),
 		//				true, false);
 		this.myProtocol=myProtocol;
+		this.el=el;
+		this.iteartiontime=iteartiontime;
 	}
 
 	//
@@ -82,11 +90,21 @@ public final class Experimentator extends APIAgent{
 
 		if (this.awaitingAnswer==0){
 			//Toute les expériences sont faites!!
-			System.out.println("1");
-			this.logWarning("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
-			this.setAlive(false);
-//			this.logWarning(this.myProtocol.toString(),LogService.onBoth);
-			System.exit(1);
+
+			LogService.logOnFile(myProtocol.finalResultPath, "\n\nIteration number -"+iteartiontime+" : \n", true, false);
+			el.write(myProtocol.finalResultPath);
+			iteartiontime--;
+
+			if (iteartiontime==0){
+				this.logWarning("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
+				this.setAlive(false);
+				//			this.logWarning(this.myProtocol.toString(),LogService.onBoth);
+				System.exit(1);
+			} else {
+				simuToLaunch.addAll(allSimu);
+				this.awaitingAnswer=this.simuToLaunch.size();
+				launchSimulation();
+			}
 		} else if (!this.simuToLaunch.isEmpty()){
 			//On lance de nouvelles expériences!
 
@@ -105,18 +123,18 @@ public final class Experimentator extends APIAgent{
 					l.addObserver(this.getIdentifier(), SimulationEndedMessage.class);
 					l.launchWith(this.getApi());
 					this.startActivity(l);
-					this.launchedSimu.put(l.getId(), l);
+//					this.launchedSimu.put(l.getId(), l);
 				} catch (final IfailedException e) {
-					this.logWarning("ABORTED!!!!!!!!!!!!!! : EXPERIMENTATION "+nextSimu, LogService.onBoth);
+					this.logWarning("ABORTED!!!!!!!!!!!!!! : EXPERIMENTATION "+nextSimu+" ("+e+")", LogService.onBoth);
 					this.awaitingAnswer--;
 					this.launchSimulation();
 				}
 
-				//				}
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!! DECOMMENT THE FOLLOWING LINE TO LAUNCH MULTIPLE SIMULATIONS :
 				//				launchSimulation();
 			} catch (final NotEnoughMachinesException e) {
 				this.simuToLaunch.add(nextSimu);
-				this.logWarning("aaaaaaaaarrrrrrrrrrrrrrrrggggggghhhhhhhhhh\n"+this.getLocations(),LogService.onBoth);
+				this.logWarning("aaaaaaaaarrrrrrrrrrrrrrrrggggggghhhhhhhhhh : not ennough machine, retrying\n"+this.getLocations(),LogService.onBoth);
 			}
 		}
 		return true;
@@ -130,9 +148,10 @@ public final class Experimentator extends APIAgent{
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
 		this.logMonologue(n.getSender()+" is finished",LogService.onBoth);
 		//		this.launchedSimu.get(n.getSender()).kill();
-		this.launchedSimu.remove(n.getSender());
+//		this.launchedSimu.remove(n.getSender());
 		//		laborantinLauncher.destroy(n.getSender());
 		this.awaitingAnswer--;
+		el.addResults(n.getNotification().getOgs());
 		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
 				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		System.gc();
@@ -165,6 +184,7 @@ public final class Experimentator extends APIAgent{
 
 		this.myProtocol.setMyAgent(this);
 		this.simuToLaunch = this.myProtocol.generateSimulation();
+		allSimu.addAll(simuToLaunch);
 		this.awaitingAnswer=this.simuToLaunch.size();
 
 		if (args[1].equals("nolog")) {

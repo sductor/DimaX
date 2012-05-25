@@ -7,6 +7,7 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.Laborantin;
 import dimaxx.experimentation.ObservingGlobalService;
@@ -15,6 +16,11 @@ import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import examples.dcop.algo.BasicAlgorithm;
 
 public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
+
+	public GlobalDCOPObservation(ExperimentationParameters rep) {
+		super(rep);
+	}
+
 
 	/**
 	 *

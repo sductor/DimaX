@@ -183,7 +183,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 			}
 		}
 
-		ReplicationObservingGlobalService rogs = new ReplicationObservingGlobalService();
+		ReplicationObservingGlobalService rogs = new ReplicationObservingGlobalService(getMyAgent().getSimulationParameters());
 		rogs.setMyAgent(getMyAgent());
 		rogs.imTheOpt=true;
 		rogs.firstoptimaltime=firstTime;

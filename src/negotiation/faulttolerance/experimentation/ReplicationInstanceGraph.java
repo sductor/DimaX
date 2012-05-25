@@ -256,8 +256,8 @@ extends BasicAgentModule<ReplicationLaborantin>{
 					h,
 					r,
 					true,true);
-			c.setSpecification(agents.get(r));
-			c.setSpecification(hosts.get(h));
+			c.setInitialState(agents.get(r));
+			c.setInitialState(hosts.get(h));
 
 			if (!c.computeResultingState(h).isValid() || !c.computeResultingState(r).isValid()) {
 				return false;

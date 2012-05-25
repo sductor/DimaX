@@ -1,6 +1,6 @@
 package negotiation.faulttolerance.collaborativecandidature;
 
-import negotiation.faulttolerance.experimentation.Replica;
+import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;

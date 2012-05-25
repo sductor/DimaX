@@ -4,9 +4,8 @@ import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
 
-public abstract class MatchingCandidature<
-ActionSpec extends AbstractActionSpecif>
-extends ContractTransition<ActionSpec> {
+public abstract class MatchingCandidature
+extends ContractTransition {
 
 	/**
 	 *

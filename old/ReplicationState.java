@@ -4,7 +4,7 @@ import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.rationality.AgentState;
 
 
-public interface ReplicationSpecification extends AbstractActionSpecif, AgentState {
+public interface ReplicationState extends  AgentState {
 
 }
 

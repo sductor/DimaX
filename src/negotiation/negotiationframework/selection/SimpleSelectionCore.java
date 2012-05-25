@@ -25,19 +25,18 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  * @param <ActionSpec>
  */
 public class SimpleSelectionCore<
-Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-ActionSpec extends AbstractActionSpecif,
+Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
+Contract extends AbstractContractTransition>
 extends
 BasicAgentCompetence<Agent>
-implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
+implements SelectionCore<Agent,PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
 	Collection<Contract> toAccept;
 	Collection<Contract> toReject;
 	Collection<Contract> toPutOnWait;
-	private ContractTrunk<Contract, ActionSpec, PersonalState> given;
+	private ContractTrunk<Contract> given;
 	GreedySelectionModule selectionModule;
 
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
@@ -50,7 +49,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 		super();
 		this.fuseInitiatorNparticipant = fuseInitiatorNparticipant;
 		this.considerOnWait = considerOnWait;
-		this.selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(this.getMyAgent(),itType);
+		this.selectionModule=new GreedySelectionModule<PersonalState, Contract>(this.getMyAgent(),itType);
 	}
 
 	/*
@@ -59,7 +58,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 
 	@Override
 	public void select(
-			final ContractTrunk<Contract, ActionSpec, PersonalState> given,
+			final ContractTrunk<Contract> given,
 			final Collection<Contract> toAccept,
 			final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {

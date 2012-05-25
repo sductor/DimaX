@@ -22,8 +22,8 @@ import dima.introspectionbasedagents.services.replication.ReplicationHandler;
  * @param <Contract>
  */
 public class HostCore
-extends	BasicAgentCompetence<SimpleRationalAgent<ReplicationSpecification, HostState, ReplicationCandidature>>
-implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidature> {
+extends	BasicAgentCompetence<SimpleRationalAgent<HostState, ReplicationCandidature>>
+implements RationalCore<HostState, ReplicationCandidature> {
 	private static final long serialVersionUID = -179565544489478368L;
 
 	private final ReplicationSocialOptimisation myOptimiser;
@@ -46,10 +46,10 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		for (final ReplicationCandidature c : c1) {
-			c.setSpecificationNInitialState(s,s);
+			c.setInitialState(s);
 		}
 		for (final ReplicationCandidature c : c2) {
-			c.setSpecificationNInitialState(s,s);
+			c.setInitialState(s);
 		}
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
@@ -108,10 +108,10 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 
 	@Override
-	public HostState computeMySpecif(
+	public void setMySpecif(
 			final HostState s,
 			final ReplicationCandidature c) {
-		return s;
+//		return new NoActionSpec();
 	}
 
 	@Override

@@ -14,9 +14,8 @@ import dima.introspectionbasedagents.services.BasicAgentModule;
 
 
 public abstract class ChocoAllocationSolver<
-Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecif,
-PersonalState extends AgentState> extends BasicAgentModule implements AllocationSolver<Contract, ActionSpec, PersonalState> {
+Contract extends MatchingCandidature,
+PersonalState extends AgentState> extends BasicAgentModule implements AllocationSolver<Contract, PersonalState> {
 
 	/**
 	 *

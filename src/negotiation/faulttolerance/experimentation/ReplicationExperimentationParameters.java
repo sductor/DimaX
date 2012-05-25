@@ -15,8 +15,10 @@ import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWi
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaProposerWithStatus;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
+import negotiation.faulttolerance.negotiatingagent.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
+import negotiation.faulttolerance.negotiatingagent.Replica;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
@@ -94,8 +96,8 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 24;
-	public static int startingNbAgents =1000;
+	public static final int startingNbHosts = 5;
+	public static int startingNbAgents =15;
 
 	public  int simultaneousCandidature = 100;
 	public  int simultaneousAcceptation = 10;

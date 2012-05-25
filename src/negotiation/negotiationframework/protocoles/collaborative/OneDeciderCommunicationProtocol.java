@@ -13,8 +13,8 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 public class OneDeciderCommunicationProtocol <
 ActionSpec extends AbstractActionSpecif,
 State extends AgentState,
-Contract extends InformedCandidature<Contract,ActionSpec>>
-extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
+Contract extends InformedCandidature<Contract>>
+extends AbstractCommunicationProtocol<Contract>{
 
 	/**
 	 *

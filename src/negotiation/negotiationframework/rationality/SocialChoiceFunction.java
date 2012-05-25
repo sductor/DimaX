@@ -3,6 +3,7 @@ package negotiation.negotiationframework.rationality;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -14,9 +15,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.support.GimaObject;
 
 
-public abstract class SocialChoiceFunction<
-ActionSpec extends AbstractActionSpecif,
-Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
+public abstract class SocialChoiceFunction<Contract extends AbstractContractTransition> extends GimaObject{
 	private static final long serialVersionUID = 5135268337671313960L;
 
 	public enum SocialChoiceType{ Utility, Leximin,	 Nash };
@@ -80,7 +79,6 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c1));
 			final Collection<AgentState> s2 =
 					this.cleanStates(ReallocationContract.getResultingAllocation(initialStates, c2));
-
 			assert s1.size()==s2.size();
 
 			if (this.socialWelfare.equals(SocialChoiceType.Leximin)){
@@ -96,10 +94,10 @@ Contract extends AbstractContractTransition<ActionSpec>> extends GimaObject{
 				throw new RuntimeException("impossible key for social welfare is : "+this.socialWelfare);
 			}
 		} catch (final IncompleteContractException e) {
+			e.printStackTrace();
 			throw new RuntimeException();
 		}
 	}
-
 	protected abstract <State extends AgentState> Collection<State> cleanStates(
 			final Collection<State> res) ;
 //			{

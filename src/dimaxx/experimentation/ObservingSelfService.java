@@ -12,9 +12,10 @@ import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public abstract class ObservingSelfService
-extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
+extends BasicAgentCompetence<BasicCompetentAgent>{
 	private static final long serialVersionUID = 496384107474313690L;
 
 

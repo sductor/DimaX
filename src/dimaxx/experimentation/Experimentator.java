@@ -108,7 +108,7 @@ public final class Experimentator extends APIAgent{
 		} else if (!this.simuToLaunch.isEmpty()){
 			//On lance de nouvelles expériences!
 
-			this.logWarning("launching new exp"+this.getLocations(),LogService.onBoth);
+//			this.logWarning("launching new exp"+this.getLocations(),LogService.onBoth);
 			ExperimentationParameters nextSimu = null;
 			try {
 				//				while (!this.simuToLaunch.isEmpty()){

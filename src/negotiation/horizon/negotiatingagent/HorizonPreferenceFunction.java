@@ -166,7 +166,14 @@ public class HorizonPreferenceFunction extends
 
     @Override
     protected <State extends AgentState> Collection<State> cleanStates(
-	    Collection<State> res) {
+	    Collection<State> cs) {
+	final Collection<State> res = new ArrayList<State>();
+	for (State s : cs) {
+	    if (s instanceof VirtualNetworkState)
+		res.add(s);
+	    else if (!(s instanceof SubstrateNodeState))
+		throw new IllegalArgumentException();
+	}
 	return res;
     }
 
@@ -176,20 +183,22 @@ public class HorizonPreferenceFunction extends
 
 	    @Override
 	    public int compare(State o1, State o2) {
-		if (o1 instanceof SubstrateNodeState
-			&& o2 instanceof SubstrateNodeState) {
-		    return HorizonPreferenceFunction.this
-			    .getUtilitaristEvaluator().getUtilityValue(o1)
-			    .compareTo(
-				    HorizonPreferenceFunction.this
-					    .getUtilitaristEvaluator()
-					    .getUtilityValue(o2));
-		} else if (o1 instanceof VirtualNetworkState
-			&& o2 instanceof VirtualNetworkState) {
-		    return ((VirtualNetworkState) o1)
-			    .compareTo((VirtualNetworkState) o2);
-		} else
-		    throw new IllegalArgumentException();
+		assert (o1 instanceof VirtualNetworkState && o2 instanceof VirtualNetworkState);
+
+		// if (o1 instanceof SubstrateNodeState
+		// && o2 instanceof SubstrateNodeState) {
+		// return HorizonPreferenceFunction.this
+		// .getUtilitaristEvaluator().getUtilityValue(o1)
+		// .compareTo(
+		// HorizonPreferenceFunction.this
+		// .getUtilitaristEvaluator()
+		// .getUtilityValue(o2));
+		// } else if (o1 instanceof VirtualNetworkState
+		// && o2 instanceof VirtualNetworkState) {
+		return ((VirtualNetworkState) o1)
+			.compareTo((VirtualNetworkState) o2);
+		// } else
+		// throw new IllegalArgumentException();
 	    }
 	};
     }

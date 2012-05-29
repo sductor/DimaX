@@ -47,7 +47,7 @@ public class SubstrateNodeCore
 
     public SubstrateNodeSpecification computeMySpecif() {
 	return new SubstrateNodeSpecification(this.getIdentifier(), this
-		.getMyAgent().myMeasureHandler.getMeasurableParameters());
+		.getMyAgent().myMeasureHandler.performMeasures());
     }
 
     @Override

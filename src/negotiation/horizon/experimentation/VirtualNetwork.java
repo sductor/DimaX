@@ -1,13 +1,10 @@
 package negotiation.horizon.experimentation;
 
-import negotiation.horizon.negotiatingagent.HorizonCandidature;
 import negotiation.horizon.negotiatingagent.HorizonContract;
 import negotiation.horizon.negotiatingagent.HorizonSpecification;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
 import negotiation.horizon.negotiatingagent.VirtualNetworkState;
-import negotiation.horizon.parameters.NodeParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -45,11 +42,11 @@ public class VirtualNetwork
     public VirtualNetwork(
 	    final VirtualNetworkIdentifier id,
 	    final VirtualNetworkState myInitialState,
-	    final RationalCore<NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> myRationality,
-	    final SelectionCore<VirtualNetwork, NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> selectionCore,
-	    final ProposerCore<VirtualNetwork, NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> proposerCore,
+	    final RationalCore<HorizonSpecification, VirtualNetworkState, HorizonContract> myRationality,
+	    final SelectionCore<VirtualNetwork, HorizonSpecification, VirtualNetworkState, HorizonContract> selectionCore,
+	    final ProposerCore<VirtualNetwork, HorizonSpecification, VirtualNetworkState, HorizonContract> proposerCore,
 	    final ObservationService myInformation,
-	    final AbstractCommunicationProtocol<NodeParameters<VirtualNetworkIdentifier>, VirtualNetworkState, ReallocationContract<HorizonCandidature, NodeParameters>> protocol)
+	    final AbstractCommunicationProtocol<HorizonSpecification, VirtualNetworkState, HorizonContract> protocol)
 	    throws CompetenceException {
 	super(id, myInitialState, myRationality, selectionCore, proposerCore,
 		myInformation, protocol);

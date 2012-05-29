@@ -18,7 +18,7 @@ public class Interval<T extends Comparable<T>> extends GimaObject implements
      */
     private static final long serialVersionUID = -2768862502506003799L;
 
-    public final static Interval<?> EMPTY_INTERVAL = new Interval<Float>();
+    private final static Interval<?> EMPTY_INTERVAL = new Interval<Integer>();
 
     /**
      * Lower bound.
@@ -68,24 +68,27 @@ public class Interval<T extends Comparable<T>> extends GimaObject implements
 	this.order = null;
     }
 
+    public boolean isEmpty() {
+	return this == EMPTY_INTERVAL;
+    }
+
     @Override
     public boolean equals(final Object obj) {
 	if (obj.getClass().equals(Interval.class)) {
+	    final Interval compared = (Interval) obj;
 	    if (this == EMPTY_INTERVAL) {
-		if ((Interval<T>) obj == EMPTY_INTERVAL)
+		if (compared == EMPTY_INTERVAL)
 		    return true;
 		else
 		    return false;
-	    } else if ((Interval<T>) obj == EMPTY_INTERVAL) {
+	    } else if (compared == EMPTY_INTERVAL) {
 		return false;
 	    }
-	    return this.inf.equals(((Interval<T>) obj).inf)
-		    && this.sup.equals(((Interval<T>) obj).sup);
+	    return this.inf.equals(compared.inf)
+		    && this.sup.equals(compared.sup);
 	} else
 	    return false;
     }
-
-    private boolean a;
 
     @Override
     public int compareTo(Interval<T> i) {
@@ -131,6 +134,14 @@ public class Interval<T extends Comparable<T>> extends GimaObject implements
 	if (this == EMPTY_INTERVAL)
 	    throw new EmptyIntervalException();
 	return this.inf;
+    }
+
+    public boolean belongs(final T value) {
+	if (this == EMPTY_INTERVAL)
+	    return false;
+	else
+	    return value.compareTo(this.inf) > 0
+		    && value.compareTo(this.sup) < 0;
     }
 
     /**

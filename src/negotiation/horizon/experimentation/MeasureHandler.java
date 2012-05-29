@@ -18,7 +18,7 @@ public class MeasureHandler extends BasicAgentCompetence<SubstrateNode> {
 	this.currentParams = params;
     }
 
-    public HorizonMeasurableParameters<SubstrateNodeIdentifier> getMeasurableParameters() {
+    public HorizonMeasurableParameters<SubstrateNodeIdentifier> performMeasures() {
 	return this.currentParams;
     }
 }

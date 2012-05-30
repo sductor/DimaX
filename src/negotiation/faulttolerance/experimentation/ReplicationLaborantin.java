@@ -28,7 +28,7 @@ public class ReplicationLaborantin extends Laborantin {
 	public ReplicationLaborantin(final ReplicationExperimentationParameters p,
 			final APILauncherModule api) throws CompetenceException,
 			IfailedException, NotEnoughMachinesException {
-		super(p, new ReplicationObservingGlobalService(), api);
+		super(p, new ReplicationObservingGlobalService(p), api);
 	}
 
 	//
@@ -72,7 +72,11 @@ public class ReplicationLaborantin extends Laborantin {
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, IfailedException, NotEnoughMachinesException{
 //		System.out.println(1<<10000);
 		
-		final Experimentator exp = new Experimentator(ReplicationExperimentationParameters.getDefaultParameters());
+		final Experimentator exp = 
+				new Experimentator(
+						ReplicationExperimentationParameters.getDefaultParameters(), 
+						new FinalExperimentsLogger(), 
+						ReplicationExperimentationParameters.iterationNumber);
 		exp.run(args);
 	}
 }

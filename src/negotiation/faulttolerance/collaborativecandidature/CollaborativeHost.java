@@ -25,13 +25,14 @@ public class CollaborativeHost extends Host{
 			final ResourceIdentifier myId,
 			final HostState myState,
 			final SocialChoiceType socialWelfare,
-			int maxCAccepts)
+			int maxCAccepts,
+			long maxComputingTime)
 					throws CompetenceException {
 		super(
 				myId,
 				myState,
 				new InformedCandidatureRationality(new HostCore(socialWelfare),false),
-				new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare),maxCAccepts){
+				new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare),maxCAccepts,maxComputingTime){
 					private static final long serialVersionUID = -1578866978817500691L;
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {

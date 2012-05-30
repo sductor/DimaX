@@ -3,6 +3,7 @@ package negotiation.negotiationframework.protocoles.collaborative;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -43,6 +44,8 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 	final AllocationSolver<Contract, ActionSpec, PersonalState> solver;
 	final int kMax;
+	final long maxComputingTime;
+	
 	Random rand = new Random();
 
 	//
@@ -51,11 +54,13 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 	public ResourceInformedSelectionCore(
 			final AllocationSolver<Contract, ActionSpec, PersonalState> solver,
-			final int kMax)
+			final int kMax,
+			long maxComputingTime)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
 		this.kMax=kMax;
+		this.maxComputingTime=maxComputingTime;
 	}
 
 
@@ -329,7 +334,8 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			this.solver.initiate(kConcerned);
 			Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
 					new HashSet<InformedCandidature<Contract,ActionSpec>>();
-			while (this.solver.hasNext()){
+			Date startingExploringTime = new Date();
+			while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<maxComputingTime)){
 				final Collection<Contract> realloc = this.solver.getNextSolution();
 				if (!realloc.isEmpty()){
 					final Set<InformedCandidature<Contract, ActionSpec>> contractsToKeep =

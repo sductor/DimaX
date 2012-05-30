@@ -31,6 +31,7 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ReplicationObservingGlobalService extends ObservingGlobalService<ReplicationLaborantin>{
 
+
 	private static final long serialVersionUID = -6071939423880629421L;
 
 	//
@@ -80,6 +81,15 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	// Constructor
 	//
 
+
+	public ReplicationObservingGlobalService(ReplicationExperimentationParameters rep) {
+		super(rep);
+	}
+	
+	public ReplicationExperimentationParameters getSimulationParameters() {
+		return (ReplicationExperimentationParameters)super.getSimulationParameters();
+	}
+
 	@ProactivityInitialisation
 	public final void initiateHostNumber(){
 		for (final AgentIdentifier id : this.getMyAgent().getIdentifiers()) {
@@ -88,6 +98,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			}
 		}
 	}
+
+	
 
 	@Override
 	public void initiate() {
@@ -278,7 +290,22 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	//
 	// Primitives
 	//
+	
+	double min;
+	double mean;
+	double nash;
+	
+	public double getMinWelfare() {
+		return min;
+	}
 
+	public double getUtilWelfare() {
+		return mean;
+	}
+
+	public double getNashWelfare() {
+		return nash;
+	}
 
 	String analyseOptimal(){
 		String result="";
@@ -290,10 +317,10 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				reliaStates.add((ReplicationResultAgent)er);
 		}
 
-		double min = Double.POSITIVE_INFINITY;
+		min = Double.POSITIVE_INFINITY;
 		double sum=0;
 		double criti=0;
-		double nash=1;
+		nash=1;
 		LinkedList<Double> lex = new LinkedList<Double>();
 		for (ReplicationResultAgent r : reliaStates){
 			sum+=ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Utility);
@@ -303,8 +330,9 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 //			lex.addLast(ReplicationSocialOptimisation.getReliability(r.getDisponibility(), r.getCriticity(), SocialChoiceType.Leximin));
 //			Collections.sort(lex);
 		}
+		mean=sum/criti;
 		result += //"Leximin solution : "+lex
-				"min sol "+min+"\n Sum solution "+sum+"\n Mean Solution : "+sum/criti+"\n Nash solution "+nash;
+				"min sol "+min+"\n Sum solution "+sum+"\n Mean Solution : "+mean+"\n Nash solution "+nash;
 
 //		result+="\n Agent percent of allocated resources : ";
 //		for (ReplicationResultAgent r : reliaStates){
@@ -425,7 +453,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			if (!endRequestSended){
 			this.logMonologue("Every agent has finished!!...killing....",LogService.onBoth);
 				for (final AgentIdentifier r : getAllAgents()) {
-					this.sendMessage(r, new SimulationEndedMessage());
+					this.sendMessage(r, new SimulationEndedMessage(this));
 				}
 			}
 			this.endRequestSended=true;
@@ -452,6 +480,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			return false;
 		}
 	}
+
+
 
 	//
 	// 

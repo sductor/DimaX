@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -27,6 +28,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	// Fields
 	//
 
+	public final ExperimentationParameters rep;
 	private HashSet<ExperimentationResults> finalStates = new HashSet<ExperimentationResults>();
 
 
@@ -34,9 +36,20 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	final Collection<AgentIdentifier> remainingAgent=new ArrayList<AgentIdentifier>();
 	//	final Collection<AgentIdentifier> remainingHost=new ArrayList<AgentIdentifier>();
 
+
+	public ObservingGlobalService(
+			ExperimentationParameters rep) {
+		super();
+		this.rep = rep;
+	}
+	
 	//
 	// Constants
 	//
+
+	public ExperimentationParameters getSimulationParameters() {
+		return rep;
+	}
 
 	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 10;
 

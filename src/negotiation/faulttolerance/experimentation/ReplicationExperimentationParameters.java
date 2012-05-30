@@ -102,7 +102,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 
 
 	public  int simultaneousCandidature = 100;
-	public  int simultaneousAcceptation = 10;
+	public  int simultaneousAcceptation = 20;
 	public  long maxComputingTime = 60000;
 	public final boolean completGraph = true;
 

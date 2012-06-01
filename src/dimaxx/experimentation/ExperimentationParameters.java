@@ -34,7 +34,7 @@ import dimaxx.server.HostIdentifier;
  * @param <Agent> le type de laborantin associé
  */
 public abstract class ExperimentationParameters<Agent extends Laborantin>
-extends BasicAgentModule<Agent> {
+extends BasicAgentModule<Agent> implements Comparable{
 	private static final long serialVersionUID = -1735965270944987539L;
 
 	

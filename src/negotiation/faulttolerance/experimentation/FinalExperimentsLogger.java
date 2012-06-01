@@ -22,7 +22,7 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 	 * @see negotiation.faulttolerance.experimentation.ExperimentLogger#addResults(negotiation.faulttolerance.experimentation.ReplicationObservingGlobalService)
 	 */
 	@Override
-	public void addResults(ObservingGlobalService og){
+	public void addAndWriteResults(ObservingGlobalService og, File f){
 		assert og instanceof ReplicationObservingGlobalService;
 		ReplicationObservingGlobalService rog = (ReplicationObservingGlobalService) og;
 		IndivdualExperiementLog iel = new IndivdualExperiementLog(rog);
@@ -31,22 +31,9 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 		} else {
 			allExp.put(iel.getId(), new StatisticalExperimentsLog(rog));
 		}
+		LogService.logOnFile(f, "\n"+allExp.get(iel.getId()), true, false);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see negotiation.faulttolerance.experimentation.ExperimentLogger#write(java.io.File)
-	 */
-	@Override
-	public void write(File f){
-		List<StatisticalExperimentsLog> all = new ArrayList<StatisticalExperimentsLog>(allExp.values());
-		Collections.sort(all);
-		String result = all.get(0).entete();
-		for (StatisticalExperimentsLog sel : all){
-			result+="\n"+sel.toString();
-		}
-		LogService.logOnFile(f, result, true, false);
-	}
 
 
 
@@ -150,9 +137,7 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 	}	
 }
 
-class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
-
-	protected String id;
+class IndivdualExperiementLog {
 
 	//entry parameters
 	protected int nbAgent;
@@ -185,7 +170,6 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 
 	public IndivdualExperiementLog(ReplicationObservingGlobalService rog){
 		this(
-				rog.getSimulationParameters().getSimulationName(),
 				rog.getSimulationParameters().nbAgents,
 				rog.getSimulationParameters().nbHosts,
 				rog.getSimulationParameters().hostCapacityMean,
@@ -205,14 +189,13 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 				rog.getSimulationParameters()._maxSimulationTime);
 	}
 
-	private IndivdualExperiementLog(String id, int nbAgent, int nbHost, double hostCapacityMean,
+	private IndivdualExperiementLog(int nbAgent, int nbHost, double hostCapacityMean,
 			double minState, double aveState, double maxState,
 			double minStab, double aveStab, double maxStab,
 			SocialChoiceType socChoice, double minValue, double nashValue,
 			double utilValue, int simultaneousCandidature,
 			int simultaneousAcceptation, long maxComputingTime, long time) {
 		super();
-		this.id = id;
 		this.nbAgent = nbAgent;
 		this.nbHost = nbHost;
 		this.hostCapacityMean=hostCapacityMean;
@@ -231,12 +214,6 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 		this.maxComputingTime = maxComputingTime;
 		this.time = time;
 	}
-
-	public String getId() {
-		return id;
-	}
-
-
 
 	public int getNbAgent() {
 		return nbAgent;
@@ -307,6 +284,10 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 		return time;
 	}
 
+	/*
+	 * 
+	 */
+	
 	public String entete() {
 		return "nbAgent ; nbHost ; instance size ; agent number	 ; hostCapacityMean ; hostCapacityPercent" +
 				"minState ; aveState ; maxState ;	" +
@@ -315,32 +296,7 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 				"simultaneousCandidature ; simultaneousAcceptation ; maxComputingTime ; " +
 				"time ; id";
 	}
-	
-	public int hashcode(){
-		
-	}
 
-	@Override
-	public int compareTo(IndivdualExperiementLog that) {
-		double fixedResources=
-				((double)ReplicationExperimentationParameters.startingNbAgents/
-						(double)ReplicationExperimentationParameters.startingNbHosts);
-
-		if (this.hostCapacityMean!=fixedResources && that.hostCapacityMean!=fixedResources){
-			if (this.getHostCapacityMean()/this.nbAgent==that.getHostCapacityMean()/that.nbAgent){
-				return this.getNbAgent()-that.getNbAgent();
-			} else {
-				return (int) ((this.getHostCapacityMean()/this.nbAgent)-(that.getHostCapacityMean()/that.nbAgent));
-			}
-		} else if (this.hostCapacityMean==fixedResources && that.hostCapacityMean==fixedResources){
-			return this.getNbAgent()-that.getNbAgent();
-		} else if  (this.hostCapacityMean!=fixedResources && that.hostCapacityMean==fixedResources){
-			return -1;
-		} else { //(this.hostCapacityMean==fixedResources && that.hostCapacityMean!=fixedResources){
-			return 1;
-		}
-	}
-	
 	public String toString(){
 		String result =	getNbAgent()+" ; "+getNbHost()+" ; "+ getNbAgent()*nbHost+" ; "+( getNbAgent()+getNbHost())+" ; "+
 				getHostCapacityMean()+" ; "+getHostCapacityMean()/nbAgent+" ; "+
@@ -352,4 +308,26 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 		//		result=result.replaceAll(".", ",");
 		return result;
 	}
+
+	/*
+	 * 
+	 */
+	
+	public String getId() {
+		return this.nbAgent+"AGENTS"+this.hostCapacityMean+"CAPACITY";
+	}
+
+	public int hashCode(){
+		return (int) (this.nbAgent*1000+this.hostCapacityMean);
+	}
+
+	public boolean equals(Object o){
+		if (o instanceof IndivdualExperiementLog){
+			IndivdualExperiementLog that = (IndivdualExperiementLog) o;
+			return this.nbAgent==that.nbAgent && this.nbHost==that.nbHost && this.hostCapacityMean==that.hostCapacityMean;
+		}else {
+			return false;
+		}
+	}
+
 }

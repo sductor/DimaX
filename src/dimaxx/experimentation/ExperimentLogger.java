@@ -6,8 +6,8 @@ import negotiation.faulttolerance.experimentation.ReplicationObservingGlobalServ
 
 public interface ExperimentLogger {
 
-	public abstract void addResults(ObservingGlobalService observingGlobalService);
+	public abstract void addAndWriteResults(ObservingGlobalService observingGlobalService, File f);
 
-	public abstract void write(File f);
+//	public abstract void write(File f);
 
 }

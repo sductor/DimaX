@@ -3,6 +3,7 @@ package dimaxx.experimentation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -92,7 +93,7 @@ public final class Experimentator extends APIAgent{
 			//Toute les expériences sont faites!!
 
 			LogService.logOnFile(myProtocol.finalResultPath, "\n\nIteration number -"+iteartiontime+" : \n", true, false);
-			el.write(myProtocol.finalResultPath);
+//			el.write(myProtocol.finalResultPath);
 			iteartiontime--;
 
 			if (iteartiontime==0){
@@ -151,7 +152,7 @@ public final class Experimentator extends APIAgent{
 //		this.launchedSimu.remove(n.getSender());
 		//		laborantinLauncher.destroy(n.getSender());
 		this.awaitingAnswer--;
-		el.addResults(n.getNotification().getOgs());
+		el.addAndWriteResults(n.getNotification().getOgs(),myProtocol.finalResultPath);
 		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
 				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		System.gc();
@@ -185,6 +186,7 @@ public final class Experimentator extends APIAgent{
 		this.myProtocol.setMyAgent(this);
 		this.simuToLaunch = this.myProtocol.generateSimulation();
 		allSimu.addAll(simuToLaunch);
+		Collections.sort(allSimu);
 		this.awaitingAnswer=this.simuToLaunch.size();
 
 		if (args[1].equals("nolog")) {

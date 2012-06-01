@@ -6,6 +6,12 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
 
+/**
+ * Module are associated to an agent but are not proactive component
+ * @author ductors
+ *
+ * @param <Agent>
+ */
 public class BasicAgentModule<Agent extends CompetentComponent> implements DimaComponentInterface{
 	private static final long serialVersionUID = -8166804401339182512L;
 

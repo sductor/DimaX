@@ -315,17 +315,9 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 				"simultaneousCandidature ; simultaneousAcceptation ; maxComputingTime ; " +
 				"time ; id";
 	}
-
-	public String toString(){
-		String result =	getNbAgent()+" ; "+getNbHost()+" ; "+ getNbAgent()*nbHost+" ; "+( getNbAgent()+getNbHost())+" ; "+
-				getHostCapacityMean()+" ; "+getHostCapacityMean()/nbAgent+" ; "+
-				getMinState()+" ; "+getAveState()+" ; "+getMaxState()+" ; "+
-				getMinStab()+" ; "+getAveStab()+" ; "+getMaxStab()+" ; "+
-				getMinValue()+" ; "+getNashValue()+" ; "+getUtilValue()+" ; "+getSocChoice()+" ; "+
-				getSimultaneousCandidature()+" ; "+getSimultaneousAcceptation()+" ; "+getMaxComputingTime()+" ; "+
-				+getTime()+" ; "+getId();
-		//		result=result.replaceAll(".", ",");
-		return result;
+	
+	public int hashcode(){
+		
 	}
 
 	@Override
@@ -347,5 +339,17 @@ class IndivdualExperiementLog implements Comparable<IndivdualExperiementLog>{
 		} else { //(this.hostCapacityMean==fixedResources && that.hostCapacityMean!=fixedResources){
 			return 1;
 		}
+	}
+	
+	public String toString(){
+		String result =	getNbAgent()+" ; "+getNbHost()+" ; "+ getNbAgent()*nbHost+" ; "+( getNbAgent()+getNbHost())+" ; "+
+				getHostCapacityMean()+" ; "+getHostCapacityMean()/nbAgent+" ; "+
+				getMinState()+" ; "+getAveState()+" ; "+getMaxState()+" ; "+
+				getMinStab()+" ; "+getAveStab()+" ; "+getMaxStab()+" ; "+
+				getMinValue()+" ; "+getNashValue()+" ; "+getUtilValue()+" ; "+getSocChoice()+" ; "+
+				getSimultaneousCandidature()+" ; "+getSimultaneousAcceptation()+" ; "+getMaxComputingTime()+" ; "+
+				+getTime()+" ; "+getId();
+		//		result=result.replaceAll(".", ",");
+		return result;
 	}
 }

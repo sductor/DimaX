@@ -467,9 +467,10 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				this.endRequestSended=true;
 				return false;
 			}else {
-				return false;//wainting 5 more minutes
+				return false;//waiting 5 more minutes
 			}
 		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+600000){//+10min
+			this.getMyAgent().getApi().kill(this.getAliveAgents());
 			this.signalException("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents());
 			return true;
 		} else {

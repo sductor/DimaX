@@ -41,6 +41,9 @@ public class Laborantin extends BasicCompetentAgent {
 
 
 	APILauncherModule api;
+
+
+
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
 	private final Map<BasicCompetentAgent, HostIdentifier> locations;
@@ -95,6 +98,9 @@ public class Laborantin extends BasicCompetentAgent {
 		assert this.locations!=null;
 	}
 
+	public APILauncherModule getApi() {
+		return api;
+	}
 
 	//
 	// Behaviors

@@ -14,7 +14,7 @@ import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
  *
  * @author Ductor Sylvain
  */
-public class NotificationMessage<Notification extends Serializable>
+public final class NotificationMessage<Notification extends Serializable>
 extends Message implements MessageInEnvelope {
 
 	/**

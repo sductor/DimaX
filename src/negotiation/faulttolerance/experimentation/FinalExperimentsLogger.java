@@ -31,7 +31,7 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 		} else {
 			allExp.put(iel.getId(), new StatisticalExperimentsLog(rog));
 		}
-		LogService.logOnFile(f, "\n"+allExp.get(iel.getId()), true, false);
+		LogService.logOnFile(f, allExp.get(iel.getId()).toString(), true, false);
 	}
 
 

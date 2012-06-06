@@ -1062,13 +1062,12 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		double thisHostCapacityPercent=this.hostCapacityMean/this.nbAgents;
 		double thatHostCapacityPercent=that.hostCapacityMean/that.nbAgents;
 
-
-		if (thisIsFixed && !thatIsFixed){
+		if  (thisIsFixed && thatIsFixed) {
+			return this.nbAgents-that.nbAgents;
+		} else if (thisIsFixed && !thatIsFixed){
 			return -1;
 		} else if (thatIsFixed && !thisIsFixed){
 			return 1;
-		} else if  (thisIsFixed && thatIsFixed) {
-			return this.nbAgents-that.nbAgents;
 		} else {//!thisIsFixed && !thatIsFixed
 			if (thisHostCapacityPercent!=thatHostCapacityPercent){
 				return (int) (thisHostCapacityPercent-thatHostCapacityPercent);

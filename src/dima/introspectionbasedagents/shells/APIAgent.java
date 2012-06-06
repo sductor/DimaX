@@ -309,11 +309,27 @@ public class APIAgent extends BasicCompetentAgent {
 			return this.launch(c, this.avalaibleHosts.get(this.pos));
 		}
 
+		Collection<AgentIdentifier> killed = new ArrayList<AgentIdentifier>();
+		public boolean kill(AgentIdentifier c){
+			final boolean removed1 = this.registeredAgent.remove(c)!=null;
+			final boolean removed2 =  this.locations.remove(c)!=null;
+			killed.add(c);
+
+			assert removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
+
+			sendMessage(c, new SigKillOrder());
+			return true;
+		}
+		public boolean kill(Collection<AgentIdentifier> cs){
+			for (AgentIdentifier c : cs)
+				kill(c);
+			return true;
+		}
 		boolean destroy(final BasicCompetentAgent c){
 			final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
 			final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
 
-			assert removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
+			assert killed.contains(c) || (removed1 && removed2):c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 
 			switch (this.myLaunchType) {
 			case NotThreaded:

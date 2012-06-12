@@ -97,8 +97,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	public static final int startingNbHosts = 24;
 	public static int startingNbAgents =5000;
-	//	public static final int startingNbHosts = 5;
-	//	public static int startingNbAgents =10;
+//		public static final int startingNbHosts = 5;
+//		public static int startingNbAgents =10;
 
 
 	public  int simultaneousCandidature = 100;

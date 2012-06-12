@@ -71,12 +71,8 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	protected abstract void updateInfo(ExperimentationResults notification);
 
 
-	/**
-	 *
-	 * @return true when the simulation is ended
-	 * must ensure every agent is destroyed!!!
-	 */
-	protected boolean simulationHasEnded(){
+
+	protected boolean allAgentDied(){
 		for (AgentIdentifier myAgent : allAgent){
 			if (getMyAgent().api.getAllAgents().contains(myAgent))
 				return false;
@@ -84,6 +80,47 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		return true;
 	}
 
+
+	/**
+	 *
+	 * @return true when the simulation is ended
+	 * must ensure every agent is destroyed!!!
+	 */
+	public boolean simulationHasEnded(){
+		if (allAgentDied()){
+			this.logMonologue("ALL AGENTS DIED!!!",LogService.onBoth);
+			this.logWarning("ALL AGENTS DIED!!!",LogService.onBoth);
+			return true;
+		}else if (this.getAliveAgents().size()==0){
+			if (!endRequestSended){
+				this.logMonologue("Every agent has finished!!...killing....",LogService.onBoth);
+				for (final AgentIdentifier r : getAllAgents()) {
+					this.sendMessage(r, new SimulationEndedMessage(this));
+				}
+			}
+			this.endRequestSended=true;
+			return false;
+		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+300000){//+5min
+			if (!endRequestSended){
+				this.logWarning("FORCING END REQUEST!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents(),LogService.onBoth);
+				for (final AgentIdentifier r : getAllAgents()) {
+					this.sendMessage(r, new SimulationEndedMessage(this));
+				}
+				this.endRequestSended=true;
+				return false;
+			}else {
+				return false;//waiting 5 more minutes
+			}
+		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+600000){//+10min
+			this.getMyAgent().getApi().kill(this.getAliveAgents());
+			this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents(),LogService.onBoth);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	boolean endRequestSended= false;
+	//	boolean shouldHAveEndedActivated=false ;
 	protected abstract void writeResult();
 
 	//

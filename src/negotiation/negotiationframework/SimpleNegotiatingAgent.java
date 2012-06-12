@@ -29,7 +29,6 @@ import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.experimentation.ObservingSelfService;
-import dimaxx.experimentation.SimulationEndedMessage;
 
 public class SimpleNegotiatingAgent<
 ActionSpec extends AbstractActionSpecification,
@@ -122,33 +121,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 //		wwait(60000);
 //		return true;
 //	}
-	
-	@MessageHandler
-	public void simulationEndORder(final SimulationEndedMessage s){
-//		logMonologue("yooo1", LogService.onBoth);
-		if (this.isAlive()) {
-			this.setActive(false);
-			this.setAlive(false);
-		}
-	}
-	
-	public void tryToResumeActivity(){
-//		if (hasAppliStarted()) logMonologue("yooo2", LogService.onBoth);
-		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
-		while (this.getMailBox().hasMail()){
-			final AbstractMessage m = this.getMailBox().readMail();
-			if (m instanceof SimulationEndedMessage) {
-				this.setAlive(false);
-				this.setActive(false);
-			} else {
-				messages.add(m);
-			}
-		}
-		for (final AbstractMessage m : messages) {
-			this.getMailBox().writeMail(m);
-		}
-		wwait(1000);
-	}
+
 	
 //	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 //	@Transient
@@ -166,6 +139,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		pockets += "\n" + this.getMyProtocol();
 		this.logMonologue(pockets,LogService.onFile);
 	}
+	
+
 }
 
 

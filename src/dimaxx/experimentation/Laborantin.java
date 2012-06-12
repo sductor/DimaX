@@ -174,6 +174,7 @@ public class Laborantin extends BasicCompetentAgent {
 	public boolean endSimulation(){
 		if (this.observingService.simulationHasEnded()){
 			this.logMonologue("I've finished!!",LogService.onBoth);
+			this.logWarning("I've finished!!",LogService.onBoth);
 			this.observingService.writeResult();
 			this.wwait(10000);
 			//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
@@ -183,6 +184,7 @@ public class Laborantin extends BasicCompetentAgent {
 			//				this.logMonologue("notifications Sended", onBoth);
 
 			this.logMonologue("my job is done! cleaning my lab bench...",LogService.onBoth);
+			this.logWarning("my job is done! cleaning my lab bench...",LogService.onBoth);
 			this.agents.clear();
 			this.agents=null;
 			this.setAlive(false);

@@ -1,8 +1,11 @@
 package dimaxx.experimentation;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
@@ -42,6 +45,9 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 		this.l.add(this.generateMyResults());
 	}
 
+	//
+	//
+	//
 
 	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
@@ -53,8 +59,40 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 		getMyAgent().setActive(false);
 		return true;
 	}
-
-
+	
+	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	@Transient
+	public boolean endSimulationPost(){
+		return endSimulation();
+	}
+	
+	@MessageHandler
+	public void simulationEndORder(final SimulationEndedMessage s){
+//		logMonologue("yooo1", LogService.onBoth);
+		if (getMyAgent().isAlive()) {
+			getMyAgent().setActive(false);
+			getMyAgent().setAlive(false);
+		}
+	}
+	
+	public void tryToResumeActivity(){
+//		if (hasAppliStarted()) logMonologue("yooo2", LogService.onBoth);
+		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
+		while (getMyAgent().getMailBox().hasMail()){
+			final AbstractMessage m = getMyAgent().getMailBox().readMail();
+			if (m instanceof SimulationEndedMessage) {
+				getMyAgent().setAlive(false);
+				getMyAgent().setActive(false);
+			} else {
+				messages.add(m);
+			}
+		}
+		for (final AbstractMessage m : messages) {
+			getMyAgent().getMailBox().writeMail(m);
+		}
+		getMyAgent().wwait(1000);
+	}
+	
 	//
 	// Public class
 	//

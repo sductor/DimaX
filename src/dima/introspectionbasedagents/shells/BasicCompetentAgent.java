@@ -12,6 +12,7 @@ import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -22,6 +23,8 @@ import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.M
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.shells.APIAgent.EndActivityMessage;
+import dima.introspectionbasedagents.shells.APIAgent.SigKillOrder;
 import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
 import dimaxx.kernel.DimaXTask;
 import dimaxx.server.HostIdentifier;
@@ -49,6 +52,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		super(newId);
 		this.log= new LogService<BasicCompetentAgent>(this);
 		this.observer=	new PatternObserverWithHookservice(this);
+		this.apiService = new ApiLaunchService(this);
 		BasicCompetentAgent.nbCompetentAgent++;
 	}
 
@@ -56,6 +60,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		super(newId);
 		this.log= new LogService<BasicCompetentAgent>(this);
 		this.observer=	new PatternObserverWithHookservice(this);
+		this.apiService = new ApiLaunchService(this);
 		BasicCompetentAgent.nbCompetentAgent++;
 	}
 
@@ -67,6 +72,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	//		super(newId, horloge);
 	//		log= new LogService(this);
 	//		observer=	new PatternObserverWithHookservice(this);
+	//	this.apiService = new ApiLaunchService(this);
 	//		nbCompetentAgent++;
 	//	}
 	//
@@ -75,6 +81,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	//		super(newId, horloge);
 	//		log= new LogService(this);
 	//		observer=	new PatternObserverWithHookservice(this);
+	//	this.apiService = new ApiLaunchService(this);
 	//		nbCompetentAgent++;
 	//	}
 
@@ -113,7 +120,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	@Override
 	public boolean isActive() {
-		return this.appliHasStarted&&isActive;
+		return apiService.hasAppliStarted()&&isActive;
 	}
 
 	public void setActive(boolean isActive) {
@@ -129,59 +136,13 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.getMyShell().loadedCompetence;
 	}
 
-	//
-	// Launch
-	//
 
 
-	private boolean appliHasStarted=false;
 
-	public boolean hasAppliStarted() {
-		return this.appliHasStarted;
-	}
-
-
-	@Override
-	public void tryToResumeActivity(){
-		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
-		while (this.getMailBox().hasMail()){
-			final AbstractMessage m = this.getMailBox().readMail();
-			if (m instanceof StartActivityMessage) {
-				this.start((StartActivityMessage)m);
-			} else {
-				messages.add(m);
-			}
-		}
-		for (final AbstractMessage m : messages) {
-			this.getMailBox().writeMail(m);
-		}
-	}
-
-	@MessageHandler
-	public boolean start(final StartActivityMessage m){
-		this.appliHasStarted=true;
-		this.creation = m.getStartDate();
-		//		this.logMonologue("Starting!!!! on "+ m.getStartDate().toLocaleString(),LogService.onFile);
-		return true;
-	}
-
-	public boolean launchWith(final APILauncherModule api){
-		this.myApi=api;
-		return api.launch(this);
-	}
-
-	public boolean launchWith(final APILauncherModule api, final HostIdentifier h){
-		this.myApi=api;
-		return api.launch(this,h);
-	}
 
 	//
-	// Competence
+	// Hook
 	//
-
-	/*
-	 * Hook
-	 */
 
 	@Override
 	public boolean when(
@@ -289,6 +250,38 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		}
 	}
 
+	//
+	// Competence
+	//
+
+
+	/*
+	 * Launch
+	 */
+
+	@Competence()
+	public
+	final ApiLaunchService apiService;
+
+	boolean launchWith(APILauncherModule api) {
+		return apiService.launchWith(api);
+	}
+
+	boolean launchWith(APILauncherModule api, HostIdentifier h) {
+		return apiService.launchWith(api, h);
+	}
+
+	boolean start(StartActivityMessage m) {
+		return apiService.start(m);
+	}
+
+	boolean suicide(SigKillOrder m) {
+		return apiService.suicide(m);
+	}
+
+	boolean endActivity(EndActivityMessage m) {
+		return apiService.endActivity(m);
+	}
 
 	/*
 	 * Pattern Observer

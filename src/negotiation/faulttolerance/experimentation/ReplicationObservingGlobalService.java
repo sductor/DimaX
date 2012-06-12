@@ -23,7 +23,6 @@ import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
-import dimaxx.experimentation.SimulationEndedMessage;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
@@ -435,49 +434,6 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		this.logMonologue(mono,LogService.onFile);
 
 	}
-
-	//
-	// Termination
-	//
-
-
-	boolean endRequestSended= false;
-	//	boolean shouldHAveEndedActivated=false ;
-
-	@Override
-	public boolean simulationHasEnded(){
-		if (super.simulationHasEnded()){
-			this.logMonologue("ALL AGENTS DIED!!!",LogService.onBoth);
-			return true;
-		}else if (this.getAliveAgents().size()==0){
-			if (!endRequestSended){
-				this.logMonologue("Every agent has finished!!...killing....",LogService.onBoth);
-				for (final AgentIdentifier r : getAllAgents()) {
-					this.sendMessage(r, new SimulationEndedMessage(this));
-				}
-			}
-			this.endRequestSended=true;
-			return false;
-		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+300000){//+5min
-			if (!endRequestSended){
-				this.signalException("FORCING END REQUEST!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents());
-				for (final AgentIdentifier r : getAllAgents()) {
-					this.sendMessage(r, new SimulationEndedMessage(this));
-				}
-				this.endRequestSended=true;
-				return false;
-			}else {
-				return false;//waiting 5 more minutes
-			}
-		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+600000){//+10min
-			this.getMyAgent().getApi().kill(this.getAliveAgents());
-			this.signalException("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 }
 
 //					for (final AgentIdentifier r : this.getAllAgents()) {

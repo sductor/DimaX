@@ -14,6 +14,7 @@ import negotiation.negotiationframework.rationality.RationalCore;
 
 public class StatusReplica extends Replica {
 
+
 	//
 	// Competences
 	//
@@ -25,14 +26,14 @@ public class StatusReplica extends Replica {
 	// Constructor
 	//	
 	
+
 	public StatusReplica(AgentIdentifier id, ReplicaState myState,
-			SelectionCore participantCore,
+			RationalCore myRationality, SelectionCore participantCore,
 			ProposerCore proposerCore, ObservationService myInformation,
 			AbstractCommunicationProtocol protocol, boolean dynamicCriticity)
 			throws CompetenceException {
-		super(id, myState, new CandidatureReplicaCoreWithStatus(), participantCore, new CandidatureReplicaProposerWithStatus(k), myInformation,
+		super(id, myState, myRationality, participantCore, proposerCore, myInformation,
 				protocol, dynamicCriticity);
-		// TODO Auto-generated constructor stub
 	}
 
 	

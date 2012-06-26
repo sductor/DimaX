@@ -14,6 +14,8 @@ import java.util.Map;
 
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaProposerWithStatus;
+import negotiation.faulttolerance.candidaturewithstatus.StatusHost;
+import negotiation.faulttolerance.candidaturewithstatus.StatusReplica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
@@ -401,7 +403,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 			}else { //Status
 
-				rep = new Replica(
+				rep = new StatusReplica(
 						replicaId,
 						this.rig.getAgentState(replicaId),
 						this.getCore(true, this._usedProtocol, this._socialWelfare),
@@ -442,7 +444,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						simultaneousAcceptation,
 						maxComputingTime);
 			} else {
-				hostAg = new Host(
+				hostAg = new StatusHost(
 						hostId,
 						this.rig.getHostState(hostId),
 						this.getCore(false, this._usedProtocol, this._socialWelfare),

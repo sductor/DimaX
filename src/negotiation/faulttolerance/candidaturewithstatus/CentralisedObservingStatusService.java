@@ -44,8 +44,7 @@ BasicCommunicatingCompetence<Laborantin> {
 		this.getSimulationParameters();
 		this.statusEvolution =
 				new StatusQuantityTrunk[ObservingGlobalService.getNumberOfTimePoints()];
-		this
-		.getSimulationParameters();
+		this.getSimulationParameters();
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
 			this.statusEvolution[i] = new StatusQuantityTrunk();
 		}

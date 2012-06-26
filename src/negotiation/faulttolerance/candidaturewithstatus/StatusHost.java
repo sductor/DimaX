@@ -16,26 +16,33 @@ import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
 import negotiation.negotiationframework.rationality.RationalCore;
 
 public class StatusHost extends Host {
-	
-	
+
+	final boolean centralised;
+	public StatusObservationCompetence soc;
+
 	public StatusHost(ResourceIdentifier id, HostState myState,
 			RationalCore myRationality, SelectionCore participantCore,
 			ProposerCore proposerCore, ObservationService myInformation,
-			AbstractCommunicationProtocol protocol) throws CompetenceException {
-		super(id, myState, myRationality, participantCore, proposerCore, myInformation,
+			AbstractCommunicationProtocol protocol,
+			boolean centralised) throws CompetenceException {
+		super(id, 
+				myState, myRationality, 
+				participantCore, proposerCore, 
+				myInformation,
 				protocol);
+		this.centralised=centralised;
 	}
 
 	@StepComposant(ticker = NegotiationParameters._statusObservationFrequency)
-	public void notifyMyReliability4Status() {
-		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
-		try {
-			this.notify(
-					((OpinionService) getMyInformation()).getGlobalOpinion(ReplicaState.class),
-					CentralisedObservingStatusService.reliabilityObservationKey);
-		} catch (NoInformationAvailableException e) {
-			//do nothing
+	public void notifyOpinion4Status() {
+		if (!centralised){
+			// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
+			try {
+			soc.diffuse(((OpinionService) getMyInformation()).getGlobalOpinion(ReplicaState.class));
+			} catch (NoInformationAvailableException e) {
+				//do nothing
+			}
 		}
 	}
-	
+
 }

@@ -347,7 +347,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			}
 		};
 		Collections.sort(reliaStates, reliaComp);
-		ReplicationResultAgent prev = reliaStates.removeFirst();
+		ReplicationResultAgent prev=null;
+		if (!reliaStates.isEmpty())prev  = reliaStates.removeFirst();
 		result+="\n Agents sorted by criticity? ";
 		while(!reliaStates.isEmpty()){
 			if (prev.getDisponibility()<reliaStates.getFirst().getDisponibility() &&
@@ -407,7 +408,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						opinionsLog.add(ag.getId(), h);
 					}
 				} else if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
-					throw new RuntimeException("impossible : should use collaborative branch");
+					//do nothing;
 				} else {
 					throw new RuntimeException("impossible : ");
 				}

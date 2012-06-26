@@ -7,15 +7,15 @@ import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.CommunicatingComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
 
-public class BasicAgentCommunicatingCompetence<Agent extends CompetentComponent & CommunicatingComponentInterface> extends BasicAgentCompetence<Agent>{
+public class BasicCommunicatingCompetence<Agent extends CompetentComponent & CommunicatingComponentInterface> extends BasicAgentCompetence<Agent>{
 	private static final long serialVersionUID = -7270812729505868349L;
 
 
-	public BasicAgentCommunicatingCompetence(final Agent ag) throws UnrespectedCompetenceSyntaxException {
+	public BasicCommunicatingCompetence(final Agent ag) throws UnrespectedCompetenceSyntaxException {
 		this.setMyAgent(ag);
 	}
 
-	public BasicAgentCommunicatingCompetence() {
+	public BasicCommunicatingCompetence() {
 	}
 
 	protected void sendMessage(final AgentIdentifier id, final Message m ){

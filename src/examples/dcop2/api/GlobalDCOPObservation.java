@@ -13,7 +13,7 @@ import dimaxx.experimentation.Laborantin;
 import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
-import examples.dcopAmeliorer.algo.BasicAlgorithm;
+import examples.dcop2.algo.BasicAlgorithm;
 
 public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 

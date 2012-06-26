@@ -16,26 +16,6 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private static final long serialVersionUID = -3882932472033817195L;
 
 
-	//
-	// Status
-	//
-
-
-	@StepComposant()
-	@Transient
-	public boolean initialynotifyMyState4Status() {
-		this.notifyMyReliability4Status();
-		return true;
-	}
-
-	@StepComposant(ticker = NegotiationParameters._statusObservationFrequency)
-	public void notifyMyReliability4Status() {
-		// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
-		this.notify(
-				this.getMyAgent().getMyCurrentState().getMyReliability(),
-				ObservingStatusService.reliabilityObservationKey);
-	}
-
 	// public CandidatureReplicaCoreWithStatus(
 	// final SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature,
 	// ReplicationSpecification> ag) {

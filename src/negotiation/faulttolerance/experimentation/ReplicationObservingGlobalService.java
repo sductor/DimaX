@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
-import negotiation.faulttolerance.candidaturewithstatus.ObservingStatusService;
+import negotiation.faulttolerance.candidaturewithstatus.CentralisedObservingStatusService;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
@@ -395,7 +395,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				//
 				if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto)){
 					//I aggregate agents reliability
-					ag.addObserver(this.getIdentifier(), ObservingStatusService.reliabilityObservationKey);//this.addObserver(ag.getIdentifier(),ObservingStatusService.reliabilityObservationKey);???
+					ag.addObserver(this.getIdentifier(), CentralisedObservingStatusService.reliabilityObservationKey);//this.addObserver(ag.getIdentifier(),ObservingStatusService.reliabilityObservationKey);???
 					reliabilityStatusLog.add(ag.getIdentifier());
 					//I forward my opinion to every agents
 					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
@@ -407,7 +407,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						opinionsLog.add(ag.getId(), h);
 					}
 				} else if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
-					//no observation
+					throw new RuntimeException("impossible : should use collaborative branch");
 				} else {
 					throw new RuntimeException("impossible : ");
 				}

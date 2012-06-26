@@ -2,8 +2,11 @@ package negotiation.faulttolerance.candidaturewithstatus;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
+import negotiation.negotiationframework.NegotiationParameters;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.annotations.Transient;
+import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
@@ -13,8 +16,8 @@ import dimaxx.experimentation.Laborantin;
 import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 
-public class ObservingStatusService extends
-BasicAgentCommunicatingCompetence<Laborantin> {
+public class CentralisedObservingStatusService extends
+BasicCommunicatingCompetence<Laborantin> {
 	private static final long serialVersionUID = 5142247796368825154L;
 
 
@@ -34,7 +37,7 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 	// Constructor
 	//
 
-	public ObservingStatusService(final Laborantin ag, final ReplicationExperimentationParameters p)
+	public CentralisedObservingStatusService(final Laborantin ag, final ReplicationExperimentationParameters p)
 			throws UnrespectedCompetenceSyntaxException {
 		super(ag);
 		this.p = p;
@@ -73,8 +76,15 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 	// Behaviors
 	//
 
+
+	//
+	// Status
+	//
+
+
+	
 	@MessageHandler
-	@NotificationEnvelope(ObservingStatusService.reliabilityObservationKey)
+	@NotificationEnvelope(CentralisedObservingStatusService.reliabilityObservationKey)
 	public void updateAgent4StatusObservation(
 			final NotificationMessage<Double> n) {
 		// System.out.println("yoopppppppppppppppppppppppphooooooooooiiiiiiiiiiiiiiii");
@@ -92,17 +102,6 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 	// Primitives
 	//
 
-	//		private void updateAnAgentStatus(final ReplicationAgentResult ag,
-	//				final int i) {
-	//			if (!ag.isLastInfo())
-	//				ReplicationLaborantin.this.myStatusObserver.statusEvolution[i]
-	//						.incr(ag.getStatus());
-
-	//			ReplicationLaborantin.this.myStatusObserver.statusEvolution[i]
-	//					.setNbAgentLost(ReplicationLaborantin.this
-	//							.getSimulationParameters().nbAgents
-	//							- ReplicationLaborantin.this.getAliveAgentsNumber());
-	//		}
 
 	public synchronized void writeStatusResult() {
 
@@ -136,6 +135,9 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 				.getResultPath(), result, true, false);
 	}
 
+	//
+	// Subclasses
+	//
 
 	public class StatusQuantityTrunk extends GimaObject {
 
@@ -185,3 +187,32 @@ BasicAgentCommunicatingCompetence<Laborantin> {
 
 
 }
+
+
+
+//		private void updateAnAgentStatus(final ReplicationAgentResult ag,
+//				final int i) {
+//			if (!ag.isLastInfo())
+//				ReplicationLaborantin.this.myStatusObserver.statusEvolution[i]
+//						.incr(ag.getStatus());
+
+//			ReplicationLaborantin.this.myStatusObserver.statusEvolution[i]
+//					.setNbAgentLost(ReplicationLaborantin.this
+//							.getSimulationParameters().nbAgents
+//							- ReplicationLaborantin.this.getAliveAgentsNumber());
+//		}
+//
+//@StepComposant()
+//@Transient
+//public boolean initialynotifyMyState4Status() {
+//	this.notifyMyReliability4Status();
+//	return true;
+//}
+//
+//@StepComposant(ticker = NegotiationParameters._statusObservationFrequency)
+//public void notifyMyReliability4Status() {
+//	// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
+//	this.notify(
+//			this.getMyAgent().getMyCurrentState().getMyReliability(),
+//			CentralisedObservingStatusService.reliabilityObservationKey);
+//}

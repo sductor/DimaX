@@ -13,7 +13,7 @@ import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
-import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.tools.mappedcollections.HashedHashList;
@@ -21,7 +21,7 @@ import dimaxx.tools.mappedcollections.HashedHashSet;
 /**
  * This is the service that provide pattern observing Ductor Sylvain
  */
-public abstract class PatternObserverService extends BasicAgentCommunicatingCompetence<BasicCompetentAgent> {
+public abstract class PatternObserverService extends BasicCommunicatingCompetence<BasicCompetentAgent> {
 
 
 	private static final long serialVersionUID = 7666491868939922910L;

@@ -32,7 +32,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	// Fields
 	//
-//	private long firstModifTime=-2;
+	//	private long firstModifTime=-2;
 	private long lastModifTime=-1;
 
 	@Competence
@@ -99,16 +99,25 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	@EventHookedMethod(HostState.class)
 	public void updateStateStatus(HostState h){
-//		if (firstModifTime==-2){
-//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
-//			firstModifTime=-1;	
-//		}else if (firstModifTime==-1){
-//			assert h.getStateCounter()==initialStateNumber+1;
-//			firstModifTime=getUptime();		
-//		}
-//		
+		//		if (firstModifTime==-2){
+		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
+		//			firstModifTime=-1;	
+		//		}else if (firstModifTime==-1){
+		//			assert h.getStateCounter()==initialStateNumber+1;
+		//			firstModifTime=getUptime();		
+		//		}
+		//		
 		lastModifTime=getUptime();
 	}
+
+	//
+	// Accessor
+	//
+
+	public boolean isFaulty() {
+		return this.getMyCurrentState().isFaulty();
+	}
+
 	//
 	// Behavior
 	//
@@ -124,17 +133,6 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 
 //new HostState(id, hostMaxProc, hostMaxMem, lambda,-1)
-
-
-
-
-//
-// Accessors
-//
-
-//	public boolean isFaulty() {
-//		return this.getMyCurrentState().isFaulty();
-//	}
 
 //
 // Behavior

@@ -2,7 +2,7 @@ package negotiation.faulttolerance.experimentation;
 
 import java.io.IOException;
 
-import negotiation.faulttolerance.candidaturewithstatus.ObservingStatusService;
+import negotiation.faulttolerance.candidaturewithstatus.CentralisedObservingStatusService;
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 
@@ -41,8 +41,8 @@ public class ReplicationLaborantin extends Laborantin {
 	new FaultTriggeringService(this.getSimulationParameters());
 
 	@Competence
-	protected ObservingStatusService myStatusObserver =
-	new ObservingStatusService(this, this.getSimulationParameters());
+	protected CentralisedObservingStatusService myStatusObserver =
+	new CentralisedObservingStatusService(this, this.getSimulationParameters());
 
 	//
 	// Accessors

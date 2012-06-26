@@ -10,7 +10,7 @@ import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
-import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
@@ -21,7 +21,7 @@ import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public abstract class ObservingGlobalService<Agent extends Laborantin>
-extends BasicAgentCommunicatingCompetence<Agent>{
+extends BasicCommunicatingCompetence<Agent>{
 	private static final long serialVersionUID = -2893635425783775245L;
 
 	//

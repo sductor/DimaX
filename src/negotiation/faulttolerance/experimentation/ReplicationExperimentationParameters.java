@@ -451,7 +451,9 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.getSelectionCore(this._hostSelection),
 						this.getProposerCore(false, this._usedProtocol),
 						this.getInformationService(false, this._usedProtocol),
-						new ReverseCFPProtocol());
+						new ReverseCFPProtocol(),
+//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						getMyAgentIdentifier());
 			}
 
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){

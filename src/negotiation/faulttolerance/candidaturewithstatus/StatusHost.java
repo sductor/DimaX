@@ -1,5 +1,6 @@
 package negotiation.faulttolerance.candidaturewithstatus;
 
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
@@ -24,13 +25,14 @@ public class StatusHost extends Host {
 			RationalCore myRationality, SelectionCore participantCore,
 			ProposerCore proposerCore, ObservationService myInformation,
 			AbstractCommunicationProtocol protocol,
-			boolean centralised) throws CompetenceException {
+			AgentIdentifier myLaborantin) throws CompetenceException {
 		super(id, 
 				myState, myRationality, 
 				participantCore, proposerCore, 
 				myInformation,
 				protocol);
-		this.centralised=centralised;
+		this.centralised=true;
+		soc=new StatusObservationCompetence(myLaborantin);
 	}
 
 	@StepComposant(ticker = NegotiationParameters._statusObservationFrequency)

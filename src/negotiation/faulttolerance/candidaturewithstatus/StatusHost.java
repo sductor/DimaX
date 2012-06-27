@@ -34,13 +34,27 @@ public class StatusHost extends Host {
 		this.centralised=true;
 		soc=new StatusObservationCompetence(myLaborantin);
 	}
-
+	
+	public StatusHost(ResourceIdentifier id, HostState myState,
+			RationalCore myRationality, SelectionCore participantCore,
+			ProposerCore proposerCore, ObservationService myInformation,
+			AbstractCommunicationProtocol protocol,
+			int numbertodiffuse) throws CompetenceException {
+		super(id, 
+				myState, myRationality, 
+				participantCore, proposerCore, 
+				myInformation,
+				protocol);
+		this.centralised=true;
+		soc=new StatusObservationCompetence(numbertodiffuse);
+	}
+	
 	@StepComposant(ticker = NegotiationParameters._statusObservationFrequency)
 	public void notifyOpinion4Status() {
 		if (!centralised){
 			// logMonologue("relia send to "+observer.getObserver(ReplicationExperimentationProtocol.reliabilityObservationKey));
 			try {
-			soc.diffuse(((OpinionService) getMyInformation()).getGlobalOpinion(ReplicaState.class));
+				soc.diffuse(((OpinionService) getMyInformation()).getGlobalOpinion(ReplicaState.class));
 			} catch (NoInformationAvailableException e) {
 				//do nothing
 			}

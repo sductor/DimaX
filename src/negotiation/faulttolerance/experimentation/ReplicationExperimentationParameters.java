@@ -105,6 +105,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	public  int simultaneousCandidature = 100;
 	public  int simultaneousAcceptation = 20;
+	public int simultaneousOpinionDiffusion=50;
 	public  long maxComputingTime = 60000;
 	public final boolean completGraph = true;
 
@@ -443,7 +444,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this._socialWelfare,
 						simultaneousAcceptation,
 						maxComputingTime);
-			} else {
+			} else if (this._usedProtocol
+					.equals(NegotiationParameters.key4CentralisedstatusProto)) {
 				hostAg = new StatusHost(
 						hostId,
 						this.rig.getHostState(hostId),
@@ -454,6 +456,20 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						new ReverseCFPProtocol(),
 //						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
 						getMyAgentIdentifier());
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4statusProto)){
+				hostAg = new StatusHost(
+						hostId,
+						this.rig.getHostState(hostId),
+						this.getCore(false, this._usedProtocol, this._socialWelfare),
+						this.getSelectionCore(this._hostSelection),
+						this.getProposerCore(false, this._usedProtocol),
+						this.getInformationService(false, this._usedProtocol),
+						new ReverseCFPProtocol(),
+//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						getMyAgentIdentifier());
+			} else {
+				throw new RuntimeException("impossible");
 			}
 
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){

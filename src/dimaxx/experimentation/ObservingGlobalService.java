@@ -42,7 +42,7 @@ extends BasicCommunicatingCompetence<Agent>{
 		super();
 		this.rep = rep;
 	}
-	
+
 	//
 	// Constants
 	//
@@ -101,20 +101,15 @@ extends BasicCommunicatingCompetence<Agent>{
 			this.endRequestSended=true;
 			return false;
 		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+300000){//+5min
-			if (!endRequestSended){
 				this.logWarning("FORCING END REQUEST!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents(),LogService.onBoth);
 				for (final AgentIdentifier r : getAllAgents()) {
 					this.sendMessage(r, new SimulationEndedMessage(this));
 				}
-				this.endRequestSended=true;
-				return false;
-			}else {
 				return false;//waiting 5 more minutes
-			}
 		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+600000){//+10min
-			this.getMyAgent().getApi().kill(this.getAliveAgents());
-			this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents(),LogService.onBoth);
-			return true;
+				this.getMyAgent().getApi().kill(this.getAliveAgents());
+				this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents(),LogService.onBoth);
+				return true;
 		} else {
 			return false;
 		}
@@ -263,7 +258,7 @@ extends BasicCommunicatingCompetence<Agent>{
 				+entry+"  mediane;\t  "
 				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
-						+entry+" prod ;\t "
+				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++){
 			result += ObservingGlobalService.geTime(i)/1000.+" ;\t ";

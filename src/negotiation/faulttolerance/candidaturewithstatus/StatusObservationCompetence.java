@@ -30,9 +30,9 @@ public class StatusObservationCompetence extends BasicAgentModule<Replica>{
 		this.numberTodiffuse = null;
 	}
 
-	public StatusObservationCompetence(Replica ag, int numberTodiffuse)
+	public StatusObservationCompetence(int numberTodiffuse)
 			throws UnrespectedCompetenceSyntaxException {
-		super(ag);
+		super();
 		this.centralised = false;
 		this.myLaborantin = null;
 		this.numberTodiffuse = numberTodiffuse;
@@ -42,15 +42,15 @@ public class StatusObservationCompetence extends BasicAgentModule<Replica>{
 		
 		if (centralised){
 			assert s instanceof ReplicaState;
-			getMyAgent().sendMessage(myLaborantin, new NotificationMessage("status information",s));
+			getMyAgent().sendMessage(myLaborantin, new NotificationMessage(CentralisedObservingStatusService.reliabilityObservationKey,s));
 		} else {
 			int numberdiffused=0;
 			ArrayList<AgentIdentifier> allAgents = new ArrayList<AgentIdentifier>(getMyAgent().getMyInformation().getKnownAgents());
-			while (numberdiffused < numberTodiffuse){
+			while (numberdiffused < numberTodiffuse && !allAgents.isEmpty()){
 				AgentIdentifier id = allAgents.remove(rand.nextInt(allAgents.size()));
 				assert !(getMyAgent().getIdentifier() instanceof AgentIdentifier) || id instanceof ResourceIdentifier;
 				assert !(getMyAgent().getIdentifier() instanceof ResourceIdentifier) || id instanceof AgentIdentifier;
-				getMyAgent().sendMessage(id, new NotificationMessage("status information",s));
+				getMyAgent().sendMessage(id, new NotificationMessage(CentralisedObservingStatusService.reliabilityObservationKey,s));
 				numberdiffused++;
 			}
 		}		

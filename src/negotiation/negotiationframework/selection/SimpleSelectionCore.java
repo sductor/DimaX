@@ -49,9 +49,13 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 		super();
 		this.fuseInitiatorNparticipant = fuseInitiatorNparticipant;
 		this.considerOnWait = considerOnWait;
-		this.selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(this.getMyAgent(),itType);
+		this.selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(itType);
 	}
-
+	@Override
+	public void setMyAgent(final Agent ag)  {
+		super.setMyAgent(ag);
+		selectionModule.setMyAgent(ag);
+	}
 	/*
 	 *
 	 */

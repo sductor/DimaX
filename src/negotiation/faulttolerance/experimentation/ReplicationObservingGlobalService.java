@@ -74,7 +74,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	HeavyDoubleAggregation[] hostsChargeEvolution;
 	/* Mean */
 	LightAverageDoubleAggregation[] faulty;
-	private int remainingHost=0;
+//	private int remainingHost=0;
 
 	//
 	// Constructor
@@ -89,14 +89,14 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		return (ReplicationExperimentationParameters)super.getSimulationParameters();
 	}
 
-	@ProactivityInitialisation
-	public final void initiateHostNumber(){
-		for (final AgentIdentifier id : this.getMyAgent().getIdentifiers()) {
-			if (id instanceof ResourceIdentifier) {
-				this.remainingHost++;
-			}
-		}
-	}
+//	@ProactivityInitialisation
+//	public final void initiateHostNumber(){
+//		for (final AgentIdentifier id : this.getMyAgent().getIdentifiers()) {
+//			if (id instanceof ResourceIdentifier) {
+//				this.remainingHost++;
+//			}
+//		}
+//	}
 
 
 
@@ -209,19 +209,19 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantileTimeEvolutionObs("reliability",
-						this.agentsExpectedReliabilityEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
+						this.agentsExpectedReliabilityEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantileTimeEvolutionObs("reliability",
-						this.agentsMinReliabilityEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
+						this.agentsMinReliabilityEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantileTimeEvolutionObs("disponibilite",
-						this.agentsDispoEvolution, 0.75 * (this.getAliveAgents().size() / this.getMyAgent()
+						this.agentsDispoEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
@@ -229,7 +229,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		// mort/vivant
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getMeanTimeEvolutionObs("survie : moyenne ponderee des (wi, mort/vivant)", this.criticite,
-						0.75 * (this.getAliveAgents().size() / this.getMyAgent()
+						0.75 * (this.getActiveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
@@ -278,13 +278,13 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 	}
 
-	@Override
-	public void setAgentHasEnded(final AgentIdentifier id){
-		super.setAgentHasEnded(id);
-		if (id instanceof ResourceIdentifier) {
-			this.remainingHost--;
-		}
-	}
+//	@Override
+//	public void setAgentHasEnded(final AgentIdentifier id){
+//		super.setAgentHasEnded(id);
+//		if (id instanceof ResourceIdentifier) {
+//			this.remainingHost--;
+//		}
+//	}
 
 	//
 	// Primitives
@@ -366,6 +366,13 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 	@Override
 	protected void setObservation(){
+//		assert !this._usedProtocol
+//		.equals(NegotiationParameters.key4CentralisedstatusProto) ||
+//		this.getMyAgent().
+//		myStatusObserver.iObserveStatus():
+//			this._usedProtocol
+//		.equals(NegotiationParameters.key4CentralisedstatusProto)+" "+this.getMyAgent().myStatusObserver.iObserveStatus();
+		
 		//Use to print at the end of the method the observation graph
 		final Collection<AgentIdentifier> observedHostResultLog  =
 				new ArrayList<AgentIdentifier>();
@@ -394,24 +401,24 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				observedRepResultLog.add(ag.getIdentifier());
 
 				//
-				if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto)){
-					//I aggregate agents reliability
-					ag.addObserver(this.getIdentifier(), CentralisedObservingStatusService.reliabilityObservationKey);//this.addObserver(ag.getIdentifier(),ObservingStatusService.reliabilityObservationKey);???
-					reliabilityStatusLog.add(ag.getIdentifier());
-					//I forward my opinion to every agents
-					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
-					opinionsLog.add(ag.getId(), this.getIdentifier());
-				} else if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4statusProto)) {
-					//This agent observe every agents that it knows
-					for (final AgentIdentifier h :	((Replica)ag).getMyInformation().getKnownAgents()){
-						this.getMyAgent().getAgent(h).addObserver(ag.getId(), SimpleOpinionService.opinionObservationKey);
-						opinionsLog.add(ag.getId(), h);
-					}
-				} else if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
-					//do nothing;
-				} else {
-					throw new RuntimeException("impossible : ");
-				}
+//				if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto)){
+//					//I aggregate agents reliability
+//					ag.addObserver(this.getIdentifier(), CentralisedObservingStatusService.reliabilityObservationKey);//this.addObserver(ag.getIdentifier(),ObservingStatusService.reliabilityObservationKey);???
+//					reliabilityStatusLog.add(ag.getIdentifier());
+//					//I forward my opinion to every agents
+//					this.addObserver(ag.getIdentifier(), SimpleOpinionService.opinionObservationKey);
+//					opinionsLog.add(ag.getId(), this.getIdentifier());
+//				} else if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4statusProto)) {
+//					//This agent observe every agents that it knows
+////					for (final AgentIdentifier h :	((Replica)ag).getMyInformation().getKnownAgents()){
+////						this.getMyAgent().getAgent(h).addObserver(ag.getId(), SimpleOpinionService.opinionObservationKey);
+////						opinionsLog.add(ag.getId(), h);
+////					}
+//				} else if (this.getMyAgent().getSimulationParameters()._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
+//					//do nothing;
+//				} else {
+//					throw new RuntimeException("impossible : ");
+//				}
 			}else if (ag instanceof Host || ag instanceof CollaborativeHost){
 				//Observation de l'évolution des états de l'hpte
 				ag.addObserver(this.getIdentifier(), ActivityLog.class);

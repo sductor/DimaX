@@ -35,13 +35,12 @@ public class ReplicationLaborantin extends Laborantin {
 	// Competences
 	// ///////////////////////////////////////////
 
-
 	@Competence
-	protected FaultTriggeringService myFaultService =
+	protected final FaultTriggeringService myFaultService =
 	new FaultTriggeringService(this.getSimulationParameters());
 
 	@Competence
-	protected CentralisedObservingStatusService myStatusObserver =
+	protected final CentralisedObservingStatusService myStatusObserver =
 	new CentralisedObservingStatusService(this, this.getSimulationParameters());
 
 	//

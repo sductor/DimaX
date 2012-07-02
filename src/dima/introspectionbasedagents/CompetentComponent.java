@@ -123,6 +123,12 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 
 	public Boolean logWarning(String text, String logKey);
 
+	public Boolean logMonologue(String text);
+
+	public Boolean logWarning(String text, Throwable e);
+
+	public Boolean logWarning(String text);
+	
 	public Boolean signalException(String text, Throwable e);
 
 	public Boolean signalException(String text);

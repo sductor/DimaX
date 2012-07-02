@@ -97,14 +97,16 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 24;
-	public static int startingNbAgents =5000;
-//		public static final int startingNbHosts = 5;
-//		public static int startingNbAgents =10;
+	public static final int startingNbHosts = 5;
+	public static int startingNbAgents =50;
+	//		public static final int startingNbHosts = 5;
+	//		public static int startingNbAgents =10;
 
 
 	public  int simultaneousCandidature = 100;
 	public  int simultaneousAcceptation = 20;
+	public  int	opinionDiffusionDegree = 50;
+
 	public  long maxComputingTime = 60000;
 	public final boolean completGraph = true;
 
@@ -378,8 +380,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	@Override
 	protected Collection<SimpleRationalAgent> instanciateAgents()throws CompetenceException {
-		assert !this._usedProtocol
-		.equals(NegotiationParameters.key4CentralisedstatusProto) ||this.getMyAgent().myStatusObserver.iObserveStatus();
+		//		System.out.println(this.getMyAgent()+" "+this.getMyAgent().
+		//				myStatusObserver);
+		//		assert !this._usedProtocol
+		//		.equals(NegotiationParameters.key4CentralisedstatusProto) ||
+		//		this.getMyAgent().
+		//		myStatusObserver.iObserveStatus():
+		//			this._usedProtocol
+		//			.equals(NegotiationParameters.key4CentralisedstatusProto)+" "+this.getMyAgent().myStatusObserver.iObserveStatus();
 
 		//		this.logMonologue("Initializing agents... ",LogService.onBoth);
 		final Map<AgentIdentifier,SimpleRationalAgent> result = new HashMap<AgentIdentifier, SimpleRationalAgent>();
@@ -401,7 +409,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						simultaneousCandidature,
 						this.dynamicCriticity);
 
-			}else { //Status
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
 
 				rep = new StatusReplica(
 						replicaId,
@@ -411,13 +420,35 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.getProposerCore(true, this._usedProtocol),
 						this.getInformationService(true, this._usedProtocol),
 						new ReverseCFPProtocol(),
-						this.dynamicCriticity);
+						this.dynamicCriticity,
+						getMyAgentIdentifier());
 
 				//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
 				//				rep.addObserver(h,
 				//						SimpleObservationService.informationObservationKey);
 				//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
 				//			}
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4statusProto)){ //Status
+
+				rep = new StatusReplica(
+						replicaId,
+						this.rig.getAgentState(replicaId),
+						this.getCore(true, this._usedProtocol, this._socialWelfare),
+						this.getSelectionCore(this._agentSelection),
+						this.getProposerCore(true, this._usedProtocol),
+						this.getInformationService(true, this._usedProtocol),
+						new ReverseCFPProtocol(),
+						this.dynamicCriticity,
+						opinionDiffusionDegree);
+
+				//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
+				//				rep.addObserver(h,
+				//						SimpleObservationService.informationObservationKey);
+				//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
+				//			}
+			} else {
+				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
 			}
 
 
@@ -443,7 +474,9 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this._socialWelfare,
 						simultaneousAcceptation,
 						maxComputingTime);
-			} else {
+
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
 				hostAg = new StatusHost(
 						hostId,
 						this.rig.getHostState(hostId),
@@ -452,8 +485,22 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.getProposerCore(false, this._usedProtocol),
 						this.getInformationService(false, this._usedProtocol),
 						new ReverseCFPProtocol(),
-//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
 						getMyAgentIdentifier());
+			} else if (this._usedProtocol
+					.equals(NegotiationParameters.key4statusProto)) {
+				hostAg = new StatusHost(
+						hostId,
+						this.rig.getHostState(hostId),
+						this.getCore(false, this._usedProtocol, this._socialWelfare),
+						this.getSelectionCore(this._hostSelection),
+						this.getProposerCore(false, this._usedProtocol),
+						this.getInformationService(false, this._usedProtocol),
+						new ReverseCFPProtocol(),
+						//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						opinionDiffusionDegree);
+			}else {
+				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
 			}
 
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
@@ -617,7 +664,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=false;
 
-	static boolean varyAgents=true;
+	static boolean varyAgents=false;
 	static boolean varyHosts=false;
 
 	static boolean varyAccessibleHost=false;
@@ -851,8 +898,20 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 		}
 		return result;
-	}
+	}	
 	private Collection<ReplicationExperimentationParameters> varyAgents(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps) {
+			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
+				final ReplicationExperimentationParameters n =  p.clone();
+				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
+				//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
+				result.add(n);	
+			}
+		}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyAgents2(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
 			List<Integer> nbAgentsList = Arrays.asList(new Integer[]{10,20,40,80,100,150,200,350,500,750,1000,2000,5000});

@@ -2,6 +2,7 @@ package negotiation.faulttolerance.candidaturewithstatus;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
+import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.NegotiationParameters;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -85,9 +86,9 @@ BasicCommunicatingCompetence<Laborantin> {
 	@MessageHandler
 	@NotificationEnvelope(CentralisedObservingStatusService.reliabilityObservationKey)
 	public void updateAgent4StatusObservation(
-			final NotificationMessage<Double> n) {
+			final NotificationMessage<ReplicaState> n) {
 		// System.out.println("yoopppppppppppppppppppppppphooooooooooiiiiiiiiiiiiiiii");
-		this.agentsStatusObservation.add(n.getNotification());
+		this.agentsStatusObservation.add(n.getNotification().getMyReliability());
 		// System.out.println(this.agentsStatusObservation
 		//+"  "+this.agentsStatusObservation.getQuantile(
 		//ReplicationExperimentationProtocol.firstTercile,

@@ -127,6 +127,8 @@ BasicCommunicatingShell {
 
 	@Override
 	public final void proactivityTerminate(final Date creation){
+//		myMainComponent.logMonologue("I'm out of here!!! >=] on d road again yeaaahh", LogService.onBoth);
+		assert myMainComponent!=null;
 		super.proactivityTerminate(creation);
 		try {
 
@@ -137,9 +139,9 @@ BasicCommunicatingShell {
 		} catch (final Exception e) {
 			LogService.writeException(this,"proactivityTerminate : Impossible!!");
 		}
-
-		//		logMonologue("I'm out of here!!! >=] on d road again yeaaahh"+myApi, LogService.onBoth);
-		((BasicCompetentAgent)this.myMainComponent).myApi.destroy((BasicCompetentAgent)this.myMainComponent);
+		assert myMainComponent!=null;
+//		((BasicCompetentAgent)this.myMainComponent).apiService.endLive();
+		((BasicCompetentAgent)this.myMainComponent).apiService.destroy(((BasicCompetentAgent)this.myMainComponent));
 		this.myMainComponent=null;
 	}
 

@@ -82,7 +82,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, false);
 		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, false);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
-		this.addLogKey(ObservingSelfService.observationLog, false, false);
+		this.addLogKey(ObservingSelfService.observationLog, true, true);
 	}
 
 	//

@@ -15,6 +15,7 @@ import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
+import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
@@ -114,6 +115,12 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	// Accessor
 	//
 
+
+	//allow to continue to receive messages
+	public void tryToResumeActivity(){
+		super.tryToResumeActivity();
+		mySelfObservationService.tryToResumeActivity();
+	}
 	public boolean isFaulty() {
 		return this.getMyCurrentState().isFaulty();
 	}

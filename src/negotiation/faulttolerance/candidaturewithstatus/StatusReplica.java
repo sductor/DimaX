@@ -19,7 +19,7 @@ public class StatusReplica extends Replica {
 	// Competences
 	//
 	
-	public StatusObservationCompetence soc;
+	public final StatusObservationCompetence soc;
 	
 	
 	// 
@@ -30,12 +30,24 @@ public class StatusReplica extends Replica {
 	public StatusReplica(AgentIdentifier id, ReplicaState myState,
 			RationalCore myRationality, SelectionCore participantCore,
 			ProposerCore proposerCore, ObservationService myInformation,
-			AbstractCommunicationProtocol protocol, boolean dynamicCriticity)
+			AbstractCommunicationProtocol protocol, boolean dynamicCriticity,
+			AgentIdentifier myLaborantin)
 			throws CompetenceException {
 		super(id, myState, myRationality, participantCore, proposerCore, myInformation,
 				protocol, dynamicCriticity);
+		soc = new StatusObservationCompetence(this,myLaborantin);
 	}
 
+	public StatusReplica(AgentIdentifier id, ReplicaState myState,
+			RationalCore myRationality, SelectionCore participantCore,
+			ProposerCore proposerCore, ObservationService myInformation,
+			AbstractCommunicationProtocol protocol, boolean dynamicCriticity,
+			int numbertoContact)
+			throws CompetenceException {
+		super(id, myState, myRationality, participantCore, proposerCore, myInformation,
+				protocol, dynamicCriticity);
+		soc = new StatusObservationCompetence(this,numbertoContact);
+	}
 	
 	//
 	// Accessors
@@ -43,7 +55,7 @@ public class StatusReplica extends Replica {
 
 	public void setNewState(final ReplicaState s) {
 		super.setNewState(s);
-		soc.diffuse(s);
+		if (soc!=null) soc.diffuse(s);
 	}
 	
 	//

@@ -6,6 +6,7 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
@@ -46,6 +47,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 
 	@Override
 	public Agent getMyAgent() {
+		assert this.myAgent!=null;
 		return this.myAgent;
 	}
 
@@ -153,6 +155,9 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logMonologue(text, details);
 	}
 
+	public Boolean logMonologue(final String text) {
+		return this.myAgent.logMonologue(text, LogService.onBoth);
+	}
 	//	@Override
 	//	public Boolean logMonologue(final String text) {
 	//		return this.myAgent.logMonologue(text);
@@ -173,6 +178,14 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logWarning(text, details);
 	}
 
+	public Boolean logWarning(final String text, final Throwable e) {
+		return this.myAgent.logWarning(text, e, LogService.onBoth);
+	}
+
+	public Boolean logWarning(final String text) {
+		return this.myAgent.logWarning(text, LogService.onBoth);
+	}
+	
 	//	@Override
 	//	public Boolean logWarning(final String text) {
 	//		return this.myAgent.logWarning(text);

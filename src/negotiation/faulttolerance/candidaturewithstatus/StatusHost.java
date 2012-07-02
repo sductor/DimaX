@@ -32,9 +32,22 @@ public class StatusHost extends Host {
 				myInformation,
 				protocol);
 		this.centralised=true;
-		soc=new StatusObservationCompetence(myLaborantin);
+		soc=new StatusObservationCompetence(this,myLaborantin);
 	}
 
+	public StatusHost(ResourceIdentifier id, HostState myState,
+			RationalCore myRationality, SelectionCore participantCore,
+			ProposerCore proposerCore, ObservationService myInformation,
+			AbstractCommunicationProtocol protocol,
+			int numberToContact) throws CompetenceException {
+		super(id, 
+				myState, myRationality, 
+				participantCore, proposerCore, 
+				myInformation,
+				protocol);
+		this.centralised=true;
+		soc=new StatusObservationCompetence(this,numberToContact);
+	}
 	@StepComposant(ticker = NegotiationParameters._statusObservationFrequency)
 	public void notifyOpinion4Status() {
 		if (!centralised){

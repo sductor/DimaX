@@ -26,6 +26,8 @@ public class ReplicationResultHost implements ExperimentationResults {
 	int nbOfModif;
 	// final Double lambda;
 
+	
+	
 	final boolean isFaulty;
 	boolean lastInfo;
 

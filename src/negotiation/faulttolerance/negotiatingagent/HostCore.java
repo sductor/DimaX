@@ -42,7 +42,8 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	//
 
 	@Override
-	public int getAllocationPreference(final HostState s,
+	public int getAllocationPreference(
+			final HostState s,
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		for (final ReplicationCandidature c : c1) {

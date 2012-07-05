@@ -53,7 +53,7 @@ extends BasicCommunicatingCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	//
 
 	boolean simulationEnded=false;
-	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
 	boolean endSimulation(){
 		assert !simulationEnded;
@@ -88,12 +88,12 @@ extends BasicCommunicatingCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	@ResumeActivity
 	//allow to continue to receive messages
 	public void tryToResumeActivity(){
-		if (getMyAgent().hasAppliStarted()) logMonologue("resuming", ObservingSelfService.observationLog);
+//		if (getMyAgent().hasAppliStarted()) logMonologue("resuming", ObservingSelfService.observationLog);
 		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
 		while (getMyAgent().getMailBox().hasMail()){
 			final AbstractMessage m = getMyAgent().getMailBox().readMail();
 			if (m instanceof SimulationEndedMessage) {
-				logMonologue("recieving end simulation order in resuming",ObservingSelfService.observationLog);
+//				logMonologue("recieving end simulation order in resuming",ObservingSelfService.observationLog);
 				simulationEndORder((SimulationEndedMessage)m);
 			} else {
 //				logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);

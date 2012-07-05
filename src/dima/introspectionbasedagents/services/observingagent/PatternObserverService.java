@@ -246,7 +246,7 @@ public abstract class PatternObserverService extends BasicCommunicatingCompetenc
 			for (final NotificationMessage<?> n : this.notificationsToSend) {
 				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey())) {
 					if (this.iGiveObservation(obs)){
-						this.logMonologue("i've sended "+n+" to "+obs,PatternObserverService._logKeyForObservation);
+//						this.logMonologue("i've sended "+n+" to "+obs,PatternObserverService._logKeyForObservation); --> java.util.ConcurrentModificationException
 						n.setReceiver(obs);
 						sendedNotif.add(n,obs);
 					}

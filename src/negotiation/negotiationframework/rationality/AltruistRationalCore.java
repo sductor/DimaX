@@ -39,7 +39,7 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	@Override
-	public final int getAllocationPreference(final PersonalState s,
+	public final int getAllocationPreference(PersonalState s, 
 			final Collection<Contract> c1,
 			final Collection<Contract> c2) {
 		for (final Contract c : c1) {

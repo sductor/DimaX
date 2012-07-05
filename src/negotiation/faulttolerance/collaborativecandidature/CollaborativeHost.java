@@ -4,7 +4,6 @@ import negotiation.faulttolerance.experimentation.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;

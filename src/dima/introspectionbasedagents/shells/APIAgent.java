@@ -341,7 +341,7 @@ public class APIAgent extends BasicCompetentAgent {
 			final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
 			final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
 			
-			logMonologue("Agent destroyed : "+c);
+//			logMonologue("Agent destroyed : "+c);
 
 			assert killed.contains(c) || (removed1 && removed2):c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 

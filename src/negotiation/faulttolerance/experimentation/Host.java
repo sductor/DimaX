@@ -24,6 +24,7 @@ import dima.introspectionbasedagents.services.observingagent.NotificationMessage
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
+import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
@@ -35,6 +36,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	//	private long firstModifTime=-2;
 	private long lastModifTime=-1;
+	private LightAverageDoubleAggregation searchTime = new LightAverageDoubleAggregation();
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
@@ -114,7 +116,18 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	// Accessor
 	//
-
+	
+	public void beNotifedOfSearchTime(){
+		
+	}
+	
+	
+	protected ExperimentationResults generateMyResults() {
+		return new ReplicationResultHost(
+				Host.this.getMyCurrentState(),//firstModifTime,
+				lastModifTime,
+				Host.this.getCreationTime(),initialStateNumber);
+	}
 
 	//allow to continue to receive messages
 	public void tryToResumeActivity(){

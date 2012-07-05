@@ -228,6 +228,7 @@ extends BasicCompetentAgent {
 
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
 		final Collection<Contract> a2 = new ArrayList<Contract>();
+		assert ContractTransition.allComplete(c);
 		return isPersonalyValid(s, c)
 				&&  this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) >= 0;
 	}

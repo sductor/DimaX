@@ -126,6 +126,18 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 	//
+	// Accessors
+	//
+	
+	protected long timeBeforeForcingSimulationEnd() {
+		return ExperimentationParameters._maxSimulationTime+getSimulationParameters().maxComputingTime+60000;/*+1min*///300000){//+5min
+	}
+	
+	protected long timeBeforeKillingSimulation() {
+		return ExperimentationParameters._maxSimulationTime+getSimulationParameters().maxComputingTime+120000;/*+2min*///600000){//+10min
+	}
+
+	//
 	// Methods
 	//
 

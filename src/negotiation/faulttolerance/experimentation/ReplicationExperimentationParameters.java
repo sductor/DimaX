@@ -104,13 +104,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 
 	public  int simultaneousCandidature = 100;
-	public  int simultaneousAcceptation = 20;
+	public  int simultaneousAcceptation = 100;
 	public  int	opinionDiffusionDegree = 50;
 
-	public  long maxComputingTime = 60000;
+	public  long maxComputingTime = 30000;//30 sec//Le temps de recherche est inférieur à deux fois cette valeur. 
+		
 	public final boolean completGraph = true;
-
 	public static final boolean multiDim=true;
+
 	private  boolean withOptimal = false;
 	private final int maxOptimal = 50;
 

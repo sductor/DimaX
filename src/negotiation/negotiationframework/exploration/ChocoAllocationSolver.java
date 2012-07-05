@@ -74,12 +74,17 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 
 	Boolean hasNext=null;
 
+	/**
+	 * has next updated initially (hasNext==null) and in getNextSolution()
+	 */
 	@Override
 	public boolean hasNext() {
 		if (this.hasNext==null){
-			this.s.solve();
-			this.hasNext=(this.s.isFeasible()==true);
+			this.s.solve();		
+			this.hasNext=(this.s.isFeasible()!=null && this.s.isFeasible()!=false);
 		}
+
+		assert hasNext!=null;
 		return this.hasNext;
 	}
 
@@ -93,6 +98,7 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 		} else {
 			final Collection<Contract> result = this.generateSolution();
 			this.hasNext = this.s.nextSolution();
+			if (hasNext==null) hasNext=false;
 			return result;
 		}
 	}

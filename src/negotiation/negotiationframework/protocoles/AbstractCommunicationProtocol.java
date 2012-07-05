@@ -16,6 +16,7 @@ import negotiation.negotiationframework.contracts.UnknownContractException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
@@ -139,7 +140,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 */
 
 	// @role(NegotiationInitiatorRole.class)
-	@StepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
+	@PreStepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
 		if (this.isActive() &&
 				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),this.contracts)

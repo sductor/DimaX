@@ -321,7 +321,5 @@ AbstractContractTransition<ActionSpec>{
 			myIds.add(c.getIdentifier());
 		}
 		return myIds;
-	}
-
-
+	}	
 }

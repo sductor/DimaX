@@ -290,6 +290,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		assert ContractTransition.stillValid(contracts);
 		assert ContractTransition.allComplete(contracts);
 
+		
 		for (final Contract contract : contracts){
 			this.getContracts().addAcceptation(this.getMyAgent().getIdentifier(),contract);
 			assert this.getContracts().getRequestableContracts().contains(contract):contract;
@@ -301,7 +302,6 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 					AbstractCommunicationProtocol.log_negotiationStep);
 		}
 
-		this.getMyAgent().execute(contracts);
 
 		for (final Contract contract : contracts) {
 			assert alreadyExecuted.add(contract.getIdentifier());
@@ -312,6 +312,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		}
 
 		this.contracts.removeAll(contracts);
+		
+		this.getMyAgent().execute(contracts);
 	}
 
 	protected void cancelContract(final Collection<Contract> contracts, final Receivers receivers) {

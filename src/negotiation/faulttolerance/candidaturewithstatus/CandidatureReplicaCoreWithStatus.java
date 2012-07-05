@@ -23,15 +23,15 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	// }
 
 	@Override
-	public int getAllocationPreference(final ReplicaState s,
+	public int getAllocationPreference(
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-		final ReplicaState s1 = this.getMyAgent().getMyResultingState(s, c1);
-		final ReplicaState s2 = this.getMyAgent().getMyResultingState(s, c2);
+		final ReplicaState s1 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c1);
+		final ReplicaState s2 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c2);
 
 		if (this.getStatus(s1).equals(AgentStateStatus.Wastefull)
 				&& this.getStatus(s2).equals(AgentStateStatus.Wastefull)) {
-			return this.getAllocationReliabilityPreference(s, c2, c1);// ATTENTION
+			return this.getAllocationReliabilityPreference(c2, c1);// ATTENTION
 		} else if (this.getStatus(s1).equals(AgentStateStatus.Wastefull)) {
 			// n'est
 			// pas
@@ -44,7 +44,7 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 			return 1;
 		} else {
 			// aucun contrat ne rend wastefull
-			return this.getFirstLoadSecondReliabilitAllocationPreference(s, c1,
+			return this.getFirstLoadSecondReliabilitAllocationPreference(c1,
 					c2);
 		}
 	}

@@ -216,7 +216,7 @@ extends BasicCompetentAgent {
 	public boolean isAnImprovment(final PersonalState s, final Collection<? extends Contract> c) {
 		final Collection<Contract> a2 = new ArrayList<Contract>();
 		return isPersonalyValid(s, c)
-				&& this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) > 0;
+				&& this.myCore.getAllocationPreference((Collection<Contract>) c, a2) > 0;
 	}
 
 
@@ -230,7 +230,7 @@ extends BasicCompetentAgent {
 		final Collection<Contract> a2 = new ArrayList<Contract>();
 		assert ContractTransition.allComplete(c);
 		return isPersonalyValid(s, c)
-				&&  this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) >= 0;
+				&&  this.myCore.getAllocationPreference((Collection<Contract>) c, a2) >= 0;
 	}
 
 	/*
@@ -265,8 +265,7 @@ extends BasicCompetentAgent {
 			@Override
 			public int compare(final Collection<Contract> o1,
 					final Collection<Contract> o2) {
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						SimpleRationalAgent.this.getMyCurrentState(), o1, o2);
+				return SimpleRationalAgent.this.myCore.getAllocationPreference(o1, o2);
 			}
 		};
 		return myComparator;
@@ -280,8 +279,7 @@ extends BasicCompetentAgent {
 				a1.add(o1);
 				final Collection<Contract> a2 = new ArrayList<Contract>();
 				a2.add(o2);
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						SimpleRationalAgent.this.getMyCurrentState(), a1, a2);
+				return SimpleRationalAgent.this.myCore.getAllocationPreference(a1, a2);
 			}
 		};
 		return myComparator;
@@ -290,34 +288,6 @@ extends BasicCompetentAgent {
 	/*
 	 *
 	 */
-
-	public Comparator<Collection<Contract>> getMyAllocationPreferenceComparator(
-			final PersonalState s) {
-		final Comparator<Collection<Contract>> myComparator = new Comparator<Collection<Contract>>() {
-			@Override
-			public int compare(final Collection<Contract> o1,
-					final Collection<Contract> o2) {
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						s, o1, o2);
-			}
-		};
-		return myComparator;
-	}
-
-	public Comparator<Contract> getMyPreferenceComparator(final PersonalState s) {
-		final Comparator<Contract> myComparator = new Comparator<Contract>() {
-			@Override
-			public int compare(final Contract o1, final Contract o2) {
-				final Collection<Contract> a1 = new ArrayList<Contract>();
-				a1.add(o1);
-				final Collection<Contract> a2 = new ArrayList<Contract>();
-				a2.add(o2);
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						s, a1, a2);
-			}
-		};
-		return myComparator;
-	}
 
 	public  Double evaluatePreference(final Collection<Contract> cs){
 		return this.myCore.evaluatePreference(cs);

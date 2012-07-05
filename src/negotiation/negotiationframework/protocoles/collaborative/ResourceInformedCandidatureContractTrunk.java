@@ -80,36 +80,36 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	 *
 	 */
 
-//	public ReallocationContract<Contract, ActionSpec> getBestReallocationContract(
-//			final InformedCandidature<Contract, ActionSpec> c){
-//		if (this.upgradingContracts.get(c).isEmpty()) {
-//			return null;
-//		} else {
-//			return this.upgradingContracts.get(c).last();
-//		}
-//	}
+	public ReallocationContract<Contract, ActionSpec> getBestReallocationContract(
+			final InformedCandidature<Contract, ActionSpec> c){
+		if (this.upgradingContracts.get(c).isEmpty()) {
+			return null;
+		} else {
+			return this.upgradingContracts.get(c).last();
+		}
+	}
 
-//	public ReallocationContract<Contract, ActionSpec> getBestRequestableReallocationContract() {
-//		ReallocationContract<Contract, ActionSpec> finalValue = null;
-//		Comparator<ReallocationContract<Contract, ActionSpec>> myComp = 
-//				((InformedCandidatureRationality<ActionSpec, PersonalState, Contract>) this.getMyAgent().
-//						getMyCore()).getReferenceAllocationComparator();
-//		for (final InformedCandidature<Contract, ActionSpec> key : this.upgradingContracts.keySet()){
-//			Iterator<ReallocationContract<Contract, ActionSpec>> itValue = this.upgradingContracts.get(key).descendingIterator();
-//			while (itValue.hasNext()){
-//				ReallocationContract<Contract, ActionSpec> sol = itValue.next();
-//				if (this.isRequestable(sol)){
-//					if (finalValue==null)
-//						finalValue=sol;
-//					else {
-//						finalValue = myComp.compare(sol,finalValue)>0?sol:finalValue;
-//					}
-//					break;
-//				}
-//			}
-//		}
-//		return finalValue;
-//	}
+	public ReallocationContract<Contract, ActionSpec> getBestRequestableReallocationContract() {
+		ReallocationContract<Contract, ActionSpec> finalValue = null;
+		Comparator<ReallocationContract<Contract, ActionSpec>> myComp = 
+				((InformedCandidatureRationality<ActionSpec, PersonalState, Contract>) this.getMyAgent().
+						getMyCore()).getReferenceAllocationComparator();
+		for (final InformedCandidature<Contract, ActionSpec> key : this.upgradingContracts.keySet()){
+			Iterator<ReallocationContract<Contract, ActionSpec>> itValue = this.upgradingContracts.get(key).descendingIterator();
+			while (itValue.hasNext()){
+				ReallocationContract<Contract, ActionSpec> sol = itValue.next();
+				if (this.isRequestable(sol)){
+					if (finalValue==null)
+						finalValue=sol;
+					else {
+						finalValue = myComp.compare(sol,finalValue)>0?sol:finalValue;
+					}
+					break;
+				}
+			}
+		}
+		return finalValue;
+	}
 
 
 

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import negotiation.faulttolerance.experimentation.SearchTimeNotif;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
@@ -150,10 +151,12 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					final Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts =
 							this.generateUpgradingContracts(rejected, onWait, myCore, contracts);
 					propCore.addContractsToPropose(ugradingContracts);
-					//					assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), accepted, rejected, onWait);
+
+					assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), accepted, rejected, onWait);
+
 					if (!ugradingContracts.isEmpty()){
-//						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!"+contracts.getReallocationContracts(),
-//								AbstractCommunicationProtocol.log_selectionStep);
+						//						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!"+contracts.getReallocationContracts(),
+						//								AbstractCommunicationProtocol.log_selectionStep);
 						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!",
 								LogService.onScreen);
 					} else {
@@ -336,7 +339,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
 					new HashSet<InformedCandidature<Contract,ActionSpec>>();
 			Date startingExploringTime = new Date();
-			logWarning("beginning exploration");
+//			logWarning("beginning exploration");
 			while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<maxComputingTime)){
 				final Collection<Contract> realloc = this.solver.getNextSolution();
 				if (!realloc.isEmpty()){
@@ -376,7 +379,8 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					}
 				}
 			}
-			logWarning("ending exploration, time : "+(new Date().getTime() - startingExploringTime.getTime()));
+//			logWarning("ending exploration, time : "+(new Date().getTime() - startingExploringTime.getTime()));
+			notify(new SearchTimeNotif(new Double(new Date().getTime() - startingExploringTime.getTime())));
 			for (final InformedCandidature<Contract, ActionSpec> c : toPropose){
 				//Pour toute action de ce contrat
 				assert !c.isMatchingCreation();//cette action est un contrat de destruction :
@@ -391,7 +395,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				//en ajoutant le best des realloc qui ont été généré à l'itération précédente
 				c.getPossibleContracts().add(best);
 			}
-			logWarning("ending exploration 2, time : "+(new Date().getTime() - startingExploringTime.getTime()));
+//			logWarning("ending exploration 2, time : "+(new Date().getTime() - startingExploringTime.getTime()));
 
 		}catch (Throwable e){
 			signalException("solver failed",e); 
@@ -408,7 +412,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
 			+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
 			+"\n-------------->"+
-			(getMyAgent().getMyCore().getAllocationPreference(getMyAgent().getMyCurrentState(),contractsToKeep, 
+			(getMyAgent().getMyCore().getAllocationPreference(contractsToKeep, 
 					new ArrayList<InformedCandidature<Contract, ActionSpec>>()));
 		return true;
 	}

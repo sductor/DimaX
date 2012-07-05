@@ -51,7 +51,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			return new ReplicationResultHost(
 					Host.this.getMyCurrentState(),//firstModifTime,
 					lastModifTime,
-					Host.this.getCreationTime(),initialStateNumber);
+					Host.this.getCreationTime(),initialStateNumber,searchTime);
 		}
 	};
 
@@ -116,19 +116,12 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	// Accessor
 	//
-	
-	public void beNotifedOfSearchTime(){
-		
+	@EventHookedMethod(SearchTimeNotif.class)
+	public void beNotifedOfSearchTime(SearchTimeNotif s){
+		searchTime.add(s.getValue());
 	}
 	
 	
-	protected ExperimentationResults generateMyResults() {
-		return new ReplicationResultHost(
-				Host.this.getMyCurrentState(),//firstModifTime,
-				lastModifTime,
-				Host.this.getCreationTime(),initialStateNumber);
-	}
-
 	//allow to continue to receive messages
 	public void tryToResumeActivity(){
 		super.tryToResumeActivity();

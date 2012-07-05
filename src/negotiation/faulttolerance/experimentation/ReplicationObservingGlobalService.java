@@ -59,6 +59,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	//	HeavyDoubleAggregation firstReplicationtime;
 	HeavyDoubleAggregation lastReplicationtime;
 	HeavyDoubleAggregation nbOfStateModif;
+	HeavyDoubleAggregation searchTime;
 	// Map<AgentIdentifier, Double> firstReplicationtime =
 	// new HashMap<AgentIdentifier, Double>();
 	// Map<AgentIdentifier, Double> lifeTime =
@@ -112,7 +113,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		//		firstReplicationtime = new HeavyDoubleAggregation();
 		lastReplicationtime = new HeavyDoubleAggregation();
 		nbOfStateModif = new HeavyDoubleAggregation();
-
+		searchTime = new HeavyDoubleAggregation();
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
 			this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
 			this.agentsSaturationEvolution[i] = new HeavyDoubleAggregation();
@@ -165,16 +166,18 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 			if (h.isLastInfo()) {
-				if (h.nbOfModif!=0){
+//				if (h.nbOfModif!=0){
 					lastReplicationtime.add(new Double(h.getLastModifTime()));
 					//					firstReplicationtime.add(new Double(h.getFirstModifTime()));
-				}
+//				}
 				nbOfStateModif.add(new Double(h.nbOfModif));
 				for (i = ObservingGlobalService.getTimeStep(h) + 1;
 						i < ObservingGlobalService.getNumberOfTimePoints();
 						i++) {
 					this.updateAnHostValue(h, i);
 				}
+				
+				searchTime.add(h.searchTime);
 			}
 		} else {
 			assert 1<0;
@@ -260,6 +263,12 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				.getQuantilePointObs(
 						"State Modif number",
 						nbOfStateModif,
+						0.75, 
+						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+				.getQuantilePointObs(
+						"Search time",
+						searchTime,
 						0.75, 
 						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
 		//		 Writing.log(this.p.f, getQuantilePointObs("Life Time",

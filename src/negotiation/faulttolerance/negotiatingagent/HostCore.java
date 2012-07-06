@@ -47,10 +47,10 @@ implements RationalCore<HostState, ReplicationCandidature> {
 			final Collection<ReplicationCandidature> c2) {
 		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
 		for (final ReplicationCandidature c : c1) {
-			c.setSpecification(getMyAgent().getMyCurrentState());
+			c.setInitialState(getMyAgent().getMyCurrentState());
 		}
 		for (final ReplicationCandidature c : c2) {
-			c.setSpecification(getMyAgent().getMyCurrentState());
+			c.setInitialState(getMyAgent().getMyCurrentState());
 
 		}
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);

@@ -66,7 +66,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 * Variables
 	 */
 
-
 	public int nbAgents;
 	public int nbHosts;
 
@@ -74,7 +73,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public String _agentSelection;
 	public String _hostSelection;
 	public SocialChoiceType _socialWelfare;
-
 
 	public int agentAccessiblePerHost;
 
@@ -98,7 +96,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 */
 
 	public static final int startingNbHosts = 8;
-	public static int startingNbAgents =1000;
+	public static int startingNbAgents =20;
 	//		public static final int startingNbHosts = 5;
 	//		public static int startingNbAgents =10;
 
@@ -667,7 +665,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=true;
 
-	static boolean varyAgents=true;
+	static boolean varyAgents=false;
 	static boolean varyHosts=false;
 
 	static boolean varyAccessibleHost=false;
@@ -710,7 +708,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
-				NegotiationParameters.key4mirrorProto,
+				NegotiationParameters.key4CentralisedstatusProto,
 				SocialChoiceType.Utility,
 				NegotiationParameters.key4greedySelect,
 				NegotiationParameters.key4greedySelect,

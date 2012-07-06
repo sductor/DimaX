@@ -1,6 +1,7 @@
 package dimaxx.tools.mappedcollections;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,55 +15,74 @@ import java.util.Set;
  *            Type of the parameter of the links
  * @author Vincent Letard
  */
-public class SymmetricBinaryAdjacencyMap<Element extends Comparable<Element>, Parameter>
-	extends Hashtable<UnorderedPair<Element>, Parameter> {
+public class SymmetricBinaryAdjacencyMap<Element extends Comparable<Element>, Parameter> {
 
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = 6960173895284238727L;
 
+    /**
+     * Mapping of the elements.
+     */
     private final HashedHashSet<Element, Element> paired;
+    /**
+     * Mapping of the link parameters.
+     */
+    private final Map<OrderedPair<Element>, Parameter> params;
 
+    /**
+     * Constructs a new empty SymmetricBinaryAdjacencyMap.
+     */
     public SymmetricBinaryAdjacencyMap() {
 	super();
 	this.paired = new HashedHashSet<Element, Element>();
+	this.params = new HashMap<OrderedPair<Element>, Parameter>();
     }
 
-    public SymmetricBinaryAdjacencyMap(
-	    final Map<UnorderedPair<Element>, Parameter> t) {
-	super();
-	this.paired = new HashedHashSet<Element, Element>();
-	this.putAll(t);
-    }
-
-    public SymmetricBinaryAdjacencyMap(final int initialCapacity) {
-	super(initialCapacity);
-	this.paired = new HashedHashSet<Element, Element>();
-    }
-
-    public SymmetricBinaryAdjacencyMap(final int initialCapacity,
-	    final float loadFactor) {
-	super(initialCapacity, loadFactor);
-	this.paired = new HashedHashSet<Element, Element>();
-    }
-
-    @Override
-    public Parameter put(final UnorderedPair<Element> elts, final Parameter p) {
+    /**
+     * Adds a link between two elements (not necessarily pre-existing).
+     * 
+     * @param elts
+     *            Elements to link
+     * @param p
+     *            Parameter (label) of the link.
+     * @return the previous parameter of the link, or <code>null</code> if the
+     *         link did not exist before.
+     */
+    public Parameter add(final OrderedPair<Element> elts, final Parameter p) {
 	this.paired.add(elts.getFirst(), elts.getSecond());
 	this.paired.add(elts.getSecond(), elts.getFirst());
-	return super.put(elts, p);
+	return this.params.put(elts, p);
     }
 
-    @Override
-    public void putAll(
-	    Map<? extends UnorderedPair<Element>, ? extends Parameter> map) {
-	for (Map.Entry<?, ?> entry : map.entrySet())
-	    this.put((UnorderedPair<Element>) entry.getKey(), (Parameter) entry
-		    .getValue());
-    }
-
+    /**
+     * Returns the elements associated with the one provided.
+     * 
+     * @param e
+     *            the element looked for.
+     * @return the Set of all the elements linked to e
+     */
     public Set<Element> getPaired(final Element e) {
-	return this.paired.get(e);
+	final Set<Element> result = this.paired.get(e);
+	return result == null ? new HashSet<Element>() : result;
+    }
+
+    /**
+     * Gives the parameter of a link.
+     * 
+     * @param elts
+     *            Elements linked
+     * @return the parameter of the link between these element.
+     * @throws ElementsNotLinkedException
+     *             if the binding does not exists in the Map
+     */
+    public Parameter getLinkParam(final OrderedPair<Element> elts)
+	    throws ElementsNotLinkedException {
+	final Parameter result = this.params.get(elts);
+	if (null == result)
+	    throw new ElementsNotLinkedException();
+	else
+	    return result;
     }
 }

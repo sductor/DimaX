@@ -2,14 +2,15 @@ package dimaxx.tools.mappedcollections;
 
 import java.io.Serializable;
 
-public class UnorderedPair<E extends Comparable<E>> implements Serializable {
+public class OrderedPair<E extends Comparable<E>> implements Serializable {
+
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = 122829942747982781L;
     private final E e1, e2;
 
-    public UnorderedPair(final E e1, final E e2) {
+    public OrderedPair(final E e1, final E e2) {
 	if (e1.compareTo(e2) < 0) {
 	    this.e1 = e1;
 	    this.e2 = e2;
@@ -21,10 +22,10 @@ public class UnorderedPair<E extends Comparable<E>> implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-	if (!(obj instanceof UnorderedPair<?>))
+	if (!(obj instanceof OrderedPair<?>))
 	    return false;
-	return this.e1.equals(((UnorderedPair<?>) obj).e1)
-		&& this.e2.equals(((UnorderedPair<?>) obj).e2);
+	return this.e1.equals(((OrderedPair<?>) obj).e1)
+		&& this.e2.equals(((OrderedPair<?>) obj).e2);
     }
 
     @Override

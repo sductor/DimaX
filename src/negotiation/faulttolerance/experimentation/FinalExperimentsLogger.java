@@ -62,8 +62,9 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 			aveStab+=iel.getAveStab();
 			maxStab+=iel.getMaxStab();
 
-
-			assert this.socChoice.equals(iel.getSocChoice());
+			if (!this.socChoice.equals(iel.getSocChoice()))
+				this.socChoice=SocialChoiceType.Null;
+//			assert this.socChoice.equals(iel.getSocChoice());
 
 			minValue+=iel.getMinValue();
 			nashValue+=iel.getNashValue();

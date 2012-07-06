@@ -97,8 +97,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 5;
-	public static int startingNbAgents =50;
+	public static final int startingNbHosts = 25;
+	public static int startingNbAgents =500;
 	//		public static final int startingNbHosts = 5;
 	//		public static int startingNbAgents =10;
 
@@ -107,7 +107,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public  int simultaneousAcceptation = 100;
 	public  int	opinionDiffusionDegree = 50;
 
-	public  long maxComputingTime = 30000;//30 sec//Le temps de recherche est inférieur à deux fois cette valeur. 
+	public  long maxComputingTime = 120000;//2 min
 		
 	public final boolean completGraph = true;
 	public static final boolean multiDim=true;
@@ -663,9 +663,9 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public static final int iterationNumber=10;
 
 	static boolean varyProtocol=false;
-	static boolean  varyOptimizers=false;
+	static boolean  varyOptimizers=true;
 
-	static boolean varyAgents=false;
+	static boolean varyAgents=true;
 	static boolean varyHosts=false;
 
 	static boolean varyAccessibleHost=false;

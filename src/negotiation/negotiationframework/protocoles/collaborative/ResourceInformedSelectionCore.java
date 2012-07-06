@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import negotiation.faulttolerance.experimentation.SearchTimeNotif;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
@@ -45,7 +46,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 	final AllocationSolver<Contract, ActionSpec, PersonalState> solver;
 	final int kMax;
 	final long maxComputingTime;
-	
+
 	Random rand = new Random();
 
 	//
@@ -100,7 +101,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			this.logMonologue("i support everyone yeah! =)", AbstractCommunicationProtocol.log_selectionStep);
 		} else //There is new agent who want to be allocated!!!
 			if (MatchingCandidature.areAllCreation(allContracts)){//I'm not currently negotiating reallocations
-				assert contracts.getReallocationContracts().isEmpty():contracts.getReallocationContracts()+"\n ---> "+allContracts;
+				assert !contracts.hasReallocationContracts():contracts.getReallocationContracts()+"\n ---> "+allContracts;
 
 				//Trying to accept simple candidatures
 				//accepting as many as possible*
@@ -150,10 +151,12 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					final Collection<InformedCandidature<Contract, ActionSpec>> ugradingContracts =
 							this.generateUpgradingContracts(rejected, onWait, myCore, contracts);
 					propCore.addContractsToPropose(ugradingContracts);
+
 					assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), accepted, rejected, onWait);
+
 					if (!ugradingContracts.isEmpty()){
-						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!"+contracts.getReallocationContracts(),
-								AbstractCommunicationProtocol.log_selectionStep);
+						//						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!"+contracts.getReallocationContracts(),
+						//								AbstractCommunicationProtocol.log_selectionStep);
 						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!",
 								LogService.onScreen);
 					} else {
@@ -166,10 +169,9 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 				//Trying to accept reallocating contracts
 				assert !contracts.getReallocationContracts().isEmpty() || !contracts.getContractToCancel().isEmpty();
 
-				if (!contracts.getReallocationContracts().isEmpty()){
+				if (contracts.hasReallocationContracts()){
 					final ReallocationContract<Contract, ActionSpec> r =
-							contracts.getBestRequestableReallocationContract(
-									myCore.getReferenceAllocationComparator(this.getMyAgent().getMyCurrentState()));
+							contracts.getBestRequestableReallocationContract();
 
 					if (r!=null){//upgrading contract available
 						this.logMonologue(
@@ -331,10 +333,13 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		try {
+
 			this.solver.initiate(kConcerned);
+			solver.setTimeLimit((int) (maxComputingTime));
 			Set<InformedCandidature<Contract, ActionSpec>> alreadyDone =
 					new HashSet<InformedCandidature<Contract,ActionSpec>>();
 			Date startingExploringTime = new Date();
+//			logWarning("beginning exploration");
 			while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<maxComputingTime)){
 				final Collection<Contract> realloc = this.solver.getNextSolution();
 				if (!realloc.isEmpty()){
@@ -343,7 +348,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					for (final Contract c : realloc) {
 						contractsToKeep.add(concerned.get(c));
 					}
-					//				assert isImprovment(contractsToKeep);
+					//					assert isImprovment(contractsToKeep);
 					if (this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep)){
 						//MAJ du contract trunk
 						for (final InformedCandidature<Contract, ActionSpec> c : contractsToKeep) {
@@ -374,19 +379,23 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 					}
 				}
 			}
-
+//			logWarning("ending exploration, time : "+(new Date().getTime() - startingExploringTime.getTime()));
+			notify(new SearchTimeNotif(new Double(new Date().getTime() - startingExploringTime.getTime())));
 			for (final InformedCandidature<Contract, ActionSpec> c : toPropose){
 				//Pour toute action de ce contrat
 				assert !c.isMatchingCreation();//cette action est un contrat de destruction :
 				//on lui associe la meilleur réalloc et on l'ajoute au contrat à proposer
 				final ReallocationContract<Contract, ActionSpec> best =
-						myAgentContractTrunk.getBestReallocationContract(
-								c, myAgentCore.getReferenceAllocationComparator(getMyAgent().getMyCurrentState()));
+						myAgentContractTrunk.getBestReallocationContract(c);
+				//				final ReallocationContract<Contract, ActionSpec> best =
+				//						myAgentContractTrunk.getBestReallocationContract(
+				//								c, myAgentCore.getReferenceAllocationComparator(getMyAgent().getMyCurrentState()));
 				assert best!=null;
 				c.getPossibleContracts().clear();
 				//en ajoutant le best des realloc qui ont été généré à l'itération précédente
 				c.getPossibleContracts().add(best);
 			}
+//			logWarning("ending exploration 2, time : "+(new Date().getTime() - startingExploringTime.getTime()));
 
 		}catch (Throwable e){
 			signalException("solver failed",e); 
@@ -403,7 +412,7 @@ ActionSpec, PersonalState, InformedCandidature<Contract,ActionSpec>> {
 			getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
 			+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
 			+"\n-------------->"+
-			(getMyAgent().getMyCore().getAllocationPreference(getMyAgent().getMyCurrentState(), contractsToKeep, 
+			(getMyAgent().getMyCore().getAllocationPreference(contractsToKeep, 
 					new ArrayList<InformedCandidature<Contract, ActionSpec>>()));
 		return true;
 	}

@@ -91,31 +91,56 @@ extends BasicCommunicatingCompetence<Agent>{
 			this.logMonologue("ALL AGENTS DIED!!!",LogService.onBoth);
 			this.logWarning("ALL AGENTS DIED!!!",LogService.onBoth);
 			return true;
-		}else if (this.getAliveAgents().size()==0){
+		}else if (this.getActiveAgents().size()==0){
 			if (!endRequestSended){
 				this.logMonologue("Every agent has finished!!...killing....",LogService.onBoth);
 				for (final AgentIdentifier r : getAllAgents()) {
 					this.sendMessage(r, new SimulationEndedMessage(this));
+//					this.logWarning("Every agent has finished!!...killing... sending to "+r,LogService.onBoth);
 				}
+				this.endRequestSended=true;
 			}
-			this.endRequestSended=true;
 			return false;
-		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+300000){//+5min
-				this.logWarning("FORCING END REQUEST!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents(),LogService.onBoth);
+		}else if (this.getMyAgent().getUptime()>timeBeforeForcingSimulationEnd()){
+			//			if (!endRequestSended){
+			if (!shouldHAveEndedActivated) {
+				this.logWarning("FORCING END REQUEST!!!! I SHOULD HAVE ALREADY END!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
+				shouldHAveEndedActivated=true;
+				endRequestSended=true;
 				for (final AgentIdentifier r : getAllAgents()) {
 					this.sendMessage(r, new SimulationEndedMessage(this));
+//					this.logWarning("Every agent has finished!!...killing... sending to "+r,LogService.onBoth);
 				}
-				return false;//waiting 5 more minutes
-		}else if (this.getMyAgent().getUptime()>ExperimentationParameters._maxSimulationTime+600000){//+10min
-				this.getMyAgent().getApi().kill(this.getAliveAgents());
-				this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getAliveAgents(),LogService.onBoth);
-				return true;
+			} else {
+				//WAITING!!!
+//				for (final AgentIdentifier r : this.getActiveAgents()) {
+//					this.sendMessage(r, new SimulationEndedMessage(this));
+//				}
+				//				}
+				//				this.endRequestSended=true;
+			}
+			//			this.logWarning("FORCING END REQUEST!!!! remaining agents are "+this.getActiveAgents(),LogService.onBoth);
+			return false;//waiting 5 more minutes
+		}else if (this.getMyAgent().getUptime()>timeBeforeKillingSimulation()){
+			this.getMyAgent().getApi().kill(this.getActiveAgents());
+			this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
+			return true;
 		} else {
 			return false;
 		}
 	}
+
+	protected long timeBeforeKillingSimulation() {
+		return ExperimentationParameters._maxSimulationTime+120000;/*+2min*///600000){//+10min
+	}
+
+	protected long timeBeforeForcingSimulationEnd() {
+		return ExperimentationParameters._maxSimulationTime+60000;/*+1min*///300000){//+5min
+	}
+	
+	
 	boolean endRequestSended= false;
-	//	boolean shouldHAveEndedActivated=false ;
+	boolean shouldHAveEndedActivated=false ;
 	protected abstract void writeResult();
 
 	//
@@ -123,7 +148,7 @@ extends BasicCommunicatingCompetence<Agent>{
 	//
 
 
-	public Collection<AgentIdentifier> getAliveAgents() {
+	public Collection<AgentIdentifier> getActiveAgents() {
 		return this.remainingAgent;
 	}
 

@@ -188,6 +188,10 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		return true;
 	}
 
+	@Override
+	public Boolean  logMonologue(final String text){
+		return logMonologue(text, onBoth);
+	}
 	// Communication
 
 
@@ -353,7 +357,13 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		}
 		return true;
 	}
-
+	public Boolean  logWarning(final String text,
+			final Throwable e) {
+	return logWarning(text,e,onBoth);
+	}
+	public Boolean  logWarning(final String text) {
+	return logWarning(text,onBoth);
+	}
 	/******************
 	 * LOG WRITING
 	 */

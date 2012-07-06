@@ -12,7 +12,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.shells.APIAgent.EndActivityMessage;
+import dima.introspectionbasedagents.shells.APIAgent.EndLiveMessage;
 import dima.introspectionbasedagents.shells.APIAgent.SigKillOrder;
 import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
 import dimaxx.server.HostIdentifier;
@@ -49,6 +49,12 @@ public class ApiLaunchService extends BasicAgentCompetence<BasicCompetentAgent>{
 		return api.launch(getMyAgent());
 	}
 
+	
+	
+	public boolean destroy(BasicCompetentAgent c) {
+		return myApi.destroy(c);
+	}
+
 	public boolean launchWith(final APILauncherModule api, final HostIdentifier h){
 		this.myApi=api;
 		return api.launch(getMyAgent(),h);
@@ -60,6 +66,7 @@ public class ApiLaunchService extends BasicAgentCompetence<BasicCompetentAgent>{
 	
 	@ResumeActivity
 	public final void apiActivityResuming(){
+		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooo");
 		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
 		while (getMyAgent().getMailBox().hasMail()){
 			final AbstractMessage m = getMyAgent().getMailBox().readMail();
@@ -87,17 +94,17 @@ public class ApiLaunchService extends BasicAgentCompetence<BasicCompetentAgent>{
 	}
 	
 	@MessageHandler 
-	public boolean suicide(final SigKillOrder m){
+	public boolean endLive(final EndLiveMessage m){
 		getMyAgent().setAlive(false);
 		getMyAgent().setActive(false);
-		this.logMonologue("Kill forced!!!! on "+ m.getEndDate().toLocaleString(),LogService.onFile);
+		 myApi.destroy(getMyAgent());
 		return true;
-	}
-	@MessageHandler 
-	public boolean endActivity(final EndActivityMessage m){
+	}	
+	
+	public boolean endLive(){
 		getMyAgent().setAlive(false);
 		getMyAgent().setActive(false);
-		this.logMonologue("Kill forced!!!! on "+ m.getEndDate().toLocaleString(),LogService.onFile);
+		 myApi.destroy(getMyAgent());
 		return true;
 	}
 }

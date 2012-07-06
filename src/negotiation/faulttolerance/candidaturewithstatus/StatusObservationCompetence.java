@@ -9,12 +9,14 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import negotiation.faulttolerance.experimentation.Replica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 
-public class StatusObservationCompetence extends BasicAgentModule<Replica>{
+public class StatusObservationCompetence extends BasicAgentModule<SimpleNegotiatingAgent>{
 
 	public final boolean centralised;
 	
@@ -23,14 +25,14 @@ public class StatusObservationCompetence extends BasicAgentModule<Replica>{
 	
 	Random rand = new Random();
 	
-	public StatusObservationCompetence(AgentIdentifier myLaborantin) {
-		super();
+	public StatusObservationCompetence(SimpleNegotiatingAgent ag, AgentIdentifier myLaborantin) {
+		super(ag);
 		this.centralised = true;
 		this.myLaborantin = myLaborantin;
 		this.numberTodiffuse = null;
 	}
 
-	public StatusObservationCompetence(int numberTodiffuse)
+	public StatusObservationCompetence(SimpleNegotiatingAgent ag, int numberTodiffuse)
 			throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.centralised = false;
@@ -50,7 +52,8 @@ public class StatusObservationCompetence extends BasicAgentModule<Replica>{
 				AgentIdentifier id = allAgents.remove(rand.nextInt(allAgents.size()));
 				assert !(getMyAgent().getIdentifier() instanceof AgentIdentifier) || id instanceof ResourceIdentifier;
 				assert !(getMyAgent().getIdentifier() instanceof ResourceIdentifier) || id instanceof AgentIdentifier;
-				getMyAgent().sendMessage(id, new NotificationMessage(CentralisedObservingStatusService.reliabilityObservationKey,s));
+
+				getMyAgent().sendMessage(id, new NotificationMessage(SimpleOpinionService.opinionObservationKey,s));
 				numberdiffused++;
 			}
 		}		

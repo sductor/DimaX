@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ReallocationContract;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -39,14 +40,9 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	@Override
-	public final int getAllocationPreference(final PersonalState s,
+	public final int getAllocationPreference(
 			final Collection<Contract> c1,
 			final Collection<Contract> c2) {
-		for (final Contract c : c1) {
-			c.setSpecification(s);
-		}	for (final Contract c : c2) {
-			c.setSpecification(s);
-		}
 		return this.myOptimiser.getSocialPreference(c1, c2);
 	}
 

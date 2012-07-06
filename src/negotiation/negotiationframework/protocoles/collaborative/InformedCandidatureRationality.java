@@ -7,6 +7,7 @@ import java.util.Comparator;
 import negotiation.negotiationframework.contracts.AbstractActionSpecification;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -61,7 +62,7 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 	}
 
 	@Override
-	public int getAllocationPreference(final PersonalState s,
+	public int getAllocationPreference(
 			final Collection<InformedCandidature<Contract, ActionSpec>> c1,
 			final Collection<InformedCandidature<Contract, ActionSpec>> c2) {
 		if (this.optimiseWithBest){//optimisation informé (pour les agents)
@@ -77,7 +78,7 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 						this.referenceRationality.getMyAgent().
 						getMyAllocationPreferenceComparator()));
 			}
-			return this.referenceRationality.getAllocationPreference(s,consequentC1,consequentC2);
+			return this.referenceRationality.getAllocationPreference(consequentC1,consequentC2);
 
 		} else {//optimisation réel
 			final Collection<Contract> consequentC1 = new ArrayList<Contract>();
@@ -88,16 +89,26 @@ implements RationalCore<ActionSpec, PersonalState, InformedCandidature<Contract,
 			for (final InformedCandidature<Contract, ActionSpec> c : c2) {
 				consequentC2.add(c.getCandidature());
 			}
-			return this.referenceRationality.getAllocationPreference(s,consequentC1,consequentC2);
+			return this.referenceRationality.getAllocationPreference(consequentC1,consequentC2);
 		}
 	}
 
-	public Comparator<Collection<Contract>> getReferenceAllocationComparator(final PersonalState s) {
-		return new Comparator<Collection<Contract>>() {
+//	public Comparator<ReallocationContract<Contract,ActionSpec>> getReferenceAllocationComparator(final PersonalState s) {
+//		return new Comparator<Collection<Contract>>() {
+//
+//			@Override
+//			public int compare(final Collection<Contract> c1, final Collection<Contract> c2) {
+//				return InformedCandidatureRationality.this.referenceRationality.getAllocationPreference(s, c1, c2);
+//			}
+//		};
+//	}
+
+	public Comparator<ReallocationContract<Contract,ActionSpec>> getReferenceAllocationComparator() {
+		return new Comparator<ReallocationContract<Contract,ActionSpec>>() {
 
 			@Override
-			public int compare(final Collection<Contract> c1, final Collection<Contract> c2) {
-				return InformedCandidatureRationality.this.referenceRationality.getAllocationPreference(s, c1, c2);
+			public int compare(final ReallocationContract<Contract,ActionSpec> c1, final ReallocationContract<Contract,ActionSpec> c2) {
+				return InformedCandidatureRationality.this.referenceRationality.getAllocationPreference(c1, c2);
 			}
 		};
 	}

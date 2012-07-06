@@ -23,7 +23,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.M
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.shells.APIAgent.EndActivityMessage;
+import dima.introspectionbasedagents.shells.APIAgent.EndLiveMessage;
 import dima.introspectionbasedagents.shells.APIAgent.SigKillOrder;
 import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
 import dimaxx.kernel.DimaXTask;
@@ -39,14 +39,11 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	public static int nbCompetentAgent=0;
 	DimaXTask<BasicCompetentAgent> darxEngine=null;
-	APILauncherModule myApi;
 	boolean isActive=true;
-
 
 	//
 	// Constructor
 	//
-
 
 	public BasicCompetentAgent(final AgentIdentifier newId)  throws CompetenceException {
 		super(newId);
@@ -89,8 +86,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	// Accessors
 	//
 
-
-
 	@Override
 	public BasicCompetenceShell<BasicCompetentAgent> getMyShell() {
 		return (BasicCompetenceShell<BasicCompetentAgent>) this.myShell;
@@ -131,14 +126,9 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		this.darxEngine=darxEngine;
 	}
 
-
 	public Collection<Class<? extends AgentCompetence<BasicCompetentAgent>>> getCompetences(){
 		return this.getMyShell().loadedCompetence;
 	}
-
-
-
-
 
 	//
 	// Hook
@@ -263,6 +253,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public
 	final ApiLaunchService apiService;
 
+	public boolean hasAppliStarted() {
+		return apiService.hasAppliStarted();
+	}
+
 	boolean launchWith(APILauncherModule api) {
 		return apiService.launchWith(api);
 	}
@@ -275,14 +269,13 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return apiService.start(m);
 	}
 
-	boolean suicide(SigKillOrder m) {
-		return apiService.suicide(m);
+	boolean endLive(EndLiveMessage m) {
+		return apiService.endLive(m);
 	}
 
-	boolean endActivity(EndActivityMessage m) {
-		return apiService.endActivity(m);
+	boolean endLive() {
+		return apiService.endLive();
 	}
-
 	/*
 	 * Pattern Observer
 	 */
@@ -415,6 +408,11 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.log.logMonologue(text, details);
 	}
 
+	@Override
+	public Boolean logMonologue(final String text) {
+		return this.log.logMonologue(text);
+	}
+	
 	//	 @Override
 	//	 public Boolean logMonologue(final String text) {
 	//		 return this.log.logMonologue(text);
@@ -435,6 +433,15 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.log.logWarning(text, details);
 	}
 
+	@Override
+	public Boolean logWarning(final String text, final Throwable e) {
+		return this.log.logWarning(text, e);
+	}
+
+	@Override
+	public Boolean logWarning(final String text) {
+		return this.log.logWarning(text);
+	}
 	//	 @Override
 	//	 public Boolean logWarning(final String text) {
 	//		 return this.log.logWarning(text);

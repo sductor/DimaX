@@ -93,7 +93,8 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 				super.faultObservation(m);
 				if (!Replica.this.getMyCurrentState().isValid()) {
 					this.logMonologue("this is the end my friend",LogService.onBoth);
-					Replica.this.mySelfObservationService.endSimulation();
+					throw new RuntimeException("endSimulation à corriger");
+//					Replica.this.mySelfObservationService.endSimulation();
 				}
 			}
 		}
@@ -143,6 +144,12 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 								newCriticity));
 			}
 		}
+	}
+	
+	//allow to continue to receive messages
+	public void tryToResumeActivity(){
+		super.tryToResumeActivity();
+		mySelfObservationService.tryToResumeActivity();
 	}
 }
 

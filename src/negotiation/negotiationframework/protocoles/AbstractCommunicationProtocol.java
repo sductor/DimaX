@@ -16,6 +16,7 @@ import negotiation.negotiationframework.contracts.UnknownContractException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
@@ -139,7 +140,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 	 */
 
 	// @role(NegotiationInitiatorRole.class)
-	@StepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
+	@PreStepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
 		if (this.isActive() &&
 				this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.getMyAgent().getMyCurrentState(),this.contracts)
@@ -289,6 +290,7 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		assert ContractTransition.stillValid(contracts);
 		assert ContractTransition.allComplete(contracts);
 
+		
 		for (final Contract contract : contracts){
 			this.getContracts().addAcceptation(this.getMyAgent().getIdentifier(),contract);
 			assert this.getContracts().getRequestableContracts().contains(contract):contract;
@@ -300,7 +302,6 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 					AbstractCommunicationProtocol.log_negotiationStep);
 		}
 
-		this.getMyAgent().execute(contracts);
 
 		for (final Contract contract : contracts) {
 			assert alreadyExecuted.add(contract.getIdentifier());
@@ -311,6 +312,8 @@ extends Protocol<SimpleNegotiatingAgent<ActionSpec, State, Contract>> {
 		}
 
 		this.contracts.removeAll(contracts);
+		
+		this.getMyAgent().execute(contracts);
 	}
 
 	protected void cancelContract(final Collection<Contract> contracts, final Receivers receivers) {

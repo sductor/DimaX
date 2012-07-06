@@ -19,6 +19,7 @@ import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import dimaxx.tools.mappedcollections.HashedHashSet;
+import dimaxx.tools.mappedcollections.HashedTreeSet;
 
 public class ResourceInformedCandidatureContractTrunk<
 Contract extends MatchingCandidature<ActionSpec>,
@@ -32,22 +33,20 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	 */
 
 	//	private final ContractTrunk<ReallocationContract<Contract, ActionSpec>> myLocalOptimisations;
-	HashedHashSet<InformedCandidature<Contract, ActionSpec>, ReallocationContract<Contract, ActionSpec>> upgradingContracts=
-			new HashedHashSet<InformedCandidature<Contract, ActionSpec>, ReallocationContract<Contract,ActionSpec>>();
-	Collection<InformedCandidature<Contract, ActionSpec>> toCancel=
+	HashedTreeSet<InformedCandidature<Contract, ActionSpec>, ReallocationContract<Contract, ActionSpec>> upgradingContracts;
+	final Collection<InformedCandidature<Contract, ActionSpec>> toCancel=
 			new ArrayList<InformedCandidature<Contract,ActionSpec>>();
 
 	/*
 	 *
 	 */
 
-	public ResourceInformedCandidatureContractTrunk(
-			final SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>> agent) {
-		super(agent);
-	}
-
-	public ResourceInformedCandidatureContractTrunk() {
-		super();
+	public void setMyAgent(final SimpleNegotiatingAgent<ActionSpec, PersonalState, InformedCandidature<Contract, ActionSpec>> agent){		
+		super.setMyAgent(agent);
+		upgradingContracts=
+				new HashedTreeSet<InformedCandidature<Contract, ActionSpec>, ReallocationContract<Contract,ActionSpec>>(
+						((InformedCandidatureRationality<ActionSpec, PersonalState, Contract>) this.getMyAgent().
+								getMyCore()).getReferenceAllocationComparator());
 	}
 
 	//
@@ -82,37 +81,50 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	 */
 
 	public ReallocationContract<Contract, ActionSpec> getBestReallocationContract(
-			final InformedCandidature<Contract, ActionSpec> c,
-			final Comparator<Collection<Contract>> pref){
-		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
-				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.get(c));
-		if (upCont.isEmpty()) {
+			final InformedCandidature<Contract, ActionSpec> c){
+		if (this.upgradingContracts.get(c).isEmpty()) {
 			return null;
 		} else {
-			return Collections.max(upCont,pref);
+			return this.upgradingContracts.get(c).last();
 		}
 	}
 
-	public ReallocationContract<Contract, ActionSpec> getBestRequestableReallocationContract(
-			final Comparator<Collection<Contract>> pref){
-		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
-				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.getAllValues());
-		Iterator<ReallocationContract<Contract, ActionSpec>> itUpCont = upCont.iterator();
-		while (itUpCont.hasNext()){
-			if (!this.isRequestable(itUpCont.next()))
-				itUpCont.remove();
+	public ReallocationContract<Contract, ActionSpec> getBestRequestableReallocationContract() {
+		ReallocationContract<Contract, ActionSpec> finalValue = null;
+		Comparator<ReallocationContract<Contract, ActionSpec>> myComp = 
+				((InformedCandidatureRationality<ActionSpec, PersonalState, Contract>) this.getMyAgent().
+						getMyCore()).getReferenceAllocationComparator();
+		for (final InformedCandidature<Contract, ActionSpec> key : this.upgradingContracts.keySet()){
+			Iterator<ReallocationContract<Contract, ActionSpec>> itValue = this.upgradingContracts.get(key).descendingIterator();
+			while (itValue.hasNext()){
+				ReallocationContract<Contract, ActionSpec> sol = itValue.next();
+				if (this.isRequestable(sol)){
+					if (finalValue==null)
+						finalValue=sol;
+					else {
+						finalValue = myComp.compare(sol,finalValue)>0?sol:finalValue;
+					}
+					break;
+				}
+			}
 		}
-		try {
-			return Collections.max(upCont,pref);
-		}	catch (NoSuchElementException e){
-			return null;
-		}
+		return finalValue;
 	}
 
+
+
+
+
+
+	@Deprecated //couteux
 	public Collection<ReallocationContract<Contract, ActionSpec>> getReallocationContracts(){
 		return this.upgradingContracts.getAllValues();
 	}
-	
+
+	public boolean hasReallocationContracts(){
+		return !this.upgradingContracts.isEmpty();
+	}
+
 	//
 	// Primitive
 	//
@@ -169,6 +181,46 @@ extends ContractTrunk<InformedCandidature<Contract, ActionSpec>, ActionSpec, Per
 	}
 }
 
+//		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
+//				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.get(c));
+//		if (upCont.isEmpty()) {
+//			return null;
+//		} else {
+//			return Collections.max(upCont,pref);
+//		}
+//	}
+//	@Deprecated //non optimiser
+//	public ReallocationContract<Contract, ActionSpec> getBestRequestableReallocationContract(
+//			final Comparator<Collection<Contract>> pref){
+//		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
+//				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.getAllValues());
+//		Iterator<ReallocationContract<Contract, ActionSpec>> itUpCont = upCont.iterator();
+//		while (itUpCont.hasNext()){
+//			if (!this.isRequestable(itUpCont.next()))
+//				itUpCont.remove();
+//		}
+//		try {
+//			return Collections.max(upCont,pref);
+//		}	catch (NoSuchElementException e){
+//			return null;
+//		}
+//	}
+//@Deprecated //non optimiser
+//public ReallocationContract<Contract, ActionSpec> getBestRequestableReallocationContract(
+//		final Comparator<Collection<Contract>> pref){
+//	final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
+//			new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.getAllValues());
+//	Iterator<ReallocationContract<Contract, ActionSpec>> itUpCont = upCont.iterator();
+//	while (itUpCont.hasNext()){
+//		if (!this.isRequestable(itUpCont.next()))
+//			itUpCont.remove();
+//	}
+//	try {
+//		return Collections.max(upCont,pref);
+//	}	catch (NoSuchElementException e){
+//		return null;
+//	}
+//}
 
 //		Collections.sort(upCont,pref);
 //		while (!upCont.isEmpty()) {

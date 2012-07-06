@@ -25,9 +25,8 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	GreedySelectionType itType;
 
 	public GreedySelectionModule(
-			final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> ag,
 			final GreedySelectionType itType) {
-		super(ag);
+		super();
 		this.itType=itType;
 	}
 
@@ -40,6 +39,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 			final List<Contract> contractsToExplore) {
 		// logMonologue("!GreedySelection! : myState"+getMyAgent().getMyCurrentState());
 
+		assert getMyAgent()!=null;
 		final Collection<Contract> toValidate = new ArrayList<Contract>();
 		Iterator<Contract> itContract;
 		switch (this.itType){
@@ -59,8 +59,6 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		// logMonologue("analysed contract (1): -->\n"+currentContract+"\n SO? : "
 		// +(this.getMyAgent().respectMyRights(currentState) &&
 		// this.getMyAgent().Iaccept(currentState, currentContract)));
-
-
 
 		while (itContract.hasNext()) {// this.getMyAgent().respectMyRights(currentState)
 			// &&
@@ -102,14 +100,19 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		int count=-1;
 
 		public GreedyIterator(final List<Contract> cs){
+			assert getMyAgent()!=null;
 			this.contractsToExplore=cs;
-			Collections.sort(this.contractsToExplore, Collections.reverseOrder(GreedySelectionModule.this.getMyAgent().getMyPreferenceComparator()));
+			Collections.sort(this.contractsToExplore, 
+					Collections.reverseOrder(
+							GreedySelectionModule.this.
+							getMyAgent().
+							getMyPreferenceComparator()));
 		}
 
 
 		@Override
 		public boolean hasNext() {
-			return this.count<this.contractsToExplore.size();
+			return this.count<this.contractsToExplore.size()-1;
 		}
 
 		@Override

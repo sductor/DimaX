@@ -23,6 +23,7 @@ import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.support.GimaObject;
 import dimaxx.deployment.DimaXDeploymentScript;
 import dimaxx.deployment.DimaXLocalLaunchScript;
+import dimaxx.experimentation.ObservingSelfService;
 import dimaxx.hostcontrol.LocalHost;
 import dimaxx.server.HostIdentifier;
 
@@ -287,7 +288,7 @@ public class APIAgent extends BasicCompetentAgent {
 			}
 
 			c.addObserver(this.getMyAgentIdentifier(), LogService.logNotificationKey);
-			c.addObserver(this.getMyAgentIdentifier(), EndActivityMessage.class);
+			c.addObserver(this.getMyAgentIdentifier(), EndLiveMessage.class);
 
 
 			switch (this.myLaunchType) {
@@ -329,14 +330,18 @@ public class APIAgent extends BasicCompetentAgent {
 			sendMessage(c, new SigKillOrder());
 			return true;
 		}
+		
 		public boolean kill(Collection<AgentIdentifier> cs){
 			for (AgentIdentifier c : cs)
 				kill(c);
 			return true;
 		}
-		boolean destroy(final BasicCompetentAgent c){
+		
+		public boolean destroy(final BasicCompetentAgent c){
 			final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
 			final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
+			
+//			logMonologue("Agent destroyed : "+c);
 
 			assert killed.contains(c) || (removed1 && removed2):c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 
@@ -382,7 +387,7 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 
 		@MessageHandler
-		void end(final NotificationMessage<EndActivityMessage> m){
+		void end(final NotificationMessage<EndLiveMessage> m){
 			this.getMyAgent().logMonologue(m.getSender()+" has ended activity ... nothing to do...",LogService.onBoth);
 		}
 
@@ -577,7 +582,7 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 	}
 
-	class EndActivityMessage extends Message{
+	class EndLiveMessage extends Message{
 		private static final long serialVersionUID = 5340852990030437060L;
 
 		private final Date endDate = new Date();

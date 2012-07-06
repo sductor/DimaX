@@ -15,6 +15,7 @@ import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
+import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
@@ -23,6 +24,7 @@ import dima.introspectionbasedagents.services.observingagent.NotificationMessage
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
+import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public class Host
 extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
@@ -34,6 +36,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	//	private long firstModifTime=-2;
 	private long lastModifTime=-1;
+	private LightAverageDoubleAggregation searchTime = new LightAverageDoubleAggregation();
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
@@ -48,7 +51,7 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			return new ReplicationResultHost(
 					Host.this.getMyCurrentState(),//firstModifTime,
 					lastModifTime,
-					Host.this.getCreationTime(),initialStateNumber);
+					Host.this.getCreationTime(),initialStateNumber,searchTime);
 		}
 	};
 
@@ -113,7 +116,17 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 	//
 	// Accessor
 	//
-
+	@EventHookedMethod(SearchTimeNotif.class)
+	public void beNotifedOfSearchTime(SearchTimeNotif s){
+		searchTime.add(s.getValue());
+	}
+	
+	
+	//allow to continue to receive messages
+	public void tryToResumeActivity(){
+		super.tryToResumeActivity();
+		mySelfObservationService.tryToResumeActivity();
+	}
 	public boolean isFaulty() {
 		return this.getMyCurrentState().isFaulty();
 	}

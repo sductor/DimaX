@@ -12,12 +12,15 @@ import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ObservingSelfService
-extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
+extends BasicCommunicatingCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	private static final long serialVersionUID = 496384107474313690L;
 
 
@@ -49,41 +52,51 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 	//
 	//
 
-	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	boolean simulationEnded=false;
+	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
-	public boolean endSimulation(){
-		this.l.getResults().getLast().setLastInfo();
+	boolean endSimulation(){
+		assert !simulationEnded;
 		this.logMonologue("this is the end my friend",ObservingSelfService.observationLog);
+		simulationEnded=true;
+		
+		//send notifs
+		this.l.getResults().getLast().setLastInfo();
 		this.notify(this.l);
 		this.getMyAgent().sendNotificationNow();
+
+		//end activity
 		getMyAgent().setActive(false);
 		return true;
 	}
-	
-	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
-	@Transient
-	public boolean endSimulationPost(){
-		return endSimulation();
-	}
-	
+
 	@MessageHandler
 	public void simulationEndORder(final SimulationEndedMessage s){
-//		logMonologue("yooo1", LogService.onBoth);
-		if (getMyAgent().isAlive()) {
-			getMyAgent().setActive(false);
-			getMyAgent().setAlive(false);
-		}
+		logMonologue("recieving end simulation order",ObservingSelfService.observationLog);
+		assert simulationEnded;
+		getMyAgent().setAlive(false);
 	}
 	
+	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime+75000)
+	public void killForced(){
+		logWarning("kill forced");
+		assert simulationEnded;
+		getMyAgent().setAlive(false);
+		
+	}
+	
+	@ResumeActivity
+	//allow to continue to receive messages
 	public void tryToResumeActivity(){
-//		if (hasAppliStarted()) logMonologue("yooo2", LogService.onBoth);
+//		if (getMyAgent().hasAppliStarted()) logMonologue("resuming", ObservingSelfService.observationLog);
 		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
 		while (getMyAgent().getMailBox().hasMail()){
 			final AbstractMessage m = getMyAgent().getMailBox().readMail();
 			if (m instanceof SimulationEndedMessage) {
-				getMyAgent().setAlive(false);
-				getMyAgent().setActive(false);
+//				logMonologue("recieving end simulation order in resuming",ObservingSelfService.observationLog);
+				simulationEndORder((SimulationEndedMessage)m);
 			} else {
+//				logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
 				messages.add(m);
 			}
 		}
@@ -92,7 +105,7 @@ extends BasicAgentCompetence<SimpleNegotiatingAgent<?, ?,?>>{
 		}
 		getMyAgent().wwait(1000);
 	}
-	
+
 	//
 	// Public class
 	//

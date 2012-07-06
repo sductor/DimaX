@@ -190,7 +190,7 @@ public class ReplicaState  extends SimpleAgentState implements ReplicationSpecif
 
 	@Override
 	public boolean isValid() {
-		return !this.getMyResourceIdentifiers().isEmpty();
+		return this.getMyResourceIdentifiers()==null || !this.getMyResourceIdentifiers().isEmpty();
 	}
 
 	/*

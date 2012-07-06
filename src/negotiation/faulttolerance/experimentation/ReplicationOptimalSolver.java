@@ -197,7 +197,7 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 			rogs.getFinalStates().add(agRes);
 		}
 		for (HostState h : finalHostAlloc.values()){
-			ReplicationResultHost hostRes = new ReplicationResultHost(h,0 , new Date(),0);
+			ReplicationResultHost hostRes = new ReplicationResultHost(h,0 , new Date(),0,null);
 			hostRes.setLastInfo();
 			rogs.updateInfo(hostRes);
 			rogs.getFinalStates().add(hostRes);

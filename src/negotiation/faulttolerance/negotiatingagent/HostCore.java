@@ -42,14 +42,15 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	//
 
 	@Override
-	public int getAllocationPreference(final HostState s,
+	public int getAllocationPreference(
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
+		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
 		for (final ReplicationCandidature c : c1) {
-			c.setSpecification(s);
+			c.setSpecification(getMyAgent().getMyCurrentState());
 		}
 		for (final ReplicationCandidature c : c2) {
-			c.setSpecification(s);
+			c.setSpecification(getMyAgent().getMyCurrentState());
 		}
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(

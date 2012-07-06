@@ -8,6 +8,7 @@ import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.experimentation.ExperimentationResults;
+import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public class ReplicationResultHost implements ExperimentationResults {
 
@@ -25,13 +26,16 @@ public class ReplicationResultHost implements ExperimentationResults {
 	final Double charge;
 	int nbOfModif;
 	// final Double lambda;
-
+	Double searchTime;
+	
+	
 	final boolean isFaulty;
 	boolean lastInfo;
 
 	public ReplicationResultHost(final HostState s, //long firstModifTime, 
 			long lastModifTime,
-			final Date agentCreationTime, int initialStateCounter) {
+			final Date agentCreationTime, int initialStateCounter,
+			LightAverageDoubleAggregation searchTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
 		this.charge = s.getMyCharge();
@@ -45,7 +49,7 @@ public class ReplicationResultHost implements ExperimentationResults {
 //		assert (nbOfModif==0) || (firstModifTime!=-2 && firstModifTime!=-1 && lastModifTime!=-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
 //		this.firstModifTime=firstModifTime;
 		this.lastModifTime=lastModifTime;
-		
+		this.searchTime=searchTime.getRepresentativeElement();		
 	}
 
 	@Override

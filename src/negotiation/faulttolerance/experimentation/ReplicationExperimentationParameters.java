@@ -98,14 +98,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 */
 
 	public static final int startingNbHosts = 8;
-	public static int startingNbAgents =10000;
+	public static int startingNbAgents =1000;
 	//		public static final int startingNbHosts = 5;
 	//		public static int startingNbAgents =10;
 
 
 	public  int simultaneousCandidature = 100;
 
-	public  int simultaneousAcceptation = 250;
+	public  int simultaneousAcceptation = 50;
 	public  int	opinionDiffusionDegree = 50;
 
 	public  long maxComputingTime = 120000;//2 min

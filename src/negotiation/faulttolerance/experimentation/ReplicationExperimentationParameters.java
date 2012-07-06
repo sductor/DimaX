@@ -97,22 +97,16 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 25;
-	public static int startingNbAgents =500;
+	public static final int startingNbHosts = 8;
+	public static int startingNbAgents =10000;
 	//		public static final int startingNbHosts = 5;
 	//		public static int startingNbAgents =10;
 
 
 	public  int simultaneousCandidature = 100;
-<<<<<<< HEAD
-	public  int simultaneousAcceptation = 20;
-	public int simultaneousOpinionDiffusion=50;
-	public  long maxComputingTime = 60000;
-	public final boolean completGraph = true;
-=======
-	public  int simultaneousAcceptation = 100;
+
+	public  int simultaneousAcceptation = 250;
 	public  int	opinionDiffusionDegree = 50;
->>>>>>> debugStatus
 
 	public  long maxComputingTime = 120000;//2 min
 		
@@ -482,26 +476,9 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this._socialWelfare,
 						simultaneousAcceptation,
 						maxComputingTime);
-<<<<<<< HEAD
-			} else if (this._usedProtocol
-					.equals(NegotiationParameters.key4CentralisedstatusProto)) {
-				hostAg = new StatusHost(
-						hostId,
-						this.rig.getHostState(hostId),
-						this.getCore(false, this._usedProtocol, this._socialWelfare),
-						this.getSelectionCore(this._hostSelection),
-						this.getProposerCore(false, this._usedProtocol),
-						this.getInformationService(false, this._usedProtocol),
-						new ReverseCFPProtocol(),
-//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
-						getMyAgentIdentifier());
-			}else if (this._usedProtocol
-					.equals(NegotiationParameters.key4statusProto)){
-=======
 
 			}else if (this._usedProtocol
 					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
->>>>>>> debugStatus
 				hostAg = new StatusHost(
 						hostId,
 						this.rig.getHostState(hostId),
@@ -512,10 +489,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						new ReverseCFPProtocol(),
 						//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
 						getMyAgentIdentifier());
-<<<<<<< HEAD
-			} else {
-				throw new RuntimeException("impossible");
-=======
+
 			} else if (this._usedProtocol
 					.equals(NegotiationParameters.key4statusProto)) {
 				hostAg = new StatusHost(
@@ -530,7 +504,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						opinionDiffusionDegree);
 			}else {
 				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
->>>>>>> debugStatus
 			}
 
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){

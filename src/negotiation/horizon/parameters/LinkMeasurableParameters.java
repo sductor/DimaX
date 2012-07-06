@@ -1,9 +1,14 @@
 package negotiation.horizon.parameters;
 
 import jtp.util.UnexpectedException;
-import negotiation.horizon.EmptyIntervalException;
-import negotiation.horizon.Interval;
+import negotiation.horizon.util.Interval;
+import negotiation.horizon.util.EmptyInterval.EmptyIntervalException;
 
+/**
+ * Gathers non functional parameters on the links.
+ * 
+ * @author Vincent Letard
+ */
 public class LinkMeasurableParameters implements LinkParameters {
 
     /**
@@ -26,6 +31,14 @@ public class LinkMeasurableParameters implements LinkParameters {
      */
     private final Interval<Integer> jitter;
 
+    /**
+     * @param packetLossRate
+     *            percentage of packetLoss
+     * @param delay
+     *            interval in milliseconds
+     * @param jitter
+     *            variation in milliseconds
+     */
     public LinkMeasurableParameters(final Interval<Float> packetLossRate,
 	    final Interval<Integer> delay, final Interval<Integer> jitter) {
 	this.packetLossRate = packetLossRate;
@@ -54,12 +67,24 @@ public class LinkMeasurableParameters implements LinkParameters {
 	return jitter;
     }
 
+    /**
+     * Returns a String representation of this LinkMeasurableParameters.
+     */
     @Override
     public String toString() {
 	return "(plr=" + this.packetLossRate + ", d=" + this.delay + ", j="
 		+ this.jitter + ")";
     }
 
+    /**
+     * Tests whether the parameters of this object are sufficient to satisfy the
+     * requested ones.
+     * 
+     * @param value
+     *            Levels of parameters to reach.
+     * @return <code>true</code> if the requested levels of parameters are
+     *         effectively satisfied here.
+     */
     public boolean satisfies(final LinkMeasurableParameters value) {
 	try {
 	    return this.delay.getUpper() <= value.delay.getUpper()

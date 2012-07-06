@@ -4,6 +4,10 @@ import negotiation.horizon.negotiatingagent.HorizonIdentifier;
 import dima.support.GimaObject;
 
 /**
+ * Gathers all the parameters of a node.
+ * 
+ * @param <Identifier>
+ *            Type of Identifier indexing the LinkParameters
  * @author Vincent Letard
  */
 public class NodeParameters<Identifier extends HorizonIdentifier> extends
@@ -14,7 +18,13 @@ public class NodeParameters<Identifier extends HorizonIdentifier> extends
      */
     private static final long serialVersionUID = 8142462973752131803L;
 
+    /**
+     * AllocableParameters of the node.
+     */
     private final HorizonAllocableParameters<Identifier> allocableParams;
+    /**
+     * MeasurableParameters of the node.
+     */
     private final HorizonMeasurableParameters<Identifier> measurableParams;
 
     // /**
@@ -29,6 +39,11 @@ public class NodeParameters<Identifier extends HorizonIdentifier> extends
 
     /**
      * Constructs a new instance of SingleNodeParameters.
+     * 
+     * @param allocableParams
+     *            AllocableParameters for this node
+     * @param measurableParams
+     *            MeasurableParameters for this node
      */
     public NodeParameters(
 	    final HorizonAllocableParameters<Identifier> allocableParams,
@@ -60,14 +75,25 @@ public class NodeParameters<Identifier extends HorizonIdentifier> extends
 	return this.allocableParams;
     }
 
+    /**
+     * @return the value of the field measurableParameters
+     */
     public HorizonMeasurableParameters<Identifier> getMeasurableParams() {
 	return this.measurableParams;
     }
 
+    /**
+     * Tests the validity of the allocableParameters of these NodeParameters.
+     * 
+     * @return the result of allocableParameters.isValid()
+     */
     public boolean isValid() {
 	return this.allocableParams.isValid();
     }
 
+    /**
+     * Returns a String representation of these NodeParameters.
+     */
     @Override
     public String toString() {
 	return "{ allocableParameters : " + this.allocableParams

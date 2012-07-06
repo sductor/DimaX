@@ -315,7 +315,7 @@ class IndivdualExperiementLog {
 	 */
 	
 	public String getId() {
-		return this.nbAgent+"AGENTS"+this.hostCapacityMean+"CAPACITY";
+		return this.nbAgent+" AGENTS "+this.hostCapacityMean+" CAPACITY ";
 	}
 
 	public int hashCode(){

@@ -3,7 +3,10 @@ package negotiation.horizon.parameters;
 import negotiation.horizon.negotiatingagent.HorizonIdentifier;
 
 /**
+ * Gathers the non functional parameters of a node in one object.
  * 
+ * @param <Identifier>
+ *            The identifier indexing the links for InterfacesParameters.
  * @author Vincent Letard
  */
 public class HorizonMeasurableParameters<Identifier extends HorizonIdentifier>
@@ -15,6 +18,12 @@ public class HorizonMeasurableParameters<Identifier extends HorizonIdentifier>
      */
     private static final long serialVersionUID = -384855814402430086L;
 
+    /**
+     * @param machineParams
+     *            parameters of the machine
+     * @param ifacesParams
+     *            parameters of the links starting from the machine
+     */
     public HorizonMeasurableParameters(
 	    final MachineMeasurableParameters machineParams,
 	    final InterfacesParameters<Identifier, LinkMeasurableParameters> ifacesParams) {

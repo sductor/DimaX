@@ -2,6 +2,13 @@ package negotiation.horizon.parameters;
 
 import negotiation.horizon.negotiatingagent.HorizonIdentifier;
 
+/**
+ * Gathers the AllocableParameters of a node in one object.
+ * 
+ * @param <Identifier>
+ *            The identifier indexing the links for InterfacesParameters.
+ * @author Vincent Letard
+ */
 public class HorizonAllocableParameters<Identifier extends HorizonIdentifier>
 	extends
 	HorizonParameters<Identifier, MachineAllocableParameters, LinkAllocableParameters>
@@ -12,12 +19,21 @@ public class HorizonAllocableParameters<Identifier extends HorizonIdentifier>
      */
     private static final long serialVersionUID = 2458579262649743840L;
 
+    /**
+     * @param machineParams
+     *            the parameters of the machine
+     * @param ifacesParam
+     *            parameters of the links starting from the machine
+     */
     public HorizonAllocableParameters(
 	    MachineAllocableParameters machineParams,
 	    InterfacesParameters<Identifier, LinkAllocableParameters> ifacesParam) {
 	super(machineParams, ifacesParam);
     }
 
+    /**
+     * @see negotiation.horizon.parameters.AllocableParameters#isValid()
+     */
     @Override
     public boolean isValid() {
 	if (!this.getMachineParameters().isValid())
@@ -30,6 +46,13 @@ public class HorizonAllocableParameters<Identifier extends HorizonIdentifier>
 	return true;
     }
 
+    /**
+     * Adds the specified parameters to those of this object.
+     * 
+     * @param params
+     *            parameters to add
+     * @return the result of the addition.
+     */
     public HorizonAllocableParameters<Identifier> add(
 	    HorizonAllocableParameters<Identifier> params) {
 	return new HorizonAllocableParameters<Identifier>(this
@@ -38,6 +61,13 @@ public class HorizonAllocableParameters<Identifier extends HorizonIdentifier>
 			.getInterfacesParameters()));
     }
 
+    /**
+     * Subtracts the specified parameters from those of this object.
+     * 
+     * @param params
+     *            parameters to subtract
+     * @return the result of the subtraction.
+     */
     public HorizonAllocableParameters<Identifier> subtract(
 	    HorizonAllocableParameters<Identifier> params) {
 	return new HorizonAllocableParameters<Identifier>(

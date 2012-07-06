@@ -98,7 +98,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 */
 
 	public static final int startingNbHosts = 8;
-	public static int startingNbAgents =1000;
+	public static int startingNbAgents =15;
 	//		public static final int startingNbHosts = 5;
 	//		public static int startingNbAgents =10;
 
@@ -665,7 +665,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public static final int iterationNumber=10;
 
 	static boolean varyProtocol=false;
-	static boolean  varyOptimizers=true;
+	static boolean  varyOptimizers=false;
 
 	static boolean varyAgents=true;
 	static boolean varyHosts=false;
@@ -711,7 +711,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
 				NegotiationParameters.key4mirrorProto,
-				SocialChoiceType.Utility,
+				SocialChoiceType.Leximin,
 				NegotiationParameters.key4greedySelect,
 				NegotiationParameters.key4greedySelect,
 				false,

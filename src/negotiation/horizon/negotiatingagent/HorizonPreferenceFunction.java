@@ -6,19 +6,49 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import negotiation.horizon.contracts.HorizonContract;
 import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 
+/**
+ * This class provides methods to evaluate utilities and preferences about
+ * HorizonContracts. These preferences are defined by the VirtualNetworks.
+ * 
+ * @author Vincent Letard
+ */
 public class HorizonPreferenceFunction extends
-	SocialChoiceFunction<HorizonSpecification, HorizonContract> {
+	SocialChoiceFunction<HorizonContract> {
 
+    /**
+     * This enumeration gives the different type of service that could be
+     * requested by VirtualNetworks with the corresponding preference order on
+     * the non functional parameters.
+     * 
+     * @author Vincent Letard
+     */
     public enum Service {
 	Voice(3, 1, 2, 4), Videophony(3, 1, 2, 4), Telephony(3, 2, 4, 1), Multimedia(
 		2, 1, 4, 3), VOD(3, 1, 4, 2), VPN(3, 1, 4, 2), DataTealTime(2,
 		1, 4, 3), Data(1, 2, 4, 3), Streaming(1, 3, 4, 2);
 
+	/**
+	 * Array of distinct values corresponding to the relative priority of
+	 * the corresponding parameter.
+	 */
 	private final int[] priorities;
 
+	/**
+	 * Private constructor setting the preference order of the parameters.
+	 * 
+	 * @param packetLossRate
+	 *            preference level on the packetLossRate
+	 * @param delay
+	 *            preference level on the delay
+	 * @param jitter
+	 *            preference level on the jitter
+	 * @param availability
+	 *            preference level on the availability
+	 */
 	private Service(final int packetLossRate, final int delay,
 		final int jitter, final int availability) {
 	    assert (packetLossRate != delay && packetLossRate != jitter
@@ -59,8 +89,8 @@ public class HorizonPreferenceFunction extends
 	 * type. The highest is the priority the lowest is the returned integer.
 	 * 
 	 * @param i
-	 *            the number of the parameter : 1 is packetLossRate, 2 is
-	 *            delay, 3 is jitter, 4 is availability
+	 *            the number of the parameter : 0 is packetLossRate, 1 is
+	 *            delay, 2 is jitter, 3 is availability
 	 * @return an inversely proportional to the priority integer
 	 */
 	public int getPriority(final int i) {
@@ -73,10 +103,19 @@ public class HorizonPreferenceFunction extends
      */
     private static final long serialVersionUID = -2775977866055120559L;
 
+    /**
+     * @param socialWelfare
+     *            The type of of ordering of utilities.
+     */
     public HorizonPreferenceFunction(final SocialChoiceType socialWelfare) {
 	super(socialWelfare);
     }
 
+    /**
+     * Provides a utility evaluator on AgentStates. This evaluator relies on the
+     * utility evaluation available in VirtualNetworkState and
+     * SubstrateNodeState.
+     */
     @Override
     public UtilitaristEvaluator<AgentState> getUtilitaristEvaluator() {
 	// service.sort;
@@ -164,6 +203,10 @@ public class HorizonPreferenceFunction extends
     // return utilityBag.getRepresentativeElement();
     // }
 
+    /**
+     * Removes from the argument the States that have no importance in the
+     * utility computation.
+     */
     @Override
     protected <State extends AgentState> Collection<State> cleanStates(
 	    Collection<State> cs) {
@@ -177,6 +220,10 @@ public class HorizonPreferenceFunction extends
 	return res;
     }
 
+    /**
+     * Provides a comparator of AgentStates. Such a comparator can provide more
+     * precise preferences specifications that could do a utility value.
+     */
     @Override
     public <State extends AgentState> Comparator<State> getComparator() {
 	return new Comparator<State>() {

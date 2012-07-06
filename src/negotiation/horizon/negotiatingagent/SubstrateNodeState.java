@@ -8,6 +8,7 @@ import java.util.Set;
 
 import negotiation.horizon.parameters.HorizonAllocableParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
@@ -29,9 +30,12 @@ public class SubstrateNodeState extends SimpleAgentState {
      */
     private final HorizonAllocableParameters<SubstrateNodeIdentifier> availableNodeParams;
 
+    /**
+     * Coefficient of energy consumption if the load of the machine is not 0.
+     */
     private final int energyConsumptionCoef;
 
-    // XXX Nécessaire uniquement si on permet la modification dynamique des
+    // Nécessaire uniquement si on permet la modification dynamique des
     // paramètres des réseaux virtuels.
     // private final Map<VirtualNodeIdentifier, NodeParameters> allocations;
 
@@ -49,6 +53,7 @@ public class SubstrateNodeState extends SimpleAgentState {
      * @param myAgent
      *            Identifier of the Agent corresponding to this State
      * @param stateNumber
+     *            initial state number (0 is recommended)
      * @param nodeParams
      *            All available parameters on this SubstrateNode
      * @param energyConsumptionCoef
@@ -81,9 +86,8 @@ public class SubstrateNodeState extends SimpleAgentState {
      * 
      * @param initial
      *            Initial SubstrateNodeState
-     * @param nodeNetwork
-     *            Identifier of the VirtualNetwork where belongs the
-     *            added/deleted node
+     * @param vnId
+     *            Network of the allocated node
      * @param params
      *            Parameters of the allocation (negative if deletion)
      * @param creation
@@ -205,20 +209,36 @@ public class SubstrateNodeState extends SimpleAgentState {
     // this.availableNodeParams = availableNodeParams;
     // }
 
+    /**
+     * Gives the amount remaining AllocableParameters on this node.
+     * 
+     * @return an object of type HorizonAllocableParameters containing the
+     *         available parameters
+     */
     public HorizonAllocableParameters<SubstrateNodeIdentifier> getAvailableNodeParams() {
 	return availableNodeParams;
     }
 
+    /**
+     * Returns the set of VirtualNetworks that have at least on node currently
+     * instanciated on this SubstrateNode
+     */
     @Override
     public Set<VirtualNetworkIdentifier> getMyResourceIdentifiers() {
 	return this.nodesHostedNetworks.keySet();
     }
 
+    /**
+     * Returns the class of the "resources" of a SubstrateNode
+     */
     @Override
-    public Class<? extends Information> getMyResourcesClass() {
+    public Class<? extends AgentState> getMyResourcesClass() {
 	return VirtualNetworkState.class;
     }
 
+    /**
+     * Tests whether rights of the agent are respected in that state.
+     */
     @Override
     public boolean isValid() {
 	return this.availableNodeParams.isValid();
@@ -233,38 +253,65 @@ public class SubstrateNodeState extends SimpleAgentState {
     // - this.availableNodeParams.getNodeParameters().getRam());
     // }
 
+    /**
+     * Unused method of the framework.
+     */
     @Override
     public Double getNumericValue(Information e) {
 	throw new UnsupportedOperationException();
     }
 
+    /**
+     * Unused method of the framework.
+     */
     @Override
     public AbstractCompensativeAggregation<Information> fuse(
 	    Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
 	throw new UnsupportedOperationException();
     }
 
+    /**
+     * Unused method of the framework.
+     */
     @Override
     public Information getRepresentativeElement(
 	    Collection<? extends Information> elems) {
 	throw new UnsupportedOperationException();
     }
 
+    /**
+     * Unused method of the framework.
+     */
     @Override
     public Information getRepresentativeElement(
 	    Map<? extends Information, Double> elems) {
 	throw new UnsupportedOperationException();
     }
 
+    /**
+     * This method is not designed for this implementation of the framework.
+     */
     @Override
     public boolean setLost(ResourceIdentifier h, boolean isLost) {
 	throw new UnsupportedOperationException();
     }
 
+    /**
+     * Tests whether this SubstrateNode is hosting no VirtualNode.
+     * 
+     * @return <code>true</code> if the number of VirtualNetworks having at
+     *         least one node instanciated on this SubstrateNode is 0
+     */
     public boolean isEmpty() {
 	return this.nodesHostedNetworks.size() == 0;
     }
 
+    /**
+     * Computes a utility evaluation for this state.
+     * 
+     * @return a double value between 0. and 1. representing the satisfaction of
+     *         the node.
+     */
     public Double evaluateUtility() {
 	return this.nodesHostedNetworks.isEmpty() ? 1
 		: 1. / (this.energyConsumptionCoef + 1);

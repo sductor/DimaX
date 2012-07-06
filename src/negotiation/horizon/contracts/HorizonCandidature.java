@@ -1,12 +1,22 @@
-package negotiation.horizon.negotiatingagent;
+package negotiation.horizon.contracts;
 
 import jtp.util.UnexpectedException;
+import negotiation.horizon.negotiatingagent.SubstrateNodeIdentifier;
+import negotiation.horizon.negotiatingagent.SubstrateNodeState;
+import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
+import negotiation.horizon.negotiatingagent.VirtualNetworkState;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.horizon.parameters.HorizonMeasurableParameters;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
+/**
+ * This class represents a allocation candidature between a VirtualNode and a
+ * SubstrateNode.
+ * 
+ * @author Vincent Letard
+ */
 public class HorizonCandidature extends MatchingCandidature {
 
     /**
@@ -14,9 +24,30 @@ public class HorizonCandidature extends MatchingCandidature {
      */
     private static final long serialVersionUID = 5688344205746523199L;
 
+    /**
+     * Initial state of the VirtualNetwork.
+     */
     private VirtualNetworkState vnInitialState = null;
+    /**
+     * Initial state of the SubstrateNode.
+     */
     private SubstrateNodeState snInitialState = null;
 
+    /**
+     * Constructs a new candidature between the specified VirtualNode of the
+     * VirtualNetwork and the SubstrateNode resource.
+     * 
+     * @param intiator
+     *            Agent proposing this candidature.
+     * @param agent
+     *            VirtualNetwork containing the concerned VirtualNode
+     * @param node
+     *            The VirtualNode proposed
+     * @param resource
+     *            The SubstrateNode requested
+     * @param validityTime
+     *            An expiration value
+     */
     public HorizonCandidature(final VirtualNetworkIdentifier intiator,
 	    final VirtualNetworkIdentifier agent,
 	    final VirtualNodeIdentifier node,
@@ -25,6 +56,11 @@ public class HorizonCandidature extends MatchingCandidature {
 	this.setSpecification(new VirtualNetworkSpecification(node));
     }
 
+    /**
+     * Gives the virtual node proposed in this candidature.
+     * 
+     * @return the identifier of the virtual node.
+     */
     public VirtualNodeIdentifier getNode() {
 	try {
 	    return this.getSpecificationOf(this.getAgent()).getNode();
@@ -34,36 +70,79 @@ public class HorizonCandidature extends MatchingCandidature {
 	}
     }
 
+    /**
+     * Gets the actual level of service provided by the resource.
+     * 
+     * @return the parameters measured at the substrate node.
+     * @throws IncompleteContractException
+     *             if these parameters are not set.
+     */
     private HorizonMeasurableParameters<SubstrateNodeIdentifier> getQoS()
 	    throws IncompleteContractException {
 	return this.getSpecificationOf(this.getResource()).getParams();
     }
 
+    /**
+     * Gives the initiator agent of this candidature.
+     */
     @Override
     public VirtualNetworkIdentifier getInitiator() {
 	return (VirtualNetworkIdentifier) super.getInitiator();
     }
 
+    /**
+     * Gives the agent of this candidature (the network containing the actor
+     * node).
+     */
     @Override
     public VirtualNetworkIdentifier getAgent() {
 	return (VirtualNetworkIdentifier) super.getAgent();
     }
 
+    /**
+     * Gives the resource requested in this candidature.
+     */
     @Override
     public SubstrateNodeIdentifier getResource() {
 	return (SubstrateNodeIdentifier) super.getResource();
     }
 
+    /**
+     * Gets the action specification of the specified VirtualNetwork.
+     * 
+     * @param id
+     *            The requested VirtualNetwork.
+     * @return The action specification of the VirtualNetwork in this
+     *         candidature.
+     * @throws IncompleteContractException
+     *             if the specification is not set.
+     */
     public VirtualNetworkSpecification getSpecificationOf(
 	    VirtualNetworkIdentifier id) throws IncompleteContractException {
 	return (VirtualNetworkSpecification) super.getSpecificationOf(id);
     }
 
+    /**
+     * Gets the action specification of the specified resource, should not be
+     * called if the resource does not take in the candidature.
+     * 
+     * @param id
+     *            The requested SubstrateNode.
+     * @return The action specification of the SubstrateNode in this
+     *         candidature.
+     * @throws IncompleteContractException
+     *             if the specification is not set.
+     */
     public SubstrateNodeSpecification getSpecificationOf(
 	    SubstrateNodeIdentifier id) throws IncompleteContractException {
 	return (SubstrateNodeSpecification) super.getSpecificationOf(id);
     }
 
+    /**
+     * Returns the AgentState of the Agent id resulting after an application of
+     * this candidature, assuming the initial state is the one specified in the
+     * data of this object.
+     */
     @Override
     public AgentState computeResultingState(AgentIdentifier id)
 	    throws IncompleteContractException {
@@ -89,8 +168,12 @@ public class HorizonCandidature extends MatchingCandidature {
     // return s;
     // }
 
+    /**
+     * Computes the resulting state after an application of this candidature
+     * considering s as the initial state.
+     */
     @Override
-    public AgentState computeResultingState(State s)
+    public <State extends AgentState> State computeResultingState(State s)
 	    throws IncompleteContractException {
 	if (s instanceof SubstrateNodeState) {
 	    if (s.getMyAgentIdentifier().equals(this.getResource()))
@@ -110,16 +193,34 @@ public class HorizonCandidature extends MatchingCandidature {
 	    throw new IllegalArgumentException();
     }
 
+    /**
+     * This function throws an IllegalArgumentException since the overriding
+     * functions handle the good argument types.
+     */
     @Override
-    public <State extends AgentState> State getInitialState(AgentIdentifier id)
+    public AgentState getInitialState(AgentIdentifier id)
 	    throws negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException {
 	throw new IllegalArgumentException();
     }
 
+    /**
+     * Gives the initial VirtualNetworkState for the specified VirtualNetwork.
+     * 
+     * @param id
+     *            The requested VirtualNetwork
+     * @return the initial state of that VirtualNetwork
+     */
     public VirtualNetworkState getInitialState(final VirtualNetworkIdentifier id) {
 	return this.vnInitialState;
     }
 
+    /**
+     * Gives the initial SubstrateNodeState for the specified SubstrateNode.
+     * 
+     * @param id
+     *            The requested SubstrateNode
+     * @return the initial state of that SubstrateNode
+     */
     public SubstrateNodeState getInitialState(final SubstrateNodeIdentifier id) {
 	return this.snInitialState;
     }

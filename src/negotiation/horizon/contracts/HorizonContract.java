@@ -1,9 +1,12 @@
-package negotiation.horizon.negotiatingagent;
+package negotiation.horizon.contracts;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import negotiation.horizon.negotiatingagent.SubstrateNodeIdentifier;
+import negotiation.horizon.negotiatingagent.SubstrateNodeState;
+import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.horizon.parameters.HorizonAllocableParameters;
 import negotiation.horizon.parameters.InterfacesParameters;
@@ -18,28 +21,54 @@ import dima.basicagentcomponents.AgentIdentifier;
  * 
  * @author Vincent Letard
  */
-public class HorizonContract extends
-	ReallocationContract<HorizonCandidature, HorizonSpecification> {
+public class HorizonContract extends ReallocationContract<HorizonCandidature> {
 
     /**
      * Serial version identifier.
      */
     private static final long serialVersionUID = 7804749910350934001L;
 
+    /**
+     * Map of the complete allocation specified by this contrat.
+     */
     private final Map<VirtualNodeIdentifier, SubstrateNodeIdentifier> allocationMap;
 
+    /**
+     * Constructs a new HorizonContract created by the specified VirtualNetwork
+     * and composed by the specified set of candidatures.
+     * 
+     * @param creator
+     *            Initiator of the contract.
+     * @param actions
+     *            Set of HorizonCandidatures of the contract.
+     */
     public HorizonContract(VirtualNetworkIdentifier creator,
 	    HorizonCandidature[] actions) {
 	super(creator, actions);
 	this.allocationMap = this.createAllocationMap();
     }
 
+    /**
+     * Constructs a new HorizonContract created by the specified VirtualNetwork
+     * and composed by the specified set of candidatures.
+     * 
+     * @param creator
+     *            Initiator of the contract.
+     * @param actions
+     *            Set of HorizonCandidatures of the contract.
+     */
     public HorizonContract(AgentIdentifier creator,
 	    Collection<HorizonCandidature> actions) {
 	super(creator, actions);
 	this.allocationMap = this.createAllocationMap();
     }
 
+    /**
+     * Private method initializing the allocation map using the candidatures of
+     * the contract.
+     * 
+     * @return the created map.
+     */
     private Map<VirtualNodeIdentifier, SubstrateNodeIdentifier> createAllocationMap() {
 	final Map<VirtualNodeIdentifier, SubstrateNodeIdentifier> allocationMap = new HashMap<VirtualNodeIdentifier, SubstrateNodeIdentifier>();
 	for (HorizonCandidature candidature : this)
@@ -84,7 +113,7 @@ public class HorizonContract extends
 		    .getInitialState(candidature.getAgent()).getNodeParams(
 			    candidature.getNode()).getAllocableParams();
 
-	    final InterfacesParameters<SubstrateNodeIdentifier, LinkAllocableParameters> switchingIfaceParams = new InterfacesParameters<SubstrateNodeIdentifier, LinkAllocableParameters>();
+	    final Map<SubstrateNodeIdentifier, LinkAllocableParameters> switchingIfaceParams = new HashMap<SubstrateNodeIdentifier, LinkAllocableParameters>();
 	    for (Map.Entry<VirtualNodeIdentifier, LinkAllocableParameters> entry : initialParams
 		    .getInterfacesParameters().entrySet()) {
 		switchingIfaceParams.put(
@@ -93,7 +122,9 @@ public class HorizonContract extends
 	    }
 
 	    HorizonAllocableParameters<SubstrateNodeIdentifier> params = new HorizonAllocableParameters<SubstrateNodeIdentifier>(
-		    initialParams.getMachineParameters(), switchingIfaceParams);
+		    initialParams.getMachineParameters(),
+		    new InterfacesParameters<SubstrateNodeIdentifier, LinkAllocableParameters>(
+			    switchingIfaceParams));
 	    resultingState = new SubstrateNodeState(resultingState, candidature
 		    .getAgent(), params, candidature.isMatchingCreation());
 	}

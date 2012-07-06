@@ -8,22 +8,23 @@ import java.util.Random;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.AgentState;
 
 public class AtMostCContractSelectioner<
-Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
+Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
+ActionSpec extends AbstractActionSpecif,
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
 extends
 BasicAgentCompetence<Agent>
-implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
+implements SelectionCore<Agent,PersonalState, Contract> {
 
 	final int c;
-	final SelectionCore<Agent,ActionSpec, PersonalState, Contract>  myCore;
+	final SelectionCore<Agent,PersonalState, Contract>  myCore;
 
 	Random rand = new Random();
 
@@ -41,7 +42,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 	}
 
 	@Override
-	public void select(ContractTrunk<Contract, ActionSpec, PersonalState> cs,
+	public void select(ContractTrunk<Contract> cs,
 			Collection<Contract> toAccept, Collection<Contract> toReject,
 			Collection<Contract> toPutOnWait) {
 		List<Contract> all = cs.getParticipantOnWaitContracts();

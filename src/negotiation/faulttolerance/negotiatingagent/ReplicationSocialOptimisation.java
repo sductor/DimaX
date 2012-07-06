@@ -5,10 +5,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 
 public class ReplicationSocialOptimisation
-extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
+extends SocialChoiceFunction<ReplicationCandidature>{
 
 
 
@@ -47,24 +48,36 @@ extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 	 * @throws IncompleteContractException
 	 */
 	@Override
-	protected Collection<ReplicationSpecification> cleanStates(
-			final Collection<ReplicationSpecification> res) {
-		final Iterator<ReplicationSpecification> itState = res.iterator();
+	protected <State extends AgentState> Collection<State> cleanStates(
+			final Collection<State> res) {
+		
+		final Iterator<State> itState = res.iterator();
 		while (itState.hasNext()) {
-			if (!(itState.next() instanceof ReplicaState)) {
+			State s = itState.next();
+			assert s instanceof ReplicaState || s instanceof HostState:s;
+			if (!(s instanceof ReplicaState)) {
 				itState.remove();
 			}
 		}
+		assert cleanStateVerif(res);
 		return res;
 	}
 
+	private boolean cleanStateVerif(Collection<? extends AgentState> res){
+		final Iterator<? extends AgentState> itState = res.iterator();
+		while (itState.hasNext()) {
+			AgentState s = itState.next();
+			assert s instanceof ReplicaState || s instanceof HostState:s;
+		}
+		return true;		
+	}
 
 	@Override
-	public Comparator<ReplicationSpecification> getComparator() {
-		return new Comparator<ReplicationSpecification>() {
+	public Comparator<ReplicaState> getComparator() {
+		return new Comparator<ReplicaState>() {
 			@Override
-			public int compare(final ReplicationSpecification r1,
-					final ReplicationSpecification r2) {
+			public int compare(final ReplicaState r1,
+					final ReplicaState r2) {
 				final ReplicaState o1 = (ReplicaState) r1;
 				final ReplicaState o2 = (ReplicaState) r2;
 
@@ -76,12 +89,10 @@ extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 	}
 
 	@Override
-	public UtilitaristEvaluator<ReplicationSpecification> getUtilitaristEvaluator() {
-		return new UtilitaristEvaluator<ReplicationSpecification>() {
+	public UtilitaristEvaluator<ReplicaState> getUtilitaristEvaluator() {
+		return new UtilitaristEvaluator<ReplicaState>() {
 			@Override
-			public Double getUtilityValue(final ReplicationSpecification o) {
-				assert o instanceof ReplicaState;
-
+			public Double getUtilityValue(final ReplicaState o) {
 				final ReplicaState s = (ReplicaState) o;
 				return s.getMyReliability();
 
@@ -114,4 +125,12 @@ extends SocialChoiceFunction<ReplicationSpecification, ReplicationCandidature>{
 		};
 	}
 
+//	private boolean cleanStateVerif(Collection<? extends AgentState> res){
+//		final Iterator<? extends AgentState> itState = res.iterator();
+//		while (itState.hasNext()) {
+//			AgentState s = itState.next();
+//			assert s instanceof ReplicaState || s instanceof HostState:s;
+//		}
+//		return true;		
+//	}
 }

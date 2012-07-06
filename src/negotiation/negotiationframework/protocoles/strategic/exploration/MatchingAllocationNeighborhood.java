@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;
@@ -15,7 +15,7 @@ import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dimaxx.tools.mappedcollections.HashedHashList;
 
-public  class MatchingAllocationNeighborhood<ActionSpec extends AbstractActionSpecification>
+public  class MatchingAllocationNeighborhood<ActionSpec extends AbstractActionSpecif>
 extends BasicAgentModule<StrategicNegotiatingAgent<?, MatchingCandidature<ActionSpec>, ActionSpec>>
 implements AbstractContractNeighborhood<MatchingCandidature<ActionSpec>, ActionSpec>
 {

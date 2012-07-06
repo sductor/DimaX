@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Random;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 
 public class GreedySelectionModule<
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>{
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
+extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 	private static final long serialVersionUID = 438513006322441185L;
 
 	public enum GreedySelectionType { Greedy, Random, RooletteWheel};

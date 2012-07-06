@@ -3,7 +3,6 @@ package negotiation.faulttolerance.experimentation;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -27,7 +26,7 @@ import dimaxx.experimentation.ObservingSelfService;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public class Host
-extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
+extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 {
 	private static final long serialVersionUID = -8478683967125467116L;
 
@@ -57,8 +56,8 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	@Competence
 	public
-	FaultObservationService<ReplicationSpecification, HostState, ReplicationCandidature> myFaultAwareService =
-	new FaultObservationService<ReplicationSpecification, HostState, ReplicationCandidature>() {
+	FaultObservationService myFaultAwareService =
+	new FaultObservationService() {
 
 		/**
 		 *

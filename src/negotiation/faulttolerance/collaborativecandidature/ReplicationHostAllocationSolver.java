@@ -9,7 +9,6 @@ import negotiation.faulttolerance.experimentation.ReplicationOptimalSolver;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.exploration.ChocoAllocationSolver;
@@ -26,7 +25,7 @@ import dima.basicagentcomponents.AgentName;
 
 public class ReplicationHostAllocationSolver
 extends ChocoAllocationSolver
-<ReplicationCandidature, ReplicationSpecification, HostState>{
+<ReplicationCandidature, HostState>{
 	private static final long serialVersionUID = 161669049253111527L;
 
 
@@ -216,16 +215,16 @@ extends ChocoAllocationSolver
 
 		final ReplicationCandidature ca =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), ra.getMyAgentIdentifier(), true, true);
-		ca.setSpecification(me);
-		ca.setSpecification(ra);
+		ca.setInitialState(me);
+		ca.setInitialState(ra);
 
 		ra = ca.getAgentResultingState();
 		me = ca.getResourceResultingState();
 
 		final ReplicationCandidature cb =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), rb.getMyAgentIdentifier(), true, true);
-		cb.setSpecification(me);
-		cb.setSpecification(rb);
+		cb.setInitialState(me);
+		cb.setInitialState(rb);
 
 		rb = cb.getAgentResultingState();
 		me = cb.getResourceResultingState();
@@ -249,33 +248,33 @@ extends ChocoAllocationSolver
 
 		final ReplicationCandidature c1 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r1.getMyAgentIdentifier(), true, true);
-		c1.setSpecification(me);
-		c1.setSpecification(r1);
+		c1.setInitialState(me);
+		c1.setInitialState(r1);
 
 		final ReplicationCandidature c2 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r2.getMyAgentIdentifier(), true, true);
-		c2.setSpecification(me);
-		c2.setSpecification(r2);
+		c2.setInitialState(me);
+		c2.setInitialState(r2);
 
 		final ReplicationCandidature c3 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r3.getMyAgentIdentifier(), true, true);
-		c3.setSpecification(me);
-		c3.setSpecification(r3);
+		c3.setInitialState(me);
+		c3.setInitialState(r3);
 
 		final ReplicationCandidature c4 =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), r4.getMyAgentIdentifier(), true, true);
-		c4.setSpecification(me);
-		c4.setSpecification(r4);
+		c4.setInitialState(me);
+		c4.setInitialState(r4);
 
 		final ReplicationCandidature cad =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), ra.getMyAgentIdentifier(), false, true);
-		cad.setSpecification(me);
-		cad.setSpecification(ra);
+		cad.setInitialState(me);
+		cad.setInitialState(ra);
 
 		final ReplicationCandidature cbd =
 				new ReplicationCandidature(me.getMyAgentIdentifier(), rb.getMyAgentIdentifier(), false, true);
-		cbd.setSpecification(me);
-		cbd.setSpecification(rb);
+		cbd.setInitialState(me);
+		cbd.setInitialState(rb);
 
 		final List<ReplicationCandidature> concerned = new ArrayList<ReplicationCandidature>();
 		concerned.add(c1);

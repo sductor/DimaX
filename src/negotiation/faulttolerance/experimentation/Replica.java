@@ -7,7 +7,6 @@ import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
@@ -23,7 +22,7 @@ import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
 
 public class Replica
-extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature> {
+extends SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature> {
 	private static final long serialVersionUID = 4986143017976368579L;
 
 	//
@@ -61,8 +60,8 @@ extends SimpleNegotiatingAgent<ReplicationSpecification, ReplicaState, Replicati
 	};
 
 	@Competence
-	FaultObservationService<ReplicationSpecification, ReplicaState, ReplicationCandidature> myFaultAwareService =
-	new FaultObservationService<ReplicationSpecification, ReplicaState, ReplicationCandidature>() {
+	FaultObservationService myFaultAwareService =
+	new FaultObservationService() {
 
 		/**
 		 *

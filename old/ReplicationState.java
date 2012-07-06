@@ -1,10 +1,10 @@
 package negotiation.faulttolerance.negotiatingagent;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.rationality.AgentState;
 
 
-public interface ReplicationSpecification extends AbstractActionSpecification {
+public interface ReplicationState extends  AgentState {
 
 }
 

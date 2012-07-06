@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 
 public class BasicGradientSearch
 <Action extends AbstractContractTransition<ActionSpec>,
-ActionSpec extends AbstractActionSpecification>
+ActionSpec extends AbstractActionSpecif>
 implements AbstractStrategicExplorationModule<AbstractContractTransition<ActionSpec>, ActionSpec>{
 	private static final long serialVersionUID = -7844264592171808539L;
 

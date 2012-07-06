@@ -171,7 +171,7 @@ AbstractContractTransition {
 		if (this.specs!=null && !this.specs.keySet().containsAll(this.actors)) {
 			throw new IncompleteContractException();
 		} else if (!this.initState.keySet().containsAll(actors)){
-			throw new IncompleteContractException();
+			throw new IncompleteContractException("initSate "+initState+"\n actors : "+actors);
 		} else {
 			for (final AgentIdentifier id : this.actors) {
 				if (!this.getInitialState(id).isValid()) {

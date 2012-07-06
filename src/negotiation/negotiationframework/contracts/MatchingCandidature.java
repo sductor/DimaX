@@ -80,34 +80,52 @@ extends ContractTransition {
 
 	@Override
 	public String toString() {
-		String agentSpecif, hostSpecif;
+		String agentSpecif, hostSpecif, agentinitState, hostinitState;
 		final String agentResult, hostResult, isviable;
 
 		try {
 			agentSpecif = this.getSpecificationOf(this.getAgent()).toString();
-			//			agentResult = this.computeResultingState(getAgent()).toString();
-		} catch (final negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		} catch (final IncompleteContractException e) {
 			agentSpecif = "unavailable";
-			//			agentResult = "unavailable";
 		}
 		try {
 			hostSpecif = this.getSpecificationOf(this.getResource()).toString();
-			//			hostResult = this.computeResultingState(getResource()).toString();
-		} catch (final negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		} catch (final IncompleteContractException e) {
 			hostSpecif = "unavailable";
-			//			hostResult = "unavailable";
 		}
+		try {
+			agentinitState = this.getInitialState(this.getAgent()).toString();
+		} catch (final IncompleteContractException e) {
+			agentinitState = "unavailable";
+		}
+		try {
+			hostinitState = this.getInitialState(this.getResource()).toString();
+		} catch (final IncompleteContractException e) {
+			hostinitState = "unavailable";
+		}
+//		try {
+//			agentResult = this.computeResultingState(getAgent()).toString();
+//		} catch (final IncompleteContractException e) {
+//			agentResult = "unavailable";
+//		}
+//		try {
+//			hostResult = this.computeResultingState(getResource()).toString();
+//		} catch (final IncompleteContractException e) {
+//			hostResult = "unavailable";
+//		}
 		//		try {
 		//			isviable= isViable()+"";
-		//		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		//		} catch (IncompleteContractException e) {
 		//			isviable="unavailable";
 		//		}
 
 		return this.getIdentifier() + " -> ("
 		+ (this.creation ? "create" : "destruct") + ")"
 		//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
-		+"\n  -----> agent specif : "+agentSpecif//+" --> resulting in "+agentResult
-		+"\n  -----> host specif : "+hostSpecif//+" --> resulting in "+hostResult
+		+"\n  -----> agent specif : "+agentSpecif
+		+"\n  -----> host specif : "+hostSpecif
+		+"\n  -----> agent init state : "+agentinitState//+" --> resulting in "+agentResult
+		+"\n  -----> host int state : "+hostinitState//+" --> resulting in "+hostResult
 		//		+"\n ***************** isViable? "+isviable
 		;
 

@@ -89,7 +89,7 @@ InformedCandidature<Contract>> {
 				(InformedCandidatureRationality<PersonalState, Contract>) this.getMyAgent().getMyCore();
 
 		//contract lists
-		final List<InformedCandidature<Contract>> allContracts = contracts.getAllContracts();
+		final Collection<InformedCandidature<Contract>> allContracts = contracts.getAllContracts();
 		PersonalState currentState = this.getMyAgent().getMyCurrentState();
 		assert ContractTransition.allComplete(allContracts):allContracts;
 

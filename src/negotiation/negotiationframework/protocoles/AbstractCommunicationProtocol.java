@@ -184,7 +184,7 @@ extends Protocol<SimpleNegotiatingAgent<?, Contract>> {
 					"initiating selection with following contracts :\n"+this.getContracts(),
 					AbstractCommunicationProtocol.log_selectionStep);
 
-			assert ContractTransition.allComplete(getContracts().getAllContracts());
+//			assert ContractTransition.allComplete(getContracts().getAllContracts()); 
 			
 			this.getMyAgent().getMySelectionCore().select(this.getContracts(), toAccept, toReject, toPutOnWait);
 
@@ -608,11 +608,12 @@ extends Protocol<SimpleNegotiatingAgent<?, Contract>> {
 
 	public static <Contract extends AbstractContractTransition>
 	boolean partitioning(
-			final Collection<Contract> all,
+			final Collection<Contract> allContracts,
 			final Collection<Contract> accepted,
 			final Collection<Contract> rejected,
 			final Collection<Contract> onWait) {
 
+		Collection<Contract> all = new ArrayList<Contract>(allContracts);
 		//accepted rejected et onWait sont disjoint
 		for (final Contract c : accepted){
 			assert !rejected.contains(c);

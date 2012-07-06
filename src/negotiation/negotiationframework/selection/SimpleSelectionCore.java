@@ -96,7 +96,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 	//return contract to validate
 	protected Collection<Contract> selection(
 			final PersonalState currentState,
-			final List<Contract> contractsToExplore){
+			final Collection<Contract> contractsToExplore){
 		return this.selectionModule.greedySelection(currentState, contractsToExplore);
 	}
 
@@ -112,11 +112,11 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 	 * @param alreadyAccepted
 	 * @param rejected
 	 */
-	protected void select(final List<Contract> initiatorContractToExplore,
-			final List<Contract> participantContractToExplore,
-			final List<Contract> initiatorOnWaitContract,
-			final List<Contract> participantAlreadyAccepted,
-			final List<Contract> rejected) {
+	protected void select(final Collection<Contract> initiatorContractToExplore,
+			final Collection<Contract> participantContractToExplore,
+			final Collection<Contract> initiatorOnWaitContract,
+			final Collection<Contract> participantAlreadyAccepted,
+			final Collection<Contract> rejected) {
 
 		// Verification de la consistance
 		assert this.getMyAgent().getMyCurrentState().isValid():

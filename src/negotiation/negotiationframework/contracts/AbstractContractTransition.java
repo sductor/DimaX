@@ -65,14 +65,12 @@ extends DimaComponentInterface {
 	public <State extends AgentState> boolean isViable(Collection<State> initialStates)	throws IncompleteContractException;
 
 	public class IncompleteContractException extends Exception{
-
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 7759487818635127561L;};
-		// public ContractTransition<ActionSpec> clone();
-
-
+		private static final long serialVersionUID = 7759487818635127561L;
+		public IncompleteContractException(String message) {
+			super(message);
+		}	
+		public IncompleteContractException() {}
+	};
 }
 
 //

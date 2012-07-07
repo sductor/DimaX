@@ -99,4 +99,29 @@ implements RationalCore<PersonalState, Contract>{
 	public void activateCompetence(final boolean active) {
 		this.myPersonalCore.activateCompetence(active);
 	}
+
+	//
+	// Assertion test
+	//
+
+	public static  <Contract extends AbstractContractTransition> boolean verifyStateConsistency(
+			SimpleRationalAgent<?, Contract> myAgent,
+			final Collection<Contract> c1,
+			final Collection<Contract> c2){
+		try {
+		for (final Contract ca : c1) {
+			for (final Contract cb : c2) {
+				assert ca.getInitialState(myAgent.getIdentifier()).equals(cb.getInitialState(myAgent.getIdentifier()));
+			}
+		}
+		for (final Contract ca : c1) {
+			assert ca.getInitialState(myAgent.getIdentifier()).equals(myAgent.getMyCurrentState());
+		}
+		return true;
+		} catch (IncompleteContractException c){
+			assert false;
+			return true;
+		}
+	}
+
 }

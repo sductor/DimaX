@@ -10,4 +10,7 @@ DimaComponentInterface {
 	public Double getProd();
 	
 	public int getNumberOfAggregatedElements();
+	
+	public double getWeightOfAggregatedElements();
+	
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
+import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -35,13 +36,14 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
-		for (final ReplicationCandidature c : c1) {
-			c.setInitialState(getMyAgent().getMyCurrentState());
-		}
-		for (final ReplicationCandidature c : c2) {
-			c.setInitialState(getMyAgent().getMyCurrentState());
-		}
+//		for (final ReplicationCandidature c : c1) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//		}
+//		for (final ReplicationCandidature c : c2) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//		}
 		//		return this.getFirstLoadSecondReliabilitAllocationPreference(s, c1, c2);
+		AltruistRationalCore.verifyStateConsistency(getMyAgent(), c1, c2);
 		return this.getAllocationReliabilityPreference(c1, c2);
 	}
 

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import negotiation.negotiationframework.rationality.AgentState;
+import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
@@ -102,7 +103,7 @@ AbstractContractTransition {
 	public AbstractActionSpecif getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
 
 			if (specs==null){
-				return new NullActionSpec();
+				return new NullActionSpec(id);
 			} else if (!this.specs.containsKey(id)) {
 				throw new IncompleteContractException();
 			} else {
@@ -149,6 +150,8 @@ AbstractContractTransition {
 		assert state != null;
 
 		if (this.actors.contains(state.getMyAgentIdentifier())) {
+			assert !this.initState.containsKey(state.getMyAgentIdentifier()) || this.initState.get(state.getMyAgentIdentifier()).equals(state):
+				this.initState.get(state.getMyAgentIdentifier())+" "+state;
 			this.initState.put(state.getMyAgentIdentifier(), state);
 		} else {
 			throw new RuntimeException("unappropriate specification set");
@@ -373,46 +376,61 @@ AbstractContractTransition {
 
 		public class NullActionSpec implements AbstractActionSpecif{
 
+			AgentIdentifier id;
+			private final Long creationTime;
+			
+			public NullActionSpec(AgentIdentifier id) {
+			this.id=id;
+			this.creationTime = new Date().getTime();
+		}
+
 			@Override
 			public AgentIdentifier getMyAgentIdentifier() {
-				return null;
+				return id;
+			}
+
+
+
+			@Override
+			public Long getCreationTime() {
+				return this.creationTime;
 			}
 
 			@Override
 			public long getUptime() {
-				return 0;
+				return new Date().getTime() - this.creationTime;
 			}
 
-			@Override
-			public Long getCreationTime() {
-				return null;
-			}
 
 			@Override
-			public int isNewerThan(Information that) {
+			public int isNewerThan(final Information i) {
 				return 0;
 			}
 
 			@Override
 			public Double getNumericValue(Information e) {
+				assert false;
 				return null;
 			}
 
 			@Override
 			public Information getRepresentativeElement(
 					Collection<? extends Information> elems) {
+				assert false;
 				return null;
 			}
 
 			@Override
 			public Information getRepresentativeElement(
-					Map<? extends Information, Double> elems) {		
+					Map<? extends Information, Double> elems) {	
+				assert false;	
 				return null;
 			}
 
 			@Override
 			public AbstractCompensativeAggregation<Information> fuse(
 					Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
+				assert false;
 				return null;
 			}}
 }

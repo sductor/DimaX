@@ -271,7 +271,7 @@ AbstractContractTransition{
 	Map<AgentIdentifier, AgentState> getInitialStates(
 			final Collection<Contract> a1,
 			final Collection<Contract> a2) throws IncompleteContractException{
-		final Map<AgentIdentifier, AgentState> result = new HashMap<AgentIdentifier, AgentState>();
+		final Map<AgentIdentifier, AgentState> resultState = new HashMap<AgentIdentifier, AgentState>();
 		final Map<AgentIdentifier, AbstractActionSpecif> resultSpec = new HashMap<AgentIdentifier, AbstractActionSpecif>();
 		final Collection<Contract> allContract = new ArrayList<Contract>();
 		allContract.addAll(a1);
@@ -279,14 +279,14 @@ AbstractContractTransition{
 
 		for (final Contract c : allContract) {
 			for (final AgentIdentifier id : c.getAllParticipants()) {
-				if (result.containsKey(id)){
-					if (c.getSpecificationOf(id).isNewerThan(result.get(id))>1) {
+				if (resultState.containsKey(id)){
+					if (c.getInitialState(id).isNewerThan(resultState.get(id))>1) {
 						//						assert 1<0;//						System.out.println("remplacing a fresher state");
-						result.put(id,c.getInitialState(id));
+						resultState.put(id,c.getInitialState(id));
 						resultSpec.put(id, c.getSpecificationOf(id));
 					}
 				} else {
-					result.put(id,c.getInitialState(id));
+					resultState.put(id,c.getInitialState(id));
 					resultSpec.put(id, c.getSpecificationOf(id));
 				}
 			}
@@ -296,10 +296,10 @@ AbstractContractTransition{
 		for (final Contract cOld : allContract) {
 			for (final AgentIdentifier id : cOld.getAllParticipants()) {
 				cOld.setSpecification(resultSpec.get(id));
-				cOld.setInitialState(result.get(id));
+				cOld.setInitialState(resultState.get(id));
 			}
 		}
-		return result;
+		return resultState;
 	}
 
 	/**

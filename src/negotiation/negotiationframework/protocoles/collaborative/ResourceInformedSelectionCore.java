@@ -102,7 +102,7 @@ InformedCandidature<Contract>> {
 			this.logMonologue("i support everyone yeah! =)", AbstractCommunicationProtocol.log_selectionStep);
 		} else //There is new agent who want to be allocated!!!
 			if (MatchingCandidature.areAllCreation(allContracts)){//I'm not currently negotiating reallocations
-				assert !contracts.hasReallocationContracts():contracts.getReallocationContracts()+"\n ---> "+allContracts;
+				assert !contracts.hasReallocationContracts():contracts.getReallocationContracts()+"\n\n -------------------> \n"+allContracts;
 
 				//Trying to accept simple candidatures
 				//accepting as many as possible*
@@ -168,7 +168,7 @@ InformedCandidature<Contract>> {
 
 			} else {//I'm currently  negotiating reallocations
 				//Trying to accept reallocating contracts
-				assert !contracts.getReallocationContracts().isEmpty() || !contracts.getContractToCancel().isEmpty();
+				assert contracts.hasReallocationContracts() || !contracts.getContractToCancel().isEmpty();
 
 
 				if (contracts.hasReallocationContracts()){

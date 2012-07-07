@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
@@ -46,13 +47,14 @@ implements RationalCore<HostState, ReplicationCandidature> {
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
-		for (final ReplicationCandidature c : c1) {
-			c.setInitialState(getMyAgent().getMyCurrentState());
-		}
-		for (final ReplicationCandidature c : c2) {
-			c.setInitialState(getMyAgent().getMyCurrentState());
-
-		}
+//		for (final ReplicationCandidature c : c1) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//		}
+//		for (final ReplicationCandidature c : c2) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//
+//		}
+		AltruistRationalCore.verifyStateConsistency(getMyAgent(), c1, c2);
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
 				"Preference : "+pref+" for \n "+c1+"\n"+c2,

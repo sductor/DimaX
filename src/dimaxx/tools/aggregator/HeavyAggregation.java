@@ -87,6 +87,7 @@ UtilitaristAnalyser<Element> {
 	 *
 	 */
 
+	@Override
 	public double getWeightOfAggregatedElements() {
 		double sum=0;
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -115,11 +116,8 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 
 
 
-
-
-	@Deprecated //couteux
 	public Collection<ReallocationContract<Contract>> getReallocationContracts(){
-		return this.upgradingContracts.getAllValues();
+		return this.upgradingContracts.getAllValuesUnsorted();
 	}
 
 	public boolean hasReallocationContracts(){
@@ -156,32 +154,79 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 
 	@Override
 	public void remove(final  InformedCandidature<Contract> c) {
+		assert verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+upgradingContracts.containsKey(c));
+		
 		super.remove(c);
-		if (toCancel.contains(c))
-			toCancel.remove(c);
-		final Collection<ReallocationContract<Contract>> toRemove =
-				new ArrayList<ReallocationContract<Contract>>();
-		toRemove.addAll(this.upgradingContracts.get(c));
-		for (final ReallocationContract<Contract> r : toRemove) {
-			Collection<InformedCandidature<Contract>> concernedKeys =
-					this.upgradingContracts.removeAvalue(r);
-			//adding lost key to cancel
-			for (InformedCandidature<Contract> k : concernedKeys){
-				if (k.getInitiator().equals(getMyAgentIdentifier()) && !upgradingContracts.containsKey(k)){
-					assert !k.isMatchingCreation();
-					toCancel.add(k);
-				}
+		toCancel.remove(c);
+		final Collection<ReallocationContract<Contract>> realloctoRemove = this.upgradingContracts.remove(c);
+		
+		//removing the other occurence of c reallocation contracts
+		Collection<InformedCandidature<Contract>> concernedKeys = new HashSet<InformedCandidature<Contract>>();
+		for (ReallocationContract<Contract> realloc : realloctoRemove){
+			concernedKeys.addAll(this.upgradingContracts.removeAvalue(realloc));
+		}		
+		assert !upgradingContracts.containsKey(c);
+		
+		assert verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+upgradingContracts.containsKey(c));
+		
+		//adding lost keys to cancel
+		concernedKeys.remove(c);
+		for (InformedCandidature<Contract> k : concernedKeys){
+			if (k.getInitiator().equals(getMyAgentIdentifier()) && !upgradingContracts.containsKey(k)){
+				assert !k.isMatchingCreation();
+				toCancel.add(k);
 			}
-
-		}
+		}			
+		assert !toCancel.contains(c);
 	}
 
 	@Override
 	public String toString(){
 		return super.toString()+"\n current upgrading contract are : \n "+this.upgradingContracts;
 	}
-}
 
+	//
+	// Assert
+	//
+
+
+
+	private boolean verifyIntegrity(String contextError){	
+		Collection<ReallocationContract<Contract>> Allrealloc = this.upgradingContracts.getAllValuesUnsorted();
+		//all individual contract of realloc exist as key in the base
+		for (ReallocationContract<Contract> r : Allrealloc){
+			for (Contract c : r)
+				assert upgradingContracts.containsKey(c):toCancel.contains(c)+"\n\\\\ aa "+c+"\\\\ \n"+contextError;
+		}
+		//all realloc contract are mapped to their individual contracts
+		for (InformedCandidature<Contract> c : upgradingContracts.keySet()){
+			Collection<ReallocationContract<Contract>> notReallocOfC = new ArrayList<ReallocationContract<Contract>>(Allrealloc);
+			notReallocOfC.removeAll(upgradingContracts.get(c));
+			for (ReallocationContract<Contract> r : notReallocOfC){
+				assert !notReallocOfC.contains(c):c+" "+r+" \n"+contextError;
+			}
+			
+		}
+
+		return true;
+	}
+}
+//super.remove(c);
+//toCancel.remove(c);
+//final Collection<ReallocationContract<Contract>> toRemove =
+//		new ArrayList<ReallocationContract<Contract>>();
+//toRemove.addAll(this.upgradingContracts.get(c));
+//for (final ReallocationContract<Contract> realloc : toRemove) {
+//	Collection<InformedCandidature<Contract>> concernedKeys =
+//			this.upgradingContracts.removeAvalue(realloc);
+//	//adding lost keys to cancel
+//	for (InformedCandidature<Contract> k : concernedKeys){
+//		if (k.getInitiator().equals(getMyAgentIdentifier()) && !upgradingContracts.containsKey(k)){
+//			assert !k.isMatchingCreation();
+//			toCancel.add(k);
+//		}
+//	}
+//}
 //		final LinkedList<ReallocationContract<Contract, ActionSpec>> upCont =
 //				new LinkedList<ReallocationContract<Contract, ActionSpec>>(this.upgradingContracts.get(c));
 //		if (upCont.isEmpty()) {

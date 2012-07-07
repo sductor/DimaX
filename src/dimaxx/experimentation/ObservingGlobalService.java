@@ -16,6 +16,8 @@ import dima.introspectionbasedagents.services.observingagent.NotificationEnvelop
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
+import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
+import dimaxx.tools.aggregator.AbstractMinMaxAggregation;
 import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
@@ -241,21 +243,21 @@ extends BasicCommunicatingCompetence<Agent>{
 	/**
 	 * Give the agregated values of a parameter
 	 */
-	public static String getQuantilePointObs(
+	public static <Aggregation extends AbstractMinMaxAggregation<Double> & AbstractCompensativeAggregation<Double>>String getQuantilePointObs(
 			final String entry,
-			final HeavyAggregation<Double> variable, final double significatifPercent, final int totalNumber){
+			final Aggregation variable, final double significatifPercent, final int totalNumber){
 		String result =entry+" min;\t "
-				+entry+" firstTercile;\t "
-				+entry+"  mediane;\t  "
-				+entry+" lastTercile;\t "
+//				+entry+" firstTercile;\t "
+//				+entry+"  mediane;\t  "
+//				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
 				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
 		if (variable.getWeightOfAggregatedElements()> (significatifPercent*totalNumber)) {
 			result += variable.getMinElement()+";\t " +
-					variable.getQuantile(1,3)+";\t " +
-					variable.getMediane()+";\t " +
-					variable.getQuantile(2,3)+";\t " +
+//					variable.getQuantile(1,3)+";\t " +
+//					variable.getMediane()+";\t " +
+//					variable.getQuantile(2,3)+";\t " +
 					variable.getMaxElement()+";\t " +
 					variable.getProd()+";\t " +
 					variable.getRepresentativeElement()+";\t " +
@@ -275,13 +277,13 @@ extends BasicCommunicatingCompetence<Agent>{
 	 * @param totalNumber
 	 * @return
 	 */
-	public static  String getQuantileTimeEvolutionObs( final String entry,
-			final HeavyAggregation<Double>[] variable, final double significatifPercent, final int totalNumber){
+	public static <Aggregation extends AbstractMinMaxAggregation<Double> & AbstractCompensativeAggregation<Double>> String getQuantileTimeEvolutionObs( final String entry,
+			final Aggregation[] variable, final double significatifPercent, final int totalNumber){
 		String result ="t (seconds);\t "+
 				entry+" min;\t "
-				+entry+" firstTercile;\t "
-				+entry+"  mediane;\t  "
-				+entry+" lastTercile;\t "
+//				+entry+" firstTercile;\t "
+//				+entry+"  mediane;\t  "
+//				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
 				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
@@ -290,9 +292,9 @@ extends BasicCommunicatingCompetence<Agent>{
 			if (variable[i].getWeightOfAggregatedElements()>significatifPercent*totalNumber) {
 				result +=
 						variable[i].getMinElement()+";\t " +
-								variable[i].getQuantile(1,3)+";\t " +
-								variable[i].getMediane()+";\t " +
-								variable[i].getQuantile(2,3)+";\t " +
+//								variable[i].getQuantile(1,3)+";\t " +
+//								variable[i].getMediane()+";\t " +
+//								variable[i].getQuantile(2,3)+";\t " +
 								variable[i].getMaxElement()+";\t " +
 								variable[i].getProd()+";\t " +
 								variable[i].getRepresentativeElement()+";\t (" +

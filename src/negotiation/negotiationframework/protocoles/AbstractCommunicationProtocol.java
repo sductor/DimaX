@@ -9,6 +9,7 @@ import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -199,9 +200,10 @@ extends Protocol<SimpleNegotiatingAgent<?, Contract>> {
 					//
 					// Answering
 					//
-
-					this.answerAccepted(toAccept);
+					//important de mettre les rejet avant les acceptation!! 
+					//les acceptation conduisen a une modification de l'état qui trendra les contrat rejeté incohérent
 					this.answerRejected(toReject);
+					this.answerAccepted(toAccept);
 		}
 	}
 
@@ -343,6 +345,14 @@ extends Protocol<SimpleNegotiatingAgent<?, Contract>> {
 	@FipaACLEnvelope(performative = Performative.Propose, protocol = AbstractCommunicationProtocol.class)
 	protected void receiveProposal(final SimpleContractProposal delta)  {
 		final Contract contract = delta.getMyContract();
+	
+			try {
+				contract.getInitialState(getMyAgent().getIdentifier());
+				assert false:contract.getInitialState(getMyAgent().getIdentifier())+" "+contract;
+			} catch (IncompleteContractException e) {
+				//good
+			}
+		
 		assert receivedContract.add(contract.getIdentifier());
 		this.logMonologue("I've received proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);
 		

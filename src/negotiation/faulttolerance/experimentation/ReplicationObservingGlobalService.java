@@ -47,19 +47,19 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	 * Agent
 	 */
 	/* Quantile */
-	HeavyDoubleAggregation[] agentsExpectedReliabilityEvolution;
-	HeavyDoubleAggregation[] agentsMinReliabilityEvolution;
+	LightAverageDoubleAggregation[] agentsExpectedReliabilityEvolution;
+	LightAverageDoubleAggregation[] agentsMinReliabilityEvolution;
 	/* Mean */
 	LightWeightedAverageDoubleAggregation[] criticite;
 	/* Disponibility */
-	HeavyDoubleAggregation[] agentsDispoEvolution;
+	LightAverageDoubleAggregation[] agentsDispoEvolution;
 	/* Quantile */
-	HeavyDoubleAggregation[] agentsSaturationEvolution;
+	LightAverageDoubleAggregation[] agentsSaturationEvolution;
 	/* Point */
 	//	HeavyDoubleAggregation firstReplicationtime;
-	HeavyDoubleAggregation lastReplicationtime;
-	HeavyDoubleAggregation nbOfStateModif;
-	HeavyDoubleAggregation searchTime;
+	LightAverageDoubleAggregation lastReplicationtime;
+	LightAverageDoubleAggregation nbOfStateModif;
+	LightAverageDoubleAggregation searchTime;
 	// Map<AgentIdentifier, Double> firstReplicationtime =
 	// new HashMap<AgentIdentifier, Double>();
 	// Map<AgentIdentifier, Double> lifeTime =
@@ -72,7 +72,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	 * Host
 	 */
 	/* Quantile */
-	HeavyDoubleAggregation[] hostsChargeEvolution;
+	LightAverageDoubleAggregation[] hostsChargeEvolution;
 	/* Mean */
 	LightAverageDoubleAggregation[] faulty;
 //	private int remainingHost=0;
@@ -103,23 +103,23 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 	@Override
 	public void initiate() {
-		this.agentsExpectedReliabilityEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
-		this.agentsMinReliabilityEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
-		this.agentsDispoEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsExpectedReliabilityEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsMinReliabilityEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsDispoEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.criticite = new LightWeightedAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
-		this.hostsChargeEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.hostsChargeEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.faulty = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
-		this.agentsSaturationEvolution = new HeavyDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsSaturationEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		//		firstReplicationtime = new HeavyDoubleAggregation();
-		lastReplicationtime = new HeavyDoubleAggregation();
-		nbOfStateModif = new HeavyDoubleAggregation();
-		searchTime = new HeavyDoubleAggregation();
+		lastReplicationtime = new LightAverageDoubleAggregation();
+		nbOfStateModif = new LightAverageDoubleAggregation();
+		searchTime = new LightAverageDoubleAggregation();
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
-			this.hostsChargeEvolution[i] = new HeavyDoubleAggregation();
-			this.agentsSaturationEvolution[i] = new HeavyDoubleAggregation();
-			this.agentsExpectedReliabilityEvolution[i] = new HeavyDoubleAggregation();
-			this.agentsMinReliabilityEvolution[i] = new HeavyDoubleAggregation();
-			this.agentsDispoEvolution[i] = new HeavyDoubleAggregation();
+			this.hostsChargeEvolution[i] = new LightAverageDoubleAggregation();
+			this.agentsSaturationEvolution[i] = new LightAverageDoubleAggregation();
+			this.agentsExpectedReliabilityEvolution[i] = new LightAverageDoubleAggregation();
+			this.agentsMinReliabilityEvolution[i] = new LightAverageDoubleAggregation();
+			this.agentsDispoEvolution[i] = new LightAverageDoubleAggregation();
 			this.criticite[i] = new LightWeightedAverageDoubleAggregation();
 			this.faulty[i] = new LightAverageDoubleAggregation();
 		}

@@ -88,11 +88,27 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 		}
 		return finalValues;
 	}
-
+	/**
+	 * @param a key
+	 * @return the value associated to the key or an empty collection if no key is present
+	 */
 	@Override
-	public synchronized Set<V> get(final Object key){
+	public Set<V> get(final Object key){
+		assert key!=null;
 		if (this.containsKey(key)) {
 			return super.get(key);
+		} else {
+			return new HashSet<V>();
+		}
+	}
+	/**
+	 * @param a key
+	 * @return the value associated to the key or an empty collection if no key is present
+	 */
+	@Override
+	public synchronized Set<V> remove(final Object key){
+		if (this.containsKey(key)) {
+			return super.remove(key);
 		} else {
 			return new HashSet<V>();
 		}

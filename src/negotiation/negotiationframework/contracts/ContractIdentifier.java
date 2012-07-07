@@ -64,7 +64,9 @@ public class ContractIdentifier implements DimaComponentInterface {
 		// que l'on ajoute au résultat après l'avoir multiplié
 		// par le nombre "multiplieur" :
 		result = multiplier * result + this.initiator.toString().hashCode();
-		result = multiplier * result + this.participants.toString().hashCode();
+		for (AgentIdentifier p : participants) {
+			result = multiplier * result + p.toString().hashCode();
+		}
 		// result = multiplier*result + (contractCreation.hashCode());
 
 		// On retourne le résultat :
@@ -73,18 +75,12 @@ public class ContractIdentifier implements DimaComponentInterface {
 
 	@Override
 	public boolean equals(final Object that) {
-
 		if (that instanceof ContractIdentifier) {
 			if (((ContractIdentifier) that).initiator.equals(this.initiator)
-					&& ((ContractIdentifier) that).participants
-					.equals(this.participants)) {
-				if (!((ContractIdentifier)
-						that).contractCreation.equals(this.contractCreation) ) {
-					throw new
-					RuntimeException("un agent a envoyé deux prop dans la mm session!!\n"+this+that);
-				} else {
-					return true;
-				}
+					&& ((ContractIdentifier) that).participants.equals(this.participants)) {
+				assert ((ContractIdentifier)that).contractCreation.equals(this.contractCreation):
+					"un agent a envoyé deux prop dans la mm session!!\n"+this+that;
+				return true;
 			}
 		}
 		return false;

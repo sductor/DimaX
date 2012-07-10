@@ -52,6 +52,8 @@ public abstract class SimpleAgentState implements AgentState {
 	//		this.creationTime = new Date().getTime();
 	//	}
 
+	public abstract AgentState clone();
+	
 	@Override
 	public String toString() {
 		return "State of agent " + this.myAgent;// +" generated on "+creationTime;

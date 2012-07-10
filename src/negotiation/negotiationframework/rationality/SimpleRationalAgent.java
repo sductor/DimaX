@@ -206,19 +206,6 @@ extends BasicCompetentAgent {
 	 * Rationality
 	 */
 
-	public boolean isAnImprovment(final PersonalState s, final Contract c) {
-		final Collection<Contract> a = new ArrayList<Contract>();
-		a.add(c);
-		return this.Iaccept(s, a);
-	}
-
-	public boolean isAnImprovment(final PersonalState s, final Collection<? extends Contract> c) {
-		final Collection<Contract> a2 = new ArrayList<Contract>();
-		return isPersonalyValid(s, c)
-				&& this.myCore.getAllocationPreference((Collection<Contract>) c, a2) > 0;
-	}
-
-
 	public boolean Iaccept(final PersonalState s, final Contract c) {
 		final Collection<Contract> a = new ArrayList<Contract>();
 		a.add(c);
@@ -227,9 +214,17 @@ extends BasicCompetentAgent {
 
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
 		final Collection<Contract> a2 = new ArrayList<Contract>();
-		assert ContractTransition.allComplete(c);
 		return isPersonalyValid(s, c)
-				&&  this.myCore.getAllocationPreference((Collection<Contract>) c, a2) >= 0;
+				&& this.myCore.getAllocationPreference((Collection<Contract>) c, a2) > 0;
+	}
+
+
+	public boolean Iaccept(final Contract c) {
+		return this.Iaccept(getMyCurrentState(), c);
+	}
+
+	public boolean Iaccept(final Collection<? extends Contract> c) {
+		return Iaccept(getMyCurrentState(),c);
 	}
 
 	/*

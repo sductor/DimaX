@@ -20,7 +20,7 @@ PersonalState extends AgentState,
 Contract extends MatchingCandidature>
 extends BasicAgentCompetence<
 SimpleRationalAgent<PersonalState, InformedCandidature<Contract>>>
-implements RationalCore<PersonalState, InformedCandidature<Contract>>{
+implements RationalCore<PersonalState, InformedCandidature<Contract>> {
 	private static final long serialVersionUID = 3012134209614654825L;
 
 	public final RationalCore<PersonalState, Contract> referenceRationality;

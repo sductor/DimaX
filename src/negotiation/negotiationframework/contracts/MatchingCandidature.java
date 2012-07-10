@@ -1,6 +1,13 @@
 package negotiation.negotiationframework.contracts;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 
 import dima.basicagentcomponents.AgentIdentifier;
 
@@ -67,9 +74,9 @@ extends ContractTransition {
 		final boolean ressourceContainsAgent =
 				this.getInitialState(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
 		assert  agentContainsResource && ressourceContainsAgent || !agentContainsResource && !ressourceContainsAgent:
-			"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
+			"incoherent states:\n"+this.getInitialState(this.getAgent())+":\n"+this.getInitialState(this.getResource());
 		assert this.isMatchingCreation()?!agentContainsResource:agentContainsResource:" creation impossible : creation?"
-		+this.isMatchingCreation()+"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
+		+this.isMatchingCreation()+"incoherent states:\n"+this.getInitialState(this.getAgent())+":\n"+this.getInitialState(this.getResource());
 
 		return super.isInitiallyValid();
 	}

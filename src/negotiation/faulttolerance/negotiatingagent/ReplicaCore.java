@@ -89,7 +89,7 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 				this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onFile);
 			}
 		} catch (final IncompleteContractException e) {
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 
 	}

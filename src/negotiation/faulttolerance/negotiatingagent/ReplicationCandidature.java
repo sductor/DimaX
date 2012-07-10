@@ -1,8 +1,17 @@
 package negotiation.faulttolerance.negotiatingagent;
 
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import negotiation.negotiationframework.NegotiationParameters;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
@@ -30,7 +39,7 @@ MatchingCandidature {
 	// Methods
 	//
 
-	
+
 	@Override
 	public <State extends AgentState>  State computeResultingState(final State s) throws IncompleteContractException {
 		if (s instanceof ReplicaState) {
@@ -41,7 +50,7 @@ MatchingCandidature {
 			throw new RuntimeException("arrrggghhhh!!!!"+s);
 		}
 	}
-	
+
 
 	public ReplicaState getAgentResultingState() throws IncompleteContractException{
 		return (ReplicaState) this.computeResultingState(this.getAgent());
@@ -58,7 +67,7 @@ MatchingCandidature {
 	public ReplicaState getAgentInitialState() throws IncompleteContractException{
 		return (ReplicaState) this.getInitialState(this.getAgent());
 	}
-	
+
 	public HostState getResourceInitialState() throws IncompleteContractException{
 		return (HostState) this.getInitialState(this.getResource());
 	}
@@ -90,7 +99,7 @@ MatchingCandidature {
 			" : ooohhhhhhhhhhhhhhhhh  =( "+(this.creation?"agent already created!":"CAN NOT DESTRUCT ")+" \n contract : "+this	+ "\n --> fromState " + fromState
 			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
 
-		
+
 		if (!fromState.getMyAgentIdentifier().equals(this.getResource())) {
 			return fromState;
 		} else {
@@ -101,6 +110,24 @@ MatchingCandidature {
 		}
 	}
 
+
+	public AbstractContractTransition clone(){		
+		ReplicationCandidature clone = new ReplicationCandidature(
+				this.getResource(), 
+				this.getAgent(), 
+				this.isMatchingCreation(), 
+				this.getInitiator().equals(this.getAgent()));
+		for (AgentIdentifier id : initState.keySet()){
+			clone.initState.put(id, initState.get(id).clone());
+		}
+		if (specs!=null){
+			for (AgentIdentifier id : specs.keySet()){
+				clone.specs.put(id, specs.get(id).clone());
+			}
+		}
+		clone.creationTime=this.creationTime;
+		return clone;
+	}
 }
 
 // ancien    getAgentResultingState

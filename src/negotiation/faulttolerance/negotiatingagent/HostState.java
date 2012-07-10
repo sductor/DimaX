@@ -18,6 +18,10 @@ import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 public class HostState extends SimpleAgentState {
 	private static final long serialVersionUID = 4107771452086657790L;
 
+	/*
+	 * Fields  (all must stay final for clone validity)
+	 */
+	
 	private  final Set<AgentIdentifier> myReplicatedAgents;
 
 	private final Double procChargeMax;
@@ -27,7 +31,7 @@ public class HostState extends SimpleAgentState {
 	private final Double memCurrentCharge;
 
 	private final double lambda;
-	private  boolean faulty;
+	private final boolean faulty;
 
 	// Take all fields	
 	public HostState(
@@ -182,23 +186,23 @@ public class HostState extends SimpleAgentState {
 		return this.faulty;
 	}
 
-	public void setFaulty(final boolean faulty) {
-		this.faulty = faulty;
-	}
+//	public void setFaulty(final boolean faulty) {
+//		this.faulty = faulty;
+//	}
 
 	/*
 	 *
 	 */
 
-	@Override
-	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-		if (h.equals(this.getMyAgentIdentifier())) {
-			this.setFaulty(isLost);
-		} else {
-			// Do nothing
-		}
-		return false;
-	}
+//	@Override
+//	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
+//		if (h.equals(this.getMyAgentIdentifier())) {
+//			this.setFaulty(isLost);
+//		} else {
+//			// Do nothing
+//		}
+//		return false;
+//	}
 
 	//
 	// Opinion Handling
@@ -302,6 +306,10 @@ public class HostState extends SimpleAgentState {
 	//
 	// Primitives
 	//
+	
+	public HostState clone(){
+		return this;	
+	}
 
 	@Override
 	public boolean equals(final Object o) {

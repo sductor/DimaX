@@ -55,6 +55,8 @@ extends DimaComponentInterface {
 	public boolean willReachExpirationTime(long t);
 
 	public long getCreationTime();
+	
+	public AbstractContractTransition clone();
 
 	//	public boolean isViable()	throws IncompleteContractException;
 
@@ -63,7 +65,9 @@ extends DimaComponentInterface {
 	public <State extends AgentState> boolean isViable(State... initialStates)	throws IncompleteContractException;
 
 	public <State extends AgentState> boolean isViable(Collection<State> initialStates)	throws IncompleteContractException;
-
+	
+	public boolean isComplete();
+	
 	public class IncompleteContractException extends Exception{
 		private static final long serialVersionUID = 7759487818635127561L;
 		public IncompleteContractException(String message) {

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
+
 import choco.kernel.memory.structure.IntInterval;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -42,7 +44,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 
 	protected final Set<Contract> initiatorContracts = new HashSet<Contract>();
 	protected final Set<Contract> participantContracts = new HashSet<Contract>();
-	
+
 	//
 	//
 	//
@@ -124,30 +126,30 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 	/*
 	 *
 	 */
-	
+
 	public List<Contract> getInitiatorRequestableContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(requestableContracts);
-		 l.removeAll(participantContracts);
+		l.removeAll(participantContracts);
 		return l;
 	}
 
 	public List<Contract> getInitiatorOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(this.waitContracts);
-		 l.removeAll(participantContracts);
+		l.removeAll(participantContracts);
 		return l;
 	}
 
 	public List<Contract> getParticipantOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(this.waitContracts);
-		 l.removeAll(initiatorContracts);
-		 l.removeAll(this.acceptedContracts.get(this.getMyAgentIdentifier()));
-		 l.removeAll(this.rejectedContracts.get(this.getMyAgentIdentifier()));
+		l.removeAll(initiatorContracts);
+		l.removeAll(this.acceptedContracts.get(this.getMyAgentIdentifier()));
+		l.removeAll(this.rejectedContracts.get(this.getMyAgentIdentifier()));
 		return l;
 	}
 
 	public List<Contract> getParticipantAlreadyAcceptedContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(this.acceptedContracts.get(this.getMyAgentIdentifier()));
-		 l.removeAll(initiatorContracts);
+		l.removeAll(initiatorContracts);
 		return l;
 	}
 
@@ -163,6 +165,43 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 		return new ArrayList<Contract>();
 	}
 
+
+	/**
+	 * Updates contract with the new initialState and actionSpec
+	 * @param newState vaut null si non spécifier
+	 * @param actionSpec vaut null si non spécifier
+	 * @return the set of modified contracts
+	 */
+	public Collection<ContractIdentifier> updateContracts(AgentState newState){
+		Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
+		if (newState!=null) {
+
+			AgentIdentifier id = newState.getMyAgentIdentifier();
+			AgentState assertedState = null;
+
+			for (final Contract c : this.getAllContracts()) {
+				if (c.getAllInvolved().contains(id)) {
+					AgentState actualState; 
+					try {
+						actualState = c.getInitialState(id);
+					} catch (IncompleteContractException e) {
+						actualState=null;
+					}
+
+					//debut assertion vérification que tous les contrats sont cohérents
+					if (assertedState==null) assertedState = actualState;			
+					else assert assertedState.equals(actualState);	
+					//fin assertion
+
+					if (actualState==null || !actualState.equals(newState)){
+						modifiedContracts.add(c.getIdentifier());
+						c.setInitialState(newState);
+					}
+				}
+			} 
+		}
+		return modifiedContracts;
+	}
 	/*
 	 *
 	 */
@@ -173,12 +212,12 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 	public void addContract(final Contract c) {
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
-//		try {
-//			assert (c.getInitiator().equals(getMyAgentIdentifier()) || c.isInitiallyValid());
-//		} catch (IncompleteContractException e) {
-//			e.printStackTrace();
-//			assert false:"incomplete contract added "+c;
-//		}
+		//		try {
+		//			assert (c.getInitiator().equals(getMyAgentIdentifier()) || c.isInitiallyValid());
+		//		} catch (IncompleteContractException e) {
+		//			e.printStackTrace();
+		//			assert false:"incomplete contract added "+c;
+		//		}
 		this.identifier2contract.put(c.getIdentifier(), c);
 		this.waitContracts.add(c);
 		if (c.getInitiator().equals(getMyAgentIdentifier()))
@@ -296,15 +335,15 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 
 	public void remove(final Contract c) {
 		this.identifier2contract.remove(c.getIdentifier());
-		
+
 		this.acceptedContracts.removeAvalue(c);
 		this.rejectedContracts.removeAvalue(c);
-		
+
 		this.waitContracts.remove(c);
-		
+
 		this.requestableContracts.remove(c);
 		this.failedContracts.remove(c);
-		
+
 		this.initiatorContracts.remove(c);
 		this.participantContracts.remove(c);
 	}

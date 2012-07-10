@@ -281,4 +281,9 @@ implements AbstractContractTransition{
 		return this.candidature.getInitialState(id);
 	}
 
+	@Override
+	public InformedCandidature<Contract> clone() {
+		return new InformedCandidature<Contract>((Contract) getCandidature().clone());
+	}
+
 }

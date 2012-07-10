@@ -363,7 +363,7 @@ InformedCandidature<Contract>> {
 						contractsToKeep.add(concerned.get(c));
 					}
 					//					assert isImprovment(contractsToKeep);
-					if (this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep)){
+					if (this.getMyAgent().Iaccept(contractsToKeep)){
 						//MAJ du contract trunk
 						for (final InformedCandidature<Contract> c : contractsToKeep) {
 							//Pour toute action de ce contrat
@@ -424,7 +424,7 @@ InformedCandidature<Contract>> {
 			Set<InformedCandidature<Contract>> contractsToKeep) {
 		assert getMyAgent().isPersonalyValid(getMyAgent().getMyCurrentState(), contractsToKeep);
 		//		assert getMyAgent().evaluatePreference(new ArrayList<InformedCandidature<Contract>>())<getMyAgent().evaluatePreference(contractsToKeep):getMyAgent().evaluatePreference()+" "+getMyAgent().evaluatePreference(contractsToKeep);
-		assert this.getMyAgent().isAnImprovment(getMyAgent().getMyCurrentState(), contractsToKeep):
+		assert this.getMyAgent().Iaccept(contractsToKeep):
 			getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
 			+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
 			+"\n-------------->"+

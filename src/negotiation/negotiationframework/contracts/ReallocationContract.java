@@ -3,6 +3,7 @@ package negotiation.negotiationframework.contracts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,6 +87,9 @@ AbstractContractTransition{
 				}
 			}
 		}
+		
+//		//verrouillage du reallocation contract en l'état
+//		this.actions = (HashedHashSet<AgentIdentifier, Contract>) Collections.unmodifiableMap(this.actions);
 	}
 
 
@@ -195,6 +199,14 @@ AbstractContractTransition{
 		return true;
 	}
 
+	@Override
+	public boolean isComplete() {
+		for (final Contract c : this) {
+			if (!c.isComplete())
+				return false;
+		}
+		return true;
+	}
 
 	//
 	// Primitive
@@ -247,7 +259,7 @@ AbstractContractTransition{
 	}
 
 
-	
+
 	private  boolean initialStateVerif(AgentIdentifier id) throws IncompleteContractException{
 		if (!this.isEmpty()){
 			Iterator<Contract> cIt = this.iterator();
@@ -326,7 +338,7 @@ AbstractContractTransition{
 		}
 		return meAsMap.values();
 	}
-	
+
 	/**
 	 * Computes the resulting state by performing the allocation specified by the Collection of Contract on the initial state provided.
 	 * @param <Contract> Type of Contract dealt here
@@ -341,8 +353,8 @@ AbstractContractTransition{
 	<Contract extends AbstractContractTransition,
 	State extends AgentState>
 	State computeResultingState(final State initialState, final Collection<Contract> alloc)
-	throws IncompleteContractException{
-	    	State result = initialState;
+			throws IncompleteContractException{
+		State result = initialState;
 		for (final Contract c : alloc) {
 			result = c.computeResultingState(result);
 		}
@@ -368,6 +380,15 @@ AbstractContractTransition{
 	 */
 
 	@Override
+	public ReallocationContract<Contract> clone() {
+		Collection<Contract> actions = new ArrayList<Contract>();
+		for (Contract c : this){
+			actions.add((Contract) c.clone());
+		}
+		return new ReallocationContract<Contract>(this.creator, actions);
+	}
+
+	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof ContractTransition) {
 			@SuppressWarnings("unchecked")
@@ -389,4 +410,6 @@ AbstractContractTransition{
 		}
 		return myIds;
 	}
+
+
 }

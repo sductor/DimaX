@@ -28,7 +28,7 @@ public class ReplicaState  extends SimpleAgentState  {
 	private static final long serialVersionUID = 1557592274895646282L;
 
 	//
-	// Fields
+	// Fields (all must stay final for clone validity)
 	//
 
 
@@ -198,15 +198,15 @@ public class ReplicaState  extends SimpleAgentState  {
 	 *
 	 */
 
-	@Override
-	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-		if (isLost) {
-			return this.myReplicas.remove(h);
-		} else {
-			throw new RuntimeException("impossible!!");
-		}
-	}
-	
+//	@Override
+//	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
+//		if (isLost) {
+//			return this.myReplicas.remove(h);
+//		} else {
+//			throw new RuntimeException("impossible!!");
+//		}
+//	}
+//	
 	/*
 	 * Double
 	 */
@@ -316,6 +316,10 @@ public class ReplicaState  extends SimpleAgentState  {
 	// Primitives
 	//
 
+	public ReplicaState clone(){
+		return this;
+	}
+	
 	@Override
 	public int hashCode() {
 		return this.getMyAgentIdentifier().hashCode();

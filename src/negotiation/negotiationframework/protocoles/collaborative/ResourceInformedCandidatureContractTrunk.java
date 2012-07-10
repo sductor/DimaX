@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,6 +14,8 @@ import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
@@ -20,6 +23,7 @@ import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.rationality.AgentState;
+import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 import dimaxx.tools.mappedcollections.HashedTreeSet;
 
@@ -33,6 +37,7 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 	 */
 
 	//	private final ContractTrunk<ReallocationContract<Contract, ActionSpec>> myLocalOptimisations;
+
 	HashedTreeSet<InformedCandidature<Contract>, ReallocationContract<Contract>> upgradingContracts;
 	final Collection<InformedCandidature<Contract>> toCancel=
 			new ArrayList<InformedCandidature<Contract>>();
@@ -67,14 +72,16 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 	}
 
 	public void addReallocContract(final ReallocationContract<Contract> realloc){
-		assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
-		for (final Contract c : realloc) {
-			try {
-				this.upgradingContracts.add(this.getContract(c.getIdentifier()),realloc);
-			} catch (final UnknownContractException e) {
-				throw new RuntimeException(e);
+//		if (getMyAgent().Iaccept(realloc)){
+			assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
+			for (final Contract c : realloc) {
+				try {
+					this.upgradingContracts.add(this.getContract(c.getIdentifier()),realloc);
+				} catch (final UnknownContractException e) {
+					throw new RuntimeException(e);
+				}
 			}
-		}
+//		}
 	}
 
 	/*
@@ -113,6 +120,65 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 		return finalValue;
 	}
 
+
+	/**
+	 * Updates contract with the new initialState  and actionSpec
+	 * update the treeset order of reallocation contract
+	 * @param newState vaut null si non spécifier
+	 * @param actionSpec vaut null si non spécifier
+	 * @return the set of modified contracts
+	 */
+	@Override
+	public Collection<ContractIdentifier> updateContracts(AgentState newState){
+		Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
+		if (newState!=null) {
+			try {
+				AgentIdentifier id = newState.getMyAgentIdentifier();
+				AgentState assertedState = null;
+
+				//On récupere sans les modifier les contrats qui sont modifier par le newState
+				for (final InformedCandidature<Contract> c : this.getAllContracts()) {
+					if (c.getAllInvolved().contains(id)) {
+						AgentState actualState = c.getInitialState(id);
+						
+						//debut assertion vérification que tous les contrats sont cohérents
+						if (assertedState==null) assertedState = actualState;			
+						else assert assertedState.equals(actualState);
+						//fin assertion
+
+						if (!actualState.equals(newState)){
+							modifiedContracts.add(c.getIdentifier());
+						}
+					}
+				} 
+
+				//On récupère le set de réallocation 
+				HashSet<ReallocationContract<Contract>> reallocModified = new HashSet<ReallocationContract<Contract>>();
+				for (ContractIdentifier cId : modifiedContracts){
+					reallocModified.addAll(upgradingContracts.get(getContract(cId)));
+				}
+				for (ReallocationContract<Contract> r : reallocModified){
+					upgradingContracts.removeAvalue(r);
+				}
+
+				//on met à jour les contrats
+				for (final ContractIdentifier c : modifiedContracts){
+					getContract(c).setInitialState(newState);
+				}
+
+				//On retri les réallocation modifié
+				for (ReallocationContract<Contract> r : reallocModified){
+					addReallocContract(r);
+				}			
+
+			} catch (IncompleteContractException e) {
+				throw new RuntimeException("impossible");
+			} catch (UnknownContractException e) {
+				throw new RuntimeException("impossible");
+			}
+		}
+		return modifiedContracts;
+	}
 
 
 
@@ -155,20 +221,20 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 	@Override
 	public void remove(final  InformedCandidature<Contract> c) {
 		assert verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+upgradingContracts.containsKey(c));
-		
+
 		super.remove(c);
 		toCancel.remove(c);
 		final Collection<ReallocationContract<Contract>> realloctoRemove = this.upgradingContracts.remove(c);
-		
+
 		//removing the other occurence of c reallocation contracts
 		Collection<InformedCandidature<Contract>> concernedKeys = new HashSet<InformedCandidature<Contract>>();
 		for (ReallocationContract<Contract> realloc : realloctoRemove){
 			concernedKeys.addAll(this.upgradingContracts.removeAvalue(realloc));
 		}		
 		assert !upgradingContracts.containsKey(c);
-		
+
 		assert verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+upgradingContracts.containsKey(c));
-		
+
 		//adding lost keys to cancel
 		concernedKeys.remove(c);
 		for (InformedCandidature<Contract> k : concernedKeys){
@@ -205,7 +271,7 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 			for (ReallocationContract<Contract> r : notReallocOfC){
 				assert !notReallocOfC.contains(c):c+" "+r+" \n"+contextError;
 			}
-			
+
 		}
 
 		return true;

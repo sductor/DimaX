@@ -7,6 +7,7 @@ import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
 import negotiation.horizon.negotiatingagent.VirtualNetworkState;
 import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import negotiation.horizon.parameters.HorizonMeasurableParameters;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;

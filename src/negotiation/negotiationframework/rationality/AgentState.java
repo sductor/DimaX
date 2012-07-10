@@ -21,11 +21,13 @@ public interface AgentState extends Information {
 	//droit = satisfaction
 	public boolean isValid();
 
-	// Return true if action had an effect
-	boolean setLost(ResourceIdentifier h, boolean isLost);
+//	// Return true if action had an effect
+//	boolean setLost(ResourceIdentifier h, boolean isLost);
 
 
 	public int getStateCounter();
+
+	public AgentState clone();
 
 }
 

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.experimentation.ExperimentLogger;
 import dimaxx.experimentation.ObservingGlobalService;
@@ -138,7 +139,7 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 	}	
 }
 
-class IndivdualExperiementLog {
+class IndivdualExperiementLog implements DimaComponentInterface{
 
 	//entry parameters
 	protected int nbAgent;

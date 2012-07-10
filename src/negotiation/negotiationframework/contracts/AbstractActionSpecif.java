@@ -10,4 +10,6 @@ import dima.introspectionbasedagents.services.information.ObservationService.Inf
  */
 public interface AbstractActionSpecif extends Information {
 
+	AbstractActionSpecif clone();
+
 }

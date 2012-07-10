@@ -71,11 +71,11 @@ extends SimpleRationalAgent<PersonalState, Contract> {
 
 	@ProactivityInitialisation
 	public void initialisation(){
-		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, false, false);
-		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, false, false);
-		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, false, false);
-		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, false, false);
-		this.addLogKey(ObservingSelfService.observationLog, false, false);
+		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, LogService.onNone);
+		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, LogService.onFile);
+		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, LogService.onNone);
+		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, LogService.onNone);
+		this.addLogKey(ObservingSelfService.observationLog, LogService.onNone);
 	}
 
 	//
@@ -94,6 +94,11 @@ extends SimpleRationalAgent<PersonalState, Contract> {
 		return this.selectionCore;
 	}
 
+	public void setNewState(final PersonalState s) {
+		super.setNewState(s);
+		if (protocol!=null) protocol.getContracts().updateContracts(s);
+	}
+	
 	//
 	// Behavior
 	//

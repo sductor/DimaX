@@ -25,7 +25,7 @@ public class CollaborativeReplica extends Replica {
 			final boolean dynamicCriticity)
 					throws CompetenceException {
 		super(id, myState,
-				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),new InformedCandidatureRationality(new ReplicaCore(),true)),
+				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),new InformedCandidatureRationality(new ReplicaCore(false,false),true)),
 				new AgentInformedSelectionCore(),
 				new CollaborativeCandidatureProposer(simulateanousKCadidature),
 				new SimpleObservationService(),

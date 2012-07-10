@@ -15,12 +15,10 @@ import dima.introspectionbasedagents.services.information.OpinionService.Opinion
 public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 	private static final long serialVersionUID = -3882932472033817195L;
 
+	public CandidatureReplicaCoreWithStatus() {
+		super(true, true);
+	}
 
-	// public CandidatureReplicaCoreWithStatus(
-	// final SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature,
-	// ReplicationSpecification> ag) {
-	// super(ag);
-	// }
 
 	@Override
 	public int getAllocationPreference(
@@ -32,6 +30,8 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 		if (this.getStatus(s1).equals(AgentStateStatus.Wastefull)
 				&& this.getStatus(s2).equals(AgentStateStatus.Wastefull)) {
 			return this.getAllocationReliabilityPreference(c2, c1);// ATTENTION
+//			return this.getFirstLoadSecondReliabilitAllocationPreference(c1,
+//					c2);
 		} else if (this.getStatus(s1).equals(AgentStateStatus.Wastefull)) {
 			// n'est
 			// pas
@@ -44,8 +44,9 @@ public class CandidatureReplicaCoreWithStatus extends ReplicaCore {
 			return 1;
 		} else {
 			// aucun contrat ne rend wastefull
-			return this.getFirstLoadSecondReliabilitAllocationPreference(c1,
-					c2);
+			return this.getAllocationReliabilityPreference(c2, c1);// ATTENTION
+//			return this.getFirstLoadSecondReliabilitAllocationPreference(c1,
+//					c2);
 		}
 	}
 

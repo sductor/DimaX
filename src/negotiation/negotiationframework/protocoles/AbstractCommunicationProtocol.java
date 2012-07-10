@@ -324,7 +324,6 @@ extends Protocol<SimpleNegotiatingAgent<?, Contract>> {
 		}
 
 		this.contracts.removeAll(contracts);
-
 		this.getMyAgent().execute(contracts);
 	}
 
@@ -495,9 +494,9 @@ extends Protocol<SimpleNegotiatingAgent<?, Contract>> {
 
 		this.getMyAgent().logMonologue("I've been confirmed!!! I'll apply proposal "+contract,AbstractCommunicationProtocol.log_negotiationStep);//+"\n"+contracts);
 
+		this.contracts.remove(contract);
 		this.getMyAgent().execute(contract);
 
-		this.contracts.remove(contract);
 	}
 
 	@MessageHandler()

@@ -35,6 +35,15 @@ implements RationalCore<PersonalState, Contract>{
 		this.myPersonalCore= rationality;
 	}
 
+	@Override
+	public boolean iMemorizeMyRessourceState() {
+		return myPersonalCore.iMemorizeMyRessourceState();
+	}
+
+	@Override
+	public boolean iObserveMyRessourceChanges() {
+		return myPersonalCore.iObserveMyRessourceChanges();
+	}
 	//
 	// Methods
 	//

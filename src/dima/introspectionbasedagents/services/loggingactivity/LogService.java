@@ -120,6 +120,21 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
+	public void addLogKey(String key, String logType) {
+		if (logType.equals(onScreen)){
+			this.addLogKey(key,true,false);			
+		}else if (logType.equals(onFile)){
+			this.addLogKey(key,false,true);			
+		} else if (logType.equals(onBoth)){
+			this.addLogKey(key,true,true);
+		}else if (logType.equals(onNone)){
+			this.addLogKey(key,false,false);
+		} else {
+			throw new RuntimeException("aaarrggh");
+		}
+	}
+	
+	@Override
 	public void setLogKey(final String key, final boolean toScreen, final boolean toFile) {
 		this.keysToScreen.put(key,toScreen);
 		this.keysToFiles.put(key, toFile);
@@ -837,6 +852,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public void sendNotificationNow() {
 		this.myAgent.sendNotificationNow();
 	}
+
 }
 
 

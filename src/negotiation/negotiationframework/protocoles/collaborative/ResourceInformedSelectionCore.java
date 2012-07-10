@@ -26,6 +26,8 @@ import negotiation.negotiationframework.exploration.AllocationSolver;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.AgentState;
+import negotiation.negotiationframework.selection.GreedySelectionModule;
+import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -47,7 +49,8 @@ InformedCandidature<Contract>> {
 	final AllocationSolver<Contract, PersonalState> solver;
 	final int kMax;
 	final long maxComputingTime;
-
+	final GreedySelectionType initialSelectionType;
+	
 	Random rand = new Random();
 
 	//
@@ -57,11 +60,13 @@ InformedCandidature<Contract>> {
 	public ResourceInformedSelectionCore(
 			final AllocationSolver<Contract, PersonalState> solver,
 			final int kMax,
+			GreedySelectionType initialSelectionType,
 			long maxComputingTime)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
 		this.kMax=kMax;
+		this.initialSelectionType=initialSelectionType;
 		this.maxComputingTime=maxComputingTime;
 	}
 
@@ -97,7 +102,6 @@ InformedCandidature<Contract>> {
 
 		//Beginninng//
 
-
 		if (allContracts.isEmpty()) {
 			this.logMonologue("i support everyone yeah! =)", AbstractCommunicationProtocol.log_selectionStep);
 		} else //There is new agent who want to be allocated!!!
@@ -111,23 +115,39 @@ InformedCandidature<Contract>> {
 				//								this.getMyAgent(), allContracts);
 				this.logMonologue("trying to accept simple nego",
 						AbstractCommunicationProtocol.log_selectionStep);
-				final Iterator<InformedCandidature<Contract>>r = allContracts.iterator();
-				while (r.hasNext()){
-					final InformedCandidature<Contract> c = r.next();//r.popNextContract();
-					if (this.getMyAgent().Iaccept(currentState, c)){
-						this.logMonologue("i accept "+c+" (my state is "+currentState+")",
-								AbstractCommunicationProtocol.log_selectionStep);
-						rejected.remove(c);
-						accepted.add(c);
-						try {
-							currentState=c.computeResultingState(currentState);
-						} catch (final IncompleteContractException e) {
-							this.signalException("impossible", e);
+				boolean useSelectionModule=true;//for debugging
+				if (!useSelectionModule){
+					final Iterator<InformedCandidature<Contract>>r = allContracts.iterator();
+					while (r.hasNext()){
+						final InformedCandidature<Contract> c = r.next();//r.popNextContract();
+						if (this.getMyAgent().Iaccept(currentState, c)){
+							this.logMonologue("i accept "+c+" (my state is "+currentState+")",
+									AbstractCommunicationProtocol.log_selectionStep);
+							rejected.remove(c);
+							accepted.add(c);
+							try {
+								currentState=c.computeResultingState(currentState);
+							} catch (final IncompleteContractException e) {
+								this.signalException("impossible", e);
+							}
+						} else {
+							this.logMonologue("i refuse "+c+" (my state is "+currentState+")",
+									AbstractCommunicationProtocol.log_selectionStep);
 						}
-					} else {
-						this.logMonologue("i refuse "+c+" (my state is "+currentState+")",
-								AbstractCommunicationProtocol.log_selectionStep);
 					}
+				} else {
+					GreedySelectionModule<PersonalState, InformedCandidature<Contract>> gsm = 
+							new GreedySelectionModule<PersonalState, InformedCandidature<Contract>>(initialSelectionType);
+					gsm.setMyAgent(getMyAgent());
+					accepted.addAll(gsm.greedySelection(currentState, allContracts));
+					try {
+						currentState=ReallocationContract.computeResultingState(currentState, accepted);
+					} catch (IncompleteContractException e) {
+						this.signalException("impossible", e);						
+					}
+					this.logMonologue("i accept "+accepted+" (my state is "+currentState+")",
+							AbstractCommunicationProtocol.log_selectionStep);
+					rejected.removeAll(accepted);
 				}
 
 				if (accepted.isEmpty()){// I accepted noone, trying to find realloc
@@ -281,7 +301,7 @@ InformedCandidature<Contract>> {
 			setSpecif(s,d);
 			//
 			alloc.add(d.getCandidature());
-			
+
 			concerned.put(d.getCandidature(),d);//adding destruction candidature
 		}
 		//		for (final ActionSpec s : this.getMyAgent().getMyResources()){
@@ -353,7 +373,7 @@ InformedCandidature<Contract>> {
 			Set<InformedCandidature<Contract>> alreadyDone =
 					new HashSet<InformedCandidature<Contract>>();
 			Date startingExploringTime = new Date();
-//			logWarning("beginning exploration");
+			//			logWarning("beginning exploration");
 			while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<maxComputingTime)){
 				final Collection<Contract> realloc = this.solver.getNextSolution();
 				if (!realloc.isEmpty()){
@@ -393,7 +413,7 @@ InformedCandidature<Contract>> {
 					}
 				}
 			}
-//			logWarning("ending exploration, time : "+(new Date().getTime() - startingExploringTime.getTime()));
+			//			logWarning("ending exploration, time : "+(new Date().getTime() - startingExploringTime.getTime()));
 			notify(new SearchTimeNotif(new Double(new Date().getTime() - startingExploringTime.getTime())));
 			for (final InformedCandidature<Contract> c : toPropose){
 				//Pour toute action de ce contrat
@@ -410,7 +430,7 @@ InformedCandidature<Contract>> {
 				//en ajoutant le best des realloc qui ont été généré à l'itération précédente
 				c.getPossibleContracts().add(best);
 			}
-//			logWarning("ending exploration 2, time : "+(new Date().getTime() - startingExploringTime.getTime()));
+			//			logWarning("ending exploration 2, time : "+(new Date().getTime() - startingExploringTime.getTime()));
 
 		}catch (Throwable e){
 			signalException("solver failed",e); 

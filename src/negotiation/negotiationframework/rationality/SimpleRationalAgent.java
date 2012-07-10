@@ -30,7 +30,6 @@ extends BasicCompetentAgent {
 	// Fields
 	//
 
-
 	@Competence
 	private final ObservationService myInformation;
 

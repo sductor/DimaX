@@ -39,10 +39,6 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 
 	protected abstract ExperimentationResults generateMyResults();
 
-	@ProactivityInitialisation
-	public void firstStateInit(){
-		this.l.add(this.generateMyResults());
-	}
 
 	@PostStepComposant(ticker=ObservingGlobalService._state_snapshot_frequency)
 	public void notifyMyState(){
@@ -128,6 +124,10 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 }
 
 
+//@ProactivityInitialisation
+//public void firstStateInit(){
+//	this.l.add(this.generateMyResults());
+//}
 
 
 //

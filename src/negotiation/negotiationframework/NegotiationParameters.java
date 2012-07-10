@@ -25,6 +25,7 @@ public class NegotiationParameters {
 	//Selection algorithms
 	public final static String key4greedySelect = "greedy select";
 	public final static String key4rouletteWheelSelect = "roolette wheel select";
+	public final static String key4randomSelect = "random select";
 	public final static String key4AllocSelect = "alloc select";
 
 	//

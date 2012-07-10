@@ -25,6 +25,7 @@ extends ExperimentationParameters<Agent> {
 	@Override
 	public LinkedList<ExperimentationParameters<Agent>> generateSimulation() {
 		// TODO introspection avec les annotations.
+		return null;
 	}
 
 	public abstract class Parameter<Type> {

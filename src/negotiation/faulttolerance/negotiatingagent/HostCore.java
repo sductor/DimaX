@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.Date;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.replication.ReplicationHandler;
 
@@ -28,15 +30,33 @@ implements RationalCore<HostState, ReplicationCandidature> {
 	private static final long serialVersionUID = -179565544489478368L;
 
 	private final ReplicationSocialOptimisation myOptimiser;
+	final boolean observeResourceChanges;
+	final boolean memorizeRessourceState;
 
 	//
 	// Constructor
 	//
 
-	public HostCore(final SocialChoiceType socialWelfare) {
+	public HostCore(final SocialChoiceType socialWelfare, boolean observeResourceChanges, boolean memorizeRessourceState) {
 		this.myOptimiser = new ReplicationSocialOptimisation(socialWelfare);
-	}
+		this.observeResourceChanges=observeResourceChanges;
+		this.memorizeRessourceState=memorizeRessourceState;
+		}
 
+	@Override
+	public boolean iObserveMyRessourceChanges() {
+		return observeResourceChanges;
+	}
+	@Override
+	public boolean iMemorizeMyRessourceState() {
+		return memorizeRessourceState;
+	}
+	public void handleResourceInformation(AgentState c){
+			if (iMemorizeMyRessourceState()) 
+				getMyAgent().getMyInformation().add(c);
+			if (iObserveMyRessourceChanges())
+				observe(c.getMyAgentIdentifier(), SimpleObservationService.informationObservationKey);
+	}
 
 	//
 	// Methods
@@ -47,13 +67,13 @@ implements RationalCore<HostState, ReplicationCandidature> {
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
-//		for (final ReplicationCandidature c : c1) {
-//			c.setInitialState(getMyAgent().getMyCurrentState());
-//		}
-//		for (final ReplicationCandidature c : c2) {
-//			c.setInitialState(getMyAgent().getMyCurrentState());
-//
-//		}
+		//		for (final ReplicationCandidature c : c1) {
+		//			c.setInitialState(getMyAgent().getMyCurrentState());
+		//		}
+		//		for (final ReplicationCandidature c : c2) {
+		//			c.setInitialState(getMyAgent().getMyCurrentState());
+		//
+		//		}
 		AltruistRationalCore.verifyStateConsistency(getMyAgent(), c1, c2);
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
@@ -67,7 +87,7 @@ implements RationalCore<HostState, ReplicationCandidature> {
 	@Override
 	public void execute(final Collection<ReplicationCandidature> cs) {
 		try {
-//			assert ContractTransition.allViable(cs):cs;//this.getMyAgent().respectRights(c);
+			//			assert ContractTransition.allViable(cs):cs;//this.getMyAgent().respectRights(c);
 			//		logMonologue(
 			//				"executing "+c+" from state "
 			//		+this.getMyAgent().getMyCurrentState()
@@ -90,6 +110,7 @@ implements RationalCore<HostState, ReplicationCandidature> {
 			}
 
 			for (final ReplicationCandidature c : destruction){
+				handleResourceInformation(c.getAgentResultingState());
 				ReplicationHandler.killReplica(c.getAgent());
 				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 				this.getMyAgent().setNewState(
@@ -98,6 +119,7 @@ implements RationalCore<HostState, ReplicationCandidature> {
 			}
 
 			for (final ReplicationCandidature c : creation){
+				handleResourceInformation(c.getAgentResultingState());
 				ReplicationHandler.replicate(c.getAgent());
 				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 				this.getMyAgent().setNewState(
@@ -115,7 +137,7 @@ implements RationalCore<HostState, ReplicationCandidature> {
 	public void setMySpecif(
 			final HostState s,
 			final ReplicationCandidature c) {
-//		return new NoActionSpec();
+		//		return new NoActionSpec();
 	}
 
 	@Override

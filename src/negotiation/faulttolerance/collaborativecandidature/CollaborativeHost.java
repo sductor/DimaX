@@ -16,6 +16,7 @@ import negotiation.negotiationframework.protocoles.collaborative.ResourceInforme
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedSelectionCore;
 import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
+import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -30,13 +31,14 @@ public class CollaborativeHost extends Host{
 			final HostState myState,
 			final SocialChoiceType socialWelfare,
 			int maxCAccepts,
+			GreedySelectionType initialSelectionType,
 			long maxComputingTime)
 					throws CompetenceException {
 		super(
 				myId,
 				myState,
-				new InformedCandidatureRationality(new HostCore(socialWelfare),false),
-				new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare),maxCAccepts,maxComputingTime){
+				new InformedCandidatureRationality(new HostCore(socialWelfare,true,true),false),
+				new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare),maxCAccepts,initialSelectionType,maxComputingTime){
 					private static final long serialVersionUID = -1578866978817500691L;
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {

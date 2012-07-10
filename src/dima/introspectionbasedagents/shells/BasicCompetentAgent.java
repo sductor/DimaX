@@ -453,6 +453,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	@Override
+	public void addLogKey(String key, String logType) {
+		this.log.addLogKey(key, logType);
+	}
+	@Override
 	public void setLogKey(final String key, final boolean toScreen, final boolean toFile) {
 		this.log.setLogKey(key, toScreen, toFile);
 	}

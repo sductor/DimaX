@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
@@ -34,7 +35,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 	// Methods
 	//
 
-	protected Collection<Contract> greedySelection(
+	public Collection<Contract> greedySelection(
 			PersonalState currentState,
 			final Collection<Contract> contractsToExplore) {
 		// logMonologue("!GreedySelection! : myState"+getMyAgent().getMyCurrentState());
@@ -117,13 +118,16 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 
 		@Override
 		public Contract next() {
+			if (!hasNext())
+				throw new NoSuchElementException();
 			this.count++;
 			return this.contractsToExplore.get(this.count);
 		}
 
 		@Override
 		public void remove() {
-			this.contractsToExplore.remove(this.count);
+//			this.contractsToExplore.remove(this.count);
+			throw new UnsupportedOperationException();
 		}
 
 	}
@@ -146,41 +150,40 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 
 		@Override
 		public boolean hasNext() {
-			return this.count<this.contractsToExplore.size();
+			return this.count<this.contractsToExplore.size()-1;
 		}
 
 		@Override
 		public Contract next() {
+			if (!hasNext())
+				throw new NoSuchElementException();
 			this.count++;
 			return this.contractsToExplore.get(this.count);
 		}
 
 		@Override
 		public void remove() {
-			this.contractsToExplore.remove(this.count);
+//			this.contractsToExplore.remove(this.count);
+			throw new UnsupportedOperationException();
 		}
 
 	}
 
 
 	public class RooletteWheelIterator implements Iterator<Contract>, DimaComponentInterface {
-
-		/**
-		 *
-		 */
 		private static final long serialVersionUID = -6677689550030424329L;
 		List<Contract> contracts;
-		Collection<Contract> initContract;
+//		Collection<Contract> initContract;//for remove
 
 		Random rand = new Random();
-		int currentContract=-1;
-		int sumPref;
+//		int currentContract=-1;
+		double sumPref;
 
 		public RooletteWheelIterator(final Collection<Contract> contracts) {
 			super();
 			this.contracts=new ArrayList<Contract>(contracts);
-			this.initContract = new ArrayList<Contract>(contracts);
-			this.currentContract=-1;
+//			this.initContract = contracts;//for remove
+//			this.currentContract=-1;
 
 			for (final Contract c : contracts) {
 				this.sumPref+=GreedySelectionModule.this.getMyAgent().evaluatePreference(c);
@@ -189,35 +192,74 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 
 		@Override
 		public boolean hasNext() {
-			return this.contracts.isEmpty();
+			return !this.contracts.isEmpty();
 		}
 
 		@Override
 		public Contract next() {
 
-			this.currentContract = 0;
+			if (!hasNext())
+				throw new NoSuchElementException();
+			
+			Contract c;
 			final Double boule= this.sumPref * this.rand.nextDouble();
-			Double wheel=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
+			assert boule<=sumPref;
 
-			while (boule>wheel) {
-				this.currentContract++;
-				wheel+=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
-			}
+			//détection du contrat correspondant à boule
+			c = this.contracts.get(foundContract(boule));
 
 			//Suppression du contrat
-			this.sumPref-=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
-			this.contracts.remove(this.currentContract);
-
-			return this.contracts.get(this.currentContract);
+			this.sumPref-=GreedySelectionModule.this.getMyAgent().evaluatePreference(c);
+			this.contracts.remove(c);
+			
+			//return
+			return c;
 		}
 
 		@Override
 		public void remove() {
-			this.initContract.remove(this.currentContract);
+			throw new UnsupportedOperationException();
+//			if (currentContract==-1)
+//				throw new IllegalStateException();
+//			this.initContract.remove(this.currentContract);
+//			currentContract=-1;
+		}
+		
+		//
+		// Primitive
+		//
+		
+		private int foundContract(double boule){
+			return foundContract(0,GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(0)), boule);
+		}
+		
+		private int foundContract(int currentPos, double currentSum, double boule){
+//			assert currentSum<=sumPref:currentPos+" "+currentSum+" "+boule+" "+sumPref+" \n --->"+contracts;
+			if (contracts.size()==0){//probleme d'arrondi??
+				assert currentPos==0;
+				return 0;
+			}
+			if (currentSum>=boule)
+				return currentPos;
+			else if (currentPos==contracts.size()-1){//probleme d'arrondi??
+//				logWarning("arrgh "+currentPos+" "+currentSum+" "+sumPref+" "+boule+" \n --->"+contracts);
+				return currentPos;
+			} else {
+				return foundContract(
+						currentPos+1, 
+						currentSum+GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(currentPos)),
+						boule);
+			}
+			
 		}
 	}
 }
-
+//Double wheel=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
+//while (boule>wheel) {
+//				this.currentContract++;
+//				wheel+=GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(this.currentContract));
+//				assert wheel<=sumPref;
+//			}
 
 //	protected void sortContract(final List<Contract> contracts) {
 //		Collections.sort(contracts, this.getMyAgent()

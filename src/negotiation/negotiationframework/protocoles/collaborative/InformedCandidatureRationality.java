@@ -40,6 +40,16 @@ implements RationalCore<PersonalState, InformedCandidature<Contract>> {
 	 */
 
 	@Override
+	public boolean iObserveMyRessourceChanges() {
+		return referenceRationality.iObserveMyRessourceChanges();
+	}
+	@Override
+	public boolean iMemorizeMyRessourceState() {
+		return referenceRationality.iMemorizeMyRessourceState();
+	}
+
+
+	@Override
 	public void setMySpecif(final PersonalState s,
 			final InformedCandidature<Contract> c) {
 		this.referenceRationality.setMySpecif(s, c.getCandidature());

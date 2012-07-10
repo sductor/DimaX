@@ -9,6 +9,7 @@ import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public  class ReplicaCore
@@ -18,15 +19,33 @@ implements
 RationalCore<ReplicaState, ReplicationCandidature>  {
 	private static final long serialVersionUID = 3436030307737036668L;
 
+	final boolean observeResourceChanges;
+	final boolean memorizeRessourceState;
+	
 	//
 	// Constructor
 	//
 
-	// public CandidatureReplicaCore(
-	// ) {
-	// super();
-	// }
+	 public ReplicaCore(boolean observeResourceChanges, boolean memorizeRessourceState) {
+	 super();
+	 this.observeResourceChanges=observeResourceChanges;
+		this.memorizeRessourceState=memorizeRessourceState;
+	 }
 
+		@Override
+		public boolean iObserveMyRessourceChanges() {
+			return observeResourceChanges;
+		}
+		@Override
+		public boolean iMemorizeMyRessourceState() {
+			return memorizeRessourceState;
+		}
+		public void handleResourceInformation(AgentState c){
+				if (iMemorizeMyRessourceState()) 
+					getMyAgent().getMyInformation().add(c);
+				if (iObserveMyRessourceChanges())
+					observe(c.getMyAgentIdentifier(), SimpleObservationService.informationObservationKey);
+		}
 	//
 	// Method
 	//
@@ -72,6 +91,7 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			}
 
 			for (final ReplicationCandidature c : creation){
+				handleResourceInformation(c.getResourceResultingState());
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -81,6 +101,7 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			}
 
 			for (final ReplicationCandidature c : destruction){
+				handleResourceInformation(c.getResourceResultingState());
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -181,6 +202,9 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 	public Double evaluatePreference(final Collection<ReplicationCandidature> cs) {
 		return this.getMyAgent().getMyResultingState(cs).getMyReliability();
 	}
+
+
+
 }
 
 //// N��c��ssit�� de faire une fonction a part car celle ci est appell�� avant

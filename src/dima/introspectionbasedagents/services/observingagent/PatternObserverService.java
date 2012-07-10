@@ -7,6 +7,7 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.ontologies.Protocol;
@@ -238,7 +239,7 @@ public abstract class PatternObserverService extends BasicCommunicatingCompetenc
 		//						+ m.getAttachement()[0]);
 	}
 
-	@StepComposant()//ticker=250)//@Transient(ticker=500)
+	@PostStepComposant()//ticker=250)//@Transient(ticker=500)
 	public void autoSendOfNotifications() {
 		final HashedHashList<NotificationMessage<?>,AgentIdentifier> sendedNotif=
 				new HashedHashList<NotificationMessage<?>,AgentIdentifier>();

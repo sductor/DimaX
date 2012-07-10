@@ -108,7 +108,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public  int	opinionDiffusionDegree = 50;
 
 	public  long maxComputingTime = 120000;//2 min
-		
+
 	public final boolean completGraph = true;
 	public static final boolean multiDim=true;
 
@@ -195,14 +195,18 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.hostCapacityDispersion=hostcapacityDispersion;
 		this._usedProtocol = usedProtocol;
 		this._socialWelfare=socialWelfare;
-		this._agentSelection = agentSelection;
-		this.set_hostSelection(hostSelection);
+		this._agentSelection = setAgentSelection(agentSelection);
+		this._hostSelection=hostSelection;
 		this.dynamicCriticity = dynamicCriticty;
 		this.setMaxSimultFailure(host_maxSimultaneousFailurePercent);
 		//		startingNbAgents =(int)((startingNbHosts * hostCapacityMean)/agentLoadMean);
 		withOptimal=withOptimal&&nbAgents*nbHosts<maxOptimal;
 		simultaneousCandidature = Math.min(nbHosts,simultaneousCandidature);
 		//		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)+1));
+	}
+
+	public String setAgentSelection(String agentSelection){
+		return _usedProtocol.equals(NegotiationParameters.key4mirrorProto)?NegotiationParameters.key4greedySelect:agentSelection;
 	}
 
 	@Override
@@ -306,14 +310,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		return this.host_maxSimultaneousFailure/this.agentAccessiblePerHost;
 	}
 
-	public void set_hostSelection(final String hostSelection) {
-		if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto)) {
-			this._hostSelection = NegotiationParameters.key4AllocSelect;
-		} else {
-			this._hostSelection = hostSelection;
-		}
-	}
-
 	//
 	// Methods
 	//
@@ -411,53 +407,32 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.dynamicCriticity);
 
 			}else if (this._usedProtocol
-					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
+					.equals(NegotiationParameters.key4CentralisedstatusProto) || 
+					this._usedProtocol.equals(NegotiationParameters.key4statusProto)){ //Status
 
 				rep = new StatusReplica(
 						replicaId,
 						this.rig.getAgentState(replicaId),
-						this.getCore(true, this._usedProtocol, this._socialWelfare),
 						this.getSelectionCore(this._agentSelection),
-						this.getProposerCore(true, this._usedProtocol),
-						this.getInformationService(true, this._usedProtocol),
-						new ReverseCFPProtocol(),
-						this.dynamicCriticity,
-						getMyAgentIdentifier());
+						simultaneousCandidature,
+						this.dynamicCriticity);
 
-				//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
-				//				rep.addObserver(h,
-				//						SimpleObservationService.informationObservationKey);
-				//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
-				//			}
-			}else if (this._usedProtocol
-					.equals(NegotiationParameters.key4statusProto)){ //Status
-
-				rep = new StatusReplica(
-						replicaId,
-						this.rig.getAgentState(replicaId),
-						this.getCore(true, this._usedProtocol, this._socialWelfare),
-						this.getSelectionCore(this._agentSelection),
-						this.getProposerCore(true, this._usedProtocol),
-						this.getInformationService(true, this._usedProtocol),
-						new ReverseCFPProtocol(),
-						this.dynamicCriticity,
-						opinionDiffusionDegree);
-
-				//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
-				//				rep.addObserver(h,
-				//						SimpleObservationService.informationObservationKey);
-				//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
-				//			}
 			} else {
 				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
 			}
 
-
+			//Ajout des acquaintances
 			rep.getMyInformation().addAll(this.rig.getAccessibleHost(replicaId));
 
-
+			//gestion des état initiaux
+			for (final AgentIdentifier host : rep.getMyCurrentState().getMyResourceIdentifiers()){
+				if (rep.getMyCore().iMemorizeMyRessourceState())
+					rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier)host));
+				if (rep.getMyCore().iObserveMyRessourceChanges())
+					rep.addObserver(host,
+							SimpleObservationService.informationObservationKey);
+			}
 			result.put(rep.getId(),rep);
-			//			getMyAgent().myInformationService.add(rep.getMyCurrentState());
 		}
 
 		/*
@@ -474,6 +449,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.rig.getHostState(hostId),
 						this._socialWelfare,
 						simultaneousAcceptation,
+						getSelectionType(_hostSelection),
 						maxComputingTime);
 
 			}else if (this._usedProtocol
@@ -481,12 +457,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				hostAg = new StatusHost(
 						hostId,
 						this.rig.getHostState(hostId),
-						this.getCore(false, this._usedProtocol, this._socialWelfare),
 						this.getSelectionCore(this._hostSelection),
-						this.getProposerCore(false, this._usedProtocol),
-						this.getInformationService(false, this._usedProtocol),
-						new ReverseCFPProtocol(),
-						//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						_socialWelfare,
 						getMyAgentIdentifier());
 
 			} else if (this._usedProtocol
@@ -494,26 +466,22 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				hostAg = new StatusHost(
 						hostId,
 						this.rig.getHostState(hostId),
-						this.getCore(false, this._usedProtocol, this._socialWelfare),
 						this.getSelectionCore(this._hostSelection),
-						this.getProposerCore(false, this._usedProtocol),
-						this.getInformationService(false, this._usedProtocol),
-						new ReverseCFPProtocol(),
-						//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						_socialWelfare,
 						opinionDiffusionDegree);
 			}else {
 				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
 			}
 
+			//pas d'acquaintance pour les ressources
+			
+			//gestion des état initiaux
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
-
-				ReplicationHandler.replicate(ag);
-
-				hostAg.getMyInformation().add(this.rig.getAgentState(ag));
-				//				hostAg.addObserver(ag,
-				//						SimpleObservationService.informationObservationKey);
-				//				this.logMonologue(hostAg + "  ->I have initially replicated "
-				//						+ ag,LogService.onBoth);
+				if (hostAg.getMyCore().iMemorizeMyRessourceState())
+					hostAg.getMyInformation().add(this.rig.getAgentState(ag));
+				if (hostAg.getMyCore().iObserveMyRessourceChanges())
+					hostAg.addObserver(ag,
+							SimpleObservationService.informationObservationKey);
 			}
 
 			result.put(hostAg.getId(),hostAg);
@@ -527,51 +495,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class),LogService.onFile);
 		return result.values();
 	}
-	private RationalCore getCore(final boolean agent, final String _usedProtocol, final SocialChoiceType _socialWelfare){
-		if (_usedProtocol
-				.equals(NegotiationParameters.key4CentralisedstatusProto)){
-			return agent?new CandidatureReplicaCoreWithStatus():new HostCore(_socialWelfare);
-		}else if (_usedProtocol.equals(NegotiationParameters.key4statusProto)) {
-			return agent?new CandidatureReplicaCoreWithStatus():new HostCore(_socialWelfare);
-		} else 	if (_usedProtocol
-				.equals(NegotiationParameters.key4multiLatProto)) {
-			throw new RuntimeException("unimplemented!");
-		} else {
-			throw new RuntimeException(
-					"Static parameters est mal conf : _usedProtocol = "
-							+ _usedProtocol);
-		}
-	}
-	private ProposerCore getProposerCore(final boolean agent, final String _usedProtocol) throws UnrespectedCompetenceSyntaxException{
-		if (_usedProtocol
-				.equals(NegotiationParameters.key4CentralisedstatusProto)){
-			return agent?new CandidatureReplicaProposerWithStatus(simultaneousCandidature):new InactiveProposerCore();
-		}else if (_usedProtocol.equals(NegotiationParameters.key4statusProto)) {
-			return agent?new CandidatureReplicaProposerWithStatus(simultaneousCandidature):new InactiveProposerCore();
-		} else 	if (_usedProtocol
-				.equals(NegotiationParameters.key4multiLatProto)) {
-			throw new RuntimeException("unimplemented!");
-		} else {
-			throw new RuntimeException(
-					"Static parameters est mal conf : _usedProtocol = "
-							+ _usedProtocol);
-		}
-	}
-	private ObservationService getInformationService(final boolean agent, final String _usedProtocol){
-		if (_usedProtocol
-				.equals(NegotiationParameters.key4CentralisedstatusProto)){
-			return agent?new SimpleOpinionService():new SimpleObservationService();
-		}else if (_usedProtocol.equals(NegotiationParameters.key4statusProto)) {
-			return agent?new SimpleOpinionService():new SimpleOpinionService();
-		} else 	if (_usedProtocol
-				.equals(NegotiationParameters.key4multiLatProto)) {
-			throw new RuntimeException("unimplemented!");
-		} else {
-			throw new RuntimeException(
-					"Static parameters est mal conf : _usedProtocol = "
-							+ _usedProtocol);
-		}
-	}
+
 	private SelectionCore getSelectionCore(final String selection){
 
 		if (selection
@@ -581,7 +505,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		} else if (selection
 				.equals(NegotiationParameters.key4rouletteWheelSelect)) {
 			return new SimpleSelectionCore(
-					true, false, GreedySelectionType.RooletteWheel);
+					true, false, GreedySelectionType.RooletteWheel);	
+			} else if (selection
+							.equals(NegotiationParameters.key4randomSelect)) {
+						return new SimpleSelectionCore(
+								true, false, GreedySelectionType.Random);
 		} else if (selection
 				.equals(NegotiationParameters.key4AllocSelect)) {
 			throw new RuntimeException(
@@ -592,7 +520,24 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					"Static parameters est mal conf : selection = "+ selection);
 		}
 	}
+	private GreedySelectionType getSelectionType(final String selection){
 
+		if (selection
+				.equals(NegotiationParameters.key4greedySelect)) {
+			return GreedySelectionType.Greedy;
+		} else if (selection
+				.equals(NegotiationParameters.key4rouletteWheelSelect)) {
+			return GreedySelectionType.RooletteWheel;
+		} else if (selection
+				.equals(NegotiationParameters.key4AllocSelect)) {
+			throw new RuntimeException(
+					"todo!!! "+ selection);
+			//				select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+		} else {
+			throw new RuntimeException(
+					"Static parameters est mal conf : selection = "+ selection);
+		}
+	}
 
 	//
 	// Protocole
@@ -608,11 +553,13 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	static List<String> protos = Arrays.asList(new String[]{
 			NegotiationParameters.key4mirrorProto,
-			NegotiationParameters.key4CentralisedstatusProto,
-			NegotiationParameters.key4statusProto});
+			NegotiationParameters.key4CentralisedstatusProto
+//			,NegotiationParameters.key4statusProto
+			});
 	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin,SocialChoiceType.Nash});// 
 	static List<String> select = Arrays.asList(new String[]{
 			NegotiationParameters.key4greedySelect,
+			NegotiationParameters.key4randomSelect,
 			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
 	static List<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{
 			DispersionSymbolicValue.Nul,
@@ -663,7 +610,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	public static final int iterationNumber=10;
 
-	static boolean varyProtocol=false;
+	static boolean varyProtocol=true;
 	static boolean  varyOptimizers=false;
 
 	static boolean varyAgents=false;
@@ -711,8 +658,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				DispersionSymbolicValue.Fort,//criticity dispersion
 				NegotiationParameters.key4CentralisedstatusProto,//NegotiationParameters.key4mirrorProto,//
 				SocialChoiceType.Utility,
-				NegotiationParameters.key4greedySelect,
-				NegotiationParameters.key4greedySelect,
+				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4greedySelect,//
+				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4greedySelect,//
 				false,
 				ReplicationExperimentationParameters.doubleParameters2.get(0));
 	}
@@ -873,7 +820,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final String v : ReplicationExperimentationParameters.select){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n._agentSelection=v;
+				n.setAgentSelection(v);
 				result.add(n);
 			}
 		}
@@ -884,7 +831,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final String v : ReplicationExperimentationParameters.select){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.set_hostSelection(v);
+				n._hostSelection=v;
 				result.add(n);
 			}
 		}
@@ -1145,6 +1092,29 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 
 
+//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
+//				rep.addObserver(h,
+//						SimpleObservationService.informationObservationKey);
+//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
+//			}
+//}else if (){ //Status
+//
+//rep = new StatusReplica(
+//		replicaId,
+//		this.rig.getAgentState(replicaId),
+//		this.getCore(true, this._usedProtocol, this._socialWelfare),
+//		this.getSelectionCore(this._agentSelection),
+//		this.getProposerCore(true, this._usedProtocol),
+//		this.getInformationService(true, this._usedProtocol),
+//		new ReverseCFPProtocol(),
+//		this.dynamicCriticity,
+//		opinionDiffusionDegree);
+
+//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
+//				rep.addObserver(h,
+//						SimpleObservationService.informationObservationKey);
+//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
+//			}
 //
 ////
 //// Creation de laborantin

@@ -2,6 +2,7 @@ package negotiation.negotiationframework.rationality;
 
 import java.util.Collection;
 
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
@@ -17,6 +18,7 @@ AgentCompetence<SimpleRationalAgent<PersonalState, Contract>> {
 	 *
 	 */
 
+	
 	//	public PersonalState getMyResultingState(PersonalState s, Contract c);
 	//
 	public void setMySpecif(PersonalState s, Contract c);
@@ -38,6 +40,11 @@ AgentCompetence<SimpleRationalAgent<PersonalState, Contract>> {
 	public int getAllocationPreference(Collection<Contract> c1, Collection<Contract> c2);
 
 	public  Double evaluatePreference(Collection<Contract> cs);
+	
+	
+	public boolean iObserveMyRessourceChanges();
+
+	boolean iMemorizeMyRessourceState();
 
 }
 

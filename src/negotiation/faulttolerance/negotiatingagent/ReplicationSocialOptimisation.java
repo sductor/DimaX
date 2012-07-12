@@ -29,10 +29,10 @@ extends SocialChoiceFunction<ReplicationCandidature>{
 	 *
 	 */
 
-	public static Double getReliability(final double utility, double rights, final SocialChoiceType socialWelfare) {
+	public static Double getReliability(final double utility, final double rights, final SocialChoiceType socialWelfare) {
 		if (socialWelfare.equals(SocialChoiceType.Leximin)){
-		assert (utility / rights < 10);
-		return utility / rights;
+			assert utility / rights < 10;
+			return utility / rights;
 		} else if (socialWelfare.equals(SocialChoiceType.Utility)){
 			return utility * rights;
 		} else if (socialWelfare.equals(SocialChoiceType.Nash)){
@@ -50,26 +50,26 @@ extends SocialChoiceFunction<ReplicationCandidature>{
 	@Override
 	protected <State extends AgentState> Collection<State> cleanStates(
 			final Collection<State> res) {
-		
+
 		final Iterator<State> itState = res.iterator();
 		while (itState.hasNext()) {
-			State s = itState.next();
+			final State s = itState.next();
 			assert s instanceof ReplicaState || s instanceof HostState:s;
 			if (!(s instanceof ReplicaState)) {
 				itState.remove();
 			}
 		}
-		assert cleanStateVerif(res);
+		assert this.cleanStateVerif(res);
 		return res;
 	}
 
-	private boolean cleanStateVerif(Collection<? extends AgentState> res){
+	private boolean cleanStateVerif(final Collection<? extends AgentState> res){
 		final Iterator<? extends AgentState> itState = res.iterator();
 		while (itState.hasNext()) {
-			AgentState s = itState.next();
+			final AgentState s = itState.next();
 			assert s instanceof ReplicaState || s instanceof HostState:s;
 		}
-		return true;		
+		return true;
 	}
 
 	@Override
@@ -78,8 +78,8 @@ extends SocialChoiceFunction<ReplicationCandidature>{
 			@Override
 			public int compare(final ReplicaState r1,
 					final ReplicaState r2) {
-				final ReplicaState o1 = (ReplicaState) r1;
-				final ReplicaState o2 = (ReplicaState) r2;
+				final ReplicaState o1 = r1;
+				final ReplicaState o2 = r2;
 
 				return Double.compare(
 						o1.getMyReliability(),
@@ -93,7 +93,7 @@ extends SocialChoiceFunction<ReplicationCandidature>{
 		return new UtilitaristEvaluator<ReplicaState>() {
 			@Override
 			public Double getUtilityValue(final ReplicaState o) {
-				final ReplicaState s = (ReplicaState) o;
+				final ReplicaState s = o;
 				return s.getMyReliability();
 
 				//				if (o instanceof ReplicaState){
@@ -125,12 +125,12 @@ extends SocialChoiceFunction<ReplicationCandidature>{
 		};
 	}
 
-//	private boolean cleanStateVerif(Collection<? extends AgentState> res){
-//		final Iterator<? extends AgentState> itState = res.iterator();
-//		while (itState.hasNext()) {
-//			AgentState s = itState.next();
-//			assert s instanceof ReplicaState || s instanceof HostState:s;
-//		}
-//		return true;		
-//	}
+	//	private boolean cleanStateVerif(Collection<? extends AgentState> res){
+	//		final Iterator<? extends AgentState> itState = res.iterator();
+	//		while (itState.hasNext()) {
+	//			AgentState s = itState.next();
+	//			assert s instanceof ReplicaState || s instanceof HostState:s;
+	//		}
+	//		return true;
+	//	}
 }

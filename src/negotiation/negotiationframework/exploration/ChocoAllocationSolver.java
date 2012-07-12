@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -80,11 +79,11 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 	@Override
 	public boolean hasNext() {
 		if (this.hasNext==null){
-			this.s.solve();		
-			this.hasNext=(this.s.isFeasible()!=null && this.s.isFeasible()!=false);
+			this.s.solve();
+			this.hasNext=this.s.isFeasible()!=null && this.s.isFeasible()!=false;
 		}
 
-		assert hasNext!=null;
+		assert this.hasNext!=null;
 		return this.hasNext;
 	}
 
@@ -98,7 +97,9 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 		} else {
 			final Collection<Contract> result = this.generateSolution();
 			this.hasNext = this.s.nextSolution();
-			if (hasNext==null) hasNext=false;
+			if (this.hasNext==null) {
+				this.hasNext=false;
+			}
 			return result;
 		}
 	}
@@ -121,7 +122,7 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 			final boolean allocated = this.s.getVar(this.replicas[i]).getVal()==1;
 			final Contract c = this.concerned[i];
 
-			if ((c.isMatchingCreation() && allocated) || (!c.isMatchingCreation() && !allocated)) {
+			if (c.isMatchingCreation() && allocated || !c.isMatchingCreation() && !allocated) {
 				results.add(c);
 			}
 		}

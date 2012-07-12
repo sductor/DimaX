@@ -74,31 +74,31 @@ public class Channel implements InChannel, OutChannel {
 	}
 
 
-//	// --------------------------------------------------------------------------
-//	// signal that thread is going to be blocked on channel
-//	// --------------------------------------------------------------------------
+	//	// --------------------------------------------------------------------------
+	//	// signal that thread is going to be blocked on channel
+	//	// --------------------------------------------------------------------------
 	public void receiveBlock() {
-//		if (visual != null) {
-//			visual.block();
-//			NodeVisual nodeVisual = receiver.getVisual();
-//			nodeVisual.block();
-//			receiver.getNetwork().getVisualizer().setText(
-//					"Node " + nodeVisual.getLabel() + " is blocked");
-//		}
+		//		if (visual != null) {
+		//			visual.block();
+		//			NodeVisual nodeVisual = receiver.getVisual();
+		//			nodeVisual.block();
+		//			receiver.getNetwork().getVisualizer().setText(
+		//					"Node " + nodeVisual.getLabel() + " is blocked");
+		//		}
 	}
-//
-//	// --------------------------------------------------------------------------
-//	// signal that thread is not blocked any more on channel
-//	// --------------------------------------------------------------------------
+	//
+	//	// --------------------------------------------------------------------------
+	//	// signal that thread is not blocked any more on channel
+	//	// --------------------------------------------------------------------------
 	public void receiveAwake() {
-//		if (visual != null) {
-//			if (queue.isEmpty()) visual.empty();
-//			else visual.fill();
-//			NodeVisual nodeVisual = receiver.getVisual();
-//			nodeVisual.awake();
-//			receiver.getNetwork().getVisualizer().setText(
-//					"Node " + nodeVisual.getLabel() + " is awake");
-//		}
+		//		if (visual != null) {
+		//			if (queue.isEmpty()) visual.empty();
+		//			else visual.fill();
+		//			NodeVisual nodeVisual = receiver.getVisual();
+		//			nodeVisual.awake();
+		//			receiver.getNetwork().getVisualizer().setText(
+		//					"Node " + nodeVisual.getLabel() + " is awake");
+		//		}
 	}
 
 	// --------------------------------------------------------------------------
@@ -114,19 +114,19 @@ public class Channel implements InChannel, OutChannel {
 		//
 		synchronized (this.neighbor) {
 			synchronized (this) {
-				blocked = (this.queue.isEmpty());
+				blocked = this.queue.isEmpty();
 				if (blocked) {
 					this.receiveBlock();
-//					index = scheduler.sleep();
+					//					index = scheduler.sleep();
 				}
 			}
 			if (blocked) {
-//				try {
-////					receiver.wait();
-//				}
-//				catch (InterruptedException e) {
-//					Assertion.fail("InterruptedException");
-//				}
+				//				try {
+				////					receiver.wait();
+				//				}
+				//				catch (InterruptedException e) {
+				//					Assertion.fail("InterruptedException");
+				//				}
 				this.receiveAwake();
 			}
 		}
@@ -134,7 +134,7 @@ public class Channel implements InChannel, OutChannel {
 		// increase time; must occur before message is selected to avoid
 		// inconsistencies in global assertions
 		//
-//		if (!blocked) scheduler.schedule();
+		//		if (!blocked) scheduler.schedule();
 		final DcopMessage msg = this.selector.select(this.queue);
 		this.owner.logMonologue("i've received "+msg, LogService.onFile);
 		return msg;

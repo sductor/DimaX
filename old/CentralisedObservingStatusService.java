@@ -1,7 +1,5 @@
-package negotiation.faulttolerance.candidaturewithstatus;
+package negotiation.faulttolerance.experimentation;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.negotiationframework.NegotiationParameters;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -23,7 +21,6 @@ BasicCommunicatingCompetence<Laborantin> {
 
 
 
-	public static final String reliabilityObservationKey = "reliabilityNotif4quantile";
 
 	//
 	// Fields
@@ -83,20 +80,20 @@ BasicCommunicatingCompetence<Laborantin> {
 
 
 	
-	@MessageHandler
-	@NotificationEnvelope(CentralisedObservingStatusService.reliabilityObservationKey)
-	public void updateAgent4StatusObservation(
-			final NotificationMessage<ReplicaState> n) {
-		// System.out.println("yoopppppppppppppppppppppppphooooooooooiiiiiiiiiiiiiiii");
-		this.agentsStatusObservation.add(n.getNotification().getMyReliability());
-		// System.out.println(this.agentsStatusObservation
-		//+"  "+this.agentsStatusObservation.getQuantile(
-		//ReplicationExperimentationProtocol.firstTercile,
-		// 100)+"   "+
-		// this.agentsStatusObservation.getQuantile(
-		//ReplicationExperimentationProtocol.lastTercile,
-		// 100));
-	}
+//	@MessageHandler
+//	@NotificationEnvelope(CentralisedObservingStatusService.reliabilityObservationKey)
+//	public void updateAgent4StatusObservation(
+//			final NotificationMessage<ReplicaState> n) {
+//		// System.out.println("yoopppppppppppppppppppppppphooooooooooiiiiiiiiiiiiiiii");
+//		this.agentsStatusObservation.add(n.getNotification().getMyReliability());
+//		// System.out.println(this.agentsStatusObservation
+//		//+"  "+this.agentsStatusObservation.getQuantile(
+//		//ReplicationExperimentationProtocol.firstTercile,
+//		// 100)+"   "+
+//		// this.agentsStatusObservation.getQuantile(
+//		//ReplicationExperimentationProtocol.lastTercile,
+//		// 100));
+//	}
 
 	//
 	// Primitives
@@ -135,55 +132,7 @@ BasicCommunicatingCompetence<Laborantin> {
 				.getResultPath(), result, true, false);
 	}
 
-	//
-	// Subclasses
-	//
 
-	public class StatusQuantityTrunk extends GimaObject {
-
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 3740320075407434400L;
-
-		int nbAgentLost = 0;
-
-		int nbAgentFragile = 0;
-		int nbAgentThrifty = 0;
-		int nbAgentFull = 0;
-		int nbAgentWastefull = 0;
-		int nbAgentEmpty = 0;
-
-		public void incr(final ReplicationResultAgent s) {
-			if (s.getDisponibility()==0) {
-				this.nbAgentLost++;
-			} else {
-				switch (s.getStatus()) {
-				case Fragile:
-					this.nbAgentFragile++;
-					break;
-				case Thrifty:
-					this.nbAgentThrifty++;
-					break;
-				case Full:
-					this.nbAgentFull++;
-					break;
-				case Wastefull:
-					this.nbAgentWastefull++;
-					break;
-				case Empty:
-					this.nbAgentEmpty++;
-					break;
-				}
-			}
-		}
-
-		public double getTotal() {
-			return (double) this.nbAgentFragile + this.nbAgentThrifty
-					+ this.nbAgentFull + this.nbAgentWastefull
-					+ this.nbAgentEmpty+ this.nbAgentLost;
-		}
-	}
 
 
 }

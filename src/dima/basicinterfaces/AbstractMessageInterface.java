@@ -4,7 +4,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 
 public interface AbstractMessageInterface {
 
-//	public AgentIdentifier getReceiver();
+	//	public AgentIdentifier getReceiver();
 
 	public AgentIdentifier getSender();
 

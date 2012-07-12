@@ -64,7 +64,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 		// que l'on ajoute au résultat après l'avoir multiplié
 		// par le nombre "multiplieur" :
 		result = multiplier * result + this.initiator.toString().hashCode();
-		for (AgentIdentifier p : participants) {
+		for (final AgentIdentifier p : this.participants) {
 			result = multiplier * result + p.toString().hashCode();
 		}
 		// result = multiplier*result + (contractCreation.hashCode());

@@ -1,7 +1,5 @@
 package algo.topt;
 
-import daj.Message;
-import dcop.Variable;
 
 public class ValueMsg extends Message {
 	int id;
@@ -12,21 +10,21 @@ public class ValueMsg extends Message {
 		super();
 	}
 
-	public ValueMsg(Variable v, int t) {
+	public ValueMsg(final Variable v, final int t) {
 		super();
-		id = v.id;
-		value = v.value;
+		this.id = v.id;
+		this.value = v.value;
 		// if (value == -1)
 		// System.out.println("Surprise");
-		ttl = t;
+		this.ttl = t;
 	}
 
 	public String getText() {
-		return ("ID " + id + ";VALUE " + value + ";TTL " + ttl);
+		return "ID " + this.id + ";VALUE " + this.value + ";TTL " + this.ttl;
 	}
 
 	public ValueMsg forward() {
-		ValueMsg msg = new ValueMsg();
+		final ValueMsg msg = new ValueMsg();
 		msg.id = this.id;
 		msg.value = this.value;
 		msg.ttl = this.ttl - 1;

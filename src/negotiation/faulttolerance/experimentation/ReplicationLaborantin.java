@@ -2,7 +2,6 @@ package negotiation.faulttolerance.experimentation;
 
 import java.io.IOException;
 
-import negotiation.faulttolerance.candidaturewithstatus.CentralisedObservingStatusService;
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 
@@ -10,9 +9,7 @@ import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.experimentation.Experimentator;
 import dimaxx.experimentation.IfailedException;
@@ -39,9 +36,9 @@ public class ReplicationLaborantin extends Laborantin {
 	protected final FaultTriggeringService myFaultService =
 	new FaultTriggeringService(this.getSimulationParameters());
 
-	@Competence
-	protected final CentralisedObservingStatusService myStatusObserver =
-	new CentralisedObservingStatusService(this, this.getSimulationParameters());
+	//	@Competence
+	//	protected final CentralisedObservingStatusService myStatusObserver =
+	//	new CentralisedObservingStatusService(this, this.getSimulationParameters());
 
 	//
 	// Accessors
@@ -69,12 +66,12 @@ public class ReplicationLaborantin extends Laborantin {
 
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, IfailedException, NotEnoughMachinesException{
-//		System.out.println(1<<10000);
-		
-		final Experimentator exp = 
+		//		System.out.println(1<<10000);
+
+		final Experimentator exp =
 				new Experimentator(
-						ReplicationExperimentationParameters.getDefaultParameters(), 
-						new FinalExperimentsLogger(), 
+						ReplicationExperimentationParameters.getDefaultParameters(),
+						new FinalExperimentsLogger(),
 						ReplicationExperimentationParameters.iterationNumber);
 		exp.run(args);
 	}

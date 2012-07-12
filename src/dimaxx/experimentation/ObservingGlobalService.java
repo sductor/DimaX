@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -18,8 +16,6 @@ import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.AbstractMinMaxAggregation;
-import dimaxx.tools.aggregator.HeavyAggregation;
-import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public abstract class ObservingGlobalService<Agent extends Laborantin>
@@ -31,7 +27,7 @@ extends BasicCommunicatingCompetence<Agent>{
 	//
 
 	public final ExperimentationParameters rep;
-	private HashSet<ExperimentationResults> finalStates = new HashSet<ExperimentationResults>();
+	private final HashSet<ExperimentationResults> finalStates = new HashSet<ExperimentationResults>();
 
 
 	final Collection<AgentIdentifier> allAgent=new ArrayList<AgentIdentifier>();
@@ -40,7 +36,7 @@ extends BasicCommunicatingCompetence<Agent>{
 
 
 	public ObservingGlobalService(
-			ExperimentationParameters rep) {
+			final ExperimentationParameters rep) {
 		super();
 		this.rep = rep;
 	}
@@ -50,7 +46,7 @@ extends BasicCommunicatingCompetence<Agent>{
 	//
 
 	public ExperimentationParameters getSimulationParameters() {
-		return rep;
+		return this.rep;
 	}
 
 	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 10;
@@ -75,9 +71,10 @@ extends BasicCommunicatingCompetence<Agent>{
 
 
 	protected boolean allAgentDied(){
-		for (AgentIdentifier myAgent : allAgent){
-			if (getMyAgent().api.getAllAgents().contains(myAgent))
+		for (final AgentIdentifier myAgent : this.allAgent){
+			if (this.getMyAgent().api.getAllAgents().contains(myAgent)) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -89,27 +86,27 @@ extends BasicCommunicatingCompetence<Agent>{
 	 * must ensure every agent is destroyed!!!
 	 */
 	public boolean simulationHasEnded(){
-		if (allAgentDied()){
+		if (this.allAgentDied()){
 			this.logMonologue("ALL AGENTS DIED!!!",LogService.onBoth);
 			this.logWarning("ALL AGENTS DIED!!!",LogService.onBoth);
 			return true;
 		}else if (this.getActiveAgents().size()==0){
-			if (!endRequestSended){
+			if (!this.endRequestSended){
 				this.logMonologue("Every agent has finished!!...killing....",LogService.onBoth);
-				for (final AgentIdentifier r : getAllAgents()) {
+				for (final AgentIdentifier r : this.getAllAgents()) {
 					this.sendMessage(r, new SimulationEndedMessage(this));
 					//					this.logWarning("Every agent has finished!!...killing... sending to "+r,LogService.onBoth);
 				}
 				this.endRequestSended=true;
 			}
 			return false;
-		}else if (this.getMyAgent().getUptime()>timeBeforeForcingSimulationEnd()){
+		}else if (this.getMyAgent().getUptime()>this.timeBeforeForcingSimulationEnd()){
 			//			if (!endRequestSended){
-			if (!shouldHAveEndedActivated) {
+			if (!this.shouldHAveEndedActivated) {
 				this.logWarning("FORCING END REQUEST!!!! I SHOULD HAVE ALREADY END!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
-				shouldHAveEndedActivated=true;
-				endRequestSended=true;
-				for (final AgentIdentifier r : getAllAgents()) {
+				this.shouldHAveEndedActivated=true;
+				this.endRequestSended=true;
+				for (final AgentIdentifier r : this.getAllAgents()) {
 					this.sendMessage(r, new SimulationEndedMessage(this));
 					//					this.logWarning("Every agent has finished!!...killing... sending to "+r,LogService.onBoth);
 				}
@@ -123,7 +120,7 @@ extends BasicCommunicatingCompetence<Agent>{
 			}
 			//			this.logWarning("FORCING END REQUEST!!!! remaining agents are "+this.getActiveAgents(),LogService.onBoth);
 			return false;//waiting 5 more minutes
-		}else if (this.getMyAgent().getUptime()>timeBeforeKillingSimulation()){
+		}else if (this.getMyAgent().getUptime()>this.timeBeforeKillingSimulation()){
 			this.getMyAgent().getApi().kill(this.getActiveAgents());
 			this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
 			return true;
@@ -156,7 +153,7 @@ extends BasicCommunicatingCompetence<Agent>{
 
 
 	public Collection<AgentIdentifier> getAllAgents() {
-		return allAgent;
+		return this.allAgent;
 	}
 
 
@@ -210,7 +207,7 @@ extends BasicCommunicatingCompetence<Agent>{
 	}
 
 	public HashSet<ExperimentationResults> getFinalStates() {
-		return finalStates;
+		return this.finalStates;
 	}
 
 	//
@@ -228,7 +225,7 @@ extends BasicCommunicatingCompetence<Agent>{
 	}
 
 	public static Long geTime(final int i) {
-		return (i)
+		return i
 				* ObservingGlobalService._state_snapshot_frequency;
 	}
 
@@ -253,7 +250,7 @@ extends BasicCommunicatingCompetence<Agent>{
 				+entry+"  max ;\t "
 				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
-		if (variable.getWeightOfAggregatedElements()> (significatifPercent*totalNumber)) {
+		if (variable.getWeightOfAggregatedElements()> significatifPercent*totalNumber) {
 			result += variable.getMinElement()+";\t " +
 					//					variable.getQuantile(1,3)+";\t " +
 					//					variable.getMediane()+";\t " +
@@ -345,9 +342,9 @@ extends BasicCommunicatingCompetence<Agent>{
 		//		received.get(i).add(ag.getId());
 
 		final ExperimentationResults resultType= results.getLast();
-		assert (!this.alreadyReceived.contains(resultType.getId())):"argh! already received"+resultType.getId();
+		assert !this.alreadyReceived.contains(resultType.getId()):"argh! already received"+resultType.getId();
 		this.alreadyReceived.add(resultType.getId());
-		assert (results.size()<=ObservingGlobalService.getNumberOfTimePoints()):"arg : "+results.size()+"\n"+results;
+		assert results.size()<=ObservingGlobalService.getNumberOfTimePoints():"arg : "+results.size()+"\n"+results;
 		//		String result ="Agent has sended results \n"+resultType.getId()+"   "+_state_snapshot_frequency+" :";
 		//		for (final ExperimentationResults r : results){
 		//			result+=r.getUptime()+"  "+getTimeStep(r)+"\n";

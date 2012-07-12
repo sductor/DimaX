@@ -159,7 +159,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 
 			//			if (msg instanceof TerminateMessage) {
 			//				break;
-			//			} else 
+			//			} else
 			if (msg instanceof KorigValueMsg) {
 				final KorigValueMsg vmsg = (KorigValueMsg) msg;
 				this.view.varMap.get(sender).value = vmsg.value;
@@ -406,73 +406,73 @@ class KorigGainMsg extends DcopMessage {
 		}
 		return s + 5;
 	}
-	
 
-public class CommitInfo {
-	public int id;
-	public int leader;
 
-	public CommitInfo(final int i, final int l) {
-		this.id = i;
-		this.leader = l;
-	}
+	public class CommitInfo {
+		public int id;
+		public int leader;
 
-	@Override
-	public String toString() {
-		return "" + this.id + "->" + this.leader;
-	}
-}
-public class GainInfo {
+		public CommitInfo(final int i, final int l) {
+			this.id = i;
+			this.leader = l;
+		}
 
-	public int id;
-	public int gain;
-	public HashMap<Integer, Integer> valMap;
-
-	public GainInfo(final int i, final int g, final HashMap<Integer, Integer> vm) {
-		this.id = i;
-		this.gain = g;
-		this.valMap = vm;
-	}
-
-	public int getSize() {
-		return this.valMap.size() * 8 + 8;
-	}
-
-	@Override
-	public String toString() {
-		return "" + this.id + ":" + this.gain;
-	}
-
-}
-
-public class LocalInfo {
-	int id;
-	int value;
-	int domain;
-	ArrayList<int[]> data;
-	HashMap<Integer, Integer> valMap;
-
-	public LocalInfo(final Variable v) {
-		this.id = v.id;
-		this.domain = v.domain;
-		this.value = v.value;
-		this.data = new ArrayList<int[]>();
-		this.valMap = new HashMap<Integer, Integer>();
-		for (final Constraint c : v.neighbors) {
-			final Variable n = c.getNeighbor(v);
-			this.valMap.put(n.id, n.value);
-			this.data.add(c.encode());
+		@Override
+		public String toString() {
+			return "" + this.id + "->" + this.leader;
 		}
 	}
+	public class GainInfo {
 
-	public int getSize() {
-		int size = 0;
-		for (final int[] array : this.data) {
-			size += array.length * 4;
+		public int id;
+		public int gain;
+		public HashMap<Integer, Integer> valMap;
+
+		public GainInfo(final int i, final int g, final HashMap<Integer, Integer> vm) {
+			this.id = i;
+			this.gain = g;
+			this.valMap = vm;
 		}
-		return 12 + size + this.valMap.size() * 4;
+
+		public int getSize() {
+			return this.valMap.size() * 8 + 8;
+		}
+
+		@Override
+		public String toString() {
+			return "" + this.id + ":" + this.gain;
+		}
+
 	}
-}
+
+	public class LocalInfo {
+		int id;
+		int value;
+		int domain;
+		ArrayList<int[]> data;
+		HashMap<Integer, Integer> valMap;
+
+		public LocalInfo(final Variable v) {
+			this.id = v.id;
+			this.domain = v.domain;
+			this.value = v.value;
+			this.data = new ArrayList<int[]>();
+			this.valMap = new HashMap<Integer, Integer>();
+			for (final Constraint c : v.neighbors) {
+				final Variable n = c.getNeighbor(v);
+				this.valMap.put(n.id, n.value);
+				this.data.add(c.encode());
+			}
+		}
+
+		public int getSize() {
+			int size = 0;
+			for (final int[] array : this.data) {
+				size += array.length * 4;
+			}
+			return 12 + size + this.valMap.size() * 4;
+		}
+	}
 
 
 

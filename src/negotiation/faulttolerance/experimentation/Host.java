@@ -8,18 +8,10 @@ import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
-import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.RationalCore;
-import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
-import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
@@ -35,7 +27,7 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	//
 	//	private long firstModifTime=-2;
 	private long lastModifTime=-1;
-	private LightAverageDoubleAggregation searchTime = new LightAverageDoubleAggregation();
+	private final LightAverageDoubleAggregation searchTime = new LightAverageDoubleAggregation();
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
@@ -49,8 +41,8 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 		protected ExperimentationResults generateMyResults() {
 			return new ReplicationResultHost(
 					Host.this.getMyCurrentState(),//firstModifTime,
-					lastModifTime,
-					Host.this.getCreationTime(),initialStateNumber,searchTime);
+					Host.this.lastModifTime,
+					Host.this.getCreationTime(),Host.this.initialStateNumber,Host.this.searchTime);
 		}
 	};
 
@@ -100,31 +92,32 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 
 
 	@EventHookedMethod(HostState.class)
-	public void updateStateStatus(HostState h){
+	public void updateStateStatus(final HostState h){
 		//		if (firstModifTime==-2){
 		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
-		//			firstModifTime=-1;	
+		//			firstModifTime=-1;
 		//		}else if (firstModifTime==-1){
 		//			assert h.getStateCounter()==initialStateNumber+1;
-		//			firstModifTime=getUptime();		
+		//			firstModifTime=getUptime();
 		//		}
-		//		
-		lastModifTime=getUptime();
+		//
+		this.lastModifTime=this.getUptime();
 	}
 
 	//
 	// Accessor
 	//
 	@EventHookedMethod(SearchTimeNotif.class)
-	public void beNotifedOfSearchTime(SearchTimeNotif s){
-		searchTime.add(s.getValue());
+	public void beNotifedOfSearchTime(final SearchTimeNotif s){
+		this.searchTime.add(s.getValue());
 	}
-	
-	
+
+
 	//allow to continue to receive messages
+	@Override
 	public void tryToResumeActivity(){
 		super.tryToResumeActivity();
-		mySelfObservationService.tryToResumeActivity();
+		this.mySelfObservationService.tryToResumeActivity();
 	}
 	public boolean isFaulty() {
 		return this.getMyCurrentState().isFaulty();

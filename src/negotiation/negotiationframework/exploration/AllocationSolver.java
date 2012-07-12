@@ -2,7 +2,6 @@ package negotiation.negotiationframework.exploration;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.rationality.AgentState;

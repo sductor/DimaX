@@ -57,7 +57,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public void activateCompetence(final boolean active) {
+	public void setActive(final boolean active) {
 		this.active = active;
 	}
 	@Override
@@ -155,6 +155,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logMonologue(text, details);
 	}
 
+	@Override
 	public Boolean logMonologue(final String text) {
 		return this.myAgent.logMonologue(text, LogService.onBoth);
 	}
@@ -178,14 +179,16 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logWarning(text, details);
 	}
 
+	@Override
 	public Boolean logWarning(final String text, final Throwable e) {
 		return this.myAgent.logWarning(text, e, LogService.onBoth);
 	}
 
+	@Override
 	public Boolean logWarning(final String text) {
 		return this.myAgent.logWarning(text, LogService.onBoth);
 	}
-	
+
 	//	@Override
 	//	public Boolean logWarning(final String text) {
 	//		return this.myAgent.logWarning(text);
@@ -196,7 +199,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		this.myAgent.addLogKey(key, toString, toFile);
 	}
 	@Override
-	public void addLogKey(String key, String logType) {
+	public void addLogKey(final String key, final String logType) {
 		this.myAgent.addLogKey(key, logType);
 	}
 	@Override

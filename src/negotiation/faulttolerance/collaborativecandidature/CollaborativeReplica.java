@@ -3,8 +3,10 @@ package negotiation.faulttolerance.collaborativecandidature;
 import negotiation.faulttolerance.experimentation.Replica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import negotiation.negotiationframework.protocoles.collaborative.AgentInformedSelectionCore;
+import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.rationality.AltruistRationalCore;
@@ -13,7 +15,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 
-public class CollaborativeReplica extends Replica {
+public class CollaborativeReplica extends Replica<InformedCandidature<ReplicationCandidature>> {
 	private static final long serialVersionUID = 4986143017976368579L;
 
 

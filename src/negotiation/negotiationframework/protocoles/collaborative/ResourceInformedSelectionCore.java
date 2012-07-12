@@ -2,7 +2,6 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,11 +13,9 @@ import java.util.Set;
 
 import negotiation.faulttolerance.experimentation.SearchTimeNotif;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
@@ -31,8 +28,6 @@ import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySe
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public abstract class ResourceInformedSelectionCore <
@@ -42,7 +37,7 @@ extends
 BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
 implements SelectionCore<
 SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
-PersonalState, 
+PersonalState,
 InformedCandidature<Contract>> {
 	private static final long serialVersionUID = 5994721006483536151L;
 
@@ -50,7 +45,7 @@ InformedCandidature<Contract>> {
 	final int kMax;
 	final long maxComputingTime;
 	final GreedySelectionType initialSelectionType;
-	
+
 	Random rand = new Random();
 
 	//
@@ -60,8 +55,8 @@ InformedCandidature<Contract>> {
 	public ResourceInformedSelectionCore(
 			final AllocationSolver<Contract, PersonalState> solver,
 			final int kMax,
-			GreedySelectionType initialSelectionType,
-			long maxComputingTime)
+			final GreedySelectionType initialSelectionType,
+			final long maxComputingTime)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
@@ -115,7 +110,7 @@ InformedCandidature<Contract>> {
 				//								this.getMyAgent(), allContracts);
 				this.logMonologue("trying to accept simple nego",
 						AbstractCommunicationProtocol.log_selectionStep);
-				boolean useSelectionModule=true;//for debugging
+				final boolean useSelectionModule=true;//for debugging
 				if (!useSelectionModule){
 					final Iterator<InformedCandidature<Contract>>r = allContracts.iterator();
 					while (r.hasNext()){
@@ -136,14 +131,14 @@ InformedCandidature<Contract>> {
 						}
 					}
 				} else {
-					GreedySelectionModule<PersonalState, InformedCandidature<Contract>> gsm = 
-							new GreedySelectionModule<PersonalState, InformedCandidature<Contract>>(initialSelectionType);
-					gsm.setMyAgent(getMyAgent());
+					final GreedySelectionModule<PersonalState, InformedCandidature<Contract>> gsm =
+							new GreedySelectionModule<PersonalState, InformedCandidature<Contract>>(this.initialSelectionType);
+					gsm.setMyAgent(this.getMyAgent());
 					accepted.addAll(gsm.greedySelection(currentState, allContracts));
 					try {
 						currentState=ReallocationContract.computeResultingState(currentState, accepted);
-					} catch (IncompleteContractException e) {
-						this.signalException("impossible", e);						
+					} catch (final IncompleteContractException e) {
+						this.signalException("impossible", e);
 					}
 					this.logMonologue("i accept "+accepted+" (my state is "+currentState+")",
 							AbstractCommunicationProtocol.log_selectionStep);
@@ -152,7 +147,7 @@ InformedCandidature<Contract>> {
 
 				if (accepted.isEmpty()){// I accepted noone, trying to find realloc
 
-					assert currentState.equals(getMyAgent().getMyCurrentState());
+					assert currentState.equals(this.getMyAgent().getMyCurrentState());
 					this.logMonologue("no contracts accepted : searching upgrading contracts! : \nhosted :"
 							+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()
 							+"\n required "+rejected,
@@ -280,25 +275,25 @@ InformedCandidature<Contract>> {
 		final Map<Contract,InformedCandidature<Contract>> concerned =
 				new HashMap<Contract,InformedCandidature<Contract>>();
 
-		List<Contract> dealloc = new ArrayList<Contract>();
+		final List<Contract> dealloc = new ArrayList<Contract>();
 		for (final InformedCandidature<Contract> c : unacceptedContracts){
 			assert c.isMatchingCreation();
 			concerned.put(c.getCandidature(),c);//adding allocation candidature
 			dealloc.add(c.getCandidature());
 		}
 
-		List<Contract> alloc = new ArrayList<Contract>();
-		for (final AgentState s : getMyAgent().getMyResources()){
-			assert s.getMyResourceIdentifiers().contains(getIdentifier());
-			assert getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(s.getMyAgentIdentifier());
+		final List<Contract> alloc = new ArrayList<Contract>();
+		for (final AgentState s : this.getMyAgent().getMyResources()){
+			assert s.getMyResourceIdentifiers().contains(this.getIdentifier());
+			assert this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(s.getMyAgentIdentifier());
 			final InformedCandidature<Contract> d =
 					this.generateDestructionContract(s.getMyAgentIdentifier());
 			//setting my paramaters
-			this.getMyAgent().setMySpecif(getMyAgent().getMyCurrentState(), d);
+			this.getMyAgent().setMySpecif(this.getMyAgent().getMyCurrentState(), d);
 			d.setInitialState(this.getMyAgent().getMyCurrentState());
 			//setting my ressource parameters
 			d.setInitialState(s);
-			setSpecif(s,d);
+			this.setSpecif(s,d);
 			//
 			alloc.add(d.getCandidature());
 
@@ -322,46 +317,46 @@ InformedCandidature<Contract>> {
 
 		assert ContractTransition.allComplete(concerned.values()):concerned+" "+myAgentContractTrunk;
 
-		Set<Contract> kConcerned = new HashSet<Contract>();
+		final Set<Contract> kConcerned = new HashSet<Contract>();
 		int nextInt;
 		//		List<Contract> allConcerned = new ArrayList<Contract>(concerned.keySet());
 
 		//Adding one alloc
 		if (!alloc.isEmpty()){
-			nextInt = rand.nextInt(alloc.size());
+			nextInt = this.rand.nextInt(alloc.size());
 			kConcerned.add(alloc.get(nextInt));
 			alloc.remove(alloc.get(nextInt));
 		}
 
 		//Adding one dealloc
 		if (!dealloc.isEmpty()){
-			nextInt = rand.nextInt(dealloc.size());
+			nextInt = this.rand.nextInt(dealloc.size());
 			kConcerned.add(dealloc.get(nextInt));
 			dealloc.remove(dealloc.get(nextInt));
 		}
 
-		while (kConcerned.size()<kMax){// && !allConcerned.isEmpty()){
+		while (kConcerned.size()<this.kMax){// && !allConcerned.isEmpty()){
 			if (dealloc.isEmpty() && alloc.isEmpty()){
 				break;
 			} else if (dealloc.isEmpty() && !alloc.isEmpty()){
-				nextInt = rand.nextInt(alloc.size());
+				nextInt = this.rand.nextInt(alloc.size());
 				kConcerned.add(alloc.get(nextInt));
 				alloc.remove(nextInt);
 			} else if (!dealloc.isEmpty() && alloc.isEmpty()){
-				nextInt = rand.nextInt(dealloc.size());
+				nextInt = this.rand.nextInt(dealloc.size());
 				kConcerned.add(dealloc.get(nextInt));
 				dealloc.remove(nextInt);
 			} else {
-				if (rand.nextBoolean()){
-					nextInt = rand.nextInt(alloc.size());
+				if (this.rand.nextBoolean()){
+					nextInt = this.rand.nextInt(alloc.size());
 					kConcerned.add(alloc.get(nextInt));
-					alloc.remove(nextInt);					
+					alloc.remove(nextInt);
 				} else {
-					nextInt = rand.nextInt(dealloc.size());
+					nextInt = this.rand.nextInt(dealloc.size());
 					kConcerned.add(dealloc.get(nextInt));
-					dealloc.remove(nextInt);					
+					dealloc.remove(nextInt);
 				}
-			}			
+			}
 		}
 
 
@@ -369,12 +364,12 @@ InformedCandidature<Contract>> {
 		try {
 
 			this.solver.initiate(kConcerned);
-			solver.setTimeLimit((int) (maxComputingTime));
-			Set<InformedCandidature<Contract>> alreadyDone =
+			this.solver.setTimeLimit((int) this.maxComputingTime);
+			final Set<InformedCandidature<Contract>> alreadyDone =
 					new HashSet<InformedCandidature<Contract>>();
-			Date startingExploringTime = new Date();
+			final Date startingExploringTime = new Date();
 			//			logWarning("beginning exploration");
-			while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<maxComputingTime)){
+			while (this.solver.hasNext() && new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime){
 				final Collection<Contract> realloc = this.solver.getNextSolution();
 				if (!realloc.isEmpty()){
 					final Set<InformedCandidature<Contract>> contractsToKeep =
@@ -399,7 +394,7 @@ InformedCandidature<Contract>> {
 								//						}
 								toPropose.add(c);
 							} else {//sinon on la laisse en attente
-								assert (!alreadyDone.add(c)||unacceptedContracts.contains(c)):unacceptedContracts;
+								assert !alreadyDone.add(c)||unacceptedContracts.contains(c):unacceptedContracts;
 								unacceptedContracts.remove(c);
 								onWait.add(c);
 							}
@@ -414,7 +409,7 @@ InformedCandidature<Contract>> {
 				}
 			}
 			//			logWarning("ending exploration, time : "+(new Date().getTime() - startingExploringTime.getTime()));
-			notify(new SearchTimeNotif(new Double(new Date().getTime() - startingExploringTime.getTime())));
+			this.notify(new SearchTimeNotif(new Double(new Date().getTime() - startingExploringTime.getTime())));
 			for (final InformedCandidature<Contract> c : toPropose){
 				//Pour toute action de ce contrat
 				assert !c.isMatchingCreation();//cette action est un contrat de destruction :
@@ -432,8 +427,8 @@ InformedCandidature<Contract>> {
 			}
 			//			logWarning("ending exploration 2, time : "+(new Date().getTime() - startingExploringTime.getTime()));
 
-		}catch (Throwable e){
-			signalException("solver failed",e); 
+		}catch (final Throwable e){
+			this.signalException("solver failed",e);
 		}
 		return toPropose;
 	}
@@ -441,16 +436,16 @@ InformedCandidature<Contract>> {
 
 
 	private boolean isImprovment(
-			Set<InformedCandidature<Contract>> contractsToKeep) {
-		assert getMyAgent().isPersonalyValid(getMyAgent().getMyCurrentState(), contractsToKeep);
+			final Set<InformedCandidature<Contract>> contractsToKeep) {
+		assert this.getMyAgent().isPersonalyValid(this.getMyAgent().getMyCurrentState(), contractsToKeep);
 		//		assert getMyAgent().evaluatePreference(new ArrayList<InformedCandidature<Contract>>())<getMyAgent().evaluatePreference(contractsToKeep):getMyAgent().evaluatePreference()+" "+getMyAgent().evaluatePreference(contractsToKeep);
 		assert this.getMyAgent().Iaccept(contractsToKeep):
-			getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
-			+getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), contractsToKeep)
+			this.getMyAgent().getMyCurrentState()+" \n"+contractsToKeep+"\n donne -------> "
+			+this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), contractsToKeep)
 			+"\n-------------->"+
 
-			(getMyAgent().getMyCore().getAllocationPreference(contractsToKeep, 
-					new ArrayList<InformedCandidature<Contract>>()));
+			this.getMyAgent().getMyCore().getAllocationPreference(contractsToKeep,
+					new ArrayList<InformedCandidature<Contract>>());
 
 		return true;
 	}

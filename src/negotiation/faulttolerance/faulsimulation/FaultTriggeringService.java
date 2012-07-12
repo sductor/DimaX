@@ -36,7 +36,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	int i = 0;
 
 
-//	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
+	//	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
 	public void toggleFault() {
 		int nbMax = this.p.host_maxSimultaneousFailure.intValue();
 		if (nbMax>0){

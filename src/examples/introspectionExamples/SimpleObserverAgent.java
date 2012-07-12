@@ -34,7 +34,7 @@ public class SimpleObserverAgent extends BasicCompetentAgent {
 	@MessageHandler
 	@NotificationEnvelope()
 	public void simpleObserverStep(final NotificationMessage<SimpleMessage> m) {
-		SimpleMessage m2 = m.getNotification();
+		final SimpleMessage m2 = m.getNotification();
 		this.logMonologue(
 				"YOOOO!!(1) =) I've received :\n" + m2,LogService.onScreen);
 	}

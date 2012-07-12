@@ -3,7 +3,6 @@ package negotiation.negotiationframework.contracts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ AbstractContractTransition{
 	protected final AgentIdentifier creator;
 	protected final Date creationTime = new Date();
 	protected final long validityTime;
-	private Boolean specifNeeded = null;
+	private final Boolean specifNeeded = null;
 
 	HashedHashSet<AgentIdentifier, Contract> actions =
 			new HashedHashSet<AgentIdentifier, Contract>();
@@ -67,7 +66,7 @@ AbstractContractTransition{
 				} catch (final IncompleteContractException e) {}
 				try {
 					if (resultState.containsKey(id)){
-						if (c.getInitialState(id).isNewerThan(resultState.get(id))>1) {		
+						if (c.getInitialState(id).isNewerThan(resultState.get(id))>1) {
 							resultState.put(id,c.getInitialState(id));
 						}
 					} else {
@@ -83,13 +82,13 @@ AbstractContractTransition{
 					c.setSpecification(resultSpec.get(id));
 				}
 				if (resultState.containsKey(id)){
-					c.setInitialState(resultState.get(id));					
+					c.setInitialState(resultState.get(id));
 				}
 			}
 		}
-		
-//		//verrouillage du reallocation contract en l'état
-//		this.actions = (HashedHashSet<AgentIdentifier, Contract>) Collections.unmodifiableMap(this.actions);
+
+		//		//verrouillage du reallocation contract en l'état
+		//		this.actions = (HashedHashSet<AgentIdentifier, Contract>) Collections.unmodifiableMap(this.actions);
 	}
 
 
@@ -134,14 +133,14 @@ AbstractContractTransition{
 	}
 
 	@Override
-	public void setSpecification(AbstractActionSpecif spec) {
+	public void setSpecification(final AbstractActionSpecif spec) {
 		for (final Contract a : this.actions.get(spec.getMyAgentIdentifier())) {
 			a.setSpecification(spec);;
 		}
 	}
 
 	@Override
-	public void setInitialState(AgentState state) {
+	public void setInitialState(final AgentState state) {
 		for (final Contract a : this.actions.get(state.getMyAgentIdentifier())) {
 			a.setInitialState(state);;
 		}
@@ -202,8 +201,9 @@ AbstractContractTransition{
 	@Override
 	public boolean isComplete() {
 		for (final Contract c : this) {
-			if (!c.isComplete())
+			if (!c.isComplete()) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -247,25 +247,25 @@ AbstractContractTransition{
 	//
 
 	@Override
-	public AgentState getInitialState(AgentIdentifier id)
+	public AgentState getInitialState(final AgentIdentifier id)
 			throws IncompleteContractException {
-		assert initialStateVerif(id);
-		if (this.isEmpty())
+		assert this.initialStateVerif(id);
+		if (this.isEmpty()) {
 			throw new NoSuchElementException();
-		else{
-			Iterator<Contract> cIt = this.iterator();
+		} else{
+			final Iterator<Contract> cIt = this.iterator();
 			return cIt.next().getInitialState(id);
 		}
 	}
 
 
 
-	private  boolean initialStateVerif(AgentIdentifier id) throws IncompleteContractException{
+	private  boolean initialStateVerif(final AgentIdentifier id) throws IncompleteContractException{
 		if (!this.isEmpty()){
-			Iterator<Contract> cIt = this.iterator();
-			AgentState initS = cIt.next().getInitialState(id);
+			final Iterator<Contract> cIt = this.iterator();
+			final AgentState initS = cIt.next().getInitialState(id);
 			while (cIt.hasNext()){
-				AgentState s = cIt.next().getInitialState(id);
+				final AgentState s = cIt.next().getInitialState(id);
 				assert initS.equals(s):initS+" "+s;
 			}
 		}
@@ -349,7 +349,7 @@ AbstractContractTransition{
 	 * @return the resulting State of the allocation
 	 * @throws IncompleteContractException if there some Contract of the allocation is not well completed
 	 */
-	public static 
+	public static
 	<Contract extends AbstractContractTransition,
 	State extends AgentState>
 	State computeResultingState(final State initialState, final Collection<Contract> alloc)
@@ -381,8 +381,8 @@ AbstractContractTransition{
 
 	@Override
 	public ReallocationContract<Contract> clone() {
-		Collection<Contract> actions = new ArrayList<Contract>();
-		for (Contract c : this){
+		final Collection<Contract> actions = new ArrayList<Contract>();
+		for (final Contract c : this){
 			actions.add((Contract) c.clone());
 		}
 		return new ReallocationContract<Contract>(this.creator, actions);

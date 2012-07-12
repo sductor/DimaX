@@ -158,14 +158,14 @@ public class BasicIntrospectiveShell extends GimaObject {
 	}
 
 	public final void resumeActivity(final Date creation){
-		this.executeBehaviors(ResumeActivity.class, creation);		
+		this.executeBehaviors(ResumeActivity.class, creation);
 	}
-	
+
 	public void proactivityTerminate(final Date creation){
 		this.executeBehaviors(ProactivityFinalisation.class, creation);
 	}
-	
-	
+
+
 
 	//
 	// Primitive

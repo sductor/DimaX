@@ -4,30 +4,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
-import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.rationality.AgentState;
+import negotiation.negotiationframework.rationality.RationalAgent;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class InformedCandidatureRationality<
 PersonalState extends AgentState,
 Contract extends MatchingCandidature>
-extends BasicAgentCompetence<
-SimpleRationalAgent<PersonalState, InformedCandidature<Contract>>>
-implements RationalCore<PersonalState, InformedCandidature<Contract>> {
+extends BasicAgentCompetence<RationalAgent<PersonalState, InformedCandidature<Contract>>>
+implements RationalCore<RationalAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>> {
 	private static final long serialVersionUID = 3012134209614654825L;
 
-	public final RationalCore<PersonalState, Contract> referenceRationality;
+	public final RationalCore<? extends SimpleRationalAgent,PersonalState, Contract> referenceRationality;
 	public final boolean optimiseWithBest;
 
 	public InformedCandidatureRationality(
-			final RationalCore<PersonalState, Contract> referenceRationality,
+			final RationalCore<? extends SimpleRationalAgent,PersonalState, Contract> referenceRationality,
 			final boolean optimiseWithBest) {
 		super();
 		this.referenceRationality = referenceRationality;
@@ -41,11 +38,11 @@ implements RationalCore<PersonalState, InformedCandidature<Contract>> {
 
 	@Override
 	public boolean iObserveMyRessourceChanges() {
-		return referenceRationality.iObserveMyRessourceChanges();
+		return this.referenceRationality.iObserveMyRessourceChanges();
 	}
 	@Override
 	public boolean iMemorizeMyRessourceState() {
-		return referenceRationality.iMemorizeMyRessourceState();
+		return this.referenceRationality.iMemorizeMyRessourceState();
 	}
 
 
@@ -103,15 +100,15 @@ implements RationalCore<PersonalState, InformedCandidature<Contract>> {
 		}
 	}
 
-//	public Comparator<ReallocationContract<Contract,ActionSpec>> getReferenceAllocationComparator(final PersonalState s) {
-//		return new Comparator<Collection<Contract>>() {
-//
-//			@Override
-//			public int compare(final Collection<Contract> c1, final Collection<Contract> c2) {
-//				return InformedCandidatureRationality.this.referenceRationality.getAllocationPreference(s, c1, c2);
-//			}
-//		};
-//	}
+	//	public Comparator<ReallocationContract<Contract,ActionSpec>> getReferenceAllocationComparator(final PersonalState s) {
+	//		return new Comparator<Collection<Contract>>() {
+	//
+	//			@Override
+	//			public int compare(final Collection<Contract> c1, final Collection<Contract> c2) {
+	//				return InformedCandidatureRationality.this.referenceRationality.getAllocationPreference(s, c1, c2);
+	//			}
+	//		};
+	//	}
 
 	public Comparator<ReallocationContract<Contract>> getReferenceAllocationComparator() {
 		return new Comparator<ReallocationContract<Contract>>() {
@@ -134,14 +131,15 @@ implements RationalCore<PersonalState, InformedCandidature<Contract>> {
 
 
 	@Override
-	public SimpleRationalAgent<PersonalState, InformedCandidature<Contract>> getMyAgent() {
-		return (SimpleRationalAgent<PersonalState, InformedCandidature<Contract>>) this.referenceRationality.getMyAgent();
+	public RationalAgent<PersonalState, InformedCandidature<Contract>> getMyAgent() {
+		return this.referenceRationality.getMyAgent();
 	}
 
 	@Override
 	public void setMyAgent(
-			final SimpleRationalAgent<PersonalState, InformedCandidature<Contract>> ag) {
-		this.referenceRationality.setMyAgent((SimpleRationalAgent<PersonalState, Contract>) ag);
+			final RationalAgent<PersonalState, InformedCandidature<Contract>> ag) {
+		((RationalCore<SimpleRationalAgent<PersonalState, Contract>,PersonalState, Contract>)this.referenceRationality).
+		setMyAgent((SimpleRationalAgent<PersonalState, Contract>) ag);
 	}
 
 	@Override
@@ -155,7 +153,7 @@ implements RationalCore<PersonalState, InformedCandidature<Contract>> {
 	}
 
 	@Override
-	public void activateCompetence(final boolean active) {
-		this.referenceRationality.activateCompetence(active);
+	public void setActive(final boolean active) {
+		this.referenceRationality.setActive(active);
 	}
 }

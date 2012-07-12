@@ -4,7 +4,7 @@ import java.util.Date;
 
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
-import negotiation.negotiationframework.protocoles.status.AgentStateStatus;
+import negotiation.negotiationframework.protocoles.status.StatusObservationCompetence.AgentStateStatus;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dimaxx.experimentation.ExperimentationResults;
@@ -69,8 +69,8 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		return this.disponibility;
 	}
 
-	public double getReliability(SocialChoiceType welfare) {
-		return ReplicationSocialOptimisation.getReliability(getDisponibility(), getCriticity(), welfare);
+	public double getReliability(final SocialChoiceType welfare) {
+		return ReplicationSocialOptimisation.getReliability(this.getDisponibility(), this.getCriticity(), welfare);
 	}
 
 	@Override

@@ -2,15 +2,15 @@ package negotiation.faulttolerance.experimentation;
 
 import java.util.Random;
 
-import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.protocoles.status.StatusAgent;
 import negotiation.negotiationframework.rationality.RationalCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
@@ -21,8 +21,8 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
 
-public class Replica
-extends SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature> {
+public class Replica<Contract extends AbstractContractTransition>
+extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 	private static final long serialVersionUID = 4986143017976368579L;
 
 	//
@@ -44,12 +44,11 @@ extends SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature> {
 		@Override
 		protected ExperimentationResults generateMyResults() {
 			ReplicationResultAgent myInfo;
-			if (Replica.this.getMyCore() instanceof CandidatureReplicaCoreWithStatus) {
+			if (Replica.this instanceof StatusAgent) {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
 						Replica.this.getCreationTime(),
-						((CandidatureReplicaCoreWithStatus) Replica.this
-								.getMyCore()).getMyStatus());
+						((StatusAgent) Replica.this).getMyStatus());
 			} else {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
@@ -93,7 +92,7 @@ extends SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature> {
 				if (!Replica.this.getMyCurrentState().isValid()) {
 					this.logMonologue("this is the end my friend",LogService.onBoth);
 					throw new RuntimeException("endSimulation à corriger");
-//					Replica.this.mySelfObservationService.endSimulation();
+					//					Replica.this.mySelfObservationService.endSimulation();
 				}
 			}
 		}
@@ -144,11 +143,12 @@ extends SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature> {
 			}
 		}
 	}
-	
+
 	//allow to continue to receive messages
+	@Override
 	public void tryToResumeActivity(){
 		super.tryToResumeActivity();
-		mySelfObservationService.tryToResumeActivity();
+		this.mySelfObservationService.tryToResumeActivity();
 	}
 }
 
@@ -156,9 +156,9 @@ extends SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature> {
 
 
 
-	//
-	// Accessors
-	//
+//
+// Accessors
+//
 
 //	public void setNewState(final ReplicaState s) {
 //		for (HostState h : s.getMyHosts()){
@@ -167,31 +167,31 @@ extends SimpleNegotiatingAgent<ReplicaState, ReplicationCandidature> {
 //		super.setNewState(s);
 //	}
 
-	//	public boolean IReplicate() {
-	//		return this.replicate;
-	//	}
-	//
-	//	public void setIReplicate(final boolean replicate) {
-	//		this.replicate = replicate;
-	//	}
-	//
-	//	@StepComposant()
-	//	@Transient
-	//	public boolean setReplication() {
-	//		if (this.getMyInformation().getKnownAgents().isEmpty())
-	//			this.replicate = false;
-	//
-	//		// logMonologue("agents i know : "+this.getKnownAgents());
-	//		// if (IReplicate())
-	//		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
-	//
-	//		return true;
-	//	}
+//	public boolean IReplicate() {
+//		return this.replicate;
+//	}
+//
+//	public void setIReplicate(final boolean replicate) {
+//		this.replicate = replicate;
+//	}
+//
+//	@StepComposant()
+//	@Transient
+//	public boolean setReplication() {
+//		if (this.getMyInformation().getKnownAgents().isEmpty())
+//			this.replicate = false;
+//
+//		// logMonologue("agents i know : "+this.getKnownAgents());
+//		// if (IReplicate())
+//		// logMonologue("yeeeeeeeeeeaaaaaaaaaaaahhhhhhhhhhhhh      iii replicatre!!!!!!!!!!!!!!!!!!!!!!"+((CandidatureReplicaCoreWithStatus)myCore).getMyStatus());
+//
+//		return true;
+//	}
 
-	//	@Override
-	//	public void setNewState(final ReplicaState s) {
-	//		super.setNewState(s);
-	//	}
+//	@Override
+//	public void setNewState(final ReplicaState s) {
+//		super.setNewState(s);
+//	}
 
 
 

@@ -11,50 +11,50 @@ import negotiation.horizon.parameters.HorizonMeasurableParameters;
  */
 public class SubstrateNodeSpecification extends HorizonSpecification {
 
-    /**
-     * Serial version identifier.
-     */
-    private static final long serialVersionUID = -1464884496624059098L;
-    /**
-     * Identifier of the SubstrateNode.
-     */
-    private final SubstrateNodeIdentifier agentId;
-    /**
-     * Level of service provided.
-     */
-    private final HorizonMeasurableParameters<SubstrateNodeIdentifier> measuredParams;
+	/**
+	 * Serial version identifier.
+	 */
+	private static final long serialVersionUID = -1464884496624059098L;
+	/**
+	 * Identifier of the SubstrateNode.
+	 */
+	private final SubstrateNodeIdentifier agentId;
+	/**
+	 * Level of service provided.
+	 */
+	private final HorizonMeasurableParameters<SubstrateNodeIdentifier> measuredParams;
 
-    /**
-     * Constructs a SubstrateNodeSpecification for the specified node and
-     * parameters.
-     * 
-     * @param id
-     *            Node specified by this SubstrateNodeSpecification.
-     * @param params
-     *            Level of service measured on the node.
-     */
-    public SubstrateNodeSpecification(final SubstrateNodeIdentifier id,
-	    final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
-	this.agentId = id;
-	this.measuredParams = params;
-    }
+	/**
+	 * Constructs a SubstrateNodeSpecification for the specified node and
+	 * parameters.
+	 * 
+	 * @param id
+	 *            Node specified by this SubstrateNodeSpecification.
+	 * @param params
+	 *            Level of service measured on the node.
+	 */
+	public SubstrateNodeSpecification(final SubstrateNodeIdentifier id,
+			final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
+		this.agentId = id;
+		this.measuredParams = params;
+	}
 
-    /**
-     * Gives the SubstrateNode specified by this object.
-     */
-    @Override
-    public SubstrateNodeIdentifier getMyAgentIdentifier() {
-	return this.agentId;
-    }
+	/**
+	 * Gives the SubstrateNode specified by this object.
+	 */
+	@Override
+	public SubstrateNodeIdentifier getMyAgentIdentifier() {
+		return this.agentId;
+	}
 
-    /**
-     * Gives the level of service provided by the SubstrateNode specified by
-     * this object.
-     * 
-     * @return the measurable parameters measured at the creation of the object
-     */
-    public HorizonMeasurableParameters<SubstrateNodeIdentifier> getParams() {
-	return this.measuredParams;
-    }
+	/**
+	 * Gives the level of service provided by the SubstrateNode specified by
+	 * this object.
+	 * 
+	 * @return the measurable parameters measured at the creation of the object
+	 */
+	public HorizonMeasurableParameters<SubstrateNodeIdentifier> getParams() {
+		return this.measuredParams;
+	}
 
 }

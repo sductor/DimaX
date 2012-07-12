@@ -21,6 +21,6 @@ public interface AgentCompetence<Agent extends CompetentComponent> extends Activ
 
 	AgentIdentifier getIdentifier();
 
-	void activateCompetence(boolean active);
+	void setActive(boolean active);
 
 }

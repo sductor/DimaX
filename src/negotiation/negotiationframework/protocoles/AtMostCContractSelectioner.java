@@ -5,17 +5,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.AgentState;
+import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class AtMostCContractSelectioner<
-Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
+Agent extends NegotiatingAgent<PersonalState, Contract>,
 ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
@@ -23,44 +23,51 @@ extends
 BasicAgentCompetence<Agent>
 implements SelectionCore<Agent,PersonalState, Contract> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7536780686332687059L;
 	final int c;
 	final SelectionCore<Agent,PersonalState, Contract>  myCore;
 
 	Random rand = new Random();
 
-	public AtMostCContractSelectioner(int c,
-			SelectionCore myCore)
+	public AtMostCContractSelectioner(final int c,
+			final SelectionCore myCore)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.c = c;
 		this.myCore = myCore;
 	}
 
-	public void setMyAgent(Agent ag){
+	@Override
+	public void setMyAgent(final Agent ag){
 		super.setMyAgent(ag);
-		myCore.setMyAgent(ag);
+		this.myCore.setMyAgent(ag);
 	}
 
 	@Override
-	public void select(ContractTrunk<Contract> cs,
-			Collection<Contract> toAccept, Collection<Contract> toReject,
-			Collection<Contract> toPutOnWait) {
-		List<Contract> all = cs.getParticipantOnWaitContracts();
+	public void select(final ContractTrunk<Contract> cs,
+			final Collection<Contract> toAccept, final Collection<Contract> toReject,
+			final Collection<Contract> toPutOnWait) {
+		final List<Contract> all = cs.getParticipantOnWaitContracts();
 		all.remove(cs.getLockedContracts());
-		int nbContracts = all.size()+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size();
-		if (nbContracts>c && !all.isEmpty()){			
-			Collection<Contract> notAnalysed = new ArrayList<Contract>();
-			for (int i = 0; i < nbContracts-c; i++){
-				if (all.isEmpty()) break;
-				int toRemove =rand.nextInt(all.size());
+		final int nbContracts = all.size()+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size();
+		if (nbContracts>this.c && !all.isEmpty()){
+			final Collection<Contract> notAnalysed = new ArrayList<Contract>();
+			for (int i = 0; i < nbContracts-this.c; i++){
+				if (all.isEmpty()) {
+					break;
+				}
+				final int toRemove =this.rand.nextInt(all.size());
 				notAnalysed.add(all.get(toRemove));
 				all.remove(toRemove);
 			}
-		 assert !all.isEmpty() || getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size()>=c;
-			getMyAgent().getMyProtocol().answerRejected(notAnalysed);
+			assert !all.isEmpty() || this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size()>=this.c;
+			this.getMyAgent().getMyProtocol().answerRejected(notAnalysed);
 		}
 
-		myCore.select(cs, toAccept, toReject, toPutOnWait);
+		this.myCore.select(cs, toAccept, toReject, toPutOnWait);
 
 	}
 

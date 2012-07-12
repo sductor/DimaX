@@ -5,10 +5,6 @@ import java.util.Collection;
 
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
-import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -49,13 +45,13 @@ BasicAgentCompetence<SimpleNegotiatingAgent<?, ?>> {
 	// Accessors
 	//
 
-//	public Double getDisponibility(final ResourceIdentifier host) {
-//		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),host);
-//	}
-//
-//	public Double getDisponibility(final Collection<ResourceIdentifier> hosts) {
-//		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),hosts);
-//	}
+	//	public Double getDisponibility(final ResourceIdentifier host) {
+	//		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),host);
+	//	}
+	//
+	//	public Double getDisponibility(final Collection<ResourceIdentifier> hosts) {
+	//		return HostDisponibilityComputer.getDisponibility(this.getMyAgent().getMyInformation(),hosts);
+	//	}
 
 	//
 	// Abstract methods

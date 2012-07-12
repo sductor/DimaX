@@ -6,6 +6,9 @@ import java.util.HashSet;
 
 import examples.dcop2.algo.DPOPTreeNode;
 import examples.dcop2.algo.TreeNode;
+import examples.dcopAmeliorer.algo.Stats;
+import examples.dcopAmeliorer.algo.topt.CommitMsg;
+import examples.dcopAmeliorer.algo.topt.ResponseMsg;
 import examples.myDCOP.dcop.Variable;
 
 public class AlgoKOptAPO extends LockingBasicAlgorithm {
@@ -51,7 +54,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 		}
 
 		for (int i = 0; i < this.out().getSize(); i++) {
-				this.outChannelMap.put(((Channel) this.out(i)).getNeighbor().asInt(), i);
+			this.outChannelMap.put(((Channel) this.out(i)).getNeighbor().asInt(), i);
 		}
 
 		if (this.k > 1) {
@@ -93,7 +96,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 
 			final DcopMessage msg = this.in(index).receive(1);
 			if (msg == null) {
-//				yield();
+				//				yield();
 			}
 
 			int sender = -1;
@@ -133,9 +136,9 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				}
 			} else if (msg instanceof LocalConstraintMsg) {
 				final LocalConstraintMsg lmsg = (LocalConstraintMsg) msg;
-				final Integer lastTTL = conTTLMap.get(lmsg.id);
+				final Integer lastTTL = this.conTTLMap.get(lmsg.id);
 				if (lastTTL == null) {
-					conTTLMap.put(lmsg.id, lmsg.ttl);
+					this.conTTLMap.put(lmsg.id, lmsg.ttl);
 					Variable v = this.view.varMap.get(lmsg.id);
 					if (v == null) {
 						v = new Variable(lmsg.id, lmsg.domain, this.view);
@@ -187,7 +190,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 						this.out().broadcast(lmsg.forward());
 					}
 				} else if (lastTTL < lmsg.ttl) {
-					conTTLMap.put(lmsg.id, lmsg.ttl);
+					this.conTTLMap.put(lmsg.id, lmsg.ttl);
 					this.out().broadcast(lmsg.forward());
 				}
 			} else if (msg instanceof LockMsg) {
@@ -246,8 +249,8 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				} else {
 					final Integer att = this.lockSet.get(lkmsg.gid);
 					final LockMsg l = this.lockMap.get(lkmsg.gid);
-					if ((att != null && att <= lkmsg.attempt)
-							|| (l != null && l.attempt <= lkmsg.attempt)) {
+					if (att != null && att <= lkmsg.attempt
+							|| l != null && l.attempt <= lkmsg.attempt) {
 						this.removeLock(lkmsg.gid);
 					}
 					for (final TreeNode n : root.children) {
@@ -366,7 +369,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				int id = Integer.MAX_VALUE;
 				LockMsg best = null;
 				for (final LockMsg msg : this.lockMap.values()) {
-					if (msg.val > comp || (msg.val == comp && msg.gid < id)) {
+					if (msg.val > comp || msg.val == comp && msg.gid < id) {
 						comp = msg.val;
 						id = msg.gid;
 						best = msg;
@@ -487,14 +490,14 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				}
 			} else if (!this.waiting && !this.lockSet.isEmpty()
 					&& this.getTime() <= this.reLockTime && !this.activeSet.isEmpty()) {
-//				final DCOPApplication app = (DCOPApplication) this.node
-//						.getNetwork().getApplication();
-//				app.wastedCycles++;
+				//				final DCOPApplication app = (DCOPApplication) this.node
+				//						.getNetwork().getApplication();
+				//				app.wastedCycles++;
 			}
 			if (this.getTime() > this.k + 1 && this.activeSet.isEmpty()) {
 				this.setDone(true);
 			}
-//			yield();
+			//			yield();
 		}
 	}
 
@@ -650,7 +653,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 						tmp = dis;
 					}
 				}
-				if (tmp < d || (tmp == d && i < this.self.id)) {
+				if (tmp < d || tmp == d && i < this.self.id) {
 					f = false;
 					break;
 				}

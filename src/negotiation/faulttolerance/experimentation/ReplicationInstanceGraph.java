@@ -13,7 +13,6 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
@@ -31,7 +30,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 	 */
 	private static final long serialVersionUID = -1869273198805540149L;
 
-//	private final int kAccessible;
+	//	private final int kAccessible;
 
 	private final Map<AgentIdentifier, ReplicaState> agents =
 			new HashMap<AgentIdentifier, ReplicaState>();
@@ -51,7 +50,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 			final ReplicationLaborantin ag, final ReplicationExperimentationParameters p)
 					throws IfailedException {
 		super(ag);
-//		this.kAccessible = p.agentAccessiblePerHost;
+		//		this.kAccessible = p.agentAccessiblePerHost;
 
 	}
 
@@ -165,7 +164,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 							hostMemCapacity.get(hostId),
 							fault.get(hostId)));
 		}
-//		System.out.println(hosts.values());
+		//		System.out.println(hosts.values());
 	}
 
 	void setVoisinage(){
@@ -174,7 +173,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 		this.accAgents =
 				new HashedHashSet<ResourceIdentifier, AgentIdentifier>();
 
-		if (getMyAgent().getSimulationParameters().completGraph){
+		if (this.getMyAgent().getSimulationParameters().completGraph){
 			for (final AgentIdentifier agId : this.agents.keySet()){
 				for (final ResourceIdentifier h : this.hosts.keySet()) {
 					this.addAcquaintance(agId, h);
@@ -206,7 +205,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 				}
 			}
 		}
-		
+
 	}
 
 	void initialRep() throws IfailedException{
@@ -279,7 +278,7 @@ extends BasicAgentModule<ReplicationLaborantin>{
 	private void addAcquaintance(final AgentIdentifier ag, final ResourceIdentifier h){
 		this.accHosts.add(ag,h);
 		this.accAgents.add(h, ag);
-//		assert this.accAgents.get(h).size() <= this.kAccessible:this.accAgents;
+		//		assert this.accAgents.get(h).size() <= this.kAccessible:this.accAgents;
 	}
 }
 

@@ -9,9 +9,9 @@ import dima.basicinterfaces.DimaComponentInterface;
  * @author Vincent Letard
  */
 public interface AllocableParameters extends DimaComponentInterface {
-    /**
-     * @return <code>true</code> if the objects corresponds to a possible
-     *         situation.
-     */
-    public boolean isValid();
+	/**
+	 * @return <code>true</code> if the objects corresponds to a possible
+	 *         situation.
+	 */
+	public boolean isValid();
 }

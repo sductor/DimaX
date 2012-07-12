@@ -129,7 +129,7 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 
 
 	private BasicAlgorithm getAlgo(final Variable v) {
-//		return new AlgoMGM1(v);
+		//		return new AlgoMGM1(v);
 		switch(this.algo){
 		case TOPTAPO:
 			return new AlgoTOptAPO(v, this.grouping);
@@ -183,12 +183,12 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 
 	@Override
 	public Laborantin createLaborantin(final APILauncherModule api) throws CompetenceException,
-			IfailedException, NotEnoughMachinesException {
+	IfailedException, NotEnoughMachinesException {
 		return new Laborantin(this,new GlobalDCOPObservation(this),api);
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
+	public int compareTo(final Object arg0) {
 		return 0;
 	}
 

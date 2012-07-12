@@ -95,7 +95,7 @@ public class SimpleAgent extends BasicCompetentAgent {
 			this.logMonologue("notifying "+m,LogService.onScreen);
 			this.notify(m);
 		} else {
-			this.sayAlive.activateCompetence(false);
+			this.sayAlive.setActive(false);
 		}
 		return true;
 	}

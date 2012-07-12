@@ -21,7 +21,7 @@ extends AbstractCommunicationProtocol<Contract>{
 	private static final long serialVersionUID = -4843844714006615468L;
 
 	public ReverseCFPProtocol()
-					throws UnrespectedCompetenceSyntaxException {
+			throws UnrespectedCompetenceSyntaxException {
 		super(new ContractTrunk<Contract>());
 	}
 	public ReverseCFPProtocol(

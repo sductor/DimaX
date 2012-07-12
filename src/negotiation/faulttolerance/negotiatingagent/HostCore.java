@@ -2,7 +2,6 @@ package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
@@ -12,7 +11,6 @@ import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.replication.ReplicationHandler;
 
@@ -26,7 +24,7 @@ import dima.introspectionbasedagents.services.replication.ReplicationHandler;
  */
 public class HostCore
 extends	BasicAgentCompetence<SimpleRationalAgent<HostState, ReplicationCandidature>>
-implements RationalCore<HostState, ReplicationCandidature> {
+implements RationalCore<SimpleRationalAgent<HostState, ReplicationCandidature>,HostState, ReplicationCandidature> {
 	private static final long serialVersionUID = -179565544489478368L;
 
 	private final ReplicationSocialOptimisation myOptimiser;
@@ -37,25 +35,27 @@ implements RationalCore<HostState, ReplicationCandidature> {
 	// Constructor
 	//
 
-	public HostCore(final SocialChoiceType socialWelfare, boolean observeResourceChanges, boolean memorizeRessourceState) {
+	public HostCore(final SocialChoiceType socialWelfare, final boolean observeResourceChanges, final boolean memorizeRessourceState) {
 		this.myOptimiser = new ReplicationSocialOptimisation(socialWelfare);
 		this.observeResourceChanges=observeResourceChanges;
 		this.memorizeRessourceState=memorizeRessourceState;
-		}
+	}
 
 	@Override
 	public boolean iObserveMyRessourceChanges() {
-		return observeResourceChanges;
+		return this.observeResourceChanges;
 	}
 	@Override
 	public boolean iMemorizeMyRessourceState() {
-		return memorizeRessourceState;
+		return this.memorizeRessourceState;
 	}
-	public void handleResourceInformation(AgentState c){
-			if (iMemorizeMyRessourceState()) 
-				getMyAgent().getMyInformation().add(c);
-			if (iObserveMyRessourceChanges())
-				observe(c.getMyAgentIdentifier(), SimpleObservationService.informationObservationKey);
+	public void handleResourceInformation(final AgentState c){
+		if (this.iMemorizeMyRessourceState()) {
+			this.getMyAgent().getMyInformation().add(c);
+		}
+		if (this.iObserveMyRessourceChanges()) {
+			this.observe(c.getMyAgentIdentifier(), SimpleRationalAgent.stateChangementObservation);
+		}
 	}
 
 	//
@@ -74,7 +74,7 @@ implements RationalCore<HostState, ReplicationCandidature> {
 		//			c.setInitialState(getMyAgent().getMyCurrentState());
 		//
 		//		}
-		AltruistRationalCore.verifyStateConsistency(getMyAgent(), c1, c2);
+		AltruistRationalCore.verifyStateConsistency(this.getMyAgent(), c1, c2);
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
 				"Preference : "+pref+" for \n "+c1+"\n"+c2,
@@ -110,7 +110,7 @@ implements RationalCore<HostState, ReplicationCandidature> {
 			}
 
 			for (final ReplicationCandidature c : destruction){
-				handleResourceInformation(c.getAgentResultingState());
+				this.handleResourceInformation(c.getAgentResultingState());
 				ReplicationHandler.killReplica(c.getAgent());
 				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 				this.getMyAgent().setNewState(
@@ -119,7 +119,7 @@ implements RationalCore<HostState, ReplicationCandidature> {
 			}
 
 			for (final ReplicationCandidature c : creation){
-				handleResourceInformation(c.getAgentResultingState());
+				this.handleResourceInformation(c.getAgentResultingState());
 				ReplicationHandler.replicate(c.getAgent());
 				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 				this.getMyAgent().setNewState(

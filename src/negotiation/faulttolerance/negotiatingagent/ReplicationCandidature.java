@@ -1,17 +1,9 @@
 package negotiation.faulttolerance.negotiatingagent;
 
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
 import negotiation.negotiationframework.NegotiationParameters;
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
@@ -83,7 +75,7 @@ MatchingCandidature {
 		if (!fromState.getMyAgentIdentifier().equals(this.getAgent())) {
 			return fromState;
 		} else {
-			ReplicaState r =fromState.allocate(getResourceInitialState());
+			final ReplicaState r =fromState.allocate(this.getResourceInitialState());
 			assert r.getMyResourceIdentifiers().size()==fromState.getMyResourceIdentifiers().size()+(this.creation?1:-1):
 				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();
 			return r;
@@ -103,7 +95,7 @@ MatchingCandidature {
 		if (!fromState.getMyAgentIdentifier().equals(this.getResource())) {
 			return fromState;
 		} else {
-			HostState r = fromState.allocate(getAgentInitialState());
+			final HostState r = fromState.allocate(this.getAgentInitialState());
 			assert r.getMyResourceIdentifiers().size()==fromState.getMyResourceIdentifiers().size()+(this.creation?1:-1):
 				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();
 			return r;
@@ -111,18 +103,19 @@ MatchingCandidature {
 	}
 
 
-	public AbstractContractTransition clone(){		
-		ReplicationCandidature clone = new ReplicationCandidature(
-				this.getResource(), 
-				this.getAgent(), 
-				this.isMatchingCreation(), 
+	@Override
+	public AbstractContractTransition clone(){
+		final ReplicationCandidature clone = new ReplicationCandidature(
+				this.getResource(),
+				this.getAgent(),
+				this.isMatchingCreation(),
 				this.getInitiator().equals(this.getAgent()));
-		for (AgentIdentifier id : initState.keySet()){
-			clone.initState.put(id, initState.get(id).clone());
+		for (final AgentIdentifier id : this.initState.keySet()){
+			clone.initState.put(id, this.initState.get(id).clone());
 		}
-		if (specs!=null){
-			for (AgentIdentifier id : specs.keySet()){
-				clone.specs.put(id, specs.get(id).clone());
+		if (this.specs!=null){
+			for (final AgentIdentifier id : this.specs.keySet()){
+				clone.specs.put(id, this.specs.get(id).clone());
 			}
 		}
 		clone.creationTime=this.creationTime;
@@ -147,7 +140,7 @@ MatchingCandidature {
 
 
 
-//	ancien	getResourceResultingState	
+//	ancien	getResourceResultingState
 //			HostState h =
 //					new HostState(fromState,
 //							this.getAgentInitialState()//, this.getCreationTime()

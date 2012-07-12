@@ -7,7 +7,10 @@
 // ----------------------------------------------------------------------------
 package daj;
 
-import daj.awt.Visualizer;
+import examples.dcopAmeliorer.daj.InChannel;
+import examples.dcopAmeliorer.daj.InChannelSet;
+import examples.dcopAmeliorer.daj.OutChannel;
+import examples.dcopAmeliorer.daj.OutChannelSet;
 
 public abstract class Program {
 
@@ -17,8 +20,8 @@ public abstract class Program {
 	// --------------------------------------------------------------------------
 	// set program node to `n`
 	// --------------------------------------------------------------------------
-	protected void setNode(Node n) {
-		node = n;
+	protected void setNode(final Node n) {
+		this.node = n;
 	}
 
 	// --------------------------------------------------------------------------
@@ -37,68 +40,69 @@ public abstract class Program {
 	// return output channel set
 	// --------------------------------------------------------------------------
 	final public OutChannelSet out() {
-		return node.getOut();
+		return this.node.getOut();
 	}
 
 	// --------------------------------------------------------------------------
 	// return output channel numbered `i`
 	// --------------------------------------------------------------------------
-	final public OutChannel out(int i) {
-		return node.getOut().getChannel(i);
+	final public OutChannel out(final int i) {
+		return this.node.getOut().getChannel(i);
 	}
 
 	// --------------------------------------------------------------------------
 	// return input channel set
 	// --------------------------------------------------------------------------
 	final public InChannelSet in() {
-		return node.getIn();
+		return this.node.getIn();
 	}
 
 	// --------------------------------------------------------------------------
 	// return input channel numbered `i`
 	// --------------------------------------------------------------------------
-	final public InChannel in(int i) {
-		return node.getIn().getChannel(i);
+	final public InChannel in(final int i) {
+		return this.node.getIn().getChannel(i);
 	}
 
 	// --------------------------------------------------------------------------
 	// get number of scheduling operations for this node
 	// --------------------------------------------------------------------------
 	public int getTime() {
-		return node.getSwitches();
+		return this.node.getSwitches();
 	}
 
 	// --------------------------------------------------------------------------
 	// invoke scheduler
 	// --------------------------------------------------------------------------
-//	protected void yield() {
-//		node.getNetwork().getScheduler().schedule();
-//	}
+	//	protected void yield() {
+	//		node.getNetwork().getScheduler().schedule();
+	//	}
 
 	// --------------------------------------------------------------------------
 	// sleep for `n` scheduling periods
 	// --------------------------------------------------------------------------
-	protected void sleep(int n) {
-		for (int i = 0; i < n; i++)
+	protected void sleep(final int n) {
+		for (int i = 0; i < n; i++) {
 			yield();
+		}
 	}
 
 	// --------------------------------------------------------------------------
 	// exit from network execution with code `n`
 	// --------------------------------------------------------------------------
-//	protected void exit(int n) {
-//		Network network = node.getNetwork();
-//		if (network.getVisualizer() != null)
-//			network.print("Execution has terminated with exit code " + String.valueOf(n));
-//		network.exit(n);
-//	}
+	//	protected void exit(int n) {
+	//		Network network = node.getNetwork();
+	//		if (network.getVisualizer() != null)
+	//			network.print("Execution has terminated with exit code " + String.valueOf(n));
+	//		network.exit(n);
+	//	}
 
 	// --------------------------------------------------------------------------
 	// state that global network state fulfills assertion `a`
 	// --------------------------------------------------------------------------
-	protected void test(GlobalAssertion a) {
-		Network network = node.getNetwork();
-		Program programs[] = network.getPrograms();
+	protected void test(final GlobalAssertion a) {
+		final Network network = this.node.getNetwork();
+		final Program programs[] = network.getPrograms();
 		if (!a.test(programs)) {
 			network.print("Global assertion violated: " + a.getText());
 			network.exit(-1);
@@ -109,7 +113,9 @@ public abstract class Program {
 	// interrupt execution until continued by user
 	// --------------------------------------------------------------------------
 	protected void interrupt() {
-		Visualizer visualizer = node.getNetwork().getVisualizer();
-		if (visualizer != null) visualizer.stop();
+		final Visualizer visualizer = this.node.getNetwork().getVisualizer();
+		if (visualizer != null) {
+			visualizer.stop();
+		}
 	}
 }

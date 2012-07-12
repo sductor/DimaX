@@ -9,10 +9,6 @@ import java.util.Map;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.FunctionalDispersionAgregator;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
@@ -34,7 +30,6 @@ SimpleObservationService implements OpinionService {
 	protected HashMap<Class<? extends Information>, OpinionDataBase<?>> everyoneOpinion =
 			new HashMap<Class<? extends Information>, OpinionDataBase<?>>();
 
-	public static final String opinionObservationKey="opinionDiffusion";
 
 	//
 	// Accessors
@@ -105,22 +100,16 @@ SimpleObservationService implements OpinionService {
 
 
 
-	@StepComposant()
-	public void broadcastMyOpinions() {
-		for (final OpinionDataBase<?> op : this.everyoneOpinion.values()) {
-			if (op.hasSignficantChange()){
-				this.notify(op.getGlobalOpinion(), SimpleOpinionService.opinionObservationKey);//+op.informationType);
-				op.significantchange=false;
-			}
-		}
-	}
+	//	@StepComposant()
+	//	public void broadcastMyOpinions() {
+	//		for (final OpinionDataBase<?> op : this.everyoneOpinion.values()) {
+	//			if (op.hasSignficantChange()){
+	//				this.notify(op.getGlobalOpinion(), SimpleOpinionService.opinionObservationKey);//+op.informationType);
+	//				op.significantchange=false;
+	//			}
+	//		}
+	//	}
 
-	@MessageHandler
-	@NotificationEnvelope(SimpleOpinionService.opinionObservationKey)
-	public <Info extends Information> void receiveOpinion(
-			final NotificationMessage<Opinion<?>> o) {
-		this.add(o.getNotification());
-	}
 
 	//
 	// Primitives
@@ -136,12 +125,6 @@ SimpleObservationService implements OpinionService {
 	//
 	// Subclasses
 	//
-
-	/*
-	 *
-	 *
-	 */
-
 
 	class AnalysedInformationDataBase<Info extends Information> extends
 	InformationDataBase<Info> {
@@ -623,6 +606,7 @@ SimpleObservationService implements OpinionService {
 			private final AgentIdentifier creator;
 			private final boolean isCertain;
 			private final Integer informationNumber;
+			private final Collection<AgentIdentifier> aggregatedAgents;
 
 			private final Long creationTime;
 
@@ -630,11 +614,8 @@ SimpleObservationService implements OpinionService {
 			private final Long maxInformationDynamicity;
 
 			private final Double statesDeviation;
+
 			private final InformedState representativeState;
-
-			private final Collection<AgentIdentifier> aggregatedAgents;
-
-
 			private final InformedState minState;
 			private final InformedState maxState;
 
@@ -874,13 +855,24 @@ SimpleObservationService implements OpinionService {
 
 			@Override
 			public double getWeightOfAggregatedElements() {
-				return getNumberOfAggregatedElements();
+				return this.getNumberOfAggregatedElements();
 			}
 
 		}
 
 	}
 }
+
+
+
+
+//public static final String opinionObservationKey="opinionDiffusion";
+//@MessageHandler
+//@NotificationEnvelope(SimpleOpinionService.opinionObservationKey)
+//public <Info extends Information> void receiveOpinion(
+//		final NotificationMessage<Opinion<?>> o) {
+//	this.add(o.getNotification());
+//}
 //@StepComposant()
 //	public void broadcastMyState() {
 //		if (getMyAgent() instanceof SimpleRationalAgent) {

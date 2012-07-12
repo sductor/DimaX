@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTransition;
@@ -14,17 +13,15 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
-import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleRationalAgent<
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends BasicCompetentAgent {
+extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	private static final long serialVersionUID = -6248384713199838544L;
 
-	public static final String stateChangement = "my state has changed!!";
 
 	//
 	// Fields
@@ -34,10 +31,12 @@ extends BasicCompetentAgent {
 	private final ObservationService myInformation;
 
 	@Competence
-	public RationalCore<PersonalState, Contract> myCore;
+	public RationalCore<? extends SimpleRationalAgent,PersonalState, Contract> myCore;
 
 	public Class<? extends AgentState> myStateType;
 	public final int initialStateNumber;
+
+	public static final String stateChangementObservation="my state has changed!!";
 
 	//
 	// Constructor
@@ -47,17 +46,17 @@ extends BasicCompetentAgent {
 	public SimpleRationalAgent(
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
-			final RationalCore<PersonalState, Contract> myRationality,
+			final RationalCore<? extends SimpleRationalAgent,PersonalState, Contract> myRationality,
 			final ObservationService myInformation)
 					throws CompetenceException {
 		super(id);
 		this.myCore = myRationality;
-		this.myCore.setMyAgent(this);
+		((RationalCore<SimpleRationalAgent<PersonalState, Contract>,PersonalState, Contract>)this.myCore).setMyAgent(this);
 		this.myInformation = myInformation;
 		this.myInformation.setMyAgent(this);
 		assert myInitialState!=null;
 		this.myStateType = myInitialState.getClass();
-		initialStateNumber=myInitialState.getStateCounter();
+		this.initialStateNumber=myInitialState.getStateCounter();
 		this.setNewState(myInitialState);
 	}
 
@@ -66,11 +65,19 @@ extends BasicCompetentAgent {
 	// Accessor
 	//
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyInformation()
+	 */
+	@Override
 	public ObservationService getMyInformation() {
 		return this.myInformation;
 	}
 
-	public RationalCore<PersonalState, Contract> getMyCore() {
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyCore()
+	 */
+	@Override
+	public RationalCore<? extends SimpleRationalAgent,PersonalState, Contract> getMyCore() {
 		return this.myCore;
 	}
 
@@ -82,6 +89,10 @@ extends BasicCompetentAgent {
 	 * State
 	 */
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyCurrentState()
+	 */
+	@Override
 	public PersonalState getMyCurrentState() {
 		try {
 			//			if(!((PersonalState) myInformation.getInformation(myStateType, getIdentifier())).equals(s))
@@ -96,12 +107,16 @@ extends BasicCompetentAgent {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyResources()
+	 */
+	@Override
 	public Collection<? extends AgentState> getMyResources(){
 		final Collection<AgentState> myResources = new ArrayList<AgentState>();
 		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers()) {
 			try {
-				AgentState ress = (AgentState) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
-				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
+				final AgentState ress = this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				assert ress.getMyResourceIdentifiers().contains(this.getIdentifier());
 				myResources.add(ress);
 			} catch (final NoInformationAvailableException e) {
 				this.signalException("uuuuuhh impossible!! pas totalement vrai : l'info doit etre manuellement ajouté!"+this.getMyCurrentState(),e);
@@ -110,31 +125,44 @@ extends BasicCompetentAgent {
 		return myResources;
 	}
 
-	public AgentState getResource(AgentIdentifier id) throws NoInformationAvailableException{
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getResource(dima.basicagentcomponents.AgentIdentifier)
+	 */
+	@Override
+	public AgentState getResource(final AgentIdentifier id) throws NoInformationAvailableException{
 		return this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#setNewState(PersonalState)
+	 */
+	@Override
 	public void setNewState(final PersonalState s) {
-		assert this.myInformation.hasMyInformation(this.myStateType)?verifyStateValidity(s):true;
+		assert this.myInformation.hasMyInformation(this.myStateType)?this.verifyStateValidity(s):true;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
-		assert this.getMyCurrentState().equals(s):this.getMyCurrentState()+"\n"+s+"\n---------"+(s.isNewerThan(getMyCurrentState())>0);
+		assert this.getMyCurrentState().equals(s):this.getMyCurrentState()+"\n"+s+"\n---------"+(s.isNewerThan(this.getMyCurrentState())>0);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-		this.notify(this.getMyCurrentState(), SimpleObservationService.informationObservationKey);
+		this.notify(this.getMyCurrentState(), SimpleRationalAgent.stateChangementObservation);
 		this.notify(this.getMyCurrentState());
 	}
 
 
+
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#verifyStateValidity(PersonalState)
+	 */
+	@Override
 	public boolean verifyStateValidity(final PersonalState s){
-		assert (s.isNewerThan(getMyCurrentState())>0):this.getMyCurrentState()+"\n"+s;
-		for (AgentIdentifier id : s.getMyResourceIdentifiers()){
+		assert s.isNewerThan(this.getMyCurrentState())>0:this.getMyCurrentState()+"\n"+s;
+		for (final AgentIdentifier id : s.getMyResourceIdentifiers()){
 			//			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 			AgentState ress;
 			try {
-				ress = (AgentState) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
-				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
-			} catch (NoInformationAvailableException e) {
+				ress = this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				assert ress.getMyResourceIdentifiers().contains(this.getIdentifier());
+			} catch (final NoInformationAvailableException e) {
 				//				assert 1<0:e;
 			}
 		}
@@ -154,14 +182,26 @@ extends BasicCompetentAgent {
 	 */
 
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#setMySpecif(PersonalState, Contract)
+	 */
+	@Override
 	public void setMySpecif(final PersonalState s, final Contract c){
 		this.myCore.setMySpecif(s, c);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#setMySpecif(Contract)
+	 */
+	@Override
 	public  void setMySpecif(final Contract c){
 		this.myCore.setMySpecif(this.getMyCurrentState(), c);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyResultingState(PersonalState, Contract)
+	 */
+	@Override
 	public PersonalState getMyResultingState(final PersonalState s, final Contract c) {
 		try {
 			return c.computeResultingState(s);
@@ -170,6 +210,10 @@ extends BasicCompetentAgent {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyResultingState(PersonalState, java.util.Collection)
+	 */
+	@Override
 	public PersonalState getMyResultingState(final PersonalState s, final Collection<Contract> cs) {
 		PersonalState result = s;
 		for (final Contract c : cs) {
@@ -179,10 +223,18 @@ extends BasicCompetentAgent {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyResultingState(Contract)
+	 */
+	@Override
 	public PersonalState getMyResultingState(final Contract c) {
 		return this.getMyResultingState(this.getMyCurrentState(),c);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyResultingState(java.util.Collection)
+	 */
+	@Override
 	public PersonalState getMyResultingState(final Collection<Contract> cs) {
 		return this.getMyResultingState(this.getMyCurrentState(),cs);
 	}
@@ -193,10 +245,18 @@ extends BasicCompetentAgent {
 	 *
 	 */
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#execute(java.util.Collection)
+	 */
+	@Override
 	public void execute(final Collection<Contract> contracts) {
 		this.myCore.execute(contracts);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#execute(Contract)
+	 */
+	@Override
 	public void execute(final Contract... contracts) {
 		this.myCore.execute(Arrays.asList(contracts));
 	}
@@ -205,54 +265,90 @@ extends BasicCompetentAgent {
 	 * Rationality
 	 */
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#Iaccept(PersonalState, Contract)
+	 */
+	@Override
 	public boolean Iaccept(final PersonalState s, final Contract c) {
 		final Collection<Contract> a = new ArrayList<Contract>();
 		a.add(c);
 		return this.Iaccept(s, a);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#Iaccept(PersonalState, java.util.Collection)
+	 */
+	@Override
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
 		final Collection<Contract> a2 = new ArrayList<Contract>();
-		return isPersonalyValid(s, c)
+		return this.isPersonalyValid(s, c)
 				&& this.myCore.getAllocationPreference((Collection<Contract>) c, a2) > 0;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#Iaccept(Contract)
+	 */
+	@Override
 	public boolean Iaccept(final Contract c) {
-		return this.Iaccept(getMyCurrentState(), c);
+		return this.Iaccept(this.getMyCurrentState(), c);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#Iaccept(java.util.Collection)
+	 */
+	@Override
 	public boolean Iaccept(final Collection<? extends Contract> c) {
-		return Iaccept(getMyCurrentState(),c);
+		return this.Iaccept(this.getMyCurrentState(),c);
 	}
 
 	/*
 	 * 
 	 */
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#isPersonalyValid(PersonalState, java.util.Collection)
+	 */
+	@Override
 	public boolean isPersonalyValid(final PersonalState s,
 			final Collection<? extends Contract> c) {
-		return getMyResultingState(s,(Collection<Contract>)c).isValid();
+		return this.getMyResultingState(s,(Collection<Contract>)c).isValid();
 	}
 
-	public boolean isPersonalyValid(final PersonalState s,Contract c) {
-		return getMyResultingState(s,c).isValid();
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#isPersonalyValid(PersonalState, Contract)
+	 */
+	@Override
+	public boolean isPersonalyValid(final PersonalState s,final Contract c) {
+		return this.getMyResultingState(s,c).isValid();
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#isSociallyValid(PersonalState, java.util.Collection)
+	 */
+	@Override
 	public boolean isSociallyValid(final PersonalState s, final Collection<? extends Contract> cs) throws IncompleteContractException{
 		return ContractTransition.respectRights((Collection<Contract>) cs,s);
 	}
 
-	public boolean isSociallyValid(final PersonalState s, Contract c) throws IncompleteContractException{
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#isSociallyValid(PersonalState, Contract)
+	 */
+	@Override
+	public boolean isSociallyValid(final PersonalState s, final Contract c) throws IncompleteContractException{
 		final Collection<Contract> a = new ArrayList<Contract>();
 		a.add(c);
-		return ContractTransition.respectRights((Collection<Contract>) a,s);
+		return ContractTransition.respectRights(a,s);
 	}
 
 	/*
 	 * Utility
 	 */
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyAllocationPreferenceComparator()
+	 */
+	@Override
 	public Comparator<Collection<Contract>> getMyAllocationPreferenceComparator() {
 		final Comparator<Collection<Contract>> myComparator = new Comparator<Collection<Contract>>() {
 			@Override
@@ -264,6 +360,10 @@ extends BasicCompetentAgent {
 		return myComparator;
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyPreferenceComparator()
+	 */
+	@Override
 	public Comparator<Contract> getMyPreferenceComparator() {
 		final Comparator<Contract> myComparator = new Comparator<Contract>() {
 			@Override
@@ -282,10 +382,18 @@ extends BasicCompetentAgent {
 	 *
 	 */
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#evaluatePreference(java.util.Collection)
+	 */
+	@Override
 	public  Double evaluatePreference(final Collection<Contract> cs){
 		return this.myCore.evaluatePreference(cs);
 	}
 
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#evaluatePreference(Contract)
+	 */
+	@Override
 	public  Double evaluatePreference(final Contract... cs){
 		return this.evaluatePreference(Arrays.asList(cs));
 	}

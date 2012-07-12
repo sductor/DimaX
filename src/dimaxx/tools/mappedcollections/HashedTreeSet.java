@@ -15,7 +15,7 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 	final Comparator<V> myComp;
 
 
-	public HashedTreeSet(Comparator<V> myComp){
+	public HashedTreeSet(final Comparator<V> myComp){
 		this.myComp=myComp;
 	}
 
@@ -27,7 +27,7 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 			this.put(key, contenu);
 			return alreadyContains;
 		} else {
-			final TreeSet<V> contenu = new TreeSet<V>(myComp);
+			final TreeSet<V> contenu = new TreeSet<V>(this.myComp);
 			contenu.add(value);
 			this.put(key, contenu);
 			return false;
@@ -43,7 +43,7 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 	public boolean remove(final K key, final V value) {
 		final boolean b = this.get(key).remove(value);
 		if (this.get(key).isEmpty()) {
-			TreeSet<V> v = this.remove(key);
+			final TreeSet<V> v = this.remove(key);
 			assert !this.containsKey(key):key+" "+this.get(key)+" "+v+" "+b+" \n--->"+this;
 		}
 		assert !this.containsKey(key)||!super.get(key).isEmpty();
@@ -82,18 +82,19 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 	public Collection<K> removeAvalue(final V item) {
 		final Collection<K> relevantKeys = new ArrayList<K>();
 		for (final K k : this.keySet()) {
-			if (this.get(k).remove(item))
+			if (this.get(k).remove(item)) {
 				relevantKeys.add(k);
+			}
 		}
 		assert !this.containsAvalue(item);//:item + "-è-------------->"+this;
-		assert !getAllValuesUnsorted().contains(item);//:item + "-è-------------->"+this;
+		assert !this.getAllValuesUnsorted().contains(item);//:item + "-è-------------->"+this;
 		for (final K key : relevantKeys) {
 			if (this.get(key).isEmpty()) {
 				this.remove(key);
 			}
 		}
 		return relevantKeys;
-	}	
+	}
 
 	//	/**
 	//	 * Fonction coûteuse
@@ -121,7 +122,7 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 	 */
 	@Deprecated //tres couteux
 	public TreeSet<V> getAllValues() {
-		final TreeSet<V> finalValues = new TreeSet<V>(myComp);
+		final TreeSet<V> finalValues = new TreeSet<V>(this.myComp);
 		for (final TreeSet<V> l : super.values()) {
 			finalValues.addAll(l);
 		}
@@ -129,7 +130,7 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 	}
 
 	/**
-	 * Fonction  coûteuse 
+	 * Fonction  coûteuse
 	 * @param meanProtoTimeExec
 	 * @return
 	 */
@@ -141,32 +142,32 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 		return finalValues;
 	}
 	/**
-	 * @param 
+	 * @param
 	 * @return
 	 */
 	public V getMaxValue() {
 		V finalValue = null;
 		for (final K key : super.keySet()){
-			if (finalValue==null)
+			if (finalValue==null) {
 				finalValue=super.get(key).last();
-			else {
-				finalValue = myComp.compare(super.get(key).last(),finalValue)>0?super.get(key).last():finalValue;
+			} else {
+				finalValue = this.myComp.compare(super.get(key).last(),finalValue)>0?super.get(key).last():finalValue;
 			}
 		}
 		return finalValue;
 	}
 
 	/**
-	 * @param 
+	 * @param
 	 * @return
 	 */
 	public V getMinValue() {
 		V finalValue = null;
 		for (final K key : super.keySet()){
-			if (finalValue==null)
+			if (finalValue==null) {
 				finalValue=super.get(key).first();
-			else {
-				finalValue = myComp.compare(super.get(key).last(),finalValue)<0?super.get(key).first():finalValue;
+			} else {
+				finalValue = this.myComp.compare(super.get(key).last(),finalValue)<0?super.get(key).first():finalValue;
 			}
 		}
 		return finalValue;
@@ -181,9 +182,9 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 		if (this.containsKey(key)) {
 			return super.get(key);
 		} else {
-			return new TreeSet<V>(myComp);
+			return new TreeSet<V>(this.myComp);
 		}
-	}	
+	}
 	/**
 	 * @param a key
 	 * @return the value associated to the key or an empty collection if no key is present
@@ -193,7 +194,7 @@ public class HashedTreeSet<K, V> extends Hashtable<K, TreeSet<V>> {
 		if (this.containsKey(key)) {
 			return super.remove(key);
 		} else {
-			return new TreeSet<V>(myComp);
+			return new TreeSet<V>(this.myComp);
 		}
 	}
 }

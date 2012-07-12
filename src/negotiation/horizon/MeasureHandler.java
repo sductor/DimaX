@@ -13,32 +13,32 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  */
 public class MeasureHandler extends BasicAgentCompetence<SubstrateNode> {
 
-    /**
-     * Serial version identifier.
-     */
-    private static final long serialVersionUID = -641940585284016641L;
+	/**
+	 * Serial version identifier.
+	 */
+	private static final long serialVersionUID = -641940585284016641L;
 
-    /**
-     * Current measured parameters of the machine.
-     */
-    private HorizonMeasurableParameters<SubstrateNodeIdentifier> currentParams;
+	/**
+	 * Current measured parameters of the machine.
+	 */
+	private final HorizonMeasurableParameters<SubstrateNodeIdentifier> currentParams;
 
-    /**
-     * @param params
-     *            initial parameters
-     */
-    public MeasureHandler(
-	    final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
-	this.currentParams = params;
-    }
+	/**
+	 * @param params
+	 *            initial parameters
+	 */
+	public MeasureHandler(
+			final HorizonMeasurableParameters<SubstrateNodeIdentifier> params) {
+		this.currentParams = params;
+	}
 
-    /**
-     * "Performs" the measures. For now returns only the parameters given to the
-     * constructor.
-     * 
-     * @return the "measured" parameters.
-     */
-    public HorizonMeasurableParameters<SubstrateNodeIdentifier> performMeasures() {
-	return this.currentParams;
-    }
+	/**
+	 * "Performs" the measures. For now returns only the parameters given to the
+	 * constructor.
+	 * 
+	 * @return the "measured" parameters.
+	 */
+	public HorizonMeasurableParameters<SubstrateNodeIdentifier> performMeasures() {
+		return this.currentParams;
+	}
 }

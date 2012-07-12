@@ -2,10 +2,6 @@ package algo.topt;
 
 import java.util.ArrayList;
 
-import daj.Message;
-import dcop.Constraint;
-import dcop.Variable;
-
 public class LocalConstraintMsg extends Message {
 	int id;
 	int domain;
@@ -16,23 +12,23 @@ public class LocalConstraintMsg extends Message {
 		super();
 	}
 
-	public LocalConstraintMsg(Variable v, int t) {
+	public LocalConstraintMsg(final Variable v, final int t) {
 		super();
-		id = v.id;
-		domain = v.domain;
-		data = new ArrayList<int[]>();
-		for (Constraint c : v.neighbors) {
-			data.add(c.encode());
+		this.id = v.id;
+		this.domain = v.domain;
+		this.data = new ArrayList<int[]>();
+		for (final Constraint c : v.neighbors) {
+			this.data.add(c.encode());
 		}
-		ttl = t;
+		this.ttl = t;
 	}
 
 	public String getText() {
-		return ("LOCAL " + id + ";TTL " + ttl);
+		return "LOCAL " + this.id + ";TTL " + this.ttl;
 	}
 
 	public LocalConstraintMsg forward() {
-		LocalConstraintMsg msg = new LocalConstraintMsg();
+		final LocalConstraintMsg msg = new LocalConstraintMsg();
 		msg.id = this.id;
 		msg.domain = this.domain;
 		msg.ttl = this.ttl - 1;
@@ -42,8 +38,9 @@ public class LocalConstraintMsg extends Message {
 
 	public int getSize() {
 		int size = 0;
-		for (int[] array : data)
+		for (final int[] array : this.data) {
 			size += array.length * 4;
+		}
 		return 13 + size;
 	}
 }

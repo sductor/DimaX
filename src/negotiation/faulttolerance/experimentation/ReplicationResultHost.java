@@ -18,24 +18,24 @@ public class ReplicationResultHost implements ExperimentationResults {
 	private static final long serialVersionUID = 4602509671903952286L;
 
 	private final long creation;
-	
-//	private long firstModifTime=-1;
-	private long lastModifTime;
+
+	//	private long firstModifTime=-1;
+	private final long lastModifTime;
 
 	final ResourceIdentifier id;
 	final Double charge;
 	int nbOfModif;
 	// final Double lambda;
 	Double searchTime;
-	
-	
+
+
 	final boolean isFaulty;
 	boolean lastInfo;
 
-	public ReplicationResultHost(final HostState s, //long firstModifTime, 
-			long lastModifTime,
-			final Date agentCreationTime, int initialStateCounter,
-			LightAverageDoubleAggregation searchTime) {
+	public ReplicationResultHost(final HostState s, //long firstModifTime,
+			final long lastModifTime,
+			final Date agentCreationTime, final int initialStateCounter,
+			final LightAverageDoubleAggregation searchTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
 		this.charge = s.getMyCharge();
@@ -43,13 +43,13 @@ public class ReplicationResultHost implements ExperimentationResults {
 		this.isFaulty = s.isFaulty();
 		this.id = s.getMyAgentIdentifier();
 		this.lastInfo = false;
-		nbOfModif = s.getStateCounter()-initialStateCounter;
-//		assert !(this.firstModifTime==1) || nbOfModif==0;
-//		assert !(nbOfModif==0) || ((firstModifTime==-2 || firstModifTime==-1) && lastModifTime==-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
-//		assert (nbOfModif==0) || (firstModifTime!=-2 && firstModifTime!=-1 && lastModifTime!=-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
-//		this.firstModifTime=firstModifTime;
+		this.nbOfModif = s.getStateCounter()-initialStateCounter;
+		//		assert !(this.firstModifTime==1) || nbOfModif==0;
+		//		assert !(nbOfModif==0) || ((firstModifTime==-2 || firstModifTime==-1) && lastModifTime==-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
+		//		assert (nbOfModif==0) || (firstModifTime!=-2 && firstModifTime!=-1 && lastModifTime!=-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
+		//		this.firstModifTime=firstModifTime;
 		this.lastModifTime=lastModifTime;
-		this.searchTime=searchTime.getRepresentativeElement();		
+		this.searchTime=searchTime.getRepresentativeElement();
 	}
 
 	@Override
@@ -62,16 +62,16 @@ public class ReplicationResultHost implements ExperimentationResults {
 		return this.id;
 	}
 
-//	public long getFirstModifTime() {
-//		return firstModifTime;
-//	}
+	//	public long getFirstModifTime() {
+	//		return firstModifTime;
+	//	}
 
 	public long getLastModifTime() {
-		return lastModifTime;
+		return this.lastModifTime;
 	}
 
 	public boolean isFaulty() {
-		return isFaulty;
+		return this.isFaulty;
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class ReplicationResultHost implements ExperimentationResults {
 		this.lastInfo=true;
 
 	}
-	
+
 	@Override
 	public String toString(){
 		String result ="****************************************************************************************************************************\n";

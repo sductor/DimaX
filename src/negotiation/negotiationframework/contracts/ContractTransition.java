@@ -9,9 +9,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
-import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
@@ -36,8 +34,8 @@ AbstractContractTransition {
 
 	protected final List<AgentIdentifier> actors;
 
-	protected Map<AgentIdentifier, AbstractActionSpecif> specs = null; 
-	protected final Map<AgentIdentifier, AgentState> initState = new Hashtable<AgentIdentifier, AgentState>(); 
+	protected Map<AgentIdentifier, AbstractActionSpecif> specs = null;
+	protected final Map<AgentIdentifier, AgentState> initState = new Hashtable<AgentIdentifier, AgentState>();
 
 	//
 	// Constructor
@@ -94,7 +92,7 @@ AbstractContractTransition {
 	@Override
 	public AgentState getInitialState(final AgentIdentifier id) throws IncompleteContractException{
 		if (!this.initState.containsKey(id)) {
-			throw new IncompleteContractException(id+"missing in "+this.getIdentifier()+"\n----------- "+initState);
+			throw new IncompleteContractException(id+"missing in "+this.getIdentifier()+"\n----------- "+this.initState);
 		} else {
 			return this.initState.get(id);
 		}
@@ -103,7 +101,7 @@ AbstractContractTransition {
 	@Override
 	public AbstractActionSpecif getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
 
-		if (specs==null){
+		if (this.specs==null){
 			return new NullActionSpec(id);
 		} else if (!this.specs.containsKey(id)) {
 			throw new IncompleteContractException();
@@ -118,14 +116,15 @@ AbstractContractTransition {
 
 		assert s!=null;
 
-		if (s instanceof NullActionSpec)
+		if (s instanceof NullActionSpec) {
 			return;
-
-		if (specs == null){
-			specs=new HashMap<AgentIdentifier, AbstractActionSpecif>();
 		}
 
-		assert specs.isEmpty()?true:((specs.values().iterator().next()).getClass().isAssignableFrom(s.getClass()));
+		if (this.specs == null){
+			this.specs=new HashMap<AgentIdentifier, AbstractActionSpecif>();
+		}
+
+		assert this.specs.isEmpty()?true:this.specs.values().iterator().next().getClass().isAssignableFrom(s.getClass());
 		assert !this.specs.containsKey(s.getMyAgentIdentifier()) || s.isNewerThan(this.specs.get(s.getMyAgentIdentifier()))>=0:
 			s+" "+this.specs.get(s.getMyAgentIdentifier());
 
@@ -147,6 +146,7 @@ AbstractContractTransition {
 	 * @param state
 	 * @param s
 	 */
+	@Override
 	public <State extends AgentState> void setInitialState(final State state) {
 		assert state != null;
 
@@ -171,15 +171,15 @@ AbstractContractTransition {
 
 	@Override
 	public boolean isInitiallyValid()
-			throws IncompleteContractException {		
+			throws IncompleteContractException {
 		if (this.specs!=null && !this.specs.keySet().containsAll(this.actors)) {
 			throw new IncompleteContractException();
-		} else if (!this.initState.keySet().containsAll(actors)){
-			throw new IncompleteContractException("initSate "+initState+"\n actors : "+actors);
+		} else if (!this.initState.keySet().containsAll(this.actors)){
+			throw new IncompleteContractException("initSate "+this.initState+"\n actors : "+this.actors);
 		} else {
 			for (final AgentIdentifier id : this.actors) {
 				if (!this.getInitialState(id).isValid()) {
-					System.out.println("res : "+computeResultingState(id));
+					System.out.println("res : "+this.computeResultingState(id));
 					return false;
 				}
 			}
@@ -230,11 +230,12 @@ AbstractContractTransition {
 		return true;
 	}
 
+	@Override
 	public boolean isComplete(){
-		for (AgentIdentifier id : getAllParticipants()){
+		for (final AgentIdentifier id : this.getAllParticipants()){
 			try {
 				this.getInitialState(id);
-			} catch (IncompleteContractException e) {
+			} catch (final IncompleteContractException e) {
 				return false;
 			}
 		}
@@ -343,6 +344,7 @@ AbstractContractTransition {
 		return this.getIdentifier().hashCode();
 	}
 
+	@Override
 	public abstract AbstractContractTransition clone() ;
 
 	//
@@ -389,17 +391,21 @@ AbstractContractTransition {
 
 	public class NullActionSpec implements AbstractActionSpecif{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6523162275321856460L;
 		AgentIdentifier id;
 		private final Long creationTime;
 
-		public NullActionSpec(AgentIdentifier id) {
+		public NullActionSpec(final AgentIdentifier id) {
 			this.id=id;
 			this.creationTime = new Date().getTime();
 		}
 
 		@Override
 		public AgentIdentifier getMyAgentIdentifier() {
-			return id;
+			return this.id;
 		}
 
 
@@ -421,34 +427,35 @@ AbstractContractTransition {
 		}
 
 		@Override
-		public Double getNumericValue(Information e) {
+		public Double getNumericValue(final Information e) {
 			assert false;
 			return null;
 		}
 
 		@Override
 		public Information getRepresentativeElement(
-				Collection<? extends Information> elems) {
+				final Collection<? extends Information> elems) {
 			assert false;
 			return null;
 		}
 
 		@Override
 		public Information getRepresentativeElement(
-				Map<? extends Information, Double> elems) {	
-			assert false;	
+				final Map<? extends Information, Double> elems) {
+			assert false;
 			return null;
 		}
 
 		@Override
 		public AbstractCompensativeAggregation<Information> fuse(
-				Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
+				final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
 			assert false;
 			return null;
 		}
 
+		@Override
 		public NullActionSpec clone(){
-			return new NullActionSpec(id);
+			return new NullActionSpec(this.id);
 		}
 	}
 }

@@ -21,7 +21,7 @@ public class HostState extends SimpleAgentState {
 	/*
 	 * Fields  (all must stay final for clone validity)
 	 */
-	
+
 	private  final Set<AgentIdentifier> myReplicatedAgents;
 
 	private final Double procChargeMax;
@@ -33,7 +33,7 @@ public class HostState extends SimpleAgentState {
 	private final double lambda;
 	private final boolean faulty;
 
-	// Take all fields	
+	// Take all fields
 	public HostState(
 			final ResourceIdentifier myAgent,
 			final double hostMaxProc,
@@ -43,7 +43,7 @@ public class HostState extends SimpleAgentState {
 		this(myAgent,
 				new HashSet<AgentIdentifier>(), lambda,
 				hostMaxProc, 0., hostMaxMem, 0.,
-				false, 
+				false,
 				stateNumber);
 	}
 
@@ -55,13 +55,13 @@ public class HostState extends SimpleAgentState {
 		this(myAgent,
 				new HashSet<AgentIdentifier>(), lambda,
 				hostMaxProc, 0., hostMaxMem, 0.,
-				false, 
+				false,
 				-1);
 	}
 
 
 	public HostState allocate(final ReplicaState newRep){
-		HashSet<AgentIdentifier> rep =new HashSet<AgentIdentifier>(this.myReplicatedAgents);
+		final HashSet<AgentIdentifier> rep =new HashSet<AgentIdentifier>(this.myReplicatedAgents);
 		Double procCurrentCharge, memCurrentCharge;
 
 		if (rep.contains(newRep.getMyAgentIdentifier())) {
@@ -123,11 +123,12 @@ public class HostState extends SimpleAgentState {
 	}
 
 	public Double getMyCharge() {
-		if (ReplicationExperimentationParameters.multiDim)
+		if (ReplicationExperimentationParameters.multiDim) {
 			return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
 					this.getCurrentProcCharge() / this.getProcChargeMax());
-		else
+		} else {
 			return this.getCurrentMemCharge() / this.getMemChargeMax();
+		}
 	}
 
 	public boolean ImSurcharged() {
@@ -186,23 +187,23 @@ public class HostState extends SimpleAgentState {
 		return this.faulty;
 	}
 
-//	public void setFaulty(final boolean faulty) {
-//		this.faulty = faulty;
-//	}
+	//	public void setFaulty(final boolean faulty) {
+	//		this.faulty = faulty;
+	//	}
 
 	/*
 	 *
 	 */
 
-//	@Override
-//	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-//		if (h.equals(this.getMyAgentIdentifier())) {
-//			this.setFaulty(isLost);
-//		} else {
-//			// Do nothing
-//		}
-//		return false;
-//	}
+	//	@Override
+	//	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
+	//		if (h.equals(this.getMyAgentIdentifier())) {
+	//			this.setFaulty(isLost);
+	//		} else {
+	//			// Do nothing
+	//		}
+	//		return false;
+	//	}
 
 	//
 	// Opinion Handling
@@ -306,9 +307,10 @@ public class HostState extends SimpleAgentState {
 	//
 	// Primitives
 	//
-	
+
+	@Override
 	public HostState clone(){
-		return this;	
+		return this;
 	}
 
 	@Override
@@ -336,7 +338,7 @@ public class HostState extends SimpleAgentState {
 				+ "\n --> lambda : "+this.lambda+
 				"\n --> agents : " + this.getMyResourceIdentifiers()
 				+ "\n --> faulty? : " + this.isFaulty()
-				+"\n --> creation time : "+this.getCreationTime()+"#"+getStateCounter()
+				+"\n --> creation time : "+this.getCreationTime()+"#"+this.getStateCounter()
 				+"\n valid ? : "+this.isValid();
 	}
 

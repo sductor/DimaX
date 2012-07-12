@@ -128,7 +128,7 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	public Boolean logWarning(String text, Throwable e);
 
 	public Boolean logWarning(String text);
-	
+
 	public Boolean signalException(String text, Throwable e);
 
 	public Boolean signalException(String text);
@@ -146,7 +146,7 @@ public interface CompetentComponent extends ActiveComponentInterface, Identified
 	//	public Boolean logWarning(String text);
 
 	public void addLogKey(String key, String logType);
-	
+
 	public void addLogKey(String key, boolean toScreen, boolean toFile);
 
 	void setLogKey(String key, boolean toScreen, boolean toFile);

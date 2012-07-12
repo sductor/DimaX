@@ -1,4 +1,4 @@
-package negotiation.negotiationframework.contracts;
+package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,12 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ContractIdentifier;
+import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.contracts.ReallocationContract;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
@@ -191,7 +197,7 @@ implements AbstractContractTransition{
 
 
 	@Override
-	public <ActionSpec extends AbstractActionSpecif> void setSpecification(ActionSpec spec) {
+	public <ActionSpec extends AbstractActionSpecif> void setSpecification(final ActionSpec spec) {
 		this.candidature.setSpecification(spec);
 		for (final ReallocationContract r : this.possibleContracts) {
 			r.setSpecification(spec);
@@ -201,7 +207,7 @@ implements AbstractContractTransition{
 	}
 
 	@Override
-	public <State extends AgentState> void setInitialState(State state) {
+	public <State extends AgentState> void setInitialState(final State state) {
 		this.candidature.setInitialState(state);
 		for (final ReallocationContract r : this.possibleContracts) {
 			r.setInitialState(state);
@@ -277,13 +283,13 @@ implements AbstractContractTransition{
 	}
 
 	@Override
-	public AgentState getInitialState(AgentIdentifier id)	throws IncompleteContractException {
+	public AgentState getInitialState(final AgentIdentifier id)	throws IncompleteContractException {
 		return this.candidature.getInitialState(id);
 	}
 
 	@Override
 	public InformedCandidature<Contract> clone() {
-		return new InformedCandidature<Contract>((Contract) getCandidature().clone());
+		return new InformedCandidature<Contract>((Contract) this.getCandidature().clone());
 	}
 
 }

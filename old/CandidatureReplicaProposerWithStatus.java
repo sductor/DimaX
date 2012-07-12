@@ -96,11 +96,6 @@ ReplicaState, ReplicationCandidature> {
 		return candidatures;
 	}
 
-	protected boolean stateStatusIs(final ReplicaState state,
-			final AgentStateStatus status) {
-		return ((CandidatureReplicaCoreWithStatus) this.getMyAgent()
-				.getMyCore()).getStatus(state).equals(status);
-	}
 
 	@Override
 	public ReplicationCandidature constructCandidature(final ResourceIdentifier id) {

@@ -41,7 +41,7 @@ public class SimpleExampleApi extends APIAgent{
 		final SimpleExampleApi apiAgent = new SimpleExampleApi();
 		apiAgent.initAPI(false);//SCHEDULED
 		//		apiAgent.initAPI(true);//FIPA
-//		apiAgent.initAPI(7777,7776);//DARX LOCAL
+		//		apiAgent.initAPI(7777,7776);//DARX LOCAL
 		//		apiAgent.initAPI("lip6.xml");//DARX Deployed
 		apiAgent.launchMySelf();
 	}

@@ -23,7 +23,6 @@ import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.support.GimaObject;
 import dimaxx.deployment.DimaXDeploymentScript;
 import dimaxx.deployment.DimaXLocalLaunchScript;
-import dimaxx.experimentation.ObservingSelfService;
 import dimaxx.hostcontrol.LocalHost;
 import dimaxx.server.HostIdentifier;
 
@@ -109,14 +108,14 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 	}
 
-	public  void launch(BasicCompetentAgent ag) {
-			ag.launchWith(this.api);
+	public  void launch(final BasicCompetentAgent ag) {
+		ag.launchWith(this.api);
 	}
 
-	public  void launch(BasicCompetentAgent ag, HostIdentifier h) {
-			ag.launchWith(this.api,h);
+	public  void launch(final BasicCompetentAgent ag, final HostIdentifier h) {
+		ag.launchWith(this.api,h);
 	}
-	
+
 	//
 
 	public static void launch(final APILauncherModule api, final Map<BasicCompetentAgent, HostIdentifier> locations) {
@@ -265,7 +264,7 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 
 		public Collection<AgentIdentifier> getAllAgents(){
-			return locations.keySet();
+			return this.locations.keySet();
 		}
 		//
 		// Launch method
@@ -320,30 +319,31 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 
 		Collection<AgentIdentifier> killed = new ArrayList<AgentIdentifier>();
-		public boolean kill(AgentIdentifier c){
+		public boolean kill(final AgentIdentifier c){
 			final boolean removed1 = this.registeredAgent.remove(c)!=null;
 			final boolean removed2 =  this.locations.remove(c)!=null;
-			killed.add(c);
+			this.killed.add(c);
 
 			assert removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 
-			sendMessage(c, new SigKillOrder());
+			APIAgent.this.sendMessage(c, new SigKillOrder());
 			return true;
 		}
-		
-		public boolean kill(Collection<AgentIdentifier> cs){
-			for (AgentIdentifier c : cs)
-				kill(c);
+
+		public boolean kill(final Collection<AgentIdentifier> cs){
+			for (final AgentIdentifier c : cs) {
+				this.kill(c);
+			}
 			return true;
 		}
-		
+
 		public boolean destroy(final BasicCompetentAgent c){
 			final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
 			final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
-			
-//			logMonologue("Agent destroyed : "+c);
 
-			assert killed.contains(c) || (removed1 && removed2):c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
+			//			logMonologue("Agent destroyed : "+c);
+
+			assert this.killed.contains(c) || removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 
 			switch (this.myLaunchType) {
 			case NotThreaded:
@@ -476,7 +476,7 @@ public class APIAgent extends BasicCompetentAgent {
 				this.nbMaxStep = nbMaxStep;
 			}
 
-			public void setRandomized(boolean randomized) {
+			public void setRandomized(final boolean randomized) {
 				this.randomized = randomized;
 			}
 
@@ -519,7 +519,9 @@ public class APIAgent extends BasicCompetentAgent {
 
 					//AGENT PRO ACTIVITY INITAILISATION
 					LogService.flush();
-					if (randomized) Collections.shuffle(toInitialize);
+					if (this.randomized) {
+						Collections.shuffle(this.toInitialize);
+					}
 					for (final BasicCompetentAgent c : this.toInitialize){
 						c.proactivityInitialize();
 						this.toExecute.add(c);
@@ -528,7 +530,9 @@ public class APIAgent extends BasicCompetentAgent {
 
 					//AGENT STEP ACTIVITIES
 					LogService.flush();
-					if (randomized) Collections.shuffle(toExecute);
+					if (this.randomized) {
+						Collections.shuffle(this.toExecute);
+					}
 					for (final BasicCompetentAgent c : this.toExecute) {
 						if (c.isAlive()){
 							if (c.isActive()){
@@ -547,7 +551,9 @@ public class APIAgent extends BasicCompetentAgent {
 
 					//AGENT PRO ACTIVITY TERMINATION
 					LogService.flush();
-					if (randomized) Collections.shuffle(toTerminate);
+					if (this.randomized) {
+						Collections.shuffle(this.toTerminate);
+					}
 					for (final BasicCompetentAgent c : this.toTerminate){
 						c.proactivityTerminate();
 						this.toExecute.remove(c);

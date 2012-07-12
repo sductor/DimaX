@@ -42,7 +42,7 @@ public class AlgoMGM1 extends BasicAlgorithm {
 		final int index = this.in().select(1);
 		if (index != -1) {
 			this.setDone(false);
-			final int sender = (((Channel) this.in(index))).getNeighbor().asInt();
+			final int sender = ((Channel) this.in(index)).getNeighbor().asInt();
 			final DcopMessage msg = this.in(index).receive();
 
 			if (msg instanceof MGM1ValueMsg) {
@@ -89,12 +89,12 @@ public class AlgoMGM1 extends BasicAlgorithm {
 		} else {
 			if (this.bestVal == this.self.value) {
 				this.setDone(true);
-//				if (checkStable())
-//					break;
+				//				if (checkStable())
+				//					break;
 			}
 			else {
 				this.setDone(false);
-//			yield();
+				//			yield();
 			}
 		}
 	}
@@ -165,7 +165,7 @@ class MGM1ValueMsg extends DcopMessage {
 
 	@Override
 	public String getText() {
-		return ("VALUE " + this.value);
+		return "VALUE " + this.value;
 	}
 }
 
@@ -183,7 +183,7 @@ class MGM1LockMsg extends DcopMessage {
 
 	@Override
 	public String getText() {
-		return (this.lock ? "LOCK" : "UNLOCK");
+		return this.lock ? "LOCK" : "UNLOCK";
 	}
 }
 
@@ -201,6 +201,6 @@ class MGM1ResponseMsg extends DcopMessage {
 
 	@Override
 	public String getText() {
-		return (this.accept ? "ACCEPT" : "DENY");
+		return this.accept ? "ACCEPT" : "DENY";
 	}
 }

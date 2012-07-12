@@ -119,8 +119,8 @@ public class Constraint {
 
 	public int evaluate() {
 		//System.out.println("(" + first.id + "," + first.value + ") (" + second.id + "," + second.value + ")");
-//		if (Helper.app != null)
-//			Helper.app.numberEval++;
+		//		if (Helper.app != null)
+		//			Helper.app.numberEval++;
 		if (this.first.value == -1 && this.second.value == -1) {
 			return this.m;
 		}

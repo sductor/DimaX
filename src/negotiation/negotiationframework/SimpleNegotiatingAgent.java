@@ -1,9 +1,5 @@
 package negotiation.negotiationframework;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
@@ -13,7 +9,6 @@ import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -21,13 +16,16 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
 import dimaxx.experimentation.ObservingSelfService;
 
 public class SimpleNegotiatingAgent<
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends SimpleRationalAgent<PersonalState, Contract> {
+extends SimpleRationalAgent<PersonalState, Contract>
+implements NegotiatingAgent<PersonalState, Contract>{
 	private static final long serialVersionUID = 3480283369532419102L;
 
 	//
@@ -50,7 +48,7 @@ extends SimpleRationalAgent<PersonalState, Contract> {
 	public SimpleNegotiatingAgent(
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
-			final RationalCore<PersonalState, Contract> myRationality,
+			final RationalCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> myRationality,
 			final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
@@ -82,54 +80,60 @@ extends SimpleRationalAgent<PersonalState, Contract> {
 	// Accessors
 	//
 
+	@Override
 	public AbstractCommunicationProtocol<Contract> getMyProtocol() {
 		return this.protocol;
 	}
 
+	@Override
 	public ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> getMyProposerCore() {
 		return this.myProposerCore;
 	}
 
+	@Override
 	public SelectionCore<? extends SimpleNegotiatingAgent,PersonalState, Contract> getMySelectionCore() {
 		return this.selectionCore;
 	}
 
+	@Override
 	public void setNewState(final PersonalState s) {
 		super.setNewState(s);
-		if (protocol!=null) protocol.getContracts().updateContracts(s);
+		if (this.protocol!=null) {
+			this.protocol.getContracts().updateContracts(s);
+		}
 	}
-	
+
 	//
 	// Behavior
 	//
 
-//	@StepComposant(ticker=ExperimentationParameters._maxSimulationTime)
-//	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
-//	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
-//	@Transient
-//	public boolean end(){
-////		this.setAlive(false);
-//		this.setActive(false);
-//		return true;
-//	}
-	
-//	@ProactivityFinalisation
-//	public boolean waitForEveryone(){
-//		logMonologue("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", LogService.onBoth);
-//		wwait(60000);
-//		return true;
-//	}
+	//	@StepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	//	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	//	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	//	@Transient
+	//	public boolean end(){
+	////		this.setAlive(false);
+	//		this.setActive(false);
+	//		return true;
+	//	}
 
-	
-//	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
-//	@Transient
-//	public boolean end(){
-//		this.setActive(false);
-//		this.setAlive(false);
-//		Thread.yield();
-//		wwait(60000);
-//		return true;
-//	}
+	//	@ProactivityFinalisation
+	//	public boolean waitForEveryone(){
+	//		logMonologue("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", LogService.onBoth);
+	//		wwait(60000);
+	//		return true;
+	//	}
+
+
+	//	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
+	//	@Transient
+	//	public boolean end(){
+	//		this.setActive(false);
+	//		this.setAlive(false);
+	//		Thread.yield();
+	//		wwait(60000);
+	//		return true;
+	//	}
 	@MessageHandler()
 	public void hereThereAre(final ShowYourPocket m) {
 		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "
@@ -137,7 +141,14 @@ extends SimpleRationalAgent<PersonalState, Contract> {
 		pockets += "\n" + this.getMyProtocol();
 		this.logMonologue(pockets,LogService.onFile);
 	}
-	
+
+	@MessageHandler
+	@NotificationEnvelope(SimpleRationalAgent.stateChangementObservation)
+	public void receiveInformation(
+			final NotificationMessage<AgentState> o) {
+		this.getMyInformation().add(o.getNotification());
+		this.getMyProtocol().getContracts().updateContracts(o.getNotification());
+	}
 
 }
 

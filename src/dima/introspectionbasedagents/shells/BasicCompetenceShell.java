@@ -56,7 +56,7 @@ BasicCommunicatingShell {
 		}
 		if (this.myMainComponent instanceof BasicCompetentAgent) {
 			final BasicCompetentAgent agent = (BasicCompetentAgent) this.myMainComponent;
-//			agent.myShell=this;
+			//			agent.myShell=this;
 			PatternObserverWithHookservice.registerEventMethod(agent, agent.observer);
 
 		}
@@ -127,8 +127,8 @@ BasicCommunicatingShell {
 
 	@Override
 	public final void proactivityTerminate(final Date creation){
-//		myMainComponent.logMonologue("I'm out of here!!! >=] on d road again yeaaahh", LogService.onBoth);
-		assert myMainComponent!=null;
+		//		myMainComponent.logMonologue("I'm out of here!!! >=] on d road again yeaaahh", LogService.onBoth);
+		assert this.myMainComponent!=null;
 		super.proactivityTerminate(creation);
 		try {
 
@@ -139,9 +139,9 @@ BasicCommunicatingShell {
 		} catch (final Exception e) {
 			LogService.writeException(this,"proactivityTerminate : Impossible!!");
 		}
-		assert myMainComponent!=null;
-//		((BasicCompetentAgent)this.myMainComponent).apiService.endLive();
-		((BasicCompetentAgent)this.myMainComponent).apiService.destroy(((BasicCompetentAgent)this.myMainComponent));
+		assert this.myMainComponent!=null;
+		//		((BasicCompetentAgent)this.myMainComponent).apiService.endLive();
+		((BasicCompetentAgent)this.myMainComponent).apiService.destroy((BasicCompetentAgent)this.myMainComponent);
 		this.myMainComponent=null;
 	}
 

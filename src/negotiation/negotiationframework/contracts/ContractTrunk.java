@@ -9,10 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
-
-import choco.kernel.memory.structure.IntInterval;
-
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
@@ -22,7 +19,7 @@ import dima.introspectionbasedagents.services.BasicAgentModule;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class ContractTrunk<Contract extends AbstractContractTransition>
-extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
+extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 
 	/**
 	 *
@@ -108,19 +105,19 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 	}
 
 	public Collection<Contract> getRequestableContracts() {
-		return Collections.unmodifiableCollection(requestableContracts);
+		return Collections.unmodifiableCollection(this.requestableContracts);
 	}
 
 	public Collection<Contract> getFailedContracts() {
-		return Collections.unmodifiableCollection(failedContracts);
+		return Collections.unmodifiableCollection(this.failedContracts);
 	}
 
 	public Collection<Contract> getAllInitiatorContracts() {
-		return Collections.unmodifiableCollection(initiatorContracts);
+		return Collections.unmodifiableCollection(this.initiatorContracts);
 	}
 
 	public Collection<Contract> getAllParticipantContracts() {
-		return Collections.unmodifiableCollection(participantContracts);
+		return Collections.unmodifiableCollection(this.participantContracts);
 	}
 
 	/*
@@ -128,20 +125,20 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 	 */
 
 	public List<Contract> getInitiatorRequestableContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>(requestableContracts);
-		l.removeAll(participantContracts);
+		final ArrayList<Contract> l = new ArrayList<Contract>(this.requestableContracts);
+		l.removeAll(this.participantContracts);
 		return l;
 	}
 
 	public List<Contract> getInitiatorOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(this.waitContracts);
-		l.removeAll(participantContracts);
+		l.removeAll(this.participantContracts);
 		return l;
 	}
 
 	public List<Contract> getParticipantOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(this.waitContracts);
-		l.removeAll(initiatorContracts);
+		l.removeAll(this.initiatorContracts);
 		l.removeAll(this.acceptedContracts.get(this.getMyAgentIdentifier()));
 		l.removeAll(this.rejectedContracts.get(this.getMyAgentIdentifier()));
 		return l;
@@ -149,7 +146,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 
 	public List<Contract> getParticipantAlreadyAcceptedContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(this.acceptedContracts.get(this.getMyAgentIdentifier()));
-		l.removeAll(initiatorContracts);
+		l.removeAll(this.initiatorContracts);
 		return l;
 	}
 
@@ -172,33 +169,37 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 	 * @param actionSpec vaut null si non spécifier
 	 * @return the set of modified contracts
 	 */
-	public Collection<ContractIdentifier> updateContracts(AgentState newState){
-		Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
+	public Collection<ContractIdentifier> updateContracts(final AgentState newState){
+		final Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
 		if (newState!=null) {
 
-			AgentIdentifier id = newState.getMyAgentIdentifier();
+			final AgentIdentifier id = newState.getMyAgentIdentifier();
 			AgentState assertedState = null;
 
 			for (final Contract c : this.getAllContracts()) {
 				if (c.getAllInvolved().contains(id)) {
-					AgentState actualState; 
+					AgentState actualState;
 					try {
 						actualState = c.getInitialState(id);
-					} catch (IncompleteContractException e) {
+					} catch (final IncompleteContractException e) {
 						actualState=null;
 					}
 
 					//debut assertion vérification que tous les contrats sont cohérents
-					if (assertedState==null) assertedState = actualState;			
-					else assert assertedState.equals(actualState);	
-					//fin assertion
+					if (assertedState==null) {
+						assertedState = actualState;
+					}
+					else {
+						assert assertedState.equals(actualState);
+						//fin assertion
+					}
 
 					if (actualState==null || !actualState.equals(newState)){
 						modifiedContracts.add(c.getIdentifier());
 						c.setInitialState(newState);
 					}
 				}
-			} 
+			}
 		}
 		return modifiedContracts;
 	}
@@ -220,10 +221,11 @@ extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 		//		}
 		this.identifier2contract.put(c.getIdentifier(), c);
 		this.waitContracts.add(c);
-		if (c.getInitiator().equals(getMyAgentIdentifier()))
-			initiatorContracts.add(c);
-		else
-			participantContracts.add(c);
+		if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
+			this.initiatorContracts.add(c);
+		} else {
+			this.participantContracts.add(c);
+		}
 		this.addAcceptation(c.getInitiator(), c);
 	}
 

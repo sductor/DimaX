@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicinterfaces.DimaComponentInterface;
@@ -40,7 +39,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 			final Collection<Contract> contractsToExplore) {
 		// logMonologue("!GreedySelection! : myState"+getMyAgent().getMyCurrentState());
 
-		assert getMyAgent()!=null;
+		assert this.getMyAgent()!=null;
 		final Collection<Contract> toValidate = new ArrayList<Contract>();
 		Iterator<Contract> itContract;
 		switch (this.itType){
@@ -101,9 +100,9 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 		int count=-1;
 
 		public GreedyIterator(final Collection<Contract> cs){
-			assert getMyAgent()!=null;
+			assert GreedySelectionModule.this.getMyAgent()!=null;
 			this.contractsToExplore=new ArrayList<Contract>(cs);
-			Collections.sort(this.contractsToExplore, 
+			Collections.sort(this.contractsToExplore,
 					Collections.reverseOrder(
 							GreedySelectionModule.this.
 							getMyAgent().
@@ -118,15 +117,16 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 
 		@Override
 		public Contract next() {
-			if (!hasNext())
+			if (!this.hasNext()) {
 				throw new NoSuchElementException();
+			}
 			this.count++;
 			return this.contractsToExplore.get(this.count);
 		}
 
 		@Override
 		public void remove() {
-//			this.contractsToExplore.remove(this.count);
+			//			this.contractsToExplore.remove(this.count);
 			throw new UnsupportedOperationException();
 		}
 
@@ -155,15 +155,16 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 
 		@Override
 		public Contract next() {
-			if (!hasNext())
+			if (!this.hasNext()) {
 				throw new NoSuchElementException();
+			}
 			this.count++;
 			return this.contractsToExplore.get(this.count);
 		}
 
 		@Override
 		public void remove() {
-//			this.contractsToExplore.remove(this.count);
+			//			this.contractsToExplore.remove(this.count);
 			throw new UnsupportedOperationException();
 		}
 
@@ -173,17 +174,17 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 	public class RooletteWheelIterator implements Iterator<Contract>, DimaComponentInterface {
 		private static final long serialVersionUID = -6677689550030424329L;
 		List<Contract> contracts;
-//		Collection<Contract> initContract;//for remove
+		//		Collection<Contract> initContract;//for remove
 
 		Random rand = new Random();
-//		int currentContract=-1;
+		//		int currentContract=-1;
 		double sumPref;
 
 		public RooletteWheelIterator(final Collection<Contract> contracts) {
 			super();
 			this.contracts=new ArrayList<Contract>(contracts);
-//			this.initContract = contracts;//for remove
-//			this.currentContract=-1;
+			//			this.initContract = contracts;//for remove
+			//			this.currentContract=-1;
 
 			for (final Contract c : contracts) {
 				this.sumPref+=GreedySelectionModule.this.getMyAgent().evaluatePreference(c);
@@ -198,20 +199,21 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 		@Override
 		public Contract next() {
 
-			if (!hasNext())
+			if (!this.hasNext()) {
 				throw new NoSuchElementException();
-			
+			}
+
 			Contract c;
 			final Double boule= this.sumPref * this.rand.nextDouble();
-			assert boule<=sumPref;
+			assert boule<=this.sumPref;
 
 			//détection du contrat correspondant à boule
-			c = this.contracts.get(foundContract(boule));
+			c = this.contracts.get(this.foundContract(boule));
 
 			//Suppression du contrat
 			this.sumPref-=GreedySelectionModule.this.getMyAgent().evaluatePreference(c);
 			this.contracts.remove(c);
-			
+
 			//return
 			return c;
 		}
@@ -219,38 +221,38 @@ extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
-//			if (currentContract==-1)
-//				throw new IllegalStateException();
-//			this.initContract.remove(this.currentContract);
-//			currentContract=-1;
+			//			if (currentContract==-1)
+			//				throw new IllegalStateException();
+			//			this.initContract.remove(this.currentContract);
+			//			currentContract=-1;
 		}
-		
+
 		//
 		// Primitive
 		//
-		
-		private int foundContract(double boule){
-			return foundContract(0,GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(0)), boule);
+
+		private int foundContract(final double boule){
+			return this.foundContract(0,GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(0)), boule);
 		}
-		
-		private int foundContract(int currentPos, double currentSum, double boule){
-//			assert currentSum<=sumPref:currentPos+" "+currentSum+" "+boule+" "+sumPref+" \n --->"+contracts;
-			if (contracts.size()==0){//probleme d'arrondi??
+
+		private int foundContract(final int currentPos, final double currentSum, final double boule){
+			//			assert currentSum<=sumPref:currentPos+" "+currentSum+" "+boule+" "+sumPref+" \n --->"+contracts;
+			if (this.contracts.size()==0){//probleme d'arrondi??
 				assert currentPos==0;
 				return 0;
 			}
-			if (currentSum>=boule)
+			if (currentSum>=boule) {
 				return currentPos;
-			else if (currentPos==contracts.size()-1){//probleme d'arrondi??
-//				logWarning("arrgh "+currentPos+" "+currentSum+" "+sumPref+" "+boule+" \n --->"+contracts);
+			} else if (currentPos==this.contracts.size()-1){//probleme d'arrondi??
+				//				logWarning("arrgh "+currentPos+" "+currentSum+" "+sumPref+" "+boule+" \n --->"+contracts);
 				return currentPos;
 			} else {
-				return foundContract(
-						currentPos+1, 
+				return this.foundContract(
+						currentPos+1,
 						currentSum+GreedySelectionModule.this.getMyAgent().evaluatePreference(this.contracts.get(currentPos)),
 						boule);
 			}
-			
+
 		}
 	}
 }

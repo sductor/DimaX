@@ -7,12 +7,12 @@ class SimulationEndedMessage extends Message{
 
 	ObservingGlobalService<?> ogs;
 
-	public SimulationEndedMessage(ObservingGlobalService<?> ogs) {
+	public SimulationEndedMessage(final ObservingGlobalService<?> ogs) {
 		super();
 		this.ogs = ogs;
 	}
 
 	public ObservingGlobalService<?> getOgs() {
-		return ogs;
+		return this.ogs;
 	}
 }

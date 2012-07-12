@@ -7,9 +7,9 @@ package negotiation.horizon.parameters;
  */
 public class UnexistingLinkException extends Exception {
 
-    /**
-     * Serial version identifier.
-     */
-    private static final long serialVersionUID = -2217602199409376065L;
+	/**
+	 * Serial version identifier.
+	 */
+	private static final long serialVersionUID = -2217602199409376065L;
 
 }

@@ -1,11 +1,9 @@
 package negotiation.negotiationframework.protocoles.collaborative;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -32,7 +30,7 @@ extends AbstractCommunicationProtocol<Contract>{
 	public OneDeciderCommunicationProtocol(
 			final boolean iMDecider)
 					throws UnrespectedCompetenceSyntaxException {
-		super((iMDecider?new ResourceInformedCandidatureContractTrunk():new ContractTrunk()));
+		super(iMDecider?new ResourceInformedCandidatureContractTrunk():new ContractTrunk());
 		this.ImDecider = iMDecider;
 	}
 

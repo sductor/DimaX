@@ -11,42 +11,42 @@ import negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNode
  */
 public class VirtualNetworkSpecification extends HorizonSpecification {
 
-    /**
-     * Serial version identifier.
-     */
-    private static final long serialVersionUID = -8399535995860205895L;
+	/**
+	 * Serial version identifier.
+	 */
+	private static final long serialVersionUID = -8399535995860205895L;
 
-    /**
-     * Virtual node of the agent that will be allocated.
-     */
-    private final VirtualNodeIdentifier node;
+	/**
+	 * Virtual node of the agent that will be allocated.
+	 */
+	private final VirtualNodeIdentifier node;
 
-    /**
-     * Constructs a new VirtualNetworkSpecification to allocate the specified
-     * node.
-     * 
-     * @param specif
-     *            The node to allocate.
-     */
-    public VirtualNetworkSpecification(final VirtualNodeIdentifier specif) {
-	this.node = specif;
-    }
+	/**
+	 * Constructs a new VirtualNetworkSpecification to allocate the specified
+	 * node.
+	 * 
+	 * @param specif
+	 *            The node to allocate.
+	 */
+	public VirtualNetworkSpecification(final VirtualNodeIdentifier specif) {
+		this.node = specif;
+	}
 
-    /**
-     * Gives the VirtualNetwork specified by this object.
-     */
-    @Override
-    public VirtualNetworkIdentifier getMyAgentIdentifier() {
-	return this.node.getMyNetwork();
-    }
+	/**
+	 * Gives the VirtualNetwork specified by this object.
+	 */
+	@Override
+	public VirtualNetworkIdentifier getMyAgentIdentifier() {
+		return this.node.getMyNetwork();
+	}
 
-    /**
-     * Gives the node to be allocated.
-     * 
-     * @return The specified node of the agent specified by this object.
-     */
-    public VirtualNodeIdentifier getNode() {
-	return this.node;
-    }
+	/**
+	 * Gives the node to be allocated.
+	 * 
+	 * @return The specified node of the agent specified by this object.
+	 */
+	public VirtualNodeIdentifier getNode() {
+		return this.node;
+	}
 
 }

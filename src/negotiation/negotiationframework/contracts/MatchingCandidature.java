@@ -1,13 +1,6 @@
 package negotiation.negotiationframework.contracts;
 
 import java.util.Collection;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
-import negotiation.negotiationframework.rationality.AgentState;
 
 import dima.basicagentcomponents.AgentIdentifier;
 
@@ -110,16 +103,16 @@ extends ContractTransition {
 		} catch (final IncompleteContractException e) {
 			hostinitState = "unavailable";
 		}
-//		try {
-//			agentResult = this.computeResultingState(getAgent()).toString();
-//		} catch (final IncompleteContractException e) {
-//			agentResult = "unavailable";
-//		}
-//		try {
-//			hostResult = this.computeResultingState(getResource()).toString();
-//		} catch (final IncompleteContractException e) {
-//			hostResult = "unavailable";
-//		}
+		//		try {
+		//			agentResult = this.computeResultingState(getAgent()).toString();
+		//		} catch (final IncompleteContractException e) {
+		//			agentResult = "unavailable";
+		//		}
+		//		try {
+		//			hostResult = this.computeResultingState(getResource()).toString();
+		//		} catch (final IncompleteContractException e) {
+		//			hostResult = "unavailable";
+		//		}
 		//		try {
 		//			isviable= isViable()+"";
 		//		} catch (IncompleteContractException e) {

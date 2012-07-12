@@ -4,24 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
-import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
-import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.ResumeActivity;
-import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public abstract class ObservingSelfService
 extends BasicAgentCompetence<BasicCompetentAgent>{
-	
+
 	private static final long serialVersionUID = 496384107474313690L;
 
 
@@ -53,54 +48,58 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
 	boolean endSimulation(){
-		assert !simulationEnded;
+		assert !this.simulationEnded;
 		this.logMonologue("this is the end my friend",ObservingSelfService.observationLog);
-		simulationEnded=true;
-		
+		this.simulationEnded=true;
+
 		//send notifs
-		this.l.getResults().getLast().setLastInfo();
+		if (!this.l.results.isEmpty()) {
+			this.l.getResults().getLast().setLastInfo();
+		}
 		this.notify(this.l);
 		this.getMyAgent().sendNotificationNow();
 
 		//end activity
-		getMyAgent().setActive(false);
+		this.getMyAgent().setActive(false);
 		return true;
 	}
 
 	@MessageHandler
 	public void simulationEndORder(final SimulationEndedMessage s){
-		logMonologue("recieving end simulation order",ObservingSelfService.observationLog);
-		assert simulationEnded;
-		getMyAgent().setAlive(false);
+		this.logMonologue("recieving end simulation order",ObservingSelfService.observationLog);
+		//		assert simulationEnded;
+		this.getMyAgent().setActive(false);
+		this.getMyAgent().setAlive(false);
 	}
-	
+
 	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime+75000)
 	public void killForced(){
-		logWarning("kill forced");
-		assert simulationEnded;
-		getMyAgent().setAlive(false);
-		
+		this.logWarning("kill forced");
+		//		assert simulationEnded;
+		this.getMyAgent().setActive(false);
+		this.getMyAgent().setAlive(false);
+
 	}
-	
+
 	@ResumeActivity
 	//allow to continue to receive messages
 	public void tryToResumeActivity(){
-//		if (getMyAgent().hasAppliStarted()) logMonologue("resuming", ObservingSelfService.observationLog);
+		//		if (getMyAgent().hasAppliStarted()) logMonologue("resuming", ObservingSelfService.observationLog);
 		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
-		while (getMyAgent().getMailBox().hasMail()){
-			final AbstractMessage m = getMyAgent().getMailBox().readMail();
+		while (this.getMyAgent().getMailBox().hasMail()){
+			final AbstractMessage m = this.getMyAgent().getMailBox().readMail();
 			if (m instanceof SimulationEndedMessage) {
-//				logMonologue("recieving end simulation order in resuming",ObservingSelfService.observationLog);
-				simulationEndORder((SimulationEndedMessage)m);
+				//				logMonologue("recieving end simulation order in resuming",ObservingSelfService.observationLog);
+				this.simulationEndORder((SimulationEndedMessage)m);
 			} else {
-//				logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
+				//				logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
 				messages.add(m);
 			}
 		}
 		for (final AbstractMessage m : messages) {
-			getMyAgent().getMailBox().writeMail(m);
+			this.getMyAgent().getMailBox().writeMail(m);
 		}
-		getMyAgent().wwait(1000);
+		this.getMyAgent().wwait(1000);
 	}
 
 	//

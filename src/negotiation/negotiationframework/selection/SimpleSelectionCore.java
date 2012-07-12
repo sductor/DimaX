@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -50,9 +49,9 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 	@Override
 	public void setMyAgent(final Agent ag)  {
 		super.setMyAgent(ag);
-		selectionModule.setMyAgent(ag);
+		this.selectionModule.setMyAgent(ag);
 	}
-	
+
 
 	//
 	// Abstract
@@ -64,7 +63,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 			final Collection<Contract> contractsToExplore){
 		return this.selectionModule.greedySelection(currentState, contractsToExplore);
 	}
-	
+
 	//
 	//
 	//
@@ -79,7 +78,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		final Collection<Contract> participantContractToExplore = given.getParticipantOnWaitContracts();
 		final Collection<Contract> initiatorOnWaitContract = given.getInitiatorOnWaitContracts();
 		final Collection<Contract> participantAlreadyAccepted = given.getParticipantAlreadyAcceptedContracts();
-		final Collection<Contract> rejected = given.getFailedContracts();//			
+		final Collection<Contract> rejected = given.getFailedContracts();//
 
 		// Verification de la consistance
 		assert this.getMyAgent().getMyCurrentState().isValid():
@@ -123,15 +122,15 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		}
 
 		toReject.removeAll(toAccept);
-//		assert validityVerification(given, toAccept, toReject);
+		//		assert validityVerification(given, toAccept, toReject);
 	}
-	
+
 
 	//
 	// Primitive
 	//
 
-	
+
 	private boolean validityVerification(
 			final ContractTrunk<Contract> given,
 			final Collection<Contract> accepted,
@@ -147,7 +146,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		final Collection<Contract> allContracts = new ArrayList<Contract>();
 		allContracts.addAll(given.getInitiatorRequestableContracts());
 		allContracts.addAll(given.getParticipantOnWaitContracts());
-//		allContracts.addAll(given.getInitiatorOnWaitContracts());
+		//		allContracts.addAll(given.getInitiatorOnWaitContracts());
 		if (!test.containsAll(allContracts)) {
 			throw new RuntimeException(
 					"mauvaise implementation du selection core (1)");
@@ -171,36 +170,36 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		return true;
 	}
 }
-		//
-		//		this.setAnswer(currentState,toAccept, toReject);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+//
+//		this.setAnswer(currentState,toAccept, toReject);
 
-		//		for (Contract c : given.getAllContracts()){
-		//			if (c instanceof DestructionOrder){
-		////				logMonologue("destructing! "+c+"\n my state is "+getMyAgent().getMyCurrentState());
-		//				given.addAcceptation(getIdentifier(), c);
-		//			}
-		//		}
+
+
+
+
+
+
+
+
+
+
+
+//		for (Contract c : given.getAllContracts()){
+//			if (c instanceof DestructionOrder){
+////				logMonologue("destructing! "+c+"\n my state is "+getMyAgent().getMyCurrentState());
+//				given.addAcceptation(getIdentifier(), c);
+//			}
+//		}
 
 //		this.select(given.getInitiatorRequestableContracts(),
 //				given.getParticipantOnWaitContracts(),
 //				given.getInitiatorOnWaitContracts(),
 //				given.getParticipantAlreadyAcceptedContracts(),
 //				given.getFailedContracts());
-		// if (!(this.getMyAgent().getIdentifier() instanceof
-		// ResourceIdentifier) &&
-		// !given.getParticipantOnWaitContracts().isEmpty())
-		// this.logMonologue("AbstractSElectionCore : MyState"+this.getMyAgent().getMyCurrentState()+"\nGiven :"+given+"\n Returned : "+this.returned);
+// if (!(this.getMyAgent().getIdentifier() instanceof
+// ResourceIdentifier) &&
+// !given.getParticipantOnWaitContracts().isEmpty())
+// this.logMonologue("AbstractSElectionCore : MyState"+this.getMyAgent().getMyCurrentState()+"\nGiven :"+given+"\n Returned : "+this.returned);
 
 
 //	/**
@@ -219,43 +218,43 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 //
 //	}
 
-	// private boolean lastFull=false;
+// private boolean lastFull=false;
 
-	//	protected void setAnswer(final PersonalState currentState,
-	//			final Collection<Contract> accepted,
-	//			final Collection<Contract> rejected) {
-	//
-	//		//		assert	this.validityVerification(accepted, rejected);
-	//
-	//		// ACCEPTATION
-	//		for (final Contract c : accepted) {
-	//			this.returned.addContract(c);
-	//			this.returned.addAcceptation(this.getMyAgent().getIdentifier(), c);
-	//		}
-	//
-	//		// REFUS
-	//		for (final Contract c : rejected) {
-	//			this.returned.addContract(c);
-	//			this.returned.addRejection(this.getMyAgent().getIdentifier(), c);
-	//		}
-	//
-	////		this.logMonologue("Setting my answer "+this.returned, CommunicationProtocol.log_selectionStep);
-	////		this.notify(new IllAnswer<PersonalState, Contract>(this.returned, currentState));
-	////		this.logMonologue("After being delaed by relevant services "+this.returned, CommunicationProtocol.log_selectionStep);
-	//	}
+//	protected void setAnswer(final PersonalState currentState,
+//			final Collection<Contract> accepted,
+//			final Collection<Contract> rejected) {
+//
+//		//		assert	this.validityVerification(accepted, rejected);
+//
+//		// ACCEPTATION
+//		for (final Contract c : accepted) {
+//			this.returned.addContract(c);
+//			this.returned.addAcceptation(this.getMyAgent().getIdentifier(), c);
+//		}
+//
+//		// REFUS
+//		for (final Contract c : rejected) {
+//			this.returned.addContract(c);
+//			this.returned.addRejection(this.getMyAgent().getIdentifier(), c);
+//		}
+//
+////		this.logMonologue("Setting my answer "+this.returned, CommunicationProtocol.log_selectionStep);
+////		this.notify(new IllAnswer<PersonalState, Contract>(this.returned, currentState));
+////		this.logMonologue("After being delaed by relevant services "+this.returned, CommunicationProtocol.log_selectionStep);
+//	}
 
-	//	private void checkImFull(final Collection<Contract> rejected) {
-	//		final Collection<Contract> allContracts = new ArrayList<Contract>();
-	//		allContracts.addAll(this.given.getInitiatorConsensualContracts());
-	//		allContracts.addAll(this.given.getParticipantOnWaitContracts());
-	//
-	//		// envoie d'info
-	//		if (!this.given.getParticipantOnWaitContracts().isEmpty()
-	//				&& rejected.containsAll(allContracts)){
-	////			logMonologue("fulll!");
-	//			this.notify(new ImFull(rejected));
-	//		}
-	//	}
+//	private void checkImFull(final Collection<Contract> rejected) {
+//		final Collection<Contract> allContracts = new ArrayList<Contract>();
+//		allContracts.addAll(this.given.getInitiatorConsensualContracts());
+//		allContracts.addAll(this.given.getParticipantOnWaitContracts());
+//
+//		// envoie d'info
+//		if (!this.given.getParticipantOnWaitContracts().isEmpty()
+//				&& rejected.containsAll(allContracts)){
+////			logMonologue("fulll!");
+//			this.notify(new ImFull(rejected));
+//		}
+//	}
 
 
 

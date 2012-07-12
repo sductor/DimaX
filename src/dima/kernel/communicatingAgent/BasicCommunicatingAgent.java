@@ -358,7 +358,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @return boolean
 	 */
 	public boolean put(final AbstractMessage m) {
-//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) ||  m.getReceiver().equals(this.getIdentifier());
+		//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) ||  m.getReceiver().equals(this.getIdentifier());
 		return this.mailBox.writeMail(m);
 	}
 	/**
@@ -387,7 +387,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 */
 	@Override
 	public void receive(final Message m) {
-//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) || m.getReceiver().equals(this.getIdentifier()):"agent "+this.getIdentifier()+" has received "+m;
+		//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) || m.getReceiver().equals(this.getIdentifier()):"agent "+this.getIdentifier()+" has received "+m;
 		this.put(m);
 	}
 	/**

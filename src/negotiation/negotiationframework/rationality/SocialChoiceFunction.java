@@ -3,11 +3,9 @@ package negotiation.negotiationframework.rationality;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ReallocationContract;
@@ -100,9 +98,9 @@ public abstract class SocialChoiceFunction<Contract extends AbstractContractTran
 	}
 	protected abstract <State extends AgentState> Collection<State> cleanStates(
 			final Collection<State> res) ;
-//			{
-//		return res;
-//	}
+	//			{
+	//		return res;
+	//	}
 
 	//
 	// Social Welfare

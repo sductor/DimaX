@@ -5,8 +5,6 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import sun.security.action.GetLongAction;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -37,21 +35,21 @@ public abstract class ExperimentationParameters<Agent extends Laborantin>
 extends BasicAgentModule<Agent> implements Comparable{
 	private static final long serialVersionUID = -1735965270944987539L;
 
-	
-	
+
+
 	public static boolean currentlyInstanciating;
 	final File resultPath;
 	final File finalResultPath;
 
-//	public static final long _maxSimulationTime = 1000 * 10; //10 secondes
-//	public static final long _maxSimulationTime = 1000 * 30; //30 secondes
+	//	public static final long _maxSimulationTime = 1000 * 10; //10 secondes
+	//	public static final long _maxSimulationTime = 1000 * 30; //30 secondes
 	public static final long _maxSimulationTime = 60000 * 1; //1 minute
-//	public static final long _maxSimulationTime = 60000 * 5;//5 minutes
-//	public static final long _maxSimulationTime = 60000 * 10;//10 minutes
-//	public static final long _maxSimulationTime = 60000 * 15;//15 minutes
-//	public static final long _maxSimulationTime = 60000 * 20;//20 minutes
-//	public static final long _maxSimulationTime = 60000 * 45;//45 minutes
-//	public static final long _maxSimulationTime = 60000 * 60;//60 minutes
+	//	public static final long _maxSimulationTime = 60000 * 5;//5 minutes
+	//	public static final long _maxSimulationTime = 60000 * 10;//10 minutes
+	//	public static final long _maxSimulationTime = 60000 * 15;//15 minutes
+	//	public static final long _maxSimulationTime = 60000 * 20;//20 minutes
+	//	public static final long _maxSimulationTime = 60000 * 45;//45 minutes
+	//	public static final long _maxSimulationTime = 60000 * 60;//60 minutes
 	//
 	// Fields
 	//
@@ -64,7 +62,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 	public ExperimentationParameters(final AgentIdentifier experimentatorId, final String protocolId) {
 		super();
 		this.experimentatorId = experimentatorId;
-		this.resultPath = new File(LogService.getMyPath()+"result_"+protocolId+"/"+getSimulationName());
+		this.resultPath = new File(LogService.getMyPath()+"result_"+protocolId+"/"+this.getSimulationName());
 		this.finalResultPath = new File(LogService.getMyPath()+"result_"+protocolId+"/FINAL");
 	}
 

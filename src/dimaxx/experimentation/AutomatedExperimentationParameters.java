@@ -29,8 +29,8 @@ extends ExperimentationParameters<Agent> {
 	}
 
 	public abstract class Parameter<Type> {
-		private Type value;
-		private DispersionSymbolicValue dispersion;
+		private final Type value;
+		private final DispersionSymbolicValue dispersion;
 
 		public Parameter(final Type value,
 				final DispersionSymbolicValue dispersion) {

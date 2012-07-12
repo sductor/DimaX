@@ -1,15 +1,11 @@
 package negotiation.faulttolerance.collaborativecandidature;
 
-import java.io.Serializable;
-import java.util.Collection;
-
 import negotiation.faulttolerance.experimentation.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
-import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
+import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedProposerCore;
@@ -18,7 +14,6 @@ import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 
@@ -30,9 +25,9 @@ public class CollaborativeHost extends Host{
 			final ResourceIdentifier myId,
 			final HostState myState,
 			final SocialChoiceType socialWelfare,
-			int maxCAccepts,
-			GreedySelectionType initialSelectionType,
-			long maxComputingTime)
+			final int maxCAccepts,
+			final GreedySelectionType initialSelectionType,
+			final long maxComputingTime)
 					throws CompetenceException {
 		super(
 				myId,
@@ -45,9 +40,9 @@ public class CollaborativeHost extends Host{
 						return new InformedCandidature(new ReplicationCandidature(myId,id,false,false));
 					}
 					@Override
-					protected void setSpecif(AgentState s,
-							InformedCandidature d) {
-//						return new NoActionSpec();
+					protected void setSpecif(final AgentState s,
+							final InformedCandidature d) {
+						//						return new NoActionSpec();
 					}
 				},//new GreedyBasicSelectionCore(true, false),//
 				new ResourceInformedProposerCore(),

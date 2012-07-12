@@ -1,13 +1,11 @@
 package negotiation.faulttolerance.negotiatingagent;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import negotiation.faulttolerance.faulsimulation.HostDisponibilityComputer;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
@@ -16,12 +14,10 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dimaxx.experimentation.ExperimentationParameters;
-import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 import dimaxx.tools.distribution.PoissonLaw;
-import dimaxx.tools.distribution.WeibullLaw;
 
 public class ReplicaState  extends SimpleAgentState  {
 
@@ -57,12 +53,12 @@ public class ReplicaState  extends SimpleAgentState  {
 			final Double myProcCharge,
 			final Double myMemCharge,
 			final SocialChoiceType socialWelfare,
-			int stateCounter) {
+			final int stateCounter) {
 		this(myAgent,
-				myCriticity, 
-				new HashSet<ResourceIdentifier>(), 
-				myProcCharge, 
-				myMemCharge, 
+				myCriticity,
+				new HashSet<ResourceIdentifier>(),
+				myProcCharge,
+				myMemCharge,
 				1.,
 				socialWelfare,
 				stateCounter);
@@ -75,10 +71,10 @@ public class ReplicaState  extends SimpleAgentState  {
 			final Double myMemCharge,
 			final SocialChoiceType socialWelfare) {
 		this(myAgent,
-				myCriticity, 
-				new HashSet<ResourceIdentifier>(), 
-				myProcCharge, 
-				myMemCharge, 
+				myCriticity,
+				new HashSet<ResourceIdentifier>(),
+				myProcCharge,
+				myMemCharge,
 				1.,
 				socialWelfare,
 				-1);
@@ -99,17 +95,17 @@ public class ReplicaState  extends SimpleAgentState  {
 	}
 
 	// Clone with modification of replicas
-	public ReplicaState allocate (final HostState newRep) {		
-		HashSet<ResourceIdentifier> rep = new HashSet<ResourceIdentifier>(this.myReplicas);
+	public ReplicaState allocate (final HostState newRep) {
+		final HashSet<ResourceIdentifier> rep = new HashSet<ResourceIdentifier>(this.myReplicas);
 		double newFailureProb = this.myFailureProb;
 		if (rep.contains(newRep.getMyAgentIdentifier())) {
 			rep.remove(newRep.getMyAgentIdentifier());
-			newFailureProb/=1-getDisponibility(newRep.getLambda());
+			newFailureProb/=1-this.getDisponibility(newRep.getLambda());
 		} else {
 			rep.add(newRep.getMyAgentIdentifier());
-			newFailureProb*=1-getDisponibility(newRep.getLambda());
+			newFailureProb*=1-this.getDisponibility(newRep.getLambda());
 		}
-		
+
 		return new ReplicaState(this.getMyAgentIdentifier(),
 				this.myCriticity,
 				rep,
@@ -146,8 +142,8 @@ public class ReplicaState  extends SimpleAgentState  {
 
 	public Double getMyReliability(){
 		return ReplicationSocialOptimisation.getReliability(
-				getMyDisponibility(),
-				getMyCriticity(),
+				this.getMyDisponibility(),
+				this.getMyCriticity(),
 				this.socialWelfare);
 	}
 
@@ -198,15 +194,15 @@ public class ReplicaState  extends SimpleAgentState  {
 	 *
 	 */
 
-//	@Override
-//	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-//		if (isLost) {
-//			return this.myReplicas.remove(h);
-//		} else {
-//			throw new RuntimeException("impossible!!");
-//		}
-//	}
-//	
+	//	@Override
+	//	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
+	//		if (isLost) {
+	//			return this.myReplicas.remove(h);
+	//		} else {
+	//			throw new RuntimeException("impossible!!");
+	//		}
+	//	}
+	//
 	/*
 	 * Double
 	 */
@@ -222,7 +218,7 @@ public class ReplicaState  extends SimpleAgentState  {
 			throw new RuntimeException("impossible");
 		}
 	}
-	
+
 	/*
 	 * Opinion
 	 */
@@ -316,10 +312,11 @@ public class ReplicaState  extends SimpleAgentState  {
 	// Primitives
 	//
 
+	@Override
 	public ReplicaState clone(){
 		return this;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.getMyAgentIdentifier().hashCode();
@@ -344,7 +341,7 @@ public class ReplicaState  extends SimpleAgentState  {
 				+ "\n * charge "+ this.getMyProcCharge() + " " + this.getMyMemCharge()
 				+ "\n * relia " + this.getMyReliability()
 				+ "\n * replicas "+(this.myReplicas==null?"empty":this.getMyResourceIdentifiers())
-				+ "\n * creation time "+ this.getCreationTime()+"#"+getStateCounter()
+				+ "\n * creation time "+ this.getCreationTime()+"#"+this.getStateCounter()
 				+"\n valid ? : "+this.isValid();
 		// +"\n status "+this.getMyStateStatus();
 	}

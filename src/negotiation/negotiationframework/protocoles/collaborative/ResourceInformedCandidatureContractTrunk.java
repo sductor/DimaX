@@ -2,29 +2,20 @@ package negotiation.negotiationframework.protocoles.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.UnknownContractException;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
-import dimaxx.tools.mappedcollections.HashedHashSet;
 import dimaxx.tools.mappedcollections.HashedTreeSet;
 
 public class ResourceInformedCandidatureContractTrunk<
@@ -47,9 +38,9 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 	 *
 	 */
 
-	public void setMyAgent(final SimpleNegotiatingAgent<?, InformedCandidature<Contract>> agent){		
+	public void setMyAgent(final SimpleNegotiatingAgent<?, InformedCandidature<Contract>> agent){
 		super.setMyAgent(agent);
-		upgradingContracts=
+		this.upgradingContracts=
 				new HashedTreeSet<InformedCandidature<Contract>, ReallocationContract<Contract>>(
 						((InformedCandidatureRationality<?, Contract>) this.getMyAgent().
 								getMyCore()).getReferenceAllocationComparator());
@@ -62,26 +53,26 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 
 	@Override
 	public Collection<InformedCandidature<Contract>> getLockedContracts(){
-		Collection<InformedCandidature<Contract>>  lock = new ArrayList<InformedCandidature<Contract>>(upgradingContracts.keySet());
-		lock.addAll(toCancel);
+		final Collection<InformedCandidature<Contract>>  lock = new ArrayList<InformedCandidature<Contract>>(this.upgradingContracts.keySet());
+		lock.addAll(this.toCancel);
 		return lock;
 	}
 
 	public Collection<InformedCandidature<Contract>> getContractToCancel() {
-		return toCancel;
+		return this.toCancel;
 	}
 
 	public void addReallocContract(final ReallocationContract<Contract> realloc){
-//		if (getMyAgent().Iaccept(realloc)){
-			assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
-			for (final Contract c : realloc) {
-				try {
-					this.upgradingContracts.add(this.getContract(c.getIdentifier()),realloc);
-				} catch (final UnknownContractException e) {
-					throw new RuntimeException(e);
-				}
+		//		if (getMyAgent().Iaccept(realloc)){
+		assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
+		for (final Contract c : realloc) {
+			try {
+				this.upgradingContracts.add(this.getContract(c.getIdentifier()),realloc);
+			} catch (final UnknownContractException e) {
+				throw new RuntimeException(e);
 			}
-//		}
+		}
+		//		}
 	}
 
 	/*
@@ -100,17 +91,17 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 
 	public ReallocationContract<Contract> getBestRequestableReallocationContract() {
 		ReallocationContract<Contract> finalValue = null;
-		Comparator<ReallocationContract<Contract>> myComp = 
+		final Comparator<ReallocationContract<Contract>> myComp =
 				((InformedCandidatureRationality<?, Contract>) this.getMyAgent().
 						getMyCore()).getReferenceAllocationComparator();
 		for (final InformedCandidature<Contract> key : this.upgradingContracts.keySet()){
-			Iterator<ReallocationContract<Contract>> itValue = this.upgradingContracts.get(key).descendingIterator();
+			final Iterator<ReallocationContract<Contract>> itValue = this.upgradingContracts.get(key).descendingIterator();
 			while (itValue.hasNext()){
-				ReallocationContract<Contract> sol = itValue.next();
+				final ReallocationContract<Contract> sol = itValue.next();
 				if (this.isRequestable(sol)){
-					if (finalValue==null)
+					if (finalValue==null) {
 						finalValue=sol;
-					else {
+					} else {
 						finalValue = myComp.compare(sol,finalValue)>0?sol:finalValue;
 					}
 					break;
@@ -129,51 +120,55 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 	 * @return the set of modified contracts
 	 */
 	@Override
-	public Collection<ContractIdentifier> updateContracts(AgentState newState){
-		Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
+	public Collection<ContractIdentifier> updateContracts(final AgentState newState){
+		final Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
 		if (newState!=null) {
 			try {
-				AgentIdentifier id = newState.getMyAgentIdentifier();
+				final AgentIdentifier id = newState.getMyAgentIdentifier();
 				AgentState assertedState = null;
 
 				//On récupere sans les modifier les contrats qui sont modifier par le newState
 				for (final InformedCandidature<Contract> c : this.getAllContracts()) {
 					if (c.getAllInvolved().contains(id)) {
-						AgentState actualState = c.getInitialState(id);
-						
+						final AgentState actualState = c.getInitialState(id);
+
 						//debut assertion vérification que tous les contrats sont cohérents
-						if (assertedState==null) assertedState = actualState;			
-						else assert assertedState.equals(actualState);
-						//fin assertion
+						if (assertedState==null) {
+							assertedState = actualState;
+						}
+						else {
+							assert assertedState.equals(actualState);
+							//fin assertion
+						}
 
 						if (!actualState.equals(newState)){
 							modifiedContracts.add(c.getIdentifier());
 						}
 					}
-				} 
-
-				//On récupère le set de réallocation 
-				HashSet<ReallocationContract<Contract>> reallocModified = new HashSet<ReallocationContract<Contract>>();
-				for (ContractIdentifier cId : modifiedContracts){
-					reallocModified.addAll(upgradingContracts.get(getContract(cId)));
 				}
-				for (ReallocationContract<Contract> r : reallocModified){
-					upgradingContracts.removeAvalue(r);
+
+				//On récupère le set de réallocation
+				final HashSet<ReallocationContract<Contract>> reallocModified = new HashSet<ReallocationContract<Contract>>();
+				for (final ContractIdentifier cId : modifiedContracts){
+					reallocModified.addAll(this.upgradingContracts.get(this.getContract(cId)));
+				}
+				for (final ReallocationContract<Contract> r : reallocModified){
+					this.upgradingContracts.removeAvalue(r);
 				}
 
 				//on met à jour les contrats
 				for (final ContractIdentifier c : modifiedContracts){
-					getContract(c).setInitialState(newState);
+					this.getContract(c).setInitialState(newState);
 				}
 
 				//On retri les réallocation modifié
-				for (ReallocationContract<Contract> r : reallocModified){
-					addReallocContract(r);
-				}			
+				for (final ReallocationContract<Contract> r : reallocModified){
+					this.addReallocContract(r);
+				}
 
-			} catch (IncompleteContractException e) {
+			} catch (final IncompleteContractException e) {
 				throw new RuntimeException("impossible");
-			} catch (UnknownContractException e) {
+			} catch (final UnknownContractException e) {
 				throw new RuntimeException("impossible");
 			}
 		}
@@ -220,30 +215,30 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 
 	@Override
 	public void remove(final  InformedCandidature<Contract> c) {
-		assert verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+upgradingContracts.containsKey(c));
+		assert this.verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+this.upgradingContracts.containsKey(c));
 
 		super.remove(c);
-		toCancel.remove(c);
+		this.toCancel.remove(c);
 		final Collection<ReallocationContract<Contract>> realloctoRemove = this.upgradingContracts.remove(c);
 
 		//removing the other occurence of c reallocation contracts
-		Collection<InformedCandidature<Contract>> concernedKeys = new HashSet<InformedCandidature<Contract>>();
-		for (ReallocationContract<Contract> realloc : realloctoRemove){
+		final Collection<InformedCandidature<Contract>> concernedKeys = new HashSet<InformedCandidature<Contract>>();
+		for (final ReallocationContract<Contract> realloc : realloctoRemove){
 			concernedKeys.addAll(this.upgradingContracts.removeAvalue(realloc));
-		}		
-		assert !upgradingContracts.containsKey(c);
+		}
+		assert !this.upgradingContracts.containsKey(c);
 
-		assert verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+upgradingContracts.containsKey(c));
+		assert this.verifyIntegrity("\n\\\\ bb "+c+"\\\\ \n"+this.upgradingContracts.containsKey(c));
 
 		//adding lost keys to cancel
 		concernedKeys.remove(c);
-		for (InformedCandidature<Contract> k : concernedKeys){
-			if (k.getInitiator().equals(getMyAgentIdentifier()) && !upgradingContracts.containsKey(k)){
+		for (final InformedCandidature<Contract> k : concernedKeys){
+			if (k.getInitiator().equals(this.getMyAgentIdentifier()) && !this.upgradingContracts.containsKey(k)){
 				assert !k.isMatchingCreation();
-				toCancel.add(k);
+				this.toCancel.add(k);
 			}
-		}			
-		assert !toCancel.contains(c);
+		}
+		assert !this.toCancel.contains(c);
 	}
 
 	@Override
@@ -257,18 +252,19 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 
 
 
-	private boolean verifyIntegrity(String contextError){	
-		Collection<ReallocationContract<Contract>> Allrealloc = this.upgradingContracts.getAllValuesUnsorted();
+	private boolean verifyIntegrity(final String contextError){
+		final Collection<ReallocationContract<Contract>> Allrealloc = this.upgradingContracts.getAllValuesUnsorted();
 		//all individual contract of realloc exist as key in the base
-		for (ReallocationContract<Contract> r : Allrealloc){
-			for (Contract c : r)
-				assert upgradingContracts.containsKey(c):toCancel.contains(c)+"\n\\\\ aa "+c+"\\\\ \n"+contextError;
+		for (final ReallocationContract<Contract> r : Allrealloc){
+			for (final Contract c : r) {
+				assert this.upgradingContracts.containsKey(c):this.toCancel.contains(c)+"\n\\\\ aa "+c+"\\\\ \n"+contextError;
+			}
 		}
 		//all realloc contract are mapped to their individual contracts
-		for (InformedCandidature<Contract> c : upgradingContracts.keySet()){
-			Collection<ReallocationContract<Contract>> notReallocOfC = new ArrayList<ReallocationContract<Contract>>(Allrealloc);
-			notReallocOfC.removeAll(upgradingContracts.get(c));
-			for (ReallocationContract<Contract> r : notReallocOfC){
+		for (final InformedCandidature<Contract> c : this.upgradingContracts.keySet()){
+			final Collection<ReallocationContract<Contract>> notReallocOfC = new ArrayList<ReallocationContract<Contract>>(Allrealloc);
+			notReallocOfC.removeAll(this.upgradingContracts.get(c));
+			for (final ReallocationContract<Contract> r : notReallocOfC){
 				assert !notReallocOfC.contains(c):c+" "+r+" \n"+contextError;
 			}
 

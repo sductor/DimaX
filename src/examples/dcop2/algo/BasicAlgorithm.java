@@ -3,6 +3,7 @@ package examples.dcopAmeliorer.algo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import examples.dcopAmeliorer.algo.Stats;
 import examples.dcopAmeliorer.daj.Program;
 import examples.dcopAmeliorer.dcop.Constraint;
 import examples.dcopAmeliorer.dcop.Graph;

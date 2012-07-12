@@ -15,8 +15,8 @@ AbstractCompensativeAggregation<Double>, AbstractMinMaxAggregation<Double> {
 		this.sum += value;
 		this.cardinal++;
 		this.prod *=value;
-		this.min = Math.min(min,value);
-		this.max = Math.max(max,value);
+		this.min = Math.min(this.min,value);
+		this.max = Math.max(this.max,value);
 		return true;
 	}
 
@@ -24,10 +24,12 @@ AbstractCompensativeAggregation<Double>, AbstractMinMaxAggregation<Double> {
 		this.sum -= value;
 		this.cardinal--;
 		this.prod /=value;
-		if (min.equals(value))
-			min.equals(Double.NaN);
-		if (max.equals(value))
-			max.equals(Double.NaN);
+		if (this.min.equals(value)) {
+			this.min.equals(Double.NaN);
+		}
+		if (this.max.equals(value)) {
+			this.max.equals(Double.NaN);
+		}
 		return true;
 	}
 
@@ -59,9 +61,10 @@ AbstractCompensativeAggregation<Double>, AbstractMinMaxAggregation<Double> {
 
 	@Override
 	public double getWeightOfAggregatedElements() {
-		return (double) getNumberOfAggregatedElements();
+		return this.getNumberOfAggregatedElements();
 	}
-	
+
+	@Override
 	public Double getProd() {
 		if (this.cardinal == 0) {
 			return Double.NaN;
@@ -69,20 +72,22 @@ AbstractCompensativeAggregation<Double>, AbstractMinMaxAggregation<Double> {
 			return this.prod;
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return the min of the values, +infty if no value, or NaN if a remove call as removed the actual min
 	 */
+	@Override
 	public Double getMinElement(){
-		return min;
+		return this.min;
 	}
 	/**
 	 * 
 	 * @return the max of the values, +infty if no value, or NaN if a remove call as removed the actual max
 	 */
+	@Override
 	public Double getMaxElement(){
-		return max;
+		return this.max;
 	}
 	/*
 	 *

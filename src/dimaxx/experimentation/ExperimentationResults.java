@@ -12,7 +12,7 @@ public interface ExperimentationResults extends DimaComponentInterface{
 
 	public abstract boolean isLastInfo();
 
-//	public abstract boolean isHost();
+	//	public abstract boolean isHost();
 
 	public abstract void setLastInfo();
 }

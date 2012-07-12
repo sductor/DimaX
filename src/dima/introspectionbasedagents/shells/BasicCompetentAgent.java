@@ -1,18 +1,14 @@
 package dima.introspectionbasedagents.shells;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -24,7 +20,6 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
 import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.shells.APIAgent.EndLiveMessage;
-import dima.introspectionbasedagents.shells.APIAgent.SigKillOrder;
 import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
 import dimaxx.kernel.DimaXTask;
 import dimaxx.server.HostIdentifier;
@@ -115,10 +110,10 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	@Override
 	public boolean isActive() {
-		return apiService.hasAppliStarted()&&isActive;
+		return this.apiService.hasAppliStarted()&&this.isActive;
 	}
 
-	public void setActive(boolean isActive) {
+	public void setActive(final boolean isActive) {
 		this.isActive = isActive;
 	}
 
@@ -254,27 +249,27 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	final ApiLaunchService apiService;
 
 	public boolean hasAppliStarted() {
-		return apiService.hasAppliStarted();
+		return this.apiService.hasAppliStarted();
 	}
 
-	boolean launchWith(APILauncherModule api) {
-		return apiService.launchWith(api);
+	boolean launchWith(final APILauncherModule api) {
+		return this.apiService.launchWith(api);
 	}
 
-	boolean launchWith(APILauncherModule api, HostIdentifier h) {
-		return apiService.launchWith(api, h);
+	boolean launchWith(final APILauncherModule api, final HostIdentifier h) {
+		return this.apiService.launchWith(api, h);
 	}
 
-	boolean start(StartActivityMessage m) {
-		return apiService.start(m);
+	boolean start(final StartActivityMessage m) {
+		return this.apiService.start(m);
 	}
 
-	boolean endLive(EndLiveMessage m) {
-		return apiService.endLive(m);
+	boolean endLive(final EndLiveMessage m) {
+		return this.apiService.endLive(m);
 	}
 
 	boolean endLive() {
-		return apiService.endLive();
+		return this.apiService.endLive();
 	}
 	/*
 	 * Pattern Observer
@@ -412,7 +407,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public Boolean logMonologue(final String text) {
 		return this.log.logMonologue(text);
 	}
-	
+
 	//	 @Override
 	//	 public Boolean logMonologue(final String text) {
 	//		 return this.log.logMonologue(text);
@@ -453,7 +448,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	@Override
-	public void addLogKey(String key, String logType) {
+	public void addLogKey(final String key, final String logType) {
 		this.log.addLogKey(key, logType);
 	}
 	@Override

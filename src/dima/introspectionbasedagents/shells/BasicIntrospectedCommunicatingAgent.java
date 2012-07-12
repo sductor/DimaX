@@ -114,7 +114,7 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 		this.myShell.resumeActivity(this.creation);
 		Thread.yield();
 	}
-	
+
 	@Override
 	public final  void proactivityTerminate() {
 		this.myShell.proactivityTerminate(this.creation);

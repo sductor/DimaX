@@ -54,7 +54,9 @@ extends ChocoAllocationSolver
 	public void initiate(final Collection<ReplicationCandidature> concerned){
 		try {
 			final Model m = new CPModel();
-			if (s!=null) s.clear();
+			if (this.s!=null) {
+				this.s.clear();
+			}
 			this.s = new CPSolver();
 
 			this.concerned=concerned.toArray(new ReplicationCandidature[concerned.size()]);
@@ -79,7 +81,7 @@ extends ChocoAllocationSolver
 	private void instanciateConstant(final int nbVariable) throws IncompleteContractException{
 
 		assert nbVariable>0;
-		
+
 		this.hostProccapacity =ReplicationOptimalSolver.asInt(this.concerned[0].getResourceInitialState().getProcChargeMax(),false);
 		this.hostMemCapacity = ReplicationOptimalSolver.asInt(this.concerned[0].getResourceInitialState().getMemChargeMax(),false);
 		this.replicasProc = new int[nbVariable];
@@ -115,10 +117,10 @@ extends ChocoAllocationSolver
 			IntegerConstantVariable minUt, maxUt;
 			minUt = new IntegerConstantVariable(ReplicationOptimalSolver.asIntNashed(Math.min(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
-					this.concerned[i].getAgentResultingState().getMyReliability()),socialWelfare));
+					this.concerned[i].getAgentResultingState().getMyReliability()),this.socialWelfare));
 			maxUt = new IntegerConstantVariable(ReplicationOptimalSolver.asIntNashed(Math.max(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
-					this.concerned[i].getAgentResultingState().getMyReliability()),socialWelfare));
+					this.concerned[i].getAgentResultingState().getMyReliability()),this.socialWelfare));
 			if (ReplicationExperimentationParameters.multiDim){
 				this.replicasValue[i] = Choco.makeIntVar(
 						this.concerned[i].getAgent().toString()+"__value", minUt.getValue(), maxUt.getValue(),
@@ -126,7 +128,7 @@ extends ChocoAllocationSolver
 				m.addConstraint(Choco.eq(
 						this.replicasValue[i],
 						Choco.ifThenElse(
-								Choco.eq(this.replicas[i],0), 
+								Choco.eq(this.replicas[i],0),
 								minUt, maxUt)));
 			} else {
 				this.replicasGain[i] = maxUt.getValue() - minUt.getValue();
@@ -144,8 +146,8 @@ extends ChocoAllocationSolver
 		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 			m.addConstraint(Choco.eq(this.socialWelfareValue, Choco.min(this.replicasValue)));
 		} else {
-			assert (this.socialWelfare.equals(SocialChoiceType.Nash)
-					|| this.socialWelfare.equals(SocialChoiceType.Utility));
+			assert this.socialWelfare.equals(SocialChoiceType.Nash)
+			|| this.socialWelfare.equals(SocialChoiceType.Utility);
 			m.addConstraint(Choco.eq (Choco.sum(this.replicasValue), this.socialWelfareValue));
 		}
 
@@ -159,12 +161,12 @@ extends ChocoAllocationSolver
 		} else {
 			int current = 0;
 			for (final ReplicationCandidature c : this.concerned){
-				current+=ReplicationOptimalSolver.asIntNashed(c.getAgentInitialState().getMyReliability(),socialWelfare);
+				current+=ReplicationOptimalSolver.asIntNashed(c.getAgentInitialState().getMyReliability(),this.socialWelfare);
 			}
 			try {
-			m.addConstraint(Choco.gt(this.socialWelfareValue, current));
-			} catch (ArrayIndexOutOfBoundsException e) {
-				signalException(this.socialWelfareValue+" "+current,e);
+				m.addConstraint(Choco.gt(this.socialWelfareValue, current));
+			} catch (final ArrayIndexOutOfBoundsException e) {
+				this.signalException(this.socialWelfareValue+" "+current,e);
 			}
 		}
 	}
@@ -308,14 +310,15 @@ extends ChocoAllocationSolver
 						+" "+solver.s.getVar(solver.replicas[i]).getVal()
 						+" value est "+solver.s.getVar(solver.replicasValue[i]).getVal());
 			}
-			Collection<ReplicationCandidature> sol = solver.getNextSolution();
+			final Collection<ReplicationCandidature> sol = solver.getNextSolution();
 			System.out.println(sol);
 			System.out.println(solver.s.getVar(solver.socialWelfareValue).getVal());
-			for (ReplicationCandidature c : sol){
+			for (final ReplicationCandidature c : sol){
 				me = c.getResourceResultingState();
 			}
-			if (!me.isValid())
+			if (!me.isValid()) {
 				System.err.println("aaaaaaahhhh\n"+me);
+			}
 			System.out.println("*****************************");
 		}
 		System.out.println("Nb_sol : " + solver.s.getNbSolutions());

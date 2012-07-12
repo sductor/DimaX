@@ -96,7 +96,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 
 		while (this.getMailBox().hasMail()){
 			final AbstractMessage mess = this.getNextMail();
-//			assert mess.getReceiver().equals(getIdentifier());
+			//			assert mess.getReceiver().equals(getIdentifier());
 			//			parseJavaMessage(mess);
 			try {
 				final Collection<MethodHandler> mts = this.getMyMethods().parseMail(mess);

@@ -7,11 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleObservationService extends
@@ -32,7 +29,6 @@ ObservationService {
 	protected HashMap<Class<? extends Information>, InformationDataBase<? extends Information>> infos =
 			new HashMap<Class<? extends Information>, InformationDataBase<? extends Information>>();
 
-	public static final String informationObservationKey="informationDiffusion";
 
 	//
 	// Accessors
@@ -69,25 +65,25 @@ ObservationService {
 
 	@Override
 	public <Info extends Information> boolean hasInformation(
-			Class<Info> informationType) {
+			final Class<Info> informationType) {
 		try {
-			getInformation(informationType);
+			this.getInformation(informationType);
 			return true;
-		} catch (NoInformationAvailableException e) {
+		} catch (final NoInformationAvailableException e) {
 			return false;
-		}		
+		}
 	}
 
 	@Override
 	public <Info extends Information> boolean hasInformation(
-			Class<Info> informationType, 
+			final Class<Info> informationType,
 			final AgentIdentifier agentId) {
 		try {
-			getInformation(informationType,agentId);
+			this.getInformation(informationType,agentId);
 			return true;
-		} catch (NoInformationAvailableException e) {
+		} catch (final NoInformationAvailableException e) {
 			return false;
-		}		
+		}
 	}
 	@SuppressWarnings("unchecked")
 	@Override
@@ -171,8 +167,8 @@ ObservationService {
 
 	@Override
 	public <Info extends Information> boolean hasMyInformation(
-			Class<Info> informationType) {
-		return hasInformation(informationType, this.getIdentifier());
+			final Class<Info> informationType) {
+		return this.hasInformation(informationType, this.getIdentifier());
 	}
 
 	@Override
@@ -194,14 +190,6 @@ ObservationService {
 		//		return s;
 	}
 
-
-	@MessageHandler
-	@NotificationEnvelope(SimpleObservationService.informationObservationKey)
-	public <Info extends Information> void receiveInformation(
-			final NotificationMessage<Information> o) {
-		this.add(o.getNotification());
-		
-	}
 
 	//
 	// Subclass
@@ -225,6 +213,14 @@ ObservationService {
 }
 
 
+//@MessageHandler
+//@NotificationEnvelope(SimpleObservationService.informationObservationKey)
+//public <Info extends Information> void receiveInformation(
+//		final NotificationMessage<Information> o) {
+//	this.add(o.getNotification());
+//
+//}
+//public static final String informationObservationKey="informationDiffusion";
 
 
 

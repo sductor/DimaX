@@ -1,38 +1,36 @@
 package negotiation.faulttolerance.experimentation;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
+import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dimaxx.experimentation.ExperimentLogger;
 import dimaxx.experimentation.ObservingGlobalService;
 
-import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
-
 public class FinalExperimentsLogger implements ExperimentLogger  {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7504393799165096196L;
 	HashMap<String, StatisticalExperimentsLog> allExp=new HashMap<String, StatisticalExperimentsLog>();
 
 	/* (non-Javadoc)
 	 * @see negotiation.faulttolerance.experimentation.ExperimentLogger#addResults(negotiation.faulttolerance.experimentation.ReplicationObservingGlobalService)
 	 */
 	@Override
-	public void addAndWriteResults(ObservingGlobalService og, File f){
+	public void addAndWriteResults(final ObservingGlobalService og, final File f){
 		assert og instanceof ReplicationObservingGlobalService;
-		ReplicationObservingGlobalService rog = (ReplicationObservingGlobalService) og;
-		IndivdualExperiementLog iel = new IndivdualExperiementLog(rog);
-		if (allExp.containsKey(iel.getId())){
-			allExp.get(iel.getId()).add(iel);
+		final ReplicationObservingGlobalService rog = (ReplicationObservingGlobalService) og;
+		final IndivdualExperiementLog iel = new IndivdualExperiementLog(rog);
+		if (this.allExp.containsKey(iel.getId())){
+			this.allExp.get(iel.getId()).add(iel);
 		} else {
-			allExp.put(iel.getId(), new StatisticalExperimentsLog(rog));
+			this.allExp.put(iel.getId(), new StatisticalExperimentsLog(rog));
 		}
-		LogService.logOnFile(f, allExp.get(iel.getId()).toString(), true, false);
+		LogService.logOnFile(f, this.allExp.get(iel.getId()).toString(), true, false);
 	}
 
 
@@ -40,36 +38,42 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 
 	class StatisticalExperimentsLog extends IndivdualExperiementLog{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1586964448679790929L;
 		int nbOfExperiements = 0;
 
-		public StatisticalExperimentsLog(ReplicationObservingGlobalService rog) {
+		public StatisticalExperimentsLog(final ReplicationObservingGlobalService rog) {
 			super(rog);
-			nbOfExperiements++;
+			this.nbOfExperiements++;
 		}
 
 
-		void add(IndivdualExperiementLog iel){
-			nbOfExperiements++;
+		void add(final IndivdualExperiementLog iel){
+			this.nbOfExperiements++;
 
 			assert this.getId().equals(iel.getId());
 			assert this.getNbAgent()==iel.getNbAgent();
 			assert this.getNbHost()==iel.getNbHost();
 
-			minState+=iel.getMinState();
-			aveState+=iel.getAveState();
-			maxState+=iel.getMaxState();
+			this.minState+=iel.getMinState();
+			this.aveState+=iel.getAveState();
+			this.maxState+=iel.getMaxState();
 
-			minStab+=iel.getMinStab();
-			aveStab+=iel.getAveStab();
-			maxStab+=iel.getMaxStab();
+			this.minStab+=iel.getMinStab();
+			this.aveStab+=iel.getAveStab();
+			this.maxStab+=iel.getMaxStab();
 
 			if (!this.socChoice.equals(iel.getSocChoice()))
+			{
 				this.socChoice=SocialChoiceType.Null;
-//			assert this.socChoice.equals(iel.getSocChoice());
+				//			assert this.socChoice.equals(iel.getSocChoice());
+			}
 
-			minValue+=iel.getMinValue();
-			nashValue+=iel.getNashValue();
-			utilValue+=iel.getUtilValue();
+			this.minValue+=iel.getMinValue();
+			this.nashValue+=iel.getNashValue();
+			this.utilValue+=iel.getUtilValue();
 
 			assert this.simultaneousCandidature==iel.getSimultaneousCandidature();
 			assert this.simultaneousAcceptation==iel.getSimultaneousAcceptation();
@@ -79,48 +83,48 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 
 		@Override
 		public double getMinState() {
-			return super.getMinState()/nbOfExperiements;
+			return super.getMinState()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getAveState() {
-			return super.getAveState()/nbOfExperiements;
+			return super.getAveState()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getMaxState() {
-			return super.getMaxState()/nbOfExperiements;
+			return super.getMaxState()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getMinStab() {
-			return super. getMinStab()/nbOfExperiements;
+			return super. getMinStab()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getAveStab() {
-			return super.getAveStab()/nbOfExperiements;
+			return super.getAveStab()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getMaxStab() {
-			return super.getMaxStab()/nbOfExperiements;
+			return super.getMaxStab()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getMinValue() {
-			return super.getMinValue()/nbOfExperiements;
+			return super.getMinValue()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getNashValue() {
-			return super.getNashValue()/nbOfExperiements;
+			return super.getNashValue()/this.nbOfExperiements;
 		}
 
 		@Override
 		public double getUtilValue() {
-			return super.getUtilValue()/nbOfExperiements;
-		}	
+			return super.getUtilValue()/this.nbOfExperiements;
+		}
 
 		//
 		//
@@ -131,16 +135,21 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 			return super.entete()+" ; nbOfExperiements";
 		}
 
+		@Override
 		public String toString(){
-			return super.toString()+" ; "+nbOfExperiements;
+			return super.toString()+" ; "+this.nbOfExperiements;
 		}
 
 
-	}	
+	}
 }
 
 class IndivdualExperiementLog implements DimaComponentInterface{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3714333911180563900L;
 	//entry parameters
 	protected int nbAgent;
 	protected int nbHost;
@@ -155,14 +164,14 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 
 	protected long time;
 
-	//result parameters	
+	//result parameters
 	protected double minState;
 	protected double aveState;
 	protected double maxState;
 
 	protected double minStab;
 	protected double aveStab;
-	protected double maxStab;	
+	protected double maxStab;
 
 	protected double minValue;
 	protected double nashValue;
@@ -170,7 +179,7 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 
 
 
-	public IndivdualExperiementLog(ReplicationObservingGlobalService rog){
+	public IndivdualExperiementLog(final ReplicationObservingGlobalService rog){
 		this(
 				rog.getSimulationParameters().nbAgents,
 				rog.getSimulationParameters().nbHosts,
@@ -191,12 +200,12 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 				rog.getSimulationParameters()._maxSimulationTime);
 	}
 
-	private IndivdualExperiementLog(int nbAgent, int nbHost, double hostCapacityMean,
-			double minState, double aveState, double maxState,
-			double minStab, double aveStab, double maxStab,
-			SocialChoiceType socChoice, double minValue, double nashValue,
-			double utilValue, int simultaneousCandidature,
-			int simultaneousAcceptation, long maxComputingTime, long time) {
+	private IndivdualExperiementLog(final int nbAgent, final int nbHost, final double hostCapacityMean,
+			final double minState, final double aveState, final double maxState,
+			final double minStab, final double aveStab, final double maxStab,
+			final SocialChoiceType socChoice, final double minValue, final double nashValue,
+			final double utilValue, final int simultaneousCandidature,
+			final int simultaneousAcceptation, final long maxComputingTime, final long time) {
 		super();
 		this.nbAgent = nbAgent;
 		this.nbHost = nbHost;
@@ -218,78 +227,78 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 	}
 
 	public int getNbAgent() {
-		return nbAgent;
+		return this.nbAgent;
 	}
 
 	public int getNbHost() {
-		return nbHost;
+		return this.nbHost;
 	}
 
 	public double getHostCapacityMean() {
-		return hostCapacityMean;
+		return this.hostCapacityMean;
 	}
 
 	public double getMinState() {
-		return minState;
+		return this.minState;
 	}
 
 
 	public double getAveState() {
-		return aveState;
+		return this.aveState;
 	}
 
 	public double getMaxState() {
-		return maxState;
+		return this.maxState;
 	}
 
 	public double getMinStab() {
-		return minStab;
+		return this.minStab;
 	}
 
 	public double getAveStab() {
-		return aveStab;
+		return this.aveStab;
 	}
 
 	public double getMaxStab() {
-		return maxStab;
+		return this.maxStab;
 	}
 
 	public SocialChoiceType getSocChoice() {
-		return socChoice;
+		return this.socChoice;
 	}
 
 	public double getMinValue() {
-		return minValue;
+		return this.minValue;
 	}
 
 	public double getNashValue() {
-		return nashValue;
+		return this.nashValue;
 	}
 
 	public double getUtilValue() {
-		return utilValue;
+		return this.utilValue;
 	}
 
 	public int getSimultaneousCandidature() {
-		return simultaneousCandidature;
+		return this.simultaneousCandidature;
 	}
 
 	public int getSimultaneousAcceptation() {
-		return simultaneousAcceptation;
+		return this.simultaneousAcceptation;
 	}
 
 	public long getMaxComputingTime() {
-		return maxComputingTime;
+		return this.maxComputingTime;
 	}
 
 	public long getTime() {
-		return time;
+		return this.time;
 	}
 
 	/*
 	 * 
 	 */
-	
+
 	public String entete() {
 		return "nbAgent ; nbHost ; instance size ; agent number	 ; hostCapacityMean ; hostCapacityPercent" +
 				"minState ; aveState ; maxState ;	" +
@@ -299,14 +308,15 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 				"time ; id";
 	}
 
+	@Override
 	public String toString(){
-		String result =	getNbAgent()+" ; "+getNbHost()+" ; "+ getNbAgent()*nbHost+" ; "+( getNbAgent()+getNbHost())+" ; "+
-				getHostCapacityMean()+" ; "+getHostCapacityMean()/nbAgent+" ; "+
-				getMinState()+" ; "+getAveState()+" ; "+getMaxState()+" ; "+
-				getMinStab()+" ; "+getAveStab()+" ; "+getMaxStab()+" ; "+
-				getMinValue()+" ; "+getNashValue()+" ; "+getUtilValue()+" ; "+getSocChoice()+" ; "+
-				getSimultaneousCandidature()+" ; "+getSimultaneousAcceptation()+" ; "+getMaxComputingTime()+" ; "+
-				+getTime()+" ; "+getId();
+		final String result =	this.getNbAgent()+" ; "+this.getNbHost()+" ; "+ this.getNbAgent()*this.nbHost+" ; "+( this.getNbAgent()+this.getNbHost())+" ; "+
+				this.getHostCapacityMean()+" ; "+this.getHostCapacityMean()/this.nbAgent+" ; "+
+				this.getMinState()+" ; "+this.getAveState()+" ; "+this.getMaxState()+" ; "+
+				this.getMinStab()+" ; "+this.getAveStab()+" ; "+this.getMaxStab()+" ; "+
+				this.getMinValue()+" ; "+this.getNashValue()+" ; "+this.getUtilValue()+" ; "+this.getSocChoice()+" ; "+
+				this.getSimultaneousCandidature()+" ; "+this.getSimultaneousAcceptation()+" ; "+this.getMaxComputingTime()+" ; "+
+				+this.getTime()+" ; "+this.getId();
 		//		result=result.replaceAll(".", ",");
 		return result;
 	}
@@ -314,18 +324,20 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 	/*
 	 * 
 	 */
-	
+
 	public String getId() {
 		return this.nbAgent+" AGENTS "+this.hostCapacityMean+" CAPACITY ";
 	}
 
+	@Override
 	public int hashCode(){
 		return (int) (this.nbAgent*1000+this.hostCapacityMean);
 	}
 
-	public boolean equals(Object o){
+	@Override
+	public boolean equals(final Object o){
 		if (o instanceof IndivdualExperiementLog){
-			IndivdualExperiementLog that = (IndivdualExperiementLog) o;
+			final IndivdualExperiementLog that = (IndivdualExperiementLog) o;
 			return this.nbAgent==that.nbAgent && this.nbHost==that.nbHost && this.hostCapacityMean==that.hostCapacityMean;
 		}else {
 			return false;

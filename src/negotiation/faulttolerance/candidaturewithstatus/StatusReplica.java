@@ -1,69 +1,108 @@
 package negotiation.faulttolerance.candidaturewithstatus;
 
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.annotations.Transient;
-import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.information.ObservationService;
-import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import negotiation.faulttolerance.experimentation.Replica;
+import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
-import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
-import negotiation.negotiationframework.rationality.RationalCore;
+import negotiation.negotiationframework.protocoles.status.StatusAgent;
+import negotiation.negotiationframework.protocoles.status.StatusObservationCompetence;
+import negotiation.negotiationframework.protocoles.status.StatusObservationCompetence.AgentStateStatus;
+import negotiation.negotiationframework.protocoles.status.StatusProposerCore;
+import negotiation.negotiationframework.protocoles.status.StatusRationalCore;
+import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 
-public class StatusReplica extends Replica {
+public class StatusReplica extends Replica<ReplicationCandidature> implements StatusAgent<ReplicaState, ReplicationCandidature> {
 
 
 	//
 	// Competences
 	//
-	
-//	public final StatusObservationCompetence soc;
-	
-	
-	// 
-	// Constructor
-	//	
-	
 
-	public StatusReplica(AgentIdentifier id, 
-			ReplicaState myState,
-			SelectionCore participantCore,
-			int simultaneousCandidature,
-			boolean dynamicCriticity)
-			throws CompetenceException {
-		super(id, 
-				myState, 
-				new CandidatureReplicaCoreWithStatus(), 
-				participantCore, 
-				new CandidatureReplicaProposerWithStatus(simultaneousCandidature), 
-				new SimpleOpinionService(),
-				new ReverseCFPProtocol(),
-				dynamicCriticity);
-//		soc = new StatusObservationCompetence(this,myLaborantin);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1107324270380354817L;
+	@Competence
+	public  StatusObservationCompetence soc;
+
+
+	//
+	// Constructor
+	//
+
+	public StatusReplica(final AgentIdentifier id,
+			final ReplicaState myState,
+			final SelectionCore participantCore,
+			final int simultaneousCandidature,
+			final boolean dynamicCriticity,
+			final AgentIdentifier myLaborantin) throws CompetenceException{
+		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
+		this.soc=new StatusObservationCompetence(myLaborantin,false, ReplicaState.class);
 	}
-//	
-//	//
-//	// Accessors
-//	//
-//
-//	public void setNewState(final ReplicaState s) {
-//		super.setNewState(s);
-//		if (soc!=null) soc.diffuse(s);
-//	}
-//	
-//	//
-//	// Behavior
-//	//
-//
-//
-//	@StepComposant()
-//	@Transient
-//	public boolean initialynotifyMyState4Status() {
-//		soc.diffuse(getMyCurrentState());
-//		return true;
-//	}
+	public StatusReplica(final AgentIdentifier id,
+			final ReplicaState myState,
+			final SelectionCore participantCore,
+			final int simultaneousCandidature,
+			final boolean dynamicCriticity,
+			final int numberToContact) throws CompetenceException{
+		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
+		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class);
+	}
+
+	private StatusReplica(final AgentIdentifier id,
+			final ReplicaState myState,
+			final SelectionCore participantCore,
+			final int simultaneousCandidature,
+			final boolean dynamicCriticity)
+					throws CompetenceException {
+		super(id,
+				myState,
+				new StatusRationalCore<ReplicaState, ReplicationCandidature>(new ReplicaCore(true, true)),
+				participantCore,
+				new StatusProposerCore<ReplicaState, ReplicationCandidature>(simultaneousCandidature) {
+
+			@Override
+			public ReplicationCandidature constructDestructionCandidature(
+					final ResourceIdentifier id) {
+				return new ReplicationCandidature(id, this.getIdentifier(), false, true);
+			}
+
+			@Override
+			public ReplicationCandidature constructCandidature(
+					final ResourceIdentifier id) {
+				return new ReplicationCandidature(id, this.getIdentifier(), true, true);
+			}
+		},
+		new SimpleOpinionService(),
+		new ReverseCFPProtocol(),
+		dynamicCriticity);
+	}
+
+	//
+	// Delegated
+	//
+
+	@Override
+	public boolean stateStatusIs(final ReplicaState state, final AgentStateStatus status) {
+		return this.soc.stateStatusIs(state, status);
+	}
+	@Override
+	public AgentStateStatus getMyStatus() {
+		return this.soc.getMyStatus();
+	}
+	@Override
+	public AgentStateStatus getStatus(final ReplicaState s) {
+		return this.soc.getStatus(s);
+	}
+	@Override
+	public void updateThreshold() {
+		this.soc.updateThreshold();
+	}
+
 }

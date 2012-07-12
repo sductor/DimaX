@@ -9,7 +9,6 @@ import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTrunk;
-import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import negotiation.negotiationframework.rationality.AgentState;
@@ -23,7 +22,7 @@ extends
 BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
 implements SelectionCore<
 SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
-PersonalState, 
+PersonalState,
 InformedCandidature<Contract>>{
 	private static final long serialVersionUID = -9125593876913236812L;
 

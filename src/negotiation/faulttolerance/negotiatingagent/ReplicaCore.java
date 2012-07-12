@@ -9,43 +9,44 @@ import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public  class ReplicaCore
 extends
 BasicAgentCompetence<SimpleRationalAgent<ReplicaState, ReplicationCandidature>>
 implements
-RationalCore<ReplicaState, ReplicationCandidature>  {
+RationalCore<SimpleRationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, ReplicationCandidature>  {
 	private static final long serialVersionUID = 3436030307737036668L;
 
 	final boolean observeResourceChanges;
 	final boolean memorizeRessourceState;
-	
+
 	//
 	// Constructor
 	//
 
-	 public ReplicaCore(boolean observeResourceChanges, boolean memorizeRessourceState) {
-	 super();
-	 this.observeResourceChanges=observeResourceChanges;
+	public ReplicaCore(final boolean observeResourceChanges, final boolean memorizeRessourceState) {
+		super();
+		this.observeResourceChanges=observeResourceChanges;
 		this.memorizeRessourceState=memorizeRessourceState;
-	 }
+	}
 
-		@Override
-		public boolean iObserveMyRessourceChanges() {
-			return observeResourceChanges;
+	@Override
+	public boolean iObserveMyRessourceChanges() {
+		return this.observeResourceChanges;
+	}
+	@Override
+	public boolean iMemorizeMyRessourceState() {
+		return this.memorizeRessourceState;
+	}
+	public void handleResourceInformation(final AgentState c){
+		if (this.iMemorizeMyRessourceState()) {
+			this.getMyAgent().getMyInformation().add(c);
 		}
-		@Override
-		public boolean iMemorizeMyRessourceState() {
-			return memorizeRessourceState;
+		if (this.iObserveMyRessourceChanges()) {
+			this.observe(c.getMyAgentIdentifier(), SimpleRationalAgent.stateChangementObservation);
 		}
-		public void handleResourceInformation(AgentState c){
-				if (iMemorizeMyRessourceState()) 
-					getMyAgent().getMyInformation().add(c);
-				if (iObserveMyRessourceChanges())
-					observe(c.getMyAgentIdentifier(), SimpleObservationService.informationObservationKey);
-		}
+	}
 	//
 	// Method
 	//
@@ -55,14 +56,14 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
-//		for (final ReplicationCandidature c : c1) {
-//			c.setInitialState(getMyAgent().getMyCurrentState());
-//		}
-//		for (final ReplicationCandidature c : c2) {
-//			c.setInitialState(getMyAgent().getMyCurrentState());
-//		}
+		//		for (final ReplicationCandidature c : c1) {
+		//			c.setInitialState(getMyAgent().getMyCurrentState());
+		//		}
+		//		for (final ReplicationCandidature c : c2) {
+		//			c.setInitialState(getMyAgent().getMyCurrentState());
+		//		}
 		//		return this.getFirstLoadSecondReliabilitAllocationPreference(s, c1, c2);
-		AltruistRationalCore.verifyStateConsistency(getMyAgent(), c1, c2);
+		AltruistRationalCore.verifyStateConsistency(this.getMyAgent(), c1, c2);
 		return this.getAllocationReliabilityPreference(c1, c2);
 	}
 
@@ -91,7 +92,7 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			}
 
 			for (final ReplicationCandidature c : creation){
-				handleResourceInformation(c.getResourceResultingState());
+				this.handleResourceInformation(c.getResourceResultingState());
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -101,7 +102,7 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			}
 
 			for (final ReplicationCandidature c : destruction){
-				handleResourceInformation(c.getResourceResultingState());
+				this.handleResourceInformation(c.getResourceResultingState());
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -122,7 +123,7 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 	public void setMySpecif(
 			final ReplicaState s,
 			final ReplicationCandidature c) {
-//		return new NoActionSpec();
+		//		return new NoActionSpec();
 	}
 
 
@@ -148,8 +149,8 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		Double r1, r2;
-		final ReplicaState s1 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c1);
-		final ReplicaState s2 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c2);
+		final ReplicaState s1 = this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), c1);
+		final ReplicaState s2 = this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), c2);
 		r1 = s1.getMyDisponibility();
 		r2 = s2.getMyDisponibility();
 		return r1.compareTo(r2);
@@ -159,9 +160,9 @@ RationalCore<ReplicaState, ReplicationCandidature>  {
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		Double e0, e1, e2;
-		final ReplicaState s1 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c1);
-		final ReplicaState s2 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c2);
-		e0 = this.getLoadEtendue(getMyAgent().getMyCurrentState());
+		final ReplicaState s1 = this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), c1);
+		final ReplicaState s2 = this.getMyAgent().getMyResultingState(this.getMyAgent().getMyCurrentState(), c2);
+		e0 = this.getLoadEtendue(this.getMyAgent().getMyCurrentState());
 		e1 = this.getLoadEtendue(s1);
 		e2 = this.getLoadEtendue(s2);
 

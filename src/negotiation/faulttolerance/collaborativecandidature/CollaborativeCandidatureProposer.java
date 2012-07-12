@@ -1,18 +1,17 @@
 package negotiation.faulttolerance.collaborativecandidature;
 
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AtMostKCandidaturesProposer;
+import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
+import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class CollaborativeCandidatureProposer
-extends AtMostKCandidaturesProposer<ReplicaState, InformedCandidature<ReplicationCandidature>>{
+extends AtMostKCandidaturesProposer<CollaborativeReplica, ReplicaState, InformedCandidature<ReplicationCandidature>>{
 	private static final long serialVersionUID = 4899697150539667541L;
 
-	public CollaborativeCandidatureProposer(int k)
+	public CollaborativeCandidatureProposer(final int k)
 			throws UnrespectedCompetenceSyntaxException {
 		super(k);
 		// TODO Auto-generated constructor stub
@@ -21,9 +20,9 @@ extends AtMostKCandidaturesProposer<ReplicaState, InformedCandidature<Replicatio
 	@Override
 	public InformedCandidature<ReplicationCandidature> constructCandidature(
 			final ResourceIdentifier id) {
-		final InformedCandidature<ReplicationCandidature> c = 
+		final InformedCandidature<ReplicationCandidature> c =
 				new InformedCandidature<ReplicationCandidature>(new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true));
-//		c.getPossibleContracts().addAll(((CollaborativeAgent)getMyAgent()).getCrt().getPossible(c));
+		//		c.getPossibleContracts().addAll(((CollaborativeAgent)getMyAgent()).getCrt().getPossible(c));
 		this.getMyAgent().setMySpecif(c);
 		c.setInitialState(this.getMyAgent().getMyCurrentState());
 		return c;

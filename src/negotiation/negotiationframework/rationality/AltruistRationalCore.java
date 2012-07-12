@@ -2,19 +2,17 @@ package negotiation.negotiationframework.rationality;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
-import negotiation.negotiationframework.contracts.ReallocationContract;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class AltruistRationalCore<
+Agent extends RationalAgent<PersonalState, Contract>,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends BasicAgentCompetence<SimpleRationalAgent<PersonalState,Contract>>
-implements RationalCore<PersonalState, Contract>{
+extends BasicAgentCompetence<Agent>
+implements RationalCore<Agent, PersonalState, Contract>{
 	private static final long serialVersionUID = -2882287744826409737L;
 
 	//
@@ -22,7 +20,7 @@ implements RationalCore<PersonalState, Contract>{
 	//
 
 	private final SocialChoiceFunction<Contract> myOptimiser;
-	private final RationalCore<PersonalState, Contract>  myPersonalCore;
+	private final RationalCore<Agent, PersonalState, Contract>  myPersonalCore;
 
 	//
 	// Constructor
@@ -30,19 +28,19 @@ implements RationalCore<PersonalState, Contract>{
 
 	public AltruistRationalCore(
 			final SocialChoiceFunction<Contract> opt,
-			final RationalCore<PersonalState, Contract> rationality) {
+			final RationalCore<Agent, PersonalState, Contract> rationality) {
 		this.myOptimiser = opt;
 		this.myPersonalCore= rationality;
 	}
 
 	@Override
 	public boolean iMemorizeMyRessourceState() {
-		return myPersonalCore.iMemorizeMyRessourceState();
+		return this.myPersonalCore.iMemorizeMyRessourceState();
 	}
 
 	@Override
 	public boolean iObserveMyRessourceChanges() {
-		return myPersonalCore.iObserveMyRessourceChanges();
+		return this.myPersonalCore.iObserveMyRessourceChanges();
 	}
 	//
 	// Methods
@@ -84,13 +82,12 @@ implements RationalCore<PersonalState, Contract>{
 	}
 
 	@Override
-	public SimpleRationalAgent<PersonalState, Contract> getMyAgent() {
+	public Agent getMyAgent() {
 		return this.myPersonalCore.getMyAgent();
 	}
 
 	@Override
-	public void setMyAgent(
-			final SimpleRationalAgent<PersonalState, Contract> ag) {
+	public void setMyAgent(final Agent ag) {
 		this.myPersonalCore.setMyAgent(ag);
 	}
 
@@ -105,8 +102,8 @@ implements RationalCore<PersonalState, Contract>{
 	}
 
 	@Override
-	public void activateCompetence(final boolean active) {
-		this.myPersonalCore.activateCompetence(active);
+	public void setActive(final boolean active) {
+		this.myPersonalCore.setActive(active);
 	}
 
 	//
@@ -114,20 +111,20 @@ implements RationalCore<PersonalState, Contract>{
 	//
 
 	public static  <Contract extends AbstractContractTransition> boolean verifyStateConsistency(
-			SimpleRationalAgent<?, Contract> myAgent,
+			final SimpleRationalAgent<?, Contract> myAgent,
 			final Collection<Contract> c1,
 			final Collection<Contract> c2){
 		try {
-		for (final Contract ca : c1) {
-			for (final Contract cb : c2) {
-				assert ca.getInitialState(myAgent.getIdentifier()).equals(cb.getInitialState(myAgent.getIdentifier()));
+			for (final Contract ca : c1) {
+				for (final Contract cb : c2) {
+					assert ca.getInitialState(myAgent.getIdentifier()).equals(cb.getInitialState(myAgent.getIdentifier()));
+				}
 			}
-		}
-		for (final Contract ca : c1) {
-			assert ca.getInitialState(myAgent.getIdentifier()).equals(myAgent.getMyCurrentState());
-		}
-		return true;
-		} catch (IncompleteContractException c){
+			for (final Contract ca : c1) {
+				assert ca.getInitialState(myAgent.getIdentifier()).equals(myAgent.getMyCurrentState());
+			}
+			return true;
+		} catch (final IncompleteContractException c){
 			assert false;
 			return true;
 		}

@@ -30,7 +30,7 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 	@Target(ElementType.METHOD)
 	public @interface EventHookedMethod {
 		Class<? extends Serializable> value();
-//				String key() default "";
+		//				String key() default "";
 
 
 	}
@@ -90,7 +90,7 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 			MethodHandler msave=null ;
 			try {//System.out.println(this.registeredMethods+"           "+key);
 				for (final MethodHandler m : this.registeredMethods.get(key)){
-					
+
 					msave=m;
 					m.execute(notification);
 				}

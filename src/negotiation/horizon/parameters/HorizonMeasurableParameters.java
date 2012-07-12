@@ -10,23 +10,23 @@ import negotiation.horizon.negotiatingagent.HorizonIdentifier;
  * @author Vincent Letard
  */
 public class HorizonMeasurableParameters<Identifier extends HorizonIdentifier>
-	extends
-	HorizonParameters<Identifier, MachineMeasurableParameters, LinkMeasurableParameters> {
+extends
+HorizonParameters<Identifier, MachineMeasurableParameters, LinkMeasurableParameters> {
 
-    /**
-     * Serial version identifier.
-     */
-    private static final long serialVersionUID = -384855814402430086L;
+	/**
+	 * Serial version identifier.
+	 */
+	private static final long serialVersionUID = -384855814402430086L;
 
-    /**
-     * @param machineParams
-     *            parameters of the machine
-     * @param ifacesParams
-     *            parameters of the links starting from the machine
-     */
-    public HorizonMeasurableParameters(
-	    final MachineMeasurableParameters machineParams,
-	    final InterfacesParameters<Identifier, LinkMeasurableParameters> ifacesParams) {
-	super(machineParams, ifacesParams);
-    }
+	/**
+	 * @param machineParams
+	 *            parameters of the machine
+	 * @param ifacesParams
+	 *            parameters of the links starting from the machine
+	 */
+	public HorizonMeasurableParameters(
+			final MachineMeasurableParameters machineParams,
+			final InterfacesParameters<Identifier, LinkMeasurableParameters> ifacesParams) {
+		super(machineParams, ifacesParams);
+	}
 }

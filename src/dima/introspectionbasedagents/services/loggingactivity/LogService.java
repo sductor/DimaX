@@ -120,11 +120,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public void addLogKey(String key, String logType) {
+	public void addLogKey(final String key, final String logType) {
 		if (logType.equals(onScreen)){
-			this.addLogKey(key,true,false);			
+			this.addLogKey(key,true,false);
 		}else if (logType.equals(onFile)){
-			this.addLogKey(key,false,true);			
+			this.addLogKey(key,false,true);
 		} else if (logType.equals(onBoth)){
 			this.addLogKey(key,true,true);
 		}else if (logType.equals(onNone)){
@@ -133,7 +133,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			throw new RuntimeException("aaarrggh");
 		}
 	}
-	
+
 	@Override
 	public void setLogKey(final String key, final boolean toScreen, final boolean toFile) {
 		this.keysToScreen.put(key,toScreen);
@@ -205,14 +205,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	@Override
 	public Boolean  logMonologue(final String text){
-		return logMonologue(text, onBoth);
+		return this.logMonologue(text, onBoth);
 	}
 	// Communication
 
 
 	public Boolean logCommunication(final Message am, final MessageStatus s){
-		if ((am instanceof LogNotification) ||
-				(am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
+		if (am instanceof LogNotification ||
+				am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification){
 			//do nothing;
 		} else {
 			//			assert commValidityVerif(am);
@@ -372,12 +372,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		}
 		return true;
 	}
+	@Override
 	public Boolean  logWarning(final String text,
 			final Throwable e) {
-	return logWarning(text,e,onBoth);
+		return this.logWarning(text,e,onBoth);
 	}
+	@Override
 	public Boolean  logWarning(final String text) {
-	return logWarning(text,onBoth);
+		return this.logWarning(text,onBoth);
 	}
 	/******************
 	 * LOG WRITING
@@ -698,7 +700,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public void activateCompetence(final boolean active) {
+	public void setActive(final boolean active) {
 		this.active = active;
 	}
 	@Override

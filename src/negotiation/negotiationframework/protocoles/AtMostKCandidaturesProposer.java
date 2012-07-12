@@ -5,15 +5,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.Set;
 
-import com.jcraft.jsch.KnownHosts;
-
-import sun.security.action.GetLongAction;
-
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecif;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -25,20 +19,20 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public  abstract class AtMostKCandidaturesProposer<
+Agent extends NegotiatingAgent<PersonalState, Contract>,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState,Contract>>
+BasicAgentCompetence<Agent>
 implements
 ProposerCore
-<SimpleNegotiatingAgent<PersonalState,Contract>,
-PersonalState,Contract> {
+<Agent,PersonalState,Contract> {
 	private static final long serialVersionUID = -5315491050460219982L;
 
 	public final int k;
 	public final LinkedList<ResourceIdentifier> myKnownHosts = new LinkedList<ResourceIdentifier>();
-		
-	public AtMostKCandidaturesProposer(int k) throws UnrespectedCompetenceSyntaxException {
+
+	public AtMostKCandidaturesProposer(final int k) throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.k = k;
 	}
@@ -47,25 +41,25 @@ PersonalState,Contract> {
 	public Set<Contract> getNextContractsToPropose()
 			throws NotReadyException {
 
-		if (myKnownHosts.isEmpty()){
-			myKnownHosts.addAll((Collection<ResourceIdentifier>) this.getMyAgent().getMyInformation().getKnownAgents());
-			myKnownHosts.remove(getMyAgent().getIdentifier());
-			myKnownHosts.removeAll(getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
-			Collections.shuffle(myKnownHosts);
-			
+		if (this.myKnownHosts.isEmpty()){
+			this.myKnownHosts.addAll((Collection<ResourceIdentifier>) this.getMyAgent().getMyInformation().getKnownAgents());
+			this.myKnownHosts.remove(this.getMyAgent().getIdentifier());
+			this.myKnownHosts.removeAll(this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
+			Collections.shuffle(this.myKnownHosts);
+
 		}
 
-		myKnownHosts.removeAll(getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
-		assert KnownHostValidityVerification();
-		Iterator<ResourceIdentifier> itMyHosts = myKnownHosts.iterator();
+		this.myKnownHosts.removeAll(this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
+		assert this.KnownHostValidityVerification();
+		final Iterator<ResourceIdentifier> itMyHosts = this.myKnownHosts.iterator();
 		final Set<Contract> candidatures = new HashSet<Contract>();
-		
-		while (itMyHosts.hasNext() && candidatures.size()<k){
+
+		while (itMyHosts.hasNext() && candidatures.size()<this.k){
 			final Contract c = this.constructCandidature(itMyHosts.next());
 			candidatures.add(c);
 			itMyHosts.remove();
 		}
-		assert candidatureValidityVerification(candidatures);
+		assert this.candidatureValidityVerification(candidatures);
 		return candidatures;
 	}
 
@@ -73,7 +67,7 @@ PersonalState,Contract> {
 
 	@Override
 	public boolean IWantToNegotiate(final ContractTrunk<Contract> contracts) {
-		return !getMyAgent().getMyCurrentState().getMyResourceIdentifiers().containsAll(
+		return !this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().containsAll(
 				this.getMyAgent().getMyInformation().getKnownAgents());
 	}
 
@@ -83,22 +77,22 @@ PersonalState,Contract> {
 	}
 
 	private boolean KnownHostValidityVerification(){
-		for (AgentIdentifier id : myKnownHosts){
+		for (final AgentIdentifier id : this.myKnownHosts){
 			assert id instanceof ResourceIdentifier:id;
-			assert !getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(id):
-				id+"\n "+getMyAgent().getMyCurrentState().getMyResourceIdentifiers()+"\n "+this.getMyAgent().getMyInformation().getKnownAgents();
+		assert !this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(id):
+			id+"\n "+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()+"\n "+this.getMyAgent().getMyInformation().getKnownAgents();
 		}
 		return true;
 	}
-	private boolean candidatureValidityVerification(Set<Contract> candidatures){
-		LinkedList<ResourceIdentifier> allHosts = new LinkedList<ResourceIdentifier>();
+	private boolean candidatureValidityVerification(final Set<Contract> candidatures){
+		final LinkedList<ResourceIdentifier> allHosts = new LinkedList<ResourceIdentifier>();
 		allHosts.addAll((Collection<ResourceIdentifier>) this.getMyAgent().getMyInformation().getKnownAgents());
-		allHosts.remove(getMyAgent().getIdentifier());
-		
-		assert !candidatures.isEmpty() ||  
-		getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size()==allHosts.size():
-			k+"\n "+getMyAgent().getMyCurrentState().getMyResourceIdentifiers()+"--> CurrentState \n  "+allHosts+"--> allHosts\n "+myKnownHosts;
-		
+		allHosts.remove(this.getMyAgent().getIdentifier());
+
+		assert !candidatures.isEmpty() ||
+		this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size()==allHosts.size():
+			this.k+"\n "+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers()+"--> CurrentState \n  "+allHosts+"--> allHosts\n "+this.myKnownHosts;
+
 		return true;
 	}
 }
@@ -106,17 +100,17 @@ PersonalState,Contract> {
 
 
 //	@Override
-	//	public boolean IWantToNegotiate(final ReplicaState s) {
-	//		if (((Replica) this.getMyAgent()).IReplicate())
-	//			if (!s.getMyResourceIdentifiers().containsAll(
-	//					this.getMyAgent().getMyInformation().getKnownAgents()))
-	//				return true;
-	//			else
-	//				// logMonologue("full!");
-	//				return false;
-	//		else
-	//			return false;
-	//	}
+//	public boolean IWantToNegotiate(final ReplicaState s) {
+//		if (((Replica) this.getMyAgent()).IReplicate())
+//			if (!s.getMyResourceIdentifiers().containsAll(
+//					this.getMyAgent().getMyInformation().getKnownAgents()))
+//				return true;
+//			else
+//				// logMonologue("full!");
+//				return false;
+//		else
+//			return false;
+//	}
 //
 //	final boolean mirrorProto;
 //

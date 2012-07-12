@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.shells.APIAgent;
+import dima.introspectionbasedagents.services.launch.APIAgent;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleExampleApi extends APIAgent{

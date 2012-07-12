@@ -11,9 +11,10 @@ public interface NegotiatingAgent<
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
 extends RationalAgent<PersonalState, Contract> {
+
 	public AbstractCommunicationProtocol<Contract> getMyProtocol();
 
-	public ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> getMyProposerCore() ;
+	public ProposerCore<? extends NegotiatingAgent, PersonalState, Contract> getMyProposerCore() ;
 
-	public SelectionCore<? extends SimpleNegotiatingAgent,PersonalState, Contract> getMySelectionCore();
+	public SelectionCore<? extends NegotiatingAgent,PersonalState, Contract> getMySelectionCore();
 }

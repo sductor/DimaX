@@ -6,9 +6,9 @@ import java.util.Comparator;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.shells.CommunicatingCompetentComponent;
 
 public interface RationalAgent<PersonalState extends AgentState, Contract extends AbstractContractTransition> extends CommunicatingCompetentComponent {
 
@@ -18,6 +18,8 @@ public interface RationalAgent<PersonalState extends AgentState, Contract extend
 
 	public abstract PersonalState getMyCurrentState();
 
+	public Class<? extends AgentState> getMyStateType();
+	
 	public abstract Collection<? extends AgentState> getMyResources();
 
 	public abstract AgentState getResource(AgentIdentifier id)

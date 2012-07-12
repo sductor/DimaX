@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import negotiation.faulttolerance.experimentation.Host;
+import negotiation.faulttolerance.Host;
 import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.NegotiationParameters;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
@@ -99,7 +98,7 @@ extends Protocol<NegotiatingAgent<?, Contract>> {
 
 
 	public AbstractCommunicationProtocol(
-			final SimpleNegotiatingAgent<?, Contract> a,
+			final NegotiatingAgent<?, Contract> a,
 			final ContractTrunk<Contract> contracts) throws UnrespectedCompetenceSyntaxException {
 		super(a);
 		this.contracts = contracts;

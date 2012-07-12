@@ -12,6 +12,7 @@ import negotiation.negotiationframework.rationality.SimpleAgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
@@ -229,8 +230,12 @@ public class ReplicaState  extends SimpleAgentState  {
 		if (o instanceof ReplicaState) {
 			final ReplicaState e = (ReplicaState) o;
 			return e.getMyReliability();
+		} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState){
+			final ReplicaState e = (ReplicaState) ((Opinion)o).getRepresentativeElement();
+			return e.getMyReliability();
 		} else {
-			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
+		
+			throw new RuntimeException("melange d'infos!!!"+this+" "+o+" "+o.getClass());
 		}
 	}
 
@@ -254,6 +259,14 @@ public class ReplicaState  extends SimpleAgentState  {
 				//				if (!((ReplicaState) o).getMyCriticity().equals(Double.NaN))
 				//					throw new RuntimeException();
 				final ReplicaState e = (ReplicaState) o;
+				meanCrit.add(e.getMyCriticity());
+				meanDisp.add(e.getMyDisponibility());
+				meanMem.add(e.getMyMemCharge());
+				meanProc.add(e.getMyProcCharge());
+			} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
+				//				if (!((ReplicaState) o).getMyCriticity().equals(Double.NaN))
+				//					throw new RuntimeException();
+				final ReplicaState e = (ReplicaState) ((Opinion)o).getRepresentativeElement();
 				meanCrit.add(e.getMyCriticity());
 				meanDisp.add(e.getMyDisponibility());
 				meanMem.add(e.getMyMemCharge());
@@ -287,6 +300,12 @@ public class ReplicaState  extends SimpleAgentState  {
 		for (final Information o : elems.keySet()) {
 			if (o instanceof ReplicaState) {
 				final ReplicaState e = (ReplicaState) o;
+				meanCrit.add(e.getMyCriticity(),elems.get(e));
+				meanDisp.add(e.getMyDisponibility(),elems.get(e));
+				meanMem.add(e.getMyMemCharge(),elems.get(e));
+				meanProc.add(e.getMyProcCharge(),elems.get(e));
+			}  else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
+				final ReplicaState e = (ReplicaState) ((Opinion)o).getRepresentativeElement();
 				meanCrit.add(e.getMyCriticity(),elems.get(e));
 				meanDisp.add(e.getMyDisponibility(),elems.get(e));
 				meanMem.add(e.getMyMemCharge(),elems.get(e));
@@ -326,6 +345,10 @@ public class ReplicaState  extends SimpleAgentState  {
 	public boolean equals(final Object o) {
 		if (o instanceof ReplicaState) {
 			final ReplicaState that = (ReplicaState) o;
+			return that.getMyAgentIdentifier().equals(
+					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
+		} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
+			final ReplicaState that = (ReplicaState) ((Opinion)o).getRepresentativeElement();
 			return that.getMyAgentIdentifier().equals(
 					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
 		} else {

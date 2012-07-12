@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -24,7 +24,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  * @param <ActionSpec>
  */
 public class SimpleSelectionCore<
-Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
+Agent extends NegotiatingAgent<PersonalState, Contract>,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
 extends

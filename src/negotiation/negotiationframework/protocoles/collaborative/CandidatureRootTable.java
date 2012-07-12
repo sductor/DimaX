@@ -3,7 +3,7 @@ package negotiation.negotiationframework.protocoles.collaborative;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ReallocationContract;
@@ -12,7 +12,7 @@ import dima.introspectionbasedagents.services.BasicAgentModule;
 public class CandidatureRootTable<
 Contract extends MatchingCandidature,
 ActionSpec extends AbstractActionSpecif>
-extends BasicAgentModule<SimpleNegotiatingAgent<?,Contract>> {
+extends BasicAgentModule<NegotiatingAgent<?,Contract>> {
 
 	/**
 	 *

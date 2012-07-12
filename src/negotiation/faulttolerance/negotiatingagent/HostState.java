@@ -11,6 +11,7 @@ import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
@@ -220,7 +221,7 @@ public class HostState extends SimpleAgentState {
 
 	@Override
 	public Double getNumericValue(final Information o) {
-		if (o instanceof HostState) {
+		if (o instanceof HostState || (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState)) {
 			final HostState e = (HostState) o;
 			return e.getMyCharge();
 		} else {
@@ -245,7 +246,7 @@ public class HostState extends SimpleAgentState {
 		meanLambda = new LightAverageDoubleAggregation();
 
 		for (final Information o : elems) {
-			if (o instanceof HostState) {
+			if (o instanceof HostState || (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState)) {
 				final HostState e = (HostState) o;
 				meanProcCu.add(e.getCurrentProcCharge());
 				meanProcMax.add(e.getProcChargeMax());
@@ -280,7 +281,7 @@ public class HostState extends SimpleAgentState {
 		meanLambda = new LightWeightedAverageDoubleAggregation();
 
 		for (final Information o : elems.keySet()) {
-			if (o instanceof HostState) {
+			if (o instanceof HostState || (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState)){
 				final HostState e = (HostState) o;
 				meanProcCu.add(e.getCurrentProcCharge(),elems.get(e));
 				meanProcMax.add(e.getProcChargeMax(),elems.get(e));
@@ -315,7 +316,7 @@ public class HostState extends SimpleAgentState {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (o instanceof HostState) {
+		if (o instanceof HostState || (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState)) {
 			final HostState that = (HostState) o;
 			return that.getMyAgentIdentifier().equals(
 					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();

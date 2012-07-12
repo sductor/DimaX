@@ -3,8 +3,8 @@ package negotiation.negotiationframework.protocoles.status;
 import java.util.ArrayList;
 import java.util.Random;
 
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.NegotiationParameters;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -17,7 +17,7 @@ import dima.introspectionbasedagents.services.information.ObservationService.Inf
 import dima.introspectionbasedagents.services.information.OpinionService;
 import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
 
-public class StatusObservationCompetence<PersonalState extends AgentState> extends BasicCommunicatingCompetence<SimpleNegotiatingAgent<PersonalState,?>>{
+public class StatusObservationCompetence<PersonalState extends AgentState> extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 
 	//
 	// Subclass
@@ -84,7 +84,7 @@ public class StatusObservationCompetence<PersonalState extends AgentState> exten
 		this.numberTodiffuse = numberTodiffuse;
 		this.iDiffuseOriginalState=iDiffuseOriginalState;
 		this.stateTypeToDiffuse=stateTypeToDiffuse;
-		assert iDiffuseOriginalState?stateTypeToDiffuse.equals(this.getMyAgent().myStateType):true;
+		assert iDiffuseOriginalState?stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType()):true;
 	}
 
 	public StatusObservationCompetence(
@@ -98,7 +98,7 @@ public class StatusObservationCompetence<PersonalState extends AgentState> exten
 		this.numberTodiffuse = null;
 		this.iDiffuseOriginalState=iDiffuseOriginalState;
 		this.stateTypeToDiffuse=stateTypeToDiffuse;
-		assert iDiffuseOriginalState?stateTypeToDiffuse.equals(this.getMyAgent().myStateType):true;
+		assert iDiffuseOriginalState?stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType()):true;
 	}
 	//
 	// Accessors
@@ -180,8 +180,8 @@ public class StatusObservationCompetence<PersonalState extends AgentState> exten
 
 	public void updateThreshold(){
 		try {
-			assert this.stateTypeToDiffuse.equals(this.getMyAgent().myStateType);
-			final Opinion<? extends AgentState> o = ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().myStateType);
+			assert this.stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType());
+			final Opinion<? extends AgentState> o = ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType());
 
 			Double mean, min, max;
 			mean = o.getRepresentativeElement().getNumericValue(o);
@@ -207,7 +207,7 @@ public class StatusObservationCompetence<PersonalState extends AgentState> exten
 			this.sendMessage(id, new StatusMessage(this.getMyAgent().getMyCurrentState()));
 		} else {
 			try {
-				this.sendMessage(id, new StatusMessage(((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().myStateType)));
+				this.sendMessage(id, new StatusMessage(((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType())));
 			} catch (final NoInformationAvailableException e) {}
 		}
 	}

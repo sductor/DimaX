@@ -18,8 +18,6 @@ import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.CommunicatingCompetentComponent;
-import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
@@ -27,6 +25,8 @@ import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.M
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.BasicCompetenceShell;
+import dima.introspectionbasedagents.shells.CommunicatingCompetentComponent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 import dima.introspectionbasedagents.shells.MethodHandler;
 import dima.introspectionbasedagents.shells.NotReadyException;
 import dima.introspectionbasedagents.shells.SimpleAgentStatus;

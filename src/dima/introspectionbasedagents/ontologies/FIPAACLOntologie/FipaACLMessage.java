@@ -11,6 +11,7 @@ import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
 import dima.introspectionbasedagents.ontologies.MessageWithProtocol;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.shells.MethodHandler;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 //message type order :content java
@@ -252,10 +253,10 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 
 
-	//////////////////////////////////////////////://Bug apres cleanup d'éclipse////// : remettre methodhandler et faire l'import...
+	//////////////////////////////////////////////://Bug apres cleanup d'éclipse////// : remettre methodhandler au lieu de SimpleMethodHandler et faire l'import...
 	public void setAttachement(final Object[] attachement,
 			final Class<?>[] attachementSignature) {
-		if (SimpleMethodHandler.checkSignature(attachementSignature, attachement)) {
+		if (MethodHandler.checkSignature(attachementSignature, attachement)) {
 			this.setArgs(attachement);
 			this.attachementSignature = attachementSignature;
 		} else {
@@ -263,7 +264,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		}
 	}
 	public void setAttachement(final Object[] attachement) {
-		final Class<?>[] attachementSignature = SimpleMethodHandler.getSignature(attachement);
+		final Class<?>[] attachementSignature = MethodHandler.getSignature(attachement);
 		this.setArgs(attachement);
 		this.attachementSignature = attachementSignature;
 	}

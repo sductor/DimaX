@@ -8,9 +8,10 @@ import java.util.LinkedList;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
 import dimaxx.server.HostIdentifier;
 
@@ -99,7 +100,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 	 * @throws CompetenceException
 	 */
 
-	protected abstract Collection<? extends BasicCompetentAgent> instanciateAgents() throws CompetenceException;
+	protected abstract Collection<? extends CompetentComponent> instanciateAgents() throws CompetenceException;
 
 	/*
 	 *

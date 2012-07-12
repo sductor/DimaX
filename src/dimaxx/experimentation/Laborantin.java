@@ -16,10 +16,12 @@ import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.launch.APIAgent;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.APIAgent;
-import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.shells.LaunchableCompetentComponent;
 import dimaxx.server.HostIdentifier;
 /**
  * Laborantin manage the execution of an experience moddelled with its simulation parameters
@@ -44,9 +46,9 @@ public class Laborantin extends BasicCompetentAgent {
 
 
 
-	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
-			new HashMap<AgentIdentifier, BasicCompetentAgent>();
-	private final Map<BasicCompetentAgent, HostIdentifier> locations;
+	protected HashMap<AgentIdentifier, LaunchableCompetentComponent> agents =
+			new HashMap<AgentIdentifier, LaunchableCompetentComponent>();
+	private final Map<LaunchableCompetentComponent, HostIdentifier> locations;
 
 	//	int numberOfAgentPerMAchine;
 	private final ExperimentationParameters p;
@@ -82,9 +84,9 @@ public class Laborantin extends BasicCompetentAgent {
 				this.getSimulationParameters().getSimulationName()+"\n"+this.p,LogService.onBoth);//agents.values());
 
 		p.initiateParameters();
-		final Collection<? extends BasicCompetentAgent> ag = p.instanciateAgents();
+		final Collection<? extends LaunchableCompetentComponent> ag = p.instanciateAgents();
 
-		for (final BasicCompetentAgent a : ag){
+		for (final LaunchableCompetentComponent a : ag){
 			//					assert a.getCompetences().contains(ObservingSelfService.class);
 			this.agents.put(a.getIdentifier(), a);
 		}
@@ -124,10 +126,10 @@ public class Laborantin extends BasicCompetentAgent {
 	// Implemented
 	//
 
-	public Map<BasicCompetentAgent, HostIdentifier> generateLocations(
+	public Map<LaunchableCompetentComponent, HostIdentifier> generateLocations(
 			final APILauncherModule api,
-			final Collection<BasicCompetentAgent> collection) throws NotEnoughMachinesException{
-		final Map<BasicCompetentAgent, HostIdentifier> result = new Hashtable<BasicCompetentAgent, HostIdentifier>();
+			final Collection<? extends LaunchableCompetentComponent> collection) throws NotEnoughMachinesException{
+		final Map<LaunchableCompetentComponent, HostIdentifier> result = new Hashtable<LaunchableCompetentComponent, HostIdentifier>();
 		final Map<HostIdentifier, Integer> hostsLoad = new Hashtable<HostIdentifier, Integer>();
 
 		for (final HostIdentifier h : api.getAvalaibleHosts()) {
@@ -140,7 +142,7 @@ public class Laborantin extends BasicCompetentAgent {
 		hosts.addAll(hostsLoad.keySet());
 		Iterator<HostIdentifier> itHosts = hosts.iterator();
 
-		for (final BasicCompetentAgent id : collection) {
+		for (final LaunchableCompetentComponent id : collection) {
 			if (hosts.isEmpty()) {
 				throw new NotEnoughMachinesException();
 			} else {
@@ -199,10 +201,10 @@ public class Laborantin extends BasicCompetentAgent {
 	// Accessors
 	//
 
-	public Collection<BasicCompetentAgent> getAgents(){
+	public Collection<? extends LaunchableCompetentComponent> getAgents(){
 		return this.agents.values();
 	}
-	public BasicCompetentAgent getAgent(final AgentIdentifier id){
+	public CompetentComponent getAgent(final AgentIdentifier id){
 		return this.agents.get(id);
 	}
 

@@ -2,6 +2,7 @@ package negotiation.horizon.negotiatingagent;
 
 import java.util.Collection;
 
+import negotiation.horizon.VirtualNetwork;
 import negotiation.horizon.contracts.HorizonContract;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.RationalCore;
@@ -18,7 +19,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 public class VirtualNetworkCore
 extends
 BasicAgentCompetence<SimpleRationalAgent<VirtualNetworkState, HorizonContract>>
-implements RationalCore<VirtualNetworkState, HorizonContract> {
+implements RationalCore<VirtualNetwork,VirtualNetworkState, HorizonContract> {
 
 	/**
 	 * The referent object to evaluate preferences.

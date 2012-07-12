@@ -1,6 +1,6 @@
 package negotiation.faulttolerance.candidaturewithstatus;
 
-import negotiation.faulttolerance.experimentation.Replica;
+import negotiation.faulttolerance.Replica;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
@@ -66,6 +66,11 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 				new StatusRationalCore<ReplicaState, ReplicationCandidature>(new ReplicaCore(true, true)),
 				participantCore,
 				new StatusProposerCore<ReplicaState, ReplicationCandidature>(simultaneousCandidature) {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 7020056484100065704L;
 
 			@Override
 			public ReplicationCandidature constructDestructionCandidature(

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import negotiation.negotiationframework.NegotiatingAgent;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
 import negotiation.negotiationframework.rationality.AgentState;
@@ -46,7 +45,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	//
 	//
 
-	public ContractTrunk(final SimpleNegotiatingAgent<?, Contract> agent) {
+	public ContractTrunk(final NegotiatingAgent<?, Contract> agent) {
 		super(agent);
 	}
 

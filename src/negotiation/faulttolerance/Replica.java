@@ -1,7 +1,9 @@
-package negotiation.faulttolerance.experimentation;
+package negotiation.faulttolerance;
 
 import java.util.Random;
 
+import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import negotiation.faulttolerance.faulsimulation.FaultEvent;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;

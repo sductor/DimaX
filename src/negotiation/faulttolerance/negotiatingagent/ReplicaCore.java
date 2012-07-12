@@ -6,6 +6,7 @@ import java.util.Collection;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.AltruistRationalCore;
+import negotiation.negotiationframework.rationality.RationalAgent;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -13,9 +14,9 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public  class ReplicaCore
 extends
-BasicAgentCompetence<SimpleRationalAgent<ReplicaState, ReplicationCandidature>>
+BasicAgentCompetence<RationalAgent<ReplicaState, ReplicationCandidature>>
 implements
-RationalCore<SimpleRationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, ReplicationCandidature>  {
+RationalCore<RationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, ReplicationCandidature>  {
 	private static final long serialVersionUID = 3436030307737036668L;
 
 	final boolean observeResourceChanges;

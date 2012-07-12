@@ -9,10 +9,10 @@ import org.jdom.JDOMException;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.launch.APIAgent;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.shells.APIAgent;
 import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
 
 

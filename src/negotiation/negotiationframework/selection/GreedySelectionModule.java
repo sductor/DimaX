@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicinterfaces.DimaComponentInterface;
@@ -17,7 +17,7 @@ import dima.introspectionbasedagents.services.BasicAgentModule;
 public class GreedySelectionModule<
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
+extends BasicAgentModule<NegotiatingAgent<PersonalState, Contract>>{
 	private static final long serialVersionUID = 438513006322441185L;
 
 	public enum GreedySelectionType { Greedy, Random, RooletteWheel};

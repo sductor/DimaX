@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.shells;
+package dima.introspectionbasedagents.services.launch;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +8,10 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.shells.APIAgent.EndLiveMessage;
-import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.server.HostIdentifier;
 
 public class ApiLaunchService extends BasicAgentCompetence<BasicCompetentAgent>{

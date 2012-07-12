@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
@@ -17,6 +16,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.shells.CommunicatingCompetentComponent;
 import dimaxx.tools.mappedcollections.HashedHashList;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 /**

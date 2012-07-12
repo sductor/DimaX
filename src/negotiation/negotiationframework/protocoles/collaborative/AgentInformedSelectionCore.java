@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -19,9 +19,9 @@ ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends MatchingCandidature>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
+BasicAgentCompetence<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
 implements SelectionCore<
-SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
+NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
 PersonalState,
 InformedCandidature<Contract>>{
 	private static final long serialVersionUID = -9125593876913236812L;

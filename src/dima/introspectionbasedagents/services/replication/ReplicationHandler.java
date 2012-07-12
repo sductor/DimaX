@@ -3,8 +3,8 @@ package dima.introspectionbasedagents.services.replication;
 import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.services.AgentCompetence;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 import dima.support.GimaObject;
 import dimaxx.server.HostIdentifier;
 

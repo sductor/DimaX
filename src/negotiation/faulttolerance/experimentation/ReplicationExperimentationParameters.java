@@ -19,6 +19,7 @@ import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.negotiationframework.NegotiationParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.RationalAgent;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
@@ -26,8 +27,8 @@ import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.CompetenceException;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.IfailedException;
 import dimaxx.experimentation.Laborantin;
@@ -365,7 +366,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 */
 
 	@Override
-	protected Collection<SimpleRationalAgent> instanciateAgents()throws CompetenceException {
+	protected Collection<RationalAgent> instanciateAgents()throws CompetenceException {
 		//		System.out.println(this.getMyAgent()+" "+this.getMyAgent().
 		//				myStatusObserver);
 		//		assert !this._usedProtocol
@@ -376,7 +377,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		//			.equals(NegotiationParameters.key4CentralisedstatusProto)+" "+this.getMyAgent().myStatusObserver.iObserveStatus();
 
 		//		this.logMonologue("Initializing agents... ",LogService.onBoth);
-		final Map<AgentIdentifier,SimpleRationalAgent> result = new HashMap<AgentIdentifier, SimpleRationalAgent>();
+		final Map<AgentIdentifier,RationalAgent> result = new HashMap<AgentIdentifier, RationalAgent>();
 
 		/*
 		 * Agent instanciation
@@ -441,7 +442,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 		for (final ResourceIdentifier hostId : this.getHostsIdentifier()) {
 
-			final SimpleRationalAgent hostAg;
+			final RationalAgent hostAg;
 			if (this._usedProtocol
 					.equals(NegotiationParameters.key4mirrorProto)) {
 				hostAg = new CollaborativeHost(
@@ -486,7 +487,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				}
 			}
 
-			result.put(hostAg.getId(),hostAg);
+			result.put(hostAg.getIdentifier(),hostAg);
 			//			getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
 		}
 
@@ -612,7 +613,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	public static final int iterationNumber=10;
 
-	static boolean varyProtocol=true;
+	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=false;
 
 	static boolean varyAgents=false;
@@ -645,7 +646,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	static ReplicationExperimentationParameters getDefaultParameters() {
 		return new ReplicationExperimentationParameters(
-				getProtocolId(),
+				ReplicationExperimentationParameters.getProtocolId(),
 				new AgentName("ziReplExp"),
 				ReplicationExperimentationParameters.startingNbAgents,
 				ReplicationExperimentationParameters.startingNbHosts,
@@ -654,14 +655,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Moyen,//load dispersion
-				(double)startingNbAgents/(double)startingNbHosts,//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean2.5,//
+				(double)ReplicationExperimentationParameters.startingNbAgents/(double)ReplicationExperimentationParameters.startingNbHosts,//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean2.5,//
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
 				NegotiationParameters.key4CentralisedstatusProto,//NegotiationParameters.key4mirrorProto,//
 				SocialChoiceType.Utility,
-				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4greedySelect,//
-				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4greedySelect,//
+				NegotiationParameters.key4greedySelect,//NegotiationParameters.key4rouletteWheelSelect,//
+				NegotiationParameters.key4greedySelect,//NegotiationParameters.key4rouletteWheelSelect,//
 				false,
 				ReplicationExperimentationParameters.doubleParameters2.get(0));
 	}
@@ -684,7 +685,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public LinkedList<ExperimentationParameters<ReplicationLaborantin>> generateSimulation() {
 		//		final String usedProtocol, agentSelection, hostSelection;
 		//		f.mkdirs();
-		new File(LogService.getMyPath()+"result_"+getProtocolId()+"/").mkdirs();
+		new File(LogService.getMyPath()+"result_"+ReplicationExperimentationParameters.getProtocolId()+"/").mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new HashSet<ReplicationExperimentationParameters>();
 		simuToLaunch.add(ReplicationExperimentationParameters.getDefaultParameters());
@@ -991,7 +992,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				}
 				//fixed resources capacity
 				final ReplicationExperimentationParameters n2 = p.clone();
-				n2.hostCapacityMean=(double)startingNbAgents/(double)startingNbHosts;
+				n2.hostCapacityMean=(double)ReplicationExperimentationParameters.startingNbAgents/(double)ReplicationExperimentationParameters.startingNbHosts;
 				if (n2.hostCapacityMean>n2.nbAgents/n2.nbHosts){
 					result.add(n2);
 				}

@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractIdentifier;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -38,7 +38,8 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 	 *
 	 */
 
-	public void setMyAgent(final SimpleNegotiatingAgent<?, InformedCandidature<Contract>> agent){
+	@Override
+	public void setMyAgent(final NegotiatingAgent<?, InformedCandidature<Contract>> agent){
 		super.setMyAgent(agent);
 		this.upgradingContracts=
 				new HashedTreeSet<InformedCandidature<Contract>, ReallocationContract<Contract>>(

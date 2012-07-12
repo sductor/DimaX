@@ -7,7 +7,6 @@ import java.util.Date;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -15,16 +14,18 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.launch.ApiLaunchService;
+import dima.introspectionbasedagents.services.launch.LaunchableComponent;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
 import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
-import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.shells.APIAgent.EndLiveMessage;
-import dima.introspectionbasedagents.shells.APIAgent.StartActivityMessage;
 import dimaxx.kernel.DimaXTask;
 import dimaxx.server.HostIdentifier;
 
-public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent{
+public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent, LaunchableComponent{
 
 	private static final long serialVersionUID = 1137235428764719916L;
 
@@ -33,7 +34,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	//
 
 	public static int nbCompetentAgent=0;
-	DimaXTask<BasicCompetentAgent> darxEngine=null;
+	public DimaXTask<BasicCompetentAgent> darxEngine=null;
 	boolean isActive=true;
 
 	//
@@ -252,23 +253,23 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.apiService.hasAppliStarted();
 	}
 
-	boolean launchWith(final APILauncherModule api) {
+	public boolean launchWith(final APILauncherModule api) {
 		return this.apiService.launchWith(api);
 	}
 
-	boolean launchWith(final APILauncherModule api, final HostIdentifier h) {
+	public boolean launchWith(final APILauncherModule api, final HostIdentifier h) {
 		return this.apiService.launchWith(api, h);
 	}
 
-	boolean start(final StartActivityMessage m) {
+	public boolean start(final StartActivityMessage m) {
 		return this.apiService.start(m);
 	}
 
-	boolean endLive(final EndLiveMessage m) {
+	public boolean endLive(final EndLiveMessage m) {
 		return this.apiService.endLive(m);
 	}
 
-	boolean endLive() {
+	public boolean endLive() {
 		return this.apiService.endLive();
 	}
 	/*

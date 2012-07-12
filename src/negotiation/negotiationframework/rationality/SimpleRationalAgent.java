@@ -106,6 +106,10 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 			throw new RuntimeException();
 		}
 	}
+	
+	public Class<? extends AgentState> getMyStateType(){
+		return myStateType;		
+	}
 
 	/* (non-Javadoc)
 	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyResources()

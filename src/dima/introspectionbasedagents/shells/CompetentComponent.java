@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents;
+package dima.introspectionbasedagents.shells;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -6,8 +6,12 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
+import dima.basicinterfaces.ProactiveComponentInterface;
 import dima.introspectionbasedagents.services.AgentCompetence;
-import dima.introspectionbasedagents.shells.NotReadyException;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
+import dimaxx.server.HostIdentifier;
 
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 

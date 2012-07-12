@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
@@ -15,7 +15,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
  * Service used by the agent to be concious of the system state
  */
 public abstract class FaultObservationService extends
-BasicAgentCompetence<SimpleNegotiatingAgent<?, ?>> {
+BasicAgentCompetence<NegotiatingAgent<?, ?>> {
 	private static final long serialVersionUID = 2339746438446977252L;
 
 	//

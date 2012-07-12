@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.Set;
 
 import negotiation.faulttolerance.experimentation.SearchTimeNotif;
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
@@ -34,9 +34,9 @@ public abstract class ResourceInformedSelectionCore <
 PersonalState extends AgentState,
 Contract extends MatchingCandidature>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
+BasicAgentCompetence<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
 implements SelectionCore<
-SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
+NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
 PersonalState,
 InformedCandidature<Contract>> {
 	private static final long serialVersionUID = 5994721006483536151L;

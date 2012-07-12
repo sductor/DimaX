@@ -1,4 +1,4 @@
-package negotiation.faulttolerance.collaborativecandidature;
+package negotiation.faulttolerance.negotiatingagent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,9 +6,6 @@ import java.util.List;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.faulttolerance.experimentation.ReplicationOptimalSolver;
-import negotiation.faulttolerance.negotiatingagent.HostState;
-import negotiation.faulttolerance.negotiatingagent.ReplicaState;
-import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.exploration.ChocoAllocationSolver;

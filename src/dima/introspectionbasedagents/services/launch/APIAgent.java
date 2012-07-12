@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents.shells;
+package dima.introspectionbasedagents.services.launch;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +14,16 @@ import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
+import dima.basicinterfaces.ProactiveComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
+import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 import dima.support.GimaObject;
 import dimaxx.deployment.DimaXDeploymentScript;
 import dimaxx.deployment.DimaXLocalLaunchScript;
@@ -96,36 +100,36 @@ public class APIAgent extends BasicCompetentAgent {
 		this.api.init();
 	}
 
-	public void launch(final Collection<BasicCompetentAgent> ags, final Map<AgentIdentifier, HostIdentifier> locations) {
-		for (final BasicCompetentAgent c : ags) {
+	public void launch(final Collection<LaunchableComponent> ags, final Map<AgentIdentifier, HostIdentifier> locations) {
+		for (final LaunchableComponent c : ags) {
 			c.launchWith(this.api, locations.get(c.getIdentifier()));
 		}
 	}
 
-	public  void launch(final Collection<BasicCompetentAgent> ags) {
-		for (final BasicCompetentAgent c : ags) {
+	public  void launch(final Collection<? extends LaunchableComponent> ags) {
+		for (final LaunchableComponent c : ags) {
 			c.launchWith(this.api);
 		}
 	}
 
-	public  void launch(final BasicCompetentAgent ag) {
+	public  void launch(final LaunchableComponent ag) {
 		ag.launchWith(this.api);
 	}
 
-	public  void launch(final BasicCompetentAgent ag, final HostIdentifier h) {
+	public  void launch(final LaunchableComponent ag, final HostIdentifier h) {
 		ag.launchWith(this.api,h);
 	}
 
 	//
 
-	public static void launch(final APILauncherModule api, final Map<BasicCompetentAgent, HostIdentifier> locations) {
-		for (final BasicCompetentAgent c : locations.keySet()) {
+	public static void launch(final APILauncherModule api, final Map<? extends LaunchableComponent, HostIdentifier> locations) {
+		for (final LaunchableComponent c : locations.keySet()) {
 			c.launchWith(api, locations.get(c));
 		}
 	}
 
-	public static void launch(final APILauncherModule api, final Collection<BasicCompetentAgent> ags) {
-		for (final BasicCompetentAgent c : ags) {
+	public static void launch(final APILauncherModule api, final Collection<? extends LaunchableComponent> ags) {
+		for (final LaunchableComponent c : ags) {
 			c.launchWith(api);
 		}
 	}
@@ -137,22 +141,22 @@ public class APIAgent extends BasicCompetentAgent {
 		this.api.startApplication();
 	}
 
-	public void startActivity(final BasicCompetentAgent ag) {
+	public void startActivity(final LaunchableComponent ag) {
 		this.api.startActivity(ag);
 	}
 
 
-	public void startActivities(final Collection<BasicCompetentAgent> ags){
+	public void startActivities(final Collection<? extends LaunchableComponent> ags){
 		this.api.start(ags);
 	}
 
 	//
 
-	public static void startActivities(final APILauncherModule api, final Collection<BasicCompetentAgent> ags){
+	public static void startActivities(final APILauncherModule api, final Collection<? extends LaunchableComponent> ags){
 		api.start(ags);
 	}
 
-	public static void startActivity(final APILauncherModule api, final BasicCompetentAgent ag){
+	public static void startActivity(final APILauncherModule api, final LaunchableComponent ag){
 		api.startActivity(ag);
 	}
 
@@ -173,8 +177,8 @@ public class APIAgent extends BasicCompetentAgent {
 		public static final String _logKeyForAPIManagement = "log key for api start";
 
 
-		private final Map<AgentIdentifier, BasicCompetentAgent> registeredAgent =
-				new HashMap<AgentIdentifier, BasicCompetentAgent>();
+		private final Map<AgentIdentifier, LaunchableComponent> registeredAgent =
+				new HashMap<AgentIdentifier, LaunchableComponent>();
 		Map<AgentIdentifier, HostIdentifier> locations =
 				new HashMap<AgentIdentifier, HostIdentifier>();
 
@@ -380,8 +384,8 @@ public class APIAgent extends BasicCompetentAgent {
 			this.start(this.registeredAgent.values());
 		}
 
-		void startActivity(final BasicCompetentAgent ag){
-			final Collection<BasicCompetentAgent> ags= new ArrayList<BasicCompetentAgent>();
+		void startActivity(final LaunchableComponent ag){
+			final Collection<LaunchableComponent> ags= new ArrayList<LaunchableComponent>();
 			ags.add(ag);
 			this.start(ags);
 		}
@@ -429,9 +433,9 @@ public class APIAgent extends BasicCompetentAgent {
 			this.avalaibleHosts.add(HostIdentifier.getLocalHost());
 		}
 
-		void start(final Collection<BasicCompetentAgent> ags){
+		void start(final Collection<? extends LaunchableComponent> ags){
 			final StartActivityMessage m = new StartActivityMessage();
-			for (final BasicCompetentAgent ag : ags)
+			for (final LaunchableComponent ag : ags)
 			{
 				if (this.myLaunchType.equals(LaunchType.NotThreaded)) {
 					ag.start(m);
@@ -458,9 +462,9 @@ public class APIAgent extends BasicCompetentAgent {
 			public int step = 0;
 			final int nbMaxStep;
 			boolean randomized = false;
-			List<BasicCompetentAgent> toInitialize = new ArrayList<BasicCompetentAgent>();
-			List<BasicCompetentAgent> toExecute = new ArrayList<BasicCompetentAgent>();
-			List<BasicCompetentAgent> toTerminate = new ArrayList<BasicCompetentAgent>();
+			List<ProactiveComponentInterface> toInitialize = new ArrayList<ProactiveComponentInterface>();
+			List<ProactiveComponentInterface> toExecute = new ArrayList<ProactiveComponentInterface>();
+			List<ProactiveComponentInterface> toTerminate = new ArrayList<ProactiveComponentInterface>();
 
 
 			/*
@@ -522,7 +526,7 @@ public class APIAgent extends BasicCompetentAgent {
 					if (this.randomized) {
 						Collections.shuffle(this.toInitialize);
 					}
-					for (final BasicCompetentAgent c : this.toInitialize){
+					for (final ProactiveComponentInterface c : this.toInitialize){
 						c.proactivityInitialize();
 						this.toExecute.add(c);
 					}
@@ -533,7 +537,7 @@ public class APIAgent extends BasicCompetentAgent {
 					if (this.randomized) {
 						Collections.shuffle(this.toExecute);
 					}
-					for (final BasicCompetentAgent c : this.toExecute) {
+					for (final ProactiveComponentInterface c : this.toExecute) {
 						if (c.isAlive()){
 							if (c.isActive()){
 								c.preActivity();
@@ -554,10 +558,10 @@ public class APIAgent extends BasicCompetentAgent {
 					if (this.randomized) {
 						Collections.shuffle(this.toTerminate);
 					}
-					for (final BasicCompetentAgent c : this.toTerminate){
+					for (final ProactiveComponentInterface c : this.toTerminate){
 						c.proactivityTerminate();
 						this.toExecute.remove(c);
-						AgentManagementSystem.getDIMAams().removeAquaintance(c);
+						AgentManagementSystem.getDIMAams().removeAquaintance((BasicCommunicatingAgent) c);
 					}
 					this.toTerminate.clear();
 
@@ -578,7 +582,7 @@ public class APIAgent extends BasicCompetentAgent {
 	//
 
 
-	class StartActivityMessage extends Message{
+	public class StartActivityMessage extends Message{
 		private static final long serialVersionUID = 5340852990030437060L;
 
 		private final Date startDate = new Date();
@@ -588,7 +592,7 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 	}
 
-	class EndLiveMessage extends Message{
+	public class EndLiveMessage extends Message{
 		private static final long serialVersionUID = 5340852990030437060L;
 
 		private final Date endDate = new Date();
@@ -597,7 +601,7 @@ public class APIAgent extends BasicCompetentAgent {
 			return this.endDate;
 		}
 	}
-	class SigKillOrder extends Message{
+	public class SigKillOrder extends Message{
 		private static final long serialVersionUID = 5340852990030437060L;
 
 		private final Date endDate = new Date();

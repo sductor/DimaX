@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 
 /**
  * Module are associated to an agent but are not proactive component

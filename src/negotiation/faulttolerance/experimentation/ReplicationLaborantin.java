@@ -3,6 +3,7 @@ package negotiation.faulttolerance.experimentation;
 import java.io.IOException;
 
 import negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
+import negotiation.negotiationframework.rationality.RationalAgent;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 
 import org.jdom.JDOMException;
@@ -10,7 +11,7 @@ import org.jdom.JDOMException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dimaxx.experimentation.Experimentator;
 import dimaxx.experimentation.IfailedException;
 import dimaxx.experimentation.Laborantin;
@@ -55,8 +56,8 @@ public class ReplicationLaborantin extends Laborantin {
 	}
 
 	@Override
-	public SimpleRationalAgent getAgent(final AgentIdentifier id){
-		return (SimpleRationalAgent) this.agents.get(id);
+	public RationalAgent getAgent(final AgentIdentifier id){
+		return (RationalAgent) this.agents.get(id);
 	}
 
 

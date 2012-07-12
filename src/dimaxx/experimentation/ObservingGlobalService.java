@@ -13,6 +13,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
 import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.AbstractMinMaxAggregation;
@@ -58,7 +59,7 @@ extends BasicCommunicatingCompetence<Agent>{
 	public abstract void initiate();
 
 	protected void setObservation() {
-		for (final BasicCompetentAgent ag : this.getMyAgent().getAgents()) {
+		for (final CompetentComponent ag : this.getMyAgent().getAgents()) {
 			ag.addObserver(this.getIdentifier(), ActivityLog.class);
 		}
 	}

@@ -2,7 +2,7 @@ package dima.introspectionbasedagents.services;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 
 /**
  * Interface for the competences,

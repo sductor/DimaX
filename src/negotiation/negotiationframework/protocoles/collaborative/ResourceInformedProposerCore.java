@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.NegotiatingAgent;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -16,9 +16,9 @@ import dima.introspectionbasedagents.shells.NotReadyException;
 public class ResourceInformedProposerCore<
 Contract extends MatchingCandidature,
 PersonalState extends AgentState>
-extends BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
+extends BasicAgentCompetence<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
 implements ProposerCore<
-SimpleNegotiatingAgent< PersonalState, InformedCandidature<Contract>>,
+NegotiatingAgent< PersonalState, InformedCandidature<Contract>>,
 PersonalState,
 InformedCandidature<Contract>> {
 

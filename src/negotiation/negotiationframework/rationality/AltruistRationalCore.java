@@ -111,7 +111,7 @@ implements RationalCore<Agent, PersonalState, Contract>{
 	//
 
 	public static  <Contract extends AbstractContractTransition> boolean verifyStateConsistency(
-			final SimpleRationalAgent<?, Contract> myAgent,
+			final RationalAgent<?, Contract> myAgent,
 			final Collection<Contract> c1,
 			final Collection<Contract> c2){
 		try {

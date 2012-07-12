@@ -5,7 +5,7 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.CommunicatingComponentInterface;
-import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 
 public class BasicCommunicatingCompetence<Agent extends CompetentComponent & CommunicatingComponentInterface> extends BasicAgentCompetence<Agent>{
 	private static final long serialVersionUID = -7270812729505868349L;

@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
+import negotiation.faulttolerance.Host;
+import negotiation.faulttolerance.Replica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
@@ -15,6 +17,7 @@ import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialC
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.shells.CompetentComponent;
 import dima.support.GimaObject;
 import dimaxx.experimentation.ExperimentationParameters;
 import dimaxx.experimentation.ExperimentationResults;
@@ -462,7 +465,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		}
 
 
-		for (final BasicCompetentAgent ag : this.getMyAgent().getAgents()) {
+		for (final CompetentComponent ag : this.getMyAgent().getAgents()) {
 			//Observation about agent
 			if (ag instanceof Replica || ag instanceof CollaborativeReplica){
 				//Observation de l'évolution des états de l'agent

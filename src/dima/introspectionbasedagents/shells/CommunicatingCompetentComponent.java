@@ -1,4 +1,4 @@
-package dima.introspectionbasedagents;
+package dima.introspectionbasedagents.shells;
 
 import dima.basicinterfaces.CommunicatingComponentInterface;
 

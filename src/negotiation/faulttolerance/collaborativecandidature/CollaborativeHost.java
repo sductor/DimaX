@@ -1,9 +1,10 @@
 package negotiation.faulttolerance.collaborativecandidature;
 
-import negotiation.faulttolerance.experimentation.Host;
+import negotiation.faulttolerance.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
+import negotiation.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidature;
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;

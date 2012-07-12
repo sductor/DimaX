@@ -10,8 +10,6 @@ import java.util.Map;
 import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.CommunicatingCompetentComponent;
-import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;

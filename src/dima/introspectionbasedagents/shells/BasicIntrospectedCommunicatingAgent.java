@@ -15,7 +15,7 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	private static final long serialVersionUID = -7910893993695270592L;
 	protected BasicCommunicatingShell myShell;
 
-	protected Date creation;
+	public Date creation;
 
 	public BasicIntrospectedCommunicatingAgent() {
 		super();

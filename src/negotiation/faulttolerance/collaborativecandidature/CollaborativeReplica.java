@@ -1,6 +1,12 @@
 package negotiation.faulttolerance.collaborativecandidature;
 
-import negotiation.faulttolerance.experimentation.Replica;
+import java.io.Serializable;
+import java.util.Collection;
+
+import negotiation.faulttolerance.Replica;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.protocoles.AtMostKCandidaturesProposer;
 import negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
@@ -10,8 +16,11 @@ import negotiation.negotiationframework.protocoles.collaborative.InformedCandida
 import negotiation.negotiationframework.protocoles.collaborative.InformedCandidatureRationality;
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.rationality.AltruistRationalCore;
+import negotiation.negotiationframework.rationality.RationalAgent;
+import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 
@@ -29,9 +38,20 @@ public class CollaborativeReplica extends Replica<InformedCandidature<Replicatio
 		super(id, myState,
 				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),new InformedCandidatureRationality(new ReplicaCore(false,false),true)),
 				new AgentInformedSelectionCore(),
-				new CollaborativeCandidatureProposer(simulateanousKCadidature),
-				new SimpleObservationService(),
-				new OneDeciderCommunicationProtocol(false),dynamicCriticity);
+				new AtMostKCandidaturesProposer(simulateanousKCadidature){
+			@Override
+			public InformedCandidature<ReplicationCandidature> constructCandidature(
+					final ResourceIdentifier id) {
+				final InformedCandidature<ReplicationCandidature> c =
+						new InformedCandidature<ReplicationCandidature>(new ReplicationCandidature(id,this.getMyAgent().getIdentifier(),true,true));
+				//		c.getPossibleContracts().addAll(((CollaborativeAgent)getMyAgent()).getCrt().getPossible(c));
+				((RationalAgent<ReplicaState, InformedCandidature<ReplicationCandidature>>) this.getMyAgent()).setMySpecif(c);
+				c.setInitialState(((RationalAgent<ReplicaState, InformedCandidature<ReplicationCandidature>>) this.getMyAgent()).getMyCurrentState());
+				return c;
+			}
+		},
+		new SimpleObservationService(),
+		new OneDeciderCommunicationProtocol(false),dynamicCriticity);
 	}
 
 }

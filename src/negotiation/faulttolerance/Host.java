@@ -1,5 +1,7 @@
-package negotiation.faulttolerance.experimentation;
+package negotiation.faulttolerance;
 
+import negotiation.faulttolerance.experimentation.ReplicationResultHost;
+import negotiation.faulttolerance.experimentation.SearchTimeNotif;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;

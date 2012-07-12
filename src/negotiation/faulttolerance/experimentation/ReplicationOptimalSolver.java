@@ -301,11 +301,11 @@ public class ReplicationOptimalSolver extends BasicAgentModule<ReplicationLabora
 
 	public static int asIntNashed(final double d, final SocialChoiceType _socialChoice){
 		if (_socialChoice.equals(SocialChoiceType.Nash)) {
-			return asInt(d, true);
+			return ReplicationOptimalSolver.asInt(d, true);
 		} else {
 			assert _socialChoice.equals(SocialChoiceType.Leximin)
 			|| _socialChoice.equals(SocialChoiceType.Utility):_socialChoice;
-			return asInt(d, false);
+			return ReplicationOptimalSolver.asInt(d, false);
 		}
 	}
 	public static int asInt(final double d, final boolean log){

@@ -12,7 +12,7 @@ import dima.introspectionbasedagents.shells.CompetentComponent;
  *
  * @param <Agent>
  */
-public class BasicAgentModule<Agent extends CompetentComponent> implements DimaComponentInterface{
+public class BasicAgentModule<Agent extends CompetentComponent> implements AgentModule<Agent>{
 	private static final long serialVersionUID = -8166804401339182512L;
 
 	//
@@ -41,6 +41,10 @@ public class BasicAgentModule<Agent extends CompetentComponent> implements DimaC
 		return this.getMyAgent().getIdentifier();
 	}
 
+	/* (non-Javadoc)
+	 * @see dima.introspectionbasedagents.services.AgentModule#setMyAgent(Agent)
+	 */
+	@Override
 	public void setMyAgent(final Agent ag) {
 		this.myAgent=ag;
 	}

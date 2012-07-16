@@ -9,9 +9,9 @@ import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dimaxx.deployment.DimaXDeploymentScript;
-import dimaxx.hostcontrol.RemoteHostExecutor;
+import dima.introspectionbasedagents.services.core.deployment.DimaXDeploymentScript;
+import dima.introspectionbasedagents.services.core.deployment.hosts.RemoteHostExecutor;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import examples.Factorial2.masapplication.AgentFact;
 import examples.Factorial2.masapplication.AgentMult;
 

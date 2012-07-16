@@ -8,7 +8,7 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelope
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SayingAliveToPeerCompetence extends BasicCommunicatingCompetence<BasicCompetentAgent> {

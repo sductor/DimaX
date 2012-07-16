@@ -5,9 +5,10 @@ import java.util.Date;
 
 import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basiccommunicationcomponents.AbstractMessage;
+import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
-import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedCommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCommunicatingMethodTrunk.UnHandledMessageException;
 
 public class BasicCommunicatingShell extends BasicIntrospectiveShell {
@@ -32,8 +33,8 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	}
 
 
-	public BasicCommunicatingShell(
-			final IdentifiedComponentInterface myComponent,
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicCommunicatingShell(
+			final Component myComponent,
 			final AbstractMailBox mailBox) {
 		super(myComponent, new BasicCommunicatingMethodTrunk());
 		this.mailBox=mailBox;
@@ -50,8 +51,8 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 		this.mailBox=myComponent.getMailBox();
 	}
 
-	public BasicCommunicatingShell(
-			final IdentifiedComponentInterface myComponent,
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicCommunicatingShell(
+			final Component myComponent,
 			final AbstractMailBox mailBox,
 			final SimpleExceptionHandler exceptionHandler) {
 		super(myComponent, new BasicCommunicatingMethodTrunk(), exceptionHandler);

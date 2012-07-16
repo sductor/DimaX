@@ -3,6 +3,7 @@ package dima.introspectionbasedagents.shells;
 import java.util.Collection;
 import java.util.Date;
 
+import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
 
 public interface IntrospectedMethodsTrunk extends DimaComponentInterface{
@@ -16,7 +17,7 @@ public interface IntrospectedMethodsTrunk extends DimaComponentInterface{
 	 * hashmaps
 	 *
 	 */
-	public abstract void load(DimaComponentInterface a);
+	public abstract void load(ActiveComponentInterface a);
 
 	public SimpleAgentStatus getStatus() ;
 

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
@@ -36,8 +37,8 @@ public class BasicIntrospectiveShell extends GimaObject {
 	// Constructor
 	//
 
-	public BasicIntrospectiveShell(
-			final IdentifiedComponentInterface myComponent,
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicIntrospectiveShell(
+			final Component myComponent,
 			final IntrospectedMethodsTrunk methods) {
 		super();
 		this.myComponentIdentifier=myComponent.getIdentifier();
@@ -47,8 +48,8 @@ public class BasicIntrospectiveShell extends GimaObject {
 		this.myMethods.load(myComponent);
 	}
 
-	public BasicIntrospectiveShell(
-			final IdentifiedComponentInterface myComponent,
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicIntrospectiveShell(
+			final Component myComponent,
 			final IntrospectedMethodsTrunk methods,
 			final SimpleExceptionHandler exceptionHandler) {
 		super();
@@ -63,8 +64,8 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 *
 	 */
 
-	public BasicIntrospectiveShell(
-			final IdentifiedComponentInterface myComponent) {
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicIntrospectiveShell(
+			final Component myComponent) {
 		super();
 		this.myComponentIdentifier=myComponent.getIdentifier();
 		this.myMethods = new BasicIntrospectedMethodsTrunk();
@@ -73,8 +74,8 @@ public class BasicIntrospectiveShell extends GimaObject {
 		this.myMethods.load(myComponent);
 	}
 
-	public BasicIntrospectiveShell(
-			final IdentifiedComponentInterface myComponent, final Date horloge,
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicIntrospectiveShell(
+			final Component myComponent, final Date horloge,
 			final SimpleExceptionHandler exceptionHandler) {
 		super();
 		this.myComponentIdentifier=myComponent.getIdentifier();
@@ -134,23 +135,23 @@ public class BasicIntrospectiveShell extends GimaObject {
 	//
 
 	public final void proactivityInitialize(final Date creation){
-		this.executeBehaviors(ProactivityInitialisation.class, creation);
+		this.executeBehaviors(ProactivityInitialisation.class, creation, true);
 
 	}
 
 	public final void preActivity(final Date creation){
-		this.executeBehaviors(PreStepComposant.class, creation);
+		this.executeBehaviors(PreStepComposant.class, creation, false);
 
 	}
 
 	public void step(final Date creation){
-		this.executeBehaviors(StepComposant.class, creation);
+		this.executeBehaviors(StepComposant.class, creation, false);
 
 	}
 
 	protected final Set<MethodHandler> metToRemove = new HashSet<MethodHandler>();
 	public final void postActivity(final Date creation){
-		this.executeBehaviors(PostStepComposant.class, creation);
+		this.executeBehaviors(PostStepComposant.class, creation, false);
 		for (final MethodHandler meth : this.metToRemove) {
 			this.myMethods.removeMethod(meth);
 		}
@@ -158,11 +159,11 @@ public class BasicIntrospectiveShell extends GimaObject {
 	}
 
 	public final void resumeActivity(final Date creation){
-		this.executeBehaviors(ResumeActivity.class, creation);
+		this.executeBehaviors(ResumeActivity.class, creation, true);
 	}
 
 	public void proactivityTerminate(final Date creation){
-		this.executeBehaviors(ProactivityFinalisation.class, creation);
+		this.executeBehaviors(ProactivityFinalisation.class, creation, true);
 	}
 
 
@@ -178,11 +179,13 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 * @param myComponent
 	 *            the agent to execute
 	 */
-	protected void executeBehaviors(final Class<? extends Annotation> annotation, final Date creation) {
+	protected void executeBehaviors(final Class<? extends Annotation> annotation, final Date creation, boolean forceExecution) {
 		for (final MethodHandler mt : this.myMethods.getMethods()) {
 			if (mt.isAnnotationPresent(annotation)) {
 				try {
-					final boolean toRemove = this.myMethods.executeStepMethod(mt, creation);
+					boolean toRemove = false;
+					if (forceExecution || mt.isActive())
+						toRemove = this.myMethods.executeStepMethod(mt, creation);
 					if (toRemove) {
 						this.metToRemove.add(mt);
 					}

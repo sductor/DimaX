@@ -1,6 +1,6 @@
 package dima.introspectionbasedagents.ontologies;
 
-import dima.basicinterfaces.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
 
 public class ClassEnveloppe implements Envelope {
 

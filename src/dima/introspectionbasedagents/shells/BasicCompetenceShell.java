@@ -9,14 +9,14 @@ import java.util.Map;
 
 import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
+import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedCommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 
 /**
  * The competence shell adds the handle of competences to an agent introspective shell

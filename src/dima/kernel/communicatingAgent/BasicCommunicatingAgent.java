@@ -14,14 +14,14 @@ import dima.basiccommunicationcomponents.CometCommunicationComponent;
 import dima.basiccommunicationcomponents.CommunicationComponent;
 import dima.basiccommunicationcomponents.Message;
 import dima.basiccommunicationcomponents.SimpleMailBox;
-import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedCommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.darxkernel.DimaXCommunicationComponent;
+import dima.introspectionbasedagents.services.core.darxkernel.DimaXTask;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dima.kernel.BasicAgents.AgentEngine;
 import dima.kernel.BasicAgents.BasicReactiveAgent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
-import dimaxx.kernel.DimaXCommunicationComponent;
-import dimaxx.kernel.DimaXTask;
 
 
 public abstract class BasicCommunicatingAgent extends BasicReactiveAgent implements MailBoxBasedCommunicatingComponentInterface {

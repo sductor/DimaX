@@ -2,16 +2,17 @@ package examples.dcop2.api;
 
 import java.util.HashMap;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
-import dimaxx.experimentation.ExperimentationParameters;
-import dimaxx.experimentation.ExperimentationResults;
-import dimaxx.experimentation.Laborantin;
-import dimaxx.experimentation.ObservingGlobalService;
-import dimaxx.tools.aggregator.HeavyDoubleAggregation;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.modules.aggregator.HeavyDoubleAggregation;
 import examples.dcop2.algo.BasicAlgorithm;
+import frameworks.experimentation.ExperimentationParameters;
+import frameworks.experimentation.ExperimentationResults;
+import frameworks.experimentation.Laborantin;
+import frameworks.experimentation.ObservingGlobalService;
 
 public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 

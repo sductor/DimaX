@@ -1,16 +1,17 @@
 package dima.basicinterfaces;
 
 import dima.basiccommunicationcomponents.CometCommunicationComponent;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.communicating.CommunicationComponentInterface;
+import dima.introspectionbasedagents.services.core.darxkernel.DimaXCommunicationComponent;
+import dima.introspectionbasedagents.services.core.darxkernel.DimaXTask;
+import dima.introspectionbasedagents.services.core.deployment.exceptions.UninstanciableMonitorException;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.monitoring.AgentMonitor;
+import dima.introspectionbasedagents.services.monitoring.MonitoredTask;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.ProactiveComponents.ProactiveComponentEngine;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 import dima.support.GimaObject;
-import dimaxx.exceptions.UninstanciableMonitorException;
-import dimaxx.kernel.DimaXCommunicationComponent;
-import dimaxx.kernel.DimaXTask;
-import dimaxx.monitoring.AgentMonitor;
-import dimaxx.monitoring.MonitoredTask;
 
 @Deprecated
 public abstract class ActivationEngine extends GimaObject implements ActivableComponent{

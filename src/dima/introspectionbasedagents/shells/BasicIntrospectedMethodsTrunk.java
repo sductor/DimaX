@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
+import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
@@ -15,7 +16,7 @@ import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 
 /**
@@ -83,7 +84,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	/**
 	 * Return the list of methods of object o that have annotation c
 	 */
-	protected Collection<MethodHandler> getMethods(final DimaComponentInterface o, final Class<? extends Annotation>... a){
+	protected Collection<MethodHandler> getMethods(final ActiveComponentInterface o, final Class<? extends Annotation>... a){
 
 		final Collection<MethodHandler> annotatedMethods = new ArrayList<MethodHandler>();
 		for (final Method mt : IntrospectionStaticPrimitivesLibrary.getAllMethods(o.getClass())) {
@@ -114,7 +115,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 * @see dima.introspectionBasedAgent.shells.IntrospedMethodsTrunk#init()
 	 */
 	@Override
-	public void load(final DimaComponentInterface a) {
+	public void load(final ActiveComponentInterface a) {
 		for (final MethodHandler mt : this.getRelevantMethods(a)) {
 			if (!this.checkMethodValidity(mt)) {
 				LogService.writeException(
@@ -150,7 +151,7 @@ public class BasicIntrospectedMethodsTrunk implements IntrospectedMethodsTrunk {
 	 */
 
 	@SuppressWarnings("unchecked")
-	protected Collection<MethodHandler> getRelevantMethods(final DimaComponentInterface o){
+	protected Collection<MethodHandler> getRelevantMethods(final ActiveComponentInterface o){
 		return this.getMethods(o,
 				ProactivityInitialisation.class,
 				PreStepComposant.class,StepComposant.class,PostStepComposant.class,

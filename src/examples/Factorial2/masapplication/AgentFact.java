@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 

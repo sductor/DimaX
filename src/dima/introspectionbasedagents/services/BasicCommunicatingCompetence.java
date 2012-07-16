@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
-import dima.basicinterfaces.CommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.CommunicatingComponentInterface;
 import dima.introspectionbasedagents.shells.CompetentComponent;
 
 public class BasicCommunicatingCompetence<Agent extends CompetentComponent & CommunicatingComponentInterface> extends BasicAgentCompetence<Agent>{

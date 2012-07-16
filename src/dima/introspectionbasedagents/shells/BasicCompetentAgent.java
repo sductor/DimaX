@@ -14,16 +14,16 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.launch.ApiLaunchService;
-import dima.introspectionbasedagents.services.launch.LaunchableComponent;
-import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
-import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
-import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
-import dimaxx.kernel.DimaXTask;
-import dimaxx.server.HostIdentifier;
+import dima.introspectionbasedagents.services.core.darxkernel.DimaXTask;
+import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.core.launch.ApiLaunchService;
+import dima.introspectionbasedagents.services.core.launch.LaunchableComponent;
+import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.core.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.core.launch.APIAgent.StartActivityMessage;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 
 public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent, LaunchableComponent{
 

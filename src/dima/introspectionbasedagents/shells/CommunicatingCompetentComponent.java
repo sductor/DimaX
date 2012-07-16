@@ -1,6 +1,6 @@
 package dima.introspectionbasedagents.shells;
 
-import dima.basicinterfaces.CommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.CommunicatingComponentInterface;
 
 public interface CommunicatingCompetentComponent extends CompetentComponent, CommunicatingComponentInterface {
 

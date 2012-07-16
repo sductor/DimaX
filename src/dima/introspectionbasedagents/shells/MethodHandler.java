@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.support.GimaObject;
 
 
@@ -19,27 +19,24 @@ public class MethodHandler extends SimpleMethodHandler {
 	 *
 	 */
 	private static final long serialVersionUID = -8867529827033886947L;
-	DimaComponentInterface caller;
+	ActiveComponentInterface caller;
 	Object[] args=null;
-	private boolean isActive=true;
+	boolean active=true;
+
 
 	//
 	// Constructor
 	//
 
-	public void setActive(final boolean isActive) {
-		this.isActive = isActive;
-	}
 
-
-	public MethodHandler(final DimaComponentInterface caller, final Method mt)//, final Object[] args)
+	public MethodHandler(final ActiveComponentInterface caller, final Method mt)//, final Object[] args)
 			throws SecurityException, IllegalArgumentException{
 		super(mt);
 		this.caller = caller;
 	}
 
 
-	public MethodHandler(final DimaComponentInterface caller, final String methodName, final Class<?>[] signature, final Object[] args)
+	public MethodHandler(final ActiveComponentInterface caller, final String methodName, final Class<?>[] signature, final Object[] args)
 			throws SecurityException, NoSuchMethodException, IllegalArgumentException{
 		super(caller.getClass().getMethod(methodName, signature==null?SimpleMethodHandler.getSignature(args):signature));
 		this.caller = caller;
@@ -52,6 +49,14 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 	// Accessors
 	//
+
+	public boolean isActive() {
+		return active && caller.isActive();
+	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public DimaComponentInterface getMyComponent() {
 		return this.caller;
@@ -95,7 +100,6 @@ public class MethodHandler extends SimpleMethodHandler {
 	}
 
 	public Object execute() throws Throwable {
-		if (!(this.caller instanceof ActiveComponentInterface) || ((ActiveComponentInterface) this.caller).isActive()) {
 			try {
 				return this.execute(this.caller, this.args);
 			} catch (final IllegalAccessException e) {
@@ -112,9 +116,6 @@ public class MethodHandler extends SimpleMethodHandler {
 				//						e.getCause());
 				throw e.getCause();
 			}
-		} else {
-			return null;
-		}
 	}
 
 	//
@@ -122,15 +123,11 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 
 	private Object execute(final Object myComponent, final Object[] args) throws IllegalArgumentException, InvocationTargetException, IllegalAccessException {
-		if (this.isActive){
 			final Method m = this.getMethod();
 			if (!m.isAccessible()) {
 				m.setAccessible(true);
 			}
 			return m.invoke(myComponent, args);
-		} else {
-			return null;
-		}
 	}
 }
 

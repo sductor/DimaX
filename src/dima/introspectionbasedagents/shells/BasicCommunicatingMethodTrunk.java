@@ -4,17 +4,19 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
 import dima.basiccommunicationcomponents.AbstractMessage;
-import dima.basicinterfaces.AbstractMessageInterface;
+import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageCollectionHandler;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.ontologies.ClassEnveloppe;
 import dima.introspectionbasedagents.ontologies.Envelope;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.modules.mappedcollections.HashedHashSet;
 import dima.support.DimaException;
-import dimaxx.tools.mappedcollections.HashedHashSet;
 
 public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk implements CommunicationMethodsTrunk {
 
@@ -126,7 +128,7 @@ public class BasicCommunicatingMethodTrunk extends BasicIntrospectedMethodsTrunk
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<MethodHandler> getRelevantMethods(final DimaComponentInterface a){
+	protected Collection<MethodHandler> getRelevantMethods(final ActiveComponentInterface a){
 		final Collection<MethodHandler> r =
 				this.getMethods(a, MessageCollectionHandler.class,MessageHandler.class);
 		r.addAll(super.getRelevantMethods(a));

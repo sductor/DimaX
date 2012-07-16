@@ -10,14 +10,9 @@ import org.jdom.JDOMException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dimaxx.experimentation.ExperimentationParameters;
-import dimaxx.experimentation.Experimentator;
-import dimaxx.experimentation.IfailedException;
-import dimaxx.experimentation.Laborantin;
-import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
-import dimaxx.server.HostIdentifier;
 import examples.dcopAmeliorer.algo.Algorithm;
 import examples.dcopAmeliorer.algo.BasicAlgorithm;
 import examples.dcopAmeliorer.algo.korig.AlgoKOptOriginal;
@@ -28,6 +23,11 @@ import examples.dcopAmeliorer.daj.Node;
 import examples.dcopAmeliorer.dcop.Constraint;
 import examples.dcopAmeliorer.dcop.Graph;
 import examples.dcopAmeliorer.dcop.Variable;
+import frameworks.experimentation.ExperimentationParameters;
+import frameworks.experimentation.Experimentator;
+import frameworks.experimentation.IfailedException;
+import frameworks.experimentation.Laborantin;
+import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 
 public class DCOPExperimentationParameters extends ExperimentationParameters<Laborantin>{
 

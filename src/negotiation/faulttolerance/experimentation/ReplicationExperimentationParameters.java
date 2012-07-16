@@ -709,7 +709,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
-				NegotiationParameters.key4mirrorProto,//NegotiationParameters.key4CentralisedstatusProto,//
+				NegotiationParameters.key4CentralisedstatusProto,//NegotiationParameters.key4mirrorProto,//
 				SocialChoiceType.Utility,
 				NegotiationParameters.key4greedySelect,
 				NegotiationParameters.key4greedySelect,

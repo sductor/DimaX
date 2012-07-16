@@ -4,7 +4,7 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
-import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 /**
@@ -13,7 +13,7 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
  * @author Ductor Sylvain
  *
  */
-public class Protocol<Agent extends CommunicatingCompetentComponent> extends BasicAgentCommunicatingCompetence<Agent> {
+public class Protocol<Agent extends CommunicatingCompetentComponent> extends BasicCommunicatingCompetence<Agent> {
 	private static final long serialVersionUID = -6952844743512562269L;
 
 	public interface ProtocolRole extends DimaComponentInterface{

@@ -3,11 +3,10 @@ package negotiation.negotiationframework.contracts;
 import java.util.Collection;
 
 import negotiation.negotiationframework.rationality.AgentState;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 
-public interface AbstractContractTransition<ActionSpec extends AbstractActionSpecification>
+public interface AbstractContractTransition
 extends DimaComponentInterface {
 
 	public ContractIdentifier getIdentifier();
@@ -20,10 +19,14 @@ extends DimaComponentInterface {
 
 	public Collection<AgentIdentifier> getAllInvolved();
 
-	public void setSpecification(ActionSpec s);
+	public <ActionSpec extends AbstractActionSpecif> void setSpecification(ActionSpec spec);
+	
+	public <State extends AgentState> void setInitialState(final State state);
 
-	ActionSpec getSpecificationOf(AgentIdentifier id) throws IncompleteContractException;
+	AbstractActionSpecif getSpecificationOf(AgentIdentifier id) throws IncompleteContractException;
 
+	public AgentState getInitialState(AgentIdentifier id)  throws IncompleteContractException;
+	
 	//Attention retourne l'état tel quel si l'agent n'est pas concerné
 	public <State extends AgentState> State computeResultingState(AgentIdentifier id)
 			throws IncompleteContractException;
@@ -52,6 +55,8 @@ extends DimaComponentInterface {
 	public boolean willReachExpirationTime(long t);
 
 	public long getCreationTime();
+	
+	public AbstractContractTransition clone();
 
 	//	public boolean isViable()	throws IncompleteContractException;
 
@@ -60,16 +65,16 @@ extends DimaComponentInterface {
 	public <State extends AgentState> boolean isViable(State... initialStates)	throws IncompleteContractException;
 
 	public <State extends AgentState> boolean isViable(Collection<State> initialStates)	throws IncompleteContractException;
-
+	
+	public boolean isComplete();
+	
 	public class IncompleteContractException extends Exception{
-
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 7759487818635127561L;};
-		// public ContractTransition<ActionSpec> clone();
-
-
+		private static final long serialVersionUID = 7759487818635127561L;
+		public IncompleteContractException(String message) {
+			super(message);
+		}	
+		public IncompleteContractException() {}
+	};
 }
 
 //

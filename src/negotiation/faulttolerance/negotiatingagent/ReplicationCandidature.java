@@ -1,13 +1,22 @@
 package negotiation.faulttolerance.negotiatingagent;
 
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import negotiation.negotiationframework.NegotiationParameters;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
+import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ContractTransition;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public class ReplicationCandidature extends
-MatchingCandidature<ReplicationSpecification> {
+MatchingCandidature {
 	private static final long serialVersionUID = -313913132536347399L;
 
 	//
@@ -30,6 +39,7 @@ MatchingCandidature<ReplicationSpecification> {
 	// Methods
 	//
 
+
 	@Override
 	public <State extends AgentState>  State computeResultingState(final State s) throws IncompleteContractException {
 		if (s instanceof ReplicaState) {
@@ -40,11 +50,7 @@ MatchingCandidature<ReplicationSpecification> {
 			throw new RuntimeException("arrrggghhhh!!!!"+s);
 		}
 	}
-	
-	@Override
-	public ReplicationSpecification computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
-		return this.computeResultingState(this.getSpecificationOf(id));
-	}
+
 
 	public ReplicaState getAgentResultingState() throws IncompleteContractException{
 		return (ReplicaState) this.computeResultingState(this.getAgent());
@@ -59,16 +65,16 @@ MatchingCandidature<ReplicationSpecification> {
 	 */
 
 	public ReplicaState getAgentInitialState() throws IncompleteContractException{
-		return (ReplicaState) this.getSpecificationOf(this.getAgent());
+		return (ReplicaState) this.getInitialState(this.getAgent());
 	}
-	
+
 	public HostState getResourceInitialState() throws IncompleteContractException{
-		return (HostState) this.getSpecificationOf(this.getResource());
+		return (HostState) this.getInitialState(this.getResource());
 	}
 
 	private ReplicaState getAgentResultingState(final ReplicaState fromState) throws IncompleteContractException {
 
-		assert this.getSpecificationOf(this.getResource()) != null:"wtf? " + this;
+		assert this.getInitialState(this.getResource()) != null:"wtf? " + this;
 		assert fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == true:
 			"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 		assert !fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == false:
@@ -86,14 +92,14 @@ MatchingCandidature<ReplicationSpecification> {
 
 	private HostState getResourceResultingState(final HostState fromState) throws IncompleteContractException {
 
-		assert this.getSpecificationOf(this.getAgent()) != null:"wtf? " + this;
+		assert this.getInitialState(this.getAgent()) != null:"wtf? " + this;
 		assert fromState.Ihost(this.getAgent()) || this.creation == true:
 			" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"+ this.getAgent()+" \n contract : "+this	+ "\n --> fromState " + fromState;
 		assert !fromState.Ihost(this.getAgent()) || this.creation == false:
 			" : ooohhhhhhhhhhhhhhhhh  =( "+(this.creation?"agent already created!":"CAN NOT DESTRUCT ")+" \n contract : "+this	+ "\n --> fromState " + fromState
 			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
 
-		
+
 		if (!fromState.getMyAgentIdentifier().equals(this.getResource())) {
 			return fromState;
 		} else {
@@ -102,6 +108,25 @@ MatchingCandidature<ReplicationSpecification> {
 				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();
 			return r;
 		}
+	}
+
+
+	public AbstractContractTransition clone(){		
+		ReplicationCandidature clone = new ReplicationCandidature(
+				this.getResource(), 
+				this.getAgent(), 
+				this.isMatchingCreation(), 
+				this.getInitiator().equals(this.getAgent()));
+		for (AgentIdentifier id : initState.keySet()){
+			clone.initState.put(id, initState.get(id).clone());
+		}
+		if (specs!=null){
+			for (AgentIdentifier id : specs.keySet()){
+				clone.specs.put(id, specs.get(id).clone());
+			}
+		}
+		clone.creationTime=this.creationTime;
+		return clone;
 	}
 }
 

@@ -6,6 +6,12 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.CompetentComponent;
 
+/**
+ * Module are associated to an agent but are not proactive component
+ * @author ductors
+ *
+ * @param <Agent>
+ */
 public class BasicAgentModule<Agent extends CompetentComponent> implements DimaComponentInterface{
 	private static final long serialVersionUID = -8166804401339182512L;
 
@@ -68,6 +74,10 @@ public class BasicAgentModule<Agent extends CompetentComponent> implements DimaC
 		return this.myAgent.logMonologue(text, details);
 	}
 
+
+	public Boolean logMonologue(final String text) {
+		return this.myAgent.logMonologue(text);
+	}
 	//	@Override
 	//	public Boolean logMonologue(final String text) {
 	//		return this.myAgent.logMonologue(text);
@@ -86,6 +96,13 @@ public class BasicAgentModule<Agent extends CompetentComponent> implements DimaC
 		return this.myAgent.logWarning(text, details);
 	}
 
+	public Boolean logWarning(final String text, final Throwable e) {
+		return this.myAgent.logWarning(text, e);
+	}
+
+	public Boolean logWarning(final String text) {
+		return this.myAgent.logWarning(text);
+	}
 	//	@Override
 	//	public Boolean logWarning(final String text) {
 	//		return this.myAgent.logWarning(text);

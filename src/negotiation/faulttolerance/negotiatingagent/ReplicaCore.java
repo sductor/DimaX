@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
+import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -11,9 +13,9 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public  class ReplicaCore
 extends
-BasicAgentCompetence<SimpleRationalAgent<ReplicationSpecification, ReplicaState, ReplicationCandidature>>
+BasicAgentCompetence<SimpleRationalAgent<ReplicaState, ReplicationCandidature>>
 implements
-RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
+RationalCore<ReplicaState, ReplicationCandidature>  {
 	private static final long serialVersionUID = 3436030307737036668L;
 
 	//
@@ -30,11 +32,19 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	//
 
 	@Override
-	public int getAllocationPreference(final ReplicaState s,
+	public int getAllocationPreference(
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
+		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
+//		for (final ReplicationCandidature c : c1) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//		}
+//		for (final ReplicationCandidature c : c2) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//		}
 		//		return this.getFirstLoadSecondReliabilitAllocationPreference(s, c1, c2);
-		return this.getAllocationReliabilityPreference(s, c1, c2);
+		AltruistRationalCore.verifyStateConsistency(getMyAgent(), c1, c2);
+		return this.getAllocationReliabilityPreference(c1, c2);
 	}
 
 
@@ -42,7 +52,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	@Override
 	public void execute(final Collection<ReplicationCandidature> cs) {
 		try {
-//			assert ContractTransition.allViable(cs):cs;
+			//			assert ContractTransition.allViable(cs):cs;
 			//		logMonologue(
 			//				"executing "+c+" from state "
 			//		+this.getMyAgent().getMyCurrentState()
@@ -79,7 +89,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 				this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onFile);
 			}
 		} catch (final IncompleteContractException e) {
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 
 	}
@@ -88,10 +98,10 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 
 
 	@Override
-	public ReplicaState getMySpecif(
+	public void setMySpecif(
 			final ReplicaState s,
 			final ReplicationCandidature c) {
-		return s;
+//		return new NoActionSpec();
 	}
 
 
@@ -105,7 +115,7 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 		Double min = Double.POSITIVE_INFINITY;
 		Double max = Double.NEGATIVE_INFINITY;
 
-		for (final ReplicationSpecification r : this.getMyAgent().getMyResources()) {
+		for (final AgentState r : this.getMyAgent().getMyResources()) {
 			min = Math.min(min, ((HostState) r).getMyCharge());
 			max = Math.max(max, ((HostState) r).getMyCharge());
 		}
@@ -113,24 +123,24 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 		return max - min;
 	}
 
-	protected int getAllocationReliabilityPreference(final ReplicaState s,
+	protected int getAllocationReliabilityPreference(
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		Double r1, r2;
-		final ReplicaState s1 = this.getMyAgent().getMyResultingState(s, c1);
-		final ReplicaState s2 = this.getMyAgent().getMyResultingState(s, c2);
+		final ReplicaState s1 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c1);
+		final ReplicaState s2 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c2);
 		r1 = s1.getMyDisponibility();
 		r2 = s2.getMyDisponibility();
 		return r1.compareTo(r2);
 	}
 
-	protected int getAllocationLoadPreference(final ReplicaState s,
+	protected int getAllocationLoadPreference(
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
 		Double e0, e1, e2;
-		final ReplicaState s1 = this.getMyAgent().getMyResultingState(s, c1);
-		final ReplicaState s2 = this.getMyAgent().getMyResultingState(s, c2);
-		e0 = this.getLoadEtendue(s);
+		final ReplicaState s1 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c1);
+		final ReplicaState s2 = this.getMyAgent().getMyResultingState(getMyAgent().getMyCurrentState(), c2);
+		e0 = this.getLoadEtendue(getMyAgent().getMyCurrentState());
 		e1 = this.getLoadEtendue(s1);
 		e2 = this.getLoadEtendue(s2);
 
@@ -157,12 +167,11 @@ RationalCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>  {
 	// else //e2.equals(e0)
 	// return 1;
 
-	protected int getFirstLoadSecondReliabilitAllocationPreference(
-			final ReplicaState s, final Collection<ReplicationCandidature> c1,
+	protected int getFirstLoadSecondReliabilitAllocationPreference(final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-		final int loadPreference = this.getAllocationLoadPreference(s, c1, c2);
+		final int loadPreference = this.getAllocationLoadPreference(c1, c2);
 		if (loadPreference == 0) {
-			return this.getAllocationReliabilityPreference(s, c1, c2);
+			return this.getAllocationReliabilityPreference(c1, c2);
 		} else {
 			return loadPreference;
 		}

@@ -200,6 +200,7 @@ ObservationService {
 	public <Info extends Information> void receiveInformation(
 			final NotificationMessage<Information> o) {
 		this.add(o.getNotification());
+		
 	}
 
 	//

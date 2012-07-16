@@ -2,34 +2,35 @@ package negotiation.negotiationframework.rationality;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.contracts.ReallocationContract;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class AltruistRationalCore<
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends BasicAgentCompetence<SimpleRationalAgent<ActionSpec,PersonalState,Contract>>
-implements RationalCore<ActionSpec, PersonalState, Contract>{
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
+extends BasicAgentCompetence<SimpleRationalAgent<PersonalState,Contract>>
+implements RationalCore<PersonalState, Contract>{
 	private static final long serialVersionUID = -2882287744826409737L;
 
 	//
 	// Fields
 	//
 
-	private final SocialChoiceFunction<ActionSpec, Contract> myOptimiser;
-	private final RationalCore<ActionSpec, PersonalState, Contract>  myPersonalCore;
+	private final SocialChoiceFunction<Contract> myOptimiser;
+	private final RationalCore<PersonalState, Contract>  myPersonalCore;
 
 	//
 	// Constructor
 	//
 
 	public AltruistRationalCore(
-			final SocialChoiceFunction<ActionSpec, Contract> opt,
-			final RationalCore<ActionSpec, PersonalState, Contract> rationality) {
+			final SocialChoiceFunction<Contract> opt,
+			final RationalCore<PersonalState, Contract> rationality) {
 		this.myOptimiser = opt;
 		this.myPersonalCore= rationality;
 	}
@@ -39,14 +40,9 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	@Override
-	public final int getAllocationPreference(final PersonalState s,
+	public final int getAllocationPreference(
 			final Collection<Contract> c1,
 			final Collection<Contract> c2) {
-		for (final Contract c : c1) {
-			c.setSpecification(s);
-		}	for (final Contract c : c2) {
-			c.setSpecification(s);
-		}
 		return this.myOptimiser.getSocialPreference(c1, c2);
 	}
 
@@ -60,8 +56,8 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	//
 
 	@Override
-	public ActionSpec getMySpecif(final PersonalState s, final Contract c) {
-		return this.myPersonalCore.getMySpecif(s, c);
+	public void setMySpecif(final PersonalState s, final Contract c) {
+		this.myPersonalCore.setMySpecif(s, c);
 	}
 
 	@Override
@@ -79,13 +75,13 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	}
 
 	@Override
-	public SimpleRationalAgent<ActionSpec, PersonalState, Contract> getMyAgent() {
+	public SimpleRationalAgent<PersonalState, Contract> getMyAgent() {
 		return this.myPersonalCore.getMyAgent();
 	}
 
 	@Override
 	public void setMyAgent(
-			final SimpleRationalAgent<ActionSpec, PersonalState, Contract> ag) {
+			final SimpleRationalAgent<PersonalState, Contract> ag) {
 		this.myPersonalCore.setMyAgent(ag);
 	}
 
@@ -103,4 +99,29 @@ implements RationalCore<ActionSpec, PersonalState, Contract>{
 	public void activateCompetence(final boolean active) {
 		this.myPersonalCore.activateCompetence(active);
 	}
+
+	//
+	// Assertion test
+	//
+
+	public static  <Contract extends AbstractContractTransition> boolean verifyStateConsistency(
+			SimpleRationalAgent<?, Contract> myAgent,
+			final Collection<Contract> c1,
+			final Collection<Contract> c2){
+		try {
+		for (final Contract ca : c1) {
+			for (final Contract cb : c2) {
+				assert ca.getInitialState(myAgent.getIdentifier()).equals(cb.getInitialState(myAgent.getIdentifier()));
+			}
+		}
+		for (final Contract ca : c1) {
+			assert ca.getInitialState(myAgent.getIdentifier()).equals(myAgent.getMyCurrentState());
+		}
+		return true;
+		} catch (IncompleteContractException c){
+			assert false;
+			return true;
+		}
+	}
+
 }

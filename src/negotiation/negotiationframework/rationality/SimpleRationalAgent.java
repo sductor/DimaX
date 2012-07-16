@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.contracts.ContractTransition;
@@ -19,9 +19,8 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SimpleRationalAgent<
-ActionSpec extends AbstractActionSpecification,
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition<ActionSpec>>
+Contract extends AbstractContractTransition>
 extends BasicCompetentAgent {
 	private static final long serialVersionUID = -6248384713199838544L;
 
@@ -36,7 +35,7 @@ extends BasicCompetentAgent {
 	private final ObservationService myInformation;
 
 	@Competence
-	public RationalCore<ActionSpec, PersonalState, Contract> myCore;
+	public RationalCore<PersonalState, Contract> myCore;
 
 	public Class<? extends AgentState> myStateType;
 	public final int initialStateNumber;
@@ -49,7 +48,7 @@ extends BasicCompetentAgent {
 	public SimpleRationalAgent(
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
-			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
+			final RationalCore<PersonalState, Contract> myRationality,
 			final ObservationService myInformation)
 					throws CompetenceException {
 		super(id);
@@ -72,7 +71,7 @@ extends BasicCompetentAgent {
 		return this.myInformation;
 	}
 
-	public RationalCore<ActionSpec, PersonalState, Contract> getMyCore() {
+	public RationalCore<PersonalState, Contract> getMyCore() {
 		return this.myCore;
 	}
 
@@ -98,11 +97,11 @@ extends BasicCompetentAgent {
 		}
 	}
 
-	public Collection<ActionSpec> getMyResources(){
-		final Collection<ActionSpec> myResources = new ArrayList<ActionSpec>();
+	public Collection<? extends AgentState> getMyResources(){
+		final Collection<AgentState> myResources = new ArrayList<AgentState>();
 		for (final AgentIdentifier id : this.getMyCurrentState().getMyResourceIdentifiers()) {
 			try {
-				ActionSpec ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				AgentState ress = (AgentState) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
 				myResources.add(ress);
 			} catch (final NoInformationAvailableException e) {
@@ -112,8 +111,8 @@ extends BasicCompetentAgent {
 		return myResources;
 	}
 
-	public ActionSpec getResource(AgentIdentifier id) throws NoInformationAvailableException{
-		return (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+	public AgentState getResource(AgentIdentifier id) throws NoInformationAvailableException{
+		return this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 	}
 
 	public void setNewState(final PersonalState s) {
@@ -132,9 +131,9 @@ extends BasicCompetentAgent {
 		assert (s.isNewerThan(getMyCurrentState())>0):this.getMyCurrentState()+"\n"+s;
 		for (AgentIdentifier id : s.getMyResourceIdentifiers()){
 			//			assert this.getMyInformation().hasInformation(this.getMyCurrentState().getMyResourcesClass(), id);
-			ActionSpec ress;
+			AgentState ress;
 			try {
-				ress = (ActionSpec) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
+				ress = (AgentState) this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(getIdentifier());
 			} catch (NoInformationAvailableException e) {
 				//				assert 1<0:e;
@@ -156,12 +155,12 @@ extends BasicCompetentAgent {
 	 */
 
 
-	public ActionSpec getMySpecif(final PersonalState s, final Contract c){
-		return this.myCore.getMySpecif(s, c);
+	public void setMySpecif(final PersonalState s, final Contract c){
+		this.myCore.setMySpecif(s, c);
 	}
 
-	public ActionSpec getMySpecif(final Contract c){
-		return this.myCore.getMySpecif(this.getMyCurrentState(), c);
+	public  void setMySpecif(final Contract c){
+		this.myCore.setMySpecif(this.getMyCurrentState(), c);
 	}
 
 	public PersonalState getMyResultingState(final PersonalState s, final Contract c) {
@@ -207,19 +206,6 @@ extends BasicCompetentAgent {
 	 * Rationality
 	 */
 
-	public boolean isAnImprovment(final PersonalState s, final Contract c) {
-		final Collection<Contract> a = new ArrayList<Contract>();
-		a.add(c);
-		return this.Iaccept(s, a);
-	}
-
-	public boolean isAnImprovment(final PersonalState s, final Collection<? extends Contract> c) {
-		final Collection<Contract> a2 = new ArrayList<Contract>();
-		return isPersonalyValid(s, c)
-				&& this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) > 0;
-	}
-
-
 	public boolean Iaccept(final PersonalState s, final Contract c) {
 		final Collection<Contract> a = new ArrayList<Contract>();
 		a.add(c);
@@ -229,7 +215,16 @@ extends BasicCompetentAgent {
 	public boolean Iaccept(final PersonalState s, final Collection<? extends Contract> c) {
 		final Collection<Contract> a2 = new ArrayList<Contract>();
 		return isPersonalyValid(s, c)
-				&&  this.myCore.getAllocationPreference(s, (Collection<Contract>) c, a2) >= 0;
+				&& this.myCore.getAllocationPreference((Collection<Contract>) c, a2) > 0;
+	}
+
+
+	public boolean Iaccept(final Contract c) {
+		return this.Iaccept(getMyCurrentState(), c);
+	}
+
+	public boolean Iaccept(final Collection<? extends Contract> c) {
+		return Iaccept(getMyCurrentState(),c);
 	}
 
 	/*
@@ -264,8 +259,7 @@ extends BasicCompetentAgent {
 			@Override
 			public int compare(final Collection<Contract> o1,
 					final Collection<Contract> o2) {
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						SimpleRationalAgent.this.getMyCurrentState(), o1, o2);
+				return SimpleRationalAgent.this.myCore.getAllocationPreference(o1, o2);
 			}
 		};
 		return myComparator;
@@ -279,8 +273,7 @@ extends BasicCompetentAgent {
 				a1.add(o1);
 				final Collection<Contract> a2 = new ArrayList<Contract>();
 				a2.add(o2);
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						SimpleRationalAgent.this.getMyCurrentState(), a1, a2);
+				return SimpleRationalAgent.this.myCore.getAllocationPreference(a1, a2);
 			}
 		};
 		return myComparator;
@@ -289,34 +282,6 @@ extends BasicCompetentAgent {
 	/*
 	 *
 	 */
-
-	public Comparator<Collection<Contract>> getMyAllocationPreferenceComparator(
-			final PersonalState s) {
-		final Comparator<Collection<Contract>> myComparator = new Comparator<Collection<Contract>>() {
-			@Override
-			public int compare(final Collection<Contract> o1,
-					final Collection<Contract> o2) {
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						s, o1, o2);
-			}
-		};
-		return myComparator;
-	}
-
-	public Comparator<Contract> getMyPreferenceComparator(final PersonalState s) {
-		final Comparator<Contract> myComparator = new Comparator<Contract>() {
-			@Override
-			public int compare(final Contract o1, final Contract o2) {
-				final Collection<Contract> a1 = new ArrayList<Contract>();
-				a1.add(o1);
-				final Collection<Contract> a2 = new ArrayList<Contract>();
-				a2.add(o2);
-				return SimpleRationalAgent.this.myCore.getAllocationPreference(
-						s, a1, a2);
-			}
-		};
-		return myComparator;
-	}
 
 	public  Double evaluatePreference(final Collection<Contract> cs){
 		return this.myCore.evaluatePreference(cs);

@@ -1,12 +1,18 @@
 package negotiation.negotiationframework.contracts;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AgentState;
 
 import dima.basicagentcomponents.AgentIdentifier;
 
-public abstract class MatchingCandidature<
-ActionSpec extends AbstractActionSpecification>
-extends ContractTransition<ActionSpec> {
+public abstract class MatchingCandidature
+extends ContractTransition {
 
 	/**
 	 *
@@ -64,13 +70,13 @@ extends ContractTransition<ActionSpec> {
 	@Override
 	public boolean isInitiallyValid() throws IncompleteContractException{
 		final boolean agentContainsResource =
-				this.getSpecificationOf(this.getAgent()).getMyResourceIdentifiers().contains(this.getResource());
+				this.getInitialState(this.getAgent()).getMyResourceIdentifiers().contains(this.getResource());
 		final boolean ressourceContainsAgent =
-				this.getSpecificationOf(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
+				this.getInitialState(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
 		assert  agentContainsResource && ressourceContainsAgent || !agentContainsResource && !ressourceContainsAgent:
-			"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
+			"incoherent states:\n"+this.getInitialState(this.getAgent())+":\n"+this.getInitialState(this.getResource());
 		assert this.isMatchingCreation()?!agentContainsResource:agentContainsResource:" creation impossible : creation?"
-		+this.isMatchingCreation()+"incoherent states:\n"+this.getSpecificationOf(this.getAgent())+":\n"+this.getSpecificationOf(this.getResource());
+		+this.isMatchingCreation()+"incoherent states:\n"+this.getInitialState(this.getAgent())+":\n"+this.getInitialState(this.getResource());
 
 		return super.isInitiallyValid();
 	}
@@ -81,34 +87,52 @@ extends ContractTransition<ActionSpec> {
 
 	@Override
 	public String toString() {
-		String agentSpecif, hostSpecif;
+		String agentSpecif, hostSpecif, agentinitState, hostinitState;
 		final String agentResult, hostResult, isviable;
 
 		try {
 			agentSpecif = this.getSpecificationOf(this.getAgent()).toString();
-			//			agentResult = this.computeResultingState(getAgent()).toString();
-		} catch (final negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		} catch (final IncompleteContractException e) {
 			agentSpecif = "unavailable";
-			//			agentResult = "unavailable";
 		}
 		try {
 			hostSpecif = this.getSpecificationOf(this.getResource()).toString();
-			//			hostResult = this.computeResultingState(getResource()).toString();
-		} catch (final negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		} catch (final IncompleteContractException e) {
 			hostSpecif = "unavailable";
-			//			hostResult = "unavailable";
 		}
+		try {
+			agentinitState = this.getInitialState(this.getAgent()).toString();
+		} catch (final IncompleteContractException e) {
+			agentinitState = "unavailable";
+		}
+		try {
+			hostinitState = this.getInitialState(this.getResource()).toString();
+		} catch (final IncompleteContractException e) {
+			hostinitState = "unavailable";
+		}
+//		try {
+//			agentResult = this.computeResultingState(getAgent()).toString();
+//		} catch (final IncompleteContractException e) {
+//			agentResult = "unavailable";
+//		}
+//		try {
+//			hostResult = this.computeResultingState(getResource()).toString();
+//		} catch (final IncompleteContractException e) {
+//			hostResult = "unavailable";
+//		}
 		//		try {
 		//			isviable= isViable()+"";
-		//		} catch (negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException e) {
+		//		} catch (IncompleteContractException e) {
 		//			isviable="unavailable";
 		//		}
 
 		return this.getIdentifier() + " -> ("
 		+ (this.creation ? "create" : "destruct") + ")"
 		//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
-		+"\n  -----> agent specif : "+agentSpecif//+" --> resulting in "+agentResult
-		+"\n  -----> host specif : "+hostSpecif//+" --> resulting in "+hostResult
+		+"\n  -----> agent specif : "+agentSpecif
+		+"\n  -----> host specif : "+hostSpecif
+		+"\n  -----> agent init state : "+agentinitState//+" --> resulting in "+agentResult
+		+"\n  -----> host int state : "+hostinitState//+" --> resulting in "+hostResult
 		//		+"\n ***************** isViable? "+isviable
 		;
 

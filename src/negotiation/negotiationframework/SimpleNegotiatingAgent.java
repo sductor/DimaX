@@ -3,11 +3,12 @@ package negotiation.negotiationframework;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
@@ -15,27 +16,18 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.annotations.PostStepComposant;
-import dima.introspectionbasedagents.annotations.PreStepComposant;
-import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
-import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
-import dimaxx.experimentation.ExperimentationParameters;
-import dimaxx.experimentation.ObservingGlobalService;
 import dimaxx.experimentation.ObservingSelfService;
-import dimaxx.experimentation.SimulationEndedMessage;
 
 public class SimpleNegotiatingAgent<
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
+extends SimpleRationalAgent<PersonalState, Contract> {
 	private static final long serialVersionUID = 3480283369532419102L;
 
 	//
@@ -43,13 +35,13 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	//
 
 	@Competence()
-	private final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol;
+	private final AbstractCommunicationProtocol<Contract> protocol;
 
 	@Competence()
-	private final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore;
+	private final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore;
 
-	@Competence
-	private final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> myProposerCore;
+	@Competence()
+	private final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> myProposerCore;
 
 	//
 	// Constructors
@@ -58,21 +50,21 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	public SimpleNegotiatingAgent(
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
-			final RationalCore<ActionSpec, PersonalState, Contract> myRationality,
-			final SelectionCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> selectionCore,
-			final ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> proposerCore,
+			final RationalCore<PersonalState, Contract> myRationality,
+			final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore,
+			final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
-			final AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> protocol)
+			final AbstractCommunicationProtocol<Contract> protocol)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
 
 		this.selectionCore = selectionCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
+		((AgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>)
 				this.selectionCore).setMyAgent(this);
 		this.protocol = protocol;
 
 		this.myProposerCore = proposerCore;
-		((AgentCompetence<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>)
+		((AgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>)
 				this.getMyProposerCore()).setMyAgent(this);
 		this.getMyProtocol().setMyAgent(this);
 	}
@@ -90,15 +82,15 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 	// Accessors
 	//
 
-	public AbstractCommunicationProtocol<ActionSpec, PersonalState, Contract> getMyProtocol() {
+	public AbstractCommunicationProtocol<Contract> getMyProtocol() {
 		return this.protocol;
 	}
 
-	public ProposerCore<? extends SimpleNegotiatingAgent, ActionSpec, PersonalState, Contract> getMyProposerCore() {
+	public ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> getMyProposerCore() {
 		return this.myProposerCore;
 	}
 
-	public SelectionCore<? extends SimpleNegotiatingAgent,ActionSpec, PersonalState, Contract> getMySelectionCore() {
+	public SelectionCore<? extends SimpleNegotiatingAgent,PersonalState, Contract> getMySelectionCore() {
 		return this.selectionCore;
 	}
 
@@ -122,33 +114,7 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 //		wwait(60000);
 //		return true;
 //	}
-	
-	@MessageHandler
-	public void simulationEndORder(final SimulationEndedMessage s){
-//		logMonologue("yooo1", LogService.onBoth);
-		if (this.isAlive()) {
-			this.setActive(false);
-			this.setAlive(false);
-		}
-	}
-	
-	public void tryToResumeActivity(){
-//		if (hasAppliStarted()) logMonologue("yooo2", LogService.onBoth);
-		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
-		while (this.getMailBox().hasMail()){
-			final AbstractMessage m = this.getMailBox().readMail();
-			if (m instanceof SimulationEndedMessage) {
-				this.setAlive(false);
-				this.setActive(false);
-			} else {
-				messages.add(m);
-			}
-		}
-		for (final AbstractMessage m : messages) {
-			this.getMailBox().writeMail(m);
-		}
-		wwait(1000);
-	}
+
 	
 //	@PreStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 //	@Transient
@@ -166,6 +132,8 @@ extends SimpleRationalAgent<ActionSpec, PersonalState, Contract> {
 		pockets += "\n" + this.getMyProtocol();
 		this.logMonologue(pockets,LogService.onFile);
 	}
+	
+
 }
 
 

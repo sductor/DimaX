@@ -2,7 +2,7 @@ package negotiation.negotiationframework.exploration.strategic.evaluation;
 
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;
 import negotiation.negotiationframework.rationality.AgentState;
@@ -12,7 +12,7 @@ import dima.introspectionbasedagents.services.information.ObservationService.Inf
 import dima.introspectionbasedagents.services.information.OpinionService.Opinion;
 
 public class UtilitaristStrategicModule
-<ActionSpec extends AbstractActionSpecification,
+<ActionSpec extends AbstractActionSpecif,
 PersonalState extends ActionSpec,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends BasicAgentModule<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>

@@ -2,23 +2,27 @@ package negotiation.negotiationframework.contracts;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
+
+import choco.kernel.memory.structure.IntInterval;
+
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dimaxx.tools.mappedcollections.HashedHashSet;
 
-public class ContractTrunk<
-Contract extends AbstractContractTransition<ActionSpec>,
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec>
-extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>> {
+public class ContractTrunk<Contract extends AbstractContractTransition>
+extends BasicAgentModule<SimpleNegotiatingAgent<?, Contract>> {
 
 	/**
 	 *
@@ -29,7 +33,8 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	private final Map<ContractIdentifier, Contract> identifier2contract =
 			new HashMap<ContractIdentifier, Contract>();
 
-	//	protected final Set<Contract> consensualContracts = new HashSet<Contract>();
+	protected final Set<Contract> requestableContracts = new HashSet<Contract>();
+	protected final Set<Contract> failedContracts = new HashSet<Contract>();
 
 	protected final Set<Contract> waitContracts = new HashSet<Contract>();
 	private final HashedHashSet<AgentIdentifier, Contract> acceptedContracts =
@@ -37,12 +42,14 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	protected final HashedHashSet<AgentIdentifier, Contract> rejectedContracts =
 			new HashedHashSet<AgentIdentifier, Contract>();
 
-	
+	protected final Set<Contract> initiatorContracts = new HashSet<Contract>();
+	protected final Set<Contract> participantContracts = new HashSet<Contract>();
+
 	//
 	//
 	//
 
-	public ContractTrunk(final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> agent) {
+	public ContractTrunk(final SimpleNegotiatingAgent<?, Contract> agent) {
 		super(agent);
 	}
 
@@ -69,129 +76,87 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		}
 	}
 
-	public Collection<Contract> getContracts(final AgentIdentifier id) {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.getAllContracts()) {
-			if (c.getAllInvolved().contains(id)) {
-				l.add(c);
-			}
-		}
-		return l;
+	//non optimisé
+	//	public Collection<Contract> getContracts(final AgentIdentifier id) {
+	//		final ArrayList<Contract> l = new ArrayList<Contract>();
+	//		for (final Contract c : this.getAllContracts()) {
+	//			if (c.getAllInvolved().contains(id)) {
+	//				l.add(c);
+	//			}
+	//		}
+	//		return l;
+	//	}
+
+	public Collection<Contract> getContractsAcceptedBy(final AgentIdentifier id) {
+		return Collections.unmodifiableCollection(this.acceptedContracts.get(id));
 	}
 
-	public List<Contract> getContractsAcceptedBy(final AgentIdentifier id) {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		l.addAll(this.acceptedContracts.get(id));
-		return l;
+	public Collection<Contract> getContractsRejectedBy(final AgentIdentifier id) {
+		return Collections.unmodifiableCollection(this.rejectedContracts.get(id));
 	}
 
-	public List<Contract> getContractsRejectedBy(final AgentIdentifier id) {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		l.addAll(this.rejectedContracts.get(id));
-		return l;
-	}
-
-	public List<Contract> getAllContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		l.addAll(this.identifier2contract.values());
-		return l;
+	public Collection<Contract> getAllContracts() {
+		return Collections.unmodifiableCollection(this.identifier2contract.values());
 	}
 
 	/*
 	 *
 	 */
 
-	public List<Contract> getOnWaitContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		l.addAll(this.waitContracts);
-		return l;
+	public Collection<Contract> getOnWaitContracts() {
+		return Collections.unmodifiableCollection(this.waitContracts);
 	}
 
-	public List<Contract> getRequestableContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c: this.identifier2contract.values()) {
-			if (this.isRequestable(c)) {
-				l.add(c);
-			}
-		}
-		return l;
+	public Collection<Contract> getRequestableContracts() {
+		return Collections.unmodifiableCollection(requestableContracts);
 	}
 
-	public List<Contract> getFailedContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c: this.identifier2contract.values()) {
-			if (this.isAFailure(c)) {
-				l.add(c);
-			}
-		}
-		return l;
+	public Collection<Contract> getFailedContracts() {
+		return Collections.unmodifiableCollection(failedContracts);
+	}
+
+	public Collection<Contract> getAllInitiatorContracts() {
+		return Collections.unmodifiableCollection(initiatorContracts);
+	}
+
+	public Collection<Contract> getAllParticipantContracts() {
+		return Collections.unmodifiableCollection(participantContracts);
 	}
 
 	/*
 	 *
 	 */
-	public List<Contract> getAllInitiatorContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.identifier2contract.values()) {
-			if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
-				l.add(c);
-			}
-		}
-		return l;
-	}
 
 	public List<Contract> getInitiatorRequestableContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.getRequestableContracts()) {
-			if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
-				l.add(c);
-			}
-		}
+		final ArrayList<Contract> l = new ArrayList<Contract>(requestableContracts);
+		l.removeAll(participantContracts);
 		return l;
-
 	}
 
 	public List<Contract> getInitiatorOnWaitContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.waitContracts) {
-			if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
-				l.add(c);
-			}
-		}
+		final ArrayList<Contract> l = new ArrayList<Contract>(this.waitContracts);
+		l.removeAll(participantContracts);
 		return l;
-
 	}
 
 	public List<Contract> getParticipantOnWaitContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.waitContracts) {
-			if (!c.getInitiator().equals(this.getMyAgentIdentifier())
-					&& !this.acceptedContracts.get(this.getMyAgentIdentifier())
-					.contains(c)
-					&& !this.rejectedContracts.get(this.getMyAgentIdentifier())
-					.contains(c)) {
-				l.add(c);
-			}
-		}
+		final ArrayList<Contract> l = new ArrayList<Contract>(this.waitContracts);
+		l.removeAll(initiatorContracts);
+		l.removeAll(this.acceptedContracts.get(this.getMyAgentIdentifier()));
+		l.removeAll(this.rejectedContracts.get(this.getMyAgentIdentifier()));
 		return l;
 	}
 
 	public List<Contract> getParticipantAlreadyAcceptedContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>();
-		for (final Contract c : this.getAllContracts()) {
-			if (!c.getInitiator().equals(this.getMyAgentIdentifier())
-					&& this.acceptedContracts.get(this.getMyAgentIdentifier())
-					.contains(c)) {
-				l.add(c);
-			}
-		}
+		final ArrayList<Contract> l = new ArrayList<Contract>(this.acceptedContracts.get(this.getMyAgentIdentifier()));
+		l.removeAll(initiatorContracts);
 		return l;
 	}
 
 	/*
 	 * 
 	 */
-	
+
 	/**
 	 * 
 	 * @return contract locked by the contract trunk, they can not be removed see {@link AtMostCContractSelectioner}
@@ -199,7 +164,44 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	public Collection<Contract> getLockedContracts(){
 		return new ArrayList<Contract>();
 	}
-	
+
+
+	/**
+	 * Updates contract with the new initialState and actionSpec
+	 * @param newState vaut null si non spécifier
+	 * @param actionSpec vaut null si non spécifier
+	 * @return the set of modified contracts
+	 */
+	public Collection<ContractIdentifier> updateContracts(AgentState newState){
+		Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
+		if (newState!=null) {
+
+			AgentIdentifier id = newState.getMyAgentIdentifier();
+			AgentState assertedState = null;
+
+			for (final Contract c : this.getAllContracts()) {
+				if (c.getAllInvolved().contains(id)) {
+					AgentState actualState; 
+					try {
+						actualState = c.getInitialState(id);
+					} catch (IncompleteContractException e) {
+						actualState=null;
+					}
+
+					//debut assertion vérification que tous les contrats sont cohérents
+					if (assertedState==null) assertedState = actualState;			
+					else assert assertedState.equals(actualState);	
+					//fin assertion
+
+					if (actualState==null || !actualState.equals(newState)){
+						modifiedContracts.add(c.getIdentifier());
+						c.setInitialState(newState);
+					}
+				}
+			} 
+		}
+		return modifiedContracts;
+	}
 	/*
 	 *
 	 */
@@ -210,9 +212,18 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	public void addContract(final Contract c) {
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
-
+		//		try {
+		//			assert (c.getInitiator().equals(getMyAgentIdentifier()) || c.isInitiallyValid());
+		//		} catch (IncompleteContractException e) {
+		//			e.printStackTrace();
+		//			assert false:"incomplete contract added "+c;
+		//		}
 		this.identifier2contract.put(c.getIdentifier(), c);
 		this.waitContracts.add(c);
+		if (c.getInitiator().equals(getMyAgentIdentifier()))
+			initiatorContracts.add(c);
+		else
+			participantContracts.add(c);
 		this.addAcceptation(c.getInitiator(), c);
 	}
 
@@ -225,7 +236,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		if (this.isRequestable(c))
 		{
 			this.waitContracts.remove(c);
-			//			this.consensualContracts.add(c);
+			this.requestableContracts.add(c);
 		}
 	}
 
@@ -257,6 +268,7 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		/**/
 		if (this.isAFailure(c)) {
 			this.waitContracts.remove(c);
+			this.failedContracts.add(c);
 		}
 	}
 	//
@@ -323,10 +335,17 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 	public void remove(final Contract c) {
 		this.identifier2contract.remove(c.getIdentifier());
+
 		this.acceptedContracts.removeAvalue(c);
-		//		this.consensua:lContracts.remove(c);
 		this.rejectedContracts.removeAvalue(c);
+
 		this.waitContracts.remove(c);
+
+		this.requestableContracts.remove(c);
+		this.failedContracts.remove(c);
+
+		this.initiatorContracts.remove(c);
+		this.participantContracts.remove(c);
 	}
 
 	//	public void remove(final ContractIdentifier id) {
@@ -346,7 +365,10 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		this.rejectedContracts.clear();
 		this.acceptedContracts.clear();
 		this.waitContracts.clear();
-		//		this.consensualContracts.clear();
+		this.requestableContracts.clear();
+		this.failedContracts.clear();
+		this.initiatorContracts.clear();
+		this.participantContracts.clear();
 	}
 
 	/*

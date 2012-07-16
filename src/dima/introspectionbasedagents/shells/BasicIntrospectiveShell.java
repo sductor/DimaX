@@ -11,6 +11,7 @@ import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.support.GimaObject;
 
@@ -156,10 +157,15 @@ public class BasicIntrospectiveShell extends GimaObject {
 		this.metToRemove.clear();
 	}
 
+	public final void resumeActivity(final Date creation){
+		this.executeBehaviors(ResumeActivity.class, creation);		
+	}
+	
 	public void proactivityTerminate(final Date creation){
 		this.executeBehaviors(ProactivityFinalisation.class, creation);
-
 	}
+	
+	
 
 	//
 	// Primitive

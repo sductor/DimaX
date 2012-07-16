@@ -3,16 +3,17 @@ package negotiation.negotiationframework.protocoles;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 
 public class ReverseCFPProtocol <
-ActionSpec extends AbstractActionSpecification,
-State extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
+ActionSpec extends AbstractActionSpecif,
+State extends AgentState,
+Contract extends AbstractContractTransition>
+extends AbstractCommunicationProtocol<Contract>{
 
 	/**
 	 *
@@ -21,10 +22,10 @@ extends AbstractCommunicationProtocol<ActionSpec, State, Contract>{
 
 	public ReverseCFPProtocol()
 					throws UnrespectedCompetenceSyntaxException {
-		super(new ContractTrunk<Contract, ActionSpec, State>());
+		super(new ContractTrunk<Contract>());
 	}
 	public ReverseCFPProtocol(
-			final ContractTrunk<Contract, ActionSpec, State> contracts)
+			final ContractTrunk<Contract> contracts)
 					throws UnrespectedCompetenceSyntaxException {
 		super(contracts);
 	}

@@ -5,10 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 
@@ -24,19 +25,18 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
  * @param <ActionSpec>
  */
 public class SimpleSelectionCore<
-Agent extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
+Agent extends SimpleNegotiatingAgent<PersonalState, Contract>,
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
 extends
 BasicAgentCompetence<Agent>
-implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
+implements SelectionCore<Agent,PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
 	Collection<Contract> toAccept;
 	Collection<Contract> toReject;
 	Collection<Contract> toPutOnWait;
-	private ContractTrunk<Contract, ActionSpec, PersonalState> given;
+	private ContractTrunk<Contract> given;
 	GreedySelectionModule selectionModule;
 
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
@@ -49,16 +49,20 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 		super();
 		this.fuseInitiatorNparticipant = fuseInitiatorNparticipant;
 		this.considerOnWait = considerOnWait;
-		this.selectionModule=new GreedySelectionModule<ActionSpec, PersonalState, Contract>(this.getMyAgent(),itType);
+		this.selectionModule=new GreedySelectionModule<PersonalState, Contract>(itType);
 	}
-
+	@Override
+	public void setMyAgent(final Agent ag)  {
+		super.setMyAgent(ag);
+		selectionModule.setMyAgent(ag);
+	}
 	/*
 	 *
 	 */
 
 	@Override
 	public void select(
-			final ContractTrunk<Contract, ActionSpec, PersonalState> given,
+			final ContractTrunk<Contract> given,
 			final Collection<Contract> toAccept,
 			final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
@@ -92,7 +96,7 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 	//return contract to validate
 	protected Collection<Contract> selection(
 			final PersonalState currentState,
-			final List<Contract> contractsToExplore){
+			final Collection<Contract> contractsToExplore){
 		return this.selectionModule.greedySelection(currentState, contractsToExplore);
 	}
 
@@ -108,11 +112,11 @@ implements SelectionCore<Agent,ActionSpec, PersonalState, Contract> {
 	 * @param alreadyAccepted
 	 * @param rejected
 	 */
-	protected void select(final List<Contract> initiatorContractToExplore,
-			final List<Contract> participantContractToExplore,
-			final List<Contract> initiatorOnWaitContract,
-			final List<Contract> participantAlreadyAccepted,
-			final List<Contract> rejected) {
+	protected void select(final Collection<Contract> initiatorContractToExplore,
+			final Collection<Contract> participantContractToExplore,
+			final Collection<Contract> initiatorOnWaitContract,
+			final Collection<Contract> participantAlreadyAccepted,
+			final Collection<Contract> rejected) {
 
 		// Verification de la consistance
 		assert this.getMyAgent().getMyCurrentState().isValid():

@@ -67,10 +67,26 @@ public class HashedHashList<K, V> extends Hashtable<K, List<V>> {
 		return finalValues;
 	}
 
+	/**
+	 * @param a key
+	 * @return the value associated to the key or an empty collection if no key is present
+	 */
 	@Override
-	public synchronized List<V> get(final Object key){
+	public List<V> get(final Object key){
 		if (this.containsKey(key)) {
 			return super.get(key);
+		} else {
+			return new ArrayList<V>();
+		}
+	}
+	/**
+	 * @param a key
+	 * @return the value associated to the key or an empty collection if no key is present
+	 */
+	@Override
+	public synchronized List<V> remove(final Object key){
+		if (this.containsKey(key)) {
+			return super.remove(key);
 		} else {
 			return new ArrayList<V>();
 		}

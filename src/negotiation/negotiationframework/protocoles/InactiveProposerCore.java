@@ -3,22 +3,25 @@ package negotiation.negotiationframework.protocoles;
 import java.util.HashSet;
 import java.util.Set;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.SimpleNegotiatingAgent;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import negotiation.negotiationframework.protocoles.strategic.StrategicNegotiatingAgent;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class InactiveProposerCore<
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends	BasicAgentCompetence<StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>>
+ActionSpec extends AbstractActionSpecif,
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
+extends	BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>
 implements ProposerCore<
-StrategicNegotiatingAgent<ActionSpec, PersonalState, Contract>,
-ActionSpec, PersonalState, Contract>  {
+SimpleNegotiatingAgent<PersonalState, Contract>,
+PersonalState, 
+Contract>  {
 	private static final long serialVersionUID = -5019973485455813800L;
 
 	public InactiveProposerCore() {
@@ -32,14 +35,12 @@ ActionSpec, PersonalState, Contract>  {
 	}
 
 	@Override
-	public boolean IWantToNegotiate(final PersonalState myCurrentState,
-			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+	public boolean IWantToNegotiate(final ContractTrunk<Contract> contracts) {
 		return false;
 	}
 
 	@Override
-	public boolean ImAllowedToNegotiate(final PersonalState myCurrentState,
-			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+	public boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
 		return false;
 	}
 

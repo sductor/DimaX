@@ -8,14 +8,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import negotiation.negotiationframework.rationality.AgentState;
-
 import dima.basicagentcomponents.AgentIdentifier;
 
-public class InformedCandidature<
-Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecification>
-extends MatchingCandidature<ActionSpec>
-implements AbstractContractTransition<ActionSpec>{
+public class InformedCandidature<Contract extends MatchingCandidature>
+extends MatchingCandidature
+implements AbstractContractTransition{
 
 	/**
 	 *
@@ -23,8 +20,8 @@ implements AbstractContractTransition<ActionSpec>{
 	private static final long serialVersionUID = -5411058011701987490L;
 	private final Contract candidature;
 	//	private ReallocationContract<Contract, ActionSpec> consequentContract;
-	private final Collection<ReallocationContract<Contract, ActionSpec>> possibleContracts;
-	private final Collection<ReallocationContract<Contract, ActionSpec>> requestedContracts;
+	private final Collection<ReallocationContract<Contract>> possibleContracts;
+	private final Collection<ReallocationContract<Contract>> requestedContracts;
 
 	public InformedCandidature(final Contract c) {
 		super(c.getInitiator(),c.getAgent(), c.getResource(), c.getValidityTime());
@@ -34,10 +31,10 @@ implements AbstractContractTransition<ActionSpec>{
 		//		consequentContract=new ReallocationContract<Contract, ActionSpec>(
 		//				candidature.getInitiator(),
 		//				actions);
-		this.possibleContracts = new ArrayList<ReallocationContract<Contract,ActionSpec>>();
-		this.requestedContracts = new ArrayList<ReallocationContract<Contract,ActionSpec>>();
+		this.possibleContracts =  new ArrayList<ReallocationContract<Contract>>();
+		this.requestedContracts = new ArrayList<ReallocationContract<Contract>>();
 		this.possibleContracts.add(
-				new ReallocationContract<Contract, ActionSpec>(
+				new ReallocationContract<Contract>(
 						this.candidature.getInitiator(),
 						actions));
 	}
@@ -51,11 +48,11 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 
-	public Collection<ReallocationContract<Contract, ActionSpec>> getPossibleContracts() {
+	public Collection<ReallocationContract<Contract>> getPossibleContracts() {
 		return this.possibleContracts;
 	}
 
-	public Collection<ReallocationContract<Contract, ActionSpec>> getRequestedContracts() {
+	public Collection<ReallocationContract<Contract>> getRequestedContracts() {
 		return this.requestedContracts;
 	}
 
@@ -63,12 +60,11 @@ implements AbstractContractTransition<ActionSpec>{
 	 *
 	 */
 
-	public static<
-	Contract extends MatchingCandidature<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification>
-	Collection<ReallocationContract<Contract, ActionSpec>> toPossibles(final Collection<InformedCandidature<Contract, ActionSpec>> contracts){
-		final Collection<ReallocationContract<Contract, ActionSpec>> result = new HashSet<ReallocationContract<Contract, ActionSpec>>();
-		for (final InformedCandidature<Contract, ActionSpec> c : contracts) {
+	public static
+	<Contract extends MatchingCandidature>
+	Collection<ReallocationContract<Contract>> toPossibles(final Collection<InformedCandidature<Contract>> contracts){
+		final Collection<ReallocationContract<Contract>> result = new HashSet<ReallocationContract<Contract>>();
+		for (final InformedCandidature<Contract> c : contracts) {
 			result.addAll(c.getPossibleContracts());
 		}
 		return result;
@@ -76,11 +72,10 @@ implements AbstractContractTransition<ActionSpec>{
 
 
 	public static<
-	Contract extends MatchingCandidature<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification>
-	Collection<ReallocationContract<Contract, ActionSpec>> toRequested(final Collection<InformedCandidature<Contract, ActionSpec>> contracts){
-		final Collection<ReallocationContract<Contract, ActionSpec>> result = new HashSet<ReallocationContract<Contract, ActionSpec>>();
-		for (final InformedCandidature<Contract, ActionSpec> c : contracts) {
+	Contract extends MatchingCandidature>
+	Collection<ReallocationContract<Contract>> toRequested(final Collection<InformedCandidature<Contract>> contracts){
+		final Collection<ReallocationContract<Contract>> result = new HashSet<ReallocationContract<Contract>>();
+		for (final InformedCandidature<Contract> c : contracts) {
 			result.addAll(c.getRequestedContracts());
 		}
 		return result;
@@ -88,11 +83,10 @@ implements AbstractContractTransition<ActionSpec>{
 
 
 	public static<
-	Contract extends MatchingCandidature<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification>
-	Collection<Contract> toCandidatures(final Collection<InformedCandidature<Contract, ActionSpec>> contracts){
+	Contract extends MatchingCandidature>
+	Collection<Contract> toCandidatures(final Collection<InformedCandidature<Contract>> contracts){
 		final Collection<Contract> result = new ArrayList<Contract>();
-		for (final InformedCandidature<Contract, ActionSpec> c : contracts) {
+		for (final InformedCandidature<Contract> c : contracts) {
 			result.add(c.getCandidature());
 		}
 		return result;
@@ -112,7 +106,7 @@ implements AbstractContractTransition<ActionSpec>{
 	//	public ReallocationContract<Contract, ActionSpec> getConsequentContract() {
 	//		return consequentContract;
 	//	}
-	public ReallocationContract<Contract, ActionSpec> getBestPossible(final Comparator<Collection<Contract>> pref){
+	public ReallocationContract<Contract> getBestPossible(final Comparator<Collection<Contract>> pref){
 		return Collections.max(this.possibleContracts, pref);
 	}
 
@@ -126,7 +120,7 @@ implements AbstractContractTransition<ActionSpec>{
 	}
 
 	@Override
-	public ActionSpec computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
+	public AgentState computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
 		return this.candidature.computeResultingState(id);
 	}
 
@@ -197,15 +191,24 @@ implements AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public void setSpecification(final ActionSpec s) {
-		this.candidature.setSpecification(s);
+	public <ActionSpec extends AbstractActionSpecif> void setSpecification(ActionSpec spec) {
+		this.candidature.setSpecification(spec);
 		for (final ReallocationContract r : this.possibleContracts) {
-			r.setSpecification(s);
+			r.setSpecification(spec);
 		}for (final ReallocationContract r : this.requestedContracts) {
-			r.setSpecification(s);
+			r.setSpecification(spec);
 		}
 	}
 
+	@Override
+	public <State extends AgentState> void setInitialState(State state) {
+		this.candidature.setInitialState(state);
+		for (final ReallocationContract r : this.possibleContracts) {
+			r.setInitialState(state);
+		}for (final ReallocationContract r : this.requestedContracts) {
+			r.setInitialState(state);
+		}
+	}
 
 	@Override
 	public ContractIdentifier getIdentifier() {
@@ -238,7 +241,7 @@ implements AbstractContractTransition<ActionSpec>{
 
 
 	@Override
-	public ActionSpec getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
+	public AbstractActionSpecif getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
 		return this.candidature.getSpecificationOf(id);
 	}
 
@@ -272,4 +275,15 @@ implements AbstractContractTransition<ActionSpec>{
 	public int hashCode() {
 		return this.candidature.hashCode();
 	}
+
+	@Override
+	public AgentState getInitialState(AgentIdentifier id)	throws IncompleteContractException {
+		return this.candidature.getInitialState(id);
+	}
+
+	@Override
+	public InformedCandidature<Contract> clone() {
+		return new InformedCandidature<Contract>((Contract) getCandidature().clone());
+	}
+
 }

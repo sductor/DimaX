@@ -4,19 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import negotiation.negotiationframework.rationality.AgentState;
-
+import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dimaxx.experimentation.ExperimentationParameters;
+import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 
-public abstract class ContractTransition<
-ActionSpec extends AbstractActionSpecification> implements
-AbstractContractTransition<ActionSpec> {
+public abstract class ContractTransition implements
+AbstractContractTransition {
 	public long getValidityTime() {
 		return this.validityTime;
 	}
@@ -28,14 +31,13 @@ AbstractContractTransition<ActionSpec> {
 	//
 
 	protected final AgentIdentifier creator;
-	protected final Date creationTime = new Date();
+	protected Date creationTime = new Date();
 	protected final long validityTime;
 
 	protected final List<AgentIdentifier> actors;
 
-	private final Map<AgentIdentifier, ActionSpec> specs = new Hashtable<AgentIdentifier, ActionSpec>(); // non
-	// functionnal
-	// properties
+	protected Map<AgentIdentifier, AbstractActionSpecif> specs = null; 
+	protected final Map<AgentIdentifier, AgentState> initState = new Hashtable<AgentIdentifier, AgentState>(); 
 
 	//
 	// Constructor
@@ -89,10 +91,21 @@ AbstractContractTransition<ActionSpec> {
 	/*
 	 *
 	 */
+	@Override
+	public AgentState getInitialState(final AgentIdentifier id) throws IncompleteContractException{
+		if (!this.initState.containsKey(id)) {
+			throw new IncompleteContractException(id+"missing in "+this.getIdentifier()+"\n----------- "+initState);
+		} else {
+			return this.initState.get(id);
+		}
+	}
 
 	@Override
-	public ActionSpec getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException{
-		if (!this.specs.containsKey(id)) {
+	public AbstractActionSpecif getSpecificationOf(final AgentIdentifier id) throws IncompleteContractException {
+
+		if (specs==null){
+			return new NullActionSpec(id);
+		} else if (!this.specs.containsKey(id)) {
 			throw new IncompleteContractException();
 		} else {
 			return this.specs.get(id);
@@ -101,13 +114,46 @@ AbstractContractTransition<ActionSpec> {
 	}
 
 	@Override
-	public void setSpecification(final ActionSpec s) {
+	public <ActionSpec extends AbstractActionSpecif> void setSpecification(final ActionSpec s) {
+
 		assert s!=null;
+
+		if (s instanceof NullActionSpec)
+			return;
+
+		if (specs == null){
+			specs=new HashMap<AgentIdentifier, AbstractActionSpecif>();
+		}
+
+		assert specs.isEmpty()?true:((specs.values().iterator().next()).getClass().isAssignableFrom(s.getClass()));
 		assert !this.specs.containsKey(s.getMyAgentIdentifier()) || s.isNewerThan(this.specs.get(s.getMyAgentIdentifier()))>=0:
 			s+" "+this.specs.get(s.getMyAgentIdentifier());
 
 		if (this.actors.contains(s.getMyAgentIdentifier())) {
 			this.specs.put(s.getMyAgentIdentifier(), s);
+		} else {
+			throw new RuntimeException("unappropriate specification set");
+		}
+
+		try {
+			if (!ExperimentationParameters.currentlyInstanciating) {
+				assert this.isInitiallyValid():this;
+			}
+		} catch (final IncompleteContractException e){/*ok!*/}
+	}
+
+	/**
+	 * If the application does not require specification, this methods is to be used instead of setSpecificationNInitialState
+	 * @param state
+	 * @param s
+	 */
+	public <State extends AgentState> void setInitialState(final State state) {
+		assert state != null;
+
+		if (this.actors.contains(state.getMyAgentIdentifier())) {
+			//			assert !this.initState.containsKey(state.getMyAgentIdentifier()) || this.initState.get(state.getMyAgentIdentifier()).equals(state):
+			//				this.initState.get(state.getMyAgentIdentifier())+" "+state;
+			this.initState.put(state.getMyAgentIdentifier(), state);
 		} else {
 			throw new RuntimeException("unappropriate specification set");
 		}
@@ -125,12 +171,15 @@ AbstractContractTransition<ActionSpec> {
 
 	@Override
 	public boolean isInitiallyValid()
-			throws IncompleteContractException {
-		if (!this.specs.keySet().containsAll(this.actors)) {
+			throws IncompleteContractException {		
+		if (this.specs!=null && !this.specs.keySet().containsAll(this.actors)) {
 			throw new IncompleteContractException();
+		} else if (!this.initState.keySet().containsAll(actors)){
+			throw new IncompleteContractException("initSate "+initState+"\n actors : "+actors);
 		} else {
 			for (final AgentIdentifier id : this.actors) {
-				if (!this.getSpecificationOf(id).isValid()) {
+				if (!this.getInitialState(id).isValid()) {
+					System.out.println("res : "+computeResultingState(id));
 					return false;
 				}
 			}
@@ -181,10 +230,29 @@ AbstractContractTransition<ActionSpec> {
 		return true;
 	}
 
-	public static <Contract extends AbstractContractTransition<ActionSpec>, ActionSpec extends AbstractActionSpecification>
+	public boolean isComplete(){
+		for (AgentIdentifier id : getAllParticipants()){
+			try {
+				this.getInitialState(id);
+			} catch (IncompleteContractException e) {
+				return false;
+			}
+		}
+		return true;
+	}
+	@Override
+	public <State extends AgentState> State computeResultingState(final AgentIdentifier id) throws IncompleteContractException {
+		return (State) this.computeResultingState(this.getInitialState(id));
+	}
+
+	/*
+	 * 
+	 */
+
+	public static <Contract extends AbstractContractTransition, ActionSpec extends AbstractActionSpecif>
 	Boolean respectRights(final Collection<Contract> cs) throws IncompleteContractException {
-		final ReallocationContract<Contract, ActionSpec> reall =
-				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
+		final ReallocationContract<Contract> reall =
+				new ReallocationContract<Contract>(new AgentName("dummy"), cs);
 
 		for (final AgentIdentifier id : reall.getAllParticipants()) {
 			if (!reall.computeResultingState(id).isValid()) {
@@ -196,12 +264,12 @@ AbstractContractTransition<ActionSpec> {
 	}
 
 	public static <
-	Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification,
+	Contract extends AbstractContractTransition,
+	ActionSpec extends AbstractActionSpecif,
 	State extends AgentState>
 	Boolean respectRights(final Collection<Contract> cs, final Collection<State> initialStates) throws IncompleteContractException {
-		final ReallocationContract<Contract, ActionSpec> reall =
-				new ReallocationContract<Contract, ActionSpec>(new AgentName("dummy"), cs);
+		final ReallocationContract<Contract> reall =
+				new ReallocationContract<Contract>(new AgentName("dummy"), cs);
 
 		for (final AgentIdentifier id : reall.getAllParticipants()) {
 			if (!reall.computeResultingState(id).isValid()) {
@@ -212,8 +280,8 @@ AbstractContractTransition<ActionSpec> {
 		return true;
 	}
 	public static <
-	Contract extends AbstractContractTransition<ActionSpec>,
-	ActionSpec extends AbstractActionSpecification,
+	Contract extends AbstractContractTransition,
+	ActionSpec extends AbstractActionSpecif,
 	State extends AgentState>
 	Boolean respectRights(final Collection<Contract> cs, final State... initialStates) throws IncompleteContractException {
 		return ContractTransition.respectRights(cs, Arrays.asList(initialStates));
@@ -264,7 +332,7 @@ AbstractContractTransition<ActionSpec> {
 	public boolean equals(final Object o) {
 		if (o instanceof ContractTransition) {
 			@SuppressWarnings("unchecked")
-			final ContractTransition<ActionSpec> that = (ContractTransition<ActionSpec>) o;
+			final ContractTransition that = (ContractTransition) o;
 			return that.getIdentifier().equals(this.getIdentifier());
 		}
 		return false;
@@ -274,6 +342,8 @@ AbstractContractTransition<ActionSpec> {
 	public int hashCode() {
 		return this.getIdentifier().hashCode();
 	}
+
+	public abstract AbstractContractTransition clone() ;
 
 	//
 	// Assertion
@@ -290,7 +360,7 @@ AbstractContractTransition<ActionSpec> {
 		return true;
 	}
 
-	public static <Contract extends AbstractContractTransition<?>>
+	public static <Contract extends AbstractContractTransition>
 	boolean stillValid(final Collection<Contract> cs){
 		for (final Contract c : cs) {
 			assert !c.hasReachedExpirationTime();
@@ -298,7 +368,7 @@ AbstractContractTransition<ActionSpec> {
 		return true;
 	}
 
-	public static <Contract extends AbstractContractTransition<?>>
+	public static <Contract extends AbstractContractTransition>
 	boolean allComplete(final Collection<Contract> contracts){
 		for (final Contract c : contracts) {
 			for (final AgentIdentifier id : c.getAllParticipants()) {
@@ -310,5 +380,75 @@ AbstractContractTransition<ActionSpec> {
 			}
 		}
 		return true;
+	}
+
+	//
+	// Sublcasses
+	//
+
+
+	public class NullActionSpec implements AbstractActionSpecif{
+
+		AgentIdentifier id;
+		private final Long creationTime;
+
+		public NullActionSpec(AgentIdentifier id) {
+			this.id=id;
+			this.creationTime = new Date().getTime();
+		}
+
+		@Override
+		public AgentIdentifier getMyAgentIdentifier() {
+			return id;
+		}
+
+
+
+		@Override
+		public Long getCreationTime() {
+			return this.creationTime;
+		}
+
+		@Override
+		public long getUptime() {
+			return new Date().getTime() - this.creationTime;
+		}
+
+
+		@Override
+		public int isNewerThan(final Information i) {
+			return 0;
+		}
+
+		@Override
+		public Double getNumericValue(Information e) {
+			assert false;
+			return null;
+		}
+
+		@Override
+		public Information getRepresentativeElement(
+				Collection<? extends Information> elems) {
+			assert false;
+			return null;
+		}
+
+		@Override
+		public Information getRepresentativeElement(
+				Map<? extends Information, Double> elems) {	
+			assert false;	
+			return null;
+		}
+
+		@Override
+		public AbstractCompensativeAggregation<Information> fuse(
+				Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
+			assert false;
+			return null;
+		}
+
+		public NullActionSpec clone(){
+			return new NullActionSpec(id);
+		}
 	}
 }

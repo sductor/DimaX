@@ -872,6 +872,11 @@ SimpleObservationService implements OpinionService {
 				return null;
 			}
 
+			@Override
+			public double getWeightOfAggregatedElements() {
+				return getNumberOfAggregatedElements();
+			}
+
 		}
 
 	}

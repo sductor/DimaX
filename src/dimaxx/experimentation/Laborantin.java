@@ -41,6 +41,9 @@ public class Laborantin extends BasicCompetentAgent {
 
 
 	APILauncherModule api;
+
+
+
 	protected HashMap<AgentIdentifier, BasicCompetentAgent> agents =
 			new HashMap<AgentIdentifier, BasicCompetentAgent>();
 	private final Map<BasicCompetentAgent, HostIdentifier> locations;
@@ -95,6 +98,9 @@ public class Laborantin extends BasicCompetentAgent {
 		assert this.locations!=null;
 	}
 
+	public APILauncherModule getApi() {
+		return api;
+	}
 
 	//
 	// Behaviors
@@ -168,6 +174,7 @@ public class Laborantin extends BasicCompetentAgent {
 	public boolean endSimulation(){
 		if (this.observingService.simulationHasEnded()){
 			this.logMonologue("I've finished!!",LogService.onBoth);
+			this.logWarning("I've finished!!",LogService.onBoth);
 			this.observingService.writeResult();
 			this.wwait(10000);
 			//				for (final ResourceIdentifier h : this.hostsStates4simulationResult.keySet())
@@ -177,6 +184,7 @@ public class Laborantin extends BasicCompetentAgent {
 			//				this.logMonologue("notifications Sended", onBoth);
 
 			this.logMonologue("my job is done! cleaning my lab bench...",LogService.onBoth);
+			this.logWarning("my job is done! cleaning my lab bench...",LogService.onBoth);
 			this.agents.clear();
 			this.agents=null;
 			this.setAlive(false);

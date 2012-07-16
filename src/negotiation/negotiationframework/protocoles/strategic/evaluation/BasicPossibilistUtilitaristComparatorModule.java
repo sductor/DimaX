@@ -1,13 +1,13 @@
 package negotiation.negotiationframework.exploration.strategic.evaluation;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 
 public class BasicPossibilistUtilitaristComparatorModule
 <Contract extends AbstractContractTransition<ActionSpec>,
-ActionSpec extends AbstractActionSpecification>
+ActionSpec extends AbstractActionSpecif>
 implements AbstractStrategicEvaluationModule<Contract, ActionSpec>{
 	private static final long serialVersionUID = 3571150755873496299L;
 

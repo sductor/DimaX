@@ -14,7 +14,7 @@ import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
  *
  * @author Ductor Sylvain
  */
-public class NotificationMessage<Notification extends Serializable>
+public final class NotificationMessage<Notification extends Serializable>
 extends Message implements MessageInEnvelope {
 
 	/**
@@ -29,7 +29,7 @@ extends Message implements MessageInEnvelope {
 	// Constructors
 	//
 
-	NotificationMessage(final String key, final Notification n) {
+	public NotificationMessage(final String key, final Notification n) {
 		super("notification of "+key+", "+n);
 		this.notif=n;
 		this.key = key;

@@ -10,18 +10,20 @@ import negotiation.faulttolerance.experimentation.ReplicationResultAgent;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
-import dima.introspectionbasedagents.services.BasicAgentCommunicatingCompetence;
+import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import dimaxx.experimentation.ObservingSelfService.ActivityLog;
+import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
+import dimaxx.tools.aggregator.AbstractMinMaxAggregation;
 import dimaxx.tools.aggregator.HeavyAggregation;
 import dimaxx.tools.aggregator.HeavyDoubleAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public abstract class ObservingGlobalService<Agent extends Laborantin>
-extends BasicAgentCommunicatingCompetence<Agent>{
+extends BasicCommunicatingCompetence<Agent>{
 	private static final long serialVersionUID = -2893635425783775245L;
 
 	//
@@ -42,7 +44,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		super();
 		this.rep = rep;
 	}
-	
+
 	//
 	// Constants
 	//
@@ -71,12 +73,8 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	protected abstract void updateInfo(ExperimentationResults notification);
 
 
-	/**
-	 *
-	 * @return true when the simulation is ended
-	 * must ensure every agent is destroyed!!!
-	 */
-	protected boolean simulationHasEnded(){
+
+	protected boolean allAgentDied(){
 		for (AgentIdentifier myAgent : allAgent){
 			if (getMyAgent().api.getAllAgents().contains(myAgent))
 				return false;
@@ -84,6 +82,67 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 		return true;
 	}
 
+
+	/**
+	 *
+	 * @return true when the simulation is ended
+	 * must ensure every agent is destroyed!!!
+	 */
+	public boolean simulationHasEnded(){
+		if (allAgentDied()){
+			this.logMonologue("ALL AGENTS DIED!!!",LogService.onBoth);
+			this.logWarning("ALL AGENTS DIED!!!",LogService.onBoth);
+			return true;
+		}else if (this.getActiveAgents().size()==0){
+			if (!endRequestSended){
+				this.logMonologue("Every agent has finished!!...killing....",LogService.onBoth);
+				for (final AgentIdentifier r : getAllAgents()) {
+					this.sendMessage(r, new SimulationEndedMessage(this));
+//					this.logWarning("Every agent has finished!!...killing... sending to "+r,LogService.onBoth);
+				}
+				this.endRequestSended=true;
+			}
+			return false;
+		}else if (this.getMyAgent().getUptime()>timeBeforeForcingSimulationEnd()){
+			//			if (!endRequestSended){
+			if (!shouldHAveEndedActivated) {
+				this.logWarning("FORCING END REQUEST!!!! I SHOULD HAVE ALREADY END!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
+				shouldHAveEndedActivated=true;
+				endRequestSended=true;
+				for (final AgentIdentifier r : getAllAgents()) {
+					this.sendMessage(r, new SimulationEndedMessage(this));
+//					this.logWarning("Every agent has finished!!...killing... sending to "+r,LogService.onBoth);
+				}
+			} else {
+				//WAITING!!!
+//				for (final AgentIdentifier r : this.getActiveAgents()) {
+//					this.sendMessage(r, new SimulationEndedMessage(this));
+//				}
+				//				}
+				//				this.endRequestSended=true;
+			}
+			//			this.logWarning("FORCING END REQUEST!!!! remaining agents are "+this.getActiveAgents(),LogService.onBoth);
+			return false;//waiting 5 more minutes
+		}else if (this.getMyAgent().getUptime()>timeBeforeKillingSimulation()){
+			this.getMyAgent().getApi().kill(this.getActiveAgents());
+			this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	protected long timeBeforeKillingSimulation() {
+		return ExperimentationParameters._maxSimulationTime+120000;/*+2min*///600000){//+10min
+	}
+
+	protected long timeBeforeForcingSimulationEnd() {
+		return ExperimentationParameters._maxSimulationTime+60000;/*+1min*///300000){//+5min
+	}
+	
+	
+	boolean endRequestSended= false;
+	boolean shouldHAveEndedActivated=false ;
 	protected abstract void writeResult();
 
 	//
@@ -91,7 +150,7 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	//
 
 
-	public Collection<AgentIdentifier> getAliveAgents() {
+	public Collection<AgentIdentifier> getActiveAgents() {
 		return this.remainingAgent;
 	}
 
@@ -184,21 +243,21 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	/**
 	 * Give the agregated values of a parameter
 	 */
-	public static String getQuantilePointObs(
+	public static <Aggregation extends AbstractMinMaxAggregation<Double> & AbstractCompensativeAggregation<Double>>String getQuantilePointObs(
 			final String entry,
-			final HeavyAggregation<Double> variable, final double significatifPercent, final int totalNumber){
+			final Aggregation variable, final double significatifPercent, final int totalNumber){
 		String result =entry+" min;\t "
-				+entry+" firstTercile;\t "
-				+entry+"  mediane;\t  "
-				+entry+" lastTercile;\t "
+//				+entry+" firstTercile;\t "
+//				+entry+"  mediane;\t  "
+//				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
 				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
 		if (variable.getWeightOfAggregatedElements()> (significatifPercent*totalNumber)) {
 			result += variable.getMinElement()+";\t " +
-					variable.getQuantile(1,3)+";\t " +
-					variable.getMediane()+";\t " +
-					variable.getQuantile(2,3)+";\t " +
+//					variable.getQuantile(1,3)+";\t " +
+//					variable.getMediane()+";\t " +
+//					variable.getQuantile(2,3)+";\t " +
 					variable.getMaxElement()+";\t " +
 					variable.getProd()+";\t " +
 					variable.getRepresentativeElement()+";\t " +
@@ -218,24 +277,24 @@ extends BasicAgentCommunicatingCompetence<Agent>{
 	 * @param totalNumber
 	 * @return
 	 */
-	public static  String getQuantileTimeEvolutionObs( final String entry,
-			final HeavyAggregation<Double>[] variable, final double significatifPercent, final int totalNumber){
+	public static <Aggregation extends AbstractMinMaxAggregation<Double> & AbstractCompensativeAggregation<Double>> String getQuantileTimeEvolutionObs( final String entry,
+			final Aggregation[] variable, final double significatifPercent, final int totalNumber){
 		String result ="t (seconds);\t "+
 				entry+" min;\t "
-				+entry+" firstTercile;\t "
-				+entry+"  mediane;\t  "
-				+entry+" lastTercile;\t "
+//				+entry+" firstTercile;\t "
+//				+entry+"  mediane;\t  "
+//				+entry+" lastTercile;\t "
 				+entry+"  max ;\t "
-						+entry+" prod ;\t "
+				+entry+" prod ;\t "
 				+entry+" mean ;\t percent of agent aggregated=\n";
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++){
 			result += ObservingGlobalService.geTime(i)/1000.+" ;\t ";
 			if (variable[i].getWeightOfAggregatedElements()>significatifPercent*totalNumber) {
 				result +=
 						variable[i].getMinElement()+";\t " +
-								variable[i].getQuantile(1,3)+";\t " +
-								variable[i].getMediane()+";\t " +
-								variable[i].getQuantile(2,3)+";\t " +
+//								variable[i].getQuantile(1,3)+";\t " +
+//								variable[i].getMediane()+";\t " +
+//								variable[i].getQuantile(2,3)+";\t " +
 								variable[i].getMaxElement()+";\t " +
 								variable[i].getProd()+";\t " +
 								variable[i].getRepresentativeElement()+";\t (" +

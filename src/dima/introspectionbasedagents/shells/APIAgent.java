@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.support.GimaObject;
 import dimaxx.deployment.DimaXDeploymentScript;
 import dimaxx.deployment.DimaXLocalLaunchScript;
+import dimaxx.experimentation.ObservingSelfService;
 import dimaxx.hostcontrol.LocalHost;
 import dimaxx.server.HostIdentifier;
 
@@ -107,6 +109,14 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 	}
 
+	public  void launch(BasicCompetentAgent ag) {
+			ag.launchWith(this.api);
+	}
+
+	public  void launch(BasicCompetentAgent ag, HostIdentifier h) {
+			ag.launchWith(this.api,h);
+	}
+	
 	//
 
 	public static void launch(final APILauncherModule api, final Map<BasicCompetentAgent, HostIdentifier> locations) {
@@ -278,7 +288,7 @@ public class APIAgent extends BasicCompetentAgent {
 			}
 
 			c.addObserver(this.getMyAgentIdentifier(), LogService.logNotificationKey);
-			c.addObserver(this.getMyAgentIdentifier(), EndActivityMessage.class);
+			c.addObserver(this.getMyAgentIdentifier(), EndLiveMessage.class);
 
 
 			switch (this.myLaunchType) {
@@ -309,11 +319,31 @@ public class APIAgent extends BasicCompetentAgent {
 			return this.launch(c, this.avalaibleHosts.get(this.pos));
 		}
 
-		boolean destroy(final BasicCompetentAgent c){
-			final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
-			final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
+		Collection<AgentIdentifier> killed = new ArrayList<AgentIdentifier>();
+		public boolean kill(AgentIdentifier c){
+			final boolean removed1 = this.registeredAgent.remove(c)!=null;
+			final boolean removed2 =  this.locations.remove(c)!=null;
+			killed.add(c);
 
 			assert removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
+
+			sendMessage(c, new SigKillOrder());
+			return true;
+		}
+		
+		public boolean kill(Collection<AgentIdentifier> cs){
+			for (AgentIdentifier c : cs)
+				kill(c);
+			return true;
+		}
+		
+		public boolean destroy(final BasicCompetentAgent c){
+			final boolean removed1 = this.registeredAgent.remove(c.getIdentifier())!=null;
+			final boolean removed2 =  this.locations.remove(c.getIdentifier())!=null;
+			
+//			logMonologue("Agent destroyed : "+c);
+
+			assert killed.contains(c) || (removed1 && removed2):c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
 
 			switch (this.myLaunchType) {
 			case NotThreaded:
@@ -357,7 +387,7 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 
 		@MessageHandler
-		void end(final NotificationMessage<EndActivityMessage> m){
+		void end(final NotificationMessage<EndLiveMessage> m){
 			this.getMyAgent().logMonologue(m.getSender()+" has ended activity ... nothing to do...",LogService.onBoth);
 		}
 
@@ -427,6 +457,7 @@ public class APIAgent extends BasicCompetentAgent {
 			private static final long serialVersionUID = -6806175893332597817L;
 			public int step = 0;
 			final int nbMaxStep;
+			boolean randomized = false;
 			List<BasicCompetentAgent> toInitialize = new ArrayList<BasicCompetentAgent>();
 			List<BasicCompetentAgent> toExecute = new ArrayList<BasicCompetentAgent>();
 			List<BasicCompetentAgent> toTerminate = new ArrayList<BasicCompetentAgent>();
@@ -443,6 +474,10 @@ public class APIAgent extends BasicCompetentAgent {
 			private LocalFipaScheduler(final int nbMaxStep) {
 				super();
 				this.nbMaxStep = nbMaxStep;
+			}
+
+			public void setRandomized(boolean randomized) {
+				this.randomized = randomized;
 			}
 
 			/*
@@ -484,6 +519,7 @@ public class APIAgent extends BasicCompetentAgent {
 
 					//AGENT PRO ACTIVITY INITAILISATION
 					LogService.flush();
+					if (randomized) Collections.shuffle(toInitialize);
 					for (final BasicCompetentAgent c : this.toInitialize){
 						c.proactivityInitialize();
 						this.toExecute.add(c);
@@ -492,6 +528,7 @@ public class APIAgent extends BasicCompetentAgent {
 
 					//AGENT STEP ACTIVITIES
 					LogService.flush();
+					if (randomized) Collections.shuffle(toExecute);
 					for (final BasicCompetentAgent c : this.toExecute) {
 						if (c.isAlive()){
 							if (c.isActive()){
@@ -510,6 +547,7 @@ public class APIAgent extends BasicCompetentAgent {
 
 					//AGENT PRO ACTIVITY TERMINATION
 					LogService.flush();
+					if (randomized) Collections.shuffle(toTerminate);
 					for (final BasicCompetentAgent c : this.toTerminate){
 						c.proactivityTerminate();
 						this.toExecute.remove(c);
@@ -544,7 +582,16 @@ public class APIAgent extends BasicCompetentAgent {
 		}
 	}
 
-	class EndActivityMessage extends Message{
+	class EndLiveMessage extends Message{
+		private static final long serialVersionUID = 5340852990030437060L;
+
+		private final Date endDate = new Date();
+
+		public Date getEndDate() {
+			return this.endDate;
+		}
+	}
+	class SigKillOrder extends Message{
 		private static final long serialVersionUID = 5340852990030437060L;
 
 		private final Date endDate = new Date();

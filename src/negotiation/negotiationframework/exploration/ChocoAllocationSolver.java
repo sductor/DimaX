@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.MatchingCandidature;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import choco.cp.solver.CPSolver;
 import choco.kernel.model.variables.integer.IntegerVariable;
@@ -13,9 +14,8 @@ import dima.introspectionbasedagents.services.BasicAgentModule;
 
 
 public abstract class ChocoAllocationSolver<
-Contract extends MatchingCandidature<ActionSpec>,
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec> extends BasicAgentModule implements AllocationSolver<Contract, ActionSpec, PersonalState> {
+Contract extends MatchingCandidature,
+PersonalState extends AgentState> extends BasicAgentModule implements AllocationSolver<Contract, PersonalState> {
 
 	/**
 	 *
@@ -74,12 +74,17 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 
 	Boolean hasNext=null;
 
+	/**
+	 * has next updated initially (hasNext==null) and in getNextSolution()
+	 */
 	@Override
 	public boolean hasNext() {
 		if (this.hasNext==null){
-			this.s.solve();
-			this.hasNext=(this.s.isFeasible()==true);
+			this.s.solve();		
+			this.hasNext=(this.s.isFeasible()!=null && this.s.isFeasible()!=false);
 		}
+
+		assert hasNext!=null;
 		return this.hasNext;
 	}
 
@@ -93,6 +98,7 @@ PersonalState extends ActionSpec> extends BasicAgentModule implements Allocation
 		} else {
 			final Collection<Contract> result = this.generateSolution();
 			this.hasNext = this.s.nextSolution();
+			if (hasNext==null) hasNext=false;
 			return result;
 		}
 	}

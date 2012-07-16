@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
+import negotiation.negotiationframework.rationality.AltruistRationalCore;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction;
@@ -22,8 +23,8 @@ import dima.introspectionbasedagents.services.replication.ReplicationHandler;
  * @param <Contract>
  */
 public class HostCore
-extends	BasicAgentCompetence<SimpleRationalAgent<ReplicationSpecification, HostState, ReplicationCandidature>>
-implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidature> {
+extends	BasicAgentCompetence<SimpleRationalAgent<HostState, ReplicationCandidature>>
+implements RationalCore<HostState, ReplicationCandidature> {
 	private static final long serialVersionUID = -179565544489478368L;
 
 	private final ReplicationSocialOptimisation myOptimiser;
@@ -42,15 +43,18 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 	//
 
 	@Override
-	public int getAllocationPreference(final HostState s,
+	public int getAllocationPreference(
 			final Collection<ReplicationCandidature> c1,
 			final Collection<ReplicationCandidature> c2) {
-		for (final ReplicationCandidature c : c1) {
-			c.setSpecification(s);
-		}
-		for (final ReplicationCandidature c : c2) {
-			c.setSpecification(s);
-		}
+		//La mise a jour des spec actualise les contrats mais ne modifie pas l'ordre!!!
+//		for (final ReplicationCandidature c : c1) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//		}
+//		for (final ReplicationCandidature c : c2) {
+//			c.setInitialState(getMyAgent().getMyCurrentState());
+//
+//		}
+		AltruistRationalCore.verifyStateConsistency(getMyAgent(), c1, c2);
 		final int pref = this.myOptimiser.getSocialPreference(c1, c2);
 		this.logMonologue(
 				"Preference : "+pref+" for \n "+c1+"\n"+c2,
@@ -87,7 +91,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 			for (final ReplicationCandidature c : destruction){
 				ReplicationHandler.killReplica(c.getAgent());
-				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onFile);
+				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -95,7 +99,7 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 			for (final ReplicationCandidature c : creation){
 				ReplicationHandler.replicate(c.getAgent());
-				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onFile);
+				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 				this.getMyAgent().setNewState(
 						c.computeResultingState(
 								this.getMyAgent().getMyCurrentState()));
@@ -108,10 +112,10 @@ implements RationalCore<ReplicationSpecification, HostState, ReplicationCandidat
 
 
 	@Override
-	public HostState getMySpecif(
+	public void setMySpecif(
 			final HostState s,
 			final ReplicationCandidature c) {
-		return s;
+//		return new NoActionSpec();
 	}
 
 	@Override

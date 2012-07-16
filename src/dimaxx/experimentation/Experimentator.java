@@ -3,6 +3,7 @@ package dimaxx.experimentation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -86,13 +87,13 @@ public final class Experimentator extends APIAgent{
 	public boolean launchSimulation() throws CompetenceException{
 		this.logMonologue("Launching simulations --> Available Memory :"
 				+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory(),LogService.onBoth);
-		this.logWarning("--------------> Used Memory (MO) : "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000,LogService.onBoth);
+//		this.logWarning("--------------> Used Memory (MO) : "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024)/1000000,LogService.onBoth);
 
 		if (this.awaitingAnswer==0){
 			//Toute les expériences sont faites!!
 
 			LogService.logOnFile(myProtocol.finalResultPath, "\n\nIteration number -"+iteartiontime+" : \n", true, false);
-			el.write(myProtocol.finalResultPath);
+//			el.write(myProtocol.finalResultPath);
 			iteartiontime--;
 
 			if (iteartiontime==0){
@@ -121,8 +122,9 @@ public final class Experimentator extends APIAgent{
 					l = nextSimu.createLaborantin(this.getApi());//new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
 					ExperimentationParameters.currentlyInstanciating=false;
 					l.addObserver(this.getIdentifier(), SimulationEndedMessage.class);
-					l.launchWith(this.getApi());
+					launch(l);
 					this.startActivity(l);
+					this.logMonologue(l.getId()+" is started",LogService.onBoth);
 //					this.launchedSimu.put(l.getId(), l);
 				} catch (final IfailedException e) {
 					this.logWarning("ABORTED!!!!!!!!!!!!!! : EXPERIMENTATION "+nextSimu+" ("+e+")", LogService.onBoth);
@@ -147,16 +149,17 @@ public final class Experimentator extends APIAgent{
 	@NotificationEnvelope
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
 		this.logMonologue(n.getSender()+" is finished",LogService.onBoth);
+		this.logWarning(n.getSender()+" receive finish",LogService.onBoth);
 		//		this.launchedSimu.get(n.getSender()).kill();
 //		this.launchedSimu.remove(n.getSender());
 		//		laborantinLauncher.destroy(n.getSender());
 		this.awaitingAnswer--;
-		el.addResults(n.getNotification().getOgs());
-		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
-				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
+		el.addAndWriteResults(n.getNotification().getOgs(),myProtocol.finalResultPath);
+//		this.logMonologue("Available Memory Before GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
+//				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		System.gc();
-		this.logMonologue("--> Available Memory After GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
-				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
+//		this.logMonologue("--> Available Memory After GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
+//				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		this.launchSimulation();
 	}
 
@@ -166,9 +169,9 @@ public final class Experimentator extends APIAgent{
 
 
 	public void run(final String[] args)
-			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException,  NotEnoughMachinesException, IfailedException{
-
-
+			throws CompetenceException, IllegalArgumentException, 
+			IllegalAccessException, JDOMException, IOException,  
+			NotEnoughMachinesException, IfailedException{
 
 		if (args[0].equals("scheduled")) {
 			this.initAPI(false);//SCHEDULED
@@ -185,6 +188,7 @@ public final class Experimentator extends APIAgent{
 		this.myProtocol.setMyAgent(this);
 		this.simuToLaunch = this.myProtocol.generateSimulation();
 		allSimu.addAll(simuToLaunch);
+		Collections.sort(allSimu);
 		this.awaitingAnswer=this.simuToLaunch.size();
 
 		if (args[1].equals("nolog")) {

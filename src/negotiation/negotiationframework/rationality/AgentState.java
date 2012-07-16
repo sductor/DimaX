@@ -15,16 +15,19 @@ public interface AgentState extends Information {
 
 	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers();
 
-	public Class<? extends Information> getMyResourcesClass();
+	public Class<? extends AgentState> getMyResourcesClass();
 
 
+	//droit = satisfaction
 	public boolean isValid();
 
-	// Return true if action had an effect
-	boolean setLost(ResourceIdentifier h, boolean isLost);
+//	// Return true if action had an effect
+//	boolean setLost(ResourceIdentifier h, boolean isLost);
 
 
 	public int getStateCounter();
+
+	public AgentState clone();
 
 }
 

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SimpleAgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
@@ -14,9 +15,13 @@ import dimaxx.tools.aggregator.AbstractCompensativeAggregation;
 import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 import dimaxx.tools.aggregator.LightWeightedAverageDoubleAggregation;
 
-public class HostState extends SimpleAgentState implements ReplicationSpecification {
+public class HostState extends SimpleAgentState {
 	private static final long serialVersionUID = 4107771452086657790L;
 
+	/*
+	 * Fields  (all must stay final for clone validity)
+	 */
+	
 	private  final Set<AgentIdentifier> myReplicatedAgents;
 
 	private final Double procChargeMax;
@@ -26,7 +31,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	private final Double memCurrentCharge;
 
 	private final double lambda;
-	private  boolean faulty;
+	private final boolean faulty;
 
 	// Take all fields	
 	public HostState(
@@ -136,7 +141,7 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	}
 
 	@Override
-	public Class<? extends Information> getMyResourcesClass() {
+	public Class<? extends AgentState> getMyResourcesClass() {
 		return ReplicaState.class;
 	}
 
@@ -181,23 +186,23 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 		return this.faulty;
 	}
 
-	public void setFaulty(final boolean faulty) {
-		this.faulty = faulty;
-	}
+//	public void setFaulty(final boolean faulty) {
+//		this.faulty = faulty;
+//	}
 
 	/*
 	 *
 	 */
 
-	@Override
-	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-		if (h.equals(this.getMyAgentIdentifier())) {
-			this.setFaulty(isLost);
-		} else {
-			// Do nothing
-		}
-		return false;
-	}
+//	@Override
+//	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
+//		if (h.equals(this.getMyAgentIdentifier())) {
+//			this.setFaulty(isLost);
+//		} else {
+//			// Do nothing
+//		}
+//		return false;
+//	}
 
 	//
 	// Opinion Handling
@@ -301,6 +306,10 @@ public class HostState extends SimpleAgentState implements ReplicationSpecificat
 	//
 	// Primitives
 	//
+	
+	public HostState clone(){
+		return this;	
+	}
 
 	@Override
 	public boolean equals(final Object o) {

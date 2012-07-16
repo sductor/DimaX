@@ -2,9 +2,9 @@ package dimaxx.experimentation;
 
 import dima.basiccommunicationcomponents.Message;
 
-public class SimulationEndedMessage extends Message{
+class SimulationEndedMessage extends Message{
 	private static final long serialVersionUID = -4584449577236269574L;
-	
+
 	ObservingGlobalService<?> ogs;
 
 	public SimulationEndedMessage(ObservingGlobalService<?> ogs) {
@@ -15,7 +15,4 @@ public class SimulationEndedMessage extends Message{
 	public ObservingGlobalService<?> getOgs() {
 		return ogs;
 	}
-	
-	
-
 }

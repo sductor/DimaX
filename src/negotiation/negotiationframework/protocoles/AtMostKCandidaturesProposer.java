@@ -13,26 +13,26 @@ import com.jcraft.jsch.KnownHosts;
 import sun.security.action.GetLongAction;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.contracts.ContractTrunk;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.shells.NotReadyException;
 
 public  abstract class AtMostKCandidaturesProposer<
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
 extends
-BasicAgentCompetence<SimpleNegotiatingAgent<ActionSpec,PersonalState,Contract>>
+BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState,Contract>>
 implements
 ProposerCore
-<SimpleNegotiatingAgent<ActionSpec,PersonalState,Contract>,
-ActionSpec,PersonalState,Contract> {
+<SimpleNegotiatingAgent<PersonalState,Contract>,
+PersonalState,Contract> {
 	private static final long serialVersionUID = -5315491050460219982L;
 
 	public final int k;
@@ -62,7 +62,6 @@ ActionSpec,PersonalState,Contract> {
 		
 		while (itMyHosts.hasNext() && candidatures.size()<k){
 			final Contract c = this.constructCandidature(itMyHosts.next());
-			c.setSpecification(this.getMyAgent().getMySpecif(c));
 			candidatures.add(c);
 			itMyHosts.remove();
 		}
@@ -73,15 +72,13 @@ ActionSpec,PersonalState,Contract> {
 	public abstract Contract constructCandidature(ResourceIdentifier id);
 
 	@Override
-	public boolean IWantToNegotiate(final PersonalState myCurrentState,
-			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
-		return !myCurrentState.getMyResourceIdentifiers().containsAll(
+	public boolean IWantToNegotiate(final ContractTrunk<Contract> contracts) {
+		return !getMyAgent().getMyCurrentState().getMyResourceIdentifiers().containsAll(
 				this.getMyAgent().getMyInformation().getKnownAgents());
 	}
 
 	@Override
-	public boolean ImAllowedToNegotiate(final PersonalState myCurrentState,
-			final ContractTrunk<Contract, ActionSpec, PersonalState> contracts) {
+	public boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
 		return  contracts.getAllInitiatorContracts().isEmpty();
 	}
 

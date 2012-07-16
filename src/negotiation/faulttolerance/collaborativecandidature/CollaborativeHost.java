@@ -1,10 +1,12 @@
 package negotiation.faulttolerance.collaborativecandidature;
 
+import java.io.Serializable;
+import java.util.Collection;
+
 import negotiation.faulttolerance.experimentation.Host;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
 import negotiation.negotiationframework.contracts.InformedCandidature;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
@@ -12,8 +14,10 @@ import negotiation.negotiationframework.protocoles.collaborative.InformedCandida
 import negotiation.negotiationframework.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedProposerCore;
 import negotiation.negotiationframework.protocoles.collaborative.ResourceInformedSelectionCore;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 
@@ -37,6 +41,11 @@ public class CollaborativeHost extends Host{
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {
 						return new InformedCandidature(new ReplicationCandidature(myId,id,false,false));
+					}
+					@Override
+					protected void setSpecif(AgentState s,
+							InformedCandidature d) {
+//						return new NoActionSpec();
 					}
 				},//new GreedyBasicSelectionCore(true, false),//
 				new ResourceInformedProposerCore(),

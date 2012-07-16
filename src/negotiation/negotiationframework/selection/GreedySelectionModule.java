@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Random;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
+import negotiation.negotiationframework.rationality.AgentState;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 
 public class GreedySelectionModule<
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
-Contract extends AbstractContractTransition<ActionSpec>>
-extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract>>{
+PersonalState extends AgentState,
+Contract extends AbstractContractTransition>
+extends BasicAgentModule<SimpleNegotiatingAgent<PersonalState, Contract>>{
 	private static final long serialVersionUID = 438513006322441185L;
 
 	public enum GreedySelectionType { Greedy, Random, RooletteWheel};
@@ -25,9 +25,8 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 	GreedySelectionType itType;
 
 	public GreedySelectionModule(
-			final SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> ag,
 			final GreedySelectionType itType) {
-		super(ag);
+		super();
 		this.itType=itType;
 	}
 
@@ -37,9 +36,10 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 
 	protected Collection<Contract> greedySelection(
 			PersonalState currentState,
-			final List<Contract> contractsToExplore) {
+			final Collection<Contract> contractsToExplore) {
 		// logMonologue("!GreedySelection! : myState"+getMyAgent().getMyCurrentState());
 
+		assert getMyAgent()!=null;
 		final Collection<Contract> toValidate = new ArrayList<Contract>();
 		Iterator<Contract> itContract;
 		switch (this.itType){
@@ -53,14 +53,12 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 			itContract = new RooletteWheelIterator(contractsToExplore);
 			break;
 		default :
-			itContract=null;
+			throw new RuntimeException();
 		}
 
 		// logMonologue("analysed contract (1): -->\n"+currentContract+"\n SO? : "
 		// +(this.getMyAgent().respectMyRights(currentState) &&
 		// this.getMyAgent().Iaccept(currentState, currentContract)));
-
-
 
 		while (itContract.hasNext()) {// this.getMyAgent().respectMyRights(currentState)
 			// &&
@@ -101,15 +99,20 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		final List<Contract> contractsToExplore;
 		int count=-1;
 
-		public GreedyIterator(final List<Contract> cs){
-			this.contractsToExplore=cs;
-			Collections.sort(this.contractsToExplore, Collections.reverseOrder(GreedySelectionModule.this.getMyAgent().getMyPreferenceComparator()));
+		public GreedyIterator(final Collection<Contract> cs){
+			assert getMyAgent()!=null;
+			this.contractsToExplore=new ArrayList<Contract>(cs);
+			Collections.sort(this.contractsToExplore, 
+					Collections.reverseOrder(
+							GreedySelectionModule.this.
+							getMyAgent().
+							getMyPreferenceComparator()));
 		}
 
 
 		@Override
 		public boolean hasNext() {
-			return this.count<this.contractsToExplore.size();
+			return this.count<this.contractsToExplore.size()-1;
 		}
 
 		@Override
@@ -135,8 +138,8 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		final List<Contract> contractsToExplore;
 		int count=-1;
 
-		public RandomIterator(final List<Contract> cs){
-			this.contractsToExplore=cs;
+		public RandomIterator(final Collection<Contract> cs){
+			this.contractsToExplore=new ArrayList<Contract>(cs);
 			Collections.shuffle(this.contractsToExplore);
 		}
 
@@ -167,16 +170,16 @@ extends BasicAgentModule<SimpleNegotiatingAgent<ActionSpec, PersonalState, Contr
 		 */
 		private static final long serialVersionUID = -6677689550030424329L;
 		List<Contract> contracts;
-		List<Contract> initContract;
+		Collection<Contract> initContract;
 
 		Random rand = new Random();
 		int currentContract=-1;
 		int sumPref;
 
-		public RooletteWheelIterator(final List<Contract> contracts) {
+		public RooletteWheelIterator(final Collection<Contract> contracts) {
 			super();
 			this.contracts=new ArrayList<Contract>(contracts);
-			this.initContract = contracts;
+			this.initContract = new ArrayList<Contract>(contracts);
 			this.currentContract=-1;
 
 			for (final Contract c : contracts) {

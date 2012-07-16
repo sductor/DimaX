@@ -4,9 +4,10 @@ import java.util.Collection;
 import java.util.Date;
 
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
-import negotiation.negotiationframework.contracts.AbstractActionSpecification;
+import negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import negotiation.negotiationframework.contracts.AbstractContractTransition;
 import negotiation.negotiationframework.protocoles.strategic.exploration.AbstractStrategicExplorationModule;
+import negotiation.negotiationframework.rationality.AgentState;
 import negotiation.negotiationframework.rationality.RationalCore;
 import negotiation.negotiationframework.selection.SimpleSelectionCore;
 import dima.basicagentcomponents.AgentIdentifier;
@@ -15,8 +16,8 @@ import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.information.SimpleOpinionService;
 
 public abstract class StrategicNegotiatingAgent<
-ActionSpec extends AbstractActionSpecification,
-PersonalState extends ActionSpec,
+ActionSpec extends AbstractActionSpecif,
+PersonalState extends AgentState,
 Contract extends AbstractContractTransition<ActionSpec>>
 extends SimpleNegotiatingAgent<ActionSpec, PersonalState, Contract> {
 

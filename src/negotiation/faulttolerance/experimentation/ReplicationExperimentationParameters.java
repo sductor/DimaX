@@ -14,6 +14,8 @@ import java.util.Map;
 
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaCoreWithStatus;
 import negotiation.faulttolerance.candidaturewithstatus.CandidatureReplicaProposerWithStatus;
+import negotiation.faulttolerance.candidaturewithstatus.StatusHost;
+import negotiation.faulttolerance.candidaturewithstatus.StatusReplica;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import negotiation.faulttolerance.negotiatingagent.HostCore;
@@ -48,7 +50,7 @@ import dimaxx.server.HostIdentifier;
 import dimaxx.tools.distribution.NormalLaw.DispersionSymbolicValue;
 
 public class ReplicationExperimentationParameters extends
-ExperimentationParameters<ReplicationLaborantin> {
+ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	private static final long serialVersionUID = -7191963637040889163L;
 
 	//	final AgentIdentifier experimentatorId;
@@ -64,7 +66,6 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Variables
 	 */
 
-
 	public int nbAgents;
 	public int nbHosts;
 
@@ -72,7 +73,6 @@ ExperimentationParameters<ReplicationLaborantin> {
 	public String _agentSelection;
 	public String _hostSelection;
 	public SocialChoiceType _socialWelfare;
-
 
 	public int agentAccessiblePerHost;
 
@@ -95,18 +95,23 @@ ExperimentationParameters<ReplicationLaborantin> {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 24;
-	public static int startingNbAgents =5000;
-	//	public static final int startingNbHosts = 5;
-	//	public static int startingNbAgents =10;
+	public static final int startingNbHosts = 8;
+	public static int startingNbAgents =15;
+
+	//		public static final int startingNbHosts = 5;
+	//		public static int startingNbAgents =10;
 
 
 	public  int simultaneousCandidature = 100;
-	public  int simultaneousAcceptation = 20;
-	public  long maxComputingTime = 60000;
-	public final boolean completGraph = true;
 
+	public  int simultaneousAcceptation = 50;
+	public  int	opinionDiffusionDegree = 50;
+
+	public  long maxComputingTime = 120000;//2 min
+		
+	public final boolean completGraph = true;
 	public static final boolean multiDim=true;
+
 	private  boolean withOptimal = false;
 	private final int maxOptimal = 50;
 
@@ -376,8 +381,14 @@ ExperimentationParameters<ReplicationLaborantin> {
 
 	@Override
 	protected Collection<SimpleRationalAgent> instanciateAgents()throws CompetenceException {
-		assert !this._usedProtocol
-		.equals(NegotiationParameters.key4CentralisedstatusProto) ||this.getMyAgent().myStatusObserver.iObserveStatus();
+		//		System.out.println(this.getMyAgent()+" "+this.getMyAgent().
+		//				myStatusObserver);
+		//		assert !this._usedProtocol
+		//		.equals(NegotiationParameters.key4CentralisedstatusProto) ||
+		//		this.getMyAgent().
+		//		myStatusObserver.iObserveStatus():
+		//			this._usedProtocol
+		//			.equals(NegotiationParameters.key4CentralisedstatusProto)+" "+this.getMyAgent().myStatusObserver.iObserveStatus();
 
 		//		this.logMonologue("Initializing agents... ",LogService.onBoth);
 		final Map<AgentIdentifier,SimpleRationalAgent> result = new HashMap<AgentIdentifier, SimpleRationalAgent>();
@@ -399,9 +410,10 @@ ExperimentationParameters<ReplicationLaborantin> {
 						simultaneousCandidature,
 						this.dynamicCriticity);
 
-			}else { //Status
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
 
-				rep = new Replica(
+				rep = new StatusReplica(
 						replicaId,
 						this.rig.getAgentState(replicaId),
 						this.getCore(true, this._usedProtocol, this._socialWelfare),
@@ -409,13 +421,35 @@ ExperimentationParameters<ReplicationLaborantin> {
 						this.getProposerCore(true, this._usedProtocol),
 						this.getInformationService(true, this._usedProtocol),
 						new ReverseCFPProtocol(),
-						this.dynamicCriticity);
+						this.dynamicCriticity,
+						getMyAgentIdentifier());
 
 				//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
 				//				rep.addObserver(h,
 				//						SimpleObservationService.informationObservationKey);
 				//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
 				//			}
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4statusProto)){ //Status
+
+				rep = new StatusReplica(
+						replicaId,
+						this.rig.getAgentState(replicaId),
+						this.getCore(true, this._usedProtocol, this._socialWelfare),
+						this.getSelectionCore(this._agentSelection),
+						this.getProposerCore(true, this._usedProtocol),
+						this.getInformationService(true, this._usedProtocol),
+						new ReverseCFPProtocol(),
+						this.dynamicCriticity,
+						opinionDiffusionDegree);
+
+				//			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){
+				//				rep.addObserver(h,
+				//						SimpleObservationService.informationObservationKey);
+				//				rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier) h));
+				//			}
+			} else {
+				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
 			}
 
 
@@ -441,15 +475,34 @@ ExperimentationParameters<ReplicationLaborantin> {
 						this._socialWelfare,
 						simultaneousAcceptation,
 						maxComputingTime);
-			} else {
-				hostAg = new Host(
+
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
+				hostAg = new StatusHost(
 						hostId,
 						this.rig.getHostState(hostId),
 						this.getCore(false, this._usedProtocol, this._socialWelfare),
 						this.getSelectionCore(this._hostSelection),
 						this.getProposerCore(false, this._usedProtocol),
 						this.getInformationService(false, this._usedProtocol),
-						new ReverseCFPProtocol());
+						new ReverseCFPProtocol(),
+						//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						getMyAgentIdentifier());
+
+			} else if (this._usedProtocol
+					.equals(NegotiationParameters.key4statusProto)) {
+				hostAg = new StatusHost(
+						hostId,
+						this.rig.getHostState(hostId),
+						this.getCore(false, this._usedProtocol, this._socialWelfare),
+						this.getSelectionCore(this._hostSelection),
+						this.getProposerCore(false, this._usedProtocol),
+						this.getInformationService(false, this._usedProtocol),
+						new ReverseCFPProtocol(),
+						//						this._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto),
+						opinionDiffusionDegree);
+			}else {
+				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
 			}
 
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
@@ -613,7 +666,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 	static boolean varyProtocol=false;
 	static boolean  varyOptimizers=false;
 
-	static boolean varyAgents=true;
+	static boolean varyAgents=false;
 	static boolean varyHosts=false;
 
 	static boolean varyAccessibleHost=false;
@@ -656,7 +709,7 @@ ExperimentationParameters<ReplicationLaborantin> {
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
-				NegotiationParameters.key4mirrorProto,
+				NegotiationParameters.key4mirrorProto,//NegotiationParameters.key4CentralisedstatusProto,//
 				SocialChoiceType.Utility,
 				NegotiationParameters.key4greedySelect,
 				NegotiationParameters.key4greedySelect,
@@ -847,8 +900,20 @@ ExperimentationParameters<ReplicationLaborantin> {
 			}
 		}
 		return result;
-	}
+	}	
 	private Collection<ReplicationExperimentationParameters> varyAgents(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps) {
+			for (final Double v : ReplicationExperimentationParameters.doubleParameters6){
+				final ReplicationExperimentationParameters n =  p.clone();
+				n.nbAgents=(int)(v*ReplicationExperimentationParameters.startingNbAgents);
+				//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
+				result.add(n);	
+			}
+		}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyAgents2(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
 			List<Integer> nbAgentsList = Arrays.asList(new Integer[]{10,20,40,80,100,150,200,350,500,750,1000,2000,5000});
@@ -1051,8 +1116,33 @@ ExperimentationParameters<ReplicationLaborantin> {
 		return result;
 	}
 
+	@Override
+	public int compareTo(Object o) {
+		ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
+		double fixedResources=
+				((double)ReplicationExperimentationParameters.startingNbAgents/
+						(double)ReplicationExperimentationParameters.startingNbHosts);
+		boolean thisIsFixed=this.hostCapacityMean==fixedResources;
+		boolean thatIsFixed=that.hostCapacityMean==fixedResources;
+		double thisHostCapacityPercent=this.hostCapacityMean/this.nbAgents;
+		double thatHostCapacityPercent=that.hostCapacityMean/that.nbAgents;
 
+		if  (thisIsFixed && thatIsFixed) {
+			return this.nbAgents-that.nbAgents;
+		} else if (thisIsFixed && !thatIsFixed){
+			return -1;
+		} else if (thatIsFixed && !thisIsFixed){
+			return 1;
+		} else {//!thisIsFixed && !thatIsFixed
+			if (thisHostCapacityPercent!=thatHostCapacityPercent){
+				return (int) (thisHostCapacityPercent-thatHostCapacityPercent);
+			} else {
+				return this.nbAgents-that.nbAgents;
+			}
+		}
+	}
 }
+
 
 
 //

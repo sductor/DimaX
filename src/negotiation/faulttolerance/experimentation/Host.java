@@ -3,7 +3,6 @@ package negotiation.faulttolerance.experimentation;
 import negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import negotiation.faulttolerance.negotiatingagent.HostState;
 import negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
-import negotiation.faulttolerance.negotiatingagent.ReplicationSpecification;
 import negotiation.negotiationframework.SimpleNegotiatingAgent;
 import negotiation.negotiationframework.contracts.ResourceIdentifier;
 import negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -15,6 +14,7 @@ import negotiation.negotiationframework.rationality.SimpleRationalAgent;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
+import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
@@ -23,17 +23,19 @@ import dima.introspectionbasedagents.services.observingagent.NotificationMessage
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import dimaxx.experimentation.ExperimentationResults;
 import dimaxx.experimentation.ObservingSelfService;
+import dimaxx.tools.aggregator.LightAverageDoubleAggregation;
 
 public class Host
-extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationCandidature>
+extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 {
 	private static final long serialVersionUID = -8478683967125467116L;
 
 	//
 	// Fields
 	//
-//	private long firstModifTime=-2;
+	//	private long firstModifTime=-2;
 	private long lastModifTime=-1;
+	private LightAverageDoubleAggregation searchTime = new LightAverageDoubleAggregation();
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
@@ -48,14 +50,14 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 			return new ReplicationResultHost(
 					Host.this.getMyCurrentState(),//firstModifTime,
 					lastModifTime,
-					Host.this.getCreationTime(),initialStateNumber);
+					Host.this.getCreationTime(),initialStateNumber,searchTime);
 		}
 	};
 
 	@Competence
 	public
-	FaultObservationService<ReplicationSpecification, HostState, ReplicationCandidature> myFaultAwareService =
-	new FaultObservationService<ReplicationSpecification, HostState, ReplicationCandidature>() {
+	FaultObservationService myFaultAwareService =
+	new FaultObservationService() {
 
 		/**
 		 *
@@ -99,16 +101,35 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 	@EventHookedMethod(HostState.class)
 	public void updateStateStatus(HostState h){
-//		if (firstModifTime==-2){
-//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
-//			firstModifTime=-1;	
-//		}else if (firstModifTime==-1){
-//			assert h.getStateCounter()==initialStateNumber+1;
-//			firstModifTime=getUptime();		
-//		}
-//		
+		//		if (firstModifTime==-2){
+		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
+		//			firstModifTime=-1;	
+		//		}else if (firstModifTime==-1){
+		//			assert h.getStateCounter()==initialStateNumber+1;
+		//			firstModifTime=getUptime();		
+		//		}
+		//		
 		lastModifTime=getUptime();
 	}
+
+	//
+	// Accessor
+	//
+	@EventHookedMethod(SearchTimeNotif.class)
+	public void beNotifedOfSearchTime(SearchTimeNotif s){
+		searchTime.add(s.getValue());
+	}
+	
+	
+	//allow to continue to receive messages
+	public void tryToResumeActivity(){
+		super.tryToResumeActivity();
+		mySelfObservationService.tryToResumeActivity();
+	}
+	public boolean isFaulty() {
+		return this.getMyCurrentState().isFaulty();
+	}
+
 	//
 	// Behavior
 	//
@@ -124,17 +145,6 @@ extends	SimpleNegotiatingAgent<ReplicationSpecification, HostState, ReplicationC
 
 
 //new HostState(id, hostMaxProc, hostMaxMem, lambda,-1)
-
-
-
-
-//
-// Accessors
-//
-
-//	public boolean isFaulty() {
-//		return this.getMyCurrentState().isFaulty();
-//	}
 
 //
 // Behavior

@@ -252,12 +252,12 @@ extends BasicAgentModule<ReplicationLaborantin>{
 			final Map<AgentIdentifier, ReplicaState> agents,
 			final Map<ResourceIdentifier, HostState> hosts){
 		try {
-			final MatchingCandidature c = new ReplicationCandidature(
+			final ReplicationCandidature c = new ReplicationCandidature(
 					h,
 					r,
 					true,true);
-			c.setSpecification(agents.get(r));
-			c.setSpecification(hosts.get(h));
+			c.setInitialState(agents.get(r));
+			c.setInitialState(hosts.get(h));
 
 			if (!c.computeResultingState(h).isValid() || !c.computeResultingState(r).isValid()) {
 				return false;

@@ -6,6 +6,7 @@ import java.util.Set;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.shells.NotReadyException;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
+import frameworks.negotiation.negotiationframework.SimpleNegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
@@ -16,9 +17,9 @@ public class InactiveProposerCore<
 ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends	BasicAgentCompetence<NegotiatingAgent<PersonalState, Contract>>
+extends	BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>
 implements ProposerCore<
-NegotiatingAgent<PersonalState, Contract>,
+SimpleNegotiatingAgent<PersonalState, Contract>,
 PersonalState,
 Contract>  {
 	private static final long serialVersionUID = -5019973485455813800L;

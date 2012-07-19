@@ -7,9 +7,9 @@ import java.util.Set;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.information.SimpleOpinionService;
 import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.core.information.OpinionService.Opinion;
+import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
+import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
 import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.services.modules.aggregator.LightWeightedAverageDoubleAggregation;
@@ -91,7 +91,7 @@ public class ReplicaState  extends SimpleAgentState  {
 				init.myReplicas,
 				init.myProcCharge,
 				init.myMemCharge,
-				init.myFailureProb,
+				init.getMyFailureProb(),
 				init.socialWelfare,
 				init.getStateCounter()+1);
 	}
@@ -99,7 +99,7 @@ public class ReplicaState  extends SimpleAgentState  {
 	// Clone with modification of replicas
 	public ReplicaState allocate (final HostState newRep) {
 		final HashSet<ResourceIdentifier> rep = new HashSet<ResourceIdentifier>(this.myReplicas);
-		double newFailureProb = this.myFailureProb;
+		double newFailureProb = this.getMyFailureProb();
 		if (rep.contains(newRep.getMyAgentIdentifier())) {
 			rep.remove(newRep.getMyAgentIdentifier());
 			newFailureProb/=1-this.getDisponibility(newRep.getLambda());
@@ -119,7 +119,7 @@ public class ReplicaState  extends SimpleAgentState  {
 	}
 
 	// private constructor for opinions
-	private ReplicaState(
+	ReplicaState(
 			final AgentIdentifier myAgent,
 			final Double myCriticity,
 			final Set<ResourceIdentifier> myReplicas,
@@ -151,7 +151,7 @@ public class ReplicaState  extends SimpleAgentState  {
 
 
 	public Double getMyDisponibility() {
-		return 1 - this.myFailureProb;
+		return 1 - this.getMyFailureProb();
 	}
 
 	public Double getMyCriticity() {
@@ -221,113 +221,6 @@ public class ReplicaState  extends SimpleAgentState  {
 		}
 	}
 
-	/*
-	 * Opinion
-	 */
-
-
-	@Override
-	public Double getNumericValue(final Information o) {
-		if (o instanceof ReplicaState) {
-			final ReplicaState e = (ReplicaState) o;
-			return e.getMyReliability();
-		} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState){
-			final ReplicaState e = (ReplicaState) ((Opinion)o).getRepresentativeElement();
-			return e.getMyReliability();
-		} else {
-		
-			throw new RuntimeException("melange d'infos!!!"+this+" "+o+" "+o.getClass());
-		}
-	}
-
-	@Override
-	public AbstractCompensativeAggregation<Information> fuse(
-			final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-		throw new RuntimeException("should not be called!");
-	}
-
-	@Override
-	public Information getRepresentativeElement(
-			final Collection<? extends Information> elems) {
-		final LightAverageDoubleAggregation
-		meanCrit = new LightAverageDoubleAggregation(),
-		meanDisp = new LightAverageDoubleAggregation(),
-		meanMem = new LightAverageDoubleAggregation(),
-		meanProc = new LightAverageDoubleAggregation();
-
-		for (final Information o : elems) {
-			if (o instanceof ReplicaState) {
-				//				if (!((ReplicaState) o).getMyCriticity().equals(Double.NaN))
-				//					throw new RuntimeException();
-				final ReplicaState e = (ReplicaState) o;
-				meanCrit.add(myCriticity);
-				meanDisp.add(myFailureProb);
-				meanMem.add(myMemCharge);
-				meanProc.add(myProcCharge);
-			} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
-				//				if (!((ReplicaState) o).getMyCriticity().equals(Double.NaN))
-				//					throw new RuntimeException();
-				final ReplicaState e = (ReplicaState) ((Opinion)o).getRepresentativeElement();
-				meanCrit.add(myCriticity);
-				meanDisp.add(myFailureProb);
-				meanMem.add(myMemCharge);
-				meanProc.add(myProcCharge);
-			} else {
-				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-			}
-		}
-
-		final ReplicaState rep = new ReplicaState(
-				SimpleOpinionService.globaLAgentIdentifer,
-				meanCrit.getRepresentativeElement(),
-				null,
-				meanProc.getRepresentativeElement(),
-				meanMem.getRepresentativeElement(),
-				meanDisp.getRepresentativeElement(),// this.getCreationTime(),
-				this.socialWelfare,
-				-1);
-		return rep;
-	}
-
-	@Override
-	public Information getRepresentativeElement(
-			final Map<? extends Information, Double> elems) {
-		final LightWeightedAverageDoubleAggregation
-		meanCrit = new LightWeightedAverageDoubleAggregation(),
-		meanDisp = new LightWeightedAverageDoubleAggregation(),
-		meanMem = new LightWeightedAverageDoubleAggregation(),
-		meanProc = new LightWeightedAverageDoubleAggregation();
-
-		for (final Information o : elems.keySet()) {
-			if (o instanceof ReplicaState) {
-				final ReplicaState e = (ReplicaState) o;
-				meanCrit.add(myCriticity,elems.get(e));
-				meanDisp.add(myFailureProb,elems.get(e));
-				meanMem.add(myMemCharge,elems.get(e));
-				meanProc.add(myProcCharge,elems.get(e));
-			}  else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
-				final ReplicaState e = (ReplicaState) ((Opinion)o).getRepresentativeElement();
-				meanCrit.add(myCriticity,elems.get(e));
-				meanDisp.add(myFailureProb,elems.get(e));
-				meanMem.add(myMemCharge,elems.get(e));
-				meanProc.add(myProcCharge,elems.get(e));
-			} else {
-				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-			}
-		}
-
-		final ReplicaState rep = new ReplicaState(
-				SimpleOpinionService.globaLAgentIdentifer,
-				meanCrit.getRepresentativeElement(),
-				null,
-				meanProc.getRepresentativeElement(),
-				meanMem.getRepresentativeElement(),
-				meanDisp.getRepresentativeElement(), //this.getCreationTime(),
-				this.socialWelfare,
-				-1);
-		return rep;
-	}
-
 	//
 	// Primitives
 	//
@@ -348,10 +241,6 @@ public class ReplicaState  extends SimpleAgentState  {
 			final ReplicaState that = (ReplicaState) o;
 			return that.getMyAgentIdentifier().equals(
 					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
-		} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
-			final ReplicaState that = (ReplicaState) ((Opinion)o).getRepresentativeElement();
-			return that.getMyAgentIdentifier().equals(
-					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
 		} else {
 			return false;
 		}
@@ -369,10 +258,17 @@ public class ReplicaState  extends SimpleAgentState  {
 				+"\n valid ? : "+this.isValid();
 		// +"\n status "+this.getMyStateStatus();
 	}
+
+	public Double getMyFailureProb() {
+		return myFailureProb;
+	}
 }
 
 
-
+//} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
+//	final ReplicaState that = (ReplicaState) ((Opinion)o).getRepresentativeElement();
+//	return that.getMyAgentIdentifier().equals(
+//			this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
 
 
 //	@Override

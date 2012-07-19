@@ -64,10 +64,10 @@ public abstract class SimpleAgentState implements AgentState {
 	public int isNewerThan(final Information i) {
 		if (i instanceof AgentState){
 			final SimpleAgentState that = (SimpleAgentState) i;
-			assert this.equals(that) || this.getStateCounter()!=that.getStateCounter():this.getStateCounter()+" "+that.getStateCounter();
-			assert this.equals(that) || (this.getStateCounter()>that.getStateCounter()?
-					this.creationTime>=that.creationTime:this.creationTime<= that.creationTime)
-					:this.getStateCounter()+" "+this.creationTime+" * "+that.getStateCounter()+" "+that.creationTime;
+//			assert this.equals(that) || this.getStateCounter()!=that.getStateCounter():this.getStateCounter()+" "+that.getStateCounter();
+//			assert this.equals(that) || (this.getStateCounter()>that.getStateCounter()?
+//					this.creationTime>=that.creationTime:this.creationTime<= that.creationTime)
+//					:this.getStateCounter()+" "+this.creationTime+" * "+that.getStateCounter()+" "+that.creationTime;
 
 					return this.getStateCounter()-that.getStateCounter();
 		} else {

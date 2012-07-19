@@ -8,6 +8,7 @@ import frameworks.negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
 import frameworks.negotiation.horizon.negotiatingagent.VirtualNetworkState;
 import frameworks.negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
 import frameworks.negotiation.horizon.parameters.HorizonMeasurableParameters;
+import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.MatchingCandidature;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 
@@ -226,5 +227,10 @@ public class HorizonCandidature extends MatchingCandidature {
 	 */
 	public SubstrateNodeState getInitialState(final SubstrateNodeIdentifier id) {
 		return this.snInitialState;
+	}
+
+	@Override
+	public AbstractContractTransition clone() {
+		return this;
 	}
 }

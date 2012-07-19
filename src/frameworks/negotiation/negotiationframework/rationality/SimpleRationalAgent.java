@@ -106,7 +106,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public Class<? extends AgentState> getMyStateType(){
 		return myStateType;		
 	}

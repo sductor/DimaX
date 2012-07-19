@@ -53,7 +53,11 @@ PersonalState, Contract> {
 			while (this.getMyAgent().stateStatusIs(nextState, AgentStateStatus.Wastefull)
 					&& !replicas.isEmpty()){
 
-				final Contract destructionCandidature =this.constructDestructionCandidature((ResourceIdentifier) replicas.remove(0).getMyAgentIdentifier());
+				AgentState rId = replicas.remove(0);
+				final Contract destructionCandidature =
+						this.constructDestructionCandidature((ResourceIdentifier) rId.getMyAgentIdentifier());
+				destructionCandidature.setInitialState(getMyAgent().getMyCurrentState());
+				destructionCandidature.setInitialState(rId);
 
 				if (this.getMyAgent().getMyResultingState(nextState,
 						destructionCandidature).isValid()

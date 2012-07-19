@@ -8,7 +8,7 @@ import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.core.information.OpinionService.Opinion;
+import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
 import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.services.modules.aggregator.LightWeightedAverageDoubleAggregation;
@@ -93,7 +93,7 @@ public class HostState extends SimpleAgentState {
 	}
 
 	// private universal constructor
-	private HostState(
+	HostState(
 			final ResourceIdentifier myAgent,
 			final Set<AgentIdentifier> myReplicatedAgents,
 			final double lambda, 
@@ -229,109 +229,6 @@ public class HostState extends SimpleAgentState {
 	//			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
 	//	}
 
-	@Override
-	public Double getNumericValue(final Information o) {
-		if (o instanceof HostState ) {
-			final HostState e = (HostState) o;
-			return e.getMyCharge();
-		} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState) {
-			final HostState e = (HostState) ((Opinion)o).getRepresentativeElement();
-			return e.getMyCharge();
-		} else {
-			throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-		}
-	}
-
-	@Override
-	public AbstractCompensativeAggregation<Information> fuse(
-			final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-		throw new RuntimeException("should not be called!");
-	}
-
-	@Override
-	public Information getRepresentativeElement(
-			final Collection<? extends Information> elems) {
-		final LightAverageDoubleAggregation
-		meanProcCu = new LightAverageDoubleAggregation(),
-		meanProcMax = new LightAverageDoubleAggregation(),
-		meanMemCu = new LightAverageDoubleAggregation(),
-		meanMemMax = new LightAverageDoubleAggregation(),
-		meanLambda = new LightAverageDoubleAggregation();
-
-		for (final Information o : elems) {
-			if (o instanceof HostState) {
-				final HostState e = (HostState) o;
-				meanProcCu.add(e.getCurrentProcCharge());
-				meanProcMax.add(e.getProcChargeMax());
-				meanMemCu.add(e.getCurrentMemCharge());
-				meanMemMax.add(e.getMemChargeMax());
-				meanLambda.add(e.getLambda());
-			} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState) {
-				final HostState e = (HostState) ((Opinion)o).getRepresentativeElement();
-				meanProcCu.add(e.getCurrentProcCharge());
-				meanProcMax.add(e.getProcChargeMax());
-				meanMemCu.add(e.getCurrentMemCharge());
-				meanMemMax.add(e.getMemChargeMax());
-				meanLambda.add(e.getLambda());
-			} else {
-				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-			}
-		}
-
-		return new HostState(
-				this.getMyAgentIdentifier(),
-				null,
-				meanLambda.getRepresentativeElement(),
-				meanProcMax.getRepresentativeElement(),
-				meanProcCu.getRepresentativeElement(),
-				meanMemMax.getRepresentativeElement(),
-				meanMemCu.getRepresentativeElement(),
-				false,// this.getCreationTime(),
-				-1);
-	}
-
-	@Override
-	public Information getRepresentativeElement(
-			final Map<? extends Information, Double> elems) {
-		final LightWeightedAverageDoubleAggregation
-		meanProcCu = new LightWeightedAverageDoubleAggregation(),
-		meanProcMax = new LightWeightedAverageDoubleAggregation(),
-		meanMemCu = new LightWeightedAverageDoubleAggregation(),
-		meanMemMax = new LightWeightedAverageDoubleAggregation(),
-		meanLambda = new LightWeightedAverageDoubleAggregation();
-
-		for (final Information o : elems.keySet()) {
-			if (o instanceof HostState){
-				final HostState e = (HostState) o;
-				meanProcCu.add(e.getCurrentProcCharge(),elems.get(e));
-				meanProcMax.add(e.getProcChargeMax(),elems.get(e));
-				meanMemCu.add(e.getCurrentMemCharge(),elems.get(e));
-				meanMemMax.add(e.getMemChargeMax(),elems.get(e));
-				meanLambda.add(e.getLambda(),elems.get(e));
-			} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState){
-				final HostState e = (HostState) ((Opinion)o).getRepresentativeElement();
-				meanProcCu.add(e.getCurrentProcCharge(),elems.get(e));
-				meanProcMax.add(e.getProcChargeMax(),elems.get(e));
-				meanMemCu.add(e.getCurrentMemCharge(),elems.get(e));
-				meanMemMax.add(e.getMemChargeMax(),elems.get(e));
-				meanLambda.add(e.getLambda(),elems.get(e));
-			} else {
-				throw new RuntimeException("melange d'infos!!!"+this+" "+o);
-			}
-		}
-
-		return new HostState(
-				this.getMyAgentIdentifier(),
-				null,
-				meanProcMax.getRepresentativeElement(),
-				meanProcCu.getRepresentativeElement(),
-				meanMemMax.getRepresentativeElement(),
-				meanMemCu.getRepresentativeElement(),
-				meanLambda.getRepresentativeElement(),
-				false, //this.getCreationTime(),
-				-1);
-	}
-
 	//
 	// Primitives
 	//
@@ -345,10 +242,6 @@ public class HostState extends SimpleAgentState {
 	public boolean equals(final Object o) {
 		if (o instanceof HostState ) {
 			final HostState that = (HostState) o;
-			return that.getMyAgentIdentifier().equals(
-					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
-		} else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof HostState) {
-			final HostState that = (HostState) ((Opinion)o).getRepresentativeElement();
 			return that.getMyAgentIdentifier().equals(
 					this.getMyAgentIdentifier())&&this.getStateCounter()==that.getStateCounter();
 		} else {
@@ -373,7 +266,4 @@ public class HostState extends SimpleAgentState {
 				+"\n --> creation time : "+this.getCreationTime()+"#"+this.getStateCounter()
 				+"\n valid ? : "+this.isValid();
 	}
-
-
-
 }

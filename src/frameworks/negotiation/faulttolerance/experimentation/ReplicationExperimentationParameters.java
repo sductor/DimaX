@@ -27,7 +27,9 @@ import frameworks.negotiation.faulttolerance.candidaturewithstatus.StatusHost;
 import frameworks.negotiation.faulttolerance.candidaturewithstatus.StatusReplica;
 import frameworks.negotiation.faulttolerance.collaborativecandidature.CollaborativeHost;
 import frameworks.negotiation.faulttolerance.collaborativecandidature.CollaborativeReplica;
+import frameworks.negotiation.faulttolerance.negotiatingagent.HostCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -482,10 +484,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 			//gestion des état initiaux
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
-				if (hostAg.getMyCore().iMemorizeMyRessourceState()) {
+				if (((HostCore)hostAg.getMyCore()).iMemorizeMyRessourceState()) {
 					hostAg.getMyInformation().add(this.rig.getAgentState(ag));
 				}
-				if (hostAg.getMyCore().iObserveMyRessourceChanges()) {
+				if (((HostCore)hostAg.getMyCore()).iObserveMyRessourceChanges()) {
 					hostAg.addObserver(ag,
 							SimpleRationalAgent.stateChangementObservation);
 				}

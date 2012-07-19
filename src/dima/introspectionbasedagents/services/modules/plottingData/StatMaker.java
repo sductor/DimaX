@@ -3,10 +3,10 @@ package dima.introspectionbasedagents.services.modules.plottingData;
 import java.util.LinkedList;
 import java.util.List;
 
-import dima.introspectionbasedagents.services.library.execution.Executor;
+import dima.introspectionbasedagents.services.core.communicating.execution.SystemCommunicationService;
 
 
-public class StatMaker extends Executor {
+public class StatMaker extends SystemCommunicationService {
 
 	private static final long serialVersionUID = 4820712229141678066L;
 

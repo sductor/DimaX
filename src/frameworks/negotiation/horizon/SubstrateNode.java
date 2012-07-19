@@ -82,8 +82,7 @@ SimpleNegotiatingAgent<SubstrateNodeState, HorizonContract> {
 					throws CompetenceException {
 		super(
 				id,
-				new SubstrateNodeState(id, 0, nativeParameters,
-						energyConsumptionCoef),
+				new SubstrateNodeState(id, 0, nativeParameters,	energyConsumptionCoef),
 						myRationality,
 						selectionCore,
 						new InactiveProposerCore<HorizonSpecification, SubstrateNodeState, HorizonContract>(),

@@ -257,48 +257,6 @@ public class SubstrateNodeState extends SimpleAgentState {
 	// - this.availableNodeParams.getNodeParameters().getRam());
 	// }
 
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Double getNumericValue(final Information e) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public AbstractCompensativeAggregation<Information> fuse(
-			final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Information getRepresentativeElement(
-			final Collection<? extends Information> elems) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Information getRepresentativeElement(
-			final Map<? extends Information, Double> elems) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * This method is not designed for this implementation of the framework.
-	 */
-	@Override
-	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-		throw new UnsupportedOperationException();
-	}
 
 	/**
 	 * Tests whether this SubstrateNode is hosting no VirtualNode.
@@ -319,6 +277,11 @@ public class SubstrateNodeState extends SimpleAgentState {
 	public Double evaluateUtility() {
 		return this.nodesHostedNetworks.isEmpty() ? 1
 				: 1. / (this.energyConsumptionCoef + 1);
+	}
+
+	@Override
+	public AgentState clone() {
+		return this;
 	}
 
 }

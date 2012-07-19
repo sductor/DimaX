@@ -7,7 +7,7 @@ import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
-import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedCommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedAsynchronousCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCommunicatingMethodTrunk.UnHandledMessageException;
 
@@ -26,14 +26,16 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	// Constructor
 	//
 
-	public BasicCommunicatingShell(
-			final MailBoxBasedCommunicatingComponentInterface myComponent) {
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	BasicCommunicatingShell(
+			final Component myComponent) {
 		super(myComponent, new BasicCommunicatingMethodTrunk());
 		this.mailBox=myComponent.getMailBox();
 	}
 
 
-	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicCommunicatingShell(
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	BasicCommunicatingShell(
 			final Component myComponent,
 			final AbstractMailBox mailBox) {
 		super(myComponent, new BasicCommunicatingMethodTrunk());
@@ -44,14 +46,16 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	 *
 	 */
 
-	public BasicCommunicatingShell(
-			final MailBoxBasedCommunicatingComponentInterface myComponent,
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	BasicCommunicatingShell(
+			final Component myComponent,
 			final SimpleExceptionHandler exceptionHandler) {
 		super(myComponent, new BasicCommunicatingMethodTrunk(), exceptionHandler);
 		this.mailBox=myComponent.getMailBox();
 	}
 
-	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface> BasicCommunicatingShell(
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	BasicCommunicatingShell(
 			final Component myComponent,
 			final AbstractMailBox mailBox,
 			final SimpleExceptionHandler exceptionHandler) {

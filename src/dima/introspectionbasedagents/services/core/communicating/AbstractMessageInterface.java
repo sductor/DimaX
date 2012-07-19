@@ -12,5 +12,9 @@ public interface AbstractMessageInterface {
 
 	public void setSender(AgentIdentifier identifier);
 
+	public Object getContent();
+
+	public AbstractMessageInterface clone();
+
 
 }

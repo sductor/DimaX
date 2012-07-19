@@ -3,10 +3,11 @@ package frameworks.negotiation.faulttolerance.candidaturewithstatus;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.SimpleOpinionService;
+import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
 import frameworks.negotiation.faulttolerance.Replica;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
 import frameworks.negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
@@ -84,7 +85,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 				return new ReplicationCandidature(id, this.getIdentifier(), true, true);
 			}
 		},
-		new SimpleOpinionService(),
+		new SimpleOpinionService(new ReplicaStateOpinionHandler(myState.getSocialWelfare(),id)),
 		new ReverseCFPProtocol(),
 		dynamicCriticity);
 	}

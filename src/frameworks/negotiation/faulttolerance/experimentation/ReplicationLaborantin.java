@@ -8,10 +8,10 @@ import org.jdom.JDOMException;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.Believer;
-import dima.introspectionbasedagents.services.core.information.OpinionService;
-import dima.introspectionbasedagents.services.core.information.SimpleOpinionService;
 import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.core.opinion.Believer;
+import dima.introspectionbasedagents.services.core.opinion.OpinionService;
+import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
 import dima.introspectionbasedagents.shells.LaunchableCompetentComponent;
 import frameworks.experimentation.Experimentator;
 import frameworks.experimentation.IfailedException;
@@ -19,6 +19,7 @@ import frameworks.experimentation.Laborantin;
 import frameworks.negotiation.faulttolerance.Replica;
 import frameworks.negotiation.faulttolerance.faulsimulation.FaultTriggeringService;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
 import frameworks.negotiation.negotiationframework.protocoles.status.CentralisedStatusCompterCompetence;
 import frameworks.negotiation.negotiationframework.rationality.RationalAgent;
@@ -35,7 +36,7 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 			final APILauncherModule api) throws CompetenceException,
 			IfailedException, NotEnoughMachinesException {
 		super(p, new ReplicationObservingGlobalService(p), api);
-		myInformationService =  new SimpleOpinionService();
+		myInformationService =  new SimpleOpinionService(new ReplicaStateOpinionHandler(p._socialWelfare, this.getIdentifier()));
 		if (p._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto)){
 			cscc.setMyAgent(this);
 			cscc.setActive(true);

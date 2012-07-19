@@ -2,10 +2,12 @@ package dima.introspectionbasedagents.services.core.information;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.modules.aggregator.FunctionnalCompensativeAggregator;
 import dima.introspectionbasedagents.services.modules.aggregator.UtilitaristAnalyser;
@@ -42,7 +44,7 @@ public interface ObservationService extends AgentCompetence<BasicCompetentAgent>
 
 	public <Info extends Information> boolean hasInformation(Class<Info> informationType, AgentIdentifier agentId);
 
-	public <Info extends Information> HashMap<AgentIdentifier, Info> getInformation(Class<Info> informationType) throws NoInformationAvailableException;
+	public <Info extends Information> Map<AgentIdentifier, Info> getInformation(Class<Info> informationType) throws NoInformationAvailableException;
 
 	public void add(Information information);
 
@@ -50,9 +52,8 @@ public interface ObservationService extends AgentCompetence<BasicCompetentAgent>
 
 	// public void beInformedOfContractExecution(Contract c);
 
-	public interface Information
-	extends //Comparable<K>,
-	UtilitaristAnalyser<Information>, FunctionnalCompensativeAggregator<Information>  {
+	public interface Information extends DimaComponentInterface
+	{
 
 		public AgentIdentifier getMyAgentIdentifier();
 

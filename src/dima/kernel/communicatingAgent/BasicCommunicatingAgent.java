@@ -14,7 +14,8 @@ import dima.basiccommunicationcomponents.CometCommunicationComponent;
 import dima.basiccommunicationcomponents.CommunicationComponent;
 import dima.basiccommunicationcomponents.Message;
 import dima.basiccommunicationcomponents.SimpleMailBox;
-import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedCommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedAsynchronousCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.core.darxkernel.DimaXCommunicationComponent;
 import dima.introspectionbasedagents.services.core.darxkernel.DimaXTask;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
@@ -24,7 +25,7 @@ import dima.kernel.BasicAgents.BasicReactiveAgent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 
 
-public abstract class BasicCommunicatingAgent extends BasicReactiveAgent implements MailBoxBasedCommunicatingComponentInterface {
+public abstract class BasicCommunicatingAgent extends BasicReactiveAgent implements MailBoxBasedAsynchronousCommunicatingComponentInterface {
 	/**
 	 *
 	 */
@@ -357,7 +358,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * Creation date: (27/04/00 11:01:12)
 	 * @return boolean
 	 */
-	public boolean put(final AbstractMessage m) {
+	public boolean put(final AbstractMessageInterface m) {
 		//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) ||  m.getReceiver().equals(this.getIdentifier());
 		return this.mailBox.writeMail(m);
 	}
@@ -386,7 +387,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 * @param m Gdima.competences.communication.AbstractMessage
 	 */
 	@Override
-	public void receive(final Message m) {
+	public void receive(final AbstractMessageInterface m) {
 		//		assert this.getIdentifier().equals(AgentManagementSystem.DIMAams.getIdentifier()) || m.getReceiver().equals(this.getIdentifier()):"agent "+this.getIdentifier()+" has received "+m;
 		this.put(m);
 	}
@@ -407,7 +408,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 */
 
 	@Override
-	public void sendMessage(final AgentIdentifier agentId, final Message am) {
+	public void sendMessage(final AgentIdentifier agentId, final AbstractMessageInterface am) {
 		am.setSender(this.getIdentifier());
 		am.setReceiver(agentId);
 		if (this.aquaintances.containsKey(agentId.toString())) {
@@ -463,6 +464,24 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 */
 	public AbstractMessage removeFirstMessage() {
 		return ((SimpleMailBox) this.getMailBox()).removeFirstMessage();
+	}
+	
+	/*
+	 * 
+	 */
+	
+
+	@Override
+	public boolean isConnected(String[] args) {
+		return true;
+	}
+	@Override
+	public boolean connect(String[] args) {
+		return true;
+	}
+	@Override
+	public boolean disconnect(String[] args) {
+		return true;
 	}
 }
 

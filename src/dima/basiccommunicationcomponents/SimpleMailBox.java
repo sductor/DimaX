@@ -1,6 +1,8 @@
 package dima.basiccommunicationcomponents;
 
 import java.util.LinkedList;
+
+import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
 /**
  * This is a simple MailBox implemented basically with a LinkedListe of
  * messages.
@@ -73,7 +75,7 @@ public class SimpleMailBox extends AbstractMailBox
 	 * Creation date: (01/03/2000 23:22:26)
 	 */
 	@Override
-	public synchronized boolean writeMail(final AbstractMessage m) {
+	public synchronized boolean writeMail(final AbstractMessageInterface m) {
 		this.messageList.add(m);
 		return true; }
 

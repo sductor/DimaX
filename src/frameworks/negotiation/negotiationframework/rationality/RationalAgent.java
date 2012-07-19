@@ -91,4 +91,5 @@ public interface RationalAgent<PersonalState extends AgentState, Contract extend
 	//		return this.myCore.evaluatePreference(s1);
 	//	}
 
+
 }

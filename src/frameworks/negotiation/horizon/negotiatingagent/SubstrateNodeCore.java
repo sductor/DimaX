@@ -6,6 +6,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import frameworks.negotiation.horizon.SubstrateNode;
 import frameworks.negotiation.horizon.contracts.HorizonContract;
 import frameworks.negotiation.horizon.contracts.SubstrateNodeSpecification;
+import frameworks.negotiation.negotiationframework.SimpleNegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.ReallocationContract;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.negotiationframework.rationality.RationalCore;
@@ -20,8 +21,8 @@ import frameworks.negotiation.negotiationframework.rationality.SocialChoiceFunct
  */
 public class SubstrateNodeCore
 extends
-BasicAgentCompetence<SimpleRationalAgent<SubstrateNodeState, HorizonContract>>
-implements RationalCore<SubstrateNodeState, HorizonContract> {
+BasicAgentCompetence<SimpleNegotiatingAgent<SubstrateNodeState, HorizonContract>>
+implements RationalCore<SimpleNegotiatingAgent<SubstrateNodeState, HorizonContract>,SubstrateNodeState, HorizonContract> {
 
 	/**
 	 * Serial version identifier.
@@ -107,5 +108,15 @@ implements RationalCore<SubstrateNodeState, HorizonContract> {
 
 		}
 		return this.myChoiceFunction.getSocialPreference(c1, c2);
+	}
+
+	@Override
+	public boolean iObserveMyRessourceChanges() {
+		throw new RuntimeException("todo");
+	}
+
+	@Override
+	public boolean iMemorizeMyRessourceState() {
+		throw new RuntimeException("todo");
 	}
 }

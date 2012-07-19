@@ -11,17 +11,21 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.core.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.core.information.OpinionService;
 import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.core.information.OpinionService.Opinion;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.core.opinion.OpinionDataBase.SimpleOpinion;
+import dima.introspectionbasedagents.services.core.opinion.OpinionHandler;
+import dima.introspectionbasedagents.services.core.opinion.OpinionService;
+import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
+import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 
-public class StatusObservationCompetence<PersonalState extends AgentState> extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
+public class StatusObservationCompetence<PersonalState extends AgentState> 
+extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 
 	//
 	// Subclass
@@ -88,6 +92,11 @@ public class StatusObservationCompetence<PersonalState extends AgentState> exten
 	// Accessors
 	//
 
+	public OpinionHandler<PersonalState> getMyOpinionHandler(){
+		return ((SimpleOpinionService) getMyAgent().getMyInformation())
+				.getHandler(getMyAgent().getMyStateType());
+	}
+
 	public boolean stateStatusIs(
 			final PersonalState state,
 			final AgentStateStatus status) {
@@ -104,19 +113,19 @@ public class StatusObservationCompetence<PersonalState extends AgentState> exten
 		final boolean full = this.getMyAgent().getMyCurrentState()
 				.getMyResourceIdentifiers().size() == this.getMyAgent().getMyInformation()
 				.getKnownAgents().size();
-		final boolean fragile = this.getMyAgent().getMyCurrentState()
+		final boolean fragile = getMyOpinionHandler()
 				.getNumericValue(this.getMyAgent().getMyCurrentState()) <= this.getLowerThreshold();
-		final boolean wastefull = this.getMyAgent().getMyCurrentState()
+		final boolean wastefull = getMyOpinionHandler()
 				.getNumericValue(this.getMyAgent().getMyCurrentState()) > this.getHigherThreshold();
 
 				if (wastefull && fragile) {
 					throw new RuntimeException(
 							"impossible! : " +
-									"me: "+this.getMyAgent().getMyCurrentState().getNumericValue(this.getMyAgent().getMyCurrentState())+
+									"me: "+getMyOpinionHandler().getNumericValue(this.getMyAgent().getMyCurrentState())+
 									" low : "+this.getLowerThreshold()
 									+" high "+this.getHigherThreshold()+
-									(this.getMyAgent().getMyCurrentState().getNumericValue(this.getMyAgent().getMyCurrentState()) <= this.getLowerThreshold())
-									+" "+(this.getMyAgent().getMyCurrentState().getNumericValue(this.getMyAgent().getMyCurrentState()) > this.getHigherThreshold())
+									(getMyOpinionHandler().getNumericValue(this.getMyAgent().getMyCurrentState()) <= this.getLowerThreshold())
+									+" "+(getMyOpinionHandler().getNumericValue(this.getMyAgent().getMyCurrentState()) > this.getHigherThreshold())
 									+wastefull+" "+fragile+" "+(wastefull && fragile));
 				} else if (full && !wastefull) {
 					return AgentStateStatus.Full;
@@ -168,12 +177,13 @@ public class StatusObservationCompetence<PersonalState extends AgentState> exten
 	public void updateThreshold(){
 		try {
 			assert this.stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType());
-			final Opinion<? extends AgentState> o = ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType());
+			final Opinion<PersonalState> o = 
+					(Opinion<PersonalState>) ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType());
 
 			Double mean, min, max;
-			mean = o.getRepresentativeElement().getNumericValue(o);
-			min = o.getMinElement().getNumericValue(o);
-			max = o.getMaxElement().getNumericValue(o);
+			mean = getMyOpinionHandler().getNumericValue(o.getMeanInfo());
+			min = getMyOpinionHandler().getNumericValue(o.getMinInfo());
+			max = getMyOpinionHandler().getNumericValue(o.getMaxInfo());
 
 			this.lowerThreshold = NegotiationParameters.alpha_low * ((mean + min)/2);
 			this.higherThreshold = NegotiationParameters.alpha_high * ((mean + max)/2);

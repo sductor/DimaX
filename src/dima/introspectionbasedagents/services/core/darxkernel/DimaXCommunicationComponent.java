@@ -8,10 +8,9 @@ import dima.basiccommunicationcomponents.CommunicationComponent;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.ProactiveComponentInterface;
-import dima.introspectionbasedagents.services.core.communicating.CommunicatingComponentInterface;
 
 public class DimaXCommunicationComponent
-<Component extends ProactiveComponentInterface & IdentifiedComponentInterface & CommunicatingComponentInterface>
+<Component extends ProactiveComponentInterface & IdentifiedComponentInterface>
 extends CommunicationComponent {
 
 	/**

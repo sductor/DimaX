@@ -20,14 +20,14 @@ public class FunctionalDispersionAgregator {
 
 	public static <Element, Analyser extends UtilitaristAnalyser<Element> & FunctionnalCompensativeAggregator<Element>>
 	double getEcartType(final Analyser f,
-			final Collection elements) {
+			final Collection<Element> elements) {
 		return Math
 				.sqrt(FunctionalDispersionAgregator.getVariance(f, elements));
 	}
 
 	public static <Element, Analyser extends UtilitaristAnalyser<Element> & FunctionnalCompensativeAggregator<Element>>
 	double getVariationCoefficient(
-			final Analyser f, final Collection elements) {
+			final Analyser f, final Collection<Element> elements) {
 		return FunctionalDispersionAgregator.getEcartType(f, elements)
 				/ f.getNumericValue(f.getRepresentativeElement(elements));
 	}

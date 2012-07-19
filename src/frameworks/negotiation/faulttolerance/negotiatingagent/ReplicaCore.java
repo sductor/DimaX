@@ -32,11 +32,9 @@ RationalCore<RationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, R
 		this.memorizeRessourceState=memorizeRessourceState;
 	}
 
-	@Override
 	public boolean iObserveMyRessourceChanges() {
 		return this.observeResourceChanges;
 	}
-	@Override
 	public boolean iMemorizeMyRessourceState() {
 		return this.memorizeRessourceState;
 	}
@@ -92,6 +90,15 @@ RationalCore<RationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, R
 				}
 			}
 
+			for (final ReplicationCandidature c : destruction){
+				this.getMyAgent().getMyInformation().remove(c.getAgent());
+				this.getMyAgent().setNewState(
+						c.computeResultingState(
+								this.getMyAgent().getMyCurrentState()));
+				//			System.out.println(c.getResource() + " " + new Date().toString()
+				//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
+				this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onFile);
+			}
 			for (final ReplicationCandidature c : creation){
 				this.handleResourceInformation(c.getResourceResultingState());
 				this.getMyAgent().setNewState(
@@ -102,15 +109,6 @@ RationalCore<RationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, R
 				this.logMonologue("  -> i have been replicated by "+c.getResource(),LogService.onFile);
 			}
 
-			for (final ReplicationCandidature c : destruction){
-				this.handleResourceInformation(c.getResourceResultingState());
-				this.getMyAgent().setNewState(
-						c.computeResultingState(
-								this.getMyAgent().getMyCurrentState()));
-				//			System.out.println(c.getResource() + " " + new Date().toString()
-				//					+ "  ->I have killed " + c.getAgent());//+" new State is "+this.getMyAgent().getMyCurrentState());
-				this.logMonologue("  -> i have been killed by "+c.getResource(),LogService.onFile);
-			}
 		} catch (final IncompleteContractException e) {
 			throw new RuntimeException(e);
 		}

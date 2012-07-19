@@ -53,7 +53,7 @@ public class MethodHandler extends SimpleMethodHandler {
 	public boolean isActive() {
 		return active && caller.isActive();
 	}
-	
+
 	public void setActive(boolean active) {
 		this.active = active;
 	}
@@ -100,22 +100,22 @@ public class MethodHandler extends SimpleMethodHandler {
 	}
 
 	public Object execute() throws Throwable {
-			try {
-				return this.execute(this.caller, this.args);
-			} catch (final IllegalAccessException e) {
-				LogService.writeException(this, "Impossible");
-				return null;
-			} catch (final IllegalArgumentException e) {
-				LogService.writeException(this, "Impossible");
-				return null;
-			}  catch (final InvocationTargetException e) {
-				// The method has not been invocated
-				//				LogService.writeException(caller,
-				//						"Couldn't invokate method "+
-				//						this,
-				//						e.getCause());
-				throw e.getCause();
-			}
+		try {
+			return this.execute(this.caller, this.args);
+		} catch (final IllegalAccessException e) {
+			LogService.writeException(this, "Impossible");
+			return null;
+		} catch (final IllegalArgumentException e) {
+			LogService.writeException(this, "Impossible");
+			return null;
+		}  catch (final InvocationTargetException e) {
+			// The method has not been invocated
+			//				LogService.writeException(caller,
+			//						"Couldn't invokate method "+
+			//						this,
+			//						e.getCause());
+			throw e.getCause();
+		}
 	}
 
 	//
@@ -123,11 +123,15 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 
 	private Object execute(final Object myComponent, final Object[] args) throws IllegalArgumentException, InvocationTargetException, IllegalAccessException {
+		if (active){	
 			final Method m = this.getMethod();
 			if (!m.isAccessible()) {
 				m.setAccessible(true);
 			}
 			return m.invoke(myComponent, args);
+		} else {
+			return null;
+		}
 	}
 }
 

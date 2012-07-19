@@ -365,49 +365,6 @@ Comparable<VirtualNetworkState> {
 	}
 
 	/**
-	 * This method is not designed for this implementation of the framework.
-	 */
-	@Override
-	public boolean setLost(final ResourceIdentifier h, final boolean isLost) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Double getNumericValue(final Information e) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public AbstractCompensativeAggregation<Information> fuse(
-			final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Information getRepresentativeElement(
-			final Collection<? extends Information> elems) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Information getRepresentativeElement(
-			final Map<? extends Information, Double> elems) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
 	 * Tests the validity of this VirtualNetworkState according to the rights of
 	 * the agent.
 	 * 
@@ -875,5 +832,10 @@ Comparable<VirtualNetworkState> {
 			}
 		}
 		return 0;
+	}
+
+	@Override
+	public AgentState clone() {
+		return this;
 	}
 }

@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import org.jdom.JDOMException;
 
+import dima.introspectionbasedagents.services.core.communicating.remoteexecution.SSHExecutor;
+
 
 public class NetworkShutdownHook extends Thread{
 
@@ -14,25 +16,25 @@ public class NetworkShutdownHook extends Thread{
 	//
 
 	String destructionCommand = "killall -9 java; killall -9 java_vm";
-	Collection<RemoteHostExecutor> hosts;
+	Collection<RemoteHostInfo> hosts;
 
 	//
 	// Constructor
 	//
 
-	public NetworkShutdownHook(final Collection<RemoteHostExecutor> hosts) {
+	public NetworkShutdownHook(final Collection<RemoteHostInfo> hosts) {
 		super();
 		this.hosts = hosts;
 	}
 
 	public NetworkShutdownHook(final HostsPark machines) {
-		this.hosts = new ArrayList<RemoteHostExecutor>();
+		this.hosts = new ArrayList<RemoteHostInfo>();
 		this.hosts.addAll(machines.getAllHosts());
 		this.hosts.add(machines.getNameServer());
 	}
 
 	public NetworkShutdownHook(final String exitCommand,
-			final Collection<RemoteHostExecutor> hosts) {
+			final Collection<RemoteHostInfo> hosts) {
 		super();
 		this.destructionCommand = exitCommand;
 		this.hosts = hosts;
@@ -42,7 +44,7 @@ public class NetworkShutdownHook extends Thread{
 	// Accessors
 	//
 
-	public Collection<RemoteHostExecutor> getAllHosts(){
+	public Collection<RemoteHostInfo> getAllHosts(){
 		return this.hosts;
 	}
 
@@ -95,11 +97,11 @@ public class NetworkShutdownHook extends Thread{
 	private void destroyAllMachines(){
 		System.out.println("\n\n EXITING!!!!!");
 
-		for (final RemoteHostExecutor h : this.getAllHosts()) {
+		for (final RemoteHostInfo h : this.getAllHosts()) {
 			if (!h.getUrl().equals(LocalHost.getUrl())) {
 				try {
 					System.out.println("\n *** Connecting "+h+" ...");
-					h.execute(this.destructionCommand);
+					new SSHExecutor(h).execute(this.destructionCommand);
 					System.out.println("   ---> Application on "+h+" successfully destroyed");
 					//					h.disconnect();
 				} catch (final Exception e) {

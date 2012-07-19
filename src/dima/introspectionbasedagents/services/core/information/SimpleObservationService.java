@@ -3,6 +3,7 @@ package dima.introspectionbasedagents.services.core.information;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.support.GimaObject;
 
 public class SimpleObservationService extends
 BasicAgentCompetence<BasicCompetentAgent> implements
@@ -26,7 +28,7 @@ ObservationService {
 
 
 	private final Set<AgentIdentifier> knownAgents = new HashSet<AgentIdentifier>();
-	protected HashMap<Class<? extends Information>, InformationDataBase<? extends Information>> infos =
+	protected Map<Class<? extends Information>, InformationDataBase<? extends Information>> infos =
 			new HashMap<Class<? extends Information>, InformationDataBase<? extends Information>>();
 
 
@@ -105,10 +107,10 @@ ObservationService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <Info extends Information> HashMap<AgentIdentifier, Info> getInformation(
+	public <Info extends Information> Map<AgentIdentifier, Info> getInformation(
 			final Class<Info> informationType) throws NoInformationAvailableException{
 		if (this.infos.get(informationType)!=null) {
-			return (InformationDataBase<Info>) this.infos.get(informationType);
+			return ((InformationDataBase<Info>) this.infos.get(informationType));
 		} else {
 			throw new NoInformationAvailableException();
 		}
@@ -118,7 +120,7 @@ ObservationService {
 	public void add(final Information information) {
 		this.add(information.getMyAgentIdentifier());
 		if (!this.infos.containsKey(information.getClass())){//new information type
-			this.infos.put(information.getClass(), new InformationDataBase<Information>());
+			this.infos.put(information.getClass(), new SimpleInformationDataBase<Information>());
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
 		} else if (!this.infos.get(information.getClass()).containsKey(information.getMyAgentIdentifier())) {
 			((InformationDataBase<Information>)this.infos.get(information.getClass())).add(information);
@@ -195,21 +197,18 @@ ObservationService {
 	// Subclass
 	//
 
-	class InformationDataBase<Info extends Information> extends HashMap<AgentIdentifier, Info> {
-		private static final long serialVersionUID = -1691723780496506679L;
-
-		public Info add(final Info o) {
-			return this.put(o.getMyAgentIdentifier(), o);
-		}
 
 
-		protected Collection<AgentIdentifier> getAgents(){
-			return new ArrayList<AgentIdentifier>(this.keySet());
-		}
+	public interface InformationDataBase<Info extends Information> 
+	extends Map<AgentIdentifier, Info> {
+
+		public Info add(final Info o) ;
+
+
+		public Collection<AgentIdentifier> getAgents();
 
 
 	}
-
 }
 
 

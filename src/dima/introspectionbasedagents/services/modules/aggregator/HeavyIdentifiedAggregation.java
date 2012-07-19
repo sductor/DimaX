@@ -12,7 +12,8 @@ import java.util.TreeMap;
  *
  * @param <Element>
  */
-public abstract class HeavyIdentifiedAggregation<Element extends Comparable> extends HeavyAggregation<Element>
+public abstract class HeavyIdentifiedAggregation<Element extends Comparable>
+extends HeavyAggregation<Element>
 implements
 AbstractCompensativeAggregation<Element>,
 FunctionnalCompensativeAggregator<Element>, AbstractDispersionAggregation,
@@ -88,12 +89,14 @@ UtilitaristAnalyser<Element> {
 
 	@Override
 	public double getEcartType() {
-		return FunctionalDispersionAgregator.getEcartType(this, this.elements.values());
+		throw new RuntimeException();
+//		return FunctionalDispersionAgregator.getEcartType(this, this.elements.values());
 	}
 
 	@Override
 	public double getVariationCoefficient() {
-		return FunctionalDispersionAgregator.getVariationCoefficient(this, this.elements.values());
+		throw new RuntimeException();
+//		return FunctionalDispersionAgregator.getVariationCoefficient(this, this.elements.values());
 	}
 
 	/*

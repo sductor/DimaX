@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.core.darxkernel.ReplicationHandler;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.replication.ReplicationHandler;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 import frameworks.negotiation.negotiationframework.rationality.AltruistRationalCore;
@@ -41,11 +41,9 @@ implements RationalCore<SimpleRationalAgent<HostState, ReplicationCandidature>,H
 		this.memorizeRessourceState=memorizeRessourceState;
 	}
 
-	@Override
 	public boolean iObserveMyRessourceChanges() {
 		return this.observeResourceChanges;
 	}
-	@Override
 	public boolean iMemorizeMyRessourceState() {
 		return this.memorizeRessourceState;
 	}
@@ -110,7 +108,7 @@ implements RationalCore<SimpleRationalAgent<HostState, ReplicationCandidature>,H
 			}
 
 			for (final ReplicationCandidature c : destruction){
-				this.handleResourceInformation(c.getAgentResultingState());
+				this.getMyAgent().getMyInformation().remove(c.getAgent());
 				ReplicationHandler.killReplica(c.getAgent());
 				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 				this.getMyAgent().setNewState(

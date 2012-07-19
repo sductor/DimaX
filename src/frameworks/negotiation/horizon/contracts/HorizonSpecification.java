@@ -63,39 +63,8 @@ public abstract class HorizonSpecification implements AbstractActionSpecif {
 		}
 	}
 
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Double getNumericValue(final Information e) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public AbstractCompensativeAggregation<Information> fuse(
-			final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Information getRepresentativeElement(
-			final Collection<? extends Information> elems) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Unused method of the framework.
-	 */
-	@Override
-	public Information getRepresentativeElement(
-			final Map<? extends Information, Double> elems) {
-		throw new UnsupportedOperationException();
+	public HorizonSpecification clone(){
+		return this;
 	}
 
 }

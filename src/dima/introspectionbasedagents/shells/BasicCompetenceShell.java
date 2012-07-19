@@ -14,7 +14,7 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedCommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedAsynchronousCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice;
 
@@ -23,7 +23,7 @@ import dima.introspectionbasedagents.services.core.observingagent.PatternObserve
  *
  * @author Sylvain Ductor
  */
-public class BasicCompetenceShell<Agent extends CommunicatingCompetentComponent & MailBoxBasedCommunicatingComponentInterface>  extends
+public class BasicCompetenceShell<Agent extends CommunicatingCompetentComponent & MailBoxBasedAsynchronousCommunicatingComponentInterface>  extends
 BasicCommunicatingShell {
 	private static final long serialVersionUID = 87670953420119714L;
 

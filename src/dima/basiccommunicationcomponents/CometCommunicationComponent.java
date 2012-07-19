@@ -1,6 +1,7 @@
 package dima.basiccommunicationcomponents;
 
 import dima.basicagentcomponents.AgentAddress;
+import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
 /**
  * Insert the type's description here.
  * Creation date: (25/04/01 09:39:51)
@@ -22,7 +23,7 @@ public class CometCommunicationComponent extends CommunicationComponent {
 	 */
 
 	@Override
-	public void sendMessage(final AgentAddress ad,final Message am) {
+	public void sendMessage(final AgentAddress ad,final AbstractMessageInterface am) {
 
 	}
 	/**

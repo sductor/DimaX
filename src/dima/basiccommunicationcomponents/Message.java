@@ -114,7 +114,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 * @return Gdima.basicagentcomponents.AgentIdentifier
 	 */
 	//	@Override
-	public dima.basicagentcomponents.AgentIdentifier getReceiver() {
+	protected dima.basicagentcomponents.AgentIdentifier getReceiver() {
 		return this.receiver;
 	}
 	/**

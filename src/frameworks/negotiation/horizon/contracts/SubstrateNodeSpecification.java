@@ -57,4 +57,7 @@ public class SubstrateNodeSpecification extends HorizonSpecification {
 		return this.measuredParams;
 	}
 
+	public SubstrateNodeSpecification clone(){
+		return this;
+	}
 }

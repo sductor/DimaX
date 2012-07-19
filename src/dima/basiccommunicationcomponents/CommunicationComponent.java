@@ -3,7 +3,7 @@ package dima.basiccommunicationcomponents;
 import dima.basicagentcomponents.AgentAddress;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
-import dima.introspectionbasedagents.services.core.communicating.CommunicationComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.AsynchronousCommunicationComponent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 /**
@@ -11,7 +11,7 @@ import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
  * Creation date: (25/04/01 09:39:51)
  * @author: Zahia Guessoum
  */
-public class CommunicationComponent extends AgentAddress implements CommunicationComponentInterface{
+public class CommunicationComponent extends AgentAddress implements AsynchronousCommunicationComponent{
 	/**
 	 *
 	 */
@@ -33,7 +33,7 @@ public class CommunicationComponent extends AgentAddress implements Communicatio
 	 * Insert the method's description here.
 	 * Creation date: (25/04/01 09:41:06)
 	 */
-	public void sendMessage(final AgentAddress ad,final Message am) {
+	public void sendMessage(final AgentAddress ad,final AbstractMessageInterface am) {
 		ad.receive(am);
 	}
 	/**
@@ -65,5 +65,22 @@ public class CommunicationComponent extends AgentAddress implements Communicatio
 		m.setReceiver(id);
 		m.setSender(this.agentBehavior.getIdentifier());
 		this.sendMessage((Message) m);
+	}
+	
+	/*
+	 * 
+	 */
+	
+	@Override
+	public boolean isConnected(String[] args) {
+		return true;
+	}
+	@Override
+	public boolean connect(String[] args) {
+		return true;
+	}
+	@Override
+	public boolean disconnect(String[] args) {
+		return true;
 	}
 }

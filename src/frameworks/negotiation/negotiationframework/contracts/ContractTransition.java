@@ -428,33 +428,6 @@ AbstractContractTransition {
 		}
 
 		@Override
-		public Double getNumericValue(final Information e) {
-			assert false;
-			return null;
-		}
-
-		@Override
-		public Information getRepresentativeElement(
-				final Collection<? extends Information> elems) {
-			assert false;
-			return null;
-		}
-
-		@Override
-		public Information getRepresentativeElement(
-				final Map<? extends Information, Double> elems) {
-			assert false;
-			return null;
-		}
-
-		@Override
-		public AbstractCompensativeAggregation<Information> fuse(
-				final Collection<? extends AbstractCompensativeAggregation<? extends Information>> averages) {
-			assert false;
-			return null;
-		}
-
-		@Override
 		public NullActionSpec clone(){
 			return new NullActionSpec(this.id);
 		}

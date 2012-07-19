@@ -7,8 +7,9 @@ import org.jdom.JDOMException;
 
 import darx.Darx;
 import darx.NameServerImpl;
+import dima.introspectionbasedagents.services.core.communicating.remoteexecution.SSHExecutor;
 import dima.introspectionbasedagents.services.core.deployment.hosts.HostsPark;
-import dima.introspectionbasedagents.services.core.deployment.hosts.RemoteHostExecutor;
+import dima.introspectionbasedagents.services.core.deployment.hosts.RemoteHostInfo;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 
 public class DimaXDeploymentScript extends HostsPark{
@@ -62,10 +63,10 @@ public class DimaXDeploymentScript extends HostsPark{
 		}
 	}
 
-	public void launchDarXServer(final RemoteHostExecutor host){
+	public void launchDarXServer(final RemoteHostInfo host){
 		try {
 			System.out.println("\n       ******** Launching "+host);
-			host.executeWithJava(this.getDarxServerClass(), this.getDarxServerCommandArgs(host));
+			new SSHExecutor(host).executeWithJava(this.getDarxServerClass(), this.getDarxServerCommandArgs(host));
 			try{Thread.sleep(2000);}catch(final Exception e){};
 		} catch (final Exception e) {
 			LogService.writeException(this, "Error while instanciating "+ host, e);
@@ -73,7 +74,7 @@ public class DimaXDeploymentScript extends HostsPark{
 	}
 
 	public void launchAllDarXServer() {
-		for (final RemoteHostExecutor host : this.getHosts()) {
+		for (final RemoteHostInfo host : this.getHosts()) {
 			this.launchDarXServer(host);
 		}
 	}
@@ -88,7 +89,7 @@ public class DimaXDeploymentScript extends HostsPark{
 
 	}
 
-	private final String getDarxServerCommandArgs(final RemoteHostExecutor host){
+	private final String getDarxServerCommandArgs(final RemoteHostInfo host){
 		return "-ns "+this.getNameServer().getUrl()+" "+this.getNameServer().getPort().toString()
 				+" -p "+host.getPort().toString();
 	}

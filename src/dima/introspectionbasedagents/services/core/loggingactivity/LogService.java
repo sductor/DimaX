@@ -20,7 +20,8 @@ import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedCommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.core.communicating.MailBoxBasedAsynchronousCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogCommunication.MessageStatus;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
@@ -40,7 +41,7 @@ import dima.introspectionbasedagents.shells.SimpleExceptionHandler;
  *
  * @author Sylvain Ductor
  */
-public final class LogService<Agent extends CommunicatingCompetentComponent & MailBoxBasedCommunicatingComponentInterface> extends SimpleExceptionHandler
+public final class LogService<Agent extends CommunicatingCompetentComponent & MailBoxBasedAsynchronousCommunicatingComponentInterface> extends SimpleExceptionHandler
 implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -4511578003487049832L;
 
@@ -210,7 +211,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	// Communication
 
 
-	public Boolean logCommunication(final Message am, final MessageStatus s){
+	public Boolean logCommunication(final AbstractMessageInterface am, final MessageStatus s){
 		if (am instanceof LogNotification ||
 				am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification){
 			//do nothing;
@@ -643,7 +644,8 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	private void stopFaultyMethods(final MethodHandler m){
 		
 		//		getMyAgent().setActive(false);
-//		m.setActive(false);
+		m.setActive(false);
+		logWarning("Stopping faulty method!!! "+m, LogService.onBoth);
 		//		if (m.getMyComponent() instanceof AgentCompetence)
 		//			myAgentShell.unload((AgentCompetence) m.getMyComponent());
 		//		else

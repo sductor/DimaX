@@ -73,4 +73,8 @@ public abstract class AbstractMessage extends CommunicationObject implements Abs
 			return this.getContent().toString();
 		}
 	}
+	
+	public AbstractMessage clone(){
+		throw new RuntimeException("clone not overrided!!");
+	}
 }

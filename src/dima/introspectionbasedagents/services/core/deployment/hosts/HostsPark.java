@@ -16,9 +16,10 @@ import org.jdom.input.SAXBuilder;
 
 import com.jcraft.jsch.JSchException;
 
+import dima.introspectionbasedagents.services.core.communicating.execution.SystemCommunicationService.ErrorOnProcessExecutionException;
+import dima.introspectionbasedagents.services.core.communicating.execution.SystemCommunicationService.WrongOSException;
+import dima.introspectionbasedagents.services.core.communicating.remoteexecution.SSHExecutor;
 import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.library.execution.Executor.ErrorOnProcessExecutionException;
-import dima.introspectionbasedagents.services.library.execution.Executor.WrongOSException;
 import dima.introspectionbasedagents.services.modules.mappedcollections.HashedHashSet;
 
 /**
@@ -36,21 +37,21 @@ public class HostsPark {
 	// Fields
 	//
 
-	private RemoteHostExecutor nameServer;
+	private RemoteHostInfo nameServer;
 
 	/**
 	 * @key a network name
 	 * @value the list of hosts of this network
 	 */
-	private final HashedHashSet<String, RemoteHostExecutor> hostsOfNetworks=
-			new HashedHashSet<String, RemoteHostExecutor>();
+	private final HashedHashSet<String, RemoteHostInfo> hostsOfNetworks=
+			new HashedHashSet<String, RemoteHostInfo>();
 
 	/**
 	 * @key an host url
 	 * @value the associated network
 	 */
-	private final Map<RemoteHostExecutor, String> networksOfHosts =
-			new HashMap<RemoteHostExecutor, String>();
+	private final Map<RemoteHostInfo, String> networksOfHosts =
+			new HashMap<RemoteHostInfo, String>();
 
 	//
 	// Constructor
@@ -81,7 +82,7 @@ public class HostsPark {
 	 */
 
 
-	public RemoteHostExecutor getNameServer(){
+	public RemoteHostInfo getNameServer(){
 		return this.nameServer;
 	}
 
@@ -92,7 +93,7 @@ public class HostsPark {
 	/**
 	 * @return the hosts associated to a network
 	 */
-	public Collection<RemoteHostExecutor> getHostsOfNetwork(final String network) {
+	public Collection<RemoteHostInfo> getHostsOfNetwork(final String network) {
 		return this.hostsOfNetworks.get(network);
 	}
 
@@ -103,15 +104,15 @@ public class HostsPark {
 		return this.hostsOfNetworks.keySet();
 	}
 
-	public Collection<RemoteHostExecutor> getHosts() {
+	public Collection<RemoteHostInfo> getHosts() {
 		return this.networksOfHosts.keySet();
 	}
 
 	/**
 	 * @return The set of host and the name server
 	 */
-	public Collection<RemoteHostExecutor> getAllHosts() {
-		final ArrayList<RemoteHostExecutor> hosts = new ArrayList<RemoteHostExecutor>();
+	public Collection<RemoteHostInfo> getAllHosts() {
+		final ArrayList<RemoteHostInfo> hosts = new ArrayList<RemoteHostInfo>();
 		hosts.addAll(this.getHosts());
 		hosts.add(this.getNameServer());
 		return hosts;
@@ -123,7 +124,7 @@ public class HostsPark {
 	public Collection<HostIdentifier> getDarxServersIdentifier() {
 		final ArrayList<HostIdentifier> hosts = new ArrayList<HostIdentifier>();
 
-		for (final RemoteHostExecutor h : this.getHosts()) {
+		for (final RemoteHostInfo h : this.getHosts()) {
 			hosts.add(h.generateHostIdentifier());
 		}
 
@@ -133,13 +134,13 @@ public class HostsPark {
 	 * Dynamic extension of the network
 	 */
 
-	protected RemoteHostExecutor addRemoteHost(final RemoteHostExecutor remoteHost) {
+	protected RemoteHostInfo addRemoteHost(final RemoteHostInfo remoteHost) {
 		this.hostsOfNetworks.add(remoteHost.getGroupID(), remoteHost);
 		this.networksOfHosts.put(remoteHost, remoteHost.getGroupID());
 		return remoteHost;
 	}
 
-	protected boolean removeRemoteHost(final RemoteHostExecutor host){
+	protected boolean removeRemoteHost(final RemoteHostInfo host){
 		this.hostsOfNetworks.get(host.getGroupID()).remove(host);
 		this.networksOfHosts.remove(host);
 		return true;
@@ -160,14 +161,14 @@ public class HostsPark {
 	 * @throws ErrorOnProcessExecutionException
 	 * @throws IOException
 	 */
-	public void execute(final RemoteHostExecutor host, final Class<?> main, final String args) throws ErrorOnProcessExecutionException, WrongOSException, JSchException, IOException{
-		host.executeWithJava(main, args);
+	public void execute(final RemoteHostInfo host, final Class<?> main, final String args) throws ErrorOnProcessExecutionException, WrongOSException, JSchException, IOException{
+		new SSHExecutor(host).executeWithJava(main, args);
 	}
 
 	public void executeOnHosts(final Class<?> main, final String args){
-		for (final RemoteHostExecutor host : this.getHosts()) {
+		for (final RemoteHostInfo host : this.getHosts()) {
 			try {
-				host.executeWithJava(main, args);
+				new SSHExecutor(host).executeWithJava(main, args);
 			} catch (final Exception e) {
 				System.err.println("Unable to connect to "+host);
 				this.removeRemoteHost(host);
@@ -178,9 +179,9 @@ public class HostsPark {
 
 
 	public void executeOnGroup(final String groupID, final Class<?> main, final String args) {
-		for (final RemoteHostExecutor host : this.getHostsOfNetwork(groupID)) {
+		for (final RemoteHostInfo host : this.getHostsOfNetwork(groupID)) {
 			try {
-				host.executeWithJava(main, args);
+				new SSHExecutor(host).executeWithJava(main, args);
 			} catch (final Exception e) {
 				System.err.println("Unable to connect to "+host);
 				this.removeRemoteHost(host);
@@ -245,7 +246,7 @@ public class HostsPark {
 	private void parseNameServer(final Element park){
 		// Getting name server
 		final Element ns = park.getChild("nameServer");
-		this.nameServer = new RemoteHostExecutor("nameServer");
+		this.nameServer = new RemoteHostInfo("nameServer");
 		this.nameServer.setAdress(ns.getChild("host"));
 		this.nameServer.setSSH(ns.getChild("ssh"));
 	}
@@ -259,8 +260,8 @@ public class HostsPark {
 			final String groupID = group.getChildText("groupID").trim();
 			if (activatedGroups.contains(groupID)) {
 				for (final Element host : (List<Element>) group.getChildren("host"))	{
-					final RemoteHostExecutor rhost =
-							new RemoteHostExecutor(groupID);
+					final RemoteHostInfo rhost =
+							new RemoteHostInfo(groupID);
 					rhost.setAdress(host);
 					rhost.setSSH(ssh);
 					this.addRemoteHost(rhost);

@@ -5,6 +5,7 @@ import java.util.Collection;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import frameworks.negotiation.horizon.VirtualNetwork;
 import frameworks.negotiation.horizon.contracts.HorizonContract;
+import frameworks.negotiation.negotiationframework.SimpleNegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.negotiationframework.rationality.RationalCore;
 import frameworks.negotiation.negotiationframework.rationality.SimpleRationalAgent;
@@ -18,8 +19,8 @@ import frameworks.negotiation.negotiationframework.rationality.SocialChoiceFunct
  */
 public class VirtualNetworkCore
 extends
-BasicAgentCompetence<SimpleRationalAgent<VirtualNetworkState, HorizonContract>>
-implements RationalCore<VirtualNetwork,VirtualNetworkState, HorizonContract> {
+BasicAgentCompetence<SimpleNegotiatingAgent<VirtualNetworkState, HorizonContract>>
+implements RationalCore<SimpleNegotiatingAgent<VirtualNetworkState, HorizonContract>,VirtualNetworkState, HorizonContract> {
 
 	/**
 	 * The referent object to evaluate preferences.
@@ -94,5 +95,15 @@ implements RationalCore<VirtualNetwork,VirtualNetworkState, HorizonContract> {
 		} catch (final IncompleteContractException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public boolean iObserveMyRessourceChanges() {
+		throw new RuntimeException("todo");
+	}
+
+	@Override
+	public boolean iMemorizeMyRessourceState() {
+		throw new RuntimeException("todo");
 	}
 }

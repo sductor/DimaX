@@ -75,12 +75,12 @@ UtilitaristAnalyser<Element> {
 
 	@Override
 	public double getEcartType() {
-		return FunctionalDispersionAgregator.getEcartType(this, this.values());
+		return FunctionalDispersionAgregator.getEcartType(this, this.keySet());
 	}
 
 	@Override
 	public double getVariationCoefficient() {
-		return FunctionalDispersionAgregator.getVariationCoefficient(this, this.values());
+		return FunctionalDispersionAgregator.getVariationCoefficient(this, this.keySet());
 	}
 
 	/*

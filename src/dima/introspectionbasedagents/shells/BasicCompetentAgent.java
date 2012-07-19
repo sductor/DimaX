@@ -14,6 +14,7 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.DuplicateCompetenceException;
 import dima.introspectionbasedagents.services.UnInstanciedCompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
 import dima.introspectionbasedagents.services.core.darxkernel.DimaXTask;
 import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.core.launch.ApiLaunchService;
@@ -383,7 +384,6 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public Boolean signalException(final String text, final Throwable e) {
 		return this.log.signalException(text, e);
 	}
-
 	//	@Override
 	//	public Boolean logException(final String text, final String details, final Throwable e) {
 	//		return this.log.logException(text, details, e);
@@ -462,7 +462,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 */
 
 	@Override
-	public void sendMessage(final AgentIdentifier agentId, final Message am) {
+	public void sendMessage(final AgentIdentifier agentId, final AbstractMessageInterface am) {
 		super.sendMessage(agentId, am);
 		assert am.getSender().equals(this.getIdentifier());
 		this.log.logCommunication(am, MessageStatus.MessageSended);
@@ -470,7 +470,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 
 	@Override
-	public void receive(final Message m) {
+	public void receive(final AbstractMessageInterface m) {
 		//		assert m.getReceiver().equals(this.getIdentifier());
 		this.log.logCommunication(m, MessageStatus.MessageReceived);
 		super.receive(m);

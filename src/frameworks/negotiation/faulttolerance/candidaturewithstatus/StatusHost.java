@@ -5,11 +5,12 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.core.information.SimpleObservationService;
-import dima.introspectionbasedagents.services.core.information.SimpleOpinionService;
+import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
 import frameworks.negotiation.faulttolerance.Host;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
 import frameworks.negotiation.negotiationframework.protocoles.InactiveProposerCore;
 import frameworks.negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
@@ -59,7 +60,8 @@ public class StatusHost extends Host {
 				new HostCore(_socialWelfare,true,true),
 				participantCore,
 				new InactiveProposerCore(),
-				centralised?new SimpleObservationService():new SimpleOpinionService(),
+				centralised?new SimpleObservationService():new SimpleOpinionService(new ReplicaStateOpinionHandler(_socialWelfare, id)),
 						new ReverseCFPProtocol());
+		
 	}
 }

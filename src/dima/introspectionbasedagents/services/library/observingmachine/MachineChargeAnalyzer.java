@@ -3,9 +3,9 @@ package dima.introspectionbasedagents.services.library.observingmachine;
 import java.util.Collection;
 import java.util.List;
 
+import dima.introspectionbasedagents.services.core.communicating.execution.SystemCommunicationService;
 import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.library.execution.Executor;
 
 /**
  * Cette classe fournit des informations sur les caractéristiques et
@@ -35,7 +35,7 @@ import dima.introspectionbasedagents.services.library.execution.Executor;
  * .javaworld.com/javaworld/javaqa/2002-11/01-qa-1108-cpu.html#resources
  */
 
-public class MachineChargeAnalyzer extends Executor implements
+public class MachineChargeAnalyzer extends SystemCommunicationService implements
 MachineSelfChargeAnalyzable {
 
 	// /**

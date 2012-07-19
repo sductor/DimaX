@@ -10,11 +10,11 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.information.Believer;
 import dima.introspectionbasedagents.services.core.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.core.information.OpinionService;
-import dima.introspectionbasedagents.services.core.information.OpinionService.Opinion;
-import dima.introspectionbasedagents.services.core.information.SimpleOpinionService;
+import dima.introspectionbasedagents.services.core.opinion.Believer;
+import dima.introspectionbasedagents.services.core.opinion.OpinionService;
+import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
+import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
 import dima.introspectionbasedagents.services.modules.aggregator.HeavyDoubleAggregation;
 import dima.introspectionbasedagents.shells.CommunicatingCompetentComponent;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationLaborantin;
@@ -46,8 +46,8 @@ public class CentralisedStatusCompterCompetence extends BasicCommunicatingCompet
 			Opinion o = getMyAgent().getMyOpinion().getGlobalOpinion(stateTypeToDiffuse);
 			this.sendMessage(acquaintances, 
 					new StatusMessage(o));	
-		logMonologue(o.getNumberOfAggregatedElements()+" "
-		+o.getAggregatedAgents()+"\n"+o.getMaxElement()+"\n"+o.getMinElement()+"\n"+o.getRepresentativeElement());
+//		logMonologue(o.getNumberOfAggregatedElements()+" "
+//		+o.getAggregatedAgents()+"\n"+o.getMaxElement()+"\n"+o.getMinElement()+"\n"+o.getRepresentativeElement());
 		} catch (NoInformationAvailableException e) {}
 	}
 

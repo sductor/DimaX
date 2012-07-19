@@ -7,7 +7,7 @@ import darx.DarxTask;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.basicinterfaces.ProactiveComponentInterface;
-import dima.introspectionbasedagents.services.core.communicating.CommunicatingComponentInterface;
+import dima.introspectionbasedagents.services.core.communicating.AsynchronousCommunicationComponent;
 import dima.introspectionbasedagents.services.core.deployment.hosts.LocalHost;
 import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
 import dima.introspectionbasedagents.shells.CompetentComponent;
@@ -157,9 +157,9 @@ public class DimaXTask<Component extends ProactiveComponentInterface & Identifie
 	 */
 	@Override
 	public void receiveAsyncMessage(final Object msg) {
-		if (this.dimaComponent instanceof CommunicatingComponentInterface){
+		if (this.dimaComponent instanceof AsynchronousCommunicationComponent){
 			if (msg instanceof Message) {
-				((CommunicatingComponentInterface) this.dimaComponent).receive((Message) msg);
+				((AsynchronousCommunicationComponent) this.dimaComponent).receive((Message) msg);
 			} else if (this.dimaComponent instanceof CompetentComponent) {
 				((CompetentComponent) this.dimaComponent).signalException(msg+" is not a message : can not be added to mail box!");
 			} else {

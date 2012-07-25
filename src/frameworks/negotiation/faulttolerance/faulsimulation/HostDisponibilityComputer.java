@@ -10,11 +10,11 @@ import java.util.Random;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.core.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.modules.distribution.PoissonLaw;
-import dima.introspectionbasedagents.services.modules.distribution.WeibullLaw;
+import dima.introspectionbasedagents.modules.distribution.PoissonLaw;
+import dima.introspectionbasedagents.modules.distribution.WeibullLaw;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;

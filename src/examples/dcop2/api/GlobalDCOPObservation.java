@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.modules.aggregator.HeavyDoubleAggregation;
+import dima.introspectionbasedagents.modules.aggregator.HeavyDoubleAggregation;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import examples.dcop2.algo.BasicAlgorithm;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.ExperimentationResults;

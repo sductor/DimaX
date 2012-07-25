@@ -1,7 +1,7 @@
 package dima.basiccommunicationcomponents;
 
 import dima.basicagentcomponents.AgentAddress;
-import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 /**
  * Insert the type's description here.
  * Creation date: (25/04/01 09:39:51)

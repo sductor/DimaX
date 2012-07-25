@@ -1,7 +1,7 @@
 package frameworks.negotiation.horizon;
 
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
+import dima.introspectionbasedagents.services.information.ObservationService;
 import frameworks.negotiation.horizon.contracts.HorizonContract;
 import frameworks.negotiation.horizon.negotiatingagent.VirtualNetworkCore;
 import frameworks.negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier;
@@ -53,7 +53,7 @@ SimpleNegotiatingAgent<VirtualNetworkState, HorizonContract> {
 			final SelectionCore<VirtualNetwork, VirtualNetworkState, HorizonContract> selectionCore,
 			final ProposerCore<VirtualNetwork, VirtualNetworkState, HorizonContract> proposerCore,
 			final ObservationService myInformation,
-			final AbstractCommunicationProtocol<HorizonContract> protocol)
+			final AbstractCommunicationProtocol<VirtualNetworkState,HorizonContract> protocol)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, selectionCore, proposerCore,
 				myInformation, protocol);

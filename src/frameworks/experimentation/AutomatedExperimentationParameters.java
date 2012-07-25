@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.modules.distribution.NormalLaw.DispersionSymbolicValue;
+import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 
 // TODO utiliser des classes représentant chaque paramètre en particulier
 // (nom, type, méthode s'appliquant à une collection de ExperimentationParameters)

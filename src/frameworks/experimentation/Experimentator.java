@@ -9,10 +9,10 @@ import org.jdom.JDOMException;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.launch.APIAgent;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.launch.APIAgent;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 
 
@@ -63,6 +63,13 @@ public final class Experimentator extends APIAgent{
 		this.myProtocol=myProtocol;
 		this.el=el;
 		this.iteartiontime=iteartiontime;
+		
+
+		this.myProtocol.setMyAgent(this);
+		this.simuToLaunch = this.myProtocol.generateSimulation();
+		this.allSimu.addAll(this.simuToLaunch);
+		Collections.sort(this.allSimu);
+		this.awaitingAnswer=this.simuToLaunch.size();
 	}
 
 	//
@@ -137,8 +144,6 @@ public final class Experimentator extends APIAgent{
 	}
 
 
-
-
 	@MessageHandler
 	@NotificationEnvelope
 	public void collectResult(final NotificationMessage<SimulationEndedMessage> n) throws CompetenceException{
@@ -155,44 +160,6 @@ public final class Experimentator extends APIAgent{
 		//		this.logMonologue("--> Available Memory After GC :"+Runtime.getRuntime().freeMemory()+"/"+Runtime.getRuntime().totalMemory()
 		//				+" used (ko): "+(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()/1024),LogService.onBoth);
 		this.launchSimulation();
-	}
-
-	/*
-	 * MAIN
-	 */
-
-
-	public void run(final String[] args)
-			throws CompetenceException, IllegalArgumentException,
-			IllegalAccessException, JDOMException, IOException,
-			NotEnoughMachinesException, IfailedException{
-
-		if (args[0].equals("scheduled")) {
-			this.initAPI(false);//SCHEDULED
-		} else if  (args[0].equals("fipa")) {
-			this.initAPI(true);//FIPA
-		} else if  (args[0].equals("darx")) {
-			this.initAPI(7779,7778);//DARX LOCAL
-		} else if  (args[0].equals("deployed")) {
-			this.initAPI("lip6.xml");//DARX Deployed
-		} else {
-			throw new RuntimeException("unknonw args");
-		}
-
-		this.myProtocol.setMyAgent(this);
-		this.simuToLaunch = this.myProtocol.generateSimulation();
-		this.allSimu.addAll(this.simuToLaunch);
-		Collections.sort(this.allSimu);
-		this.awaitingAnswer=this.simuToLaunch.size();
-
-		if (args[1].equals("nolog")) {
-			LogService.setLog(false);
-		} else if (args[1].equals("log")) {
-			LogService.setLog(true);
-		} else {
-			throw new RuntimeException("unknonw args");
-		}
-		this.launchMySelf();
 	}
 
 	public String getDescription(){

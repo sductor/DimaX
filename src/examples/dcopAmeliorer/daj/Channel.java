@@ -8,7 +8,7 @@
 // --------------------------------------------------------------------------
 package examples.dcopAmeliorer.daj;
 
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 
 public class Channel implements InChannel, OutChannel {

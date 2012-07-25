@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
+
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
@@ -11,8 +12,8 @@ import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.annotations.Transient;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public abstract class ObservingSelfService
 extends BasicAgentCompetence<BasicCompetentAgent>{

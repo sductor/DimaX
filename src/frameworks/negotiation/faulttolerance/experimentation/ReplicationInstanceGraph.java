@@ -10,12 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.modules.distribution.DistributionParameters;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.BasicAgentModule;
-import dima.introspectionbasedagents.services.modules.distribution.DistributionParameters;
-import dima.introspectionbasedagents.services.modules.mappedcollections.HashedHashSet;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import frameworks.experimentation.IfailedException;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;

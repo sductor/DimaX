@@ -6,11 +6,11 @@ import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.services.core.observingagent.ShowYourPocket;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -33,7 +33,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	//
 
 	@Competence()
-	private final AbstractCommunicationProtocol<Contract> protocol;
+	private final AbstractCommunicationProtocol<PersonalState,Contract> protocol;
 
 	@Competence()
 	private final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore;
@@ -52,7 +52,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 			final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore,
 			final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
-			final AbstractCommunicationProtocol<Contract> protocol)
+			final AbstractCommunicationProtocol<PersonalState,Contract> protocol)
 					throws CompetenceException {
 		super(id, myInitialState, myRationality, myInformation);
 
@@ -81,7 +81,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	//
 
 	@Override
-	public AbstractCommunicationProtocol<Contract> getMyProtocol() {
+	public AbstractCommunicationProtocol<PersonalState,Contract> getMyProtocol() {
 		return this.protocol;
 	}
 
@@ -99,7 +99,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	public void setNewState(final PersonalState s) {
 		super.setNewState(s);
 		if (this.protocol!=null) {
-			this.protocol.getContracts().updateContracts(s);
+			setInformation(s);
 		}
 	}
 
@@ -134,10 +134,11 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	//		wwait(60000);
 	//		return true;
 	//	}
+
 	@MessageHandler()
 	public void hereThereAre(final ShowYourPocket m) {
 		String pockets = "My pockets!!! (asked by " + m.getAsker() + " on "
-				+ m.getCallingMethod() + ")";
+				+ m.getDebugCallingMethod() + ")";
 		pockets += "\n" + this.getMyProtocol();
 		this.logMonologue(pockets,LogService.onFile);
 	}
@@ -146,10 +147,17 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	@NotificationEnvelope(SimpleRationalAgent.stateChangementObservation)
 	public void receiveInformation(
 			final NotificationMessage<AgentState> o) {
-		this.getMyInformation().add(o.getNotification());
-		this.getMyProtocol().getContracts().updateContracts(o.getNotification());
+//		setInformation(o.getNotification());
 	}
 
+	@Override
+	public void setInformation(
+			final AgentState o) {
+		if (o!=null){
+			this.getMyInformation().add(o);
+			this.getMyProtocol().getContracts().updateContracts(o);
+		}
+	}
 }
 
 

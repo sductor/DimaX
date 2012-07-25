@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.darxkernel.ReplicationHandler;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.darxkernel.ReplicationHandler;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 import frameworks.negotiation.negotiationframework.rationality.AltruistRationalCore;
@@ -47,12 +47,20 @@ implements RationalCore<SimpleRationalAgent<HostState, ReplicationCandidature>,H
 	public boolean iMemorizeMyRessourceState() {
 		return this.memorizeRessourceState;
 	}
-	public void handleResourceInformation(final AgentState c){
+	public void handleResourceInformation(final AgentState c, boolean creation){
 		if (this.iMemorizeMyRessourceState()) {
-			this.getMyAgent().getMyInformation().add(c);
+			if (creation) {
+				this.getMyAgent().getMyInformation().add(c);
+			} else {
+				this.getMyAgent().getMyInformation().remove(c);
+			}
 		}
 		if (this.iObserveMyRessourceChanges()) {
-			this.observe(c.getMyAgentIdentifier(), SimpleRationalAgent.stateChangementObservation);
+			if (creation) {
+				this.observe(c.getMyAgentIdentifier(), SimpleRationalAgent.stateChangementObservation);
+			} else {
+				this.stopObservation(c.getMyAgentIdentifier(), SimpleRationalAgent.stateChangementObservation);
+			}
 		}
 	}
 
@@ -95,34 +103,32 @@ implements RationalCore<SimpleRationalAgent<HostState, ReplicationCandidature>,H
 			/*
 			 *
 			 */
+			if (!cs.isEmpty()){
+				final Collection<ReplicationCandidature> creation = new ArrayList<ReplicationCandidature>();
+				final Collection<ReplicationCandidature> destruction = new ArrayList<ReplicationCandidature>();
 
-			final Collection<ReplicationCandidature> creation = new ArrayList<ReplicationCandidature>();
-			final Collection<ReplicationCandidature> destruction = new ArrayList<ReplicationCandidature>();
-
-			for (final ReplicationCandidature c : cs) {
-				if (c.isMatchingCreation()) {
-					creation.add(c);
-				} else {
-					destruction.add(c);
+				for (final ReplicationCandidature c : cs) {
+					if (c.isMatchingCreation()) {
+						creation.add(c);
+					} else {
+						destruction.add(c);
+					}
 				}
-			}
+				HostState newState = this.getMyAgent().getMyCurrentState();
+				for (final ReplicationCandidature c : destruction){
+					this.handleResourceInformation(c.getAgentInitialState(),false);//the state is maybe not the actual one but  valid with regard to the couple (host,agent)
+					ReplicationHandler.killReplica(c.getAgent());
+					this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
+					newState = c.computeResultingState(newState);
+				}
 
-			for (final ReplicationCandidature c : destruction){
-				this.getMyAgent().getMyInformation().remove(c.getAgent());
-				ReplicationHandler.killReplica(c.getAgent());
-				this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
-				this.getMyAgent().setNewState(
-						c.computeResultingState(
-								this.getMyAgent().getMyCurrentState()));
-			}
-
-			for (final ReplicationCandidature c : creation){
-				this.handleResourceInformation(c.getAgentResultingState());
-				ReplicationHandler.replicate(c.getAgent());
-				this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
-				this.getMyAgent().setNewState(
-						c.computeResultingState(
-								this.getMyAgent().getMyCurrentState()));
+				for (final ReplicationCandidature c : creation){
+					this.handleResourceInformation(c.getAgentResultingState(),true);//the state is maybe not the actual one but  valid with regard to the couple (host,agent)
+					ReplicationHandler.replicate(c.getAgent());
+					this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
+					newState = c.computeResultingState(newState);
+				}
+				this.getMyAgent().setNewState(newState);
 			}
 		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();

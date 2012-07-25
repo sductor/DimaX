@@ -60,8 +60,11 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 	public Collection<Contract> getBestSolution(){
 		this.s.resetSearchStrategy();
 		this.s.setObjective(this.s.getVar(this.socialWelfareValue));
-		this.s.maximize(true);
-		final Collection<Contract> result = this.generateSolution();
+		Boolean feasible = this.s.maximize(true);
+		Collection<Contract> result = new ArrayList<Contract>(); 
+		if (feasible!=null && feasible){
+			result = this.generateSolution();
+		}
 		this.s.resetSearchStrategy();
 		this.s.setObjective(null);
 		return  result;

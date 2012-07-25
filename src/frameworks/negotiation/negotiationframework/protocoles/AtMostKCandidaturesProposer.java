@@ -7,10 +7,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.shells.NotReadyException;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
@@ -71,10 +72,6 @@ ProposerCore
 				this.getMyAgent().getMyInformation().getKnownAgents());
 	}
 
-	@Override
-	public boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
-		return  contracts.getAllInitiatorContracts().isEmpty();
-	}
 
 	private boolean KnownHostValidityVerification(){
 		for (final AgentIdentifier id : this.myKnownHosts){

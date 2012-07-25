@@ -8,21 +8,22 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
+import dima.introspectionbasedagents.kernel.LaunchableCompetentComponent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
-import dima.introspectionbasedagents.services.core.information.SimpleObservationService;
-import dima.introspectionbasedagents.services.core.launch.APIAgent;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.CompetentComponent;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dima.introspectionbasedagents.shells.LaunchableCompetentComponent;
+import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.launch.APIAgent;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 /**
  * Laborantin manage the execution of an experience moddelled with its simulation parameters
  * it collects the results and write them

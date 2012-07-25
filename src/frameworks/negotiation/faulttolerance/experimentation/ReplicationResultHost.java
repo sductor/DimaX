@@ -5,8 +5,8 @@ import java.util.Date;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentationResults;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;

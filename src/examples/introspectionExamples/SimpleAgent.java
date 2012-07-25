@@ -6,9 +6,9 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 
 public class SimpleAgent extends BasicCompetentAgent {

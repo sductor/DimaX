@@ -48,11 +48,12 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 
 	@Override
 	public void select(final ContractTrunk<Contract> cs,
+			PersonalState s,
 			final Collection<Contract> toAccept, final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
 		final List<Contract> all = cs.getParticipantOnWaitContracts();
 		all.remove(cs.getLockedContracts());
-		final int nbContracts = all.size()+this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().size();
+		final int nbContracts = all.size()+s.getMyResourceIdentifiers().size();
 		if (nbContracts>this.c && !all.isEmpty()){
 			final Collection<Contract> notAnalysed = new ArrayList<Contract>();
 			for (int i = 0; i < nbContracts-this.c; i++){
@@ -67,7 +68,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 			this.getMyAgent().getMyProtocol().answerRejected(notAnalysed);
 		}
 
-		this.myCore.select(cs, toAccept, toReject, toPutOnWait);
+		this.myCore.select(cs, s, toAccept, toReject, toPutOnWait);
 
 	}
 

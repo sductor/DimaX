@@ -14,7 +14,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 
 	private final AgentIdentifier initiator;
 	private final Collection<AgentIdentifier> participants;
-	private final Date contractCreation;
+	final Date contractCreation;
 	private final long validityTime;
 
 	public ContractIdentifier(final AgentIdentifier intiator, final Date date,
@@ -78,8 +78,8 @@ public class ContractIdentifier implements DimaComponentInterface {
 		if (that instanceof ContractIdentifier) {
 			if (((ContractIdentifier) that).initiator.equals(this.initiator)
 					&& ((ContractIdentifier) that).participants.equals(this.participants)) {
-				assert ((ContractIdentifier)that).contractCreation.equals(this.contractCreation):
-					"un agent a envoyé deux prop dans la mm session!!\n"+this+that;
+//				assert ((ContractIdentifier)that).contractCreation.equals(this.contractCreation):
+//					"un agent a envoyé deux prop dans la mm session!!\n"+this+that;
 				return true;
 			}
 		}

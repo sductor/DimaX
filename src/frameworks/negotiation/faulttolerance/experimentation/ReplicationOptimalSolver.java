@@ -17,7 +17,7 @@ import choco.kernel.solver.Solver;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.IfailedException;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;

@@ -3,8 +3,9 @@ package frameworks.negotiation.negotiationframework.protocoles;
 import java.util.HashSet;
 import java.util.Set;
 
+
+import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.shells.NotReadyException;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.SimpleNegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractActionSpecif;
@@ -36,11 +37,6 @@ Contract>  {
 
 	@Override
 	public boolean IWantToNegotiate(final ContractTrunk<Contract> contracts) {
-		return false;
-	}
-
-	@Override
-	public boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
 		return false;
 	}
 

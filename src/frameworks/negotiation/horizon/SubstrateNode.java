@@ -2,7 +2,7 @@ package frameworks.negotiation.horizon;
 
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
+import dima.introspectionbasedagents.services.information.ObservationService;
 import frameworks.negotiation.horizon.contracts.HorizonContract;
 import frameworks.negotiation.horizon.contracts.HorizonSpecification;
 import frameworks.negotiation.horizon.negotiatingagent.SubstrateNodeCore;
@@ -78,7 +78,7 @@ SimpleNegotiatingAgent<SubstrateNodeState, HorizonContract> {
 			final SubstrateNodeCore myRationality,
 			final SelectionCore<SubstrateNode, SubstrateNodeState, HorizonContract> selectionCore,
 			final ObservationService myInformation,
-			final AbstractCommunicationProtocol<HorizonContract> protocol)
+			final AbstractCommunicationProtocol<SubstrateNodeState,HorizonContract> protocol)
 					throws CompetenceException {
 		super(
 				id,

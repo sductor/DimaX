@@ -29,15 +29,16 @@ InformedCandidature<Contract>>{
 	@Override
 	public void select(
 			final ContractTrunk<InformedCandidature<Contract>> contracts,
+			PersonalState currentState,
 			final Collection<InformedCandidature<Contract>> toAccept,
 			final Collection<InformedCandidature<Contract>> toReject,
 			final Collection<InformedCandidature<Contract>> toPutOnWait) {
 
 		// Intitiation de l'état
-		assert this.getMyAgent().getMyCurrentState().isValid():
+		assert currentState.isValid():
 			"what the  (1)!!!!!!"+ this.getMyAgent().getMyCurrentState();
 		assert MatchingCandidature.assertAllDestruction(contracts.getParticipantAlreadyAcceptedContracts());
-		PersonalState currentState = this.getMyAgent()
+		currentState = this.getMyAgent()
 				.getMyResultingState(
 						this.getMyAgent().getMyCurrentState(),
 						contracts.getParticipantAlreadyAcceptedContracts());

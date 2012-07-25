@@ -707,7 +707,7 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 			"Content: "+request+"\n"+
 			"Language: "+m.getLanguage()+"\n"+
 			"Ontology: "+m.getOntology()+"\n"+
-			"In-reply-to: "+m.getInReplyTo()+"\n");
+			"In-reply-to: "+m.getDebugInReplyTo()+"\n");
 	if(m.getLanguage().equals(new String("DQL")))
 	{  final DQLTranslator p = new DQLTranslator();
 	final Vector answers =  p.getAnswerPatternInstance(request);

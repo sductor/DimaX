@@ -5,13 +5,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.ContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
@@ -149,15 +150,11 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 		this.notify(this.getMyCurrentState(), SimpleRationalAgent.stateChangementObservation);
-		this.notify(this.getMyCurrentState());
+//		this.notify(this.getMyCurrentState());
 	}
 
 
 
-	/* (non-Javadoc)
-	 * @see negotiation.negotiationframework.rationality.RationalAgent#verifyStateValidity(PersonalState)
-	 */
-	@Override
 	public boolean verifyStateValidity(final PersonalState s){
 		assert s.isNewerThan(this.getMyCurrentState())>0:this.getMyCurrentState()+"\n"+s;
 		for (final AgentIdentifier id : s.getMyResourceIdentifiers()){
@@ -167,7 +164,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 				ress = this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(this.getIdentifier());
 			} catch (final NoInformationAvailableException e) {
-				//				assert 1<0:e;
+//								assert false:e;
 			}
 		}
 		return true;

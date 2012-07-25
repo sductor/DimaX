@@ -8,15 +8,16 @@ import java.util.Date;
 import java.util.LinkedList;
 
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.modules.aggregator.LightWeightedAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.modules.mappedcollections.HashedHashSet;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dima.introspectionbasedagents.shells.CompetentComponent;
-import dima.introspectionbasedagents.shells.LaunchableCompetentComponent;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
+import dima.introspectionbasedagents.kernel.LaunchableCompetentComponent;
+import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.support.GimaObject;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.ExperimentationResults;

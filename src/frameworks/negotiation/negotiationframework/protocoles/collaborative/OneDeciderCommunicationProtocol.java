@@ -9,10 +9,9 @@ import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicat
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 
 public class OneDeciderCommunicationProtocol <
-ActionSpec extends AbstractActionSpecif,
 State extends AgentState,
 Contract extends InformedCandidature<Contract>>
-extends AbstractCommunicationProtocol<Contract>{
+extends AbstractCommunicationProtocol<State,Contract>{
 
 	/**
 	 *
@@ -20,12 +19,6 @@ extends AbstractCommunicationProtocol<Contract>{
 	private static final long serialVersionUID = -7022976048693084925L;
 	boolean ImDecider;
 
-	//	public boolean negotiationAsInitiatorHasStarted() {
-	//		if (ImDecider)
-	//			return false;
-	//		else
-	//			return super.negotiationAsInitiatorHasStarted();
-	//	}
 
 	public OneDeciderCommunicationProtocol(
 			final boolean iMDecider)
@@ -55,6 +48,14 @@ extends AbstractCommunicationProtocol<Contract>{
 	@Override
 	protected void putOnWait(final Collection<Contract> toPutOnWait) {
 		// Do nothing
+	}
+
+	@Override
+	protected boolean ImAllowedToNegotiate(ContractTrunk<Contract> contracts) {
+		if (ImDecider)
+			return true;
+		else
+			return  contracts.getAllInitiatorContracts().isEmpty();
 	}
 }
 

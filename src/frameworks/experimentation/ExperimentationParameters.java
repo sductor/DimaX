@@ -5,14 +5,15 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedList;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dima.introspectionbasedagents.shells.CompetentComponent;
+import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 
 

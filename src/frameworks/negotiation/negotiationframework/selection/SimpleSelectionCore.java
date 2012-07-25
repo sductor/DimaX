@@ -8,6 +8,7 @@ import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
+import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 import frameworks.negotiation.negotiationframework.selection.GreedySelectionModule.GreedySelectionType;
@@ -32,7 +33,7 @@ BasicAgentCompetence<Agent>
 implements SelectionCore<Agent,PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
-	SelectionModule<Agent, PersonalState,Contract> selectionModule;
+	private SelectionModule<Agent, PersonalState,Contract> selectionModule;
 
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
 	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
@@ -44,24 +45,12 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		super();
 		this.fuseInitiatorNparticipant = fuseInitiatorNparticipant;
 		this.considerOnWait = considerOnWait;
-		this.selectionModule=select;
+		selectionModule=select;
 	}
 	@Override
 	public void setMyAgent(final Agent ag)  {
 		super.setMyAgent(ag);
-		this.selectionModule.setMyAgent(ag);
-	}
-
-
-	//
-	// Abstract
-	//
-
-	//return contract to validate
-	protected Collection<Contract> selection(
-			final PersonalState currentState,
-			final Collection<Contract> contractsToExplore){
-		return this.selectionModule.selection(currentState, contractsToExplore);
+		this.getSelectionModule().setMyAgent(ag);
 	}
 
 	//
@@ -71,6 +60,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 	@Override
 	public void select(
 			final ContractTrunk<Contract> given,
+			PersonalState currentState,
 			final Collection<Contract> toAccept,
 			final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
@@ -78,15 +68,16 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		final Collection<Contract> participantContractToExplore = given.getParticipantOnWaitContracts();
 		final Collection<Contract> initiatorOnWaitContract = given.getInitiatorOnWaitContracts();
 		final Collection<Contract> participantAlreadyAccepted = given.getParticipantAlreadyAcceptedContracts();
-		final Collection<Contract> rejected = given.getFailedContracts();//
 
+		assert given.getFailedContracts().isEmpty():given.getFailedContracts();
+		
 		// Verification de la consistance
-		assert this.getMyAgent().getMyCurrentState().isValid():
-			"what the  (1)!!!!!!"+ this.getMyAgent().getMyCurrentState();
+		assert currentState.isValid():
+			"what the  (1)!!!!!!"+ currentState+"\n"+this.getMyAgent().getMyCurrentState();
 
 		// Mis à jour de l'état si tous les agents ayant été accepter
 		// confirmaient :
-		final PersonalState currentState = this.getMyAgent()
+		currentState = this.getMyAgent()
 				.getMyResultingState(
 						this.getMyAgent().getMyCurrentState(),
 						participantAlreadyAccepted);
@@ -98,7 +89,9 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		toReject.addAll(participantContractToExplore);
 		toPutOnWait.addAll(initiatorOnWaitContract);
 		toPutOnWait.addAll(participantAlreadyAccepted);
-		assert given.getFailedContracts().isEmpty();
+		
+//		assert toAccept.isEmpty():toAccept;
+		assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), toAccept, toReject, toPutOnWait);
 
 		if (this.fuseInitiatorNparticipant) {
 
@@ -109,16 +102,16 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 				contractsToExplore.addAll(initiatorOnWaitContract);
 			}
 
-			toAccept.addAll(this.selection(currentState, contractsToExplore));
+			toAccept.addAll(this.getSelectionModule().selection(currentState, contractsToExplore));
 
 		} else {
 
-			toAccept.addAll(this.selection(currentState, participantContractToExplore));
+			toAccept.addAll(this.getSelectionModule().selection(currentState, participantContractToExplore));
 
 			if (this.considerOnWait) {
 				initiatorContractToExplore.addAll(initiatorOnWaitContract);
 			}
-			toAccept.addAll(this.selection(currentState,initiatorContractToExplore));
+			toAccept.addAll(this.getSelectionModule().selection(currentState,initiatorContractToExplore));
 		}
 
 		toReject.removeAll(toAccept);
@@ -169,6 +162,10 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		}
 		return true;
 	}
+	public SelectionModule<Agent, PersonalState,Contract> getSelectionModule() {
+		return selectionModule;
+	}
+
 }
 //
 //		this.setAnswer(currentState,toAccept, toReject);

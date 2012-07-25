@@ -6,14 +6,14 @@ import java.util.Collection;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import frameworks.negotiation.negotiationframework.contracts.AbstractActionSpecif;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
+import frameworks.negotiation.negotiationframework.contracts.ContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 
 public class ReverseCFPProtocol <
-ActionSpec extends AbstractActionSpecif,
-State extends AgentState,
+PeronsalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends AbstractCommunicationProtocol<Contract>{
+extends AbstractCommunicationProtocol<PeronsalState,Contract>{
 
 	/**
 	 *
@@ -30,6 +30,20 @@ extends AbstractCommunicationProtocol<Contract>{
 		super(contracts);
 	}
 
+	/*
+	 * 
+	 */
+	
+
+	@Override
+	public boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
+		return  contracts.getAllInitiatorContracts().isEmpty();
+	}
+	
+	/*
+	 * 
+	 */
+	
 	@Override
 	protected void answerAccepted(final Collection<Contract> toAccept) {
 		final ArrayList<Contract> initiator = new ArrayList<Contract>();
@@ -39,6 +53,9 @@ extends AbstractCommunicationProtocol<Contract>{
 
 		assert AbstractCommunicationProtocol.allRequestable(initiator, this.getContracts());
 
+		assert ContractTransition.allComplete(initiator);
+		assert ContractTransition.allComplete(participant);
+		
 		this.confirmContract(initiator, Receivers.NotInitiatingParticipant);
 		this.acceptContract(participant, Receivers.Initiator);
 	}
@@ -47,6 +64,11 @@ extends AbstractCommunicationProtocol<Contract>{
 	protected void answerRejected(final Collection<Contract> toReject) {
 		final ArrayList<Contract> initiator = new ArrayList<Contract>();
 		final ArrayList<Contract> participant = new ArrayList<Contract>();
+
+		this.separateInitiator(toReject, initiator, participant);
+		
+		assert ContractTransition.allComplete(initiator);
+		assert ContractTransition.allComplete(participant);
 
 		this.cancelContract(initiator, Receivers.NotInitiatingParticipant);
 		this.rejectContract(participant, Receivers.Initiator);
@@ -57,22 +79,6 @@ extends AbstractCommunicationProtocol<Contract>{
 		// Do nothing
 	}
 
-	/*
-	 *
-	 */
-
-	private void separateInitiator(final Collection<Contract> all, final Collection<Contract> initiator, final Collection<Contract> participant){
-		assert initiator.isEmpty();
-		assert participant.isEmpty();
-
-		for (final Contract a : all) {
-			if (a.getInitiator().equals(this.getMyAgent().getIdentifier())) {
-				initiator.add(a);
-			} else {
-				participant.add(a);
-			}
-		}
-	}
 
 }
 

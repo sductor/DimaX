@@ -88,7 +88,7 @@ public class FIPAACLMessage extends Message {
 	 * Creation date: (23/12/2002 09:23:02)
 	 * @return java.lang.String
 	 */
-	public java.lang.String getInReplyTo() {
+	public String getInReplyTo() {
 		return this.inReplyTo;
 	}
 	/**

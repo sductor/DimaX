@@ -1,0 +1,7 @@
+package dima.introspectionbasedagents.kernel;
+
+import dima.introspectionbasedagents.services.communicating.AsynchronousCommunicationComponent;
+
+public interface CommunicatingCompetentComponent extends CompetentComponent, AsynchronousCommunicationComponent {
+
+}

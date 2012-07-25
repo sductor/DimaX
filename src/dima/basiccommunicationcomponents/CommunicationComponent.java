@@ -2,8 +2,8 @@ package dima.basiccommunicationcomponents;
 
 import dima.basicagentcomponents.AgentAddress;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
-import dima.introspectionbasedagents.services.core.communicating.AsynchronousCommunicationComponent;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.communicating.AsynchronousCommunicationComponent;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 /**

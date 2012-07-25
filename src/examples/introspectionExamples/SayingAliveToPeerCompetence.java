@@ -3,13 +3,13 @@ package examples.introspectionExamples;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class SayingAliveToPeerCompetence extends BasicCommunicatingCompetence<BasicCompetentAgent> {
 

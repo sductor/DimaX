@@ -4,14 +4,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
+import dima.introspectionbasedagents.kernel.MethodHandler;
 import dima.introspectionbasedagents.ontologies.Envelope;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
 import dima.introspectionbasedagents.ontologies.MessageWithProtocol;
 import dima.introspectionbasedagents.ontologies.Protocol;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.MethodHandler;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 //message type order :content java
@@ -37,7 +39,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 	// l'ontologie auquel le message se rattache
 	private Ontology ontology = Ontology.Any;
 	// la référence d'un message antérieur auquel le message actuel se rattache
-	private FipaACLMessage inreplyto = null;
+	private AbstractMessageInterface inreplyto = null;
 	// ou la référence d'un message ultérieur attendu en retour
 	private List<FipaACLMessage> replywith = null;
 	// reference to the agent that initated the conversation
@@ -50,7 +52,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 	private final Date creationTime;
 	private String additionalInformation = "";
-	private Exception attachedException = null;
+	private Throwable attachedException = null;
 
 	//
 	// Constructor
@@ -102,7 +104,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		return this.ontology;
 	}
 
-	public FipaACLMessage getInreplyto() {
+	public AbstractMessageInterface getInreplyto() {
 		return this.inreplyto;
 	}
 
@@ -165,16 +167,16 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 	/**
 	 * @return the attachedException
 	 */
-	protected Exception getAttachedException() {
+	public Throwable getAttachedException() {
 		return this.attachedException;
 	}
 
 	/**
-	 * @param attachedException
+	 * @param e
 	 *            the attachedException to set
 	 */
-	public void setAttachedException(final Exception attachedException) {
-		this.attachedException = attachedException;
+	public void setAttachedException(final Throwable e) {
+		this.attachedException = e;
 	}
 
 	/**
@@ -204,8 +206,8 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		this.ontology = ontology;
 	}
 
-	public void setInreplyto(final FipaACLMessage inreplyto) {
-		this.inreplyto = inreplyto;
+	public void setInreplyto(final AbstractMessageInterface ami) {
+		this.inreplyto = ami;
 	}
 
 	public void setReplywith(final List<FipaACLMessage> replywith) {

@@ -1,12 +1,16 @@
 package dima.introspectionbasedagents.services;
 
 import java.util.Collection;
+import java.util.HashSet;
+
+import com.sun.media.sound.HsbParser;
+
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
-import dima.introspectionbasedagents.services.core.communicating.AsynchronousCommunicationComponent;
-import dima.introspectionbasedagents.shells.CompetentComponent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.communicating.AsynchronousCommunicationComponent;
 
 public class BasicCommunicatingCompetence<Agent extends 
 CompetentComponent & AsynchronousCommunicationComponent> extends BasicAgentCompetence<Agent>{
@@ -25,6 +29,7 @@ CompetentComponent & AsynchronousCommunicationComponent> extends BasicAgentCompe
 	}
 
 	public void sendMessage(final Collection<? extends AgentIdentifier> ids, final AbstractMessageInterface m){
+		assert new HashSet(ids).size()==ids.size();
 		for (final AgentIdentifier id :ids) {
 			if (id!=this.myAgent.getIdentifier()) {
 				this.sendMessage(id, m);

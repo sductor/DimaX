@@ -2,7 +2,9 @@ package dima.introspectionbasedagents.ontologies;
 
 import java.io.Serializable;
 
-import dima.introspectionbasedagents.shells.BasicCommunicatingShell;
+import dima.introspectionbasedagents.kernel.BasicCommunicatingShell;
+
+
 
 /**
  * This class should be implemented by any class which aims at being used as an envelope.

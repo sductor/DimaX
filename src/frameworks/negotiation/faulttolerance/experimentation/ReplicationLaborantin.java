@@ -3,16 +3,15 @@ package frameworks.negotiation.faulttolerance.experimentation;
 import java.io.IOException;
 
 
+
 import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.kernel.LaunchableCompetentComponent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.core.opinion.Believer;
-import dima.introspectionbasedagents.services.core.opinion.OpinionService;
-import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
-import dima.introspectionbasedagents.shells.LaunchableCompetentComponent;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.Experimentator;
 import frameworks.experimentation.IfailedException;
 import frameworks.experimentation.Laborantin;
@@ -21,6 +20,9 @@ import frameworks.negotiation.faulttolerance.faulsimulation.FaultTriggeringServi
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
+import frameworks.negotiation.negotiationframework.opinion.Believer;
+import frameworks.negotiation.negotiationframework.opinion.OpinionService;
+import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
 import frameworks.negotiation.negotiationframework.protocoles.status.CentralisedStatusCompterCompetence;
 import frameworks.negotiation.negotiationframework.rationality.RationalAgent;
 import frameworks.negotiation.negotiationframework.rationality.SimpleRationalAgent;
@@ -62,7 +64,7 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 	//	new CentralisedObservingStatusService(this, this.getSimulationParameters());
 
 	@Competence
-	public final CentralisedStatusCompterCompetence cscc = new CentralisedStatusCompterCompetence(ReplicaState.class);
+	public final CentralisedStatusCompterCompetence cscc = new CentralisedStatusCompterCompetence(ReplicaState.class, ExperimentationParameters._maxSimulationTime);
 
 
 	//

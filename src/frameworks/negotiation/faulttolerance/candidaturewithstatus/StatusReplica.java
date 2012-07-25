@@ -3,19 +3,20 @@ package frameworks.negotiation.faulttolerance.candidaturewithstatus;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
 import frameworks.negotiation.faulttolerance.Replica;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
+import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
 import frameworks.negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.negotiationframework.protocoles.status.StatusAgent;
 import frameworks.negotiation.negotiationframework.protocoles.status.StatusObservationCompetence;
 import frameworks.negotiation.negotiationframework.protocoles.status.StatusProposerCore;
-import frameworks.negotiation.negotiationframework.protocoles.status.StatusRationalCore;
+import frameworks.negotiation.negotiationframework.protocoles.status.StatusAgentRationalCore;
+import frameworks.negotiation.negotiationframework.protocoles.status.StatusProtocol;
 import frameworks.negotiation.negotiationframework.protocoles.status.StatusObservationCompetence.AgentStateStatus;
 
 public class StatusReplica extends Replica<ReplicationCandidature> implements StatusAgent<ReplicaState, ReplicationCandidature> {
@@ -64,7 +65,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 					throws CompetenceException {
 		super(id,
 				myState,
-				new StatusRationalCore<ReplicaState, ReplicationCandidature>(new ReplicaCore(true, true)),
+				new StatusAgentRationalCore<ReplicaState, ReplicationCandidature>(new ReplicaCore(true, true)),
 				participantCore,
 				new StatusProposerCore<ReplicaState, ReplicationCandidature>(simultaneousCandidature) {
 
@@ -86,7 +87,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			}
 		},
 		new SimpleOpinionService(new ReplicaStateOpinionHandler(myState.getSocialWelfare(),id)),
-		new ReverseCFPProtocol(),
+		new StatusProtocol(null),
 		dynamicCriticity);
 	}
 

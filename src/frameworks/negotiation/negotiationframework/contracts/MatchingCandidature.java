@@ -67,7 +67,7 @@ extends ContractTransition {
 		final boolean ressourceContainsAgent =
 				this.getInitialState(this.getResource()).getMyResourceIdentifiers().contains(this.getAgent());
 		assert  agentContainsResource && ressourceContainsAgent || !agentContainsResource && !ressourceContainsAgent:
-			"incoherent states:\n"+this.getInitialState(this.getAgent())+":\n"+this.getInitialState(this.getResource());
+			"incoherent states:"+this;//.getInitialState(this.getAgent())+":"+this.getInitialState(this.getResource())+this;
 		assert this.isMatchingCreation()?!agentContainsResource:agentContainsResource:" creation impossible : creation?"
 		+this.isMatchingCreation()+"incoherent states:\n"+this.getInitialState(this.getAgent())+":\n"+this.getInitialState(this.getResource());
 

@@ -13,7 +13,7 @@ import java.util.Set;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.modules.mappedcollections.HashedHashSet;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 
 public class ReallocationContract<Contract extends AbstractContractTransition>

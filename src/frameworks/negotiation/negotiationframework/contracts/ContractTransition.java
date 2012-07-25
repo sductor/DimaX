@@ -12,8 +12,8 @@ import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 

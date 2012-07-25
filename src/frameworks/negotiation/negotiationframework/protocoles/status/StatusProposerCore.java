@@ -6,8 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.shells.NotReadyException;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -59,7 +60,7 @@ PersonalState, Contract> {
 				destructionCandidature.setInitialState(getMyAgent().getMyCurrentState());
 				destructionCandidature.setInitialState(rId);
 
-				if (this.getMyAgent().getMyResultingState(nextState,
+				if (!this.getMyAgent().getMyResultingState(nextState,
 						destructionCandidature).isValid()
 						|| this.getMyAgent().stateStatusIs(
 								this.getMyAgent().getMyResultingState(nextState,
@@ -84,7 +85,8 @@ PersonalState, Contract> {
 			//				this.getMyAgent().execute(c);
 
 		} else if (this.getMyAgent().stateStatusIs(this.getMyAgent().getMyCurrentState(),
-				AgentStateStatus.Fragile)) {
+				AgentStateStatus.Fragile) || (this.getMyAgent().stateStatusIs(this.getMyAgent().getMyCurrentState(),
+						AgentStateStatus.Empty))) {
 			candidatures.addAll(super.getNextContractsToPropose());
 		}
 

@@ -3,7 +3,7 @@ package frameworks.negotiation.negotiationframework.rationality;
 import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 
 public interface AgentState extends Information {
 

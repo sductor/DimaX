@@ -6,7 +6,7 @@ public class NegotiationParameters {
 	// Negotiation Tickers
 	//
 
-	public static final long _timeToCollect =500;//500;//
+	public static final long _timeToCollect =1000;//500;//
 	public static final long _initiatorPropositionFrequency = -1;//(long) (ExperimentationProtocol._timeToCollect*0.5);//(long)
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
@@ -27,16 +27,15 @@ public class NegotiationParameters {
 	public final static String key4rouletteWheelSelect = "roolette wheel select";
 	public final static String key4randomSelect = "random select";
 	public final static String key4OptSelect = "opt select";
-	public static final Object key4BetterSelect = null;
+	public static final String key4BetterSelect = "better select";
 
 	//
 	// Quantile
 	//
 
-	public static final long _statusObservationFrequency = 250;//10 * ReplicationExperimentationProtocol._timeToCollect;// (long)
+//	public static final long _statusObservationFrequency = 250;//10 * ReplicationExperimentationProtocol._timeToCollect;// (long)
 	// (0.25*_contractExpirationTime);
-	public static final int firstTercile = 33;// percent
-	public static final int lastTercile = 66;// percent
 	public static final double alpha_low = 1;
-	public static final double alpha_high = 1;
+	public static final double alpha_high = 0.5;
+	public static final long opinionDiffusionFrequency = _timeToCollect/2;
 }

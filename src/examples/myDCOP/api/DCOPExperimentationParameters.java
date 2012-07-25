@@ -5,14 +5,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+
 import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import examples.dcopAmeliorer.algo.Algorithm;
 import examples.dcopAmeliorer.algo.BasicAlgorithm;
 import examples.dcopAmeliorer.algo.korig.AlgoKOptOriginal;

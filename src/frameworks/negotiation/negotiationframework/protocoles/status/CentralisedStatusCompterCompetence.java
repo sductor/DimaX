@@ -3,34 +3,39 @@ package frameworks.negotiation.negotiationframework.protocoles.status;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.annotations.Transient;
+import dima.introspectionbasedagents.kernel.CommunicatingCompetentComponent;
+import dima.introspectionbasedagents.modules.aggregator.HeavyDoubleAggregation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.core.opinion.Believer;
-import dima.introspectionbasedagents.services.core.opinion.OpinionService;
-import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
-import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
-import dima.introspectionbasedagents.services.modules.aggregator.HeavyDoubleAggregation;
-import dima.introspectionbasedagents.shells.CommunicatingCompetentComponent;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
+import frameworks.negotiation.negotiationframework.opinion.Believer;
+import frameworks.negotiation.negotiationframework.opinion.OpinionService;
+import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
+import frameworks.negotiation.negotiationframework.opinion.OpinionService.Opinion;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 
 public class CentralisedStatusCompterCompetence extends BasicCommunicatingCompetence<Believer> {
 	
 	private final Collection<AgentIdentifier> acquaintances = new ArrayList<AgentIdentifier>();
 	private final Class<? extends AgentState> stateTypeToDiffuse;
+	private final Long simulationTime;
 	
 	public CentralisedStatusCompterCompetence(
-			Class<? extends AgentState> stateTypeToDiffuse)
+			Class<? extends AgentState> stateTypeToDiffuse,
+			Long maxSimulationTime)
 			throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.stateTypeToDiffuse = stateTypeToDiffuse;
+		this.simulationTime=maxSimulationTime;
 	
 	}
 	
@@ -40,8 +45,8 @@ public class CentralisedStatusCompterCompetence extends BasicCommunicatingCompet
 		getMyAgent().getMyOpinion().add(n.getTransmittedState());
 	}
 
-	@StepComposant(ticker=NegotiationParameters._timeToCollect)
-	void diffuseInfo(){
+	@Transient@StepComposant(ticker=NegotiationParameters.opinionDiffusionFrequency)
+	boolean diffuseInfo(){
 		try {
 			Opinion o = getMyAgent().getMyOpinion().getGlobalOpinion(stateTypeToDiffuse);
 			this.sendMessage(acquaintances, 
@@ -49,6 +54,7 @@ public class CentralisedStatusCompterCompetence extends BasicCommunicatingCompet
 //		logMonologue(o.getNumberOfAggregatedElements()+" "
 //		+o.getAggregatedAgents()+"\n"+o.getMaxElement()+"\n"+o.getMinElement()+"\n"+o.getRepresentativeElement());
 		} catch (NoInformationAvailableException e) {}
+		return getMyAgent().getUptime()>simulationTime;
 	}
 
 	public Collection<AgentIdentifier> getAcquaintances() {

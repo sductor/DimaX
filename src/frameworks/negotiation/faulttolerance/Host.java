@@ -1,10 +1,10 @@
 package frameworks.negotiation.faulttolerance;
 
 import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
-import dima.introspectionbasedagents.services.core.observingagent.PatternObserverWithHookservice.EventHookedMethod;
-import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import frameworks.experimentation.ExperimentationResults;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationResultHost;

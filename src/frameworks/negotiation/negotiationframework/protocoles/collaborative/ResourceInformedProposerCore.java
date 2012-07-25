@@ -4,8 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+
+import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.shells.NotReadyException;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
 import frameworks.negotiation.negotiationframework.contracts.MatchingCandidature;
@@ -54,11 +55,5 @@ InformedCandidature<Contract>> {
 		return !this.contractsToPropose.isEmpty();
 	}
 
-
-	@Override
-	public boolean ImAllowedToNegotiate(
-			final ContractTrunk<InformedCandidature<Contract>> contracts) {
-		return true;
-	}
 
 }

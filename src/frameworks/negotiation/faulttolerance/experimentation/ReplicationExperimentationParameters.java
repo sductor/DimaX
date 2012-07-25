@@ -14,11 +14,11 @@ import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.modules.distribution.NormalLaw.DispersionSymbolicValue;
+import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.IfailedException;
 import frameworks.experimentation.Laborantin;
@@ -88,8 +88,12 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 * Constantes
 	 */
 
-	public static final int startingNbHosts = 8;
-	public static int startingNbAgents =15;
+	public static final int startingNbHosts = 2;
+	public static int startingNbAgents =5;
+	
+//
+//	public static final int startingNbHosts = 8;
+//	public static int startingNbAgents =15;
 
 	//		public static final int startingNbHosts = 5;
 	//		public static int startingNbAgents =10;
@@ -456,7 +460,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.rig.getHostState(hostId),
 						this._socialWelfare,
 						this.simultaneousAcceptation,
-						this.getSelectionType(this._hostSelection),
+						this.getGreedySelectionType(this._hostSelection),
 						this.maxComputingTime);
 
 			}else if (this._usedProtocol
@@ -484,10 +488,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 			//gestion des état initiaux
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
-				if (((HostCore)hostAg.getMyCore()).iMemorizeMyRessourceState()) {
+				if ((hostAg.getMyCore()).iMemorizeMyRessourceState()) {
 					hostAg.getMyInformation().add(this.rig.getAgentState(ag));
 				}
-				if (((HostCore)hostAg.getMyCore()).iObserveMyRessourceChanges()) {
+				if ((hostAg.getMyCore()).iObserveMyRessourceChanges()) {
 					hostAg.addObserver(ag,
 							SimpleRationalAgent.stateChangementObservation);
 				}
@@ -505,7 +509,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		return result.values();
 	}
 
-	private SelectionCore getSelectionCore(final String selection){
+	private SimpleSelectionCore getSelectionCore(final String selection){
 
 		if (selection
 				.equals(NegotiationParameters.key4greedySelect)) {
@@ -532,7 +536,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					"Static parameters est mal conf : selection = "+ selection);
 		}
 	}
-	private GreedySelectionType getSelectionType(final String selection){
+	private GreedySelectionType getGreedySelectionType(final String selection){
 
 		if (selection
 				.equals(NegotiationParameters.key4greedySelect)) {
@@ -662,16 +666,16 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				1.,//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
 				0.7,//dispo mean
 				DispersionSymbolicValue.Moyen,//dispo dispersion
-				0.5,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
+				0.25,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
 				DispersionSymbolicValue.Moyen,//load dispersion
 				(double)ReplicationExperimentationParameters.startingNbAgents/(double)ReplicationExperimentationParameters.startingNbHosts,//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean2.5,//
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
-				NegotiationParameters.key4CentralisedstatusProto,//NegotiationParameters.key4statusProto,//NegotiationParameters.key4mirrorProto,//
+				NegotiationParameters.key4CentralisedstatusProto,//NegotiationParameters.key4mirrorProto,//NegotiationParameters.key4statusProto,//
 				SocialChoiceType.Utility,
 				NegotiationParameters.key4greedySelect,//NegotiationParameters.key4rouletteWheelSelect,//
-				NegotiationParameters.key4greedySelect,//NegotiationParameters.key4rouletteWheelSelect,//
+				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
 				false,
 				ReplicationExperimentationParameters.doubleParameters2.get(0));
 	}

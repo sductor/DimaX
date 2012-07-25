@@ -2,7 +2,7 @@ package dima.basiccommunicationcomponents;
 
 import java.util.LinkedList;
 
-import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 /**
  * This is a simple MailBox implemented basically with a LinkedListe of
  * messages.
@@ -15,7 +15,7 @@ public class SimpleMailBox extends AbstractMailBox
 	 *
 	 */
 	private static final long serialVersionUID = -8707578669937655981L;
-	LinkedList messageList;
+	LinkedList<AbstractMessageInterface> messageList;
 
 	/**
 	 * SimpleMailBox constructor comment.
@@ -37,12 +37,14 @@ public class SimpleMailBox extends AbstractMailBox
 	 * SimpleMailBox .
 	 */
 	@Override
-	public  boolean hasMail(){ return !this.messageList.isEmpty();}
+	public  boolean hasMail(){ 
+		return !this.messageList.isEmpty();
+		}
 	/**
 	 * SimpleMailBox initialization.
 	 */
 	public void initialize() {
-		this.messageList = /*Collections.synchronizedList(*/ new LinkedList();
+		this.messageList = /*Collections.synchronizedList(*/ new LinkedList<AbstractMessageInterface>();
 	}
 	/**
 	 * Starts the application.
@@ -76,15 +78,15 @@ public class SimpleMailBox extends AbstractMailBox
 	 */
 	@Override
 	public synchronized boolean writeMail(final AbstractMessageInterface m) {
-		this.messageList.add(m);
+		this.messageList.addLast(m);
 		return true; }
-
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (01/03/2000 23:19:52)
-	 * @return java.lang.Object
-	 */
-	public AbstractMessage removeFirstMessage(){
-		return (AbstractMessage)this.messageList.remove(0);
-	}
+//
+//	/**
+//	 * Insert the method's description here.
+//	 * Creation date: (01/03/2000 23:19:52)
+//	 * @return java.lang.Object
+//	 */
+//	public AbstractMessage removeFirstMessage(){
+//		return (AbstractMessage)this.messageList.remove(0);
+//	}
 }

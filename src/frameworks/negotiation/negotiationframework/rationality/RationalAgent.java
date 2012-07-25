@@ -3,12 +3,13 @@ package frameworks.negotiation.negotiationframework.rationality;
 import java.util.Collection;
 import java.util.Comparator;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.core.information.ObservationService;
-import dima.introspectionbasedagents.services.core.launch.LaunchableComponent;
-import dima.introspectionbasedagents.shells.CommunicatingCompetentComponent;
-import dima.introspectionbasedagents.shells.LaunchableCompetentComponent;
+import dima.introspectionbasedagents.kernel.CommunicatingCompetentComponent;
+import dima.introspectionbasedagents.kernel.LaunchableCompetentComponent;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.ObservationService;
+import dima.introspectionbasedagents.services.launch.LaunchableComponent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 
@@ -29,7 +30,7 @@ public interface RationalAgent<PersonalState extends AgentState, Contract extend
 
 	public abstract void setNewState(final PersonalState s);
 
-	public abstract boolean verifyStateValidity(final PersonalState s);
+//	public abstract boolean verifyStateValidity(final PersonalState s);
 
 	// public Collection<AgentIdentifier> getKnownAgents() {
 	// return this.myInformation.getKnownAgents();

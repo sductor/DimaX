@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.negotiation.horizon.parameters.HorizonAllocableParameters;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;

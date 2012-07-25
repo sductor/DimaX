@@ -2,16 +2,18 @@ package dima.introspectionbasedagents.services;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
+
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.introspectionbasedagents.services.core.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.EndLiveMessage;
-import dima.introspectionbasedagents.services.core.launch.APIAgent.StartActivityMessage;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.CompetentComponent;
-import dima.introspectionbasedagents.shells.NotReadyException;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
+import dima.introspectionbasedagents.kernel.NotReadyException;
+import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -8166804401339182512L;
@@ -294,6 +296,14 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	@Override
 	public Collection<AgentIdentifier> getObservers(final Class<?> notificationKey) {
 		return this.myAgent.getObservers(notificationKey);
+	}
+
+	public Date getCreationTime() {
+		return myAgent.getCreationTime();
+	}
+
+	public long getUptime() {
+		return myAgent.getUptime();
 	}
 
 }

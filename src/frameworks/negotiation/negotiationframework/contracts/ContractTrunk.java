@@ -11,8 +11,9 @@ import java.util.Set;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.BasicAgentModule;
-import dima.introspectionbasedagents.services.modules.mappedcollections.HashedHashSet;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.negotiationframework.protocoles.AtMostCContractSelectioner;
@@ -66,6 +67,8 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	public Contract getContract(final ContractIdentifier id)
 			throws UnknownContractException {
 		final Contract contract = this.identifier2contract.get(id);
+		assert contract.getIdentifier().contractCreation.equals(id.contractCreation):
+			"un agent a envoyé deux prop dans la mm session!!\n"+id+contract;
 		if (contract == null) {
 			throw new UnknownContractException(id);
 		} else {
@@ -73,16 +76,19 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		}
 	}
 
-	//non optimisé
-	//	public Collection<Contract> getContracts(final AgentIdentifier id) {
-	//		final ArrayList<Contract> l = new ArrayList<Contract>();
-	//		for (final Contract c : this.getAllContracts()) {
-	//			if (c.getAllInvolved().contains(id)) {
-	//				l.add(c);
-	//			}
-	//		}
-	//		return l;
-	//	}
+	/*
+	 * 
+	 */
+	@Deprecated
+	public Collection<Contract> getContracts(final AgentIdentifier id) {
+		final ArrayList<Contract> l = new ArrayList<Contract>();
+		for (final Contract c : this.getAllContracts()) {
+			if (c.getAllInvolved().contains(id)) {
+				l.add(c);
+			}
+		}
+		return l;
+	}
 
 	public Collection<Contract> getContractsAcceptedBy(final AgentIdentifier id) {
 		return Collections.unmodifiableCollection(this.acceptedContracts.get(id));
@@ -112,6 +118,10 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		return Collections.unmodifiableCollection(this.failedContracts);
 	}
 
+	/*
+	 *
+	 */
+
 	public Collection<Contract> getAllInitiatorContracts() {
 		return Collections.unmodifiableCollection(this.initiatorContracts);
 	}
@@ -135,6 +145,10 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		l.removeAll(this.participantContracts);
 		return l;
 	}
+
+	/*
+	 *
+	 */
 
 	public List<Contract> getParticipantOnWaitContracts() {
 		final ArrayList<Contract> l = new ArrayList<Contract>(this.waitContracts);
@@ -171,6 +185,17 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	 */
 	public Collection<ContractIdentifier> updateContracts(final AgentState newState){
 		final Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
+		//		boolean isUpdate;
+		//		if (newState!=null){
+		//			try {
+		//				isUpdate= newState.getStateCounter()>
+		//				getMyAgent().getMyInformation().getInformation(newState.getClass(), newState.getMyAgentIdentifier()).getStateCounter();
+		//			} catch (NoInformationAvailableException e1) {
+		//				isUpdate=true;
+		//			}
+		//		} else {
+		//			isUpdate=false;
+		//		}
 		if (newState!=null) {
 
 			final AgentIdentifier id = newState.getMyAgentIdentifier();
@@ -196,13 +221,19 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 
 					if (actualState==null || !actualState.equals(newState)){
 						modifiedContracts.add(c.getIdentifier());
-						c.setInitialState(newState);
+						try {
+							c.setInitialState(newState);
+						} catch (AssertionError e){
+							signalException("current state "+getMyAgent().getMyCurrentState());
+							throw e;
+						}
 					}
 				}
 			}
 		}
 		return modifiedContracts;
 	}
+
 	/*
 	 *
 	 */
@@ -219,6 +250,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		//			e.printStackTrace();
 		//			assert false:"incomplete contract added "+c;
 		//		}
+		c.setInitialState(getMyAgent().getMyCurrentState());
 		this.identifier2contract.put(c.getIdentifier(), c);
 		this.waitContracts.add(c);
 		if (c.getInitiator().equals(this.getMyAgentIdentifier())) {

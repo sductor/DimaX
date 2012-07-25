@@ -10,18 +10,18 @@ import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.services.core.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
-import dima.introspectionbasedagents.services.core.opinion.OpinionDataBase.SimpleOpinion;
-import dima.introspectionbasedagents.services.core.opinion.OpinionHandler;
-import dima.introspectionbasedagents.services.core.opinion.OpinionService;
-import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
-import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
+import frameworks.negotiation.negotiationframework.opinion.OpinionHandler;
+import frameworks.negotiation.negotiationframework.opinion.OpinionService;
+import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
+import frameworks.negotiation.negotiationframework.opinion.OpinionDataBase.SimpleOpinion;
+import frameworks.negotiation.negotiationframework.opinion.OpinionService.Opinion;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 
 public class StatusObservationCompetence<PersonalState extends AgentState> 
@@ -185,8 +185,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			min = getMyOpinionHandler().getNumericValue(o.getMinInfo());
 			max = getMyOpinionHandler().getNumericValue(o.getMaxInfo());
 
-			this.lowerThreshold = NegotiationParameters.alpha_low * ((mean + min)/2);
-			this.higherThreshold = NegotiationParameters.alpha_high * ((mean + max)/2);
+			this.lowerThreshold = NegotiationParameters.alpha_low * mean + (1-NegotiationParameters.alpha_low) * min;
+			this.higherThreshold = NegotiationParameters.alpha_high * mean + (1-NegotiationParameters.alpha_high) * max;
 		} catch (final Exception e) {
 			this.getMyAgent().signalException(
 					"impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"

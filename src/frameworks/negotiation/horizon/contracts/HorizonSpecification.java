@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.Map;
 
 
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.negotiation.negotiationframework.contracts.AbstractActionSpecif;
 
 /**

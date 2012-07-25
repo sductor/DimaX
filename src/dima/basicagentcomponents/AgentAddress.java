@@ -8,7 +8,7 @@ package dima.basicagentcomponents;
  */
 
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.services.core.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 public class AgentAddress extends AbstractAgentAddress {

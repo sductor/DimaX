@@ -8,7 +8,8 @@ import java.util.Iterator;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.modules.mappedcollections.HashedTreeSet;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedTreeSet;
+import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.ContractIdentifier;
 import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
@@ -124,7 +125,18 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 	@Override
 	public Collection<ContractIdentifier> updateContracts(final AgentState newState){
 		final Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
-		if (newState!=null) {
+		boolean isUpdate;
+		if (newState!=null){
+		try {
+			isUpdate= newState.getStateCounter()>
+			getMyAgent().getMyInformation().getInformation(newState.getClass(), newState.getMyAgentIdentifier()).getStateCounter();
+		} catch (NoInformationAvailableException e1) {
+			isUpdate=true;
+		}
+		} else {
+			isUpdate=false;
+		}
+		if (isUpdate) {
 			try {
 				final AgentIdentifier id = newState.getMyAgentIdentifier();
 				AgentState assertedState = null;

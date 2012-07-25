@@ -12,12 +12,12 @@ import java.util.Set;
 
 
 import jtp.util.UnexpectedException;
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.modules.mappedcollections.ElementsNotLinkedException;
-import dima.introspectionbasedagents.services.modules.mappedcollections.OrderedPair;
-import dima.introspectionbasedagents.services.modules.mappedcollections.SymmetricBinaryAdjacencyMap;
+import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.modules.mappedcollections.ElementsNotLinkedException;
+import dima.introspectionbasedagents.modules.mappedcollections.OrderedPair;
+import dima.introspectionbasedagents.modules.mappedcollections.SymmetricBinaryAdjacencyMap;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.support.GimaObject;
 import frameworks.negotiation.horizon.negotiatingagent.HorizonPreferenceFunction.Service;
 import frameworks.negotiation.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;

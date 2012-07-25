@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentLogger;
 import frameworks.experimentation.ObservingGlobalService;
 import frameworks.negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;

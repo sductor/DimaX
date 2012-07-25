@@ -12,9 +12,11 @@ PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
 extends RationalAgent<PersonalState, Contract> {
 
-	public AbstractCommunicationProtocol<Contract> getMyProtocol();
+	public AbstractCommunicationProtocol<PersonalState,Contract> getMyProtocol();
 
 	public ProposerCore<? extends NegotiatingAgent, PersonalState, Contract> getMyProposerCore() ;
 
 	public SelectionCore<? extends NegotiatingAgent,PersonalState, Contract> getMySelectionCore();
+
+	void setInformation(AgentState o);
 }

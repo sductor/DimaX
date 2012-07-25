@@ -2,7 +2,7 @@ package frameworks.negotiation.faulttolerance.collaborativecandidature;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import frameworks.negotiation.faulttolerance.Host;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;

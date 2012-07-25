@@ -14,7 +14,7 @@ import java.util.Set;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.negotiation.faulttolerance.experimentation.SearchTimeNotif;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.ContractTransition;
@@ -69,6 +69,7 @@ InformedCandidature<Contract>> {
 	@Override
 	public void select(
 			final ContractTrunk<InformedCandidature<Contract>> given,
+			PersonalState currentState,
 			final Collection<InformedCandidature<Contract>> accepted,
 			final Collection<InformedCandidature<Contract>> rejected,
 			final Collection<InformedCandidature<Contract>> onWait)  {
@@ -78,7 +79,7 @@ InformedCandidature<Contract>> {
 		assert onWait.isEmpty();
 
 		// Verification de la consistance
-		assert this.getMyAgent().getMyCurrentState().isValid():
+		assert currentState.isValid():
 			"what the  (1)!!!!!!"+ this.getMyAgent().getMyCurrentState();
 		assert given.getParticipantAlreadyAcceptedContracts().isEmpty();
 
@@ -90,7 +91,6 @@ InformedCandidature<Contract>> {
 
 		//contract lists
 		final Collection<InformedCandidature<Contract>> allContracts = contracts.getAllContracts();
-		PersonalState currentState = this.getMyAgent().getMyCurrentState();
 		assert ContractTransition.allComplete(allContracts):allContracts;
 
 		rejected.addAll(allContracts);

@@ -7,13 +7,13 @@ import java.util.Set;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
-import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.modules.aggregator.LightWeightedAverageDoubleAggregation;
+import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
+import frameworks.negotiation.negotiationframework.opinion.OpinionService.Opinion;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 import frameworks.negotiation.negotiationframework.rationality.SimpleAgentState;
 

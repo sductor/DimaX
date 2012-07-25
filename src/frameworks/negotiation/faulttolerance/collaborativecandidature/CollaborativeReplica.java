@@ -6,7 +6,7 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.services.core.information.SimpleObservationService;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import frameworks.negotiation.faulttolerance.Replica;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;

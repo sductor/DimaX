@@ -3,16 +3,16 @@ package frameworks.negotiation.faulttolerance.negotiatingagent;
 import java.util.Collection;
 import java.util.Map;
 
+import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
+import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
 import dima.introspectionbasedagents.services.BasicAgentModule;
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
-import dima.introspectionbasedagents.services.core.opinion.OpinionDataBase;
-import dima.introspectionbasedagents.services.core.opinion.OpinionHandler;
-import dima.introspectionbasedagents.services.core.opinion.OpinionService.Opinion;
-import dima.introspectionbasedagents.services.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.services.modules.aggregator.LightAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.modules.aggregator.LightWeightedAverageDoubleAggregation;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
+import frameworks.negotiation.negotiationframework.opinion.OpinionDataBase;
+import frameworks.negotiation.negotiationframework.opinion.OpinionHandler;
+import frameworks.negotiation.negotiationframework.opinion.OpinionService.Opinion;
 
 public class HostStateOpinionHandler
 implements OpinionHandler<HostState>{

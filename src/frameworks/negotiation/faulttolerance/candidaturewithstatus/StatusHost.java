@@ -4,33 +4,33 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.core.information.SimpleObservationService;
-import dima.introspectionbasedagents.services.core.opinion.SimpleOpinionService;
+import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import frameworks.negotiation.faulttolerance.Host;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
+import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
 import frameworks.negotiation.negotiationframework.protocoles.InactiveProposerCore;
 import frameworks.negotiation.negotiationframework.protocoles.ReverseCFPProtocol;
 import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.negotiationframework.protocoles.status.StatusObservationCompetence;
+import frameworks.negotiation.negotiationframework.protocoles.status.StatusProtocol;
 import frameworks.negotiation.negotiationframework.rationality.SocialChoiceFunction.SocialChoiceType;
+import frameworks.negotiation.negotiationframework.selection.OptimalSelectionModule;
+import frameworks.negotiation.negotiationframework.selection.SimpleSelectionCore;
 
 public class StatusHost extends Host {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1891276000545412915L;
+
 	@Competence
 	public StatusObservationCompetence soc;
 
 	public StatusHost(
 			final ResourceIdentifier id,
 			final HostState myState,
-			final SelectionCore participantCore,
+			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
 			final AgentIdentifier myLaborantin) throws CompetenceException {
 		this(id, myState, participantCore, _socialWelfare,true);
@@ -41,7 +41,7 @@ public class StatusHost extends Host {
 	public StatusHost(
 			final ResourceIdentifier id,
 			final HostState myState,
-			final SelectionCore participantCore,
+			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
 			final int numberToContact) throws CompetenceException {
 		this(id, myState, participantCore, _socialWelfare,false);
@@ -52,7 +52,7 @@ public class StatusHost extends Host {
 	private StatusHost(
 			final ResourceIdentifier id,
 			final HostState myState,
-			final SelectionCore participantCore,
+			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
 			final boolean centralised) throws UnrespectedCompetenceSyntaxException, CompetenceException{
 		super(id,
@@ -61,7 +61,7 @@ public class StatusHost extends Host {
 				participantCore,
 				new InactiveProposerCore(),
 				centralised?new SimpleObservationService():new SimpleOpinionService(new ReplicaStateOpinionHandler(_socialWelfare, id)),
-						new ReverseCFPProtocol());
+						new StatusProtocol((participantCore.getSelectionModule() instanceof OptimalSelectionModule)));
 		
 	}
 }

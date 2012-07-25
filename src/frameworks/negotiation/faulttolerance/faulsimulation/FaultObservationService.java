@@ -7,7 +7,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 

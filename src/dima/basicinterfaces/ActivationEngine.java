@@ -1,13 +1,13 @@
 package dima.basicinterfaces;
 
 import dima.basiccommunicationcomponents.CometCommunicationComponent;
-import dima.introspectionbasedagents.services.core.communicating.AsynchronousCommunicationComponent;
-import dima.introspectionbasedagents.services.core.darxkernel.DimaXCommunicationComponent;
-import dima.introspectionbasedagents.services.core.darxkernel.DimaXTask;
-import dima.introspectionbasedagents.services.core.deployment.exceptions.UninstanciableMonitorException;
-import dima.introspectionbasedagents.services.core.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.monitoring.AgentMonitor;
-import dima.introspectionbasedagents.services.monitoring.MonitoredTask;
+import dima.introspectionbasedagents.monitoring.AgentMonitor;
+import dima.introspectionbasedagents.monitoring.MonitoredTask;
+import dima.introspectionbasedagents.services.communicating.AsynchronousCommunicationComponent;
+import dima.introspectionbasedagents.services.darxkernel.DimaXCommunicationComponent;
+import dima.introspectionbasedagents.services.darxkernel.DimaXTask;
+import dima.introspectionbasedagents.services.deployment.exceptions.UninstanciableMonitorException;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.ProactiveComponents.ProactiveComponentEngine;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;

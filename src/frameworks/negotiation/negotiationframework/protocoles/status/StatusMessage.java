@@ -1,7 +1,7 @@
 package frameworks.negotiation.negotiationframework.protocoles.status;
 
 import dima.basiccommunicationcomponents.Message;
-import dima.introspectionbasedagents.services.core.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.ObservationService.Information;
 public class StatusMessage extends Message {
 
 	/**

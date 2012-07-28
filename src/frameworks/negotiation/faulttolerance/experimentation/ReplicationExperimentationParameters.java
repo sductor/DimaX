@@ -30,6 +30,7 @@ import frameworks.negotiation.faulttolerance.collaborativecandidature.Collaborat
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaCore;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -125,10 +126,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 */
 
 	public enum DisponibilityComputationType {Static, Weibull, Poisson}
-	public static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
+	public static final DisponibilityComputationType choosenType = DisponibilityComputationType.Poisson;//Static;//
 
 	public static final long _host_maxFaultfrequency = 500;//10 * ReplicationExperimentationProtocol._timeToCollect;// 2*_simulationTime;//
-	public static final long _timeScale = 10 * ReplicationExperimentationParameters._host_maxFaultfrequency;
+	public static final long _timeScale = 2 * ReplicationExperimentationParameters._host_maxFaultfrequency;
 	public static final double _lambdaRepair = 1;
 
 	//	WEIBULL : OLD
@@ -319,7 +320,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 		ReplicationOptimalSolver ros=null;
 
-		this.logMonologue("Agents & Hosts:\n"+this.rig.getAgentStates()+"\n"+this.rig.getHostsStates(), LogService.onFile);
+//		this.logMonologue("Agents & Hosts:\n"+this.rig.getAgentStates()+"\n"+this.rig.getHostsStates(), LogService.onFile);
 
 		int count = 5;
 		boolean iFailed=false;
@@ -444,6 +445,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				}
 			}
 			result.put(rep.getId(),rep);
+			getMyAgent().myInformationService.add(rep.getMyCurrentState());
 		}
 
 		/*
@@ -498,14 +500,15 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 
 			result.put(hostAg.getIdentifier(),hostAg);
-			//			getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
+						getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
 		}
 
 		/*
 		 *
 		 */
 
-		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class),LogService.onFile);
+		
+		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class) + this.getMyAgent().myInformationService.show(ReplicaState.class),LogService.onBoth);
 		return result.values();
 	}
 
@@ -672,7 +675,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				DispersionSymbolicValue.Faible,//capcity dispersion
 				ReplicationExperimentationParameters.doubleParameters.get(1),//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
-				NegotiationParameters.key4CentralisedstatusProto,//NegotiationParameters.key4mirrorProto,//NegotiationParameters.key4statusProto,//
+				NegotiationParameters.key4statusProto,//NegotiationParameters.key4mirrorProto,//NegotiationParameters.key4CentralisedstatusProto,//
 				SocialChoiceType.Utility,
 				NegotiationParameters.key4greedySelect,//NegotiationParameters.key4rouletteWheelSelect,//
 				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//

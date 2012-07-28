@@ -102,7 +102,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 			setInformation(s);
 		}
 	}
-
+	
 	//
 	// Behavior
 	//

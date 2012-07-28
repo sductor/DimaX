@@ -10,6 +10,7 @@ import frameworks.negotiation.faulttolerance.negotiatingagent.HostCore;
 import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
 import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
 import frameworks.negotiation.negotiationframework.protocoles.InactiveProposerCore;
@@ -63,5 +64,14 @@ public class StatusHost extends Host {
 				centralised?new SimpleObservationService():new SimpleOpinionService(new ReplicaStateOpinionHandler(_socialWelfare, id)),
 						new StatusProtocol((participantCore.getSelectionModule() instanceof OptimalSelectionModule)));
 		
+	}
+
+	@Override
+	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+		return new ReplicationCandidature((ResourceIdentifier) this.getIdentifier(),id,  false, false);
+	}
+	@Override
+	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+		return new ReplicationCandidature((ResourceIdentifier)  this.getIdentifier(),id, true, false);
 	}
 }

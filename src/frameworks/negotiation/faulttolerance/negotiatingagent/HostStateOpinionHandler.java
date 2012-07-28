@@ -63,7 +63,6 @@ implements OpinionHandler<HostState>{
 				meanProcCu.getRepresentativeElement(),
 				meanMemMax.getRepresentativeElement(),
 				meanMemCu.getRepresentativeElement(),
-				false,// this.getCreationTime(),
 				-1);
 	}
 
@@ -98,7 +97,6 @@ implements OpinionHandler<HostState>{
 				meanMemMax.getRepresentativeElement(),
 				meanMemCu.getRepresentativeElement(),
 				meanLambda.getRepresentativeElement(),
-				false, //this.getCreationTime(),
 				-1);
 	}
 

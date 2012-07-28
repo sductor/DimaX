@@ -8,6 +8,7 @@ import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
@@ -73,7 +74,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		this.numberTodiffuse = numberTodiffuse;
 		this.iDiffuseOriginalState=iDiffuseOriginalState;
 		this.stateTypeToDiffuse=stateTypeToDiffuse;
-		assert iDiffuseOriginalState?stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType()):true;
+//		assert iDiffuseOriginalState?stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType()):true;
 	}
 
 	public StatusObservationCompetence(
@@ -157,8 +158,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			allAgents.remove(getMyAgent().getIdentifier());
 			while (numberdiffused < this.numberTodiffuse && !allAgents.isEmpty()){
 				final AgentIdentifier id = allAgents.remove(this.rand.nextInt(allAgents.size()));
-				assert !(this.getMyAgent().getIdentifier() instanceof AgentIdentifier) || id instanceof ResourceIdentifier:id;
-				assert !(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier) || id instanceof AgentIdentifier:id;
+				assert Assert.Imply(!(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier),id instanceof ResourceIdentifier):id;
+				assert Assert.Imply((this.getMyAgent().getIdentifier() instanceof ResourceIdentifier), id instanceof AgentIdentifier):id;
 				this.sendInfo(id);
 				numberdiffused++;
 			}
@@ -206,7 +207,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		} else {
 			try {
 				this.sendMessage(id, 
-						new StatusMessage(((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType())));
+						new StatusMessage(((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(stateTypeToDiffuse)));
 			} catch (final NoInformationAvailableException e) {}
 		}
 	}

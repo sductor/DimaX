@@ -48,7 +48,7 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 	boolean simulationEnded=false;
 	@PostStepComposant(ticker=ExperimentationParameters._maxSimulationTime)
 	@Transient
-	boolean endSimulation(){
+	public	boolean endSimulation(){
 		assert !this.simulationEnded;
 		this.logMonologue("this is the end my friend",ObservingSelfService.observationLog);
 		this.simulationEnded=true;

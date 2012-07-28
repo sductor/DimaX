@@ -102,45 +102,43 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	 */
 	public static FaultStatusMessage eventOccur(
 			final ObservationService myAgentInformation,
-			final ResourceIdentifier host) {
-		try {
+			final ResourceIdentifier host,
+			final boolean currentlyInFault) {
+
+			boolean triggerAfault = !currentlyInFault;
 			if (HostDisponibilityComputer.eventOccur(
 					HostDisponibilityComputer.getUptime(myAgentInformation,host),
 					HostDisponibilityComputer.getLambda(myAgentInformation,host),
-					!myAgentInformation.getInformation(HostState.class,host).isFaulty())) {
-				if (myAgentInformation.getInformation(HostState.class, host).isFaulty()) {
-					return new RepairEvent(host);
+					triggerAfault)) {
+				if (triggerAfault) {
+					return new FaultStatusMessage(host,true);
 				} else {
-					return new FaultEvent(host);
+					return new FaultStatusMessage(host,false);
 				}
 			} else {
 				return null;
 			}
-		} catch (final NoInformationAvailableException e) {
-			LogService
-			.writeException("immmmmmmmmoooooooooooooossssssssssssiiiiiiiiiiblle");
-			return null;
-		}
+			
 	}
 
-	public static void updateFaultyStatus(
-			final ObservationService myAgentInformation,
-			final FaultStatusMessage event) {
-		try {
-			if (event instanceof FaultEvent) {
-				myAgentInformation.getInformation(HostState.class,
-						event.getHost()).setFaulty(true);
-			} else if (event instanceof RepairEvent) {
-				myAgentInformation.getInformation(HostState.class,
-						event.getHost()).setFaulty(false);
-			} else {
-				throw new RuntimeException("impossiblle!!");
-			}
-		} catch (final NoInformationAvailableException e) {
-			LogService
-			.writeException("immmmmmmmmoooooooooooooosssssssssssiiiiiiiiiiblle");
-		}
-	}
+//	public static void updateFaultyStatus(
+//			final ObservationService myAgentInformation,
+//			final FaultStatusMessage event) {
+//		try {
+//			if (event instanceof FaultEvent) {
+//				myAgentInformation.getInformation(HostState.class,
+//						event.getHost()).setFaulty(true);
+//			} else if (event instanceof RepairEvent) {
+//				myAgentInformation.getInformation(HostState.class,
+//						event.getHost()).setFaulty(false);
+//			} else {
+//				throw new RuntimeException("impossiblle!!");
+//			}
+//		} catch (final NoInformationAvailableException e) {
+//			LogService
+//			.writeException("immmmmmmmmoooooooooooooosssssssssssiiiiiiiiiiblle");
+//		}
+//	}
 
 	public static Collection<? extends ResourceIdentifier> getHosts(final ObservationService myAgentInformation) {
 		final Collection<ResourceIdentifier> host = new ArrayList<ResourceIdentifier>();

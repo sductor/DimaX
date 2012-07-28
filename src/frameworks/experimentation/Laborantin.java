@@ -112,7 +112,7 @@ public class Laborantin extends BasicCompetentAgent {
 	//
 	@ProactivityInitialisation
 	public void startSimu() {
-		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
+//		this.logMonologue("Those are my agents!!!!! :\n"+this.agents,LogService.onFile);
 
 		this.observingService.setObservation();
 		this.addObserver(this.p.experimentatorId, SimulationEndedMessage.class);

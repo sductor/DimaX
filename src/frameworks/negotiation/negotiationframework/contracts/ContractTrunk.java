@@ -449,6 +449,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 
 		return result;
 	}
+
 }
 
 // public void clearRequestable() {

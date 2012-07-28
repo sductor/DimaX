@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import frameworks.negotiation.faulttolerance.negotiatingagent.HostState;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
 
 public interface AgentState extends Information {
 
@@ -27,7 +29,6 @@ public interface AgentState extends Information {
 	public int getStateCounter();
 
 	public AgentState clone();
-
 }
 
 // public interface SocialState<State extends AgentState> extends

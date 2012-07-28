@@ -12,9 +12,9 @@ import frameworks.experimentation.ExperimentationResults;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationResultAgent;
-import frameworks.negotiation.faulttolerance.faulsimulation.FaultEvent;
 import frameworks.negotiation.faulttolerance.faulsimulation.FaultObservationService;
 import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.negotiation.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.negotiationframework.SimpleNegotiatingAgent;
 import frameworks.negotiation.negotiationframework.contracts.AbstractContractTransition;
 import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol;
@@ -23,7 +23,7 @@ import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicat
 import frameworks.negotiation.negotiationframework.protocoles.status.StatusAgent;
 import frameworks.negotiation.negotiationframework.rationality.RationalCore;
 
-public class Replica<Contract extends AbstractContractTransition>
+public abstract class Replica<Contract extends AbstractContractTransition>
 extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 	private static final long serialVersionUID = 4986143017976368579L;
 
@@ -64,39 +64,13 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 	FaultObservationService myFaultAwareService =
 	new FaultObservationService() {
 
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 186751301573671600L;
-
-		@Override
-		protected void resetMyState() {
-			Replica.this.setNewState(
-					new ReplicaState(this.getIdentifier(),
-							Replica.this.getMyCurrentState().getMyCriticity(),
-							Replica.this.getMyCurrentState().getMyProcCharge(),
-							Replica.this.getMyCurrentState().getMyMemCharge(),
-							Replica.this.getMyCurrentState().getSocialWelfare(),
-							this.getMyAgent().getMyCurrentState().getStateCounter()+1));
+		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
+			return Replica.this.generateDestructionContract(id);
 		}
 
 		@Override
-		protected void resetMyUptime() {
-			assert 1<0:"Replica.this.getMyCurrentState().resetUptime()";
-		}
-
-		@Override
-		public void faultObservation(final FaultEvent m) {// final
-			// NotificationMessage<FaultEvent>
-			// m) {
-			if (Replica.this.isAlive()) {
-				super.faultObservation(m);
-				if (!Replica.this.getMyCurrentState().isValid()) {
-					this.logMonologue("this is the end my friend",LogService.onBoth);
-					throw new RuntimeException("endSimulation à corriger");
-					//					Replica.this.mySelfObservationService.endSimulation();
-				}
-			}
+		public void endSimulation() {
+			mySelfObservationService.endSimulation();			
 		}
 	};
 
@@ -122,6 +96,9 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 	}
 
 
+	public abstract ReplicationCandidature generateDestructionContract(final AgentIdentifier id);
+	public abstract ReplicationCandidature generateCreationContract(final AgentIdentifier id);
+	
 	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
 	public void updateMyCriticity() {
 		if (this.dynamicCrticity){

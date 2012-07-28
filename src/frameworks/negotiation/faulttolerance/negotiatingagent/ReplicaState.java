@@ -176,7 +176,7 @@ public class ReplicaState  extends SimpleAgentState  {
 
 
 	@Override
-	public Class<? extends AgentState> getMyResourcesClass() {
+	public Class<HostState> getMyResourcesClass() {
 		return HostState.class;
 	}
 

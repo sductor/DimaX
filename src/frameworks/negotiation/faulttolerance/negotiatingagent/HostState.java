@@ -17,7 +17,7 @@ import frameworks.negotiation.negotiationframework.opinion.OpinionService.Opinio
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
 import frameworks.negotiation.negotiationframework.rationality.SimpleAgentState;
 
-public class HostState extends SimpleAgentState {
+public class HostState extends SimpleAgentState{
 	private static final long serialVersionUID = 4107771452086657790L;
 
 	/*
@@ -33,7 +33,8 @@ public class HostState extends SimpleAgentState {
 	private final Double memCurrentCharge;
 
 	private final double lambda;
-	private final boolean faulty;
+	private boolean isFaulty;
+
 
 	// Take all fields
 	public HostState(
@@ -47,7 +48,6 @@ public class HostState extends SimpleAgentState {
 				lambda,
 				hostMaxProc, 0., 
 				hostMaxMem, 0.,
-				false,
 				stateNumber);
 	}
 
@@ -61,7 +61,6 @@ public class HostState extends SimpleAgentState {
 				lambda,
 				hostMaxProc, 0., 
 				hostMaxMem, 0.,
-				false,
 				-1);
 	}
 
@@ -88,7 +87,6 @@ public class HostState extends SimpleAgentState {
 				procCurrentCharge,
 				this.getMemChargeMax(),
 				memCurrentCharge,
-				this.isFaulty(),
 				this.getStateCounter()+1);
 	}
 
@@ -101,7 +99,6 @@ public class HostState extends SimpleAgentState {
 			final Double procCurrentCharge, 
 			final Double memChargeMax,
 			final Double memCurrentCharge, 
-			final boolean faulty,// final Long creationTime,
 			final int stateNumber) {
 		super(myAgent, stateNumber);
 		this.myReplicatedAgents = myReplicatedAgents;
@@ -110,13 +107,19 @@ public class HostState extends SimpleAgentState {
 		this.memChargeMax = memChargeMax;
 		this.memCurrentCharge = memCurrentCharge;
 		this.lambda = lambda;
-		this.faulty = faulty;
 	}
 
 	//
 	// Accessors
 	//
 
+	public boolean isFaulty() {
+		return isFaulty;
+	}
+
+	public void setFaulty(boolean isFaulty) {
+		this.isFaulty = isFaulty;
+	}
 	//pas propre!!! camarche uniquement pcq le h ne change pas de charge
 	//	public boolean update(ReplicaState h){
 	//		if (myReplicatedAgents.contains(h)){
@@ -153,7 +156,7 @@ public class HostState extends SimpleAgentState {
 	}
 
 	@Override
-	public Class<? extends AgentState> getMyResourcesClass() {
+	public Class<ReplicaState> getMyResourcesClass() {
 		return ReplicaState.class;
 	}
 
@@ -194,9 +197,6 @@ public class HostState extends SimpleAgentState {
 	 *
 	 */
 
-	public boolean isFaulty() {
-		return this.faulty;
-	}
 
 	//	public void setFaulty(final boolean faulty) {
 	//		this.faulty = faulty;
@@ -262,7 +262,6 @@ public class HostState extends SimpleAgentState {
 				+ "\n --> capacity : "+ this.getProcChargeMax()+", "+this.getMemChargeMax()
 				+ "\n --> lambda : "+this.lambda+
 				"\n --> agents : " + this.getMyResourceIdentifiers()
-				+ "\n --> faulty? : " + this.isFaulty()
 				+"\n --> creation time : "+this.getCreationTime()+"#"+this.getStateCounter()
 				+"\n valid ? : "+this.isValid();
 	}

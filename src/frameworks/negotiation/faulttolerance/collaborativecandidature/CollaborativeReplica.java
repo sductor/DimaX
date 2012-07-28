@@ -54,6 +54,19 @@ public class CollaborativeReplica extends Replica<InformedCandidature<Replicatio
 		new OneDeciderCommunicationProtocol(false),dynamicCriticity);
 	}
 
+
+	@Override
+	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+		return new ReplicationCandidature((ResourceIdentifier) id,this.getIdentifier(),false,true);	
+		}
+
+
+	@Override
+	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+		assert false;
+		return null;
+	}
+
 }
 
 

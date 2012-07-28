@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import choco.cp.solver.CPSolver;
 import choco.kernel.model.variables.integer.IntegerVariable;
+import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import frameworks.negotiation.negotiationframework.contracts.MatchingCandidature;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
@@ -81,12 +82,21 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 	 */
 	@Override
 	public boolean hasNext() {
-		if (this.hasNext==null){
-			this.s.solve();
-			this.hasNext=this.s.isFeasible()!=null && this.s.isFeasible()!=false;
+		if (this.hasNext==null){//initialisation			
+			this.hasNext=this.s.solve();
+//			assert Assert.Imply(s.isFeasible()==null,hasNext==null):hasNext+" "+s.isFeasible();
+//			assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
+			if (this.hasNext==null) {
+				this.hasNext=false;
+			}
+//			assert Assert.Imply(s.isFeasible()==null,hasNext==false):hasNext+" "+s.isFeasible();
+//			assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
 		}
 
-		assert this.hasNext!=null;
+//		assert this.hasNext!=null;
+//		assert s!=null;
+//		assert Assert.Imply(s.isFeasible()!=null,hasNext==s.isFeasible()):hasNext+" "+s.isFeasible();
+//		assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
 		return this.hasNext;
 	}
 
@@ -95,10 +105,16 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 	 */
 	@Override
 	public Collection<Contract> getNextSolution(){
-		if (this.hasNext=false || this.hasNext==null){
+		assert Assert.Imply(s.isFeasible()!=null,hasNext==s.isFeasible()):hasNext+" "+s.isFeasible();
+		if (!this.hasNext){
 			throw new NoSuchElementException();
+		} else if (hasNext==null){
+			hasNext();
+			return getNextSolution();
 		} else {
+			assert hasNext:hasNext;
 			final Collection<Contract> result = this.generateSolution();
+			assert s!=null;
 			this.hasNext = this.s.nextSolution();
 			if (this.hasNext==null) {
 				this.hasNext=false;
@@ -117,7 +133,8 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 	 */
 	private Collection<Contract> generateSolution(){
 		assert this.concerned.length==this.replicas.length;
-		assert this.s.isFeasible()==true;
+//		assert this.s.isFeasible()!=null && this.s.isFeasible():this.s.isFeasible()+" "+hasNext;
+//		assert hasNext:hasNext;
 		final ArrayList<Contract> results = new ArrayList<Contract>();
 
 		for (int i = 0; i < this.concerned.length; i++){

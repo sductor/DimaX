@@ -2,10 +2,13 @@ package frameworks.negotiation.faulttolerance.faulsimulation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
@@ -18,6 +21,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	//
 
 	private final ReplicationExperimentationParameters p;
+	private final HashSet<AgentIdentifier> currentlyFaultyHost=new HashSet<AgentIdentifier>();
 
 	//
 	// Constructor
@@ -36,7 +40,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	int i = 0;
 
 
-	//	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
+	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
 	public void toggleFault() {
 		int nbMax = this.p.host_maxSimultaneousFailure.intValue();
 		if (nbMax>0){
@@ -46,20 +50,20 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 			Collections.shuffle(hosts);
 			for (final ResourceIdentifier h : hosts) {
 				final FaultStatusMessage sentence =
-						HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h);
+						HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h, currentlyFaultyHost.contains(h));
 
 				if (sentence != null) {
 					// Execution de la sentence!! muahaha!!!
-					HostDisponibilityComputer.updateFaultyStatus(
-							this.getMyAgent().myInformationService, sentence);
-					//					this.logWarning("executing this sentence : " + sentence
-					//							+ " (" + this.i + ")",LogService.onBoth);
+					boolean b = currentlyFaultyHost.add(h);
+					assert b;
+										this.logWarning("executing this sentence : " + sentence
+												+ " (" + this.i + ")",LogService.onBoth);
 					// Déclaration public
 					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents()) {
 						this.getMyAgent().sendMessage(id, sentence);
 					}
 
-					if (sentence instanceof FaultEvent)
+					if (sentence.isFaultEvent())
 					{
 						nbMax--;// il est mort! =(
 					}

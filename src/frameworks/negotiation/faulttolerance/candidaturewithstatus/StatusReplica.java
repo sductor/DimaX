@@ -65,7 +65,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 					throws CompetenceException {
 		super(id,
 				myState,
-				new StatusAgentRationalCore<ReplicaState, ReplicationCandidature>(new ReplicaCore(true, true)),
+				new StatusAgentRationalCore<ReplicaState, ReplicationCandidature>(new ReplicaCore(false, true)),
 				participantCore,
 				new StatusProposerCore<ReplicaState, ReplicationCandidature>(simultaneousCandidature) {
 
@@ -110,6 +110,14 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 	@Override
 	public void updateThreshold() {
 		this.soc.updateThreshold();
+	}
+	@Override
+	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), false, true);
+	}
+	@Override
+	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), true, true);
 	}
 
 }

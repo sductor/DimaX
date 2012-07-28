@@ -143,14 +143,15 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	 */
 	@Override
 	public void setNewState(final PersonalState s) {
+//		assert s.isValid();
 		assert this.myInformation.hasMyInformation(this.myStateType)?this.verifyStateValidity(s):true;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
 		assert this.getMyCurrentState().equals(s):this.getMyCurrentState()+"\n"+s+"\n---------"+(s.isNewerThan(this.getMyCurrentState())>0);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-		this.notify(this.getMyCurrentState(), SimpleRationalAgent.stateChangementObservation);
 //		this.notify(this.getMyCurrentState());
+		
 	}
 
 

@@ -32,6 +32,7 @@ import frameworks.negotiation.negotiationframework.contracts.ContractTrunk;
 import frameworks.negotiation.negotiationframework.contracts.MatchingCandidature;
 import frameworks.negotiation.negotiationframework.contracts.UnknownContractException;
 import frameworks.negotiation.negotiationframework.rationality.AgentState;
+import frameworks.negotiation.negotiationframework.rationality.SimpleRationalAgent;
 
 /**
  * Negotiation, as a protocol, provide : * the involved roles * the method to
@@ -140,7 +141,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 
 	// @role(NegotiationInitiatorRole.class)
 	@PreStepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
-	public void initiateNegotiation() {
+	protected void initiateNegotiation() {
 		if (this.isActive() &&
 				ImAllowedToNegotiate(this.contracts)
 				&& this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.contracts)) {
@@ -333,10 +334,10 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			m.setMyNewState(this.getMyAgent().getMyCurrentState());
 			this.send(contract, receivers,m);
 		}
-
+		this.notify(this.getMyAgent().getMyCurrentState(), SimpleRationalAgent.stateChangementObservation);
 	}
 	
-	public boolean contractsAreClean(final Collection<Contract> cs){
+	private boolean contractsAreClean(final Collection<Contract> cs){
 		for (Contract n:cs){
 			for (AgentIdentifier id : n.getAllInvolved())
 				if (!id.equals(getMyAgent().getIdentifier()))
@@ -374,7 +375,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.Propose, protocol = AbstractCommunicationProtocol.class)
-	public void receiveProposal(final SimpleContractProposal delta)  {
+	protected void receiveProposal(final SimpleContractProposal delta)  {
 		final Contract contract = delta.getMyContract();
 
 		//			try {
@@ -523,6 +524,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 		this.getMyAgent().setInformation(delta.getMyNewState());
 		this.getMyAgent().execute(contract);
 		this.getMyAgent().setInformation(delta.getMyNewState());
+		this.notify(this.getMyAgent().getMyCurrentState(), SimpleRationalAgent.stateChangementObservation);
 
 	}
 

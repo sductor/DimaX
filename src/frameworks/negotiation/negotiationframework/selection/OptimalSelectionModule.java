@@ -51,7 +51,7 @@ implements SelectionModule<Agent, PersonalState, Contract> {
 
 			} else {
 				final Date startingExploringTime = new Date();
-				while (this.solver.hasNext() && new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime){
+				while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime)){
 					result = solver.getNextSolution();
 					if (result==null)
 						return  new ArrayList<Contract>();

@@ -51,4 +51,17 @@ public class CollaborativeHost extends Host{
 				new OneDeciderCommunicationProtocol(true) );
 		this.getMyProtocol().getContracts().setMyAgent(this);
 	}
+
+
+	@Override
+	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+		return new ReplicationCandidature((ResourceIdentifier) getIdentifier(),id,false,false);
+	}
+
+
+	@Override
+	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+		assert false;
+		return null;
+	}
 }

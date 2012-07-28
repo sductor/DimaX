@@ -6,14 +6,20 @@ import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
 public class FaultStatusMessage extends Message {
 	private static final long serialVersionUID = -7015696793109757279L;
 
-	final ResourceIdentifier r;
+	private final ResourceIdentifier r;
+	private final boolean isFaultEvent;
 
-	public FaultStatusMessage(final ResourceIdentifier r) {
+	public FaultStatusMessage(ResourceIdentifier r, boolean isFaultEvent) {
 		super();
 		this.r = r;
+		this.isFaultEvent = isFaultEvent;
 	}
 
 	public ResourceIdentifier getHost() {
 		return this.r;
+	}
+
+	public boolean isFaultEvent() {
+		return isFaultEvent;
 	}
 }

@@ -75,10 +75,6 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 	XMPPConnection connection;
 	String me;
 
-	boolean available;
-	Presence.Mode mode;
-	String status;
-
 	HashMap<String, String> chatThreads = new HashMap<String, String>();
 	MessageListener myMessageListener = new MessageListener(){
 
@@ -192,6 +188,11 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 
 	@Override
 	public void receive(AbstractMessageInterface a) {
+		try {
+			this.execute("zenity  --text "+"From : "+a.getSender()+" : "+a.getContent().toString());
+		} catch (ErrorOnProcessExecutionException e) {
+			e.printStackTrace();
+		}
 		System.out.println("From : "+a.getSender()+" : "+a.getContent().toString());
 
 	}

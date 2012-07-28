@@ -1,7 +1,12 @@
 package frameworks.negotiation.faulttolerance;
 
+import java.io.Serializable;
+import java.util.Collection;
+
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
+import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
@@ -19,7 +24,7 @@ import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicat
 import frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.negotiationframework.rationality.RationalCore;
 
-public class Host
+public abstract class Host
 extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 {
 	private static final long serialVersionUID = -8478683967125467116L;
@@ -53,25 +58,16 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	FaultObservationService myFaultAwareService =
 	new FaultObservationService() {
 
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = -5530153574167669156L;
-
-		@Override
-		protected void resetMyState() {
-			Host.this.setNewState(new HostState((ResourceIdentifier) this.getIdentifier(),
-					Host.this.getMyCurrentState().getProcChargeMax(),
-					Host.this.getMyCurrentState().getMemChargeMax(),
-					Host.this.getMyCurrentState().getLambda(),this.getMyAgent().getMyCurrentState().getStateCounter()+1));
-			//			this.resetMyUptime();
+		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
+			return Host.this.generateDestructionContract(id);
 		}
 
-		@Override
-		protected void resetMyUptime() {
 
-			assert 1<0:"Host.this.getMyCurrentState().resetUptime()";
+		@Override
+		public void endSimulation() {
+			assert false;			
 		}
+		
 
 	};
 
@@ -125,6 +121,8 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 		return this.getMyCurrentState().isFaulty();
 	}
 
+	public abstract ReplicationCandidature generateDestructionContract(final AgentIdentifier id);
+	public abstract ReplicationCandidature generateCreationContract(final AgentIdentifier id);
 	//
 	// Behavior
 	//

@@ -1,18 +1,24 @@
 package dima.introspectionbasedagents.services.communicating.xmppcommunication;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
+import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
+
 public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 	final private String loginname;
-	private Collection<String> friends;
-
+	private Collection<String> friends=new HashSet<String>();
+	File log;
 	//
 	// Constructors
 	//
@@ -30,7 +36,9 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	@Override
 	public boolean connect(String[] args) {
 		boolean b = super.connect(new String[]{"talk.google.com", "5222", "gmail.com",loginname+"@gmail.com","false"});
-//		try {u = this.execute("zenity  --text ");} catch (ErrorOnProcessExecutionException e) {}
+		friends.add(receiveFromUSer("new friend?"));
+		friends.add(receiveFromUSer("new friend?"));
+		log = new File(LogService.getDimaXDir()+"log/__Messages.log");
 		return b;
 	}
 
@@ -43,8 +51,11 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 	@Override
 	public void handlePresenceChangement(Presence presence) {
-		if (friends.contains(StringUtils.parseBareAddress(presence.getFrom())))
-			System.out.println("on "+new Date()+" new presence : "+presence.getFrom()+" : "+presence);
+		if (friends.contains(StringUtils.parseBareAddress(presence.getFrom()))){
+			String text = "on "+new Date()+" new presence : "+presence.getFrom()+" : "+presence;
+			System.out.println(text);
+			LogService.logOnFile(log, text, false, false);
+		}
 	}
 
 	/*
@@ -213,12 +224,12 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 					};
 				}
 				);
-				Connection.DEBUG_ENABLED = true;
+//				Connection.DEBUG_ENABLED = true;
 		boolean ok =com.connect(null);
 		System.out.println("connected? "+ok);
-		com.setStatusToServer(false, Presence.Mode.available, "maha!");
-		com.setBlocked("coolhibou@gmail.com");
-		com.setAuto("coolhibou@gmail.com");
+		com.setStatusToServer(false, Presence.Mode.xa, "");
+//		com.setBlocked("coolhibou@gmail.com");
+//		com.setAuto("coolhibou@gmail.com");
 
 		boolean isRunning = true;
 		while (isRunning) {

@@ -44,9 +44,10 @@ import dima.introspectionbasedagents.services.acquaintance.AcquaintancesHandler;
 import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 import dima.introspectionbasedagents.services.communicating.AsynchronousCommunicationComponent;
 import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService;
+import dima.introspectionbasedagents.services.communicating.userHandling.UserCommunicationHandler;
 
 public class JabberCommunicationCompetence 
-extends SystemCommunicationService 
+extends UserCommunicationHandler 
 implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 
 	class JabberMessage extends Message {
@@ -73,10 +74,9 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 
 	Map<AgentIdentifier,Presence> acquaintances;
 	XMPPConnection connection;
-	String me;
-
+	
 	HashMap<String, String> chatThreads = new HashMap<String, String>();
-	MessageListener myMessageListener = new MessageListener(){
+	final MessageListener myMessageListener = new MessageListener(){
 
 		@Override
 		public void processMessage(Chat chat,
@@ -106,7 +106,7 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 			// Connect to the server
 			connection.connect();	
 			// Log into the server
-			String pass = this.execute("zenity  --password ");
+			String pass = this.receiveHiddenFromUSer("Provide password for "+args[3]);
 			connection.login(args[3], pass, "smackThat");
 
 			RosterListener rl = new RosterListener() {
@@ -151,15 +151,11 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 
 				}
 			});
-			me = connection.getUser();
 
 		} catch (XMPPException e) {
 			e.printStackTrace();
 			return false;
-		} catch (ErrorOnProcessExecutionException e) {
-			e.printStackTrace();
-			return false;
-		}
+		} 
 		return true;
 	}
 

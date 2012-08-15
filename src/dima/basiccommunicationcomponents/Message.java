@@ -51,20 +51,20 @@ public class Message extends AbstractMessage implements Serializable {
 		this.messageId=Message.messageIdCount;
 		Message.messageIdCount++;
 	}
-//	/**
-//	 * Insert the method's description here.
-//	 * Creation date: (07/05/00 09:51:51)
-//	 * @param status java.lang.String
-//	 * @param msgContent org.omg.CORBA.Object
-//	 * @param msgReceiver Gdima.kernel.AgentAddress
-//	 */
-//	public Message(final String  msgContent, final Serializable... paras) {
-//		this.content=msgContent;
-//		this.args = paras;
-//		this.type = "java";
-//		messageId=messageIdCount;
-//		messageIdCount++;
-//	}
+	//	/**
+	//	 * Insert the method's description here.
+	//	 * Creation date: (07/05/00 09:51:51)
+	//	 * @param status java.lang.String
+	//	 * @param msgContent org.omg.CORBA.Object
+	//	 * @param msgReceiver Gdima.kernel.AgentAddress
+	//	 */
+	//	public Message(final String  msgContent, final Serializable... paras) {
+	//		this.content=msgContent;
+	//		this.args = paras;
+	//		this.type = "java";
+	//		messageId=messageIdCount;
+	//		messageIdCount++;
+	//	}
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (07/05/00 09:51:51)
@@ -113,7 +113,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 * Creation date: (23/05/01 16:02:47)
 	 * @return Gdima.basicagentcomponents.AgentIdentifier
 	 */
-//	@Override
+	//	@Override
 	protected dima.basicagentcomponents.AgentIdentifier getReceiver() {
 		return this.receiver;
 	}
@@ -183,7 +183,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 */
 	@Override
 	public void setReceiver(final dima.basicagentcomponents.AgentIdentifier newReceiver) {
-//		assert receiver==null || (receiver.equals(newReceiver)):"old receiver "+receiver+" new receiver "+newReceiver;
+		//		assert receiver==null || (receiver.equals(newReceiver)):"old receiver "+receiver+" new receiver "+newReceiver;
 		this.receiver = newReceiver;
 	}
 	/**
@@ -192,7 +192,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 * @param newReceiver Gdima.basicagentcomponents.AgentIdentifier
 	 */
 	public void setReceiver(final String newReceiver) {
-//		assert receiver==null || (receiver.toString().equals(newReceiver));
+		//		assert receiver==null || (receiver.toString().equals(newReceiver));
 		this.receiver = new AgentName(newReceiver);
 	}
 	/**
@@ -202,7 +202,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 */
 	@Override
 	public void setSender(final dima.basicagentcomponents.AgentIdentifier newSender) {
-		assert this.sender==null || (this.sender.equals(newSender));
+		assert this.sender==null || this.sender.equals(newSender);
 		this.sender = newSender;
 	}
 	/**
@@ -211,7 +211,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 * @param newSender Gdima.basicagentcomponents.AgentIdentifier
 	 */
 	public void setSender(final String newSender) {
-		assert this.sender==null || (this.sender.toString().equals(newSender));
+		assert this.sender==null || this.sender.toString().equals(newSender);
 		this.sender = new AgentName(newSender);
 	}
 	/**
@@ -227,12 +227,12 @@ public class Message extends AbstractMessage implements Serializable {
 	@Override
 	public Message clone(){
 		return this;
-//		Message m = new Message((String) content, args);
-//		m.type=new String(this.type);
-//		m.sender=sender.clone();
-//		m.receiver=null;
-//		m.messageId=this.messageId;
-//		return m;
+		//		Message m = new Message((String) content, args);
+		//		m.type=new String(this.type);
+		//		m.sender=sender.clone();
+		//		m.receiver=null;
+		//		m.messageId=this.messageId;
+		//		return m;
 	}
 
 	/**

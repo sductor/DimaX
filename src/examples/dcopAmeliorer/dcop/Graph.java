@@ -448,7 +448,7 @@ public class Graph {
 
 	public static boolean constraintExist(final Graph g, final int id1, final int id2){
 		for (final Constraint c : g.conList){
-			if ((c.first.id==id1 && c.second.id==id2) || (c.first.id==id2 && c.second.id==id1)) {
+			if (c.first.id==id1 && c.second.id==id2 || c.first.id==id2 && c.second.id==id1) {
 				return true;
 			}
 		}

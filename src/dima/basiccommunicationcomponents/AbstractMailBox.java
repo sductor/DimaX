@@ -1,5 +1,7 @@
 package dima.basiccommunicationcomponents;
 
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
+
 /**
  * Insert the type's description here.
  * Creation date: (01/03/2000 21:46:23)
@@ -31,5 +33,5 @@ public abstract class AbstractMailBox extends CommunicationObject{
 	/**
 	 * AbstractMailBox constructor comment.
 	 */
-	public abstract  boolean writeMail(AbstractMessage m);
+	public abstract  boolean writeMail(AbstractMessageInterface m);
 }

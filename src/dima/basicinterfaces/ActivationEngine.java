@@ -1,16 +1,17 @@
 package dima.basicinterfaces;
 
 import dima.basiccommunicationcomponents.CometCommunicationComponent;
+import dima.introspectionbasedagents.monitoring.AgentMonitor;
+import dima.introspectionbasedagents.monitoring.MonitoredTask;
+import dima.introspectionbasedagents.services.communicating.AsynchronousCommunicationComponent;
+import dima.introspectionbasedagents.services.darxkernel.DimaXCommunicationComponent;
+import dima.introspectionbasedagents.services.darxkernel.DimaXTask;
+import dima.introspectionbasedagents.services.deployment.exceptions.UninstanciableMonitorException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.kernel.FIPAPlatform.AgentManagementSystem;
 import dima.kernel.ProactiveComponents.ProactiveComponentEngine;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 import dima.support.GimaObject;
-import dimaxx.exceptions.UninstanciableMonitorException;
-import dimaxx.kernel.DimaXCommunicationComponent;
-import dimaxx.kernel.DimaXTask;
-import dimaxx.monitoring.AgentMonitor;
-import dimaxx.monitoring.MonitoredTask;
 
 @Deprecated
 public abstract class ActivationEngine extends GimaObject implements ActivableComponent{
@@ -20,12 +21,12 @@ public abstract class ActivationEngine extends GimaObject implements ActivableCo
 	 */
 	private static final long serialVersionUID = -7504867452215601716L;
 
-	public abstract CommunicationComponentInterface getCommunicationComponent();
-	public abstract void setCommunicationComponent(CommunicationComponentInterface com);
+	public abstract AsynchronousCommunicationComponent getCommunicationComponent();
+	public abstract void setCommunicationComponent(AsynchronousCommunicationComponent com);
 
 	//	final private ProactiveComponentInterface myComponent;
 	final private BasicCommunicatingAgent myComponent;
-	CommunicationComponentInterface com;
+	AsynchronousCommunicationComponent com;
 
 	public ActivationEngine(final BasicCommunicatingAgent myComponent) {
 		super();

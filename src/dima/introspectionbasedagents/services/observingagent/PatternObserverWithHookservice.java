@@ -8,14 +8,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
+
+
+import dima.introspectionbasedagents.kernel.BasicCompetenceShell;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.kernel.IntrospectionStaticPrimitivesLibrary;
+import dima.introspectionbasedagents.kernel.MethodHandler;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.BasicCompetenceShell;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dima.introspectionbasedagents.shells.IntrospectionStaticPrimitivesLibrary;
-import dima.introspectionbasedagents.shells.MethodHandler;
-import dimaxx.tools.mappedcollections.HashedHashSet;
 
 
 public class PatternObserverWithHookservice extends PatternObserverService {
@@ -30,7 +32,7 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 	@Target(ElementType.METHOD)
 	public @interface EventHookedMethod {
 		Class<? extends Serializable> value();
-//				String key() default "";
+		//				String key() default "";
 
 
 	}
@@ -90,7 +92,7 @@ public class PatternObserverWithHookservice extends PatternObserverService {
 			MethodHandler msave=null ;
 			try {//System.out.println(this.registeredMethods+"           "+key);
 				for (final MethodHandler m : this.registeredMethods.get(key)){
-					
+
 					msave=m;
 					m.execute(notification);
 				}

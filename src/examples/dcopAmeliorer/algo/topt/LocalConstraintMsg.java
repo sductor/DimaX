@@ -33,7 +33,7 @@ public class LocalConstraintMsg extends DcopMessage {
 
 	@Override
 	public String getText() {
-		return ("LOCAL " + this.id + ";TTL " + this.ttl);
+		return "LOCAL " + this.id + ";TTL " + this.ttl;
 	}
 
 	public LocalConstraintMsg forward() {

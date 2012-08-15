@@ -67,48 +67,48 @@ public abstract class Program {
 		return this.node.getSwitches();
 	}
 
-//	// --------------------------------------------------------------------------
-//	// invoke scheduler
-//	// --------------------------------------------------------------------------
-//	protected void yield() {
-//		node.getNetwork().getScheduler().schedule();
-//	}
-//
-//	// --------------------------------------------------------------------------
-//	// sleep for `n` scheduling periods
-//	// --------------------------------------------------------------------------
-//	protected void sleep(int n) {
-//		for (int i = 0; i < n; i++)
-//			yield();
-//	}
-//
-//	// --------------------------------------------------------------------------
-//	// exit from network execution with code `n`
-//	// --------------------------------------------------------------------------
-//	protected void exit(int n) {
-//		Network network = node.getNetwork();
-//		if (network.getVisualizer() != null)
-//			network.print("Execution has terminated with exit code " + String.valueOf(n));
-//		network.exit(n);
-//	}
-//
-//	// --------------------------------------------------------------------------
-//	// state that global network state fulfills assertion `a`
-//	// --------------------------------------------------------------------------
-//	protected void test(GlobalAssertion a) {
-//		Network network = node.getNetwork();
-//		Program programs[] = network.getPrograms();
-//		if (!a.test(programs)) {
-//			network.print("Global assertion violated: " + a.getText());
-//			network.exit(-1);
-//		}
-//	}
-//
-//	// --------------------------------------------------------------------------
-//	// interrupt execution until continued by user
-//	// --------------------------------------------------------------------------
-//	protected void interrupt() {
-//		Visualizer visualizer = node.getNetwork().getVisualizer();
-//		if (visualizer != null) visualizer.stop();
-//	}
+	//	// --------------------------------------------------------------------------
+	//	// invoke scheduler
+	//	// --------------------------------------------------------------------------
+	//	protected void yield() {
+	//		node.getNetwork().getScheduler().schedule();
+	//	}
+	//
+	//	// --------------------------------------------------------------------------
+	//	// sleep for `n` scheduling periods
+	//	// --------------------------------------------------------------------------
+	//	protected void sleep(int n) {
+	//		for (int i = 0; i < n; i++)
+	//			yield();
+	//	}
+	//
+	//	// --------------------------------------------------------------------------
+	//	// exit from network execution with code `n`
+	//	// --------------------------------------------------------------------------
+	//	protected void exit(int n) {
+	//		Network network = node.getNetwork();
+	//		if (network.getVisualizer() != null)
+	//			network.print("Execution has terminated with exit code " + String.valueOf(n));
+	//		network.exit(n);
+	//	}
+	//
+	//	// --------------------------------------------------------------------------
+	//	// state that global network state fulfills assertion `a`
+	//	// --------------------------------------------------------------------------
+	//	protected void test(GlobalAssertion a) {
+	//		Network network = node.getNetwork();
+	//		Program programs[] = network.getPrograms();
+	//		if (!a.test(programs)) {
+	//			network.print("Global assertion violated: " + a.getText());
+	//			network.exit(-1);
+	//		}
+	//	}
+	//
+	//	// --------------------------------------------------------------------------
+	//	// interrupt execution until continued by user
+	//	// --------------------------------------------------------------------------
+	//	protected void interrupt() {
+	//		Visualizer visualizer = node.getNetwork().getVisualizer();
+	//		if (visualizer != null) visualizer.stop();
+	//	}
 }

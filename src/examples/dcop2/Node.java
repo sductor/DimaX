@@ -10,8 +10,11 @@ package examples.dcop2;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import examples.dcopAmeliorer.daj.InChannelSet;
+import examples.dcopAmeliorer.daj.NodeIdentifier;
+import examples.dcopAmeliorer.daj.OutChannelSet;
 
 
 public class Node extends BasicCompetentAgent {

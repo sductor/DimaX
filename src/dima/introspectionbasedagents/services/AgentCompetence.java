@@ -2,7 +2,7 @@ package dima.introspectionbasedagents.services;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
 
 /**
  * Interface for the competences,
@@ -21,6 +21,6 @@ public interface AgentCompetence<Agent extends CompetentComponent> extends Activ
 
 	AgentIdentifier getIdentifier();
 
-	void activateCompetence(boolean active);
+	void setActive(boolean active);
 
 }

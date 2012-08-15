@@ -2,8 +2,8 @@ package examples.Factorial2.apis;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.services.deployment.DimaXLocalLaunchScript;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dimaxx.deployment.DimaXLocalLaunchScript;
 import examples.Factorial2.masapplication.AgentFact;
 import examples.Factorial2.masapplication.AgentMult;
 

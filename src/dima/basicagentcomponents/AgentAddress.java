@@ -8,6 +8,7 @@ package dima.basicagentcomponents;
  */
 
 import dima.basiccommunicationcomponents.Message;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 import dima.kernel.communicatingAgent.BasicCommunicatingAgent;
 
 public class AgentAddress extends AbstractAgentAddress {
@@ -43,7 +44,7 @@ public class AgentAddress extends AbstractAgentAddress {
 	 * Creation date: (28/04/00 16:09:42)
 	 * @param m Gdima.competences.communication.AbstractMessage
 	 */
-	public void receive(final Message m) {
+	public void receive(final AbstractMessageInterface m) {
 		this.agentBehavior.receive(m);
 	}
 

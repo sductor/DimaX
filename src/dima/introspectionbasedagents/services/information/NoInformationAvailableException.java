@@ -1,6 +1,6 @@
 package dima.introspectionbasedagents.services.information;
 
-import dima.introspectionbasedagents.shells.NotReadyException;
+import dima.introspectionbasedagents.kernel.NotReadyException;
 
 
 public class NoInformationAvailableException extends NotReadyException {

@@ -1,7 +1,7 @@
 package dima.introspectionbasedagents.services.loggingactivity;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dimaxx.hostcontrol.LocalHost;
+import dima.introspectionbasedagents.services.deployment.hosts.LocalHost;
 
 public class LogMonologue extends LogNotification {
 

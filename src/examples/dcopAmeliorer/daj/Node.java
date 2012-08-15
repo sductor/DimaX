@@ -10,8 +10,8 @@ package examples.dcopAmeliorer.daj;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 import examples.dcopAmeliorer.algo.BasicAlgorithm;
 
 

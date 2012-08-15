@@ -9,9 +9,9 @@ import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.services.deployment.DimaXDeploymentScript;
+import dima.introspectionbasedagents.services.deployment.hosts.RemoteHostInfo;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dimaxx.deployment.DimaXDeploymentScript;
-import dimaxx.hostcontrol.RemoteHostExecutor;
 import examples.Factorial2.masapplication.AgentFact;
 import examples.Factorial2.masapplication.AgentMult;
 
@@ -38,7 +38,7 @@ public class DeployedDarXFactorialAPI2 {
 		try{Thread.sleep(5000);}catch(final Exception e){};
 
 		//Lancement d'un agent mult sur chaque machine
-		for (final RemoteHostExecutor h : machines.getHosts()){
+		for (final RemoteHostInfo h : machines.getHosts()){
 			final AgentMult m = new AgentMult(DeployedDarXFactorialAPI2.getMultName(), DeployedDarXFactorialAPI2.factName);
 			System.out.println("starting mult on "+h);
 			m.activateWithDarx(h.getUrl(), h.getPort());
@@ -48,7 +48,7 @@ public class DeployedDarXFactorialAPI2 {
 
 
 		final AgentFact F = new AgentFact(DeployedDarXFactorialAPI2.factName, n, launchedMults);
-		final RemoteHostExecutor h = machines.getHosts().iterator().next();
+		final RemoteHostInfo h = machines.getHosts().iterator().next();
 		F.activateWithDarx(h.getUrl(), h.getPort());
 
 		LogService.write("\n\n\n"+" Factorial:  " + n+"\n\n\n");

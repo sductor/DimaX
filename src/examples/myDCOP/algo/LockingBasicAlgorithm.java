@@ -14,28 +14,29 @@ public abstract class LockingBasicAlgorithm extends BasicAlgorithm {
 	public boolean subsetlocking;
 	public int windowsize;
 	public boolean waiting;
-	public boolean changed;	
+	public boolean changed;
 	public int lockVal;
 	public int lockMsgTimer;
 	public int attempt;
 
-	public LockingBasicAlgorithm(Variable v, boolean s, int ws) {
-		super(v);		
-		subsetlocking = s;
-		windowsize = ws;
-		lockSet = new HashMap<Integer, Integer>();
-		lockMap = new HashMap<Integer, LockMsg>();
-		acceptSet = new HashSet<Integer>();
-		lockVal = -1;		
-		waiting = false;
-		changed = false;
-		lockMsgTimer = 0;
-		attempt = 0;
+	public LockingBasicAlgorithm(final Variable v, final boolean s, final int ws) {
+		super(v);
+		this.subsetlocking = s;
+		this.windowsize = ws;
+		this.lockSet = new HashMap<Integer, Integer>();
+		this.lockMap = new HashMap<Integer, LockMsg>();
+		this.acceptSet = new HashSet<Integer>();
+		this.lockVal = -1;
+		this.waiting = false;
+		this.changed = false;
+		this.lockMsgTimer = 0;
+		this.attempt = 0;
 	}
-	public void removeLock(int id) {
-		lockMap.remove(id);
-		lockSet.remove(id);
-		if (lockSet.isEmpty())
-			lockVal = -1;
+	public void removeLock(final int id) {
+		this.lockMap.remove(id);
+		this.lockSet.remove(id);
+		if (this.lockSet.isEmpty()) {
+			this.lockVal = -1;
+		}
 	}
 }

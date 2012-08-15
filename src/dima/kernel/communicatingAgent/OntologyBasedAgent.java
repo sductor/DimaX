@@ -568,7 +568,7 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 		final String request = (String) m.getContent();
 		System.out.println("Ask-One:"+"\n"+
 				"Sender: "+m.getSender()+"\n"+
-//				"Receiver: "+m.getReceiver()+"\n"+
+				//				"Receiver: "+m.getReceiver()+"\n"+
 				"Content: "+request+"\n"+
 				"Language: "+m.getLanguage()+"\n"+
 				"Ontology: "+m.getOntology()+"\n"+
@@ -624,7 +624,7 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 	{final String request = (String) m.getContent();
 	System.out.println("Ask-All:"+"\n"+
 			"Sender: "+m.getSender()+"\n"+
-//			"Receiver: "+m.getReceiver()+"\n"+
+			//			"Receiver: "+m.getReceiver()+"\n"+
 			"Content: "+request+"\n"+
 			"Language: "+m.getLanguage()+"\n"+
 			"Ontology: "+m.getOntology()+"\n"+
@@ -703,11 +703,11 @@ public abstract class OntologyBasedAgent extends BasicCommunicatingAgent {
 	{final String request = (String) m.getContent();
 	System.out.println("Tell:"+"\n"+
 			"Sender: "+m.getSender()+"\n"+
-//			"Receiver: "+m.getReceiver()+"\n"+
+			//			"Receiver: "+m.getReceiver()+"\n"+
 			"Content: "+request+"\n"+
 			"Language: "+m.getLanguage()+"\n"+
 			"Ontology: "+m.getOntology()+"\n"+
-			"In-reply-to: "+m.getInReplyTo()+"\n");
+			"In-reply-to: "+m.getDebugInReplyTo()+"\n");
 	if(m.getLanguage().equals(new String("DQL")))
 	{  final DQLTranslator p = new DQLTranslator();
 	final Vector answers =  p.getAnswerPatternInstance(request);

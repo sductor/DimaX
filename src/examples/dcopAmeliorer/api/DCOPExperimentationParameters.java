@@ -5,19 +5,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+
 import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.shells.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dimaxx.experimentation.ExperimentationParameters;
-import dimaxx.experimentation.Experimentator;
-import dimaxx.experimentation.IfailedException;
-import dimaxx.experimentation.Laborantin;
-import dimaxx.experimentation.Laborantin.NotEnoughMachinesException;
-import dimaxx.server.HostIdentifier;
+import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import examples.dcopAmeliorer.algo.Algorithm;
 import examples.dcopAmeliorer.algo.BasicAlgorithm;
 import examples.dcopAmeliorer.algo.korig.AlgoKOptOriginal;
@@ -28,6 +24,11 @@ import examples.dcopAmeliorer.daj.Node;
 import examples.dcopAmeliorer.dcop.Constraint;
 import examples.dcopAmeliorer.dcop.Graph;
 import examples.dcopAmeliorer.dcop.Variable;
+import frameworks.experimentation.ExperimentationParameters;
+import frameworks.experimentation.Experimentator;
+import frameworks.experimentation.IfailedException;
+import frameworks.experimentation.Laborantin;
+import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 
 public class DCOPExperimentationParameters extends ExperimentationParameters<Laborantin>{
 
@@ -129,7 +130,7 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 
 
 	private BasicAlgorithm getAlgo(final Variable v) {
-//		return new AlgoMGM1(v);
+		//		return new AlgoMGM1(v);
 		switch(this.algo){
 		case TOPTAPO:
 			return new AlgoTOptAPO(v, this.grouping);
@@ -183,12 +184,12 @@ public class DCOPExperimentationParameters extends ExperimentationParameters<Lab
 
 	@Override
 	public Laborantin createLaborantin(final APILauncherModule api) throws CompetenceException,
-			IfailedException, NotEnoughMachinesException {
+	IfailedException, NotEnoughMachinesException {
 		return new Laborantin(this,new GlobalDCOPObservation(this),api);
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
+	public int compareTo(final Object arg0) {
 		return 0;
 	}
 

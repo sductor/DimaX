@@ -4,11 +4,11 @@ package examples.introspectionExamples;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.annotations.Transient;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 
 
 public class SimpleObserverAgent extends BasicCompetentAgent {
@@ -34,7 +34,7 @@ public class SimpleObserverAgent extends BasicCompetentAgent {
 	@MessageHandler
 	@NotificationEnvelope()
 	public void simpleObserverStep(final NotificationMessage<SimpleMessage> m) {
-		SimpleMessage m2 = m.getNotification();
+		final SimpleMessage m2 = m.getNotification();
 		this.logMonologue(
 				"YOOOO!!(1) =) I've received :\n" + m2,LogService.onScreen);
 	}

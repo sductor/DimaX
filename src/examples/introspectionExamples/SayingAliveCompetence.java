@@ -1,9 +1,9 @@
 package examples.introspectionExamples;
 
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class SayingAliveCompetence extends BasicAgentCompetence<BasicCompetentAgent> {
 

@@ -45,8 +45,8 @@ public abstract class ProactiveComponent extends GimaObject implements Serializa
 	 */
 	public void wwait()
 	{
-			try {Thread.sleep (200, 10);}
-			 catch (InterruptedException e) {}
+		try {Thread.sleep (200, 10);}
+		catch (final InterruptedException e) {}
 
 	}
 
@@ -56,8 +56,8 @@ public abstract class ProactiveComponent extends GimaObject implements Serializa
 	 */
 	public void wwait(final long n)
 	{
-			try {Thread.sleep (n, 10);}
-			 catch (InterruptedException e) {}
+		try {Thread.sleep (n, 10);}
+		catch (final InterruptedException e) {}
 
 	}
 	/**

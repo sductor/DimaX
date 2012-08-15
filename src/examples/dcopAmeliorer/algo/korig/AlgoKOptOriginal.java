@@ -161,7 +161,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 
 			//			if (msg instanceof TerminateMessage) {
 			//				break;
-			//			} else 
+			//			} else
 			if (msg instanceof KorigValueMsg) {
 				final KorigValueMsg vmsg = (KorigValueMsg) msg;
 				this.view.varMap.get(sender).value = vmsg.value;

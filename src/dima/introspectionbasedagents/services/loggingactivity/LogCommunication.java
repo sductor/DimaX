@@ -2,6 +2,7 @@ package dima.introspectionbasedagents.services.loggingactivity;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 
 public class LogCommunication extends LogNotification {
 
@@ -22,14 +23,14 @@ public class LogCommunication extends LogNotification {
 	// Field
 	//
 
-	Message m;
+	AbstractMessageInterface m;
 	MessageStatus status;
 
 	//
 	// Constructor
 	//
 
-	public LogCommunication(final AgentIdentifier agent,final Message m, final MessageStatus s) {
+	public LogCommunication(final AgentIdentifier agent,final AbstractMessageInterface m, final MessageStatus s) {
 		super(agent);
 		this.m = m;
 		this.status = s;

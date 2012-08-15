@@ -3,7 +3,7 @@ package examples.dcopAmeliorer.api;
 import java.util.Date;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dimaxx.experimentation.SimpleExperimentationResults;
+import frameworks.experimentation.SimpleExperimentationResults;
 
 public class DcopExperimentationResult extends SimpleExperimentationResults {
 

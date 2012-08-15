@@ -15,7 +15,7 @@ public class Assertion {
 	public static void fail(final String s) {
 		assert 1<0:s;
 		System.err.println("assertion failed: " + s);
-//		System.exit(-1);
+		//		System.exit(-1);
 	}
 
 	// --------------------------------------------------------------------------

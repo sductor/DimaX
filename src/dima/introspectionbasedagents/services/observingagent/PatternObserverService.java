@@ -4,20 +4,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
+
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.kernel.CommunicatingCompetentComponent;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashList;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dimaxx.tools.mappedcollections.HashedHashList;
-import dimaxx.tools.mappedcollections.HashedHashSet;
 /**
  * This is the service that provide pattern observing Ductor Sylvain
  */
@@ -142,8 +145,12 @@ public abstract class PatternObserverService extends BasicCommunicatingCompetenc
 		if (notification==null) {
 			System.err.print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhh"+key);
 		}
-		return this.notificationsToSend.add(
-				new NotificationMessage<Notification>(key, notification));
+		NotificationMessage n = new NotificationMessage<Notification>(key, notification);
+		try {
+		n.setDebugCallingMethod(getMyAgent().getMyCurrentStatus().getCurrentlyExecutedBehavior());
+		n.setDebugInReplyTo(getMyAgent().getMyCurrentStatus().getCurrentlyReadedMail());
+		} catch (NullPointerException e){/*shell non instancié*/}
+		return this.notificationsToSend.add(n);
 	}
 	/**
 	 * Used to make <@param observedAgent> send automatically all this
@@ -238,7 +245,7 @@ public abstract class PatternObserverService extends BasicCommunicatingCompetenc
 		//						+ m.getAttachement()[0]);
 	}
 
-	@StepComposant()//ticker=250)//@Transient(ticker=500)
+	@PostStepComposant()//ticker=250)//@Transient(ticker=500)
 	public void autoSendOfNotifications() {
 		final HashedHashList<NotificationMessage<?>,AgentIdentifier> sendedNotif=
 				new HashedHashList<NotificationMessage<?>,AgentIdentifier>();
@@ -246,7 +253,7 @@ public abstract class PatternObserverService extends BasicCommunicatingCompetenc
 			for (final NotificationMessage<?> n : this.notificationsToSend) {
 				for (final AgentIdentifier obs : this.registeredObservers.get(n.getKey())) {
 					if (this.iGiveObservation(obs)){
-//						this.logMonologue("i've sended "+n+" to "+obs,PatternObserverService._logKeyForObservation); --> java.util.ConcurrentModificationException
+						//						this.logMonologue("i've sended "+n+" to "+obs,PatternObserverService._logKeyForObservation); --> java.util.ConcurrentModificationException
 						n.setReceiver(obs);
 						sendedNotif.add(n,obs);
 					}

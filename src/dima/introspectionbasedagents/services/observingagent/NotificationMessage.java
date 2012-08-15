@@ -34,7 +34,11 @@ extends Message implements MessageInEnvelope {
 		this.notif=n;
 		this.key = key;
 	}
-
+//	public NotificationMessage(final Notification n) {
+//		super("notification of "+n.getClass().getName()+", "+n);
+//		this.notif=n;
+//		this.key = n.getClass().getName();
+//	}
 	//
 	// Accessor
 	//

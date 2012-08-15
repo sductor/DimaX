@@ -12,25 +12,27 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.basicinterfaces.MailBoxBasedCommunicatingComponentInterface;
-import dima.introspectionbasedagents.CommunicatingCompetentComponent;
-import dima.introspectionbasedagents.CompetentComponent;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.kernel.BasicCompetenceShell;
+import dima.introspectionbasedagents.kernel.CommunicatingCompetentComponent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
+import dima.introspectionbasedagents.kernel.MethodHandler;
+import dima.introspectionbasedagents.kernel.NotReadyException;
+import dima.introspectionbasedagents.kernel.SimpleAgentStatus;
+import dima.introspectionbasedagents.kernel.SimpleExceptionHandler;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.communicating.MailBoxBasedAsynchronousCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.shells.BasicCompetenceShell;
-import dima.introspectionbasedagents.shells.MethodHandler;
-import dima.introspectionbasedagents.shells.NotReadyException;
-import dima.introspectionbasedagents.shells.SimpleAgentStatus;
-import dima.introspectionbasedagents.shells.SimpleExceptionHandler;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 /**
  * OLD :
  * Le LoggerManager est chargé d'écrire et d'afficher les logs d'activité des
@@ -40,7 +42,8 @@ import dima.introspectionbasedagents.shells.SimpleExceptionHandler;
  *
  * @author Sylvain Ductor
  */
-public final class LogService<Agent extends CommunicatingCompetentComponent & MailBoxBasedCommunicatingComponentInterface> extends SimpleExceptionHandler
+public final class LogService<Agent extends CommunicatingCompetentComponent & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+extends SimpleExceptionHandler
 implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -4511578003487049832L;
 
@@ -120,6 +123,21 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
+	public void addLogKey(final String key, final String logType) {
+		if (logType.equals(onScreen)){
+			this.addLogKey(key,true,false);
+		}else if (logType.equals(onFile)){
+			this.addLogKey(key,false,true);
+		} else if (logType.equals(onBoth)){
+			this.addLogKey(key,true,true);
+		}else if (logType.equals(onNone)){
+			this.addLogKey(key,false,false);
+		} else {
+			throw new RuntimeException("aaarrggh");
+		}
+	}
+
+	@Override
 	public void setLogKey(final String key, final boolean toScreen, final boolean toFile) {
 		this.keysToScreen.put(key,toScreen);
 		this.keysToFiles.put(key, toFile);
@@ -190,14 +208,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	@Override
 	public Boolean  logMonologue(final String text){
-		return logMonologue(text, onBoth);
+		return this.logMonologue(text, onBoth);
 	}
 	// Communication
 
 
-	public Boolean logCommunication(final Message am, final MessageStatus s){
-		if ((am instanceof LogNotification) ||
-				(am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification)){
+	public Boolean logCommunication(final AbstractMessageInterface am, final MessageStatus s){
+		if (am instanceof LogNotification ||
+				am instanceof NotificationMessage && ((NotificationMessage) am).getNotification()  instanceof LogNotification){
 			//do nothing;
 		} else {
 			//			assert commValidityVerif(am);
@@ -256,6 +274,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		if (this.activateExceptoScreen){
 			System.err.println(log.generateLogToScreen());
 			if (e!=null) {
+				System.err.println("--> stackTrace : ");
 				e.printStackTrace();
 			}
 			else {
@@ -357,12 +376,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		}
 		return true;
 	}
+	@Override
 	public Boolean  logWarning(final String text,
 			final Throwable e) {
-	return logWarning(text,e,onBoth);
+		return this.logWarning(text,e,onBoth);
 	}
+	@Override
 	public Boolean  logWarning(final String text) {
-	return logWarning(text,onBoth);
+		return this.logWarning(text,onBoth);
 	}
 	/******************
 	 * LOG WRITING
@@ -572,6 +593,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			return this.keysToFiles.get(key);
 		} else{
 			this.logWarning("Unknown log key!!!!! "+key,LogService.onBoth);
+			assert false;
 			return false;
 		}
 	}
@@ -591,11 +613,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			final MethodHandler methodHandler,
 			final AbstractMessage abstractMessage,
 			final Throwable e){
-		this.signalException(
-				"Method "+methodHandler+"\n on message "+abstractMessage.toString()
-				+"\n has raised EXCEPTION :" , e);
 		this.stopFaultyMethods(methodHandler);
-		return super.handleExceptionOnMessage(dimaComponentInterface, methodHandler, abstractMessage, e);
+		String result="Stopping faulty method!!! "+methodHandler.getMethodName()+"\n"; 
+		result+= super.handleExceptionOnMessage(dimaComponentInterface, methodHandler, abstractMessage, e);
+		this.signalException(result , e);
+		return result;
 	}
 
 	@Override
@@ -603,11 +625,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			final DimaComponentInterface dimaComponentInterface,
 			final MethodHandler mt,
 			final Throwable e){
-		this.signalException(
-				"Method "+mt.getMethodName()
-				+"\n has raised EXCEPTION :" , e);
 		this.stopFaultyMethods(mt);
-		return super.handleExceptionOnMethod(dimaComponentInterface, mt, e);
+		String result = "Stopping faulty method!!! "+mt.getMethodName()+"\n";
+		result+=super.handleExceptionOnMethod(dimaComponentInterface, mt, e);
+		this.signalException(result, e);
+		return result ;
 
 	}
 
@@ -623,6 +645,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	private void stopFaultyMethods(final MethodHandler m){
+		
 		//		getMyAgent().setActive(false);
 		m.setActive(false);
 		//		if (m.getMyComponent() instanceof AgentCompetence)
@@ -683,7 +706,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public void activateCompetence(final boolean active) {
+	public void setActive(final boolean active) {
 		this.active = active;
 	}
 	@Override
@@ -796,6 +819,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		this.myAgent.autoObserve(notificationKey);
 	}
 
+	public Date getCreationTime() {
+		return myAgent.getCreationTime();
+	}
+
+	public long getUptime() {
+		return myAgent.getUptime();
+	}
+
 	@Override
 	public void addObserver(final AgentIdentifier observerAgent,
 			final Class<?> notificationKey) {
@@ -837,6 +868,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public void sendNotificationNow() {
 		this.myAgent.sendNotificationNow();
 	}
+
 }
 
 

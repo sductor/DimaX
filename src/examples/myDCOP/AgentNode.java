@@ -1,11 +1,11 @@
 package examples.myDCOP;
 
+import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
 
 public class AgentNode extends BasicCompetentAgent{
 
-	public AgentNode(Integer newId) throws CompetenceException {
+	public AgentNode(final Integer newId) throws CompetenceException {
 		super(newId.toString());
 	}
 

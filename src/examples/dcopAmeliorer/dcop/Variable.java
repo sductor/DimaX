@@ -22,7 +22,7 @@ public class Variable {
 
 	public Variable(final String s, final Graph g) {
 		final String[] ss = s.split(" ");
-//		assert ss.length >= 5;
+		//		assert ss.length >= 5;
 		this.id = Integer.parseInt(ss[1]);
 		this.domain = Integer.parseInt(ss[3]);
 		this.graph = g;

@@ -2,9 +2,10 @@ package dima.introspectionbasedagents.services;
 
 import java.io.Serializable;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
 
 /**
  * Module are associated to an agent but are not proactive component
@@ -12,7 +13,7 @@ import dima.introspectionbasedagents.CompetentComponent;
  *
  * @param <Agent>
  */
-public class BasicAgentModule<Agent extends CompetentComponent> implements DimaComponentInterface{
+public class BasicAgentModule<Agent extends CompetentComponent> implements AgentModule<Agent>{
 	private static final long serialVersionUID = -8166804401339182512L;
 
 	//
@@ -41,6 +42,10 @@ public class BasicAgentModule<Agent extends CompetentComponent> implements DimaC
 		return this.getMyAgent().getIdentifier();
 	}
 
+	/* (non-Javadoc)
+	 * @see dima.introspectionbasedagents.services.AgentModule#setMyAgent(Agent)
+	 */
+	@Override
 	public void setMyAgent(final Agent ag) {
 		this.myAgent=ag;
 	}

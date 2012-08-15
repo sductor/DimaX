@@ -23,7 +23,7 @@ public class CommitMsg extends DcopMessage {
 
 	@Override
 	public String getText() {
-		return ("COMMIT ") + this.gid + "\n";
+		return "COMMIT " + this.gid + "\n";
 	}
 
 	@Override

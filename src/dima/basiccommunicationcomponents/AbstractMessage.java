@@ -1,18 +1,20 @@
 package dima.basiccommunicationcomponents;
 
-import dima.basicinterfaces.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
+import dima.introspectionbasedagents.services.loggingactivity.AbstractDebugableMessage;
+import dima.introspectionbasedagents.services.loggingactivity.AbstractDebugableMessageInterface;
 
 /**
  * Insert the type's description here.
  * Creation date: (01/03/2000 23:42:49)
  * @author: Gerard Rozsavolgyi
  */
-public abstract class AbstractMessage extends CommunicationObject implements AbstractMessageInterface {
-	/**
-	 *
-	 */
+public abstract class AbstractMessage extends AbstractDebugableMessage implements AbstractMessageInterface {
 	private static final long serialVersionUID = -5044580240872440630L;
+	
 	Object content;
+	private int serial;
+	static int number=-1;
 	/**
 	 * AbstractMessage constructor comment.
 	 */
@@ -72,5 +74,16 @@ public abstract class AbstractMessage extends CommunicationObject implements Abs
 		} else {
 			return this.getContent().toString();
 		}
+	}
+	
+	public AbstractMessage clone(){
+		throw new RuntimeException("clone not overrided!!");
+	}
+	public int getSerial() {
+		return serial;
+	}
+	public boolean setSerial(int serial) {
+		this.serial = serial;
+		return true;
 	}
 }

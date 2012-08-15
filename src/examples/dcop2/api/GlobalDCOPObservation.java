@@ -2,22 +2,21 @@ package examples.dcop2.api;
 
 import java.util.HashMap;
 
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.modules.aggregator.HeavyDoubleAggregation;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
-import dima.introspectionbasedagents.shells.BasicCompetentAgent;
-import dimaxx.experimentation.ExperimentationParameters;
-import dimaxx.experimentation.ExperimentationResults;
-import dimaxx.experimentation.Laborantin;
-import dimaxx.experimentation.ObservingGlobalService;
-import dimaxx.experimentation.ObservingSelfService.ActivityLog;
-import dimaxx.tools.aggregator.HeavyDoubleAggregation;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import examples.dcop2.algo.BasicAlgorithm;
+import frameworks.experimentation.ExperimentationParameters;
+import frameworks.experimentation.ExperimentationResults;
+import frameworks.experimentation.Laborantin;
+import frameworks.experimentation.ObservingGlobalService;
 
 public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 
-	public GlobalDCOPObservation(ExperimentationParameters rep) {
+	public GlobalDCOPObservation(final ExperimentationParameters rep) {
 		super(rep);
 	}
 
@@ -51,7 +50,7 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 	public void receiveStability(final NotificationMessage<Boolean> m){
 		this.appIsStable.put(m.getSender(), m.getNotification());
 	}
-	
+
 	//
 	// Method
 	//
@@ -80,12 +79,12 @@ public class GlobalDCOPObservation extends ObservingGlobalService<Laborantin>{
 	@Override
 	protected void writeResult() {
 		System.out.println("yooooooooooooooo");
-//		LogService.logOnFile(getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-//				.getQuantileTimeEvolutionObs(getMyAgent().getSimulationParameters(),"reliability",
-//						this.agentsValueEvolution, 0.75 * (
-//								getMyAgent().getNbAgents() /
-//								getMyAgent().getNbAgents()),
-//								getMyAgent().getNbAgents()), true,
-//								false);
+		//		LogService.logOnFile(getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+		//				.getQuantileTimeEvolutionObs(getMyAgent().getSimulationParameters(),"reliability",
+		//						this.agentsValueEvolution, 0.75 * (
+		//								getMyAgent().getNbAgents() /
+		//								getMyAgent().getNbAgents()),
+		//								getMyAgent().getNbAgents()), true,
+		//								false);
 	}
 }

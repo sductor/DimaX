@@ -2,12 +2,18 @@ package dima.introspectionbasedagents.services;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
+
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.introspectionbasedagents.CompetentComponent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
+import dima.introspectionbasedagents.kernel.NotReadyException;
+import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.shells.NotReadyException;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -8166804401339182512L;
@@ -52,12 +58,12 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public boolean isActive() {
-		return this.active;
+	public final boolean isActive() {
+		return getMyAgent().isActive() && this.active;
 	}
 
 	@Override
-	public void activateCompetence(final boolean active) {
+	public void setActive(final boolean active) {
 		this.active = active;
 	}
 	@Override
@@ -155,6 +161,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logMonologue(text, details);
 	}
 
+	@Override
 	public Boolean logMonologue(final String text) {
 		return this.myAgent.logMonologue(text, LogService.onBoth);
 	}
@@ -178,14 +185,16 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.logWarning(text, details);
 	}
 
+	@Override
 	public Boolean logWarning(final String text, final Throwable e) {
 		return this.myAgent.logWarning(text, e, LogService.onBoth);
 	}
 
+	@Override
 	public Boolean logWarning(final String text) {
 		return this.myAgent.logWarning(text, LogService.onBoth);
 	}
-	
+
 	//	@Override
 	//	public Boolean logWarning(final String text) {
 	//		return this.myAgent.logWarning(text);
@@ -194,6 +203,10 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	@Override
 	public void addLogKey(final String key, final boolean toString, final boolean toFile) {
 		this.myAgent.addLogKey(key, toString, toFile);
+	}
+	@Override
+	public void addLogKey(final String key, final String logType) {
+		this.myAgent.addLogKey(key, logType);
 	}
 	@Override
 	public void setLogKey(final String key, final boolean toScreen, final boolean toFile) {
@@ -285,7 +298,12 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.getObservers(notificationKey);
 	}
 
+	public Date getCreationTime() {
+		return myAgent.getCreationTime();
+	}
 
-
+	public long getUptime() {
+		return myAgent.getUptime();
+	}
 
 }

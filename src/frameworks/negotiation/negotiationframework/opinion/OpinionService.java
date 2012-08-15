@@ -17,7 +17,7 @@ extends ObservationService{
 //			Class<Info> informationType, AgentIdentifier agentId) throws NoInformationAvailableException;
 
 	public <Info extends Information> Opinion<Info> getGlobalOpinion(
-			Class<Info> myInfoType) throws NoInformationAvailableException;
+			Class<Info> myInfoType) throws NoInformationAvailableException, NoOpinionHandlerException;
 	// public <Info extends Information> void collectInformation(Class<Info>
 	// informationType);
 	//

@@ -206,6 +206,7 @@ extends BasicCommunicatingCompetence<Agent>{
 
 	public void setAgentHasEnded(final AgentIdentifier id){
 		//		getMyAgent().logMonologue("agent is dead "+id, LogService.onBoth);
+		assert this.remainingAgent.contains(id);
 		this.remainingAgent.remove(id);
 	}
 

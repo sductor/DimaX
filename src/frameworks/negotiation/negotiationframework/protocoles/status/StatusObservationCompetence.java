@@ -18,6 +18,7 @@ import dima.introspectionbasedagents.services.observingagent.NotificationEnvelop
 import frameworks.negotiation.negotiationframework.NegotiatingAgent;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
 import frameworks.negotiation.negotiationframework.contracts.ResourceIdentifier;
+import frameworks.negotiation.negotiationframework.opinion.NoOpinionHandlerException;
 import frameworks.negotiation.negotiationframework.opinion.OpinionHandler;
 import frameworks.negotiation.negotiationframework.opinion.OpinionService;
 import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
@@ -208,7 +209,10 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			try {
 				this.sendMessage(id, 
 						new StatusMessage(((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(stateTypeToDiffuse)));
-			} catch (final NoInformationAvailableException e) {}
+			} catch (final NoInformationAvailableException e) {} 
+			catch (NoOpinionHandlerException e) {
+				throw new RuntimeException("impossible!!!!");
+			}
 		}
 	}
 

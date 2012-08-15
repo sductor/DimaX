@@ -44,7 +44,9 @@ extends SimpleObservationService implements OpinionService{
 
 	@Override
 	public <Info extends Information> Opinion<Info> getGlobalOpinion(
-			Class<Info> myInfoType) throws NoInformationAvailableException {
+			Class<Info> myInfoType) throws NoInformationAvailableException, NoOpinionHandlerException {
+		if (!myHandlers.containsKey(myInfoType))
+			throw new NoOpinionHandlerException();
 		assert myHandlers.containsKey(myInfoType) || (this.infos.get(myInfoType) ==null || this.infos.get(myInfoType) instanceof OpinionDataBase):myInfoType+" "+myHandlers;
 		if (infos.get(myInfoType)!=null){
 			return ((OpinionDataBase)infos.get(myInfoType)).getGlobalOpinion();

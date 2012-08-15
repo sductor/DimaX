@@ -508,7 +508,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		 */
 
 		
-		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class) + this.getMyAgent().myInformationService.show(ReplicaState.class),LogService.onBoth);
+		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class) + this.getMyAgent().myInformationService.show(ReplicaState.class),LogService.onFile);
 		return result.values();
 	}
 

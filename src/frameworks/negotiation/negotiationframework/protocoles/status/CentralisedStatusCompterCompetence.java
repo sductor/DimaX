@@ -18,6 +18,7 @@ import dima.introspectionbasedagents.services.information.NoInformationAvailable
 import frameworks.negotiation.faulttolerance.experimentation.ReplicationLaborantin;
 import frameworks.negotiation.negotiationframework.NegotiationParameters;
 import frameworks.negotiation.negotiationframework.opinion.Believer;
+import frameworks.negotiation.negotiationframework.opinion.NoOpinionHandlerException;
 import frameworks.negotiation.negotiationframework.opinion.OpinionService;
 import frameworks.negotiation.negotiationframework.opinion.SimpleOpinionService;
 import frameworks.negotiation.negotiationframework.opinion.OpinionService.Opinion;
@@ -53,7 +54,10 @@ public class CentralisedStatusCompterCompetence extends BasicCommunicatingCompet
 					new StatusMessage(o));	
 //		logMonologue(o.getNumberOfAggregatedElements()+" "
 //		+o.getAggregatedAgents()+"\n"+o.getMaxElement()+"\n"+o.getMinElement()+"\n"+o.getRepresentativeElement());
-		} catch (NoInformationAvailableException e) {}
+		} catch (NoInformationAvailableException e) {} 
+		catch (NoOpinionHandlerException e) {
+			throw new RuntimeException("impossible!!!!");
+		}
 		return getMyAgent().getUptime()>simulationTime;
 	}
 

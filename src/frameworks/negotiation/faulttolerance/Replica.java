@@ -60,19 +60,19 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 		}
 	};
 
-	@Competence
-	FaultObservationService myFaultAwareService =
-	new FaultObservationService() {
-
-		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
-			return Replica.this.generateDestructionContract(id);
-		}
-
-		@Override
-		public void endSimulation() {
-			mySelfObservationService.endSimulation();			
-		}
-	};
+//	@Competence
+//	FaultObservationService myFaultAwareService =
+//	new FaultObservationService() {
+//
+//		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
+//			return Replica.this.generateDestructionContract(id);
+//		}
+//
+//		@Override
+//		public void endSimulation() {
+//			mySelfObservationService.endSimulation();			
+//		}
+//	};
 
 	//
 	// Constructor

@@ -53,23 +53,23 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 		}
 	};
 
-	@Competence
-	public
-	FaultObservationService myFaultAwareService =
-	new FaultObservationService() {
-
-		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
-			return Host.this.generateDestructionContract(id);
-		}
-
-
-		@Override
-		public void endSimulation() {
-			assert false;			
-		}
-		
-
-	};
+//	@Competence
+//	public
+//	FaultObservationService myFaultAwareService =
+//	new FaultObservationService() {
+//
+//		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
+//			return Host.this.generateDestructionContract(id);
+//		}
+//
+//
+//		@Override
+//		public void endSimulation() {
+//			assert false;			
+//		}
+//		
+//
+//	};
 
 	//
 	// Constructor

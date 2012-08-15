@@ -141,7 +141,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 
 	// @role(NegotiationInitiatorRole.class)
 	@PreStepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
-	protected void initiateNegotiation() {
+	public void initiateNegotiation() {
 		if (this.isActive() &&
 				ImAllowedToNegotiate(this.contracts)
 				&& this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.contracts)) {
@@ -375,7 +375,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 
 	@MessageHandler()
 	@FipaACLEnvelope(performative = Performative.Propose, protocol = AbstractCommunicationProtocol.class)
-	protected void receiveProposal(final SimpleContractProposal delta)  {
+	public void receiveProposal(final SimpleContractProposal delta)  {
 		final Contract contract = delta.getMyContract();
 
 		//			try {

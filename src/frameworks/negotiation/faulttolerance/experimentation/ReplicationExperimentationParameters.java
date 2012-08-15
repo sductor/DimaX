@@ -126,10 +126,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 */
 
 	public enum DisponibilityComputationType {Static, Weibull, Poisson}
-	public static final DisponibilityComputationType choosenType = DisponibilityComputationType.Poisson;//Static;//
+	public static final DisponibilityComputationType choosenType = DisponibilityComputationType.Static;//Poisson;//
 
 	public static final long _host_maxFaultfrequency = 500;//10 * ReplicationExperimentationProtocol._timeToCollect;// 2*_simulationTime;//
-	public static final long _timeScale = 2 * ReplicationExperimentationParameters._host_maxFaultfrequency;
+	public static final long _timeScale = 10 * ReplicationExperimentationParameters._host_maxFaultfrequency;
 	public static final double _lambdaRepair = 1;
 
 	//	WEIBULL : OLD

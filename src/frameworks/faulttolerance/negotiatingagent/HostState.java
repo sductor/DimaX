@@ -276,4 +276,8 @@ public class HostState extends SimpleAgentState{
 				+"\n valid ? : "+this.isValid();
 	}
 
+	public Double getLambda() {
+		return lambda;
+	}
+
 }

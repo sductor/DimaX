@@ -16,6 +16,8 @@ import frameworks.dcop.dcop.Variable;
 import frameworks.dcop.exec.DCOPApplication;
 import frameworks.dcop.exec.Stats;
 
+
+
 public class AlgoKOptAPO extends LockingBasicAlgorithm {
 
 	int k;

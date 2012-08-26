@@ -1,11 +1,13 @@
 package frameworks.dcop.algo;
 
 import java.util.HashSet;
+
 import frameworks.dcop.daj.Channel;
 import frameworks.dcop.daj.Message;
 import frameworks.dcop.dcop.Constraint;
 import frameworks.dcop.dcop.Helper;
 import frameworks.dcop.dcop.Variable;
+
 
 public class AlgoMGM1 extends BasicAlgorithm {
 

@@ -3,7 +3,7 @@ package dima.introspectionbasedagents.modules.distribution;
 import java.util.Date;
 import java.util.Random;
 
-import frameworks.negotiation.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 
 

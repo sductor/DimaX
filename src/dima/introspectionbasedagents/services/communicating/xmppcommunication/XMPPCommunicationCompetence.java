@@ -50,4 +50,9 @@ public class XMPPCommunicationCompetence extends JabberCommunicationCompetence{
 		return true;
 	}
 
+	//
+	//
+	//
+	
+	
 }

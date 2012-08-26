@@ -2,12 +2,14 @@ package frameworks.dcop.algo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import frameworks.dcop.daj.Program;
 import frameworks.dcop.dcop.Constraint;
 import frameworks.dcop.dcop.Graph;
 import frameworks.dcop.dcop.Helper;
 import frameworks.dcop.dcop.Variable;
 import frameworks.dcop.exec.Stats;
+
 
 public abstract class BasicAlgorithm extends Program {
 

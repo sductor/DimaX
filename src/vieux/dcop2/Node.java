@@ -30,7 +30,7 @@ public class Node extends BasicCompetentAgent {
 	// create node with `prog` to execute in network `net`
 	// --------------------------------------------------------------------------
 	public Node(final Program prog) throws CompetenceException {
-		super(new NodeIdentifier(((BasicAlgorithm)prog).getID()));
+		super(new NodeIdentifier(((BasicDCOPNode)prog).getID()));
 		this.init(prog);
 	}
 
@@ -71,7 +71,7 @@ public class Node extends BasicCompetentAgent {
 
 	@ProactivityInitialisation
 	public void initialisation(){
-		((BasicAlgorithm)this.program).initialisation();
+		((BasicDCOPNode)this.program).initialisation();
 	}
 
 	// --------------------------------------------------------------------------

@@ -3,6 +3,7 @@ package dima.introspectionbasedagents.kernel;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
@@ -17,6 +18,7 @@ import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessa
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 
 
+	public Random getRandom();
 	//
 	// Hook
 	//

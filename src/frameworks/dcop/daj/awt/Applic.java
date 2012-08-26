@@ -20,6 +20,7 @@ import frameworks.dcop.daj.Scheduler;
 import frameworks.dcop.daj.Selector;
 import frameworks.dcop.daj.SelectorDefault;
 
+
 public abstract class Applic /*extends Applet implements ActionListener*/ {
 
 	/**

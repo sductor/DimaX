@@ -24,6 +24,7 @@ import java.awt.event.MouseMotionListener;
 import frameworks.dcop.daj.Application;
 import frameworks.dcop.daj.Assertion;
 
+
 @SuppressWarnings("serial")
 public class Screen extends Panel implements AdjustmentListener, MouseMotionListener,
 		MouseListener {

@@ -10,7 +10,7 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 
 /**
- * @see frameworks.negotiation.negotiationframework.protocoles.AbstractCommunicationProtocol
+ * @see frameworks.negotiation.protocoles.AbstractCommunicationProtocol
  *
  * @author Ductor Sylvain
  *

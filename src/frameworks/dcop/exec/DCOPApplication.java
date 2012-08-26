@@ -17,6 +17,8 @@ import frameworks.dcop.dcop.Graph;
 import frameworks.dcop.dcop.Helper;
 import frameworks.dcop.dcop.Variable;
 
+
+
 public class DCOPApplication extends Application {
 	private static final long serialVersionUID = 380092569934615212L;
 

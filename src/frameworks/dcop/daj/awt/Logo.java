@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 
 import frameworks.dcop.daj.Assertion;
 
+
 @SuppressWarnings("serial")
 public class Logo extends Panel {
 

@@ -6,6 +6,8 @@ import frameworks.dcop.daj.Message;
 import frameworks.dcop.dcop.Constraint;
 import frameworks.dcop.dcop.Variable;
 
+
+
 public class LocalConstraintMsg extends Message {
 	int id;
 	int domain;

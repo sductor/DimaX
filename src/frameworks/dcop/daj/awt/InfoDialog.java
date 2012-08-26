@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 
 import frameworks.dcop.daj.Assertion;
 
+
 @SuppressWarnings("serial")
 public class InfoDialog extends Dialog implements ActionListener {
 

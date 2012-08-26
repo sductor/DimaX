@@ -16,6 +16,7 @@ import frameworks.dcop.daj.Assertion;
 import frameworks.dcop.daj.Channel;
 import frameworks.dcop.daj.Node;
 
+
 public class ChannelVisual {
 
 	// corresponding channel

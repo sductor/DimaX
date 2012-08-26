@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import darx.DarxMessage;
 import darx.Logger;
@@ -43,6 +44,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	public static int nbCompetentAgent=0;
 	public DimaXTask<BasicCompetentAgent> darxEngine=null;
+	private Random r;
 	boolean isActive=true;
 	
 	@Competence
@@ -143,6 +145,18 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.getMyShell().loadedCompetence;
 	}
 
+	public Random getRandom(){
+		if (r==null)
+			r=new Random();
+		return r;
+	}
+	
+	public void setRandomSeed(long seed){
+		if (r==null)
+			r=new Random(seed);
+		else
+			r.setSeed(seed);		
+	}
 	//
 	// Hook
 	//
@@ -516,6 +530,11 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		this.log.logCommunication(am, MessageStatus.MessageSended);
 	}
 
+	public void sendMessage(final Collection<? extends AgentIdentifier> agentId, final AbstractMessageInterface am) {
+		for (AgentIdentifier id : agentId){
+			sendMessage(agentId, am);
+		}
+	}
 
 	@Override
 	public void receive(final AbstractMessageInterface m) {

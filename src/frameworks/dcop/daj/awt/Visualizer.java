@@ -35,6 +35,7 @@ import java.io.IOException;
 import frameworks.dcop.daj.Application;
 import frameworks.dcop.daj.Network;
 
+
 @SuppressWarnings("serial")
 public class Visualizer extends Frame implements ActionListener, ComponentListener,
 		WindowListener {

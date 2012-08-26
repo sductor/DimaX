@@ -18,6 +18,7 @@ import frameworks.dcop.algo.topt.RewardMatrix;
 import frameworks.dcop.algo.topt.TreeNode;
 
 
+
 public class Graph {
 
 	public HashMap<Integer, Variable> varMap;

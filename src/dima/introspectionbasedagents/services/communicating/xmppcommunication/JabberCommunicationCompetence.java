@@ -291,7 +291,8 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 				}
 				);
 		Connection.DEBUG_ENABLED = true;
-		boolean ok =com.connect(new String[]{"talk.google.com", "5222", "gmail.com","coolhibou","true"});
+		boolean ok =com.connect(new String[]{"chat.facebook.com","5222","facebook.com","ductor.sylvain","true"});
+//		boolean ok =com.connect(new String[]{"talk.google.com", "5222", "gmail.com","coolhibou","true"});
 		System.out.println("connected? "+ok);
 
 		boolean isRunning = true;

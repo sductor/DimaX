@@ -17,6 +17,7 @@ import frameworks.dcop.daj.Assertion;
 import frameworks.dcop.daj.Node;
 
 
+
 public class NodeVisual {
 
 	// associated node

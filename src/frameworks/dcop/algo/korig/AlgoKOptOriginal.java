@@ -14,6 +14,8 @@ import frameworks.dcop.dcop.Graph;
 import frameworks.dcop.dcop.Helper;
 import frameworks.dcop.dcop.Variable;
 
+
+
 public class AlgoKOptOriginal extends BasicAlgorithm {
 
 	int k;

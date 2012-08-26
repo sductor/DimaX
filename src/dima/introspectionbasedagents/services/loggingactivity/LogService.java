@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -867,6 +868,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@Override
 	public void sendNotificationNow() {
 		this.myAgent.sendNotificationNow();
+	}
+
+	@Override
+	public Random getRandom() {
+		return this.myAgent.getRandom();
 	}
 
 }

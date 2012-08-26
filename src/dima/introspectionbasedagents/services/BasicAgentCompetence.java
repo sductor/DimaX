@@ -3,6 +3,7 @@ package dima.introspectionbasedagents.services;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -306,4 +307,8 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return myAgent.getUptime();
 	}
 
+	@Override
+	public Random getRandom() {
+		return this.myAgent.getRandom();
+	}
 }

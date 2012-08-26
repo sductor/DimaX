@@ -15,12 +15,12 @@ import vieux.dcopAmeliorer.daj.OutChannelSet;
 public abstract class Program {
 
 	// node on which program executes
-	public Node node = null;
+	public AgentNode node = null;
 
 	// --------------------------------------------------------------------------
 	// set program node to `n`
 	// --------------------------------------------------------------------------
-	protected void setNode(final Node n) {
+	protected void setNode(final AgentNode n) {
 		this.node = n;
 	}
 

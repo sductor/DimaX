@@ -9,7 +9,7 @@ public class RewardMatrix {
 
 	public int size;
 
-	public int[] data;
+	public double[] data;
 	public int[] value;
 
 	public RewardMatrix(HashMap<Integer, Integer> dmap) {
@@ -20,7 +20,7 @@ public class RewardMatrix {
 			map.put(i, size);
 			size *= dmap.get(i);
 		}
-		data = new int[size];
+		data = new double[size];
 		value = new int[size];
 	}
 

@@ -310,11 +310,11 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 
 		this.backup();
 		for (int i = 0; i < node.mat.getSize(); i++) {
-			int best = -1;
-			int bestVal = -1;
+			double best = -1;
+			int bestVal = 0;
 			for (int j = 0; j < self.domain; j++) {
 				self.value = j;
-				int sum = 0;
+				double sum = 0;
 				for (Constraint c : self.neighbors) {
 					Variable n = c.getNeighbor(self);
 					if (ancestors.contains(n.id)) {

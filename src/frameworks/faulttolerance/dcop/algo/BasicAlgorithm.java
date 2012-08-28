@@ -38,7 +38,7 @@ public abstract class BasicAlgorithm extends Program {
 			nn.fixed = true;
 			view.varMap.put(nn.id, nn);
 			AbstractConstraint cc;
-			if (v == c.first)
+			if (v == c.getFirst())
 				cc = new AbstractConstraint(self, nn);
 			else
 				cc = new AbstractConstraint(nn, self);

@@ -2,23 +2,23 @@ package frameworks.faulttolerance.dcop.dcop;
 
 import java.util.Vector;
 
-public class AbstractVariable {
+public abstract class AbstractVariable<Value> {
 
 	final DcopAbstractGraph graph;
 
+	Value value;
+	
 	public int id;
 	public int domain;
-	public double value;
-	private double _value;
+	public boolean fixed = false;
+
 	public Vector<AbstractConstraint> neighbors;
-	public boolean fixed;
 	
 	public AbstractVariable(int i, int d, DcopAbstractGraph g) {
 		assert g!=null;
 		id = i;
 		graph = g;
 		domain = d;
-		init();
 	}
 
 	public AbstractVariable(String s, DcopAbstractGraph g) {
@@ -28,22 +28,15 @@ public class AbstractVariable {
 		id = Integer.parseInt(ss[1]);
 		domain = Integer.parseInt(ss[3]);
 		graph = g;
-		init();
 	}
+	
+	public abstract double evaluate() ;
 
-	public void init() {
-		value = -1;
-		neighbors = new Vector<AbstractConstraint>();
-		fixed = false;
-	}
+	public abstract void backupValue();
 
-	public void backupValue() {
-		_value = value;
-	}
-
-	public void recoverValue() {
-		value = _value;
-	}
+	public abstract void clear();
+	
+	public abstract void recoverValue() ;
 
 	public boolean addConstraint(AbstractConstraint c) {
 		return neighbors.add(c);
@@ -65,10 +58,9 @@ public class AbstractVariable {
 		return null;
 	}
 
-	public void clear() {
-		if (!fixed)
-			value = -1;
-	}
+
+	public abstract void uninstanciate();
+	public abstract boolean isInstaciated();
 
 	public String toString() {
 		return "VARIABLE " + id + " 1 " + domain + Helper.newline;
@@ -78,17 +70,4 @@ public class AbstractVariable {
 		return neighbors.size();
 	}
 
-	public double evaluate() {
-		if (value == -1) {
-			return -1;
-		}
-		double reward = 0;
-		for (AbstractConstraint c : neighbors) {
-			double v = c.evaluate();
-			if (v == -1)
-				return -1;
-			reward += v;
-		}
-		return reward;
-	}
 }

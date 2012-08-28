@@ -2,15 +2,7 @@ package frameworks.faulttolerance.dcop.dcop;
 
 import java.util.Arrays;
 
-public class ClassicalConstraint {
-
-	DcopAbstractGraph graph;
-
-	public AbstractVariable first;
-	public AbstractVariable second;
-
-	public int d1;
-	public int d2;
+public class ClassicalConstraint extends AbstractConstraint<Integer> {
 
 	public double[][] f;
 
@@ -18,42 +10,31 @@ public class ClassicalConstraint {
 	private int[] m2;
 	private double m;
 
-	public ClassicalConstraint(AbstractVariable a, AbstractVariable b) {
-		assert a.graph == b.graph;
-		first = a;
-		second = b;
-		graph = a.graph;
-		d1 = a.domain;
-		d2 = b.domain;
+	public ClassicalConstraint(AbstractVariable<Integer> a, AbstractVariable<Integer> b) {
+		super(a,b);
+		if (!(a instanceof ClassicalVariable) && !(b instanceof ClassicalVariable))
+			throw new RuntimeException();
 		f = new double[d1][d2];
-		first.addConstraint(this);
-		second.addConstraint(this);
 		m = -1;
 		m1 = new int[d1];
 		m2 = new int[d2];
 	}
 
-	public AbstractVariable getNeighbor(AbstractVariable v) {
-		if (v == first)
-			return second;
-		if (v == second)
-			return first;
-		return null;
+	public ClassicalVariable getFirst() {
+		return (ClassicalVariable) super.getFirst();
 	}
-	public int getNeighbor(int vid) {
-		if (vid == first.id)
-			return second.id;
-		if (vid == second.id)
-			return first.id;
-		return -1;
+
+
+	public ClassicalVariable getSecond() {
+		return (ClassicalVariable)  super.getFirst();
 	}
 	
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CONSTRAINT ");
-		buffer.append(first.id);
+		buffer.append(getFirst().id);
 		buffer.append(" ");
-		buffer.append(second.id);
+		buffer.append(getSecond().id);
 		buffer.append(Helper.newline);
 		for (int i = 0; i < d1; i++) {
 			for (int j = 0; j < d2; j++) {
@@ -71,9 +52,9 @@ public class ClassicalConstraint {
 
 	public double[] encode() {
 		double[] msg = new double[4 + d1 * d2];
-		msg[0] = first.id;
+		msg[0] = getFirst().id;
 		msg[1] = d1;
-		msg[2] = second.id;
+		msg[2] = getSecond().id;
 		msg[3] = d2;
 		for (int i = 0; i < d1; i++){
 			for (int j = 0; j < d2; j++) {
@@ -116,19 +97,19 @@ public class ClassicalConstraint {
 		//System.out.println("(" + first.id + "," + first.value + ") (" + second.id + "," + second.value + ")");
 		if (Helper.app != null)
 			Helper.app.numberEval++;
-		if (first.value == -1 && second.value == -1)
+		if (getFirst().value == -1 && getSecond().value == -1)
 			return m;
-		if (first.value == -1 && second.value != -1){
-			if (m2[second.value]==-1)
+		if (getFirst().value == -1 && getSecond().value != -1){
+			if (m2[getSecond().value]==-1)
 				return Double.NEGATIVE_INFINITY;
-			return f[m2[second.value]][second.value];
+			return f[m2[getSecond().value]][getSecond().value];
 		}			
-		if (first.value != -1 && second.value == -1){
-			if (m1[first.value]==-1)
+		if (getFirst().value != -1 && getSecond().value == -1){
+			if (m1[getFirst().value]==-1)
 				return Double.NEGATIVE_INFINITY;
-			return f[first.value][m1[first.value]];
+			return f[getFirst().value][m1[getSecond().value]];
 		}			
-		return f[first.value][second.value];
+		return f[getFirst().value][getSecond().value];
 	}
 
 	public double evaluate(Integer val1, Integer val2) {

@@ -3,21 +3,21 @@ package frameworks.faulttolerance.dcop.algo.topt;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TreeNode {
+public class TreeNode<Value> {
 	public int id;
-	public int value;
+	public Value value;
 	public boolean fixed;
 	public boolean mark;
 
-	public ArrayList<TreeNode> children;
+	public ArrayList<TreeNode<Value>> children;
 
-	public TreeNode parent;
+	public TreeNode<Value> parent;
 
-	public TreeNode(int i, int val, boolean f, TreeNode p) {
+	public TreeNode(int i, Value val, boolean f, TreeNode<Value> p) {
 		id = i;
 		value = val;
 		fixed = f;
-		children = new ArrayList<TreeNode>();
+		children = new ArrayList<TreeNode<Value>>();
 		if (p != null)
 			p.children.add(this);
 		parent = p;
@@ -37,7 +37,7 @@ public class TreeNode {
 	public HashSet<Integer> getSet() {
 		HashSet<Integer> set = new HashSet<Integer>();
 		set.add(id);
-		for (TreeNode n : children) {
+		for (TreeNode<Value> n : children) {
 			set.addAll(n.getSet());
 		}
 		return set;
@@ -47,11 +47,11 @@ public class TreeNode {
 		return this.getSet().size();
 	}
 
-	public TreeNode find(int i) {
+	public TreeNode<Value> find(int i) {
 		if (this.id == i)
 			return this;
-		for (TreeNode n : children) {
-			TreeNode f = n.find(i);
+		for (TreeNode<Value> n : children) {
+			TreeNode<Value> f = n.find(i);
 			if (f != null)
 				return f;
 		}
@@ -60,7 +60,7 @@ public class TreeNode {
 
 	public void markAll() {
 		this.mark = true;
-		for (TreeNode n : children) {
+		for (TreeNode<Value> n : children) {
 			n.markAll();
 		}
 	}
@@ -69,7 +69,7 @@ public class TreeNode {
 	}
 	public int maxdistanceMarkedNode(){
 		int dist = 0;				
-		for (TreeNode n : children) {
+		for (TreeNode<Value> n : children) {
 			int newtemp = n.maxdistanceMarkedNode(); 
 			if(newtemp > dist){
 				dist = newtemp; 
@@ -88,7 +88,7 @@ public class TreeNode {
 		if(this.mark){
 			set.add(id);
 		}
-		for(TreeNode n: children){
+		for(TreeNode<Value> n: children){
 			set.addAll(n.getMarkedSet());			
 		}
 		return set;

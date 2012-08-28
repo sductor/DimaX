@@ -339,7 +339,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			throw new RuntimeException("arrggh");
 		}
 	}
-
 	//
 	// Methods
 	//

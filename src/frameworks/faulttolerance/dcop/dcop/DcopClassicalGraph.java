@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.HashSet;
 import java.util.Vector;
 
+import frameworks.faulttolerance.dcop.DcopFactory;
 import frameworks.faulttolerance.dcop.algo.Algorithm;
 import frameworks.faulttolerance.dcop.algo.topt.AsyncHelper;
 import frameworks.faulttolerance.dcop.algo.topt.DPOPTreeNode;
@@ -24,10 +25,10 @@ import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 
 
-public class DcopClassicalGraph extends DcopReplicationGraph{
+public class DcopClassicalGraph<Value> extends DcopReplicationGraph<Value>{
 
 	private double _maxReward;
-	private HashMap<Integer, Integer> _bestSolution;
+	private HashMap<Integer, Value> _bestSolution;
 	Algorithm algo;
 	private Random random = new Random();	
 
@@ -65,7 +66,7 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 
 
 	@Override
-	public HashMap<Integer, Integer> solve() {
+	public HashMap<Integer, Value> solve() {
 		if (algo==Algorithm.TOPTAPO && conList.size() > varMap.size() * varMap.size() / 4)
 			return branchBoundSolve();
 		else
@@ -76,12 +77,12 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 	 * 
 	 */
 
-	private HashMap<Integer, Integer> branchBoundSolve() {
-		ArrayList<AbstractVariable> list = new ArrayList<AbstractVariable>();
-		for (AbstractVariable v : varMap.values())
+	private HashMap<Integer, Value> branchBoundSolve() {
+		ArrayList<AbstractVariable<Value>> list = new ArrayList<AbstractVariable<Value>>();
+		for (AbstractVariable<Value> v : varMap.values())
 			list.add(v);
-				Collections.sort(list, new Comparator<AbstractVariable>() {
-					public int compare(AbstractVariable v0, AbstractVariable v1) {
+				Collections.sort(list, new Comparator<AbstractVariable<Value>>() {
+					public int compare(AbstractVariable<Value> v0, AbstractVariable<Value> v1) {
 						if (v0.getDegree() >= v1.getDegree())
 							return -1;
 						else
@@ -90,15 +91,15 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 				});
 				int[] queue = new int[list.size()];
 				int idx = 0;
-				for (AbstractVariable v : list) {
+				for (AbstractVariable<Value> v : list) {
 					queue[idx] = v.id;
 					idx++;
 				}
 
 				this.backup();
 
-				for (AbstractVariable v : varMap.values())
-					if (!v.fixed && v.value == -1)
+				for (AbstractVariable<Value> v : varMap.values())
+					if (!v.fixed && !v.isInstaciated())
 						v.value = 0;
 
 						_maxReward = this.evaluate();
@@ -106,9 +107,9 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 
 						// int r = _maxReward;
 
-						for (AbstractVariable v : varMap.values()) {
+						for (AbstractVariable<Value> v : varMap.values()) {
 							if (!v.fixed)
-								v.value = -1;
+								v.uninstanciate();
 						}
 
 						_bbEnumerate(queue, 0);
@@ -130,7 +131,7 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 			}
 			return;
 		}
-		AbstractVariable v = varMap.get(queue[idx]);
+		AbstractVariable<Value> v = varMap.get(queue[idx]);
 		if (v.fixed)
 			_bbEnumerate(queue, idx + 1);
 		else {
@@ -145,49 +146,55 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 		}
 	}
 
-	public DcopClassicalGraph simplifyGraph() {
-		DcopClassicalGraph tmp = new DcopClassicalGraph();
+	public DcopClassicalGraph<Value> simplifyGraph() {
+		DcopClassicalGraph<Value> tmp = new DcopClassicalGraph<Value>();
 		int maxId = 0;
 		boolean f = false;
-		for (AbstractVariable v : this.varMap.values()) {
+		for (AbstractVariable<Value> v : this.varMap.values()) {
 			if (v.id > maxId)
 				maxId = v.id;
 			if (!v.fixed)
-				tmp.varMap.put(v.id, new AbstractVariable(v.id, v.domain, tmp));
+				tmp.varMap.put(v.id, DcopFactory.constructVariable(v.id, v.domain, tmp));
 			else {
 				f = true;
 				assert v.value != -1;
 			}
 		}
 		maxId++;
-		AbstractVariable s = new AbstractVariable(maxId, 1, tmp);
+		AbstractVariable<Value> s = DcopFactory.constructVariable(maxId, 1, tmp);
 		if (f)
 			tmp.varMap.put(s.id, s);
-		for (AbstractConstraint c : this.conList) {
-			if (!c.first.fixed && !c.second.fixed) {
-				AbstractConstraint cc = new AbstractConstraint(tmp.varMap.get(c.first.id),
-						tmp.varMap.get(c.second.id));
+		for (AbstractConstraint<Value> c : this.conList) {
+			if (!c.getFirst().fixed && !c.getSecond().fixed) {
+				AbstractConstraint<Value> cc = DcopFactory.constructConstraint(tmp.varMap.get(c.getFirst().id),
+						tmp.varMap.get(c.getSecond().id));
+				if (DcopFactory.isClassical()){
 				for (int i = 0; i < cc.d1; i++)
 					for (int j = 0; j < cc.d2; j++)
-						cc.f[i][j] = c.f[i][j];
+						((ClassicalConstraint)cc).f[i][j] = ((ClassicalConstraint)c).f[i][j];
+				}
 				tmp.conList.add(cc);
-			} else if (c.first.fixed && !c.second.fixed) {
-				AbstractConstraint cc = s.getNeighbor(c.second.id);
+			} else if (c.getFirst().fixed && !c.getSecond().fixed) {
+				AbstractConstraint<Value> cc = s.getNeighbor(c.getSecond().id);
 				if (cc == null) {
-					cc = new AbstractConstraint(tmp.varMap.get(c.second.id), s);
+					cc = DcopFactory.constructConstraint(tmp.varMap.get(c.getSecond().id), s);
 					tmp.conList.add(cc);
 				}
+				if (DcopFactory.isClassical()){
 				for (int i = 0; i < cc.d1; i++)
-					cc.f[i][0] += c.f[c.first.value][i];
+					((ClassicalConstraint)cc).f[i][0] += ((ClassicalConstraint)c).f[((ClassicalConstraint)c).getFirst().value][i];
+				}
 
-			} else if (!c.first.fixed && c.second.fixed) {
-				AbstractConstraint cc = s.getNeighbor(c.first.id);
+			} else if (!c.getFirst().fixed && c.getSecond().fixed) {
+				AbstractConstraint<Value> cc = s.getNeighbor(c.getFirst().id);
 				if (cc == null) {
-					cc = new AbstractConstraint(tmp.varMap.get(c.first.id), s);
+					cc = DcopFactory.constructConstraint(tmp.varMap.get(c.getFirst().id), s);
 					tmp.conList.add(cc);
 				}
+				if (DcopFactory.isClassical()){
 				for (int i = 0; i < cc.d1; i++)
-					cc.f[i][0] += c.f[i][c.second.value];
+					((ClassicalConstraint)cc).f[i][0] += ((ClassicalConstraint)c).f[i][((ClassicalConstraint)c).getSecond().value];
+				}
 			}
 		}
 		return tmp;
@@ -195,22 +202,22 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 
 	public int getMaxId() {
 		int max = 0;
-		for (AbstractVariable v : varMap.values())
+		for (AbstractVariable<Value> v : varMap.values())
 			if (v.id > max)
 				max = v.id;
 				return max;
 	}
 
-	public HashMap<Integer, Integer> DPOPSolve() {
-		DcopClassicalGraph tmp = this.simplifyGraph();
+	public HashMap<Integer, Value> DPOPSolve() {
+		DcopClassicalGraph<Value> tmp = this.simplifyGraph();
 		int maxId = tmp.getMaxId();
-		AbstractVariable top = tmp.varMap.get(maxId);
-		HashMap<Integer, Integer> sol = tmp._DPOPSolve(top);
-		HashMap<Integer, Integer> fsol = new HashMap<Integer, Integer>();
+		AbstractVariable<Value> top = tmp.varMap.get(maxId);
+		HashMap<Integer, Value> sol = tmp._DPOPSolve(top);
+		HashMap<Integer, Value> fsol = new HashMap<Integer, Value>();
 		for (Integer i : sol.keySet())
 			if (this.varMap.containsKey(i))
 				fsol.put(i, sol.get(i));
-				for (AbstractVariable v : varMap.values()) {
+				for (AbstractVariable<Value> v : varMap.values()) {
 					if (v.fixed)
 						fsol.put(v.id, v.value);
 				}
@@ -218,8 +225,8 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 				return fsol;
 	}
 
-	private HashMap<Integer, Integer> _DPOPSolve(AbstractVariable top) {
-		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+	private HashMap<Integer, Value> _DPOPSolve(AbstractVariable<Value> top) {
+		HashMap<Integer, Value> map = new HashMap<Integer, Value>();
 		HashSet<Integer> visited = new HashSet<Integer>();
 		DPOPTreeNode root = new DPOPTreeNode(top.id, 0, 0, false, null);
 		visited.add(top.id);
@@ -231,7 +238,7 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 			DPOPTreeNode parent = (DPOPTreeNode) node.parent;
 			if (parent != null) {
 				boolean fullinfo = true;
-				for (TreeNode n : parent.children) {
+				for (TreeNode<Value> n : parent.children) {
 					if (((DPOPTreeNode) n).mat == null) {
 						fullinfo = false;
 						break;
@@ -246,14 +253,14 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 		while (!queue.isEmpty()) {
 			DPOPTreeNode node = queue.remove(0);
 			int offset = 0;
-			TreeNode n = node.parent;
+			TreeNode<Value> n = node.parent;
 			while (n != null) {
 				offset += node.mat.getBase(n.id) * n.value;
 				n = n.parent;
 			}
 			node.value = node.mat.value[offset];
 			map.put(node.id, node.value);
-			for (TreeNode nn : node.children)
+			for (TreeNode<Value> nn : node.children)
 				queue.add((DPOPTreeNode) nn);
 		}
 		return map;
@@ -261,10 +268,10 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 
 	private void depthFirstTraverse(DPOPTreeNode parent,
 			HashSet<Integer> visited, ArrayList<DPOPTreeNode> leafList) {
-		AbstractVariable v = this.varMap.get(parent.id);
+		AbstractVariable<Value> v = this.varMap.get(parent.id);
 		assert v != null;
-		for (AbstractConstraint c : v.neighbors) {
-			AbstractVariable n = c.getNeighbor(v);
+		for (AbstractConstraint<Value> c : v.neighbors) {
+			AbstractVariable<Value> n = c.getNeighbor(v);
 			if (!visited.contains(n.id)) {
 				DPOPTreeNode node = new DPOPTreeNode(n.id, 0, 0, false, parent);
 				visited.add(n.id);
@@ -277,7 +284,7 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 
 	private void computeMatrix(DPOPTreeNode node) {
 		// TODO consider children
-		AbstractVariable self = varMap.get(node.id);
+		AbstractVariable<Value> self = varMap.get(node.id);
 
 		HashSet<Integer> ancestors = new HashSet<Integer>();
 		ArrayList<RewardMatrix> matList = new ArrayList<RewardMatrix>();
@@ -294,8 +301,8 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 		}
 
 		HashMap<Integer, Integer> list = new HashMap<Integer, Integer>();
-		for (AbstractConstraint c : self.neighbors) {
-			AbstractVariable n = c.getNeighbor(self);
+		for (AbstractConstraint<Value> c : self.neighbors) {
+			AbstractVariable<Value> n = c.getNeighbor(self);
 			if (ancestors.contains(n.id))
 				list.put(n.id, n.domain);
 		}
@@ -310,13 +317,13 @@ public class DcopClassicalGraph extends DcopReplicationGraph{
 
 		this.backup();
 		for (int i = 0; i < node.mat.getSize(); i++) {
-			int best = -1;
+			double best = -1;
 			int bestVal = -1;
 			for (int j = 0; j < self.domain; j++) {
 				self.value = j;
 				double sum = 0;
-				for (AbstractConstraint c : self.neighbors) {
-					AbstractVariable n = c.getNeighbor(self);
+				for (AbstractConstraint<Value> c : self.neighbors) {
+					AbstractVariable<Value> n = c.getNeighbor(self);
 					if (ancestors.contains(n.id)) {
 						n.value = node.mat.getValue(i, n.id);
 						sum += c.evaluate();

@@ -1,5 +1,9 @@
 package frameworks.faulttolerance.dcop.dcop;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,13 +16,15 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 
 import frameworks.experimentation.IfailedException;
+import frameworks.faulttolerance.dcop.DcopFactory;
+import frameworks.faulttolerance.dcop.DcopFactory.DCOPType;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public abstract class DcopReplicationGraph extends DcopAbstractGraph {
+public abstract class DcopReplicationGraph<Value> extends DcopAbstractGraph<Value> {
 
 
 	public DcopReplicationGraph(
@@ -30,8 +36,8 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 			final Double hostFaultProbabilityMean,final DispersionSymbolicValue hostDisponibilityDispersion,
 			boolean completGraph, int agentAccessiblePerHost) throws IfailedException{
 		super();
-		varMap = new HashMap<Integer, AbstractVariable>();
-		conList = new Vector<AbstractConstraint>();
+		varMap = new HashMap<Integer, AbstractVariable<Value>>();
+		conList = new Vector<AbstractConstraint<Value>>();
 
 		ReplicationInstanceGraph rig = new ReplicationInstanceGraph();
 
@@ -46,7 +52,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 
 		for (AgentState a : rig.getAgentStates()) {
 			AgentIdentifier id = a.getMyAgentIdentifier();
-			AbstractVariable v = new AbstractVariable(
+			AbstractVariable v = DcopFactory.constructVariable(
 					identifierToInt(id,nbAgents), 
 					(int) Math.pow(2, rig.getAccessibleHost(id).size()),
 					this);
@@ -56,7 +62,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 		}
 		for (HostState h : rig.getHostsStates()){
 			ResourceIdentifier id = h.getMyAgentIdentifier();
-			AbstractVariable v = new AbstractVariable(
+			AbstractVariable v = DcopFactory.constructVariable(
 					identifierToInt(id,nbAgents), 
 					(int) Math.pow(2, rig.getAccessibleAgent(id).size()),
 					this);
@@ -70,7 +76,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 			AbstractVariable agentVar = varMap.get(identifierToInt(idAgent,nbAgents));
 			for (ResourceIdentifier idHost : rig.getAccessibleHost(idAgent)){
 				AbstractVariable hostVar = varMap.get(identifierToInt(idHost,nbAgents));
-				AbstractConstraint c = new AbstractConstraint(agentVar, hostVar);
+				AbstractConstraint c = DcopFactory.constructConstraint(agentVar, hostVar);
 				conList.add(c);
 
 				instanciateConstraintsValues(rig, idAgent, idHost, agentVar,
@@ -103,10 +109,10 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 		}
 		result+="\n Contraints :\n";
 		for (AbstractConstraint c : conList){
-			result+="("+c.first.id+","+c.second.id+") --> \n";
+			result+="("+c.getFirst().id+","+c.getSecond().id+") --> \n";
 			for (int i = 0; i < c.d1; i++){
 				for (int j = 0; j < c.d2; j++){
-					result+="   ------ "+Integer.toBinaryString(i)+" -- "+Integer.toBinaryString(j)+"  =  "+c.f[i][j]+"\n";
+					result+="   ------ "+Integer.toBinaryString(i)+" -- "+Integer.toBinaryString(j);//+"  =  "+c.f[i][j]+"\n";
 				}
 			}
 		}
@@ -120,13 +126,15 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 	private void instanciateConstraintsValues(ReplicationInstanceGraph rig,
 			AgentIdentifier idAgent, ResourceIdentifier idHost,
 			AbstractVariable agentVar, AbstractVariable hostVar, AbstractConstraint c) {
+		if (DcopFactory.type==DCOPType.Classical){
 		for (int x = 0; x < agentVar.domain; x++){
 			for (int y = 0; y < hostVar.domain; y++){
 				if (!respectAgentRight(idAgent,x,rig)|| !respectHostRight(idHost,y,rig) ||  !consistant(idAgent,idHost,x,y,rig))
-					c.f[x][y]=Double.NEGATIVE_INFINITY;
+					((ClassicalConstraint)c).f[x][y]=Double.NEGATIVE_INFINITY;
 				else
-					c.f[x][y]= valeur(idAgent,x,rig);
+					((ClassicalConstraint)c).f[x][y]= valeur(idAgent,x,rig);
 			}
+		}
 		}
 	}
 
@@ -179,7 +187,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 		for (HostState h : rig.getHostsStates()) {
 			ResourceIdentifier idHost = h.getMyAgentIdentifier();
 			for (AgentIdentifier idAgent : rig.getAccessibleAgent(idHost)){
-				AbstractConstraint c = new AbstractConstraint(varMap.get(idAgent), varMap.get(idHost));
+				AbstractConstraint c =  DcopFactory.constructConstraint(varMap.get(idAgent), varMap.get(idHost));
 				assert conList.contains(c);
 			}
 		}

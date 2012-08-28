@@ -155,8 +155,8 @@ public class DCOPApplication extends Application {
 			link(controller, node);
 		}
 		for (AbstractConstraint c : g.conList) {
-			Node first = nodeMap.get(c.first.id);
-			Node second = nodeMap.get(c.second.id);
+			Node first = nodeMap.get(c.getFirst().id);
+			Node second = nodeMap.get(c.getSecond().id);
 			link(first, second);
 			link(second, first);
 		}

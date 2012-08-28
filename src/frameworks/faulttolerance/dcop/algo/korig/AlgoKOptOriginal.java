@@ -69,8 +69,8 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 		}
 		korigSelf = korigView.varMap.get(self.id);
 		for (AbstractConstraint c : view.conList) {
-			AbstractConstraint cc = new AbstractConstraint(korigView.getVar(c.first.id),
-					korigView.getVar(c.second.id));
+			AbstractConstraint cc = new AbstractConstraint(korigView.getVar(c.getFirst().id),
+					korigView.getVar(c.getSecond().id));
 			korigView.conList.add(cc);
 			for (int i = 0; i < c.d1; i++)
 				for (int j = 0; j < c.d2; j++)

@@ -2,41 +2,29 @@ package frameworks.faulttolerance.dcop.dcop;
 
 import java.util.Vector;
 
-public class ClassicalVariable {
+public class ClassicalVariable extends AbstractVariable<Integer>{
 
-	final DcopAbstractGraph graph;
-
-	public int id;
-	public int domain;
-	public double value;
-	private double _value;
+	private int _value;
 	public Vector<AbstractConstraint> neighbors;
-	public boolean fixed;
 	
 	public ClassicalVariable(int i, int d, DcopAbstractGraph g) {
-		assert g!=null;
-		id = i;
-		graph = g;
-		domain = d;
+		super(i,d,g);
 		init();
 	}
 
 	public ClassicalVariable(String s, DcopAbstractGraph g) {
-		assert g!=null;
-		String[] ss = s.split(" ");
-//		assert ss.length >= 5;
-		id = Integer.parseInt(ss[1]);
-		domain = Integer.parseInt(ss[3]);
-		graph = g;
+		super(s,g);
 		init();
 	}
 
-	public void init() {
+	private void init() {
 		value = -1;
 		neighbors = new Vector<AbstractConstraint>();
-		fixed = false;
 	}
 
+	public void uninstanciate(){
+		value = -1;		
+	}
 	public void backupValue() {
 		_value = value;
 	}
@@ -90,5 +78,10 @@ public class ClassicalVariable {
 			reward += v;
 		}
 		return reward;
+	}
+
+	@Override
+	public boolean isInstaciated() {
+		return value!=-1;
 	}
 }

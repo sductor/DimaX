@@ -99,7 +99,7 @@ public class AlgoMGM1 extends BasicAlgorithm {
 				AbstractVariable n = c.getNeighbor(self);
 				if (n.value == -1)
 					return -1;
-				if (self == c.first)
+				if (self == c.getFirst())
 					sum += c.f[i][n.value];
 				else
 					sum += c.f[n.value][i];

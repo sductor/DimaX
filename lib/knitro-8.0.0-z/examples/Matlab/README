@@ -1,0 +1,115 @@
+Using KNITRO with Matlab(R)
+---------------------------
+
+This directory contains example code illustrating how to call KNITRO from the 
+Matlab language using the "ktrlink" interface.
+
+NOTE: The KNITRO/Matlab link "ktrlink" requires Matlab release R2008a
+or later including Optimization Toolbox, as well as a valid KNITRO
+installation (version 5.2 or later).
+
+README.txt:           This file.
+
+exampleNLP1.m         A Matlab example code illustrating how to solve a
+                      small nonlinear optimization model using the KNITRO 
+                      Mex interface "ktrlink".
+
+exampleQP1.m          A Matlab example code illustrating how to solve a
+                      small quadratic programming (QP) model using the KNITRO 
+                      Mex interface "ktrlink".
+
+exampleLP1.m          A Matlab example code illustrating how to solve a
+                      small linear programming (LP) model using the KNITRO 
+                      Mex interface "ktrlink".
+
+qpoptions.opt         A sample KNITRO input file of user options that are
+                      often ideal for quadratic programming (QP) models.
+                      Contents can be modified using any text-based editor. The
+                      file can be passed as the last parameter to "ktrlink".
+
+lpoptions.opt         A sample KNITRO input file of user options that are
+                      often ideal for linear programming (LP) models.
+                      Contents can be modified using any text-based editor. The
+                      file can be passed as the last parameter to "ktrlink".
+
+knitro.opt            A sample KNITRO input file complete a complete list of 
+                      user options.  Contents can be modified using any 
+                      text-based editor.  The file can be passed as the last 
+                      parameter to "ktrlink".
+
+
+Installation
+------------
+
+1) Make sure a Ziena license for KNITRO is properly installed.  See Section 2.2
+   of "ZienaLicenseMgr_UserManual.pdf" provided in the "doc" directory of this
+   distribution for instructions on installing a KNITRO license.  There are
+   several options for installing the license file.  The easiest is typically 
+   to put the license file whose name begins with "ziena_lic" in your "$HOME" 
+   or "$HOME/.ziena/" directory.
+
+2) In order to use ktrlink, you need to tell MATLAB where the KNITRO shared 
+   object library ("libknitro.so", "libknitro.so.8" or similar file) resides.  
+   To do this, set the $LD_LIBRARY_PATH environment variable to include the 
+   "lib" directory holding the KNITRO libraries via the command:
+
+    export LD_LIBRARY_PATH=<full_path_to_knitro_lib_directory>:$LD_LIBRARY_PATH
+   
+   or
+
+    setenv LD_LIBRARY_PATH <full_path_to_knitro_lib_directory>:$LD_LIBRARY_PATH
+
+NOTE: Matlab releases R2008a, R2008b, and R2009a expect the KNITRO library file 
+      on Linux to be named "libknitro.so.5". Matlab releases R2009b, R2010a, and 
+      R2010b expect the KNITRO library file on Linux to be named "libknitro.so.6".
+      Matlab releases R2011a, R2011b and R2012a expect the KNITRO library file on 
+      Linux to be named "libknitro.so.7".	
+
+      To use KNITRO 8.x or later with Matlab release R2008a through 2011b, you 
+      must simply make a copy of the KNITRO shared object library provided, and 
+      rename it appropriately (if a copy of this name does not already exist),
+      or create a symbolic link to the expected name.  For example, in the KNITRO 
+      library directory, issue the command:
+
+        ln -s libknitro.so.8.0.0 libknitro.so.5
+
+      for Matlab releases R2008a, R2008b, or R2009a, or
+
+        ln -s libknitro.so.8.0.0 libknitro.so.6
+
+      for Matlab releases R2009b, R2010a, or R2010b or
+
+        ln -s libknitro.so.8.0.0 libknitro.so.7
+
+      for Matlab releases R2011a, R2011b, or R2012a to allow the KNITRO 8.0.0 
+      distribution to work with Matlab releases R2008a through R2011b.
+
+3) Once the $LD_LIBRARY_PATH environment variable is set correctly, close and 
+   re-open Matlab.  To test whether your installation was successful, type in 
+   the expression
+
+      [x fval] = ktrlink(@(x)cos(x),1)
+
+   at the Matlab command prompt. If your installation was successful, ktrlink
+   returns x = 3.1416, fval = -1.
+  
+   To run the examples provided in this directory, just type "exampleNLP1", for
+   example, at a Matlab  prompt to run the example "exampleNLP1.m".
+
+
+Documentation
+-------------
+
+This distribution provides documentation on KNITRO itself. Specific 
+KNITRO/Matlab interface documentation can be found on the Matlab Optimization 
+Toolbox webpages.  Go to:
+
+  http://www.mathworks.com/access/helpdesk/help/toolbox/optim/
+
+For instructions on installing and using the KNITRO/Matlab interface "ktrlink" 
+click on the "External Interfaces" link on the left side and select "ktrlink".
+Also see, 
+
+ http://www.ziena.com/matlabknitro.html
+
+for additional information or examples regarding use of KNITRO with Matlab.

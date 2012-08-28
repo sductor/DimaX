@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started with MATLAB &mdash; KNITRO user guide 8.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '8.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="KNITRO user guide 8.0 documentation" href="../../index.html" />
+    <link rel="up" title="Getting started" href="../gettingStarted.html" />
+    <link rel="next" title="Getting started with the callable library" href="startCallableLibrary.html" />
+    <link rel="prev" title="Getting started with AMPL" href="startAmpl.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="startCallableLibrary.html" title="Getting started with the callable library"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="startAmpl.html" title="Getting started with AMPL"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../../2_userGuide.html" >User guide</a> &raquo;</li>
+          <li><a href="../gettingStarted.html" accesskey="U">Getting started</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started-with-matlab">
+<span id="startmatlab"></span><h1>Getting started with MATLAB</h1>
+<p>The KNITRO interface for MATLAB, called <em>ktrlink</em>, is provided
+as part of the MATLAB Optimization Toolbox. To test whether your installation
+is correct, type in the expression:</p>
+<div class="highlight-python"><pre>[x fval] = ktrlink(@(x)cos(x),1)</pre>
+</div>
+<p>at the MATLAB command prompt. If your installation was successful, <em>ktrlink</em>
+returns:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="mf">3.1416</span><span class="p">,</span> <span class="n">fval</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
+</pre></div>
+</div>
+<p>If you do not get this output but an error stating that <em>ktrlink</em> was
+not found, it probably means that the optimization toolbox is not installed.
+If <em>ktrlink</em> is found and returns an error stating that the dynamic library was
+not found, it means that the KNITRO library is not on the PATH. If KNITRO is found
+and called but returns an error, it probably means that no license was found.
+In any of these situations, please see <a class="reference internal" href="../../1_introduction/troubleshooting.html#sec-troubleshooting"><em>Troubleshooting</em></a>.</p>
+<div class="section" id="the-ktrlink-interface">
+<h2>The <em>ktrlink</em> interface</h2>
+<p>The <em>ktrlink</em> interface to KNITRO in MATLAB is very similar to
+MATLAB&#8217;s built-in <em>fmincon</em> function signature; the most elaborate
+form is:</p>
+<div class="highlight-python"><pre>[x,fval,exitflag,output,lambda] =
+        ktrlink(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon,options,KNITROOptions)</pre>
+</div>
+<p>but the simplest function call reduces to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">ktrlink</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span><span class="n">x0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <em>ktrlink</em> interface is discussed in more details in the
+MATLAB online documentation:</p>
+<blockquote>
+<div><a class="reference external" href="http://www.mathworks.com/help/toolbox/optim/ug/ktrlink.html">http://www.mathworks.com/help/toolbox/optim/ug/ktrlink.html</a>.</div></blockquote>
+</div>
+<div class="section" id="first-matlab-example">
+<h2>First MATLAB example</h2>
+<p>Let&#8217;s consider the same example as before (in section <a class="reference internal" href="startAmpl.html#getstartampl"><em>Getting started with AMPL</em></a>),
+converted into MATLAB.</p>
+<div class="highlight-none"><div class="highlight"><pre>% objective to minimize
+obj = @(x) 1000 - x(1)^2 - 2*x(2)^2 - x(3)^2 - x(1)*x(2) - x(1)*x(3);
+
+% No nonlinear equality constraints.
+ceq  = [];
+
+% Specify nonlinear inequality constraint to be nonnegative
+c2 =  @(x) x(1)^2 + x(2)^2 + x(3)^2 - 25;
+
+% &quot;nlcon&quot; should return [c, ceq] with c(x) &lt;= 0 and ceq(x) = 0
+% so we need to negate the inequality constraint above
+nlcon = @(x)deal(-c2(x), ceq);
+
+% Initial point
+x0  = [2; 2; 2];
+
+% No linear inequality contraint (&quot;A*x &lt;= b&quot;)
+A = [];
+b = [];
+
+% Since the equality constraint &quot;c1&quot; is linear, specify it here  (&quot;Aeq*x = beq&quot;)
+Aeq = [8 14 7];
+beq = [56];
+
+% lower and upper bounds
+lb = zeros(3,1);
+ub = [];
+
+% solver call
+x = ktrlink(obj, x0, A, b, Aeq, beq, lb, ub, nlcon);
+</pre></div>
+</div>
+<p>Saving this code in a file <em>example.m</em> in the current folder and
+issuing <em>example</em> at the MATLAB prompt produces the following output.</p>
+<div class="highlight-none"><div class="highlight"><pre>======================================
+       Commercial Ziena License
+             KNITRO 8.0.0
+          Ziena Optimization
+======================================
+
+WARNING: Option presolve=1 not valid when gradopt=2 (finite differences).
+         No presolve will be applied.
+algorithm:            1
+gradopt:              2
+hessopt:              2
+honorbnds:            1
+maxit:                10000
+outlev:               1
+presolve:             0
+KNITRO changing bar_switchrule from AUTO to 2.
+KNITRO changing bar_murule from AUTO to 4.
+KNITRO changing bar_initpt from AUTO to 2.
+KNITRO changing bar_penaltyrule from AUTO to 2.
+KNITRO changing bar_penaltycons from AUTO to 1.
+KNITRO changing linsolver from AUTO to 2.
+
+Problem Characteristics
+-----------------------
+Objective goal:  Minimize
+Number of variables:                         3
+        bounded below:                       3
+        bounded above:                       0
+        bounded below and above:             0
+        fixed:                               0
+        free:                                0
+Number of constraints:                       2
+        linear equalities:                   1
+        nonlinear equalities:                0
+        linear inequalities:                 0
+        nonlinear inequalities:              1
+        range:                               0
+Number of nonzeros in Jacobian:              6
+Number of nonzeros in Hessian:               6
+
+EXIT: Locally optimal solution found.
+
+Final Statistics
+----------------
+Final objective value               =   9.36000000020000e+02
+Final feasibility error (abs / rel) =   0.00e+00 / 0.00e+00
+Final optimality error  (abs / rel) =   2.37e-09 / 1.48e-10
+# of iterations                     =          9
+# of CG iterations                  =          0
+# of function evaluations           =         40
+# of gradient evaluations           =          0
+Total program time (secs)           =       0.03261 (     0.042 CPU time)
+Time spent in evaluations (secs)    =       0.03072
+
+===============================================================================
+</pre></div>
+</div>
+<p>The objective function value is the same (about 936.0) as in the AMPL example.
+However, even though we solved the same problem, things went quite
+differently behind the scene in these two examples;
+as we will see in Section <a class="reference internal" href="../derivatives.html#sec-derivatives"><em>Derivatives</em></a>, AMPL provides
+derivatives to KNITRO automatically, whereas in MATLAB the user must
+do it manually. Since we did not provide these derivatives, KNITRO had
+to approximate them. Note that with AMPL, only 8 function evaluations
+took place, whereas there were 40 in the MATLAB example.
+On a large problem, this could have made a very
+significant difference in performance.</p>
+</div>
+<div class="section" id="further-documentation">
+<h2>Further documentation</h2>
+<p>This distribution provides documentation on KNITRO itself. Specific
+KNITRO/MATLAB interface documentation can be found on the MATLAB Optimization
+Toolbox webpages at:</p>
+<blockquote>
+<div><a class="reference external" href="http://www.mathworks.com/access/helpdesk/help/toolbox/optim/">http://www.mathworks.com/access/helpdesk/help/toolbox/optim/</a></div></blockquote>
+<p>For instructions on installing and using the KNITRO/MATLAB interface &#8220;ktrlink&#8221;
+click on the &#8220;User&#8217;s Guide-&gt;External Interfaces&#8221; link on the left side and select &#8220;ktrlink&#8221;.</p>
+</div>
+<div class="section" id="additional-examples">
+<h2>Additional examples</h2>
+<p>More examples are provided in the <tt class="file docutils literal"><span class="pre">examples/Matlab</span></tt> directory of the
+KNITRO distribution. Also see,</p>
+<blockquote>
+<div><a class="reference external" href="http://www.ziena.com/matlabknitro.html">http://www.ziena.com/matlabknitro.html</a></div></blockquote>
+<p>for additional information or examples regarding use of KNITRO with MATLAB.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started with MATLAB</a><ul>
+<li><a class="reference internal" href="#the-ktrlink-interface">The <em>ktrlink</em> interface</a></li>
+<li><a class="reference internal" href="#first-matlab-example">First MATLAB example</a></li>
+<li><a class="reference internal" href="#further-documentation">Further documentation</a></li>
+<li><a class="reference internal" href="#additional-examples">Additional examples</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="startAmpl.html"
+                        title="previous chapter">Getting started with AMPL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="startCallableLibrary.html"
+                        title="next chapter">Getting started with the callable library</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="startCallableLibrary.html" title="Getting started with the callable library"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="startAmpl.html" title="Getting started with AMPL"
+             >previous</a> |</li>
+        <li><a href="../../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../../2_userGuide.html" >User guide</a> &raquo;</li>
+          <li><a href="../gettingStarted.html" >Getting started</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Ziena Optimization LLC.
+    </div>
+  </body>
+</html>

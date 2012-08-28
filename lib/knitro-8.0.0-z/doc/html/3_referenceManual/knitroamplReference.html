@@ -1,0 +1,1517 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>KNITRO / AMPL reference &mdash; KNITRO user guide 8.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="KNITRO user guide 8.0 documentation" href="../index.html" />
+    <link rel="up" title="Reference manual" href="../3_referenceManual.html" />
+    <link rel="next" title="Callable library reference" href="callableLibraryReference.html" />
+    <link rel="prev" title="Reference manual" href="../3_referenceManual.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="callableLibraryReference.html" title="Callable library reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../3_referenceManual.html" title="Reference manual"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../3_referenceManual.html" accesskey="U">Reference manual</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="knitro-ampl-reference">
+<span id="knitroamplreference"></span><h1>KNITRO / AMPL reference</h1>
+<p id="index-0">A complete list of available KNITRO options can always be shown
+by typing:</p>
+<div class="highlight-python"><pre>knitroampl -=</pre>
+</div>
+<p>in a terminal, which produces the following output.</p>
+<div class="highlight-none"><div class="highlight"><pre>alg                   Algorithm (0=auto, 1=direct, 2=cg, 3=active, 5=multi)
+algorithm             Algorithm (0=auto, 1=direct, 2=cg, 3=active, 5=multi)
+bar_directinterval    Frequency for trying to force direct steps
+bar_feasible          Emphasize feasibility
+bar_feasmodetol       Tolerance for entering stay feasible mode
+bar_initmu            Initial value for barrier parameter
+bar_initpt            Barrier initial point strategy
+bar_maxbacktrack      Maximum number of linesearch backtracks
+bar_maxcrossit        Maximum number of crossover iterations
+bar_maxrefactor       Maximum number of KKT refactorizations allowed
+bar_murule            Rule for updating the barrier parameter
+bar_penaltycons       Apply penalty method to constraints
+bar_penaltyrule       Rule for updating the penalty parameter
+bar_switchrule        Rule for barrier switching alg
+blasoption            Which BLAS/LAPACK library to use
+blasoptionlib         Name of dynamic BLAS/LAPACK library
+cplexlibname          Name of dynamic CPLEX library
+debug                 Debugging level (0=none, 1=problem, 2=execution)
+delta                 Initial trust region radius
+feastol               Feasibility stopping tolerance
+feastol_abs           Absolute feasibility tolerance
+feastolabs            Absolute feasibility tolerance
+gradopt               Gradient computation method
+hessopt               Hessian computation method
+honorbnds             Enforce satisfaction of the bounds
+infeastol             Infeasibility stopping tolerance
+linsolver             Which linear solver to use
+lmsize                Number of limited-memory pairs stored for LBFGS
+lpsolver              LP solver used by Active Set algorithm
+ma_maxtime_cpu        Maximum CPU time when &#39;alg=multi&#39;, in seconds
+ma_maxtime_real       Maximum real time when &#39;alg=multi&#39;, in seconds
+ma_outsub             Enable subproblem output when &#39;alg=multi&#39;
+ma_terminate          Termination condition when option &#39;alg=multi&#39;
+maxcgit               Maximum number of conjugate gradient iterations
+maxit                 Maximum number of iterations
+maxtime_cpu           Maximum CPU time in seconds, per start point
+maxtime_real          Maximum real time in seconds, per start point
+mip_branchrule        MIP branching rule
+mip_debug             MIP debugging level (0=none, 1=all)
+mip_gub_branch        Branch on GUBs (0=no, 1=yes)
+mip_heuristic         MIP heuristic search
+mip_heuristic_maxit   MIP heuristic iteration limit
+mip_implications      Add logical implications (0=no, 1=yes)
+mip_integer_tol       Threshold for deciding integrality
+mip_integral_gap_abs  Absolute integrality gap stop tolerance
+mip_integral_gap_rel  Relative integrality gap stop tolerance
+mip_knapsack          Add knapsack cuts (0=no, 1=ineqs, 2=ineqs+eqs)
+mip_lpalg             LP subproblem algorithm
+mip_maxnodes          Maximum nodes explored
+mip_maxsolves         Maximum subproblem solves
+mip_maxtime_cpu       Maximum CPU time in seconds for MIP
+mip_maxtime_real      Maximum real in seconds time for MIP
+mip_method            MIP method (0=auto, 1=BB, 2=HQG)
+mip_outinterval       MIP output interval
+mip_outlevel          MIP output level
+mip_outsub            Enable MIP subproblem output
+mip_pseudoinit        Pseudo-cost initialization
+mip_rootalg           Root node relaxation algorithm
+mip_rounding          MIP rounding rule
+mip_selectrule        MIP node selection rule
+mip_strong_candlim    Strong branching candidate limit
+mip_strong_level      Strong branching tree level limit
+mip_strong_maxit      Strong branching iteration limit
+mip_terminate         Termination condition for MIP
+ms_enable             Enable multistart
+ms_maxbndrange        Maximum unbounded variable range for multistart
+ms_maxsolves          Maximum KNITRO solves for multistart
+ms_maxtime_cpu        Maximum CPU time for multistart, in seconds
+ms_maxtime_real       Maximum real time for multistart, in seconds
+ms_num_to_save        Feasible points to save from multistart
+ms_outsub             Enable subproblem output for parallel multistart
+ms_savetol            Tol for feasible points being equal
+ms_seed               Seed for multistart random generator
+ms_startptrange       Maximum variable range for multistart
+ms_terminate          Termination condition for multistart
+newpoint              Use newpoint feature
+objno                 objective number: 0 = none, 1 = first (default),
+                      2 = second (if _nobjs &gt; 1), etc.
+objrange              Objective range
+objrep                Whether to replace
+                        minimize obj: v;
+                      with
+                        minimize obj: f(x)
+                      when variable v appears linearly
+                      in exactly one constraint of the form
+                        s.t. c: v &gt;= f(x);
+                      or
+                        s.t. c: v == f(x);
+                      Possible objrep values:
+                      0 = no
+                      1 = yes for v &gt;= f(x) (default)
+                      2 = yes for v == f(x)
+                      3 = yes in both cases
+opttol                Optimality stopping tolerance
+opttol_abs            Absolute optimality tolerance
+opttolabs             Absolute optimality tolerance
+outappend             Append to output files (0=no, 1=yes)
+outdir                Directory for output files
+outlev                Control printing level
+outmode               Where to direct output (0=screen, 1=file, 2=both)
+par_numthreads        Number of parallel threads
+pivot                 Initial pivot tolerance
+presolve              KNITRO presolver level
+presolve_dbg          KNITRO presolver debugging level
+presolve_tol          KNITRO presolver tolerance
+relax                 whether to ignore integrality: 0 (default) = no, 1 = yes
+scale                 Automatic scaling option
+soc                   Second order correction options
+timing                Whether to report problem I/O and solve times:
+                        0 (default) = no
+                        1 = yes, on stdout
+version               Report software version
+wantsol               solution report without -AMPL: sum of
+                        1 ==&gt; write .sol file
+                        2 ==&gt; print primal variable values
+                        4 ==&gt; print dual variable values
+                        8 ==&gt; do not print solution message
+xtol                  Stepsize stopping tolerance
+</pre></div>
+</div>
+<p>These options are detailed below.</p>
+<div class="section" id="knitro-options-in-ampl">
+<h2>KNITRO options in AMPL</h2>
+<ul class="simple">
+<li><strong>alg</strong>: optimization algorithm used (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#algorithm" title="algorithm"><tt class="xref c c-type docutils literal"><span class="pre">algorithm</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the algorithm</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>Interior/Direct (barrier) algorithm</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>Interior/CG (barrier) algorithm</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>Active Set algorithm</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Run multiple algorithms</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>bar_directinterval</strong>: frequency for trying to force direct steps (default 10). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_directinterval" title="bar_directinterval"><tt class="xref c c-type docutils literal"><span class="pre">bar_directinterval</span></tt></a>.</li>
+<li><strong>bar_feasible</strong>: whether feasibility is given special emphasis (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_feasible" title="bar_feasible"><tt class="xref c c-type docutils literal"><span class="pre">bar_feasible</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>no special emphasis on feasibility</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>iterates must honor inequalities</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>emphasize first getting feasible before optimizing</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>implement both options 1 and 2 above</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>bar_feasmodetol</strong>: tolerance for entering stay feasible mode (default 1.0e-4). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_feasmodetol" title="bar_feasmodetol"><tt class="xref c c-type docutils literal"><span class="pre">bar_feasmodetol</span></tt></a>.</li>
+<li><strong>bar_initmu</strong>: initial value for barrier parameter (default 1.0e-1). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_initmu" title="bar_initmu"><tt class="xref c c-type docutils literal"><span class="pre">bar_initmu</span></tt></a>.</li>
+<li><strong>bar_initpt</strong>: initial point strategy for barrier algorithms (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_initpt" title="bar_initpt"><tt class="xref c c-type docutils literal"><span class="pre">bar_initpt</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the initial point strategy</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>shift the initial point to improve barrier performance</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>do not alter the initial point supplied by the user</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>bar_maxbacktrack</strong>: maximum number of linesearch backtracks (default 3). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_maxbacktrack" title="bar_maxbacktrack"><tt class="xref c c-type docutils literal"><span class="pre">bar_maxbacktrack</span></tt></a>.</li>
+<li><strong>bar_maxcrossit</strong>: maximum number of allowable crossover iterations (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_maxcrossit" title="bar_maxcrossit"><tt class="xref c c-type docutils literal"><span class="pre">bar_maxcrossit</span></tt></a>.</li>
+<li><strong>bar_maxrefactor</strong>: maximum number of KKT refactorizations allowed (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_maxrefactor" title="bar_maxrefactor"><tt class="xref c c-type docutils literal"><span class="pre">bar_maxrefactor</span></tt></a>.</li>
+<li><strong>bar_murule</strong>: barrier parameter update rule (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_murule" title="bar_murule"><tt class="xref c c-type docutils literal"><span class="pre">bar_murule</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the barrier update rule</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>monotone decrease rule</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>adaptive rule based on complementarity gap</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>probing rule (Interior/Direct only)</td>
+</tr>
+<tr class="row-even"><td>4</td>
+<td>safeguarded Mehrotra predictor-corrector type rule</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+<td>Mehrotra predictor-corrector type rule</td>
+</tr>
+<tr class="row-even"><td>6</td>
+<td>rule based on minimizing a quality function</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>bar_penaltycons</strong>: technique for penalizing constraints in the barrier algorithms (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_penaltycons" title="bar_penaltycons"><tt class="xref c c-type docutils literal"><span class="pre">bar_penaltycons</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the strategy</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>do not apply penalty approach to any constraints</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>apply a penalty approach to all general constraints</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>bar_penaltyrule</strong>: penalty parameter rule for step acceptance (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_penaltyrule" title="bar_penaltyrule"><tt class="xref c c-type docutils literal"><span class="pre">bar_penaltyrule</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the strategy</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>use single penalty parameter approach</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>use more tolerant, flexible strategy</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>bar_switchrule</strong>: controls technique for switching between feasibility phase and optimality phase in the barrier algorithms (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#bar_switchrule" title="bar_switchrule"><tt class="xref c c-type docutils literal"><span class="pre">bar_switchrule</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO determine the switching procedure</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>never switch to feasibility phase</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>allow switches to feasibility phase</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>use more aggressive switching rule</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>blasoption</strong>: specify the BLAS/LAPACK function library to use (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#blasoption" title="blasoption"><tt class="xref c c-type docutils literal"><span class="pre">blasoption</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>use KNITRO built-in functions</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>use Intel Math Kernel Library functions</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>use the dynamic library specified with <a class="reference internal" href="callableLibrary/userOptions.html#blasoptionlib" title="blasoptionlib"><tt class="xref c c-type docutils literal"><span class="pre">blasoptionlib</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>blasoptionlib</strong>: specify the BLAS/LAPACK function library if using <tt class="xref c c-type docutils literal"><span class="pre">blasoption=2</span></tt>. See <a class="reference internal" href="callableLibrary/userOptions.html#blasoptionlib" title="blasoptionlib"><tt class="xref c c-type docutils literal"><span class="pre">blasoptionlib</span></tt></a>.</li>
+<li><strong>debug</strong>: enable debugging output (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#debug" title="debug"><tt class="xref c c-type docutils literal"><span class="pre">debug</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>no extra debugging</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>print info to debug solution of the problem</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>print info to debug execution of the solver</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>delta</strong>: initial trust region radius scaling (default 1.0e0). See <a class="reference internal" href="callableLibrary/userOptions.html#delta" title="delta"><tt class="xref c c-type docutils literal"><span class="pre">delta</span></tt></a>.</li>
+<li><strong>feastol</strong>: feasibility termination tolerance (relative) (default 1.0e-6). See <a class="reference internal" href="callableLibrary/userOptions.html#feastol" title="feastol"><tt class="xref c c-type docutils literal"><span class="pre">feastol</span></tt></a>.</li>
+<li><strong>feastol_abs</strong>: feasibility termination tolerance (absolute) (default 0.0e-0). See <a class="reference internal" href="callableLibrary/userOptions.html#feastol_abs" title="feastol_abs"><tt class="xref c c-type docutils literal"><span class="pre">feastol_abs</span></tt></a>.</li>
+<li><strong>gradopt</strong>: gradient computation method (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#gradopt" title="gradopt"><tt class="xref c c-type docutils literal"><span class="pre">gradopt</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>use exact gradients</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>compute forward finite-difference approximations</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>compute centered finite-difference approximations</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>hessopt</strong>: Hessian (Hessian-vector) computation method (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#hessopt" title="hessopt"><tt class="xref c c-type docutils literal"><span class="pre">hessopt</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>use exact Hessian derivatives</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>use dense quasi-Newton BFGS Hessian approximation</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>use dense quasi-Newton SR1 Hessian approximation</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>compute Hessian-vector products by finite diffs</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>compute exact Hessian-vector products</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>use limited-memory BFGS Hessian approximation</td>
+</tr>
+</tbody>
+</table>
+<p>-honorbnds**: allow or not bounds to be violated during the optimization  (default 2). See <a class="reference internal" href="callableLibrary/userOptions.html#honorbnds" title="honorbnds"><tt class="xref c c-type docutils literal"><span class="pre">honorbnds</span></tt></a>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>allow bounds to be violated during the optimization</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>enforce bounds satisfaction of all iterates</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>enforce bounds satisfaction of initial point</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>infeastol</strong>: tolerance for declaring infeasibility (default 1.0e-8). See <a class="reference internal" href="callableLibrary/userOptions.html#infeastol" title="infeastol"><tt class="xref c c-type docutils literal"><span class="pre">infeastol</span></tt></a>.</li>
+<li><strong>linsolver</strong>: linear system solver to use inside KNITRO (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#linsolver" title="linsolver"><tt class="xref c c-type docutils literal"><span class="pre">linsolver</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the linear system solver</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>(not currently used; same as 0)</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>use a hybrid approach; solver depends on system</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>use a dense QR method (small problems only)</td>
+</tr>
+<tr class="row-even"><td>4</td>
+<td>use HSL MA27 sparse symmetric indefinite solver</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+<td>use HSL MA57 sparse symmetric indefinite solver</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>lmsize</strong>: number of limited-memory pairs stored in LBFGS approach (default 10). See <a class="reference internal" href="callableLibrary/userOptions.html#lmsize" title="lmsize"><tt class="xref c c-type docutils literal"><span class="pre">lmsize</span></tt></a>.</li>
+<li><strong>lpsolver</strong>: LP solver in Active Set algorithm (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#lpsolver" title="lpsolver"><tt class="xref c c-type docutils literal"><span class="pre">lpsolver</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="92%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>use internal LP solver</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>use ILOG-CPLEX LP solver (requires a valid CPLEX license; specify library location with <a class="reference internal" href="callableLibrary/userOptions.html#cplexlibname" title="cplexlibname"><tt class="xref c c-type docutils literal"><span class="pre">cplexlibname</span></tt></a>)</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>ma_maxtime_cpu</strong>: maximum CPU time in seconds before terminating for the multi-algorithm (<tt class="xref c c-type docutils literal"><span class="pre">alg=5</span></tt>) procedure (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#ma_maxtime_cpu" title="ma_maxtime_cpu"><tt class="xref c c-type docutils literal"><span class="pre">ma_maxtime_cpu</span></tt></a>.</li>
+<li><strong>ma_maxtime_real</strong>: maximum real time in seconds before terminating for the multi-algorithm (<tt class="xref c c-type docutils literal"><span class="pre">alg=5</span></tt>) procedure (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#ma_maxtime_real" title="ma_maxtime_real"><tt class="xref c c-type docutils literal"><span class="pre">ma_maxtime_real</span></tt></a>.</li>
+<li><strong>ma_outsub</strong>: enable writing algorithm output to files for the multi-algorithm (<tt class="xref c c-type docutils literal"><span class="pre">alg=5</span></tt>) procedure (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#ma_outsub" title="ma_outsub"><tt class="xref c c-type docutils literal"><span class="pre">ma_outsub</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not write detailed algorithm output to files</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>write detailed algorithm output to files named <tt class="file docutils literal"><span class="pre">knitro_ma_*.log</span></tt></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>ma_terminate</strong>: termination condition for multi-algorithm (<tt class="xref c c-type docutils literal"><span class="pre">alg=5</span></tt>) procedure (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#ma_terminate" title="ma_terminate"><tt class="xref c c-type docutils literal"><span class="pre">ma_terminate</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>terminate after all algorithms have completed</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>terminate at first local optimum</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>terminate at first feasible solution</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>maxcgit</strong>: maximum allowable conjugate gradient (CG) iterations (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#maxcgit" title="maxcgit"><tt class="xref c c-type docutils literal"><span class="pre">maxcgit</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO set the number based on the problem size</td>
+</tr>
+<tr class="row-odd"><td><em>n</em></td>
+<td>maximum of <em>n &gt; 0</em> CG iterations per minor iteration</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>maxit</strong>: maximum number of iterations before terminating (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#maxit" title="maxit"><tt class="xref c c-type docutils literal"><span class="pre">maxit</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO set the number based on the problem</td>
+</tr>
+<tr class="row-odd"><td><em>n</em></td>
+<td>maximum limit of <em>n &gt; 0</em> iterations</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>maxtime_cpu</strong>: maximum CPU time in seconds before terminating (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#maxtime_cpu" title="maxtime_cpu"><tt class="xref c c-type docutils literal"><span class="pre">maxtime_cpu</span></tt></a>.</li>
+<li><strong>maxtime_real</strong>: maximum real time in seconds before terminating (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#maxtime_real" title="maxtime_real"><tt class="xref c c-type docutils literal"><span class="pre">maxtime_real</span></tt></a>.</li>
+<li><strong>mip_branchrule</strong>: MIP branching rule (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_branchrule" title="mip_branchrule"><tt class="xref c c-type docutils literal"><span class="pre">mip_branchrule</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the branching rule</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>most-fractional branching</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>pseudo-cost branching</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>strong branching</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_debug</strong>: MIP debugging level (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_debug" title="mip_debug"><tt class="xref c c-type docutils literal"><span class="pre">mip_debug</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>no MIP debugging output</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>print MIP debugging information</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_gub_branch</strong>: Branch on GUBs (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_gub_branch" title="mip_gub_branch"><tt class="xref c c-type docutils literal"><span class="pre">mip_gub_branch</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not branch on GUB constraints</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>allow branching on GUB constraints</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_heuristic</strong>: heuristic search approach (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_heuristic" title="mip_heuristic"><tt class="xref c c-type docutils literal"><span class="pre">mip_heuristic</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO decide whether to apply a heuristic</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>do not apply any heuristic</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>use feasibility pump heuristic</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>use MPEC heuristic</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_heuristic_maxit</strong>: heuristic search iteration limit (default 100). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_heuristic_maxit" title="mip_heuristic_maxit"><tt class="xref c c-type docutils literal"><span class="pre">mip_heuristic_maxit</span></tt></a>.</li>
+<li><strong>mip_implications</strong>: add logical implications (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_implications" title="mip_implications"><tt class="xref c c-type docutils literal"><span class="pre">mip_implications</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not add constraints from logical implications</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>add constraints from logical implications</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_integer_tol</strong>: threshold for deciding integrality (default 1.0e-8). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_integer_tol" title="mip_integer_tol"><tt class="xref c c-type docutils literal"><span class="pre">mip_integer_tol</span></tt></a>.</li>
+<li><strong>mip_integral_gap_abs</strong>: absolute integrality gap stop tolerance (default 1.0e-6). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_integral_gap_abs" title="mip_integral_gap_abs"><tt class="xref c c-type docutils literal"><span class="pre">mip_integral_gap_abs</span></tt></a>.</li>
+<li><strong>mip_integral_gap_rel</strong>: relative integrality gap stop tolerance (default 1.0e-6). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_integral_gap_rel" title="mip_integral_gap_rel"><tt class="xref c c-type docutils literal"><span class="pre">mip_integral_gap_rel</span></tt></a>.</li>
+<li><strong>mip_knapsack</strong>: add knapsack cuts(default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_knapsack" title="mip_knapsack"><tt class="xref c c-type docutils literal"><span class="pre">mip_knapsack</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not add knapsack cuts</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>add knapsack inequality cuts only</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>add knapsack inequality and equality cuts</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_lpalg</strong>: LP subproblem algorithm (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_lpalg" title="mip_lpalg"><tt class="xref c c-type docutils literal"><span class="pre">mip_lpalg</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO decide the LP algorithm</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>Interior/Direct (barrier) algorithm</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>Interior/CG (barrier) algorithm</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>Active Set (simplex) algorithm</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_maxnodes</strong>: maximum nodes explored (default 100000). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_maxnodes" title="mip_maxnodes"><tt class="xref c c-type docutils literal"><span class="pre">mip_maxnodes</span></tt></a>.</li>
+<li><strong>mip_maxsolves</strong>: maximum subproblem solves (default 200000). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_maxsolves" title="mip_maxsolves"><tt class="xref c c-type docutils literal"><span class="pre">mip_maxsolves</span></tt></a>.</li>
+<li><strong>mip_maxtime_cpu</strong>: maximum CPU time in seconds for MIP (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_maxtime_cpu" title="mip_maxtime_cpu"><tt class="xref c c-type docutils literal"><span class="pre">mip_maxtime_cpu</span></tt></a>.</li>
+<li><strong>mip_maxtime_real</strong>: maximum real time in seconds for MIP (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_maxtime_real" title="mip_maxtime_real"><tt class="xref c c-type docutils literal"><span class="pre">mip_maxtime_real</span></tt></a>.</li>
+<li><strong>mip_method</strong>: MIP method (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_method" title="mip_method"><tt class="xref c c-type docutils literal"><span class="pre">mip_method</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the method</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>branch and bound method</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>hybrid method for convex nonlinear models</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_outinterval</strong>: MIP node output interval (default 10). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_outinterval" title="mip_outinterval"><tt class="xref c c-type docutils literal"><span class="pre">mip_outinterval</span></tt></a>.</li>
+<li><strong>mip_outlevel</strong>: MIP output level (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_outlevel" title="mip_outlevel"><tt class="xref c c-type docutils literal"><span class="pre">mip_outlevel</span></tt></a>.</li>
+<li><strong>mip_outsub</strong>: enable MIP subproblem debug output (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_outsub" title="mip_outsub"><tt class="xref c c-type docutils literal"><span class="pre">mip_outsub</span></tt></a>.</li>
+<li><strong>mip_pseudoinit</strong>: method to initialize pseudo-costs (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_pseudoinit" title="mip_pseudoinit"><tt class="xref c c-type docutils literal"><span class="pre">mip_pseudoinit</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the method</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>use average value</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>use strong branching</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_rootalg</strong>: root node relaxation algorithm (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_rootalg" title="mip_rootalg"><tt class="xref c c-type docutils literal"><span class="pre">mip_rootalg</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO decide the root algorithm</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>Interior/Direct (barrier) algorithm</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>Interior/CG (barrier) algorithm</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>Active Set algorithm</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_rounding</strong>: MIP rounding rule (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_rounding" title="mip_rounding"><tt class="xref c c-type docutils literal"><span class="pre">mip_rounding</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the rounding rule</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>do not attempt rounding</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>use fast heuristic</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>apply rounding solve selectively</td>
+</tr>
+<tr class="row-even"><td>4</td>
+<td>apply rounding solve always</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_selectrule</strong>: MIP node selection rule (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_selectrule" title="mip_selectrule"><tt class="xref c c-type docutils literal"><span class="pre">mip_selectrule</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO choose the node select rule</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>use depth first search</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>use best bound node selection</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>use a combination of depth first and best bound</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>mip_strong_candlim</strong>: strong branching candidate limit (default 10). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_strong_candlim" title="mip_strong_candlim"><tt class="xref c c-type docutils literal"><span class="pre">mip_strong_candlim</span></tt></a>.</li>
+<li><strong>mip_strong_level</strong>: strong branching level limit (default 10). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_strong_level" title="mip_strong_level"><tt class="xref c c-type docutils literal"><span class="pre">mip_strong_level</span></tt></a>.</li>
+<li><strong>mip_strong_maxit</strong>: strong branching subproblem iteration limit (default 1000). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_strong_maxit" title="mip_strong_maxit"><tt class="xref c c-type docutils literal"><span class="pre">mip_strong_maxit</span></tt></a>.</li>
+<li><strong>mip_terminate</strong>: termination condition for MIP (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#mip_terminate" title="mip_terminate"><tt class="xref c c-type docutils literal"><span class="pre">mip_terminate</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>terminate at optimal solution</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>terminate at first integer feasible solution</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>ms_enable</strong>: mulistart feature (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_enable" title="ms_enable"><tt class="xref c c-type docutils literal"><span class="pre">ms_enable</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>multi-start disabled</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>multi-start enabled</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>ms_maxbndrange</strong>: maximum range to vary unbounded <em>x</em> when generating start points (default 1.0e3). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_maxbndrange" title="ms_maxbndrange"><tt class="xref c c-type docutils literal"><span class="pre">ms_maxbndrange</span></tt></a>.</li>
+<li><strong>ms_maxsolves</strong>: maximum number of start points to try during multi-start (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_maxsolves" title="ms_maxsolves"><tt class="xref c c-type docutils literal"><span class="pre">ms_maxsolves</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>let KNITRO set the number based on problem size</td>
+</tr>
+<tr class="row-odd"><td><em>n</em></td>
+<td>try exactly <em>n &gt; 0</em> start points</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>ms_maxtime_cpu</strong>: maximum CPU time for multi-start, in seconds (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_maxtime_cpu" title="ms_maxtime_cpu"><tt class="xref c c-type docutils literal"><span class="pre">ms_maxtime_cpu</span></tt></a>.</li>
+<li><strong>ms_maxtime_real</strong>: maximum real time for multi-start, in seconds (default 1.0e8). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_maxtime_real" title="ms_maxtime_real"><tt class="xref c c-type docutils literal"><span class="pre">ms_maxtime_real</span></tt></a>.</li>
+<li><strong>ms_num_to_save</strong>: number feasible points to save in <tt class="file docutils literal"><span class="pre">knitro_mspoints.log</span></tt> (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_num_to_save" title="ms_num_to_save"><tt class="xref c c-type docutils literal"><span class="pre">ms_num_to_save</span></tt></a>.</li>
+<li><strong>ms_outsub</strong>: enable writing output from subproblem solves to files for parallel multi-start (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_outsub" title="ms_outsub"><tt class="xref c c-type docutils literal"><span class="pre">ms_outsub</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not write subproblem output to files</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>write detailed subproblem output to files named <tt class="file docutils literal"><span class="pre">knitro_ms_*.log</span></tt></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>ms_savetol</strong>: tolerance for feasible points to be considered distinct (default 1.0e-6). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_savetol" title="ms_savetol"><tt class="xref c c-type docutils literal"><span class="pre">ms_savetol</span></tt></a>.</li>
+<li><strong>ms_seed</strong>: seed value used to generate random initial points in multi-start; should be a non-negative integer (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_seed" title="ms_seed"><tt class="xref c c-type docutils literal"><span class="pre">ms_seed</span></tt></a>.</li>
+<li><strong>ms_startptrange</strong>: maximum range to vary all <em>x</em> when generating start points (default 1.0e20). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_startptrange" title="ms_startptrange"><tt class="xref c c-type docutils literal"><span class="pre">ms_startptrange</span></tt></a>.</li>
+<li><strong>ms_terminate</strong>: termination condition for multi-start (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#ms_terminate" title="ms_terminate"><tt class="xref c c-type docutils literal"><span class="pre">ms_terminate</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>terminate after ms_maxsolves</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>terminate at first local optimum (if before ms_maxsolves)</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>terminate at first feasible solution (if before ms_maxsolves)</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>newpoint</strong>: save newpoints? (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#newpoint" title="newpoint"><tt class="xref c c-type docutils literal"><span class="pre">newpoint</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>no action</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>save the latest new point to file <tt class="file docutils literal"><span class="pre">knitro_newpoint.log</span></tt></td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>append all new points to file <tt class="file docutils literal"><span class="pre">knitro_newpoint.log</span></tt></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>objrange</strong>: maximum allowable objective function magnitude (default 1.0e20). See <a class="reference internal" href="callableLibrary/userOptions.html#objrange" title="objrange"><tt class="xref c c-type docutils literal"><span class="pre">objrange</span></tt></a>.</li>
+<li><strong>opttol</strong>: optimality termination tolerance (relative) (default 1.0e-6). See <a class="reference internal" href="callableLibrary/userOptions.html#opttol" title="opttol"><tt class="xref c c-type docutils literal"><span class="pre">opttol</span></tt></a>.</li>
+<li><strong>opttol_abs</strong>: optimality termination tolerance (absolute) (default 0.0e-0). See <a class="reference internal" href="callableLibrary/userOptions.html#opttol_abs" title="opttol_abs"><tt class="xref c c-type docutils literal"><span class="pre">opttol_abs</span></tt></a>.</li>
+<li><strong>outappend</strong>: append output to existing files (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#outappend" title="outappend"><tt class="xref c c-type docutils literal"><span class="pre">outappend</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not append</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>do append</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>outdir</strong>: directory where output files are created. See <a class="reference internal" href="callableLibrary/userOptions.html#outdir" title="outdir"><tt class="xref c c-type docutils literal"><span class="pre">outdir</span></tt></a>.</li>
+<li><strong>outlev</strong>: printing output level (default 2). See <a class="reference internal" href="callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>no printing</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>just print summary information</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>print basic information every 10 iterations</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>print basic information at each iteration</td>
+</tr>
+<tr class="row-even"><td>4</td>
+<td>print all information at each iteration</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+<td>also print final (primal) variables</td>
+</tr>
+<tr class="row-even"><td>6</td>
+<td>also print final Lagrange multipliers (sensitivies)</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>outmode</strong>: KNITRO output redirection (default 0). See <a class="reference internal" href="callableLibrary/userOptions.html#outmode" title="outmode"><tt class="xref c c-type docutils literal"><span class="pre">outmode</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>direct KNITRO output to standard out (e.g., screen)</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>direct KNITRO output to the file <tt class="file docutils literal"><span class="pre">knitro.log</span></tt></td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>print to both the screen and file <tt class="file docutils literal"><span class="pre">knitro.log</span></tt></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>par_numthreads</strong>: specify the number of threads to use for parallel computing (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#par_numthreads" title="par_numthreads"><tt class="xref c c-type docutils literal"><span class="pre">par_numthreads</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>determine by environment variable $OMP_NUM_THREADS</td>
+</tr>
+<tr class="row-odd"><td><em>n</em></td>
+<td>use <em>n &gt; 0</em> threads</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>pivot</strong>: initial pivot threshold for matrix factorizations (default 1.0e-8). See <a class="reference internal" href="callableLibrary/userOptions.html#pivot" title="pivot"><tt class="xref c c-type docutils literal"><span class="pre">pivot</span></tt></a>.</li>
+<li><strong>presolve</strong>: enable KNITRO presolver (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#presolve" title="presolve"><tt class="xref c c-type docutils literal"><span class="pre">presolve</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not use KNITRO presolver</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>use the KNITRO presolver</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>presolve_dbg</strong>: presolve debug output (default 0).</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>no debugging information</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>print the KNITRO problem with AMPL model names</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>presolve_tol</strong>: tolerance used by KNITRO presolver to remove variables and constraints (default 1.0e-6). See <a class="reference internal" href="callableLibrary/userOptions.html#presolve_tol" title="presolve_tol"><tt class="xref c c-type docutils literal"><span class="pre">presolve_tol</span></tt></a>.</li>
+<li><strong>scale</strong>: automatic scaling (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#scale" title="scale"><tt class="xref c c-type docutils literal"><span class="pre">scale</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not scale the problem</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>perform automatic scaling of functions</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>soc</strong>: 2nd order corrections (default 1). See <a class="reference internal" href="callableLibrary/userOptions.html#soc" title="soc"><tt class="xref c c-type docutils literal"><span class="pre">soc</span></tt></a>.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>do not allow second order correction steps</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>selectively try second order correction steps</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>always try second order correction steps</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>xtol</strong>: stepsize termination tolerance (default 1.0e-15). See <a class="reference internal" href="callableLibrary/userOptions.html#xtol" title="xtol"><tt class="xref c c-type docutils literal"><span class="pre">xtol</span></tt></a>.</li>
+</ul>
+</div>
+<div class="section" id="return-codes">
+<h2>Return codes</h2>
+<p id="index-1">Upon completion, KNITRO displays a message and returns an exit code to
+AMPL.  In the example above KNITRO found a solution, so the message was:</p>
+<div class="highlight-python"><pre>Locally optimal solution found</pre>
+</div>
+<p>with exit code of zero; the exit code can be seen by typing:</p>
+<div class="highlight-python"><pre>ampl: display solve_result_num;</pre>
+</div>
+<p>If a solution is not found, then KNITRO returns one of the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>Locally optimal solution found.</td>
+</tr>
+<tr class="row-odd"><td>100</td>
+<td>Current solution estimate cannot be improved. Nearly optimal.</td>
+</tr>
+<tr class="row-even"><td>101</td>
+<td>Relative change in feasible solution estimate &lt; xtol.</td>
+</tr>
+<tr class="row-odd"><td>102</td>
+<td>Current feasible solution estimate cannot be improved.</td>
+</tr>
+<tr class="row-even"><td>200</td>
+<td>Convergence to an infeasible point. Problem may be locally infeasible.</td>
+</tr>
+<tr class="row-odd"><td>201</td>
+<td>Relative change in infeasible solution estimate &lt; xtol.</td>
+</tr>
+<tr class="row-even"><td>202</td>
+<td>Current infeasible solution estimate cannot be improved.</td>
+</tr>
+<tr class="row-odd"><td>203</td>
+<td>Multistart: No primal feasible point found.</td>
+</tr>
+<tr class="row-even"><td>204</td>
+<td>Problem determined to be infeasible.</td>
+</tr>
+<tr class="row-odd"><td>205</td>
+<td>Problem determined to be infeasible.</td>
+</tr>
+<tr class="row-even"><td>300</td>
+<td>Problem appears to be unbounded.</td>
+</tr>
+<tr class="row-odd"><td>400</td>
+<td>Iteration limit reached.</td>
+</tr>
+<tr class="row-even"><td>401</td>
+<td>Time limit reached.</td>
+</tr>
+<tr class="row-odd"><td>403</td>
+<td>MIP: All nodes have been explored.</td>
+</tr>
+<tr class="row-even"><td>404</td>
+<td>MIP: Integer feasible point found.</td>
+</tr>
+<tr class="row-odd"><td>405</td>
+<td>MIP: Subproblem solve limit reached.</td>
+</tr>
+<tr class="row-even"><td>406</td>
+<td>MIP: Node limit reached.</td>
+</tr>
+<tr class="row-odd"><td>501</td>
+<td>LP solver error.</td>
+</tr>
+<tr class="row-even"><td>502</td>
+<td>Evaluation error.</td>
+</tr>
+<tr class="row-odd"><td>503</td>
+<td>Not enough memory.</td>
+</tr>
+<tr class="row-even"><td>504</td>
+<td>Terminated by user.</td>
+</tr>
+<tr class="row-odd"><td>505</td>
+<td>Input or other API error.</td>
+</tr>
+<tr class="row-even"><td>506</td>
+<td>Internal KNITRO error.</td>
+</tr>
+<tr class="row-odd"><td>507</td>
+<td>Unknown termination.</td>
+</tr>
+<tr class="row-even"><td>508</td>
+<td>Illegal objno value.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">KNITRO / AMPL reference</a><ul>
+<li><a class="reference internal" href="#knitro-options-in-ampl">KNITRO options in AMPL</a></li>
+<li><a class="reference internal" href="#return-codes">Return codes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../3_referenceManual.html"
+                        title="previous chapter">Reference manual</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="callableLibraryReference.html"
+                        title="next chapter">Callable library reference</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="callableLibraryReference.html" title="Callable library reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../3_referenceManual.html" title="Reference manual"
+             >previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../3_referenceManual.html" >Reference manual</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Ziena Optimization LLC.
+    </div>
+  </body>
+</html>

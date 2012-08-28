@@ -10,6 +10,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
+import frameworks.faulttolerance.dcop.dcop.DcopClassicalGraph;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -48,13 +52,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	private static final long serialVersionUID = -7191963637040889163L;
 
 	//	final AgentIdentifier experimentatorId;
-
+	public enum DCOPGraphType {Classical, Replication};
 
 	/**
 	 * Instance
 	 */
 
 	ReplicationInstanceGraph rig;
+	long randSeed;
 
 	/***
 	 * Variables
@@ -91,10 +96,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	public static final int startingNbHosts = 2;
 	public static int startingNbAgents =5;
-	
-//
-//	public static final int startingNbHosts = 8;
-//	public static int startingNbAgents =15;
+
+	//
+	//	public static final int startingNbHosts = 8;
+	//	public static int startingNbAgents =15;
 
 	//		public static final int startingNbHosts = 5;
 	//		public static int startingNbAgents =10;
@@ -276,6 +281,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	// Accessors
 	//
 
+
+	public long getRandomSeed() {
+		return randSeed;
+	}
+
 	public Collection<AgentIdentifier> getReplicasIdentifier() {
 		return this.rig.getAgentsIdentifier();
 	}
@@ -308,44 +318,51 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		return this.host_maxSimultaneousFailure/this.agentAccessiblePerHost;
 	}
 
+	public static DcopAbstractGraph constructDCOPGraph(){
+//		return new DcopAbstractGraph();
+		return new DcopClassicalGraph();
+	}
+
+	public static DcopAbstractGraph constructDCOPGraph(String filename) {
+//		return new DcopAbstractGraph(filename);
+//			return new DcopClassicalGraph(filename);
+		try {
+			return new DcopClassicalGraph("yo", 566668, 
+					4, 2,//nbAgent,nbHost 
+					0.5, DispersionSymbolicValue.Moyen, //criticity
+					0.25, DispersionSymbolicValue.Moyen, //agent load
+					1., DispersionSymbolicValue.Nul, //hostCap
+					0.5, DispersionSymbolicValue.Moyen, //hostDisp
+					true,2);
+		} catch (IfailedException e) {
+			e.printStackTrace();
+			throw new RuntimeException("arrggh");
+		}
+	}
+
 	//
 	// Methods
 	//
 
 	@Override
 	public final void initiateParameters() throws IfailedException{
-		this.rig = new ReplicationInstanceGraph(this.getMyAgent(),this);
+		this.rig = new ReplicationInstanceGraph();
 
-		this.rig.initiateAgents(this);
+		rig.initiate(getSimulationName(), randSeed,
+				nbAgents, nbHosts, 
+				agentCriticityMean, agentCriticityDispersion, 
+				agentLoadMean, agentLoadDispersion, hostCapacityMean, 
+				hostCapacityDispersion, hostFaultProbabilityMean, hostDisponibilityDispersion, 
+				_socialWelfare, completGraph, agentAccessiblePerHost);
 
-		ReplicationOptimalSolver ros=null;
-
-//		this.logMonologue("Agents & Hosts:\n"+this.rig.getAgentStates()+"\n"+this.rig.getHostsStates(), LogService.onFile);
-
-		int count = 5;
-		boolean iFailed=false;
-		do {
-			try{
-				iFailed=false;
-				this.rig.setVoisinage();
-				if (this.withOptimal) {
-					ros = new ReplicationOptimalSolver(this.getMyAgent());
-				}
-				this.rig.initialRep();
-			} catch (final IfailedException e) {
-				iFailed=true;
-				//				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG "+count+e, LogService.onBoth);
-				count--;
-				if (count==0) {
-					throw e;
-				}
-			}
-		}while(iFailed && count > 0);
 
 		if (this.withOptimal){
-			this.logMonologue("beggining optimal computation &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", LogService.onBoth);
-			ros.solve();
-			this.logMonologue("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& ending optimal computation ", LogService.onBoth);
+			this.logMonologue("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& wtttttttfffffffffffff ", LogService.onBoth);
+//			ReplicationOptimalSolver ros=null;
+//			ros = new ReplicationOptimalSolver(this.getMyAgent());
+//			this.logMonologue("beggining optimal computation &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", LogService.onBoth);
+//			ros.solve();
+//			this.logMonologue("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& ending optimal computation ", LogService.onBoth);
 		}
 
 		String initialisationStatus = "Neighborhoog... :\n";
@@ -500,14 +517,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 
 			result.put(hostAg.getIdentifier(),hostAg);
-						getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
+			getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
 		}
 
 		/*
 		 *
 		 */
 
-		
+
 		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class) + this.getMyAgent().myInformationService.show(ReplicaState.class),LogService.onFile);
 		return result.values();
 	}
@@ -1107,6 +1124,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 		}
 	}
+
 }
 
 

@@ -3,6 +3,7 @@ package dima.introspectionbasedagents.modules.distribution;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Random;
 
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 
@@ -28,8 +29,8 @@ Serializable {
 	//
 
 	public DistributionParameters(final Collection<K> population,
-			final double moyenne, final double ecartType) {
-		this.g = new NormalLaw(moyenne, ecartType);
+			final double moyenne, final double ecartType, Random rand) {
+		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {
 			this.put(individu,  this.g.nextValue());
@@ -38,8 +39,8 @@ Serializable {
 
 	//Normalis�
 	public DistributionParameters(final Collection<K> population,
-			final ZeroOneSymbolicValue moyenne,final DispersionSymbolicValue ecartType) {
-		this.g = new NormalLaw(moyenne, ecartType);
+			final ZeroOneSymbolicValue moyenne,final DispersionSymbolicValue ecartType, Random rand) {
+		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {
 			this.put(individu,  this.g.nextNormalizedNonExtremeValue());
@@ -47,8 +48,8 @@ Serializable {
 	}
 	//Normalis�
 	public DistributionParameters(final Collection<K> population,
-			final Double moyenne,final DispersionSymbolicValue ecartType) {
-		this.g = new NormalLaw(moyenne, ecartType);
+			final Double moyenne,final DispersionSymbolicValue ecartType, Random rand) {
+		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {
 			this.put(individu,  this.g.nextNormalizedNonExtremeValue());

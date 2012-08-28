@@ -10,7 +10,7 @@ import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Program;
 import frameworks.faulttolerance.dcop.dcop.Constraint;
-import frameworks.faulttolerance.dcop.dcop.Graph;
+import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.Variable;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
@@ -36,7 +36,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 
 	int sync;
 
-	Graph korigView;
+	DcopAbstractGraph korigView;
 	Variable korigSelf;
 
 	public AlgoKOptOriginal(Variable v, int kk) {
@@ -199,9 +199,9 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 						}
 						for (double[] enc : l.data) {
 							if (enc[0] == v.id) {
-								Variable n = korigView.varMap.get(enc[2]);
+								Variable n = korigView.varMap.get((int)enc[2]);
 								if (n == null) {
-									n = new Variable((int) enc[2], (int) enc[3], korigView);
+									n = new Variable((int)enc[2], (int)enc[3], korigView);
 									korigView.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
@@ -213,9 +213,9 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 										}
 								}
 							} else {
-								Variable n = korigView.varMap.get(enc[0]);
+								Variable n = korigView.varMap.get((int)enc[0]);
 								if (n == null) {
-									n = new Variable((int) enc[0], (int) enc[1], korigView);
+									n = new Variable((int)enc[0], (int)enc[1], korigView);
 									korigView.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {

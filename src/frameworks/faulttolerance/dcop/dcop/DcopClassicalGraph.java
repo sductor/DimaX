@@ -18,25 +18,42 @@ import frameworks.faulttolerance.dcop.algo.topt.DPOPTreeNode;
 import frameworks.faulttolerance.dcop.algo.topt.RewardMatrix;
 import frameworks.faulttolerance.dcop.algo.topt.TreeNode;
 
+import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 
-public class ClassicalGraph extends Graph{
+import frameworks.experimentation.IfailedException;
+import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
+
+
+public class DcopClassicalGraph extends DcopReplicationGraph{
 
 	private double _maxReward;
 	private HashMap<Integer, Integer> _bestSolution;
 	Algorithm algo;
 	private Random random = new Random();	
 
-	public ClassicalGraph() {
+	public DcopClassicalGraph() {
 		super();
 	}
 
-	public ClassicalGraph(String inFilename) {
+	public DcopClassicalGraph(String inFilename) {
 		super(inFilename);
 	}
 
-	/*
-	 * 
-	 */
+	public DcopClassicalGraph(String simulationName, long randSeed,
+			int nbAgents, int nbHosts, Double agentCriticityMean,
+			DispersionSymbolicValue agentCriticityDispersion,
+			Double agentLoadMean, DispersionSymbolicValue agentLoadDispersion,
+			Double hostCapacityMean,
+			DispersionSymbolicValue hostCapacityDispersion,
+			Double hostFaultProbabilityMean,
+			DispersionSymbolicValue hostDisponibilityDispersion,
+			boolean completGraph, int agentAccessiblePerHost)
+			throws IfailedException {
+		super(simulationName, randSeed, nbAgents, nbHosts, agentCriticityMean,
+				agentCriticityDispersion, agentLoadMean, agentLoadDispersion,
+				hostCapacityMean, hostCapacityDispersion, hostFaultProbabilityMean,
+				hostDisponibilityDispersion, completGraph, agentAccessiblePerHost);
+	}
 
 	@Override
 	public double evaluate() {
@@ -128,8 +145,8 @@ public class ClassicalGraph extends Graph{
 		}
 	}
 
-	public ClassicalGraph simplifyGraph() {
-		ClassicalGraph tmp = new ClassicalGraph();
+	public DcopClassicalGraph simplifyGraph() {
+		DcopClassicalGraph tmp = new DcopClassicalGraph();
 		int maxId = 0;
 		boolean f = false;
 		for (Variable v : this.varMap.values()) {
@@ -185,7 +202,7 @@ public class ClassicalGraph extends Graph{
 	}
 
 	public HashMap<Integer, Integer> DPOPSolve() {
-		ClassicalGraph tmp = this.simplifyGraph();
+		DcopClassicalGraph tmp = this.simplifyGraph();
 		int maxId = tmp.getMaxId();
 		Variable top = tmp.varMap.get(maxId);
 		HashMap<Integer, Integer> sol = tmp._DPOPSolve(top);

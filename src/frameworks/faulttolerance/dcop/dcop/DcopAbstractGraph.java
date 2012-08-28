@@ -18,17 +18,18 @@ import frameworks.faulttolerance.dcop.algo.topt.RewardMatrix;
 import frameworks.faulttolerance.dcop.algo.topt.TreeNode;
 
 
-public abstract class Graph {
+
+public abstract class DcopAbstractGraph {
 
 	public HashMap<Integer, Variable> varMap;
 	public Vector<Constraint> conList;
 
-	public Graph() {
+	public DcopAbstractGraph() {
 		varMap = new HashMap<Integer, Variable>();
 		conList = new Vector<Constraint>();
 	}
 
-	public Graph(String inFilename) {
+	public DcopAbstractGraph(String inFilename) {
 		// We assume in the input file, there is at most one link between two
 		// variables
 		try {

@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class Variable {
 
-	Graph graph;
+	final DcopAbstractGraph graph;
 
 	public int id;
 	public int domain;
@@ -13,14 +13,16 @@ public class Variable {
 	public Vector<Constraint> neighbors;
 	public boolean fixed;
 	
-	public Variable(int i, int d, Graph g) {
+	public Variable(int i, int d, DcopAbstractGraph g) {
+		assert g!=null;
 		id = i;
 		graph = g;
 		domain = d;
 		init();
 	}
 
-	public Variable(String s, Graph g) {
+	public Variable(String s, DcopAbstractGraph g) {
+		assert g!=null;
 		String[] ss = s.split(" ");
 //		assert ss.length >= 5;
 		id = Integer.parseInt(ss[1]);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
 import choco.Choco;
 import choco.Options;
 import choco.cp.model.CPModel;
@@ -14,7 +15,6 @@ import choco.kernel.model.variables.integer.IntegerConstantVariable;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import dima.basicagentcomponents.AgentName;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
-import frameworks.faulttolerance.experimentation.ReplicationOptimalSolver;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.exploration.ChocoAllocationSolver;
@@ -79,8 +79,8 @@ extends ChocoAllocationSolver
 
 		assert nbVariable>0;
 
-		this.hostProccapacity =ReplicationOptimalSolver.asInt(this.concerned[0].getResourceInitialState().getProcChargeMax(),false);
-		this.hostMemCapacity = ReplicationOptimalSolver.asInt(this.concerned[0].getResourceInitialState().getMemChargeMax(),false);
+		this.hostProccapacity =asInt(this.concerned[0].getResourceInitialState().getProcChargeMax(),false);
+		this.hostMemCapacity = asInt(this.concerned[0].getResourceInitialState().getMemChargeMax(),false);
 		this.replicasProc = new int[nbVariable];
 		this.replicasMem = new int[nbVariable];
 
@@ -91,8 +91,8 @@ extends ChocoAllocationSolver
 			assert this.concerned[i].getAgentInitialState().getMyProcCharge().equals(
 					this.concerned[i].getAgentResultingState().getMyProcCharge());
 
-			this.replicasMem[i] = ReplicationOptimalSolver.asInt(this.concerned[i].getAgentInitialState().getMyMemCharge(),false);
-			this.replicasProc[i] = ReplicationOptimalSolver.asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
+			this.replicasMem[i] = asInt(this.concerned[i].getAgentInitialState().getMyMemCharge(),false);
+			this.replicasProc[i] = asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
 		}
 	}
 
@@ -112,10 +112,10 @@ extends ChocoAllocationSolver
 			this.replicas[i] = Choco.makeIntVar(this.concerned[i].getAgent().toString(), 0, 1, Options.V_ENUM);
 
 			IntegerConstantVariable minUt, maxUt;
-			minUt = new IntegerConstantVariable(ReplicationOptimalSolver.asIntNashed(Math.min(
+			minUt = new IntegerConstantVariable(asIntNashed(Math.min(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
 					this.concerned[i].getAgentResultingState().getMyReliability()),this.socialWelfare));
-			maxUt = new IntegerConstantVariable(ReplicationOptimalSolver.asIntNashed(Math.max(
+			maxUt = new IntegerConstantVariable(asIntNashed(Math.max(
 					this.concerned[i].getAgentInitialState().getMyReliability(),
 					this.concerned[i].getAgentResultingState().getMyReliability()),this.socialWelfare));
 			if (ReplicationExperimentationParameters.multiDim){
@@ -152,13 +152,13 @@ extends ChocoAllocationSolver
 		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 			final int[] currentAllocation = new int[this.concerned.length];
 			for (int i = 0; i < this.concerned.length; i++){
-				currentAllocation[i] = ReplicationOptimalSolver.asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
+				currentAllocation[i] = asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
 			}
 			m.addConstraint(Choco.leximin(currentAllocation, this.replicasValue));
 		} else {
 			int current = 0;
 			for (final ReplicationCandidature c : this.concerned){
-				current+=ReplicationOptimalSolver.asIntNashed(c.getAgentInitialState().getMyReliability(),this.socialWelfare);
+				current+=asIntNashed(c.getAgentInitialState().getMyReliability(),this.socialWelfare);
 			}
 			try {
 				m.addConstraint(Choco.gt(this.socialWelfareValue, current));
@@ -186,6 +186,22 @@ extends ChocoAllocationSolver
 	}
 
 
+	public static int asIntNashed(final double d, final SocialChoiceType _socialChoice){
+		if (_socialChoice.equals(SocialChoiceType.Nash)) {
+			return asInt(d, true);
+		} else {
+			assert _socialChoice.equals(SocialChoiceType.Leximin)
+			|| _socialChoice.equals(SocialChoiceType.Utility):_socialChoice;
+			return asInt(d, false);
+		}
+	}
+	public static int asInt(final double d, final boolean log){
+		if (log) {
+			return (int) Math.log(100*(d+0.01));
+		} else {
+			return (int) (100 * (d+0.01));
+		}
+	}
 
 	/*
 	 *

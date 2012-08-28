@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import frameworks.faulttolerance.dcop.daj.Program;
 import frameworks.faulttolerance.dcop.dcop.Constraint;
-import frameworks.faulttolerance.dcop.dcop.Graph;
+import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.Variable;
 import frameworks.faulttolerance.dcop.exec.Stats;
@@ -15,7 +15,7 @@ public abstract class BasicAlgorithm extends Program {
 	protected static final int reLockInterval = 8;
 	protected int lockBase;
 	protected int reLockTime;
-	protected Graph view;
+	protected DcopAbstractGraph view;
 	protected Variable self;
 	protected int lock;
 	protected boolean done;

@@ -22,18 +22,19 @@ public class NormalLaw extends GimaObject {
 
 
 
-	public NormalLaw(final double moyenne, final double ecartType) {
+	public NormalLaw(final double moyenne, final double ecartType, Random rand) {
 		super();
 		this.ecartType = ecartType;
 		this.moyenne = moyenne;
+		this.rand=rand;
 	}
 
-	public NormalLaw(final ZeroOneSymbolicValue moyenne, final DispersionSymbolicValue ecartType) {
-		this(moyenne.getNumericValue(), ecartType.getNumericValue());
+	public NormalLaw(final ZeroOneSymbolicValue moyenne, final DispersionSymbolicValue ecartType, Random rand) {
+		this(moyenne.getNumericValue(), ecartType.getNumericValue(),rand);
 	}
 
-	public NormalLaw(final Double moyenne, final DispersionSymbolicValue ecartType) {
-		this(moyenne, ecartType.getNumericValue());
+	public NormalLaw(final Double moyenne, final DispersionSymbolicValue ecartType, Random rand) {
+		this(moyenne, ecartType.getNumericValue(),rand);
 	}
 	/**
 	 *
@@ -101,7 +102,7 @@ public class NormalLaw extends GimaObject {
 	 *
 	 */
 	public static void main(final String[] args){
-		final NormalLaw d = new NormalLaw(0.7, 0.75);
+		final NormalLaw d = new NormalLaw(0.7, 0.75, new Random());
 		for (int i = 0; i < 200; i++) {
 			System.out.println(d.nextNormalizedNonExtremeValue());
 		}

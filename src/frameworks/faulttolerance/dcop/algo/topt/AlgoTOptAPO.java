@@ -113,9 +113,9 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 						v.fixed = false;
 						for (double[] enc : lmsg.data) {
 							if (enc[0] == v.id) {
-								Variable n = view.varMap.get(enc[2]);
+								Variable n = view.varMap.get((int) enc[2]);
 								if (n == null) {
-									n = new Variable((int)enc[2],(int) enc[3], view);
+									n = new Variable((int) enc[2],(int) enc[3], view);
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
@@ -130,7 +130,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 									c.cache();
 								}
 							} else {
-								Variable n = view.varMap.get(enc[0]);
+								Variable n = view.varMap.get((int) enc[0]);
 								if (n == null) {
 									n = new Variable((int)enc[0], (int)enc[1], view);
 									if (lmsg.ttl <= 1)

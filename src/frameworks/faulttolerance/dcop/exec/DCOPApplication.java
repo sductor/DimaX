@@ -13,14 +13,15 @@ import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Node;
 import frameworks.faulttolerance.dcop.daj.Program;
 import frameworks.faulttolerance.dcop.dcop.Constraint;
-import frameworks.faulttolerance.dcop.dcop.Graph;
+import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 public class DCOPApplication extends Application {
 	private static final long serialVersionUID = 380092569934615212L;
 
-	public Graph g;
+	public DcopAbstractGraph g;
 	Algorithm algo;
 	HashMap<Integer, Node> nodeMap;
 	private static final int radius = 200;
@@ -33,7 +34,7 @@ public class DCOPApplication extends Application {
 	public int numberConflicts;
 	public int wastedCycles;
 	
-	public int[] quality;
+	public double[] quality;
 	public int[] msgsize;
 	public int[] nummsg;
 	
@@ -68,12 +69,12 @@ public class DCOPApplication extends Application {
 		numberConflicts = 0;
 		wastedCycles = 0;
 		
-		g = new Graph(filename);
+		g = ReplicationExperimentationParameters.constructDCOPGraph(filename);
 		//algo = Algorithm.MGM1;
 		this.grouping = kort;
 		this.algo = a;		
 		
-		quality = new int[cycles];
+		quality = new double[cycles];
 		msgsize = new int[cycles];
 		nummsg = new int[cycles];		
 		nEval = new int[cycles];
@@ -98,11 +99,11 @@ public class DCOPApplication extends Application {
 		numberConflicts = 0;
 		wastedCycles = 0;
 		
-		g = new Graph(filename);
+		g = ReplicationExperimentationParameters.constructDCOPGraph(filename);
 		//algo = Algorithm.MGM1;
 		this.grouping = kort;
 		this.algo = a;
-		quality = new int[cycles];
+		quality = new double[cycles];
 		msgsize = new int[cycles];
 		nummsg = new int[cycles];
 		nEval = new int[cycles];
@@ -116,7 +117,7 @@ public class DCOPApplication extends Application {
 		this.s = s;
 		this.ws = ws;
 	}
-	public int[] getQuality() {
+	public double[] getQuality() {
 		return quality;
 	}
 	public int[] getMsgsize() {
@@ -173,6 +174,8 @@ public class DCOPApplication extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+//		args = new String[]{"conf/1.dcop","TOPT","3","50"};
+		args = new String[]{"conf/1.dcop","","4","50"};
 		String temp = args[0];
 		DCOPApplication app = null;
 		boolean isGUI = true;
@@ -213,25 +216,24 @@ public class DCOPApplication extends Application {
 	}
 	
 	private BasicAlgorithm getAlgo(Variable v) {
-		return new AlgoMGM1(v);
-//		switch(this.algo){
-//			case TOPTAPO: 
-//				if(!isWin){
-//					return new AlgoTOptAPO(v, grouping);
-//				}
-//				else{
-//					return new AlgoTOptAPO(v, grouping, s, ws);
-//				}
-//			case KOPTAPO: 
-//				if(!isWin){
-//					return new AlgoKOptAPO(v, grouping);
-//				}
-//				else{
-//					return new AlgoKOptAPO(v, grouping, s, ws);
-//				}
-//			case KOPTORIG: return new AlgoKOptOriginal(v, grouping);			
-//			default: return null;
-//		}
+		switch(this.algo){
+			case TOPTAPO: 
+				if(!isWin){
+					return new AlgoTOptAPO(v, grouping);
+				}
+				else{
+					return new AlgoTOptAPO(v, grouping, s, ws);
+				}
+			case KOPTAPO: 
+				if(!isWin){
+					return new AlgoKOptAPO(v, grouping);
+				}
+				else{
+					return new AlgoKOptAPO(v, grouping, s, ws);
+				}
+			case KOPTORIG: return new AlgoKOptOriginal(v, grouping);			
+			default: return null;
+		}
 	}
 }
 

@@ -1,8 +1,10 @@
 package frameworks.faulttolerance.dcop.dcop;
 
+import java.util.Arrays;
+
 public class Constraint {
 
-	Graph graph;
+	DcopAbstractGraph graph;
 
 	public Variable first;
 	public Variable second;
@@ -12,9 +14,9 @@ public class Constraint {
 
 	public double[][] f;
 
-	public int[] m1;
-	public int[] m2;
-	public double m;
+	private int[] m1;
+	private int[] m2;
+	private double m;
 
 	public Constraint(Variable a, Variable b) {
 		assert a.graph == b.graph;
@@ -116,10 +118,16 @@ public class Constraint {
 			Helper.app.numberEval++;
 		if (first.value == -1 && second.value == -1)
 			return m;
-		if (first.value == -1 && second.value != -1)
+		if (first.value == -1 && second.value != -1){
+			if (m2[second.value]==-1)
+				return Double.NEGATIVE_INFINITY;
 			return f[m2[second.value]][second.value];
-		if (first.value != -1 && second.value == -1)
+		}			
+		if (first.value != -1 && second.value == -1){
+			if (m1[first.value]==-1)
+				return Double.NEGATIVE_INFINITY;
 			return f[first.value][m1[first.value]];
+		}			
 		return f[first.value][second.value];
 	}
 

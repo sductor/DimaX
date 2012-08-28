@@ -10,9 +10,9 @@ import frameworks.faulttolerance.dcop.algo.TerminateMessage;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Program;
-import frameworks.faulttolerance.dcop.dcop.Constraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 import frameworks.faulttolerance.dcop.exec.DCOPApplication;
 import frameworks.faulttolerance.dcop.exec.Stats;
 
@@ -23,13 +23,13 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	TreeNode center;
 	public boolean trivial;
 
-	public AlgoTOptAPO(Variable v, int tt) {
+	public AlgoTOptAPO(AbstractVariable v, int tt) {
 		super(v, true, 2);
 		t = tt;
 		init();
 	}
 
-	public AlgoTOptAPO(Variable v, int tt, boolean s, int ws) {
+	public AlgoTOptAPO(AbstractVariable v, int tt, boolean s, int ws) {
 		super(v, s, ws);
 		t = tt;
 		init();
@@ -91,7 +91,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 
 				if (msg instanceof ValueMsg) {
 					ValueMsg vmsg = (ValueMsg) msg;
-					Variable v = view.varMap.get(vmsg.id);
+					AbstractVariable v = view.varMap.get(vmsg.id);
 					assert v != null;
 					if (vmsg.ttl > 1)
 						out().broadcast(vmsg.forward());
@@ -105,23 +105,23 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 					Integer lastTTL = conTTLMap.get(lmsg.id);
 					if (lastTTL == null) {
 						conTTLMap.put(lmsg.id, lmsg.ttl);
-						Variable v = view.varMap.get(lmsg.id);
+						AbstractVariable v = view.varMap.get(lmsg.id);
 						if (v == null) {
-							v = new Variable(lmsg.id, lmsg.domain, view);
+							v = new AbstractVariable(lmsg.id, lmsg.domain, view);
 							view.varMap.put(v.id, v);
 						}
 						v.fixed = false;
 						for (double[] enc : lmsg.data) {
 							if (enc[0] == v.id) {
-								Variable n = view.varMap.get((int) enc[2]);
+								AbstractVariable n = view.varMap.get((int) enc[2]);
 								if (n == null) {
-									n = new Variable((int) enc[2],(int) enc[3], view);
+									n = new AbstractVariable((int) enc[2],(int) enc[3], view);
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
-									Constraint c = new Constraint(v, n);
+									AbstractConstraint c = new AbstractConstraint(v, n);
 									view.conList.add(c);
 									for (int i = 0; i < c.d1; i++)
 										for (int j = 0; j < c.d2; j++) {
@@ -130,15 +130,15 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 									c.cache();
 								}
 							} else {
-								Variable n = view.varMap.get((int) enc[0]);
+								AbstractVariable n = view.varMap.get((int) enc[0]);
 								if (n == null) {
-									n = new Variable((int)enc[0], (int)enc[1], view);
+									n = new AbstractVariable((int)enc[0], (int)enc[1], view);
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
-									Constraint c = new Constraint(n, v);
+									AbstractConstraint c = new AbstractConstraint(n, v);
 									view.conList.add(c);
 									for (int i = 0; i < c.d1; i++)
 										for (int j = 0; j < c.d2; j++) {
@@ -254,7 +254,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 									st.gain = view.evaluate(bestSolution)
 											- view.evaluate();
 									st.varChanged = 0;
-									for (Variable v : view.varMap.values())
+									for (AbstractVariable v : view.varMap.values())
 										if (v.value != bestSolution.get(v.id))
 											st.varChanged++;
 									st.attempts = attempt - preAttempt;
@@ -356,7 +356,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 							st.gain = view.evaluate(bestSolution)
 									- view.evaluate();
 							st.varChanged = 0;
-							for (Variable v : view.varMap.values()) {
+							for (AbstractVariable v : view.varMap.values()) {
 								if (v.value != bestSolution.get(v.id))
 									st.varChanged++;
 							}
@@ -477,7 +477,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	}
 
 	private void checkSolution() {
-		for (Variable v : view.varMap.values())
+		for (AbstractVariable v : view.varMap.values())
 			if (v.fixed && v.value == -1) {
 				bestSolution = null;
 				return;
@@ -502,15 +502,15 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 		if (root.value != view.varMap.get(self.id).value)
 			root.mark = true;
 
-		ArrayList<Variable> queue = new ArrayList<Variable>();
+		ArrayList<AbstractVariable> queue = new ArrayList<AbstractVariable>();
 		HashMap<Integer, TreeNode> map = new HashMap<Integer, TreeNode>();
 		queue.add(self);
 		map.put(self.id, root);
 		while (!queue.isEmpty()) {
-			Variable v = queue.remove(0);
+			AbstractVariable v = queue.remove(0);
 			TreeNode p = map.get(v.id);
-			for (Constraint c : v.neighbors) {
-				Variable n = c.getNeighbor(v);
+			for (AbstractConstraint c : v.neighbors) {
+				AbstractVariable n = c.getNeighbor(v);
 				if (!map.containsKey(n.id)) {
 					queue.add(n);
 					TreeNode child = new TreeNode(n.id, bestSolution.get(n.id),
@@ -536,7 +536,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	private boolean checkMove() {
 		if (bestSolution == null)
 			return false;
-		for (Variable v : view.varMap.values()) {
+		for (AbstractVariable v : view.varMap.values()) {
 			if (!bestSolution.containsKey(v.id))
 				return false;
 		}
@@ -552,20 +552,20 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	private boolean isTrivial() {
 		HashMap<Integer, Integer> minDis = new HashMap<Integer, Integer>();
 		int maxId = 0;
-		for (Variable v : view.varMap.values())
+		for (AbstractVariable v : view.varMap.values())
 			if (v.id > maxId)
 				maxId = v.id;
 		maxId++;
-		for (Variable v : view.varMap.values()) {
-			ArrayList<Variable> queue = new ArrayList<Variable>();
+		for (AbstractVariable v : view.varMap.values()) {
+			ArrayList<AbstractVariable> queue = new ArrayList<AbstractVariable>();
 			queue.add(v);
 			minDis.put(v.id * maxId + v.id, 0);
 			HashSet<Integer> visited = new HashSet<Integer>();
 			visited.add(v.id);
 			while (!queue.isEmpty()) {
-				Variable var = queue.remove(0);
-				for (Constraint c : var.neighbors) {
-					Variable n = c.getNeighbor(var);
+				AbstractVariable var = queue.remove(0);
+				for (AbstractConstraint c : var.neighbors) {
+					AbstractVariable n = c.getNeighbor(var);
 					if (!visited.contains(n.id)) {
 						queue.add(n);
 						int depth = minDis.get(v.id * maxId + var.id);
@@ -577,16 +577,16 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 		}
 
 		int minD = 0;
-		for (Variable v : view.varMap.values()) {
+		for (AbstractVariable v : view.varMap.values()) {
 			int m = minDis.get(self.id * maxId + v.id);
 			if (m > minD)
 				minD = m;
 		}
 
-		for (Constraint c : self.neighbors) {
-			Variable n = c.getNeighbor(self);
+		for (AbstractConstraint c : self.neighbors) {
+			AbstractVariable n = c.getNeighbor(self);
 			int d = 0;
-			for (Variable v : view.varMap.values()) {
+			for (AbstractVariable v : view.varMap.values()) {
 				int m = minDis.get(n.id * maxId + v.id);
 				if (m > d)
 					d = m;
@@ -601,7 +601,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 
 	public String getText() {
 		String val = "";
-		for (Variable v : view.varMap.values()) {
+		for (AbstractVariable v : view.varMap.values()) {
 			val += v.id + "  " + v.value + "/"
 					+ (bestSolution != null ? bestSolution.get(v.id) : "NA")
 					+ (v.fixed ? "F" : "") + "\n";

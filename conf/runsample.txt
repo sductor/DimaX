@@ -1,1 +1,0 @@
-java -classpath bin exec.DCOPApplication 1.dcop TOPT 1 500

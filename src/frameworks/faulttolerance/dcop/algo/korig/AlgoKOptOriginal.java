@@ -9,10 +9,10 @@ import frameworks.faulttolerance.dcop.algo.TerminateMessage;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Program;
-import frameworks.faulttolerance.dcop.dcop.Constraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 public class AlgoKOptOriginal extends BasicAlgorithm {
@@ -37,9 +37,9 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 	int sync;
 
 	DcopAbstractGraph korigView;
-	Variable korigSelf;
+	AbstractVariable korigSelf;
 
-	public AlgoKOptOriginal(Variable v, int kk) {
+	public AlgoKOptOriginal(AbstractVariable v, int kk) {
 		super(v);
 		k = kk;
 		self.value = Helper.random.nextInt(self.domain);
@@ -60,16 +60,16 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 		gainInfoCounter = 0;
 		commitInfoCounter = 0;
 		state = 0;
-		for (Constraint c : self.neighbors) {
+		for (AbstractConstraint c : self.neighbors) {
 			c.getNeighbor(self).value = -1;
 		}
 		korigView = ReplicationExperimentationParameters.constructDCOPGraph();
-		for (Variable v : view.varMap.values()) {
-			korigView.varMap.put(v.id, new Variable(v.id, v.domain, korigView));
+		for (AbstractVariable v : view.varMap.values()) {
+			korigView.varMap.put(v.id, new AbstractVariable(v.id, v.domain, korigView));
 		}
 		korigSelf = korigView.varMap.get(self.id);
-		for (Constraint c : view.conList) {
-			Constraint cc = new Constraint(korigView.getVar(c.first.id),
+		for (AbstractConstraint c : view.conList) {
+			AbstractConstraint cc = new AbstractConstraint(korigView.getVar(c.first.id),
 					korigView.getVar(c.second.id));
 			korigView.conList.add(cc);
 			for (int i = 0; i < c.d1; i++)
@@ -157,7 +157,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 					KorigValueMsg vmsg = (KorigValueMsg) msg;
 					view.varMap.get(sender).value = vmsg.value;
 					boolean f = true;
-					for (Constraint c : self.neighbors) {
+					for (AbstractConstraint c : self.neighbors) {
 						if (c.getNeighbor(self).value == -1) {
 							f = false;
 							break;
@@ -187,25 +187,25 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 
 				if (localInfoCounter == k / 2 + 1) {
 					localInfoCounter = 0;
-					for (Variable v : view.varMap.values()) {
+					for (AbstractVariable v : view.varMap.values()) {
 						korigView.varMap.get(v.id).value = v.value;
 					}
 					
 					for (LocalInfo l : localInfoMap.values()) {
-						Variable v = korigView.varMap.get(l.id);
+						AbstractVariable v = korigView.varMap.get(l.id);
 						if (v == null) {
-							v = new Variable(l.id, l.domain, korigView);
+							v = new AbstractVariable(l.id, l.domain, korigView);
 							korigView.varMap.put(v.id, v);
 						}
 						for (double[] enc : l.data) {
 							if (enc[0] == v.id) {
-								Variable n = korigView.varMap.get((int)enc[2]);
+								AbstractVariable n = korigView.varMap.get((int)enc[2]);
 								if (n == null) {
-									n = new Variable((int)enc[2], (int)enc[3], korigView);
+									n = new AbstractVariable((int)enc[2], (int)enc[3], korigView);
 									korigView.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
-									Constraint c = new Constraint(v, n);
+									AbstractConstraint c = new AbstractConstraint(v, n);
 									korigView.conList.add(c);
 									for (int i = 0; i < c.d1; i++)
 										for (int j = 0; j < c.d2; j++) {
@@ -213,13 +213,13 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 										}
 								}
 							} else {
-								Variable n = korigView.varMap.get((int)enc[0]);
+								AbstractVariable n = korigView.varMap.get((int)enc[0]);
 								if (n == null) {
-									n = new Variable((int)enc[0], (int)enc[1], korigView);
+									n = new AbstractVariable((int)enc[0], (int)enc[1], korigView);
 									korigView.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
-									Constraint c = new Constraint(n, v);
+									AbstractConstraint c = new AbstractConstraint(n, v);
 									korigView.conList.add(c);
 									for (int i = 0; i < c.d1; i++)
 										for (int j = 0; j < c.d2; j++) {
@@ -235,7 +235,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 					HashSet<Integer> kgroup = new HashSet<Integer>();
 					ArrayList<Integer> cList = new ArrayList<Integer>();
 					kgroup.add(korigSelf.id);
-					for (Constraint c : korigSelf.neighbors) {
+					for (AbstractConstraint c : korigSelf.neighbors) {
 						cList.add(c.getNeighbor(korigSelf).id);
 					}
 					while (kgroup.size() < k) {
@@ -244,8 +244,8 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 						int idx = cList.remove(Helper.random.nextInt(cList
 								.size()));
 						kgroup.add(idx);
-						Variable v = korigView.getVar(idx);
-						for (Constraint c : v.neighbors) {
+						AbstractVariable v = korigView.getVar(idx);
+						for (AbstractConstraint c : v.neighbors) {
 							int nid = c.getNeighbor(v).id;
 							if (localInfoMap.containsKey(nid)
 									&& !cList.contains(nid)
@@ -254,7 +254,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 						}
 					}
 
-					for (Variable v : korigView.varMap.values())
+					for (AbstractVariable v : korigView.varMap.values())
 						v.fixed = true;
 					for (Integer i : kgroup) {
 						korigView.getVar(i).fixed = false;
@@ -263,10 +263,10 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 					double gain = korigView.evaluate(sol) - korigView.evaluate();
 					HashMap<Integer, Integer> vMap = new HashMap<Integer, Integer>();
 					for (Integer i : kgroup) {
-						Variable v = korigView.getVar(i);
+						AbstractVariable v = korigView.getVar(i);
 						vMap.put(v.id, sol.get(v.id));
-						for (Constraint c : v.neighbors) {
-							Variable n = c.getNeighbor(v);
+						for (AbstractConstraint c : v.neighbors) {
+							AbstractVariable n = c.getNeighbor(v);
 							vMap.put(n.id, sol.get(n.id));
 						}
 					}
@@ -327,7 +327,7 @@ class KorigValueMsg extends Message {
 	int id;
 	int value;
 
-	public KorigValueMsg(Variable v) {
+	public KorigValueMsg(AbstractVariable v) {
 		value = v.value;
 	}
 

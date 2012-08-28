@@ -3,8 +3,8 @@ package frameworks.faulttolerance.dcop.algo.korig;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import frameworks.faulttolerance.dcop.dcop.Constraint;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 
 public class LocalInfo {
 	int id;
@@ -13,14 +13,14 @@ public class LocalInfo {
 	ArrayList<double[]> data;
 	HashMap<Integer, Integer> valMap;
 
-	public LocalInfo(Variable v) {
+	public LocalInfo(AbstractVariable v) {
 		id = v.id;
 		domain = v.domain;
 		value = v.value;
 		data = new ArrayList<double[]>();
 		valMap = new HashMap<Integer, Integer>();
-		for (Constraint c : v.neighbors) {
-			Variable n = c.getNeighbor(v);
+		for (AbstractConstraint c : v.neighbors) {
+			AbstractVariable n = c.getNeighbor(v);
 			valMap.put(n.id, n.value);
 			data.add(c.encode());
 		}

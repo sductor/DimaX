@@ -3,9 +3,9 @@ package frameworks.faulttolerance.dcop.algo;
 import java.util.HashSet;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.Constraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 
 public class AlgoMGM1 extends BasicAlgorithm {
 
@@ -13,7 +13,7 @@ public class AlgoMGM1 extends BasicAlgorithm {
 
 	HashSet<Integer> acceptSet;
 
-	public AlgoMGM1(Variable v) {
+	public AlgoMGM1(AbstractVariable v) {
 		super(v);
 		bestVal = -1;
 		acceptSet = new HashSet<Integer>();
@@ -95,8 +95,8 @@ public class AlgoMGM1 extends BasicAlgorithm {
 		int val = -1;
 		for (int i = 0; i < self.domain; i++) {
 			int sum = 0;
-			for (Constraint c : self.neighbors) {
-				Variable n = c.getNeighbor(self);
+			for (AbstractConstraint c : self.neighbors) {
+				AbstractVariable n = c.getNeighbor(self);
 				if (n.value == -1)
 					return -1;
 				if (self == c.first)

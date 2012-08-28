@@ -30,8 +30,8 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 			final Double hostFaultProbabilityMean,final DispersionSymbolicValue hostDisponibilityDispersion,
 			boolean completGraph, int agentAccessiblePerHost) throws IfailedException{
 		super();
-		varMap = new HashMap<Integer, Variable>();
-		conList = new Vector<Constraint>();
+		varMap = new HashMap<Integer, AbstractVariable>();
+		conList = new Vector<AbstractConstraint>();
 
 		ReplicationInstanceGraph rig = new ReplicationInstanceGraph();
 
@@ -46,7 +46,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 
 		for (AgentState a : rig.getAgentStates()) {
 			AgentIdentifier id = a.getMyAgentIdentifier();
-			Variable v = new Variable(
+			AbstractVariable v = new AbstractVariable(
 					identifierToInt(id,nbAgents), 
 					(int) Math.pow(2, rig.getAccessibleHost(id).size()),
 					this);
@@ -56,7 +56,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 		}
 		for (HostState h : rig.getHostsStates()){
 			ResourceIdentifier id = h.getMyAgentIdentifier();
-			Variable v = new Variable(
+			AbstractVariable v = new AbstractVariable(
 					identifierToInt(id,nbAgents), 
 					(int) Math.pow(2, rig.getAccessibleAgent(id).size()),
 					this);
@@ -67,10 +67,10 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 
 		for (AgentState a : rig.getAgentStates()) {
 			AgentIdentifier idAgent = a.getMyAgentIdentifier();
-			Variable agentVar = varMap.get(identifierToInt(idAgent,nbAgents));
+			AbstractVariable agentVar = varMap.get(identifierToInt(idAgent,nbAgents));
 			for (ResourceIdentifier idHost : rig.getAccessibleHost(idAgent)){
-				Variable hostVar = varMap.get(identifierToInt(idHost,nbAgents));
-				Constraint c = new Constraint(agentVar, hostVar);
+				AbstractVariable hostVar = varMap.get(identifierToInt(idHost,nbAgents));
+				AbstractConstraint c = new AbstractConstraint(agentVar, hostVar);
 				conList.add(c);
 
 				instanciateConstraintsValues(rig, idAgent, idHost, agentVar,
@@ -98,11 +98,11 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 
 	public String toString(){
 		String result = "Variables :\n";
-		for (Variable var : varMap.values()){
+		for (AbstractVariable var : varMap.values()){
 			result+=var.id+" -- "+var.domain+" -- "+var.value+"\n";
 		}
 		result+="\n Contraints :\n";
-		for (Constraint c : conList){
+		for (AbstractConstraint c : conList){
 			result+="("+c.first.id+","+c.second.id+") --> \n";
 			for (int i = 0; i < c.d1; i++){
 				for (int j = 0; j < c.d2; j++){
@@ -119,7 +119,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 
 	private void instanciateConstraintsValues(ReplicationInstanceGraph rig,
 			AgentIdentifier idAgent, ResourceIdentifier idHost,
-			Variable agentVar, Variable hostVar, Constraint c) {
+			AbstractVariable agentVar, AbstractVariable hostVar, AbstractConstraint c) {
 		for (int x = 0; x < agentVar.domain; x++){
 			for (int y = 0; y < hostVar.domain; y++){
 				if (!respectAgentRight(idAgent,x,rig)|| !respectHostRight(idHost,y,rig) ||  !consistant(idAgent,idHost,x,y,rig))
@@ -179,7 +179,7 @@ public abstract class DcopReplicationGraph extends DcopAbstractGraph {
 		for (HostState h : rig.getHostsStates()) {
 			ResourceIdentifier idHost = h.getMyAgentIdentifier();
 			for (AgentIdentifier idAgent : rig.getAccessibleAgent(idHost)){
-				Constraint c = new Constraint(varMap.get(idAgent), varMap.get(idHost));
+				AbstractConstraint c = new AbstractConstraint(varMap.get(idAgent), varMap.get(idHost));
 				assert conList.contains(c);
 			}
 		}

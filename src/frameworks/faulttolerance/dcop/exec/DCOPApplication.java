@@ -12,10 +12,10 @@ import frameworks.faulttolerance.dcop.daj.Application;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Node;
 import frameworks.faulttolerance.dcop.daj.Program;
-import frameworks.faulttolerance.dcop.dcop.Constraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 public class DCOPApplication extends Application {
@@ -146,7 +146,7 @@ public class DCOPApplication extends Application {
 		Node controller = node(new Controller(this), "Simulator",
 				20 + (radius - 30), 20 + (radius - 30));
 
-		for (Variable v : g.varMap.values()) {
+		for (AbstractVariable v : g.varMap.values()) {
 			Node node = node(getAlgo(v), "" + v.id, (int) (20 + (radius - 30)
 					* (1 + Math.cos(angle))), (int) (20 + (radius - 30)
 					* (1 + Math.sin(angle))));
@@ -154,7 +154,7 @@ public class DCOPApplication extends Application {
 			angle += delta;
 			link(controller, node);
 		}
-		for (Constraint c : g.conList) {
+		for (AbstractConstraint c : g.conList) {
 			Node first = nodeMap.get(c.first.id);
 			Node second = nodeMap.get(c.second.id);
 			link(first, second);
@@ -215,7 +215,7 @@ public class DCOPApplication extends Application {
 		System.out.println("GlobalTime:\t" + app.getNetwork().getScheduler().getTime());		
 	}
 	
-	private BasicAlgorithm getAlgo(Variable v) {
+	private BasicAlgorithm getAlgo(AbstractVariable v) {
 		switch(this.algo){
 			case TOPTAPO: 
 				if(!isWin){

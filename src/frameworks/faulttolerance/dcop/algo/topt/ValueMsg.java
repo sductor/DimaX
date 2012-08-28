@@ -1,7 +1,7 @@
 package frameworks.faulttolerance.dcop.algo.topt;
 
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 
 public class ValueMsg extends Message {
 	int id;
@@ -12,7 +12,7 @@ public class ValueMsg extends Message {
 		super();
 	}
 
-	public ValueMsg(Variable v, int t) {
+	public ValueMsg(AbstractVariable v, int t) {
 		super();
 		id = v.id;
 		value = v.value;

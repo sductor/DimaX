@@ -3,10 +3,10 @@ package frameworks.faulttolerance.dcop.algo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import frameworks.faulttolerance.dcop.daj.Program;
-import frameworks.faulttolerance.dcop.dcop.Constraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 import frameworks.faulttolerance.dcop.exec.Stats;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
@@ -16,7 +16,7 @@ public abstract class BasicAlgorithm extends Program {
 	protected int lockBase;
 	protected int reLockTime;
 	protected DcopAbstractGraph view;
-	protected Variable self;
+	protected AbstractVariable self;
 	protected int lock;
 	protected boolean done;
 	
@@ -28,20 +28,20 @@ public abstract class BasicAlgorithm extends Program {
 	public int nlockReq;
 	public int preCycles;
 
-	public BasicAlgorithm(Variable v) {
+	public BasicAlgorithm(AbstractVariable v) {
 		view = ReplicationExperimentationParameters.constructDCOPGraph();
-		self = new Variable(v.id, v.domain, view);
+		self = new AbstractVariable(v.id, v.domain, view);
 		view.varMap.put(self.id, self);
-		for (Constraint c : v.neighbors) {
-			Variable n = c.getNeighbor(v);
-			Variable nn = new Variable(n.id, n.domain, view);
+		for (AbstractConstraint c : v.neighbors) {
+			AbstractVariable n = c.getNeighbor(v);
+			AbstractVariable nn = new AbstractVariable(n.id, n.domain, view);
 			nn.fixed = true;
 			view.varMap.put(nn.id, nn);
-			Constraint cc;
+			AbstractConstraint cc;
 			if (v == c.first)
-				cc = new Constraint(self, nn);
+				cc = new AbstractConstraint(self, nn);
 			else
-				cc = new Constraint(nn, self);
+				cc = new AbstractConstraint(nn, self);
 			for (int i = 0; i < cc.d1; i++)
 				for (int j = 0; j < cc.d2; j++) {
 					cc.f[i][j] = c.f[i][j];

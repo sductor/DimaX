@@ -21,12 +21,12 @@ import frameworks.faulttolerance.dcop.algo.topt.TreeNode;
 
 public abstract class DcopAbstractGraph {
 
-	public HashMap<Integer, Variable> varMap;
-	public Vector<Constraint> conList;
+	public HashMap<Integer, AbstractVariable> varMap;
+	public Vector<AbstractConstraint> conList;
 
 	public DcopAbstractGraph() {
-		varMap = new HashMap<Integer, Variable>();
-		conList = new Vector<Constraint>();
+		varMap = new HashMap<Integer, AbstractVariable>();
+		conList = new Vector<AbstractConstraint>();
 	}
 
 	public DcopAbstractGraph(String inFilename) {
@@ -35,13 +35,13 @@ public abstract class DcopAbstractGraph {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(
 					inFilename));
-			varMap = new HashMap<Integer, Variable>();
-			conList = new Vector<Constraint>();
+			varMap = new HashMap<Integer, AbstractVariable>();
+			conList = new Vector<AbstractConstraint>();
 			String line;
-			Constraint c = null;
+			AbstractConstraint c = null;
 			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("VARIABLE")) {
-					Variable v = new Variable(line, this);
+					AbstractVariable v = new AbstractVariable(line, this);
 					varMap.put(v.id, v);
 				} else if (line.startsWith("CONSTRAINT")) {
 					String[] ss = line.split(" ");
@@ -50,7 +50,7 @@ public abstract class DcopAbstractGraph {
 					int second = Integer.parseInt(ss[2]);
 					assert varMap.containsKey(first);
 					assert varMap.containsKey(second);
-					c = new Constraint(varMap.get(first), varMap.get(second));
+					c = new AbstractConstraint(varMap.get(first), varMap.get(second));
 					conList.add(c);
 				} else if (line.startsWith("F")) {
 					assert c != null;
@@ -62,7 +62,7 @@ public abstract class DcopAbstractGraph {
 					c.f[x][y] = v;
 				}
 			}
-			for (Constraint cc : conList)
+			for (AbstractConstraint cc : conList)
 				cc.cache();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -76,12 +76,12 @@ public abstract class DcopAbstractGraph {
 	public abstract HashMap<Integer, Integer> solve();
 	
 
-	public Variable getVar(int i) {
+	public AbstractVariable getVar(int i) {
 		return varMap.get(i);
 	}
 
 	public boolean checkValues() {
-		for (Variable v : varMap.values())
+		for (AbstractVariable v : varMap.values())
 			if (v.value == -1)
 				return false;
 		return true;
@@ -89,7 +89,7 @@ public abstract class DcopAbstractGraph {
 	
 	public double evaluate(HashMap<Integer, Integer> sol) {
 		this.backup();
-		for (Variable v : varMap.values())
+		for (AbstractVariable v : varMap.values())
 			v.value = sol.get(v.id);
 		double sum = this.evaluate();
 		this.recover();
@@ -99,7 +99,7 @@ public abstract class DcopAbstractGraph {
 	public boolean sameSolution(HashMap<Integer, Integer> sol) {
 		if (sol == null)
 			return false;
-		for (Variable v : varMap.values()) {
+		for (AbstractVariable v : varMap.values()) {
 			if (!sol.containsKey(v.id))
 				return false;
 			if (v.value != sol.get(v.id))
@@ -109,24 +109,24 @@ public abstract class DcopAbstractGraph {
 	}
 
 	public void clear() {
-		for (Variable v : varMap.values())
+		for (AbstractVariable v : varMap.values())
 			v.clear();
 	}
 
 	public void backup() {
-		for (Variable v : varMap.values())
+		for (AbstractVariable v : varMap.values())
 			v.backupValue();
 	}
 
 	public void recover() {
-		for (Variable v : varMap.values())
+		for (AbstractVariable v : varMap.values())
 			v.recoverValue();
 	}
 
 
 	public HashMap<Integer, Integer> getSolution() {
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
-		for (Variable v : varMap.values())
+		for (AbstractVariable v : varMap.values())
 			map.put(v.id, v.value);
 		return map;
 	}

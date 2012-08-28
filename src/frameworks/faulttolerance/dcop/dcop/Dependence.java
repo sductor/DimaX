@@ -5,9 +5,9 @@ public class Dependence {
 	public int pid;
 	public int[] values;
 	
-	public Dependence(Variable child, Constraint c) {
+	public Dependence(AbstractVariable child, AbstractConstraint c) {
 		cid = child.id;
-		Variable parent = c.getNeighbor(child);
+		AbstractVariable parent = c.getNeighbor(child);
 		pid = parent.id;
 		values = new int[parent.domain];
 		for (int i=0;i<values.length;i++)

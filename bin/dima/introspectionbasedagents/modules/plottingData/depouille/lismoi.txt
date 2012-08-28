@@ -1,8 +1,0 @@
-
-mkRes: affiche les resultats a partir de tous les fichiers a l'extension .dat present dans le repertoire. Sortie sur la console. Dans l'ordre, les donnees affichees correspondent a: nbEval, min, lowerQuartile, median, upperQuartile, max. Le numero de la colonne utilisee pour construire les resultats est codee en dur dans le code (variable targetIndex). Syntaxe: python mkRes > results.log
-
-mkSimple: affiche le fichier results.log (s'il existe) en ignorant N lignes a chaque fois (parametre en dur dans le code). Pratique pour avoir moins de points sur la courbe. syntaxe: python mkSimple.py > monfichier.res
-
-plotWhiskerBox: affiche le graphe des resultats avec gnuplot. Le script gnuplot a des parametres (a eventuellement changer) sur ce qui est affiche (contraintes x et y, taille des boxs, etc.) - il est aussi possible de creer directement une image PNG. Lis les donnees dans le fichier results.log. Syntaxe: gnuplot plotWhiskerBox.gp
-
-dans l'exemple fournit (fichiers a.dat, b.dat, c.dat, d.dat), la 1ere colonne donne le numero de generations, la seconde colonne donne le nombre d'evaluation depuis le debut et la 3eme colonne est utilisee pour construire les resultats qui seront finalement affiche. Dans cet exemple, il s'agit de la performance du meilleur individu pour chaque runs. Ainsi le graphe resultant montre la mediane du meilleur, le meilleur et le pire des meilleurs et les quartiles associes pour chaque generation (visible en abscisse en comptant par evaluations).

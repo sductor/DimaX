@@ -1,4 +1,4 @@
-package frameworks.faulttolerance.experimentation;
+package frameworks.faulttolerance.solver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import frameworks.negotiation.exploration.AllocationSolver;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public class KnitroAllocationSolver
+public class KnitroOptimalReplicationSolver
 <Contract extends MatchingCandidature,
 PersonalState extends AgentState> implements
 AllocationSolver<Contract, PersonalState> {

@@ -7,7 +7,7 @@ import frameworks.faulttolerance.Host;
 import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
-import frameworks.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
+import frameworks.faulttolerance.solver.ChocoHostReplicationSolver;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.collaborative.InformedCandidature;
 import frameworks.negotiation.protocoles.collaborative.InformedCandidatureRationality;
@@ -34,7 +34,7 @@ public class CollaborativeHost extends Host{
 				myId,
 				myState,
 				new InformedCandidatureRationality(new HostCore(socialWelfare,true,true),false),
-				new ResourceInformedSelectionCore(new ReplicationHostAllocationSolver(socialWelfare),maxCAccepts,initialSelectionType,maxComputingTime){
+				new ResourceInformedSelectionCore(new ChocoHostReplicationSolver(socialWelfare),maxCAccepts,initialSelectionType,maxComputingTime){
 					private static final long serialVersionUID = -1578866978817500691L;
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {

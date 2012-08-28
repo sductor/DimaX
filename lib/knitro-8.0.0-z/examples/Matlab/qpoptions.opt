@@ -1,0 +1,15 @@
+# Some KNITRO option settings that are usually ideal for large QPs.
+# It is recommended to experiment with various KNITRO options settings.
+# In particular, it is recommended to try all 3 "algorithm" options.
+# See the KNITRO User's Manual for a summary of all user options.
+
+algorithm direct      # use KNITRO Interior/Direct algorithm
+#algorithm cg         # use KNITRO Interior/CG algorithm
+#algorithm active     # use KNITRO Active-Set (SLQP) algorithm
+outlev  iter_verbose  # Display output every iteration
+gradopt exact         # Enforce user-supplied/exact gradients
+hessopt exact         # Enforce user-supplied/exact Hessian
+bar_murule probing    # Use a dynamic barrier parameter update
+bar_initpt yes        # Use a special initial point strategy
+bar_maxcrossit 5      # This option will "clean-up" the solution
+                      # (but may be expensive on large problems)

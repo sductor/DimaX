@@ -1,0 +1,140 @@
+<?xml version="1.0" standalone="yes"?><!DOCTYPE park SYSTEM "park.dtd">
+<park>
+	<nameServer>
+		<host ip="thefugitivekind" port="7777"/>
+		<ssh gate="gate-ia.lip6.fr" user="ductors" />
+	</nameServer>
+		
+	<network>
+		<networkID> remote</networkID>
+		<ssh gate="gate-ia.lip6.fr" dir="workspace/DimaX_SD/" user="ductors" />
+
+		<group>
+			<groupID> 649</groupID>
+			<host ip="finalcut" port="7003" />
+			<host ip="heaven" port="7003" />
+			<host ip="darkside" port="7003" />
+			<host ip="intheflesh" port="7003" />
+		</group>
+
+		<group>
+			<groupID> 650</groupID>
+			<host ip="ratsalad" port="7003" />
+		</group>
+		
+		<group>
+			<groupID>651</groupID>
+			<host ip="finalcut" port="7003" />
+		</group>
+		
+	</network>
+	
+	<network>
+		<networkID> local</networkID>
+		<ssh/>
+
+		<group>
+			<groupID> 649</groupID>
+			<host ip="finalcut.lip6.fr" port="7003" />
+			<host ip="heaven.lip6.fr" port="7003" />
+			<host ip="darkside.lip6.fr" port="7003" />
+			<host ip="intheflesh.lip6.fr" port="7003" />
+		</group>
+
+		<group>
+			<groupID> 650</groupID>
+			<host ip="ratsalad.lip6.fr" port="7003" />
+		</group>
+		
+		<group>
+			<groupID>651</groupID>
+			<host ip="tikenjah.lip6.fr" port="7003" />
+			<host ip="alister.lip6.fr" port="7003" />
+		</group>
+		
+		<group>
+			<groupID>652</groupID>
+			<host ip="nirvana" port="7003"/>
+			<host ip="thefugitivekind" port="7003"/>
+			<host ip="tikenjah" port="7003" />
+			<host ip="alister" port="7003" />
+		</group>
+		
+		<group>
+		<groupID>lip6mini</groupID>
+		<host ip="hotchip" port="7003" />
+<host ip="alister" port="7003" />
+		</group>
+		
+		<group>
+		<groupID>lip6ALL</groupID>
+		<host ip="17hippies" port="7003" />
+<host ip="achille" port="7003" />
+<host ip="jason" port="7003" />
+<host ip="abigor" port="7003" />
+<host ip="mukta" port="7003" />
+<host ip="epoisses" port="7003" />
+<host ip="grimmy" port="7003" />
+<host ip="koryo" port="7003" />
+<host ip="recife" port="7003" />
+<host ip="blackdog" port="7003" />
+<host ip="cali" port="7003" />
+<host ip="chouffe" port="7003" />
+<host ip="corona" port="7003" />
+<host ip="infomagic4" port="7003" />
+<host ip="messerchups" port="7003" />
+<host ip="pierre" port="7003" />
+<host ip="quezac" port="7003" />
+<host ip="thedoors" port="7003" />
+<host ip="air" port="7003" />
+<host ip="aphextwin" port="7003" />
+<host ip="augustiner" port="7003" />
+<host ip="bjork" port="7003" />
+<host ip="brassens" port="7003" />
+<host ip="brel" port="7003" />
+<host ip="bud" port="7003" />
+<host ip="carlsberg" port="7003" />
+<host ip="colomba" port="7003" />
+<host ip="dannyelfman" port="7003" />
+<host ip="easybeats" port="7003" />
+<host ip="ferdinand" port="7003" />
+<host ip="george" port="7003" />
+<host ip="grimbergen" port="7003" />
+<host ip="gunsnroses" port="7003" />
+<host ip="helios" port="7003" />
+<host ip="john" port="7003" />
+<host ip="kaiserchiefs" port="7003" />
+<host ip="muzo" port="7003" />
+<host ip="nara" port="7003" />
+<host ip="nirvana" port="7003" />
+<host ip="offspring" port="7003" />
+<host ip="pete" port="7003" />
+<host ip="rakes" port="7003" />
+<host ip="ringo" port="7003" />
+<host ip="supertzar" port="7003" />
+<host ip="tbfree" port="7003" />
+<host ip="thefugitivekind" port="7003" />
+<host ip="thepixies" port="7003" />
+<host ip="tomwaits" port="7003" />
+<host ip="twang" port="7003" />
+<host ip="vines" port="7003" />
+<host ip="yokohama" port="7003" />
+<host ip="fortune" port="7003" />
+<host ip="jamait" port="7003" />
+<host ip="klaxons" port="7003" />
+<host ip="terradyn3" port="7003" />
+<host ip="tikenjah" port="7003" />
+<host ip="volnay" port="7003" />
+		</group>
+		
+	</network>
+	
+	<activatedNetworks>
+		<networkID> local</networkID>
+	</activatedNetworks>
+		
+	<activatedGroups>
+		<groupID> lip6mini</groupID>
+	</activatedGroups>
+		
+</park>

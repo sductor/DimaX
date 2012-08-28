@@ -35,7 +35,7 @@ import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
+import frameworks.faulttolerance.solver.ChocoHostReplicationSolver;
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -546,11 +546,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		} else if (selection
 				.equals(NegotiationParameters.key4OptSelect)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(new ReplicationHostAllocationSolver(_socialWelfare), true, maxComputingTime));
+					true, false, new OptimalSelectionModule(new ChocoHostReplicationSolver(_socialWelfare), true, maxComputingTime));
 		}else if (selection
 				.equals(NegotiationParameters.key4BetterSelect)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(new ReplicationHostAllocationSolver(_socialWelfare), false, maxComputingTime));
+					true, false, new OptimalSelectionModule(new ChocoHostReplicationSolver(_socialWelfare), false, maxComputingTime));
 		} else {
 			throw new RuntimeException(
 					"Static parameters est mal conf : selection = "+ selection);

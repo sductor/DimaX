@@ -1,4 +1,4 @@
-package frameworks.faulttolerance.negotiatingagent;
+package frameworks.faulttolerance.solver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,12 +15,15 @@ import choco.kernel.model.variables.integer.IntegerConstantVariable;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import dima.basicagentcomponents.AgentName;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import frameworks.faulttolerance.negotiatingagent.HostState;
+import frameworks.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.exploration.ChocoAllocationSolver;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public class ReplicationHostAllocationSolver
+public class ChocoHostReplicationSolver
 extends ChocoAllocationSolver
 <ReplicationCandidature, HostState>{
 	private static final long serialVersionUID = 161669049253111527L;
@@ -43,7 +46,7 @@ extends ChocoAllocationSolver
 
 	IntegerVariable[] replicasValue;
 
-	public ReplicationHostAllocationSolver(final SocialChoiceType socialWelfare) {
+	public ChocoHostReplicationSolver(final SocialChoiceType socialWelfare) {
 		super(socialWelfare);
 	}
 
@@ -299,8 +302,8 @@ extends ChocoAllocationSolver
 		concerned.add(cad);
 		concerned.add(cbd);
 
-		final ReplicationHostAllocationSolver solver =
-				new ReplicationHostAllocationSolver(sw);
+		final ChocoHostReplicationSolver solver =
+				new ChocoHostReplicationSolver(sw);
 		solver.initiate(concerned);
 
 		final boolean best = false;

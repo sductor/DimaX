@@ -1,0 +1,202 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tips and tricks &mdash; KNITRO user guide 8.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="KNITRO user guide 8.0 documentation" href="../index.html" />
+    <link rel="up" title="User guide" href="../2_userGuide.html" />
+    <link rel="next" title="Bibliography" href="bibliography.html" />
+    <link rel="prev" title="Special problem classes" href="specialProblems.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="bibliography.html" title="Bibliography"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="specialProblems.html" title="Special problem classes"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../2_userGuide.html" accesskey="U">User guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tips-and-tricks">
+<h1>Tips and tricks</h1>
+<p>This last chapter contains some rules of the thumb to improve efficiency
+or solve memory issues.</p>
+<div class="section" id="option-tuning-for-efficiency">
+<span id="index-0"></span><h2>Option tuning for efficiency</h2>
+<ul class="simple">
+<li>The most important user option is the choice of which continuous
+nonlinear optimization algorithm to use, which is specified by the
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#algorithm" title="algorithm"><tt class="xref c c-type docutils literal"><span class="pre">algorithm</span></tt></a> option.  Please try all three values as it is often difficult to
+predict which one will work best, or try using the <em>multi</em> option
+(<tt class="xref c c-type docutils literal"><span class="pre">algorithm=5</span></tt>).  In particular the Active Set
+algorithm may often work best for small problems, problems whose only constraints
+are simple bounds on the variables, or linear programs.  The interior-point
+algorithms are generally preferable for large-scale problems.</li>
+<li>Perhaps the second most important user option setting is the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#hessopt" title="hessopt"><tt class="xref c c-type docutils literal"><span class="pre">hessopt</span></tt></a>
+user option that specifies which Hessian (or Hessian approximation) technique
+to use.  If you (or the modeling language) are not providing the  exact
+Hessian to KNITRO, then you should experiment with different values here.</li>
+<li>One of the most important user options for the interior-point
+algorithms is the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#bar_murule" title="bar_murule"><tt class="xref c c-type docutils literal"><span class="pre">bar_murule</span></tt></a> option, which controls the handling
+of the barrier parameter.  It is recommended to experiment
+with different values for this user option if you are using one of the
+interior-point solvers in KNITRO.</li>
+<li>If you are using the Interior/Direct algorithm
+and it seems to be taking a large number of conjugate gradient (CG) steps
+(as evidenced by a non-zero value under the  CGits output column header
+on many iterations), then you should try a small value for the
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#bar_directinterval" title="bar_directinterval"><tt class="xref c c-type docutils literal"><span class="pre">bar_directinterval</span></tt></a> user option (e.g., 0-2).  This option will try
+to prevent KNITRO from taking an excessive number of CG steps.  Additionally,
+if there are solver iterations where KNITRO slows down because it is taking a very
+large number of CG iterations, you can try enforcing a maximum limit on the
+number of CG iterations per algorithm iteration using the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#maxcgit" title="maxcgit"><tt class="xref c c-type docutils literal"><span class="pre">maxcgit</span></tt></a>
+user option.</li>
+<li>The <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#linsolver" title="linsolver"><tt class="xref c c-type docutils literal"><span class="pre">linsolver</span></tt></a> option can make a big difference in performance
+for some problems. For small problems (particularly small problems with dense
+Jacobian and Hessian matrices), it is recommended to try the <em>qr</em> setting,
+while for large problems, it is recommended to try the <em>hybrid</em>, <em>ma27</em> and
+<em>ma57</em> settings to see which is fastest.
+When using either the  <em>hybrid</em>, <em>qr</em> or <em>ma57</em> setting for the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#linsolver" title="linsolver"><tt class="xref c c-type docutils literal"><span class="pre">linsolver</span></tt></a>
+option it is <em>highly</em> recommended to use the Intel MKL BLAS
+(<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#blasoption" title="blasoption"><tt class="xref c c-type docutils literal"><span class="pre">blasoption</span></tt></a> = 1)
+provided with KNITRO or some other optimized BLAS as this can result in
+significant speedups compared to the internal KNITRO BLAS (<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#blasoption" title="blasoption"><tt class="xref c c-type docutils literal"><span class="pre">blasoption</span></tt></a> = 0).</li>
+<li>When solving mixed integer problems (MIPs), if KNITRO is struggling to
+find an integer feasible point, then you should try different values for the
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_heuristic" title="mip_heuristic"><tt class="xref c c-type docutils literal"><span class="pre">mip_heuristic</span></tt></a> option, which will try to find a integer feasible point
+before beginning the branch and bound process.  Other important MIP
+options that can significantly impact the performance of KNITRO are the
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_method" title="mip_method"><tt class="xref c c-type docutils literal"><span class="pre">mip_method</span></tt></a>,  <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_branchrule" title="mip_branchrule"><tt class="xref c c-type docutils literal"><span class="pre">mip_branchrule</span></tt></a>,
+and  <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_selectrule" title="mip_selectrule"><tt class="xref c c-type docutils literal"><span class="pre">mip_selectrule</span></tt></a> user options,
+as well as the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#algorithm" title="algorithm"><tt class="xref c c-type docutils literal"><span class="pre">algorithm</span></tt></a> option which will determine the KNITRO
+algorithm to use to solve the nonlinear, continuous subproblems generated
+during the branch and bound process.</li>
+</ul>
+</div>
+<div class="section" id="memory-issues">
+<span id="index-1"></span><h2>Memory issues</h2>
+<p>If you receive a KNITRO termination message indicating that there
+was not enough memory on your computer to solve the problem, or if your
+problem appears to be running very slow because it is using nearly
+all of the available memory on your computer system, the following are
+some recommendations to try to reduce the amount of memory
+used by KNITRO.</p>
+<ul class="simple">
+<li>Experiment with different algorithms. Typically the Interior/Direct
+algorithm is chosen by default and uses the most memory.  The
+Interior/CG and  Active Set algorithms usually use much less memory.
+In particular if the Hessian matrix is large and dense and using most of the
+memory, then the  Interior/CG method may offer big savings in memory.
+If the constraint Jacobian matrix is large and dense and using most of the memory,
+then the  Active Set algorithm may use much less memory on your problem.</li>
+<li>If much of the memory usage seems to come from the Hessian matrix,
+then you should try different Hessian options via the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#hessopt" title="hessopt"><tt class="xref c c-type docutils literal"><span class="pre">hessopt</span></tt></a>
+user option. In particular <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#hessopt" title="hessopt"><tt class="xref c c-type docutils literal"><span class="pre">hessopt</span></tt></a> settings <em>finite_diff</em>,
+<em>product</em>, and <em>lbfgs</em> use the least amount of memory.</li>
+<li>Try different linear solver options in KNITRO via the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#linsolver" title="linsolver"><tt class="xref c c-type docutils literal"><span class="pre">linsolver</span></tt></a> user option.
+Sometimes even if your problem definition (e.g. Hessian and Jacobian matrix)
+can be easily stored in memory, the sparse linear system solvers inside KNITRO
+may require a lot of extra memory to perform and store matrix factorizations.
+If your problem size is relatively small you can try <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#linsolver" title="linsolver"><tt class="xref c c-type docutils literal"><span class="pre">linsolver</span></tt></a> setting
+<em>qr</em>.  For large problems you should try both <em>ma27</em> and <em>ma57</em> settings
+as one or the other may use significantly less memory.  In addition, using a smaller
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#pivot" title="pivot"><tt class="xref c c-type docutils literal"><span class="pre">pivot</span></tt></a> user option value may reduce the amount of memory needed for the linear solver.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tips and tricks</a><ul>
+<li><a class="reference internal" href="#option-tuning-for-efficiency">Option tuning for efficiency</a></li>
+<li><a class="reference internal" href="#memory-issues">Memory issues</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="specialProblems.html"
+                        title="previous chapter">Special problem classes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bibliography.html"
+                        title="next chapter">Bibliography</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="bibliography.html" title="Bibliography"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="specialProblems.html" title="Special problem classes"
+             >previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../2_userGuide.html" >User guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Ziena Optimization LLC.
+    </div>
+  </body>
+</html>

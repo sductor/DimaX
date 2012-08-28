@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Obtaining information &mdash; KNITRO user guide 8.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="KNITRO user guide 8.0 documentation" href="../index.html" />
+    <link rel="up" title="User guide" href="../2_userGuide.html" />
+    <link rel="next" title="Callback and reverse communication mode" href="callbackVsRevComm.html" />
+    <link rel="prev" title="Termination criteria" href="termination.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="callbackVsRevComm.html" title="Callback and reverse communication mode"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="termination.html" title="Termination criteria"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../2_userGuide.html" accesskey="U">User guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obtaining-information">
+<span id="sec-knitrooutput"></span><h1>Obtaining information</h1>
+<p>In addition to the KNITRO log that is printed on screen,
+information about the computation performed by KNITRO is
+available in the form of various function calls. This section
+explains how this information can be retrieved and interpreted.</p>
+<div class="section" id="knitro-output-for-continuous-problems">
+<span id="index-0"></span><h2>KNITRO output for continuous problems</h2>
+<p>This section describes KNITRO outputs at various levels
+for continuous problems. We examine the output that results from running
+<tt class="file docutils literal"><span class="pre">examples/C/callback2_static</span></tt> to solve <tt class="file docutils literal"><span class="pre">problemHS15.c</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <tt class="xref c c-type docutils literal"><span class="pre">outlev=0</span></tt> then all printing of output is suppressed.
+If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> is positive, then KNITRO prints
+information about the solution of your optimization problem either to
+standard output (<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outmode" title="outmode"><tt class="xref c c-type docutils literal"><span class="pre">outmode</span></tt></a> = <em>screen</em>), to a file named
+<tt class="file docutils literal"><span class="pre">knitro.log</span></tt>      (<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outmode" title="outmode"><tt class="xref c c-type docutils literal"><span class="pre">outmode</span></tt></a> = <em>file</em>), or to
+both (<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outmode" title="outmode"><tt class="xref c c-type docutils literal"><span class="pre">outmode</span></tt></a> = <em>both</em>).
+The option <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outdir" title="outdir"><tt class="xref c c-type docutils literal"><span class="pre">outdir</span></tt></a> controls the directory where output files are
+created (if any are) and the option <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outappend" title="outappend"><tt class="xref c c-type docutils literal"><span class="pre">outappend</span></tt></a> controls whether
+output is appended to existing files.</p>
+</div>
+<p class="rubric">Display of Nondefault Options</p>
+<p>KNITRO first prints the banner displaying the Ziena license type
+and version of KNITRO that is installed.
+It then lists all user options which are different from their default values
+If nothing is listed in this section then it must be that all user options
+are set to their default values.
+Lastly, KNITRO prints messages that describe how it resolved user
+options that were set to automatic values.
+For example, if option <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#algorithm" title="algorithm"><tt class="xref c c-type docutils literal"><span class="pre">algorithm</span></tt></a> = <em>auto</em>, then KNITRO
+prints the algorithm that it chooses.</p>
+<div class="highlight-none"><div class="highlight"><pre>======================================
+       Commercial Ziena License
+             KNITRO 8.0.0
+          Ziena Optimization
+======================================
+
+outlev: 6
+KNITRO changing algorithm from AUTO to 1.
+KNITRO changing bar_murule from AUTO to 1.
+KNITRO changing bar_initpt from AUTO to 2.
+KNITRO changing bar_penaltyrule from AUTO to 1.
+KNITRO changing bar_penaltycons from AUTO to 1.
+</pre></div>
+</div>
+<p>In the example above, it is indicated that we are using a more verbose
+output level (<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> = 6) instead of the default value
+(<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> = 2).
+KNITRO chose algorithm 1 (Interior/Direct), and then determined four
+other options related to the algorithm.</p>
+<p class="rubric">Display of problem characteristics</p>
+<p>KNITRO next prints a summary
+description of the problem characteristics including the number and
+type of variables and constraints and the number of nonzero elements
+in the Jacobian matrix and Hessian matrix (if providing the exact Hessian).</p>
+<div class="highlight-none"><div class="highlight"><pre>Problem Characteristics
+-----------------------
+Objective goal:    Minimize
+Number of variables:                  2
+        bounded below:                0
+        bounded above:                1
+        bounded below and above:      0
+        fixed:                        0
+        free:                         1
+Number of constraints:                2
+        linear equalities:            0
+        nonlinear equalities:         0
+        linear inequalities:          0
+        nonlinear inequalities:       2
+        range:                        0
+Number of nonzeros in Jacobian:       4
+Number of nonzeros in Hessian:        3
+</pre></div>
+</div>
+<p class="rubric">Display of Iteration Information</p>
+<p>Next, if <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> is greater than 2, KNITRO prints
+columns of data reflecting detailed information about individual
+iterations during the solution process.
+An iteration is defined as a step
+which generates a new solution estimate (i.e., a successful step).</p>
+<p>If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> = 2, summary data is printed every 10
+iterations, and on the final iteration. If
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> = 3, summary data is printed every
+iteration.      If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> = 4, the most verbose
+iteration information is printed every iteration.</p>
+<div class="highlight-none"><div class="highlight"><pre>Iter        fCount      Objective        FeasError     OptError      ||Step||      CGits
+--------    --------    --------------   ----------    ----------    ----------    -------
+0           1           9.090000e+02     3.000e+00
+1           2           7.989784e+02     2.878e+00     9.096e+01     6.566e-02           0
+2           3           4.232342e+02     2.554e+00     5.828e+01     2.356e-01           0
+3           4           1.457686e+01     9.532e-01     3.088e+00     1.909e+00           0
+4           9           1.235269e+02     7.860e-01     3.818e+00     7.601e-01           5
+5           0           3.993788e+02     3.022e-02     1.795e+01     1.186e+00           0
+6           11          3.924231e+02     2.924e-02     1.038e+01     1.856e-02           0
+7           12          3.158787e+02     0.000e+00     6.905e-02     2.373e-01           0
+8           13          3.075530e+02     0.000e+00     6.888e-03     2.255e-02           0
+9           14          3.065107e+02     0.000e+00     6.397e-05     2.699e-03           0
+10          15          3.065001e+02     0.000e+00     4.457e-07     2.714e-05           0
+</pre></div>
+</div>
+<p>The meaning of each column is described below.</p>
+<ul class="simple">
+<li><strong>Iter</strong>: iteration number.</li>
+<li><strong>fCount</strong>: the cumulative number of function evalutions.
+(This information is only printed if
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> is greater than 3).</li>
+<li><strong>Objective</strong>: gives the value of the objective function at the current iterate.</li>
+<li><strong>FeasError</strong>: gives a measure of the feasibility violation at the current iterate</li>
+<li><strong>OptError</strong>: gives a measure of the violation of the Karush-Kuhn-Tucker (KKT)
+(first-order) optimality conditions (not including feasibility)
+at the current iterate.</li>
+<li><strong>Step</strong>: the 2-norm length of the step (i.e., the distance between the new
+iterate and the previous iterate).</li>
+<li><strong>CGits</strong>: the number of Projected Conjugate Gradient (CG) iterations required
+to compute the step.</li>
+</ul>
+<p class="rubric">Display of termination status</p>
+<p>At the end of the run a termination message is printed indicating
+whether or not the optimal solution was found and if not, why KNITRO
+stopped.        The termination message typically starts with the word &#8220;EXIT&#8221;.
+If KNITRO was successful in satisfying the termination
+test, the message will look as follows:</p>
+<div class="highlight-python"><pre>EXIT: Locally optimal solution found.</pre>
+</div>
+<p class="rubric">Display of Final Statistics</p>
+<p>Following the termination message,
+a summary of some final statistics on the run
+are printed. Both relative and absolute error values are printed.</p>
+<div class="highlight-none"><div class="highlight"><pre>Final Statistics
+----------------
+Final objective value                      =    3.06500096351765e+02
+Final feasibility error (abs / rel)        =    0.00e+00 / 0.00e+00
+Final optimality error (abs / rel)         =    4.46e-07 / 3.06e-08
+# of iterations                            =    10
+# of CG iterations                         =    5
+# of function evaluations                  =    15
+# of gradient evaluations                  =    11
+# of Hessian evaluations                   =    10
+Total program time (secs)                  =    0.00136 (0.000 CPU time)
+Time spent in evaluations (sec)            =    0.00012
+</pre></div>
+</div>
+<p class="rubric">Display of solution vector and constraints</p>
+<p>If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> equals 5 or 6, the values of the solution vector are printed
+after the final statistics.     If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> equals 6, the final constraint
+values are also printed, and the values of the
+Lagrange multipliers (or dual variables) are printed next to their corresponding
+constraint or bound.</p>
+<div class="highlight-none"><div class="highlight"><pre>Constraint Vector                Lagrange Multipliers
+-----------------                ---------------------
+c[0] =     1.00000006873e+00,    lambda[0] =    -7.00000062964e+02
+c[1] =     4.50000096310e+00,    lambda[1) =    -1.07240081095e-05
+
+Solution Vector
+---------------
+x[0] =     4.99999972449e-01,    lambda[2] =     7.27764067199e+01
+x[1] =     2.00000024766e+00,    lambda[3] =     0.00000000000e+00
+</pre></div>
+</div>
+<p class="rubric">Debugging / profiling information</p>
+<p>KNITRO can produce
+additional information which may be useful in debugging or analyzing
+performance. If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> is positive and
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#debug" title="debug"><tt class="xref c c-type docutils literal"><span class="pre">debug</span></tt></a> = 1, then multiple files named <tt class="file docutils literal"><span class="pre">kdbg_*.log</span></tt> are
+created which contain detailed information on performance.
+If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> is positive and <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#debug" title="debug"><tt class="xref c c-type docutils literal"><span class="pre">debug</span></tt></a> = 2,
+then KNITRO prints information useful for debugging program execution.
+The information produced by <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#debug" title="debug"><tt class="xref c c-type docutils literal"><span class="pre">debug</span></tt></a>
+is primarily intended for developers, and should not be
+used in a production setting.</p>
+<p class="rubric">Intermediate iterates</p>
+<p>Users can generate a file containing iterates and/or solution points
+with option <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#newpoint" title="newpoint"><tt class="xref c c-type docutils literal"><span class="pre">newpoint</span></tt></a>. The output file is called
+<tt class="file docutils literal"><span class="pre">knitro_newpoint.log</span></tt>.</p>
+</div>
+<div class="section" id="knitro-output-for-discrete-problems">
+<h2>KNITRO output for discrete problems</h2>
+<p>This section describes KNITRO outputs at various levels
+for discrete or mixed integer problems. We examine the output
+that results from running <tt class="file docutils literal"><span class="pre">examples/C/callbackMINLP_static</span></tt> to
+solve <tt class="file docutils literal"><span class="pre">problemMINLP.c</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> is positive, the options <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outlevel" title="mip_outlevel"><tt class="xref c c-type docutils literal"><span class="pre">mip_outlevel</span></tt></a>,
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_debug" title="mip_debug"><tt class="xref c c-type docutils literal"><span class="pre">mip_debug</span></tt></a>, <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outinterval" title="mip_outinterval"><tt class="xref c c-type docutils literal"><span class="pre">mip_outinterval</span></tt></a> and
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outsub" title="mip_outsub"><tt class="xref c c-type docutils literal"><span class="pre">mip_outsub</span></tt></a> control the
+amount and type of MIP output generated as described below.</p>
+</div>
+<p>KNITRO first prints the banner displaying the Ziena license type
+and version of KNITRO that is installed.
+It then lists all user options which are different from their default values.
+If nothing is listed in this section then it must be that all user options
+are set to their default values.
+Lastly, KNITRO prints messages that describe how it resolved user
+options that were set to automatic values.      For example, if
+option <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_branchrule" title="mip_branchrule"><tt class="xref c c-type docutils literal"><span class="pre">mip_branchrule</span></tt></a> = <em>auto</em>,
+then KNITRO prints the branching rule that it chooses.</p>
+<div class="highlight-none"><div class="highlight"><pre>======================================
+       Commercial Ziena License
+             KNITRO 8.0.0
+          Ziena Optimization
+======================================
+
+mip_method: 1
+mip_outinterval: 1
+KNITRO changing mip_rootalg from AUTO to 1.
+KNITRO changing mip_lpalg from AUTO to 3.
+KNITRO changing mip_branchrule from AUTO to 2.
+KNITRO changing mip_selectrule from AUTO to 2.
+KNITRO changing mip_rounding from AUTO to 3.
+KNITRO changing mip_heuristic from AUTO to 1.
+KNITRO changing mip_pseudoinit from AUTO to 1.
+</pre></div>
+</div>
+<p>In the example above, it is indicated that we are using
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_method" title="mip_method"><tt class="xref c c-type docutils literal"><span class="pre">mip_method</span></tt></a> = 1 which is the standard branch and bound method,
+and that we are printing output
+information at every node since <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outinterval" title="mip_outinterval"><tt class="xref c c-type docutils literal"><span class="pre">mip_outinterval</span></tt></a> = 1.
+It then determined seven other options related to the MIP method.</p>
+<p class="rubric">Display of Problem Characteristics</p>
+<p>KNITRO next prints a summary
+description of the problem characteristics including the number and
+type of variables and constraints and the number of nonzero elements
+in the Jacobian matrix and Hessian matrix (if providing the exact Hessian).</p>
+<p>If no initial point is provided by the user, KNITRO indicates
+that it is computing one. KNITRO also prints the results of any
+MIP preprocessing to detect special structure and indicates
+which MIP method it is using.</p>
+<div class="highlight-none"><div class="highlight"><pre>Problem Characteristics
+-----------------------
+Objective goal:    Minimize
+        Number of variables:                                    6
+        bounded below:                                          0
+        bounded above:                                          0
+        bounded below and above:                                6
+        fixed:                                                  0
+        free:                                                   0
+Number of binary variables:                                     3
+Number of integer variables:                                    0
+Number of constraints:                                          6
+        linear equalities:                                      0
+        nonlinear equalities:                                   0
+        linear inequalities:                                    4
+        nonlinear inequalities:                                 2
+        range:                                                  0
+Number of nonzeros in Jacobian:                                 16
+Number of nonzeros in Hessian:                                  3
+
+No start point provided -- KNITRO computing one.
+
+KNITRO detected 1 GUB constraints
+KNITRO derived 0 knapsack covers after examining 3 constraints
+KNITRO solving root node relaxation
+KNITRO MIP using Branch and Bound method
+</pre></div>
+</div>
+<p class="rubric">Display of Node Information</p>
+<p>Next, if <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outlevel" title="mip_outlevel"><tt class="xref c c-type docutils literal"><span class="pre">mip_outlevel</span></tt></a> = 1, KNITRO prints
+columns of data reflecting detailed information about individual
+nodes during the solution process. The frequency of this node
+information is controlled by the <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outinterval" title="mip_outinterval"><tt class="xref c c-type docutils literal"><span class="pre">mip_outinterval</span></tt></a> parameter.
+For example, if <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outinterval" title="mip_outinterval"><tt class="xref c c-type docutils literal"><span class="pre">mip_outinterval</span></tt></a> = 100, this node information
+is printed only for every 100th node (printing output less
+frequently may save significant CPU time in some cases).        In the example
+below, <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outinterval" title="mip_outinterval"><tt class="xref c c-type docutils literal"><span class="pre">mip_outinterval</span></tt></a> = 1, so information about every node is
+printed.</p>
+<div class="highlight-none"><div class="highlight"><pre>   Node     Left    Iinf     Objective         Best relaxatn   Best incumbent
+  ------   ------  ------  --------------     --------------   --------------
+       1        0       2    7.592845e-01       7.592845e-01
+       2        1       1    5.171320e+00       7.592845e-01
+*      2        1                         r                      7.671320e+00
+*      3        2       0    6.009759e+00 f     5.171320e+00     6.009759e+00
+       4        1            1.000000e+01 pr    5.171320e+00     6.009759e+00
+       5        0            7.092732e+00 pr    6.009759e+00     6.009759e+00
+</pre></div>
+</div>
+<p>The meaning of each column is described below.</p>
+<ul class="simple">
+<li><strong>Node:</strong> the node number.      If an integer feasible point was found at a given node,
+then it is marked with a star (*).</li>
+<li><strong>Left:</strong> the current number of active nodes left in the branch and bound tree.</li>
+<li><strong>Iinf:</strong> the number of integer infeasible variables at the current node solution.</li>
+<li><strong>Objective:</strong> gives the value of the objective function at the solution of
+the relaxed subproblem solved at the current node.      If the subproblem
+was infeasible or failed, this is indicated. Additional symbols
+may be printed at some nodes if the node was pruned (<em>pr</em>)),
+integer feasible (<em>f</em>)),
+or an integer feasible point was found through rounding (<em>r</em>)).</li>
+<li><strong>Best relaxatn:</strong> the value of the current best relaxation
+(lower bound on the solution if minimizing).</li>
+<li><strong>Best incumbent:</strong> the value of the current best integer feasible point
+(upper bound on the solution if minimizing).</li>
+</ul>
+<p class="rubric">Display of Termination Status</p>
+<p>At the end of the run a termination message is printed indicating
+whether or not the optimal solution was found and if not, why KNITRO
+stopped. The termination message typically starts with the word &#8220;EXIT&#8221;.
+If KNITRO was successful in satisfying the termination
+test, the message will look as follows:</p>
+<div class="highlight-python"><pre>EXIT: Optimal solution found.</pre>
+</div>
+<p>See the reference manual (<a class="reference internal" href="../3_referenceManual/callableLibrary/returnCodes.html#returncodes"><em>Return codes</em></a>) for a list of possible termination
+messages and a description of their meaning and the corresponding
+value returned by <a class="reference internal" href="../3_referenceManual/callableLibrary/API.html#KTR_mip_solve" title="KTR_mip_solve"><tt class="xref c c-func docutils literal"><span class="pre">KTR_mip_solve()</span></tt></a>.</p>
+<p class="rubric">Display of Final Statistics</p>
+<p>Following the termination message,
+a summary of some final statistics on the run
+are printed.</p>
+<div class="highlight-none"><div class="highlight"><pre>Final Statistics for MIP
+------------------------
+Final objective value                =    6.00975890892825e+00
+Final integrality gap (abs / rel)    =    0.00e+00 /     0.00e+00 (0.00%)
+# of nodes processed                 =    5
+# of subproblems solved              =    6
+Total program time (secs)            =    0.09930 (0.099 CPU time)
+Time spent in evaluations (secs)     =    0.00117
+</pre></div>
+</div>
+<p class="rubric">Display of Solution Vector and Constraints</p>
+<p>If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> equals 5 or 6, the values of the solution vector are printed
+after the final statistics.</p>
+<div class="highlight-none"><div class="highlight"><pre>Solution Vector
+---------------
+x[0] =   1.30097589089e+00
+x[1] =   0.00000000000e+00
+x[2] =   1.00000000000e+00
+x[3] =   0.00000000000e+00      (binary variable)
+x[4] =   1.00000000000e+00      (binary variable)
+x[5] =   0.00000000000e+00      (binary variable)
+</pre></div>
+</div>
+<p>KNITRO can produce
+additional information which may be useful in debugging or analyzing
+MIP performance. If <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#outlev" title="outlev"><tt class="xref c c-type docutils literal"><span class="pre">outlev</span></tt></a> is positive and
+<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_debug" title="mip_debug"><tt class="xref c c-type docutils literal"><span class="pre">mip_debug</span></tt></a> = 1, then the file named <tt class="file docutils literal"><span class="pre">kdbg_mip.log</span></tt> is
+created which contains detailed information on the MIP performance.
+In addition, if <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_outsub" title="mip_outsub"><tt class="xref c c-type docutils literal"><span class="pre">mip_outsub</span></tt></a> = 1, this file will contain
+extensive output for each subproblem solve in the MIP solution process.
+The information produced by <a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#mip_debug" title="mip_debug"><tt class="xref c c-type docutils literal"><span class="pre">mip_debug</span></tt></a>
+is primarily intended for developers, and should not be
+used in a production setting.</p>
+</div>
+<div class="section" id="getting-information-programmatically">
+<h2>Getting information programmatically</h2>
+<p>Important solution information from KNITRO is either made
+available as output from the call to <a class="reference internal" href="../3_referenceManual/callableLibrary/API.html#KTR_solve" title="KTR_solve"><tt class="xref c c-func docutils literal"><span class="pre">KTR_solve()</span></tt></a> or <a class="reference internal" href="../3_referenceManual/callableLibrary/API.html#KTR_mip_solve" title="KTR_mip_solve"><tt class="xref c c-func docutils literal"><span class="pre">KTR_mip_solve()</span></tt></a>,
+or can be retrieved through special function calls.</p>
+<p>The <a class="reference internal" href="../3_referenceManual/callableLibrary/API.html#KTR_solve" title="KTR_solve"><tt class="xref c c-func docutils literal"><span class="pre">KTR_solve()</span></tt></a> and <a class="reference internal" href="../3_referenceManual/callableLibrary/API.html#KTR_mip_solve" title="KTR_mip_solve"><tt class="xref c c-func docutils literal"><span class="pre">KTR_mip_solve()</span></tt></a> functions return the
+final value of the objective function in <em>obj</em>, the final (primal)
+solution vector in the array <em>x</em> and the final values of the
+Lagrange multipliers (or dual variables) in the array <em>lambda</em>.
+The solution status code is given by the return value from
+<a class="reference internal" href="../3_referenceManual/callableLibrary/API.html#KTR_solve" title="KTR_solve"><tt class="xref c c-func docutils literal"><span class="pre">KTR_solve()</span></tt></a> or <a class="reference internal" href="../3_referenceManual/callableLibrary/API.html#KTR_mip_solve" title="KTR_mip_solve"><tt class="xref c c-func docutils literal"><span class="pre">KTR_mip_solve()</span></tt></a>.</p>
+<p>In addition, information related to the final statistics can be
+retrieved through the following function calls. The precise
+meaning of each option is described in the reference manual
+(<a class="reference internal" href="../3_referenceManual/callableLibrary/userOptions.html#useroptions"><em>KNITRO user options</em></a>).</p>
+<div class="highlight-none"><div class="highlight"><pre>int KTR_get_number_FC_evals (const KTR_context_ptr  kc);
+int KTR_get_number_GA_evals (const KTR_context_ptr  kc);
+int KTR_get_number_H_evals (const KTR_context_ptr  kc);
+int KTR_get_number_HV_evals (const KTR_context_ptr  kc);
+</pre></div>
+</div>
+<p>Continuous problems</p>
+<div class="highlight-none"><div class="highlight"><pre>int KTR_get_number_iters (const KTR_context_ptr  kc);
+int KTR_get_number_cg_iters (const KTR_context_ptr  kc);
+double KTR_get_abs_feas_error (const KTR_context_ptr  kc);
+double KTR_get_rel_feas_error (const KTR_context_ptr  kc);
+double KTR_get_abs_opt_error (const KTR_context_ptr  kc);
+double KTR_get_rel_opt_error (const KTR_context_ptr  kc);
+int KTR_get_constraint_values (const KTR_context_ptr kc, double * const c);
+int  KNITRO_API KTR_get_solution (const KTR_context_ptr kc,
+                                        int     * const status,
+                                        double  * const obj,
+                                        double  * const x,
+                                        double  * const lambda);
+</pre></div>
+</div>
+<p>Discrete or mixed integer problems</p>
+<div class="highlight-none"><div class="highlight"><pre>int KTR_get_mip_num_nodes (const KTR_context_ptr  kc);
+int KTR_get_mip_num_solves (const KTR_context_ptr  kc);
+double KTR_get_mip_abs_gap (const KTR_context_ptr  kc);
+double KTR_get_mip_rel_gap (const KTR_context_ptr  kc);
+double  KTR_get_mip_incumbent_obj (const KTR_context_ptr  kc);
+int  KTR_get_mip_incumbent_x (const KTR_context_ptr kc, double * const x);
+double  KTR_get_mip_relaxation_bnd (const KTR_context_ptr  kc);
+double  KTR_get_mip_lastnode_obj (const KTR_context_ptr  kc);
+</pre></div>
+</div>
+</div>
+<div class="section" id="suppressing-all-output-in-ampl">
+<h2>Suppressing all output in AMPL</h2>
+<dl class="docutils">
+<dt>Even when setting the options::</dt>
+<dd>ampl: option solver_msg 0;
+ampl: option KNITRO_options &#8220;outlev=0&#8221;;</dd>
+</dl>
+<p>in an AMPL session, AMPL will still print some
+basic information like the solver name and non-default user
+option settings to the screen.  In order to suppress all AMPL and
+KNITRO output you must change your AMPL solve commands to something like:</p>
+<div class="highlight-python"><pre>ampl: solve &gt;scratch-file;</pre>
+</div>
+<p>where scratch-file is the name of some temporary file where the unwanted
+output can be sent.  Under Unix, &#8220;solve &gt;/dev/null&#8221; automatically throws
+away the unwanted output, but under Windows you need to redirect
+output to an actual file.</p>
+</div>
+<div class="section" id="ampl-presolve">
+<span id="presolve"></span><h2>AMPL presolve</h2>
+<p id="index-1">AMPL will often perform a reordering of the variables and constraints defined
+in the AMPL model.  The AMPL presolver may also simplify the form of the
+problem by eliminating certain variables or constraints.  The output printed
+by KNITRO corresponds to the reordered, reformulated problem.
+To view final variable and constraint values in the original AMPL model,
+use the AMPL display command after KNITRO has completed solving
+the problem.</p>
+<p>It is possible to correlate KNITRO variables and constraints with the
+original AMPL model.  You must type an extra command in the AMPL session:</p>
+<div class="highlight-python"><pre>option knitroampl_auxfiles rc;</pre>
+</div>
+<p>and set KNITRO option <tt class="xref c c-type docutils literal"><span class="pre">presolve_dbg</span></tt> = 2.  Then the solver will
+print the variables and constraints that KNITRO receives, with their
+upper and lower bounds, and their AMPL model names.  The extra AMPL command
+causes the model names to be passed to the KNITRO/AMPL solver.</p>
+<p>The output below is obtained with the
+example file <tt class="file docutils literal"><span class="pre">testproblem.mod</span></tt> supplied with the distribution.
+The center column of variable and constraint names are those used by
+KNITRO, while the names in the right-hand column are from the AMPL model:</p>
+<div class="highlight-python"><pre>ampl: model testproblem.mod;
+ampl: option solver knitroampl;
+ampl: option knitroampl_auxfiles rc;
+ampl: option knitro_options "presolve_dbg=2 outlev=0";
+
+KNITRO 8.0: presolve_dbg=2
+outlev=0
+----- AMPL problem for KNITRO -----
+Objective name:  obj
+   0.000000e+00  &lt;=  x[   0]  &lt;=     1.000000e+20  x[1]
+   0.000000e+00  &lt;=  x[   1]  &lt;=     1.000000e+20  x[2]
+   0.000000e+00  &lt;=  x[   2]  &lt;=     1.000000e+20  x[3]
+
+   2.500000e+01  &lt;=  c[   0]  &lt;=     1.000000e+20  c2
+   5.600000e+01  &lt;=  c[   1]  &lt;=     5.600000e+01  c1
+-----------------------------------
+KNITRO 8.0: Locally optimal solution found.
+objective 9.360000e+02; feasibility error 7.105427e-15
+6 major iterations; 7 function evaluations</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Obtaining information</a><ul>
+<li><a class="reference internal" href="#knitro-output-for-continuous-problems">KNITRO output for continuous problems</a></li>
+<li><a class="reference internal" href="#knitro-output-for-discrete-problems">KNITRO output for discrete problems</a></li>
+<li><a class="reference internal" href="#getting-information-programmatically">Getting information programmatically</a></li>
+<li><a class="reference internal" href="#suppressing-all-output-in-ampl">Suppressing all output in AMPL</a></li>
+<li><a class="reference internal" href="#ampl-presolve">AMPL presolve</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="termination.html"
+                        title="previous chapter">Termination criteria</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="callbackVsRevComm.html"
+                        title="next chapter">Callback and reverse communication mode</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="callbackVsRevComm.html" title="Callback and reverse communication mode"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="termination.html" title="Termination criteria"
+             >previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../2_userGuide.html" >User guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Ziena Optimization LLC.
+    </div>
+  </body>
+</html>

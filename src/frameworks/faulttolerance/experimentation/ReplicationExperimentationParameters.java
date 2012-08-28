@@ -318,28 +318,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		return this.host_maxSimultaneousFailure/this.agentAccessiblePerHost;
 	}
 
-	public static DcopAbstractGraph constructDCOPGraph(){
-//		return new DcopAbstractGraph();
-		return new DcopClassicalGraph();
-	}
-
-	public static DcopAbstractGraph constructDCOPGraph(String filename) {
-//		return new DcopAbstractGraph(filename);
-//			return new DcopClassicalGraph(filename);
-		try {
-			return new DcopClassicalGraph("yo", 566668, 
-					4, 2,//nbAgent,nbHost 
-					0.5, DispersionSymbolicValue.Moyen, //criticity
-					0.25, DispersionSymbolicValue.Moyen, //agent load
-					1., DispersionSymbolicValue.Nul, //hostCap
-					0.5, DispersionSymbolicValue.Moyen, //hostDisp
-					true,2);
-		} catch (IfailedException e) {
-			e.printStackTrace();
-			throw new RuntimeException("arrggh");
-		}
-	}
-
 	//
 	// Methods
 	//

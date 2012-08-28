@@ -10,7 +10,7 @@ package frameworks.faulttolerance.dcop.daj;
 import frameworks.faulttolerance.dcop.daj.awt.NodeVisual;
 import frameworks.faulttolerance.dcop.daj.awt.Visualizer;
 
-public class Node extends Thread {
+public class Node  extends Thread {
 
 	// channels to receive messages from respectively send messages to
 	private InChannelSet in = new InChannelSet();

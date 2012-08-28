@@ -3,17 +3,17 @@ package frameworks.faulttolerance.dcop.algo;
 import java.util.HashSet;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.Constraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 
-public class AlgoMGM1 extends BasicAlgorithm {
+public class AlgoMGM1<Value> extends BasicAlgorithm<Value> {
 
 	int bestVal;
 
 	HashSet<Integer> acceptSet;
 
-	public AlgoMGM1(Variable v) {
+	public AlgoMGM1(AbstractVariable v) {
 		super(v);
 		bestVal = -1;
 		acceptSet = new HashSet<Integer>();
@@ -21,11 +21,11 @@ public class AlgoMGM1 extends BasicAlgorithm {
 
 	@Override
 	protected void main() {
-		self.value = Helper.random.nextInt(self.domain);
+		self.setValue(Helper.random.nextInt(self.getDomain()));
 		out().broadcast(createValueMsg());
 		while (true) {
 
-			if (lock == -1 && bestVal != -1 && bestVal != self.value
+			if (lock == -1 && bestVal != -1 && bestVal != self.getValue()
 					&& getTime() > reLockTime) {
 				lock = self.id;
 				acceptSet.clear();
@@ -41,8 +41,8 @@ public class AlgoMGM1 extends BasicAlgorithm {
 
 				if (msg instanceof MGM1ValueMsg) {
 					MGM1ValueMsg vmsg = (MGM1ValueMsg) msg;
-					if (view.varMap.get(sender).value != vmsg.value) {
-						view.varMap.get(sender).value = vmsg.value;
+					if (view.varMap.get(sender).getValue() != vmsg.value) {
+						view.varMap.get(sender).setValue(vmsg.value);
 						bestVal = checkView();
 					}
 				} else if (msg instanceof MGM1LockMsg) {
@@ -71,15 +71,15 @@ public class AlgoMGM1 extends BasicAlgorithm {
 						if (acceptSet.size() == self.neighbors.size()) {
 							lock = -1;
 							System.out.println("" + self.id + ":\t"
-									+ self.value + " -> " + bestVal);
+									+ self.getValue() + " -> " + bestVal);
 							out().broadcast(createUnLockMsg());
-							self.value = bestVal;
+							self.setValue(bestVal);
 							out().broadcast(createValueMsg());
 						}
 					}
 				}
 			} else {
-				if (bestVal == self.value) {
+				if (bestVal == self.getValue()) {
 					done = true;
 					if (checkStable())
 						break;
@@ -93,16 +93,16 @@ public class AlgoMGM1 extends BasicAlgorithm {
 	int checkView() {
 		int best = 0;
 		int val = -1;
-		for (int i = 0; i < self.domain; i++) {
+		for (int i = 0; i < self.getDomain(); i++) {
 			int sum = 0;
-			for (Constraint c : self.neighbors) {
-				Variable n = c.getNeighbor(self);
-				if (n.value == -1)
+			for (AbstractConstraint c : self.neighbors) {
+				AbstractVariable n = c.getNeighbor(self);
+				if (n.getValue() == -1)
 					return -1;
 				if (self == c.first)
-					sum += c.f[i][n.value];
+					sum += c.evaluate(i,n.getValue());
 				else
-					sum += c.f[n.value][i];
+					sum += c.evaluate(n.getValue(),i);
 			}
 			if (sum > best) {
 				best = sum;
@@ -113,12 +113,12 @@ public class AlgoMGM1 extends BasicAlgorithm {
 	}
 
 	public String getText() {
-		return "ID: " + self.id + "\nVal: " + self.value + "\nBest: " + bestVal
+		return "ID: " + self.id + "\nVal: " + self.getValue() + "\nBest: " + bestVal
 				+ "\nNextLock: " + reLockTime;
 	}
 
 	MGM1ValueMsg createValueMsg() {
-		return new MGM1ValueMsg(self.value);
+		return new MGM1ValueMsg(self.getValue());
 	}
 
 	MGM1LockMsg createLockMsg() {

@@ -1,16 +1,8 @@
 package frameworks.faulttolerance.dcop.dcop;
 
-import java.util.Arrays;
 
-public class Constraint {
+public class ClassicalConstraint extends AbstractConstraint<Integer>{
 
-	DcopAbstractGraph graph;
-
-	public Variable first;
-	public Variable second;
-
-	public int d1;
-	public int d2;
 
 	public double[][] f;
 
@@ -18,13 +10,8 @@ public class Constraint {
 	private int[] m2;
 	private double m;
 
-	public Constraint(Variable a, Variable b) {
-		assert a.graph == b.graph;
-		first = a;
-		second = b;
-		graph = a.graph;
-		d1 = a.domain;
-		d2 = b.domain;
+	public ClassicalConstraint(AbstractVariable<Integer> a, AbstractVariable<Integer> b) {
+		super(a,b);
 		f = new double[d1][d2];
 		first.addConstraint(this);
 		second.addConstraint(this);
@@ -33,20 +20,6 @@ public class Constraint {
 		m2 = new int[d2];
 	}
 
-	public Variable getNeighbor(Variable v) {
-		if (v == first)
-			return second;
-		if (v == second)
-			return first;
-		return null;
-	}
-	public int getNeighbor(int vid) {
-		if (vid == first.id)
-			return second.id;
-		if (vid == second.id)
-			return first.id;
-		return -1;
-	}
 	
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
@@ -82,7 +55,7 @@ public class Constraint {
 		}
 		return msg;
 	}
-
+	
 	public void cache() {
 		if (m >= 0)
 			return;
@@ -116,19 +89,19 @@ public class Constraint {
 		//System.out.println("(" + first.id + "," + first.value + ") (" + second.id + "," + second.value + ")");
 		if (Helper.app != null)
 			Helper.app.numberEval++;
-		if (first.value == -1 && second.value == -1)
+		if (first.getValue() == -1 && second.getValue() == -1)
 			return m;
-		if (first.value == -1 && second.value != -1){
-			if (m2[second.value]==-1)
+		if (first.getValue() == -1 && second.getValue() != -1){
+			if (m2[second.getValue()]==-1)
 				return Double.NEGATIVE_INFINITY;
-			return f[m2[second.value]][second.value];
+			return f[m2[second.getValue()]][second.getValue()];
 		}			
-		if (first.value != -1 && second.value == -1){
-			if (m1[first.value]==-1)
+		if (first.getValue() != -1 && second.getValue() == -1){
+			if (m1[first.getValue()]==-1)
 				return Double.NEGATIVE_INFINITY;
-			return f[first.value][m1[first.value]];
+			return f[first.getValue()][m1[first.getValue()]];
 		}			
-		return f[first.value][second.value];
+		return f[first.getValue()][second.getValue()];
 	}
 
 	public double evaluate(Integer val1, Integer val2) {

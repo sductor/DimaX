@@ -3,10 +3,10 @@ package frameworks.faulttolerance.dcop.algo.topt;
 import java.util.ArrayList;
 
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.Constraint;
-import frameworks.faulttolerance.dcop.dcop.Variable;
+import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
+import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 
-public class LocalConstraintMsg extends Message {
+public class LocalConstraintMsg<Value> extends Message {
 	int id;
 	int domain;
 	int ttl;
@@ -16,12 +16,12 @@ public class LocalConstraintMsg extends Message {
 		super();
 	}
 
-	public LocalConstraintMsg(Variable v, int t) {
+	public LocalConstraintMsg(AbstractVariable<Value> v, int t) {
 		super();
 		id = v.id;
-		domain = v.domain;
+		domain = v.getDomain();
 		data = new ArrayList<double[]>();
-		for (Constraint c : v.neighbors) {
+		for (AbstractConstraint<Value> c : v.neighbors) {
 			data.add(c.encode());
 		}
 		ttl = t;
@@ -31,8 +31,8 @@ public class LocalConstraintMsg extends Message {
 		return ("LOCAL " + id + ";TTL " + ttl);
 	}
 
-	public LocalConstraintMsg forward() {
-		LocalConstraintMsg msg = new LocalConstraintMsg();
+	public LocalConstraintMsg<Value> forward() {
+		LocalConstraintMsg<Value> msg = new LocalConstraintMsg<Value>();
 		msg.id = this.id;
 		msg.domain = this.domain;
 		msg.ttl = this.ttl - 1;

@@ -1,4 +1,4 @@
-package frameworks.faulttolerance.negotiatingagent;
+package frameworks.faulttolerance.solver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +15,9 @@ import choco.kernel.model.variables.integer.IntegerConstantVariable;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import dima.basicagentcomponents.AgentName;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import frameworks.faulttolerance.negotiatingagent.HostState;
+import frameworks.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.exploration.ChocoAllocationSolver;
@@ -98,7 +101,7 @@ extends ChocoAllocationSolver
 
 	private void instanciateVariable(final Model m, final int nbVariable) throws IncompleteContractException{
 
-		this.replicas = new IntegerVariable[nbVariable];
+		this.candidatureAllocation = new IntegerVariable[nbVariable];
 		this.socialWelfareValue =  Choco.makeIntVar("utility", 1, 1000000, Options.V_BOUND, Options.V_NO_DECISION);
 
 		if (ReplicationExperimentationParameters.multiDim){
@@ -109,7 +112,7 @@ extends ChocoAllocationSolver
 
 		//initialisation des variables replicas
 		for (int i = 0; i < nbVariable; i++){
-			this.replicas[i] = Choco.makeIntVar(this.concerned[i].getAgent().toString(), 0, 1, Options.V_ENUM);
+			this.candidatureAllocation[i] = Choco.makeIntVar(this.concerned[i].getAgent().toString(), 0, 1, Options.V_ENUM);
 
 			IntegerConstantVariable minUt, maxUt;
 			minUt = new IntegerConstantVariable(asIntNashed(Math.min(
@@ -125,7 +128,7 @@ extends ChocoAllocationSolver
 				m.addConstraint(Choco.eq(
 						this.replicasValue[i],
 						Choco.ifThenElse(
-								Choco.eq(this.replicas[i],0),
+								Choco.eq(this.candidatureAllocation[i],0),
 								minUt, maxUt)));
 			} else {
 				this.replicasGain[i] = maxUt.getValue() - minUt.getValue();
@@ -136,8 +139,8 @@ extends ChocoAllocationSolver
 	private void instanciateConstraints(final Model m) throws IncompleteContractException{
 
 		//Contrainte de poids
-		m.addConstraint(Choco.leq(Choco.scalar(this.replicasProc, this.replicas), this.hostProccapacity));
-		m.addConstraint(Choco.leq(Choco.scalar(this.replicasMem, this.replicas), this.hostMemCapacity));
+		m.addConstraint(Choco.leq(Choco.scalar(this.replicasProc, this.candidatureAllocation), this.hostProccapacity));
+		m.addConstraint(Choco.leq(Choco.scalar(this.replicasMem, this.candidatureAllocation), this.hostMemCapacity));
 
 		//Optimisation social
 		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
@@ -175,11 +178,11 @@ extends ChocoAllocationSolver
 					Choco.makeIntVar("weight", 0, 1000000, Options.V_BOUND, Options.V_NO_DECISION);
 			//Optimisation social & Contrainte de poids
 			m.addConstraint(Choco.knapsackProblem(this.socialWelfareValue, weightVar,
-					this.replicas, this.replicasGain, this.replicasProc));
+					this.candidatureAllocation, this.replicasGain, this.replicasProc));
 			m.addConstraint(Choco.leq(weightVar, this.hostProccapacity));
 		} else if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 			//Contrainte de poids
-			m.addConstraint(Choco.leq(Choco.scalar(this.replicasProc, this.replicas), this.hostProccapacity));
+			m.addConstraint(Choco.leq(Choco.scalar(this.replicasProc, this.candidatureAllocation), this.hostProccapacity));
 			//Optimisation social
 			m.addConstraint(Choco.eq(this.socialWelfareValue, Choco.min(this.replicasValue)));
 		}
@@ -318,9 +321,9 @@ extends ChocoAllocationSolver
 		System.out.println("isfeasible : "+solver.s.isFeasible());
 		while (solver.hasNext()){
 			System.out.println("isfeasible : "+solver.s.isFeasible());
-			for (int i = 0; i < solver.replicas.length; i++){
-				System.out.println(solver.s.getVar(solver.replicas[i]).getName()
-						+" "+solver.s.getVar(solver.replicas[i]).getVal()
+			for (int i = 0; i < solver.candidatureAllocation.length; i++){
+				System.out.println(solver.s.getVar(solver.candidatureAllocation[i]).getName()
+						+" "+solver.s.getVar(solver.candidatureAllocation[i]).getVal()
 						+" value est "+solver.s.getVar(solver.replicasValue[i]).getVal());
 			}
 			final Collection<ReplicationCandidature> sol = solver.getNextSolution();
@@ -352,9 +355,9 @@ extends ChocoAllocationSolver
 
 		System.out.println("Best : &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 		System.out.println(solver.getBestSolution());//System.out.println(solver.getBestSolution());
-		for (int i = 0; i < solver.replicas.length; i++){
-			System.out.println(solver.s.getVar(solver.replicas[i]).getName()
-					+" "+solver.s.getVar(solver.replicas[i]).getVal()
+		for (int i = 0; i < solver.candidatureAllocation.length; i++){
+			System.out.println(solver.s.getVar(solver.candidatureAllocation[i]).getName()
+					+" "+solver.s.getVar(solver.candidatureAllocation[i]).getVal()
 					+" value est "+solver.s.getVar(solver.replicasValue[i]).getVal());
 		}
 		System.out.println(solver.s.getVar(solver.socialWelfareValue).getVal());

@@ -3,23 +3,25 @@ package frameworks.faulttolerance.dcop.algo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dima.introspectionbasedagents.modules.faults.Assert;
+
 import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.daj.Program;
-import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
-import frameworks.faulttolerance.dcop.dcop.ClassicalConstraint;
-import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.CPUFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 import frameworks.faulttolerance.dcop.exec.Stats;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
-public abstract class BasicAlgorithm<Value> extends Program {
+public abstract class BasicAlgorithm extends Program {
 
 	protected static final int reLockInterval = 8;
 	protected int lockBase;
 	protected int reLockTime;
-	protected DcopAbstractGraph<Value> view;
-	protected AbstractVariable<Value> self;
+	protected DcopReplicationGraph view;
+	protected ReplicationVariable self;
 	protected int lock;
 	protected boolean done;
 
@@ -31,16 +33,17 @@ public abstract class BasicAlgorithm<Value> extends Program {
 	public int nlockReq;
 	public int preCycles;
 
-	public BasicAlgorithm(AbstractVariable<Value> v) {
-		view = DCOPFactory.constructDCOPGraph();
-		self = DCOPFactory.constructVariable(v.id, v.getDomain(), view);
+	public BasicAlgorithm(ReplicationVariable v) {
+		view = DCOPFactory.constructDCOPGraph(v.getSocialWelfare());
+		assert v.getState()!=null:v;
+		self = DCOPFactory.constructVariable(v.id, v.getDomain(),v.getState(), view);
 		view.varMap.put(self.id, self);
-		for (AbstractConstraint<Value> c : v.neighbors) {
-			AbstractVariable<Value> n = c.getNeighbor(v);
-			AbstractVariable<Value> nn = DCOPFactory.constructVariable(n.id, n.getDomain(), view);
+		for (MemFreeConstraint c : v.getNeighbors()) {
+			ReplicationVariable n = c.getNeighbor(v);
+			ReplicationVariable nn = DCOPFactory.constructVariable(n.id, n.getDomain(),n.getState(), view);
 			nn.fixed = true;
 			view.varMap.put(nn.id, nn);
-			AbstractConstraint<Value> cc;
+			MemFreeConstraint cc;
 			if (v == c.first)
 				cc = DCOPFactory.constructConstraint(self, nn);
 			else
@@ -48,9 +51,9 @@ public abstract class BasicAlgorithm<Value> extends Program {
 			if (DCOPFactory.isClassical()){
 				for (int i = 0; i < cc.d1; i++)
 					for (int j = 0; j < cc.d2; j++) {
-						((ClassicalConstraint)cc).f[i][j] = ((ClassicalConstraint)c).f[i][j];
+						((CPUFreeConstraint)cc).f[i][j] = ((CPUFreeConstraint)c).f[i][j];
 					}
-				((ClassicalConstraint)cc).cache();
+				((CPUFreeConstraint)cc).cache();
 			}
 			view.conList.add(cc);
 		}
@@ -86,7 +89,7 @@ public abstract class BasicAlgorithm<Value> extends Program {
 		for (int i = 0; i < prog.length; i++) {
 			if (!(prog[i] instanceof BasicAlgorithm))
 				continue;
-			BasicAlgorithm<Value> p = (BasicAlgorithm) prog[i];
+			BasicAlgorithm p = (BasicAlgorithm) prog[i];
 			if (!p.done)
 				return false;
 		}

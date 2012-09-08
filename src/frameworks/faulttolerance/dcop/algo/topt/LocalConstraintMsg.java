@@ -1,28 +1,39 @@
 package frameworks.faulttolerance.dcop.algo.topt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+import frameworks.negotiation.rationality.AgentState;
 
-public class LocalConstraintMsg<Value> extends Message {
+public class LocalConstraintMsg extends Message {
 	int id;
+	public AgentState state;
 	int domain;
 	int ttl;
 	ArrayList<double[]> data;
+	HashMap<Integer,AgentState>dataStates;
 
 	public LocalConstraintMsg() {
 		super();
 	}
 
-	public LocalConstraintMsg(AbstractVariable<Value> v, int t) {
+	public LocalConstraintMsg(ReplicationVariable v, int t) {
 		super();
 		id = v.id;
 		domain = v.getDomain();
 		data = new ArrayList<double[]>();
-		for (AbstractConstraint<Value> c : v.neighbors) {
+		if (!DCOPFactory.isClassical())
+			dataStates=new HashMap<Integer, AgentState>();
+		state = v.getState();
+		for (MemFreeConstraint c : v.getNeighbors()) {
 			data.add(c.encode());
+			if (!DCOPFactory.isClassical()){
+				dataStates.put(c.getNeighbor(v).id, c.getNeighbor(v).getState());
+			}
 		}
 		ttl = t;
 	}
@@ -31,12 +42,14 @@ public class LocalConstraintMsg<Value> extends Message {
 		return ("LOCAL " + id + ";TTL " + ttl);
 	}
 
-	public LocalConstraintMsg<Value> forward() {
-		LocalConstraintMsg<Value> msg = new LocalConstraintMsg<Value>();
+	public LocalConstraintMsg forward() {
+		LocalConstraintMsg msg = new LocalConstraintMsg();
 		msg.id = this.id;
+		msg.state = this.state;
 		msg.domain = this.domain;
 		msg.ttl = this.ttl - 1;
 		msg.data = this.data;
+		msg.dataStates=this.dataStates;
 		return msg;
 	}
 

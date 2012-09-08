@@ -7,7 +7,9 @@ import java.util.Date;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.contracts.MatchingCandidature;
-import frameworks.negotiation.exploration.AllocationSolver;
+import frameworks.negotiation.exploration.ResourceAllocationSolver;
+import frameworks.negotiation.exploration.Solver.ExceedLimitException;
+import frameworks.negotiation.exploration.Solver.UnsatisfiableException;
 import frameworks.negotiation.rationality.AgentState;
 
 public class OptimalSelectionModule<
@@ -17,12 +19,12 @@ Contract extends MatchingCandidature>
 extends BasicAgentModule<Agent> 
 implements SelectionModule<Agent, PersonalState, Contract> {
 
-	final AllocationSolver<Contract, PersonalState> solver;
+	final ResourceAllocationSolver<Contract, PersonalState> solver;
 	final boolean forceOptimal;
 	final long maxComputingTime;
 
 	public OptimalSelectionModule(
-			AllocationSolver<Contract, PersonalState> solver, 
+			ResourceAllocationSolver<Contract, PersonalState> solver, 
 			boolean forceOptimal,
 			final long maxComputingTime) {
 		this.solver = solver;
@@ -30,8 +32,16 @@ implements SelectionModule<Agent, PersonalState, Contract> {
 		this.maxComputingTime=maxComputingTime;
 	}
 
-	public Collection<Contract> getBestSolution() {
-		return solver.getBestSolution();
+	private Collection<Contract> getBestSolution() {
+		try {
+			return solver.computeBestLocalSolution();
+		} catch (UnsatisfiableException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ExceedLimitException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
@@ -39,11 +49,14 @@ implements SelectionModule<Agent, PersonalState, Contract> {
 			PersonalState currentState,
 			final Collection<Contract> contractsToExplore) {
 		Collection<Contract> result;
+		
 		if (!contractsToExplore.isEmpty()){
+			
 			solver.initiate(contractsToExplore);
 			this.solver.setTimeLimit((int) this.maxComputingTime);
+			
 			if (forceOptimal){
-				result = solver.getBestSolution();
+				result = getBestSolution();
 				if (result==null || !getMyAgent().Iaccept(contractsToExplore))
 					return  new ArrayList<Contract>();
 				else 

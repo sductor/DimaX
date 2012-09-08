@@ -1,7 +1,7 @@
 package frameworks.faulttolerance.dcop.dcop;
 
 
-public class ClassicalConstraint extends AbstractConstraint<Integer>{
+public class CPUFreeConstraint extends MemFreeConstraint{
 
 
 	public double[][] f;
@@ -10,37 +10,35 @@ public class ClassicalConstraint extends AbstractConstraint<Integer>{
 	private int[] m2;
 	private double m;
 
-	public ClassicalConstraint(AbstractVariable<Integer> a, AbstractVariable<Integer> b) {
+	public CPUFreeConstraint(ReplicationVariable a, ReplicationVariable b) {
 		super(a,b);
 		f = new double[d1][d2];
-		first.addConstraint(this);
-		second.addConstraint(this);
 		m = -1;
 		m1 = new int[d1];
 		m2 = new int[d2];
 	}
 
 	
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("CONSTRAINT ");
-		buffer.append(first.id);
-		buffer.append(" ");
-		buffer.append(second.id);
-		buffer.append(Helper.newline);
-		for (int i = 0; i < d1; i++) {
-			for (int j = 0; j < d2; j++) {
-				buffer.append("F ");
-				buffer.append(i);
-				buffer.append(" ");
-				buffer.append(j);
-				buffer.append(" ");
-				buffer.append(f[i][j]);
-				buffer.append(Helper.newline);
-			}
-		}
-		return buffer.toString();
-	}
+//	public String toString() {
+//		StringBuffer buffer = new StringBuffer();
+//		buffer.append("CONSTRAINT ");
+//		buffer.append(first.id);
+//		buffer.append(" ");
+//		buffer.append(second.id);
+//		buffer.append(Helper.newline);
+//		for (int i = 0; i < d1; i++) {
+//			for (int j = 0; j < d2; j++) {
+//				buffer.append("F ");
+//				buffer.append(i);
+//				buffer.append(" ");
+//				buffer.append(j);
+//				buffer.append(" ");
+//				buffer.append(f[i][j]);
+//				buffer.append(Helper.newline);
+//			}
+//		}
+//		return buffer.toString();
+//	}
 
 	public double[] encode() {
 		double[] msg = new double[4 + d1 * d2];

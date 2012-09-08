@@ -39,19 +39,7 @@ public class HostState extends SimpleAgentState{
 
 
 	// Take all fields
-	public HostState(
-			final ResourceIdentifier myAgent,
-			final double hostMaxProc,
-			final double hostMaxMem,
-			final double lambda,
-			final int stateNumber) {
-		this(myAgent,
-				new HashSet<AgentIdentifier>(), 
-				lambda,
-				hostMaxProc, 0., 
-				hostMaxMem, 0.,
-				stateNumber);
-	}
+
 
 	public HostState(
 			final ResourceIdentifier myAgent,
@@ -59,14 +47,21 @@ public class HostState extends SimpleAgentState{
 			final double hostMaxMem,
 			final double lambda) {
 		this(myAgent,
-				new HashSet<AgentIdentifier>(), 
-				lambda,
 				hostMaxProc, 0., 
 				hostMaxMem, 0.,
+				new HashSet<AgentIdentifier>(), 
+				lambda,
 				-1);
 	}
 
-
+	public HostState allocate (final ReplicaState newRep, boolean creation) {
+		boolean ok = (creation &&!this.myReplicatedAgents.contains(newRep.getMyAgentIdentifier())) 
+				|| (!creation && this.myReplicatedAgents.contains(newRep.getMyAgentIdentifier()));
+		if (ok)
+			return allocate(newRep);
+		else
+			return this;
+	}
 	public HostState allocate(final ReplicaState newRep){
 		final HashSet<AgentIdentifier> rep =new HashSet<AgentIdentifier>(this.myReplicatedAgents);
 		Double procCurrentCharge, memCurrentCharge;
@@ -83,24 +78,41 @@ public class HostState extends SimpleAgentState{
 
 		return new HostState(
 				this.getMyAgentIdentifier(),
-				rep,
-				this.lambda,
 				this.procChargeMax,
 				procCurrentCharge,
 				this.memChargeMax,
 				memCurrentCharge,
+				rep,
+				this.lambda,
 				this.getStateCounter()+1);
 	}
 
+	public HostState allocateAll(Collection<ReplicaState> toAllocate){
+		HostState s = this;
+		for (ReplicaState ress : toAllocate)	{		
+				s =  s.allocate(ress);
+		}
+		return s;
+	}
+	
+	public HostState freeAllResources() {
+		return new HostState(
+				this.getMyAgentIdentifier(),
+				this.procChargeMax,0.,
+				this.memChargeMax,0.,
+				new HashSet<AgentIdentifier>(),
+				this.lambda,
+				this.getStateCounter()+1);
+	}
 	// private universal constructor
 	HostState(
 			final ResourceIdentifier myAgent,
-			final Set<AgentIdentifier> myReplicatedAgents,
-			final double lambda, 
 			final Double procChargeMax,
 			final Double procCurrentCharge, 
 			final Double memChargeMax,
 			final Double memCurrentCharge, 
+			final Set<AgentIdentifier> myReplicatedAgents,
+			final double lambda, 
 			final int stateNumber) {
 		super(myAgent, stateNumber);
 		this.myReplicatedAgents = myReplicatedAgents;
@@ -187,11 +199,11 @@ public class HostState extends SimpleAgentState{
 		}
 	}
 
-	Double getCurrentProcCharge() {
+	public Double getCurrentProcCharge() {
 		return this.procCurrentCharge;
 	}
 
-	Double getCurrentMemCharge() {
+	public Double getCurrentMemCharge() {
 		return this.memCurrentCharge;
 	}
 
@@ -206,7 +218,6 @@ public class HostState extends SimpleAgentState{
 	/*
 	 *
 	 */
-
 
 	//	public void setFaulty(final boolean faulty) {
 	//		this.faulty = faulty;
@@ -279,5 +290,8 @@ public class HostState extends SimpleAgentState{
 	public Double getLambda() {
 		return lambda;
 	}
+
+
+
 
 }

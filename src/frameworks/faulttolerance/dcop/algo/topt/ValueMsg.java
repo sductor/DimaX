@@ -1,7 +1,7 @@
 package frameworks.faulttolerance.dcop.algo.topt;
 
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 
 public class ValueMsg extends Message {
 	int id;
@@ -12,8 +12,9 @@ public class ValueMsg extends Message {
 		super();
 	}
 
-	public ValueMsg(AbstractVariable v, int t) {
+	public ValueMsg(ReplicationVariable v, int t) {
 		super();
+		assert value!=-1;
 		id = v.id;
 		value = v.getValue();
 		// if (value == -1)

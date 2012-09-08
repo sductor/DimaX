@@ -3,17 +3,17 @@ package frameworks.faulttolerance.dcop.algo;
 import java.util.HashSet;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 
-public class AlgoMGM1<Value> extends BasicAlgorithm<Value> {
+public class AlgoMGM1 extends BasicAlgorithm {
 
 	int bestVal;
 
 	HashSet<Integer> acceptSet;
 
-	public AlgoMGM1(AbstractVariable v) {
+	public AlgoMGM1(ReplicationVariable v) {
 		super(v);
 		bestVal = -1;
 		acceptSet = new HashSet<Integer>();
@@ -21,7 +21,7 @@ public class AlgoMGM1<Value> extends BasicAlgorithm<Value> {
 
 	@Override
 	protected void main() {
-		self.setValue(Helper.random.nextInt(self.getDomain()));
+		self.setValue(self.getInitialValue());
 		out().broadcast(createValueMsg());
 		while (true) {
 
@@ -68,7 +68,7 @@ public class AlgoMGM1<Value> extends BasicAlgorithm<Value> {
 							reLockTime = getTime()
 									+ Helper.random.nextInt(reLockInterval);
 						}
-						if (acceptSet.size() == self.neighbors.size()) {
+						if (acceptSet.size() == self.getNeighbors().size()) {
 							lock = -1;
 							System.out.println("" + self.id + ":\t"
 									+ self.getValue() + " -> " + bestVal);
@@ -95,8 +95,8 @@ public class AlgoMGM1<Value> extends BasicAlgorithm<Value> {
 		int val = -1;
 		for (int i = 0; i < self.getDomain(); i++) {
 			int sum = 0;
-			for (AbstractConstraint c : self.neighbors) {
-				AbstractVariable n = c.getNeighbor(self);
+			for (MemFreeConstraint c : self.getNeighbors()) {
+				ReplicationVariable n = c.getNeighbor(self);
 				if (n.getValue() == -1)
 					return -1;
 				if (self == c.first)

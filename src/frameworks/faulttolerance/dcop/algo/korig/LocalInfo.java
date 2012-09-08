@@ -3,26 +3,38 @@ package frameworks.faulttolerance.dcop.algo.korig;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.DCOPFactory;
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+import frameworks.negotiation.rationality.AgentState;
 
-public class LocalInfo<Value> {
+public class LocalInfo {
 	int id;
+	public AgentState state;
 	int value;
 	int domain;
 	ArrayList<double[]> data;
+	HashMap<Integer,AgentState>dataStates;
 	HashMap<Integer, Integer> valMap;
 
-	public LocalInfo(AbstractVariable<Value> v) {
+	public LocalInfo(ReplicationVariable v) {
 		id = v.id;
 		domain = v.getDomain();
+		state = v.getState();
 		value = v.getValue();
 		data = new ArrayList<double[]>();
+		if (!DCOPFactory.isClassical())
+			dataStates=new HashMap<Integer, AgentState>();
 		valMap = new HashMap<Integer, Integer>();
-		for (AbstractConstraint<Value> c : v.neighbors) {
-			AbstractVariable<Value> n = c.getNeighbor(v);
+		for (MemFreeConstraint c : v.getNeighbors()) {
+			ReplicationVariable n = c.getNeighbor(v);
 			valMap.put(n.id, n.getValue());
 			data.add(c.encode());
+
+			if (!DCOPFactory.isClassical()){
+				dataStates.put(c.first.id, c.first.getState());
+				dataStates.put(c.second.id, c.second.getState());
+			}
 		}
 	}
 

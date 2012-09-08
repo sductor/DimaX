@@ -11,34 +11,35 @@ import frameworks.faulttolerance.dcop.algo.TerminateMessage;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Program;
-import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
-import frameworks.faulttolerance.dcop.dcop.ClassicalConstraint;
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.CPUFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 import frameworks.faulttolerance.dcop.exec.DCOPApplication;
 import frameworks.faulttolerance.dcop.exec.Stats;
+import frameworks.negotiation.rationality.AgentState;
 
-public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
+public class AlgoTOptAPO extends LockingBasicAlgorithm {
 
 	int t;
 	HashMap<Integer, Integer> bestSolution;
 	TreeNode center;
 	public boolean trivial;
 
-	public AlgoTOptAPO(AbstractVariable<Value> v, int tt) {
+	public AlgoTOptAPO(ReplicationVariable v, int tt) {
 		super(v, true, 2);
 		t = tt;
 		init();
 	}
 
-	public AlgoTOptAPO(AbstractVariable<Value> v, int tt, boolean s, int ws) {
+	public AlgoTOptAPO(ReplicationVariable v, int tt, boolean s, int ws) {
 		super(v, s, ws);
 		t = tt;
 		init();
 	}
 
 	protected void init() {
-		self.setValue(Helper.random.nextInt(self.getDomain()));
+		self.setValue(self.getInitialValue());
 		bestSolution = null;
 		center = null;
 		trivial = false;
@@ -65,7 +66,7 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 		}
 
 		if (t > 0)
-			out().broadcast(new LocalConstraintMsg<Value>(self, t));
+			out().broadcast(new LocalConstraintMsg(self, t));
 		out().broadcast(new ValueMsg(self, t + 1));
 		changed = true;
 
@@ -93,7 +94,7 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 
 				if (msg instanceof ValueMsg) {
 					ValueMsg vmsg = (ValueMsg) msg;
-					AbstractVariable<Value> v = view.varMap.get(vmsg.id);
+					ReplicationVariable v = view.varMap.get(vmsg.id);
 					assert v != null;
 					if (vmsg.ttl > 1)
 						out().broadcast(vmsg.forward());
@@ -103,53 +104,59 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 							changed = true;
 					}
 				} else if (msg instanceof LocalConstraintMsg) {
-					LocalConstraintMsg<Value> lmsg = (LocalConstraintMsg) msg;
+					LocalConstraintMsg lmsg = (LocalConstraintMsg) msg;
 					Integer lastTTL = conTTLMap.get(lmsg.id);
 					if (lastTTL == null) {
 						conTTLMap.put(lmsg.id, lmsg.ttl);
-						AbstractVariable v = view.varMap.get(lmsg.id);
+						ReplicationVariable v = view.varMap.get(lmsg.id);
 						if (v == null) {
-							v = DCOPFactory.constructVariable(lmsg.id, lmsg.domain, view);
+							v = DCOPFactory.constructVariable(lmsg.id, lmsg.domain, lmsg.state, view);
 							view.varMap.put(v.id, v);
 						}
 						v.fixed = false;
 						for (double[] enc : lmsg.data) {
 							if (enc[0] == v.id) {
-								AbstractVariable n = view.varMap.get((int) enc[2]);
+								ReplicationVariable n = view.varMap.get((int) enc[2]);
 								if (n == null) {
-									n = DCOPFactory.constructVariable((int) enc[2],(int) enc[3], view);
+									AgentState s = null;
+									if (!DCOPFactory.isClassical())
+										s = lmsg.dataStates.get((int)enc[2]);
+									n = DCOPFactory.constructVariable((int) enc[2],(int) enc[3], s, view);
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
-									AbstractConstraint c = DCOPFactory.constructConstraint(v, n);
+									MemFreeConstraint c = DCOPFactory.constructConstraint(v, n);
 									view.conList.add(c);
 									if (DCOPFactory.isClassical()){
 										for (int i = 0; i < c.d1; i++)
 											for (int j = 0; j < c.d2; j++) {
-												((ClassicalConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
+												((CPUFreeConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
 											}
-										((ClassicalConstraint)c).cache();
+										((CPUFreeConstraint)c).cache();
 									}
 								}
 							} else {
-								AbstractVariable n = view.varMap.get((int) enc[0]);
+								ReplicationVariable n = view.varMap.get((int) enc[0]);
 								if (n == null) {
-									n = DCOPFactory.constructVariable((int)enc[0], (int)enc[1], view);
+									AgentState s = null;
+									if (!DCOPFactory.isClassical())
+										s = lmsg.dataStates.get((int)enc[0]);
+									n = DCOPFactory.constructVariable((int)enc[0], (int)enc[1], s, view);
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
-									AbstractConstraint c = DCOPFactory.constructConstraint(n, v);
+									MemFreeConstraint c = DCOPFactory.constructConstraint(n, v);
 									view.conList.add(c);
 									if (DCOPFactory.isClassical()){
 										for (int i = 0; i < c.d1; i++)
 											for (int j = 0; j < c.d2; j++) {
-												((ClassicalConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
+												((CPUFreeConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
 											}
-										((ClassicalConstraint)c).cache();
+										((CPUFreeConstraint)c).cache();
 									}
 								}
 							}
@@ -260,7 +267,7 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 									st.gain = view.evaluate(bestSolution)
 											- view.evaluate();
 									st.varChanged = 0;
-									for (AbstractVariable v : view.varMap.values())
+									for (ReplicationVariable v : view.varMap.values())
 										if (v.getValue() != bestSolution.get(v.id))
 											st.varChanged++;
 											st.attempts = attempt - preAttempt;
@@ -362,7 +369,7 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 							st.gain = view.evaluate(bestSolution)
 									- view.evaluate();
 							st.varChanged = 0;
-							for (AbstractVariable v : view.varMap.values()) {
+							for (ReplicationVariable v : view.varMap.values()) {
 								if (v.getValue() != bestSolution.get(v.id))
 									st.varChanged++;
 							}
@@ -483,7 +490,7 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 	}
 
 	private void checkSolution() {
-		for (AbstractVariable v : view.varMap.values())
+		for (ReplicationVariable v : view.varMap.values())
 			if (v.fixed && v.getValue() == -1) {
 				bestSolution = null;
 				return;
@@ -508,15 +515,15 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 		if (root.value != view.varMap.get(self.id).getValue())
 			root.mark = true;
 
-		ArrayList<AbstractVariable> queue = new ArrayList<AbstractVariable>();
+		ArrayList<ReplicationVariable> queue = new ArrayList<ReplicationVariable>();
 		HashMap<Integer, TreeNode> map = new HashMap<Integer, TreeNode>();
 		queue.add(self);
 		map.put(self.id, root);
 		while (!queue.isEmpty()) {
-			AbstractVariable<Value> v = queue.remove(0);
+			ReplicationVariable v = queue.remove(0);
 			TreeNode p = map.get(v.id);
-			for (AbstractConstraint<Value> c : v.neighbors) {
-				AbstractVariable<Value> n = c.getNeighbor(v);
+			for (MemFreeConstraint c : v.getNeighbors()) {
+				ReplicationVariable n = c.getNeighbor(v);
 				if (!map.containsKey(n.id)) {
 					queue.add(n);
 					TreeNode child = new TreeNode(n.id, bestSolution.get(n.id),
@@ -542,7 +549,7 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 	private boolean checkMove() {
 		if (bestSolution == null)
 			return false;
-		for (AbstractVariable v : view.varMap.values()) {
+		for (ReplicationVariable v : view.varMap.values()) {
 			if (!bestSolution.containsKey(v.id))
 				return false;
 		}
@@ -558,20 +565,20 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 	private boolean isTrivial() {
 		HashMap<Integer, Integer> minDis = new HashMap<Integer, Integer>();
 		int maxId = 0;
-		for (AbstractVariable<Value> v : view.varMap.values())
+		for (ReplicationVariable v : view.varMap.values())
 			if (v.id > maxId)
 				maxId = v.id;
 				maxId++;
-				for (AbstractVariable<Value> v : view.varMap.values()) {
-					ArrayList<AbstractVariable<Value>> queue = new ArrayList<AbstractVariable<Value>>();
+				for (ReplicationVariable v : view.varMap.values()) {
+					ArrayList<ReplicationVariable> queue = new ArrayList<ReplicationVariable>();
 					queue.add(v);
 					minDis.put(v.id * maxId + v.id, 0);
 					HashSet<Integer> visited = new HashSet<Integer>();
 					visited.add(v.id);
 					while (!queue.isEmpty()) {
-						AbstractVariable<Value> var = queue.remove(0);
-						for (AbstractConstraint<Value> c : var.neighbors) {
-							AbstractVariable n = c.getNeighbor(var);
+						ReplicationVariable var = queue.remove(0);
+						for (MemFreeConstraint c : var.getNeighbors()) {
+							ReplicationVariable n = c.getNeighbor(var);
 							if (!visited.contains(n.id)) {
 								queue.add(n);
 								int depth = minDis.get(v.id * maxId + var.id);
@@ -583,16 +590,16 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 				}
 
 				int minD = 0;
-				for (AbstractVariable v : view.varMap.values()) {
+				for (ReplicationVariable v : view.varMap.values()) {
 					int m = minDis.get(self.id * maxId + v.id);
 					if (m > minD)
 						minD = m;
 				}
 
-				for (AbstractConstraint c : self.neighbors) {
-					AbstractVariable n = c.getNeighbor(self);
+				for (MemFreeConstraint c : self.getNeighbors()) {
+					ReplicationVariable n = c.getNeighbor(self);
 					int d = 0;
-					for (AbstractVariable v : view.varMap.values()) {
+					for (ReplicationVariable v : view.varMap.values()) {
 						int m = minDis.get(n.id * maxId + v.id);
 						if (m > d)
 							d = m;
@@ -607,7 +614,7 @@ public class AlgoTOptAPO<Value> extends LockingBasicAlgorithm<Value> {
 
 	public String getText() {
 		String val = "";
-		for (AbstractVariable v : view.varMap.values()) {
+		for (ReplicationVariable v : view.varMap.values()) {
 			val += v.id + "  " + v.getValue() + "/"
 					+ (bestSolution != null ? bestSolution.get(v.id) : "NA")
 					+ (v.fixed ? "F" : "") + "\n";

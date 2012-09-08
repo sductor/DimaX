@@ -1,10 +1,10 @@
 package frameworks.faulttolerance.dcop.algo.topt;
 
 import frameworks.faulttolerance.dcop.daj.Message;
-import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 
-public class NeighborMsg<Value> extends Message {
+public class NeighborMsg extends Message {
 	int id;
 	int ttl;
 	int[] neighbors;
@@ -13,12 +13,12 @@ public class NeighborMsg<Value> extends Message {
 		super();
 	}
 
-	public NeighborMsg(AbstractVariable<Value> v, int t) {
+	public NeighborMsg(ReplicationVariable v, int t) {
 		super();
 		id = v.id;
-		neighbors = new int[v.neighbors.size()];
+		neighbors = new int[v.getNeighbors().size()];
 		int i = 0;
-		for (AbstractConstraint<Value> c : v.neighbors) {
+		for (MemFreeConstraint c : v.getNeighbors()) {
 			neighbors[i] = c.getNeighbor(v).id;
 			i++;
 		}
@@ -29,8 +29,8 @@ public class NeighborMsg<Value> extends Message {
 		return ("NEIGHBOR " + id + ";TTL " + ttl);
 	}
 
-	public NeighborMsg<Value> forward() {
-		NeighborMsg<Value> msg = new NeighborMsg<Value>();
+	public NeighborMsg forward() {
+		NeighborMsg msg = new NeighborMsg();
 		msg.id = this.id;
 		msg.ttl = this.ttl - 1;
 		msg.neighbors = this.neighbors;

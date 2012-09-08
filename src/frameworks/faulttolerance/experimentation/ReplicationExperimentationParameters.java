@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
-import frameworks.faulttolerance.dcop.dcop.DcopClassicalGraph;
+import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -35,7 +34,8 @@ import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.faulttolerance.negotiatingagent.ReplicationHostAllocationSolver;
+import frameworks.faulttolerance.solver.ChocoReplicationAllocationSolver;
+import frameworks.faulttolerance.solver.SolverFactory;
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -74,6 +74,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public SocialChoiceType _socialWelfare;
 
 	public int agentAccessiblePerHost;
+	public int maxHostAccessibleParAgent=30;
 
 	public Double hostFaultProbabilityMean;
 	public  DispersionSymbolicValue hostDisponibilityDispersion;
@@ -324,14 +325,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	@Override
 	public final void initiateParameters() throws IfailedException{
-		this.rig = new ReplicationInstanceGraph();
+		this.rig = new ReplicationInstanceGraph(_socialWelfare);
 
-		rig.initiate(getSimulationName(), randSeed,
-				nbAgents, nbHosts, 
+		rig.randomInitiaition(getSimulationName(), randSeed,
+				nbAgents, nbHosts, startingNbAgents,
 				agentCriticityMean, agentCriticityDispersion, 
 				agentLoadMean, agentLoadDispersion, hostCapacityMean, 
 				hostCapacityDispersion, hostFaultProbabilityMean, hostDisponibilityDispersion, 
-				_socialWelfare, completGraph, agentAccessiblePerHost);
+				_socialWelfare, maxHostAccessibleParAgent, agentAccessiblePerHost);
 
 
 		if (this.withOptimal){
@@ -348,7 +349,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			initialisationStatus+="using a complete accesiblity graph";
 		} else {
 			for (final AgentIdentifier r : this.rig.getAgentsIdentifier()){
-				initialisationStatus+=r+"  has acces to  "+this.rig.getAccessibleHost(r)+"\n";
+				initialisationStatus+=r+"  has acces to  "+this.rig.getAccessibleHosts(r)+"\n";
 			}
 		}
 		initialisationStatus += "\n Initializing allocation... :\n";
@@ -427,7 +428,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 
 			//Ajout des acquaintances
-			rep.getMyInformation().addAll(this.rig.getAccessibleHost(replicaId));
+			rep.getMyInformation().addAll(this.rig.getAccessibleHosts(replicaId));
 
 			//gestion des état initiaux
 			for (final AgentIdentifier host : rep.getMyCurrentState().getMyResourceIdentifiers()){
@@ -524,11 +525,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		} else if (selection
 				.equals(NegotiationParameters.key4OptSelect)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(new ReplicationHostAllocationSolver(_socialWelfare), true, maxComputingTime));
+					true, false, new OptimalSelectionModule(SolverFactory.getLocalSolver(_socialWelfare), true, maxComputingTime));
 		}else if (selection
 				.equals(NegotiationParameters.key4BetterSelect)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(new ReplicationHostAllocationSolver(_socialWelfare), false, maxComputingTime));
+					true, false, new OptimalSelectionModule(SolverFactory.getLocalSolver(_socialWelfare), false, maxComputingTime));
 		} else {
 			throw new RuntimeException(
 					"Static parameters est mal conf : selection = "+ selection);

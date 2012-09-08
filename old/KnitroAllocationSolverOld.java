@@ -1,24 +1,28 @@
-package frameworks.faulttolerance.experimentation;
+package frameworks.faulttolerance.solver;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import com.hp.hpl.mesa.rdf.jena.common.Util;
 import com.ziena.knitro.KnitroJava;
 
+import frameworks.faulttolerance.dcop.DcopSolver;
+import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import frameworks.negotiation.contracts.MatchingCandidature;
-import frameworks.negotiation.exploration.AllocationSolver;
+import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public class KnitroAllocationSolver
+public class KnitroAllocationSolverOld
 <Contract extends MatchingCandidature,
 PersonalState extends AgentState> implements
-AllocationSolver<Contract, PersonalState> {
+ResourceAllocationSolver<Contract, PersonalState> ,
+DcopSolver{
 
 	KnitroJava solver;
 	int n, m;
@@ -33,6 +37,12 @@ AllocationSolver<Contract, PersonalState> {
 	SocialChoiceType socialChoice;
 
 
+	@Override
+	public void initiate(DcopReplicationGraph drg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public void initiate(Collection<Contract> concerned) {
 		// TODO Auto-generated method stub
@@ -50,27 +60,10 @@ AllocationSolver<Contract, PersonalState> {
 	}
 
 	@Override
-	public Collection<Contract> getBestSolution() {
+	public Collection<Contract> solve() {
 		return solver.solve(nEvalStatus, daObjective, daCons, daGradient, daJacValues, daHessValues);
 	}
 
-	@Override
-	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Collection<Contract> getNextSolution() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setTimeLimit(int millisec) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public int solve(){
 		//---- ALLOCATE ARRAYS FOR REVERSE COMMUNICATIONS OPERATION.
@@ -281,4 +274,5 @@ AllocationSolver<Contract, PersonalState> {
 			l.set(i, 1);
 		return l.toArray(new Integer[num]);
 	}
+
 }

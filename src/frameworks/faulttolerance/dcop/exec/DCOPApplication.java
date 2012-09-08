@@ -13,16 +13,16 @@ import frameworks.faulttolerance.dcop.daj.Application;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Node;
 import frameworks.faulttolerance.dcop.daj.Program;
-import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
-import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
-import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
-public class DCOPApplication<Value> extends Application {
+public class DCOPApplication extends Application {
 	private static final long serialVersionUID = 380092569934615212L;
 
-	public DcopAbstractGraph<Value> g;
+	public DcopReplicationGraph g;
 	Algorithm algo;
 	HashMap<Integer, Node> nodeMap;
 	private static final int radius = 200;
@@ -144,10 +144,10 @@ public class DCOPApplication<Value> extends Application {
 		double delta = 2 * Math.PI / n;
 		double angle = 0;
 		nodeMap = new HashMap<Integer, Node>();
-		Node controller = node(new Controller<Value>(this), "Simulator",
+		Node controller = node(new Controller(this), "Simulator",
 				20 + (radius - 30), 20 + (radius - 30));
 
-		for (AbstractVariable<Value> v : g.varMap.values()) {
+		for (ReplicationVariable v : g.varMap.values()) {
 			Node node = node(getAlgo(v), "" + v.id, (int) (20 + (radius - 30)
 					* (1 + Math.cos(angle))), (int) (20 + (radius - 30)
 					* (1 + Math.sin(angle))));
@@ -155,7 +155,7 @@ public class DCOPApplication<Value> extends Application {
 			angle += delta;
 			link(controller, node);
 		}
-		for (AbstractConstraint<Value> c : g.conList) {
+		for (MemFreeConstraint c : g.conList) {
 			Node first = nodeMap.get(c.first.id);
 			Node second = nodeMap.get(c.second.id);
 			link(first, second);
@@ -209,13 +209,13 @@ public class DCOPApplication<Value> extends Application {
 		app.run();
 
 		for (Object i : app.nodeMap.keySet()){
-			((AbstractVariable)app.g.varMap.get((Integer)i)).setValue(((BasicAlgorithm)((Node) app.nodeMap.get(i)).getProgram()).getValue());
+			((ReplicationVariable)app.g.varMap.get((Integer)i)).setValue(((BasicAlgorithm)((Node) app.nodeMap.get(i)).getProgram()).getValue());
 		}
 		System.out.println("Quality:\t" + app.g.evaluate());
 		System.out.println("GlobalTime:\t" + app.getNetwork().getScheduler().getTime());		
 	}
 	
-	private BasicAlgorithm<Value> getAlgo(AbstractVariable<Value> v) {
+	private BasicAlgorithm getAlgo(ReplicationVariable v) {
 		switch(this.algo){
 			case TOPTAPO: 
 				if(!isWin){
@@ -237,9 +237,9 @@ public class DCOPApplication<Value> extends Application {
 	}
 }
 
-class Controller<Value> extends Program {
-	private DCOPApplication<Value> app;
-	public Controller(DCOPApplication<Value> a) {
+class Controller extends Program {
+	private DCOPApplication app;
+	public Controller(DCOPApplication a) {
 		app = a;
 	}
 	@Override

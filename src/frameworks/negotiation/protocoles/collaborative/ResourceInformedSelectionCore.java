@@ -23,7 +23,7 @@ import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.contracts.UnknownContractException;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
-import frameworks.negotiation.exploration.AllocationSolver;
+import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.rationality.AgentState;
@@ -41,7 +41,7 @@ PersonalState,
 InformedCandidature<Contract>> {
 	private static final long serialVersionUID = 5994721006483536151L;
 
-	final AllocationSolver<Contract, PersonalState> solver;
+	final ResourceAllocationSolver<Contract, PersonalState> solver;
 	final int kMax;
 	final long maxComputingTime;
 	final GreedySelectionType initialSelectionType;
@@ -53,7 +53,7 @@ InformedCandidature<Contract>> {
 	//
 
 	public ResourceInformedSelectionCore(
-			final AllocationSolver<Contract, PersonalState> solver,
+			final ResourceAllocationSolver<Contract, PersonalState> solver,
 			final int kMax,
 			final GreedySelectionType initialSelectionType,
 			final long maxComputingTime)
@@ -369,8 +369,8 @@ InformedCandidature<Contract>> {
 					new HashSet<InformedCandidature<Contract>>();
 			final Date startingExploringTime = new Date();
 			//			logWarning("beginning exploration");
-			while (this.solver.hasNext() && new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime){
-				final Collection<Contract> realloc = this.solver.getNextSolution();
+			Collection<Collection<Contract>> allRealloc = this.solver.computeAllLocalSolutions();
+			for (Collection<Contract> realloc : allRealloc){
 				if (!realloc.isEmpty()){
 					final Set<InformedCandidature<Contract>> contractsToKeep =
 							new HashSet<InformedCandidature<Contract>>();

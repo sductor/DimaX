@@ -50,7 +50,7 @@ public class DCOPFactory {
 	}
 
 	public static String[] getArgs() {
-		SolverFactory.setParameters(SolverType.Knitro);//.Dpop);//BranchNBound);//Choco);//
+		SolverFactory.setParameters(SolverType.Dpop);//Knitro);//BranchNBound);//Choco);//
 		DCOPFactory.setParameters(
 				100,
 				VariableType.CPUConsumming, //.MemoryConsumming, //

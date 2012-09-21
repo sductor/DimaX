@@ -127,7 +127,7 @@ implements DcopSolver{
 		nbAgents =ags.size();
 		nbHosts = hs.size();
 
-		
+
 		boolean[][] accesibilityGraph;
 
 		IntegerConstantVariable[] agentCriticity;
@@ -222,7 +222,7 @@ implements DcopSolver{
 
 		//utilité social
 		socialWelfareValue = Choco.makeIntVar("welfare", 0, 21474836,
-			Options.V_BOUND, Options.V_NO_DECISION, Options.V_OBJECTIVE);
+				Options.V_BOUND, Options.V_NO_DECISION, Options.V_OBJECTIVE);
 
 		/*
 		 * Instanciating constraints
@@ -230,9 +230,9 @@ implements DcopSolver{
 
 		//Poids
 		for (int j = 0; j < nbHosts; j++){
-			if (ReplicationExperimentationParameters.multiDim) {
-				m.addConstraint(Choco.leq(Choco.scalar(repProcCharge, hostsMatrix[j]), hostProcCap[j]));
-			}
+			//			if (ReplicationExperimentationParameters.multiDim) {
+			m.addConstraint(Choco.leq(Choco.scalar(repProcCharge, hostsMatrix[j]), hostProcCap[j]));
+			//			}
 			m.addConstraint(Choco.leq(Choco.scalar(repMemCharge, hostsMatrix[j]), hostMemCap[j]));
 		}
 
@@ -309,10 +309,10 @@ implements DcopSolver{
 
 		hostProccapacity =asInt(this.concerned[0].getResourceInitialState().getProcChargeMax(),false);
 		hostMemCapacity = asInt(this.concerned[0].getResourceInitialState().getMemChargeMax(),false);
-		
+
 		replicasMem = new int[nbVariable];
-		if (ReplicationExperimentationParameters.multiDim) 
-			replicasProc = new int[nbVariable];
+		//		if (ReplicationExperimentationParameters.multiDim) 
+		replicasProc = new int[nbVariable];
 
 		for (int i = 0; i < nbVariable; i++){
 			assert this.concerned[i].getResourceInitialState().equals(this.concerned[0].getResourceInitialState());
@@ -322,8 +322,8 @@ implements DcopSolver{
 					this.concerned[i].getAgentResultingState().getMyProcCharge());
 
 			replicasMem[i] = asInt(this.concerned[i].getAgentInitialState().getMyMemCharge(),false);
-			if (ReplicationExperimentationParameters.multiDim) 
-				replicasProc[i] = asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
+			//			if (ReplicationExperimentationParameters.multiDim) 
+			replicasProc[i] = asInt(this.concerned[i].getAgentInitialState().getMyProcCharge(),false);
 		}
 
 		/*
@@ -335,15 +335,15 @@ implements DcopSolver{
 		this.candidatureAllocation = new IntegerVariable[nbVariable];
 		this.socialWelfareValue =  Choco.makeIntVar("utility", 1, 21474836, Options.V_BOUND, Options.V_NO_DECISION);
 
-		if (ReplicationExperimentationParameters.multiDim){
+//		if (ReplicationExperimentationParameters.multiDim){
 
 			replicasValue = new IntegerVariable[nbVariable];
 
-		} else {
-
-			replicasGain = new int[nbVariable];
-
-		}
+//		} else {
+//
+//			replicasGain = new int[nbVariable];
+//
+//		}
 
 		//initialisation des variables replicas
 		for (int i = 0; i < nbVariable; i++){
@@ -357,7 +357,7 @@ implements DcopSolver{
 					this.concerned[i].getAgentInitialState().getMyReliability(),
 					this.concerned[i].getAgentResultingState().getMyReliability()),this.socialWelfare));
 
-			if (ReplicationExperimentationParameters.multiDim){
+//			if (ReplicationExperimentationParameters.multiDim){
 
 				replicasValue[i] = Choco.makeIntVar(
 						this.concerned[i].getAgent().toString()+"__value", minUt.getValue(), maxUt.getValue(),
@@ -368,11 +368,11 @@ implements DcopSolver{
 								Choco.eq(this.candidatureAllocation[i],0),
 								minUt, maxUt)));
 
-			} else {
-
-				replicasGain[i] = maxUt.getValue() - minUt.getValue();
-
-			}
+//			} else {
+//
+//				replicasGain[i] = maxUt.getValue() - minUt.getValue();
+//
+//			}
 
 		}
 
@@ -381,7 +381,7 @@ implements DcopSolver{
 		 * Constraints
 		 */
 
-		if (ReplicationExperimentationParameters.multiDim){
+//		if (ReplicationExperimentationParameters.multiDim){
 
 			//Contrainte de poids
 
@@ -400,33 +400,33 @@ implements DcopSolver{
 				m.addConstraint(Choco.eq (Choco.sum(replicasValue), this.socialWelfareValue));
 			}
 
-		} else {
-
-			if (this.socialWelfare.equals(SocialChoiceType.Nash)
-					|| this.socialWelfare.equals(SocialChoiceType.Utility)){
-
-				//Optimisation social & Contrainte de poids
-
-				final IntegerVariable weightVar = Choco.constant(hostProccapacity);
-				Choco.makeIntVar("weight", 0, 21474836, Options.V_BOUND, Options.V_NO_DECISION);
-				m.addConstraint(Choco.knapsackProblem(this.socialWelfareValue, weightVar,
-						this.candidatureAllocation, replicasGain, replicasProc));
-				m.addConstraint(Choco.leq(weightVar, hostProccapacity));
-
-
-			} else  {
-				assert (this.socialWelfare.equals(SocialChoiceType.Leximin)); 
-
-
-				//Contrainte de poids
-
-				m.addConstraint(Choco.leq(Choco.scalar(replicasMem, this.candidatureAllocation), hostMemCapacity));
-
-				//Optimisation social
-
-				m.addConstraint(Choco.eq(this.socialWelfareValue, Choco.min(replicasValue)));
-			}
-		}
+//		} else {
+//
+//			if (this.socialWelfare.equals(SocialChoiceType.Nash)
+//					|| this.socialWelfare.equals(SocialChoiceType.Utility)){
+//
+//				//Optimisation social & Contrainte de poids
+//
+//				final IntegerVariable weightVar = Choco.constant(hostProccapacity);
+//				Choco.makeIntVar("weight", 0, 21474836, Options.V_BOUND, Options.V_NO_DECISION);
+//				m.addConstraint(Choco.knapsackProblem(this.socialWelfareValue, weightVar,
+//						this.candidatureAllocation, replicasGain, replicasProc));
+//				m.addConstraint(Choco.leq(weightVar, hostProccapacity));
+//
+//
+//			} else  {
+//				assert (this.socialWelfare.equals(SocialChoiceType.Leximin)); 
+//
+//
+//				//Contrainte de poids
+//
+//				m.addConstraint(Choco.leq(Choco.scalar(replicasMem, this.candidatureAllocation), hostMemCapacity));
+//
+//				//Optimisation social
+//
+//				m.addConstraint(Choco.eq(this.socialWelfareValue, Choco.min(replicasValue)));
+//			}
+//		}
 
 		//Contrainte d'amélioration stricte
 
@@ -434,11 +434,11 @@ implements DcopSolver{
 		if (this.socialWelfare.equals(SocialChoiceType.Leximin)) {
 
 			final int[] currentAllocation = new int[this.concerned.length];
-			
+
 			for (int i = 0; i < this.concerned.length; i++){
 				currentAllocation[i] = asInt(this.concerned[i].getAgentInitialState().getMyReliability(),false);
 			}
-			
+
 			m.addConstraint(Choco.leximin(currentAllocation, replicasValue));
 
 		} else {
@@ -446,11 +446,11 @@ implements DcopSolver{
 			assert (this.socialWelfare.equals(SocialChoiceType.Nash)|| this.socialWelfare.equals(SocialChoiceType.Utility));
 
 			int currentSocialValue = 0;
-			
+
 			for (final ReplicationCandidature c : this.concerned){
 				currentSocialValue+=asIntNashed(c.getAgentInitialState().getMyReliability(),this.socialWelfare);
 			}
-			
+
 			m.addConstraint(Choco.lt(currentSocialValue, this.socialWelfareValue));
 
 		}
@@ -475,7 +475,7 @@ implements DcopSolver{
 		} else {
 			return (int) (100 * (d+0.01));
 		}
-	
+
 	}
 
 }

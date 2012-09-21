@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.horizon.parameters.HorizonAllocableParameters;
@@ -232,6 +233,10 @@ public class SubstrateNodeState extends SimpleAgentState {
 		return this.nodesHostedNetworks.keySet();
 	}
 
+	@Override
+	public boolean hasResource(AgentIdentifier id) {
+		return getMyResourceIdentifiers().contains(id);
+	}
 	/**
 	 * Returns the class of the "resources" of a SubstrateNode
 	 */
@@ -283,5 +288,6 @@ public class SubstrateNodeState extends SimpleAgentState {
 	public AgentState clone() {
 		return this;
 	}
+
 
 }

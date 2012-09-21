@@ -110,7 +110,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 						conTTLMap.put(lmsg.id, lmsg.ttl);
 						ReplicationVariable v = view.varMap.get(lmsg.id);
 						if (v == null) {
-							v = DCOPFactory.constructVariable(lmsg.id, lmsg.domain, lmsg.state, view);
+							v = DCOPFactory.constructVariable(lmsg.id, lmsg.domain, lmsg.state, view.getSocialWelfare());
 							view.varMap.put(v.id, v);
 						}
 						v.fixed = false;
@@ -121,7 +121,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 									AgentState s = null;
 									if (!DCOPFactory.isClassical())
 										s = lmsg.dataStates.get((int)enc[2]);
-									n = DCOPFactory.constructVariable((int) enc[2],(int) enc[3], s, view);
+									n = DCOPFactory.constructVariable((int) enc[2],(int) enc[3], s, view.getSocialWelfare());
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
@@ -143,7 +143,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 									AgentState s = null;
 									if (!DCOPFactory.isClassical())
 										s = lmsg.dataStates.get((int)enc[0]);
-									n = DCOPFactory.constructVariable((int)enc[0], (int)enc[1], s, view);
+									n = DCOPFactory.constructVariable((int)enc[0], (int)enc[1], s, view.getSocialWelfare());
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);

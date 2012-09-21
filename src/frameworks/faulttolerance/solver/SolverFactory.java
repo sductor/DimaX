@@ -18,7 +18,7 @@ public class SolverFactory {
 
 	public enum SolverType {Dpop, BranchNBound, Mixed, Knitro, Choco};
 
-	private static SolverType solvertype;
+	private static SolverType solvertype=SolverType.Knitro;//Choco;//BranchNBound;//
 
 	/*
 	 * 
@@ -33,20 +33,19 @@ public class SolverFactory {
 	 * 
 	 */
 		
-	public static HashMap<Integer, Integer> solve(DcopReplicationGraph drg) 
-			throws UnsatisfiableException, ExceedLimitException {
+	public static HashMap<Integer, Integer> solve(DcopReplicationGraph drg)  {
 		switch (solvertype) {
 		case Dpop:
 			return new DcopDPOPSolver().solve(drg);
 		case BranchNBound :
-			return new DcopBranchAndBoundSolver().solve(drg);
+			return new DcopBranchAndBoundSolver(drg.getSocialWelfare()).solve(drg);
 		case Mixed :	
 			if (drg.conList.size() > drg.varMap.size() * drg.varMap.size() / 4)
-				return new DcopBranchAndBoundSolver().solve(drg);
+				return new DcopBranchAndBoundSolver(drg.getSocialWelfare()).solve(drg);
 			else
 				return new DcopDPOPSolver().solve(drg);
 		case Knitro :
-			KnitroAllocationSolver kas = new KnitroAllocationSolver(drg.getSocialWelfare(),false,true);
+			ResourceAllocationProblem kas = new KnitroAllocationSolver(drg.getSocialWelfare(),true,true,1,false,-1);
 			return kas.solve(drg);
 		case Choco :
 			return new ChocoReplicationAllocationSolver(drg.getSocialWelfare()).solve(drg);
@@ -61,11 +60,11 @@ public class SolverFactory {
 		case Dpop:
 			return null;//new DcopDPOPSolver();
 		case BranchNBound :
-			return null;//new DcopBranchAndBoundSolver();
+			return new DcopBranchAndBoundSolver(socialWelfare);
 		case Mixed :	
 				return null;
 		case Knitro :
-			return new KnitroAllocationSolver(socialWelfare,false,true);
+			return new KnitroAllocationSolver(socialWelfare,false,true,1,false,-1);
 		case Choco :
 			return new ChocoReplicationAllocationSolver(socialWelfare);
 		default :

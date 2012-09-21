@@ -59,7 +59,7 @@ PersonalState extends AgentState> extends BasicAgentModule implements ResourceAl
 	 */
 	@Deprecated
 	@Override
-	public Collection<Contract> computeBestLocalSolution(){
+	public Collection<Contract> getBestLocalSolution(){
 		this.s.resetSearchStrategy();
 		this.s.setObjective(this.s.getVar(this.socialWelfareValue));
 		Boolean feasible = this.s.maximize(true);
@@ -105,13 +105,13 @@ PersonalState extends AgentState> extends BasicAgentModule implements ResourceAl
 	 * @see negotiation.negotiationframework.exploration.AllocationSolver#getAllSolution()
 	 */
 	@Override
-	public Collection<Contract> getNextSolution(){
+	public Collection<Contract> getNextLocalSolution(){
 		assert Assert.Imply(s.isFeasible()!=null,hasNext==s.isFeasible()):hasNext+" "+s.isFeasible();
 		if (!this.hasNext){
 			throw new NoSuchElementException();
 		} else if (hasNext==null){
 			hasNext();
-			return getNextSolution();
+			return getNextLocalSolution();
 		} else {
 			assert hasNext:hasNext;
 			final Collection<Contract> result = this.generateSolution();
@@ -124,30 +124,6 @@ PersonalState extends AgentState> extends BasicAgentModule implements ResourceAl
 		}
 	}
 
-	@Override
-	public Collection<Collection<Contract>> computeAllLocalSolutions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void computeBestSolution() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void addNextSolution() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void addAllSolution() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void setNumberOfSolutionLimit(int numberOfSolution) {
-		// TODO Auto-generated method stub
-	}
 	/**
 	 * Transforme la solution actuelle du solveur en candidature accepté
 	 * @return la liste des candidature de la solution du solveur différentes de l'allcoation courante

@@ -97,7 +97,7 @@ public class DcopDPOPSolver implements DcopSolver {
 			if (v.id > maxId)
 				maxId = v.id;
 			if (!v.fixed)
-				tmp.varMap.put(v.id, DCOPFactory.constructVariable(v.id, v.getDomain(), v.getState(), tmp));
+				tmp.varMap.put(v.id, DCOPFactory.constructVariable(v.id, v.getDomain(), v.getState(), drg.getSocialWelfare()));
 			else {
 				f = true;
 				assert v.getValue() != -1;
@@ -105,7 +105,7 @@ public class DcopDPOPSolver implements DcopSolver {
 		}
 		maxId++;
 //		ReplicationVariable s = DCOPFactory.constructVariable(maxId, 1, drg.varMap.get(maxId).getState(),tmp);
-		ReplicationVariable s = DCOPFactory.constructVariable(maxId, 1, null,tmp);
+		ReplicationVariable s = DCOPFactory.constructVariable(maxId, 1, null,drg.getSocialWelfare());
 		if (f)
 			tmp.varMap.put(s.id, s);
 		for (MemFreeConstraint c : drg.conList) {

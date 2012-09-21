@@ -33,9 +33,10 @@ public class StatusHost extends Host {
 			final HostState myState,
 			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
-			final AgentIdentifier myLaborantin) throws CompetenceException {
+			final AgentIdentifier myLaborantin,
+			double alpha_low, double alpha_high) throws CompetenceException {
 		this(id, myState, participantCore, _socialWelfare,true);
-		this.soc=new StatusObservationCompetence(myLaborantin,false, ReplicaState.class);
+		this.soc=new StatusObservationCompetence(myLaborantin,false, ReplicaState.class, alpha_low, alpha_high);
 		this.soc.setActive(false);
 	}
 
@@ -44,9 +45,10 @@ public class StatusHost extends Host {
 			final HostState myState,
 			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
-			final int numberToContact) throws CompetenceException {
+			final int numberToContact,
+			double alpha_low, double alpha_high) throws CompetenceException {
 		this(id, myState, participantCore, _socialWelfare,false);
-		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class);
+		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class, alpha_low, alpha_high);
 	}
 
 

@@ -34,7 +34,7 @@ implements SelectionModule<Agent, PersonalState, Contract> {
 
 	private Collection<Contract> getBestSolution() {
 		try {
-			return solver.computeBestLocalSolution();
+			return solver.getBestLocalSolution();
 		} catch (UnsatisfiableException e) {
 			e.printStackTrace();
 			return null;
@@ -65,7 +65,7 @@ implements SelectionModule<Agent, PersonalState, Contract> {
 			} else {
 				final Date startingExploringTime = new Date();
 				while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime)){
-					result = solver.getNextSolution();
+					result = solver.getNextLocalSolution();
 					if (result==null)
 						return  new ArrayList<Contract>();
 					else if (getMyAgent().Iaccept(contractsToExplore))

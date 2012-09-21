@@ -40,7 +40,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 
 
 	public static boolean currentlyInstanciating;
-	final File resultPath;
+	protected final File resultPath;
 	final File finalResultPath;
 
 	//	public static final long _maxSimulationTime = 1000 * 10; //10 secondes

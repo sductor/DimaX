@@ -151,12 +151,12 @@ public class HostState extends SimpleAgentState{
 	}
 
 	public Double getMyCharge() {
-		if (ReplicationExperimentationParameters.multiDim) {
+//		if (ReplicationExperimentationParameters.multiDim) {
 			return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
 					this.getCurrentProcCharge() / this.getProcChargeMax());
-		} else {
-			return this.getCurrentMemCharge() / this.getMemChargeMax();
-		}
+//		} else {
+//			return this.getCurrentMemCharge() / this.getMemChargeMax();
+//		}
 	}
 
 	public boolean ImSurcharged() {
@@ -168,7 +168,10 @@ public class HostState extends SimpleAgentState{
 	public Collection<AgentIdentifier> getMyResourceIdentifiers(){
 		return  this.myReplicatedAgents;
 	}
-
+	@Override
+	public boolean hasResource(AgentIdentifier id) {
+		return  this.myReplicatedAgents.contains(id);
+	}
 	@Override
 	public Class<ReplicaState> getMyResourcesClass() {
 		return ReplicaState.class;

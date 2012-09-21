@@ -16,6 +16,8 @@ import java.util.Vector;
 
 import javax.management.RuntimeErrorException;
 
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate.Fixed;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.support.GimaObject;
@@ -50,6 +52,14 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 		this.socialWelfare=socialWelfare;
 	}
 
+	public DcopReplicationGraph(HashMap<Integer, ReplicationVariable> varMap,
+			Vector<MemFreeConstraint> conList, SocialChoiceType socialWelfare) {
+		super();
+		this.varMap = varMap;
+		this.conList = conList;
+		this.socialWelfare = socialWelfare;
+	}
+
 	public DcopReplicationGraph(ReplicationGraph rig) {
 		super();
 		varMap = new HashMap<Integer, ReplicationVariable>();
@@ -61,7 +71,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 					DCOPFactory.identifierToInt(id), 
 					(int) Math.pow(2, rig.getAccessibleHosts(id).size()),
 					rig.getAgentState(id),
-					this);
+					socialWelfare);
 			assert !varMap.containsKey(DCOPFactory.identifierToInt(id));
 			assert rig.getAccessibleHosts(id).size()<31;
 			varMap.put(v.id, v);
@@ -73,7 +83,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 					DCOPFactory.identifierToInt(id), 
 					(int) Math.pow(2, rig.getAccessibleAgents(id).size()),
 					rig.getHostState(id),
-					this);
+					socialWelfare);
 			assert rig.getAccessibleAgents(id).size()<31;
 			assert !varMap.containsKey(DCOPFactory.identifierToInt(id));
 			varMap.put(v.id, v);
@@ -96,7 +106,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 		}
 	}
 
-	private void instanciateConstraintsValues() {
+	public void instanciateConstraintsValues() {
 		for (MemFreeConstraint c : conList){
 			for (int x = 0; x < c.first.getDomain(); x++){
 				for (int y = 0; y < c.second.getDomain(); y++){
@@ -132,7 +142,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 					assert ss.length >= 4:Arrays.asList(ss);
 					int	id = Integer.parseInt(ss[1]);
 					int	domain = Integer.parseInt(ss[3]);
-					ReplicationVariable v = DCOPFactory.constructVariable(id, domain,null,this);
+					ReplicationVariable v = DCOPFactory.constructVariable(id, domain,null,socialWelfare);
 					varMap.put(v.id, v);
 				} else if (line.startsWith("CONSTRAINT")) {
 					String[] ss = line.split(" ");
@@ -168,15 +178,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 		return DCOPFactory.evaluate(this);
 	}
 	public  HashMap<Integer, Integer> solve(){
-		try {
 			return SolverFactory.solve(this);
-		} catch (UnsatisfiableException e) {
-			e.printStackTrace();
-			throw new RuntimeException("impossible car le prob admet une solution");
-		} catch (ExceedLimitException e) {
-			e.printStackTrace();
-			throw new RuntimeException("impossible car le prob admet une solution");
-		}
 	}
 
 
@@ -242,11 +244,16 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 	}
 
 	public String toString(){
-		String result = "Variables :\n";
+		String result = "DCOP GRAPH \nVariables :\n";
 		for (ReplicationVariable var : varMap.values()){
-			result+="id : "+var.id+" -- domain : "+var.getDomain()+" -- initialValue "+var.getInitialValue()+" --- voisinage "+var.getNeighborsIdentifiers()+"\n";
+			result+="id : "+var.id+", "+var.getAgentIdentifier()
+					+"\n ----> initialValue "+var.getInitialValue()+", "+var.getAllocatedRessources(var.getInitialValue())
+					+"\n ----> voisinage "+var.getDomain()+", "+var.getNeighborsIdentifiers()
+					+"\n ----> currentValue "+var.getValue()+(var.getValue()!=-1?", "+var.getAllocatedRessources():" uninstaciated")
+					+"\n ----> fixed?"+var.fixed
+					+"\n";
 		}
-		result+="\n Contraints :\n";
+		result+="\n Contraints links :\n";
 		for (MemFreeConstraint c : conList){
 			result+="("+c.first.id+","+c.second.id+") \n";
 			if (DCOPFactory.isClassical()){

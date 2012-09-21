@@ -144,7 +144,7 @@ extends GimaObject implements ReplicationGraph{
 			final Double agentLoadMean,final DispersionSymbolicValue agentLoadDispersion,
 			final Double hostCapacityMean,final DispersionSymbolicValue hostCapacityDispersion,
 			final Double hostFaultProbabilityMean,final DispersionSymbolicValue hostDisponibilityDispersion, 
-			SocialChoiceType _socialWelfare,int agentAccessiblePerHost, int maxHostAccessiblePerAgent) throws IfailedException{
+			int agentAccessiblePerHost, int maxHostAccessiblePerAgent) throws IfailedException{
 		Random rand;
 		rand = new Random(randSeed);
 		this.initiateAgents(
@@ -152,8 +152,7 @@ extends GimaObject implements ReplicationGraph{
 				nbAgents, nbHosts, nbAgentMax,
 				agentCriticityMean, agentCriticityDispersion, 
 				agentLoadMean, agentLoadDispersion, 
-				hostCapacityMean, hostCapacityDispersion, hostFaultProbabilityMean, hostDisponibilityDispersion, 
-				_socialWelfare);
+				hostCapacityMean, hostCapacityDispersion, hostFaultProbabilityMean, hostDisponibilityDispersion);
 
 
 		//		this.logMonologue("Agents & Hosts:\n"+this.rig.getAgentStates()+"\n"+this.rig.getHostsStates(), LogService.onFile);
@@ -238,8 +237,7 @@ extends GimaObject implements ReplicationGraph{
 			final Double agentCriticityMean,final DispersionSymbolicValue agentCriticityDispersion,
 			final Double agentLoadMean,final DispersionSymbolicValue agentLoadDispersion,
 			final Double hostCapacityMean,final DispersionSymbolicValue hostCapacityDispersion,
-			final Double hostFaultProbabilityMean,final DispersionSymbolicValue hostDisponibilityDispersion, 
-			SocialChoiceType _socialWelfare){
+			final Double hostFaultProbabilityMean,final DispersionSymbolicValue hostDisponibilityDispersion){
 
 
 		/*
@@ -292,7 +290,7 @@ extends GimaObject implements ReplicationGraph{
 							Math.min(ReplicationExperimentationParameters._criticityMin+ agentCriticity.get(id), 1),
 							agentProcessor.get(id),
 							agentMemory.get(id),
-							_socialWelfare));
+							socialWelfare));
 		}
 
 		for (final ResourceIdentifier hostId : this.hosts.keySet()){

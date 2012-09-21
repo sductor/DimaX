@@ -21,7 +21,6 @@ import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class ReplicationVariable {
 
-	//	final DcopReplicationGraph graph;
 
 	public int id;
 	protected final int domain;
@@ -33,11 +32,9 @@ public class ReplicationVariable {
 
 	final SocialChoiceType socialWelfare;
 
-	public ReplicationVariable(int i, int d, AgentState s, DcopReplicationGraph g) {
-		assert g!=null;
+	public ReplicationVariable(int i, int d, AgentState s, SocialChoiceType socialWelfare) {
 		id = i;
-		socialWelfare=g.getSocialWelfare();
-		//		graph = g;
+		this.socialWelfare=socialWelfare;
 		this.s=s;
 		domain=d;
 		neighbors=new ArrayList<MemFreeConstraint>();

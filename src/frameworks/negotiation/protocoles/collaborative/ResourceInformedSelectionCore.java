@@ -362,15 +362,15 @@ InformedCandidature<Contract>> {
 
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		try {
-
+			assert kConcerned!=null;
 			this.solver.initiate(kConcerned);
 			this.solver.setTimeLimit((int) this.maxComputingTime);
 			final Set<InformedCandidature<Contract>> alreadyDone =
 					new HashSet<InformedCandidature<Contract>>();
 			final Date startingExploringTime = new Date();
 			//			logWarning("beginning exploration");
-			Collection<Collection<Contract>> allRealloc = this.solver.computeAllLocalSolutions();
-			for (Collection<Contract> realloc : allRealloc){
+			while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime)){
+				Collection<Contract> realloc = solver.getNextLocalSolution();
 				if (!realloc.isEmpty()){
 					final Set<InformedCandidature<Contract>> contractsToKeep =
 							new HashSet<InformedCandidature<Contract>>();

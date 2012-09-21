@@ -13,6 +13,7 @@ public interface AgentState extends Information {
 	public AgentIdentifier getMyAgentIdentifier();
 
 	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers();
+	public boolean hasResource(AgentIdentifier id);
 
 	public Class<? extends AgentState> getMyResourcesClass();
 

@@ -50,12 +50,12 @@ public class DCOPFactory {
 	}
 
 	public static String[] getArgs() {
-		SolverFactory.setParameters(SolverType.Dpop);//Knitro);//BranchNBound);//Choco);//
+//		SolverFactory.setParameters(SolverType.Dpop);//Knitro);//BranchNBound);//Choco);//
 		DCOPFactory.setParameters(
 				100,
 				VariableType.CPUConsumming, //.MemoryConsumming, //
 				"yo");
-		return new String[]{"conf/1.dcop","","2","500"};
+		return new String[]{"conf/1.dcop","","5","500"};
 	}
 
 	public static DcopReplicationGraph constructDCOPGraph(String filename) {
@@ -70,7 +70,7 @@ public class DCOPFactory {
 					0.25, DispersionSymbolicValue.Nul, //agent load
 					1., DispersionSymbolicValue.Nul, //hostCap
 					0.5, DispersionSymbolicValue.Moyen, //hostDisp
-					SocialChoiceType.Utility,5,4);
+					5,4);
 		} catch (IfailedException e1) {
 			e1.printStackTrace();
 		}
@@ -113,7 +113,7 @@ public class DCOPFactory {
 	}
 
 
-	public  static ReplicationVariable constructVariable(final int i, final int d,AgentState s,  final DcopReplicationGraph g){
+	public  static ReplicationVariable constructVariable(final int i, final int d,AgentState s,  final SocialChoiceType g){
 //		assert s!=null;
 		return new ReplicationVariable(i,d,s, g);
 	}

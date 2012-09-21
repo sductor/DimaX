@@ -101,9 +101,9 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 
 		final Experimentator exp =
 				new Experimentator(
-						ReplicationExperimentationParameters.getDefaultParameters(),
+						ReplicationExperimentationGenerator.getDefaultParameters(),
 						new FinalExperimentsLogger(),
-						ReplicationExperimentationParameters.iterationNumber);
+						ReplicationExperimentationGenerator.iterationNumber);
 		exp.run(args);
 	}
 

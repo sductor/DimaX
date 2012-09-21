@@ -36,11 +36,11 @@ public abstract class BasicAlgorithm extends Program {
 	public BasicAlgorithm(ReplicationVariable v) {
 		view = DCOPFactory.constructDCOPGraph(v.getSocialWelfare());
 		assert v.getState()!=null:v;
-		self = DCOPFactory.constructVariable(v.id, v.getDomain(),v.getState(), view);
+		self = DCOPFactory.constructVariable(v.id, v.getDomain(),v.getState(), view.getSocialWelfare());
 		view.varMap.put(self.id, self);
 		for (MemFreeConstraint c : v.getNeighbors()) {
 			ReplicationVariable n = c.getNeighbor(v);
-			ReplicationVariable nn = DCOPFactory.constructVariable(n.id, n.getDomain(),n.getState(), view);
+			ReplicationVariable nn = DCOPFactory.constructVariable(n.id, n.getDomain(),n.getState(), view.getSocialWelfare());
 			nn.fixed = true;
 			view.varMap.put(nn.id, nn);
 			MemFreeConstraint cc;

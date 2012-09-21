@@ -98,8 +98,13 @@ public class ReplicaState  extends SimpleAgentState  {
 
 
 	public ReplicaState allocate (final HostState newRep, boolean creation) {
-		boolean ok = (creation &&!this.myReplicas.contains(newRep.getMyAgentIdentifier())) 
-				|| (!creation && this.myReplicas.contains(newRep.getMyAgentIdentifier()));
+		assert newRep!=null;
+		assert newRep.getMyAgentIdentifier()!=null;
+		assert this.myReplicas!=null;
+		boolean ok = 
+				(creation && !this.myReplicas.contains(newRep.getMyAgentIdentifier())) 
+				|| 
+				(!creation && this.myReplicas.contains(newRep.getMyAgentIdentifier()));
 		if (ok)
 			return allocate(newRep);
 		else
@@ -200,8 +205,10 @@ public class ReplicaState  extends SimpleAgentState  {
 	public Collection<ResourceIdentifier> getMyResourceIdentifiers() {
 		return this.myReplicas;
 	}
-
-
+	@Override
+	public boolean hasResource(AgentIdentifier id) {
+		return  this.myReplicas.contains(id);
+	}
 	@Override
 	public Class<HostState> getMyResourcesClass() {
 		return HostState.class;

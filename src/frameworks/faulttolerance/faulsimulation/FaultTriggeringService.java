@@ -42,7 +42,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 
 //	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
 	public void toggleFault() {
-		int nbMax = this.p.host_maxSimultaneousFailure.intValue();
+		int nbMax = this.p.getMaxSimultFailure().intValue();
 		if (nbMax>0){
 			final List<ResourceIdentifier> hosts = new ArrayList<ResourceIdentifier>();
 			hosts.addAll(HostDisponibilityComputer.getHosts(this.getMyAgent().myInformationService));

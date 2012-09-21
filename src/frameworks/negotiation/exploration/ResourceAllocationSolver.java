@@ -6,6 +6,7 @@ import frameworks.negotiation.NegotiationException;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.rationality.AgentState;
+import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 
 public interface ResourceAllocationSolver
@@ -23,11 +24,11 @@ extends Solver{
 	 */
 	public abstract void initiate(Collection<Contract> concerned);
 
-	public abstract Collection<Contract> computeBestLocalSolution() 
+	public abstract Collection<Contract> getBestLocalSolution() 
 			throws UnsatisfiableException, ExceedLimitException;
-	
-	public abstract Collection<Collection<Contract>> computeAllLocalSolutions();
 
-	public abstract Collection<Contract> getNextSolution();
+	public boolean hasNext();
+	
+	public abstract Collection<Contract> getNextLocalSolution();
 	
 }

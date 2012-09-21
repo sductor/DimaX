@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import frameworks.faulttolerance.dcop.algo.topt.LockMsg;
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 
 public abstract class LockingBasicAlgorithm extends BasicAlgorithm {
 
@@ -19,7 +23,11 @@ public abstract class LockingBasicAlgorithm extends BasicAlgorithm {
 	public int lockMsgTimer;
 	public int attempt;
 
+<<<<<<< HEAD
 	public LockingBasicAlgorithm(AbstractVariable v, boolean s, int ws) {
+=======
+	public LockingBasicAlgorithm(ReplicationVariable v, boolean s, int ws) {
+>>>>>>> dcopX
 		super(v);		
 		subsetlocking = s;
 		windowsize = ws;

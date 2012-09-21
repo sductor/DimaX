@@ -2,11 +2,23 @@ package frameworks.faulttolerance.dcop.algo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import dima.introspectionbasedagents.modules.faults.Assert;
+
+import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.daj.Program;
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.CPUFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
+import frameworks.faulttolerance.dcop.dcop.Helper;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 import frameworks.faulttolerance.dcop.exec.Stats;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
@@ -15,19 +27,25 @@ public abstract class BasicAlgorithm extends Program {
 	protected static final int reLockInterval = 8;
 	protected int lockBase;
 	protected int reLockTime;
+<<<<<<< HEAD
 	protected DcopAbstractGraph view;
 	protected AbstractVariable self;
+=======
+	protected DcopReplicationGraph view;
+	protected ReplicationVariable self;
+>>>>>>> dcopX
 	protected int lock;
 	protected boolean done;
-	
+
 	protected HashMap<Integer, Integer> inChannelMap;
 	protected HashMap<Integer, Integer> outChannelMap;
-	
+
 	public int preAttempt;
 	public ArrayList<Stats> statList;
 	public int nlockReq;
 	public int preCycles;
 
+<<<<<<< HEAD
 	public BasicAlgorithm(AbstractVariable v) {
 		view = ReplicationExperimentationParameters.constructDCOPGraph();
 		self = new AbstractVariable(v.id, v.domain, view);
@@ -47,14 +65,38 @@ public abstract class BasicAlgorithm extends Program {
 					cc.f[i][j] = c.f[i][j];
 				}
 			cc.cache();
+=======
+	public BasicAlgorithm(ReplicationVariable v) {
+		view = DCOPFactory.constructDCOPGraph(v.getSocialWelfare());
+		assert v.getState()!=null:v;
+		self = DCOPFactory.constructVariable(v.id, v.getDomain(),v.getState(), view.getSocialWelfare());
+		view.varMap.put(self.id, self);
+		for (MemFreeConstraint c : v.getNeighbors()) {
+			ReplicationVariable n = c.getNeighbor(v);
+			ReplicationVariable nn = DCOPFactory.constructVariable(n.id, n.getDomain(),n.getState(), view.getSocialWelfare());
+			nn.fixed = true;
+			view.varMap.put(nn.id, nn);
+			MemFreeConstraint cc;
+			if (v == c.first)
+				cc = DCOPFactory.constructConstraint(self, nn);
+			else
+				cc = DCOPFactory.constructConstraint(nn, self);
+			if (DCOPFactory.isClassical()){
+				for (int i = 0; i < cc.d1; i++)
+					for (int j = 0; j < cc.d2; j++) {
+						((CPUFreeConstraint)cc).f[i][j] = ((CPUFreeConstraint)c).f[i][j];
+					}
+				((CPUFreeConstraint)cc).cache();
+			}
+>>>>>>> dcopX
 			view.conList.add(cc);
 		}
-		
+
 		lock = -1;
 		lockBase = 1;
 		reLockTime = Helper.random.nextInt(reLockInterval * lockBase * 4);
 		done = false;
-		
+
 		inChannelMap = new HashMap<Integer, Integer>();
 		outChannelMap = new HashMap<Integer, Integer>();
 		statList = new ArrayList<Stats>();
@@ -63,19 +105,19 @@ public abstract class BasicAlgorithm extends Program {
 		nlockReq = 0;
 
 	}
-	
+
 	public int getValue(){
-		return self.value;
+		return self.getValue();
 	}
-	
+
 	public int getID() {
 		return self.id;
 	}
-	
+
 	public boolean isStable() {
 		return done;
 	}
-	
+
 	protected boolean checkStable() {
 		Program[] prog = this.node.getNetwork().getPrograms();
 		for (int i = 0; i < prog.length; i++) {

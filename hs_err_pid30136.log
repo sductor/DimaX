@@ -1,0 +1,428 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f1970ed6ec8, pid=30136, tid=139747292169984
+#
+# JRE version: 6.0_24-b07
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (19.1-b02 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# C  [libJNI-knitro800.so+0x71ec8]  ktr_x2244
++0x6c8
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f196c007000):  JavaThread "main" [_thread_in_native, id=30141, stack(0x00007f1973a54000,0x00007f1973b55000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=1 (SEGV_MAPERR), si_addr=0x0000000000000000
+
+Registers:
+RAX=0x0000000000000056, RBX=0x00007f19708f3010, RCX=0x0000000000000001, RDX=0x0000000000000000
+RSP=0x00007f1973b52950, RBP=0x00007f196c20a640, RSI=0x0000000000000001, RDI=0x00007f1971494de0
+R8 =0x3cd203af9ee75616, R9 =0x3cd203af9ee75616, R10=0x00007f197091bb18, R11=0x00007f197091bb08
+R12=0x00007f196c209880, R13=0x00007f196c204400, R14=0x0000000000000001, R15=0x000000000000011a
+RIP=0x00007f1970ed6ec8, EFL=0x0000000000010202, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Register to memory mapping:
+
+RAX=0x0000000000000056
+0x0000000000000056 is pointing to unknown location
+
+RBX=0x00007f19708f3010
+0x00007f19708f3010 is pointing to unknown location
+
+RCX=0x0000000000000001
+0x0000000000000001 is pointing to unknown location
+
+RDX=0x0000000000000000
+0x0000000000000000 is pointing to unknown location
+
+RSP=0x00007f1973b52950
+0x00007f1973b52950 is pointing into the stack for thread: 0x00007f196c007000
+"main" prio=10 tid=0x00007f196c007000 nid=0x75bd runnable [0x00007f1973b53000]
+   java.lang.Thread.State: RUNNABLE
+
+RBP=0x00007f196c20a640
+0x00007f196c20a640 is pointing to unknown location
+
+RSI=0x0000000000000001
+0x0000000000000001 is pointing to unknown location
+
+RDI=0x00007f1971494de0
+0x00007f1971494de0: <offset 0x62fde0> in /opt/java/jre/lib/amd64/libJNI-knitro800.so at 0x00007f1970e65000
+
+R8 =0x3cd203af9ee75616
+0x3cd203af9ee75616 is pointing to unknown location
+
+R9 =0x3cd203af9ee75616
+0x3cd203af9ee75616 is pointing to unknown location
+
+R10=0x00007f197091bb18
+0x00007f197091bb18 is pointing to unknown location
+
+R11=0x00007f197091bb08
+0x00007f197091bb08 is pointing to unknown location
+
+R12=0x00007f196c209880
+0x00007f196c209880 is pointing to unknown location
+
+R13=0x00007f196c204400
+0x00007f196c204400 is pointing to unknown location
+
+R14=0x0000000000000001
+0x0000000000000001 is pointing to unknown location
+
+R15=0x000000000000011a
+0x000000000000011a is pointing to unknown location
+
+
+Top of Stack: (sp=0x00007f1973b52950)
+0x00007f1973b52950:   00007f197091bb10 00007f197091bb14
+0x00007f1973b52960:   00007f196c20a0c0 00007f196c20a640
+0x00007f1973b52970:   00007f196c1ff290 00007f196c1fee50
+0x00007f1973b52980:   00007f19708f3610 00007f196c200480
+0x00007f1973b52990:   00007f19708f376c 00007f197091bb18
+0x00007f1973b529a0:   00007f197091bb08 00007f197082f010
+0x00007f1973b529b0:   00007f196c21bef0 00007f196c21e730
+0x00007f1973b529c0:   00007f197091c370 00007f197091c378
+0x00007f1973b529d0:   00007f197091c328 00007f197091c340
+0x00007f1973b529e0:   00007f197091c330 00007f197091c338
+0x00007f1973b529f0:   00007f196c220210 00007f196c21a3f0
+0x00007f1973b52a00:   00007f196c21aab0 00007f196c21b170
+0x00007f1973b52a10:   00007f196c21b830 00007f197091c5a0
+0x00007f1973b52a20:   00007f197091c3c0 00007f19705e3010
+0x00007f1973b52a30:   00007f197091c730 00007f197091c348
+0x00007f1973b52a40:   0000000000000005 00007f1900000003
+0x00007f1973b52a50:   00000000504f76d8 3cd203af9ee75616
+0x00007f1973b52a60:   00007f197091bb18 00007f197091bb08
+0x00007f1973b52a70:   0000000000000000 0000008070f378db
+0x00007f1973b52a80:   00007f1973b52ac8 00007f1973b52ad0
+0x00007f1973b52a90:   00007f1973b52ad8 3cd203af9ee75616
+0x00007f1973b52aa0:   3cb0000000000000 00007f197091c378
+0x00007f1973b52ab0:   3cd203af9ee75616 00007f197091c398
+0x00007f1973b52ac0:   0000000000000000 0000000200000000
+0x00007f1973b52ad0:   00007f19708f3610 00007f197091bd40
+0x00007f1973b52ae0:   00007f197091bb00 00007f197091bb10
+0x00007f1973b52af0:   00007f196c1ff290 00007f196c1fee50
+0x00007f1973b52b00:   00007f19708f3760 00007f19708f3010
+0x00007f1973b52b10:   00007f19708f3760 00007f197091bb18
+0x00007f1973b52b20:   00007f19708f3530 00007f19708f3764
+0x00007f1973b52b30:   00007f196c1ff6f0 00007f1970ed9520
+0x00007f1973b52b40:   00007f19708f3768 00007f196c20ca10 
+
+Instructions: (pc=0x00007f1970ed6ec8)
+0x00007f1970ed6eb8:   4c 89 94 24 10 01 00 00 4c 89 9c 24 18 01 00 00
+0x00007f1970ed6ec8:   48 8b 0a ba 3a 00 00 00 f2 0f 11 a4 24 30 01 00 
+
+Stack: [0x00007f1973a54000,0x00007f1973b55000],  sp=0x00007f1973b52950,  free space=1018k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libJNI-knitro800.so+0x71ec8]  ktr_x2244
++0x6c8
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  com.ziena.knitro.KnitroJava.nativeMipSolve_(II[D[D[D[D[D[D[D)I+0
+j  com.ziena.knitro.KnitroJava.mipSolve(I[D[D[D[D[D)I+71
+j  frameworks.faulttolerance.solver.KnitroAllocationSolver.solveProb()[D+73
+j  frameworks.faulttolerance.solver.KnitroAllocationSolver.getBestSolution()[D+74
+j  frameworks.faulttolerance.solver.KnitroAllocationSolver.main([Ljava/lang/String;)V+126
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f196c090800 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=30152, stack(0x00007f19718ca000,0x00007f19719cb000)]
+  0x00007f196c08e800 JavaThread "CompilerThread1" daemon [_thread_blocked, id=30151, stack(0x00007f19719cb000,0x00007f1971acc000)]
+  0x00007f196c08b800 JavaThread "CompilerThread0" daemon [_thread_blocked, id=30150, stack(0x00007f1971acc000,0x00007f1971bcd000)]
+  0x00007f196c089800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=30149, stack(0x00007f1971bcd000,0x00007f1971cce000)]
+  0x00007f196c06d000 JavaThread "Finalizer" daemon [_thread_blocked, id=30148, stack(0x00007f1971e57000,0x00007f1971f58000)]
+  0x00007f196c06b000 JavaThread "Reference Handler" daemon [_thread_blocked, id=30147, stack(0x00007f1971f58000,0x00007f1972059000)]
+=>0x00007f196c007000 JavaThread "main" [_thread_in_native, id=30141, stack(0x00007f1973a54000,0x00007f1973b55000)]
+
+Other Threads:
+  0x00007f196c064800 VMThread [stack: 0x00007f1972059000,0x00007f197215a000] [id=30146]
+  0x00007f196c093800 WatcherThread [stack: 0x00007f19717c9000,0x00007f19718ca000] [id=30153]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 17920K, used 8246K [0x00000000ec000000, 0x00000000ed400000, 0x0000000100000000)
+  eden space 15360K, 53% used [0x00000000ec000000,0x00000000ec80d9c8,0x00000000ecf00000)
+  from space 2560K, 0% used [0x00000000ed180000,0x00000000ed180000,0x00000000ed400000)
+  to   space 2560K, 0% used [0x00000000ecf00000,0x00000000ecf00000,0x00000000ed180000)
+ PSOldGen        total 40960K, used 0K [0x00000000c4000000, 0x00000000c6800000, 0x00000000ec000000)
+  object space 40960K, 0% used [0x00000000c4000000,0x00000000c4000000,0x00000000c6800000)
+ PSPermGen       total 21248K, used 3515K [0x00000000bee00000, 0x00000000c02c0000, 0x00000000c4000000)
+  object space 21248K, 16% used [0x00000000bee00000,0x00000000bf16ef70,0x00000000c02c0000)
+
+Dynamic libraries:
+40000000-40009000 r-xp 00000000 08:05 149531                             /opt/java/jre/bin/java
+40108000-4010a000 rwxp 00008000 08:05 149531                             /opt/java/jre/bin/java
+418fa000-4191b000 rwxp 00000000 00:00 0                                  [heap]
+bee00000-c02c0000 rwxp 00000000 00:00 0 
+c02c0000-c4000000 rwxp 00000000 00:00 0 
+c4000000-c6800000 rwxp 00000000 00:00 0 
+c6800000-ec000000 rwxp 00000000 00:00 0 
+ec000000-ed400000 rwxp 00000000 00:00 0 
+ed400000-100000000 rwxp 00000000 00:00 0 
+7f1934000000-7f1934021000 rwxp 00000000 00:00 0 
+7f1934021000-7f1938000000 ---p 00000000 00:00 0 
+7f193c000000-7f193c15b000 rwxp 00000000 00:00 0 
+7f193c15b000-7f1940000000 ---p 00000000 00:00 0 
+7f1940000000-7f1940021000 rwxp 00000000 00:00 0 
+7f1940021000-7f1944000000 ---p 00000000 00:00 0 
+7f1944000000-7f1944021000 rwxp 00000000 00:00 0 
+7f1944021000-7f1948000000 ---p 00000000 00:00 0 
+7f1948000000-7f19480fe000 rwxp 00000000 00:00 0 
+7f19480fe000-7f194c000000 ---p 00000000 00:00 0 
+7f194c000000-7f194c021000 rwxp 00000000 00:00 0 
+7f194c021000-7f1950000000 ---p 00000000 00:00 0 
+7f1950000000-7f1950021000 rwxp 00000000 00:00 0 
+7f1950021000-7f1954000000 ---p 00000000 00:00 0 
+7f1954000000-7f1954021000 rwxp 00000000 00:00 0 
+7f1954021000-7f1958000000 ---p 00000000 00:00 0 
+7f1958000000-7f1958021000 rwxp 00000000 00:00 0 
+7f1958021000-7f195c000000 ---p 00000000 00:00 0 
+7f195c000000-7f195c021000 rwxp 00000000 00:00 0 
+7f195c021000-7f1960000000 ---p 00000000 00:00 0 
+7f1960000000-7f1960021000 rwxp 00000000 00:00 0 
+7f1960021000-7f1964000000 ---p 00000000 00:00 0 
+7f1964000000-7f1964021000 rwxp 00000000 00:00 0 
+7f1964021000-7f1968000000 ---p 00000000 00:00 0 
+7f1969000000-7f1969270000 rwxp 00000000 00:00 0 
+7f1969270000-7f196c223000 rwxp 00000000 00:00 0 
+7f196c223000-7f1970000000 ---p 00000000 00:00 0 
+7f19705e3000-7f197091e000 rwxp 00000000 00:00 0 
+7f197091e000-7f1970933000 r-xp 00000000 08:05 52312                      /usr/lib/libgcc_s.so.1
+7f1970933000-7f1970b32000 ---p 00015000 08:05 52312                      /usr/lib/libgcc_s.so.1
+7f1970b32000-7f1970b33000 rwxp 00014000 08:05 52312                      /usr/lib/libgcc_s.so.1
+7f1970b33000-7f1970c18000 r-xp 00000000 08:05 21104                      /usr/lib/libstdc++.so.6.0.17
+7f1970c18000-7f1970e17000 ---p 000e5000 08:05 21104                      /usr/lib/libstdc++.so.6.0.17
+7f1970e17000-7f1970e1f000 r-xp 000e4000 08:05 21104                      /usr/lib/libstdc++.so.6.0.17
+7f1970e1f000-7f1970e21000 rwxp 000ec000 08:05 21104                      /usr/lib/libstdc++.so.6.0.17
+7f1970e21000-7f1970e36000 rwxp 00000000 00:00 0 
+7f1970e37000-7f1970e65000 rwxp 00000000 00:00 0 
+7f1970e65000-7f1971501000 r-xp 00000000 08:05 289171                     /opt/java/jre/lib/amd64/libJNI-knitro800.so
+7f1971501000-7f1971700000 ---p 0069c000 08:05 289171                     /opt/java/jre/lib/amd64/libJNI-knitro800.so
+7f1971700000-7f197170e000 rwxp 0069b000 08:05 289171                     /opt/java/jre/lib/amd64/libJNI-knitro800.so
+7f197170e000-7f197171f000 rwxp 00000000 00:00 0 
+7f197171f000-7f1971720000 r-xs 00003000 08:04 18579583                   /droop/Boulot/workspace/DimaX/lib/knitro-8.0.0-z/examples/Java/knitro800java.jar
+7f1971720000-7f1971727000 r-xs 00048000 08:04 1392662                    /droop/Boulot/workspace/DimaX/lib/smackx-jingle.jar
+7f1971727000-7f1971735000 r-xs 00095000 08:04 1392663                    /droop/Boulot/workspace/DimaX/lib/smackx.jar
+7f1971735000-7f197173b000 r-xs 00046000 08:04 1392645                    /droop/Boulot/workspace/DimaX/lib/smack.jar
+7f197173b000-7f1971796000 r-xs 00501000 08:04 1392656                    /droop/Boulot/workspace/DimaX/lib/choco-solver-2.1.3-with-sources.jar
+7f1971796000-7f197179b000 r-xs 00030000 08:04 1392649                    /droop/Boulot/workspace/DimaX/lib/rdf-api-2001-01-19.jar
+7f197179b000-7f197179e000 r-xs 0001a000 08:04 1392653                    /droop/Boulot/workspace/DimaX/lib/junit.jar
+7f197179e000-7f19717a7000 r-xs 00083000 08:04 1392655                    /droop/Boulot/workspace/DimaX/lib/jtp.jar
+7f19717a7000-7f19717aa000 r-xs 0002b000 08:04 1392646                    /droop/Boulot/workspace/DimaX/lib/jsch-0.1.42.jar
+7f19717aa000-7f19717c6000 r-xs 000fc000 08:04 1392648                    /droop/Boulot/workspace/DimaX/lib/jena.jar
+7f19717c6000-7f19717c9000 r-xs 0001f000 08:04 1392661                    /droop/Boulot/workspace/DimaX/lib/jdom.jar
+7f19717c9000-7f19717ca000 ---p 00000000 00:00 0 
+7f19717ca000-7f19718ca000 rwxp 00000000 00:00 0                          [stack:30153]
+7f19718ca000-7f19718cd000 ---p 00000000 00:00 0 
+7f19718cd000-7f19719cb000 rwxp 00000000 00:00 0                          [stack:30152]
+7f19719cb000-7f19719ce000 ---p 00000000 00:00 0 
+7f19719ce000-7f1971acc000 rwxp 00000000 00:00 0                          [stack:30151]
+7f1971acc000-7f1971acf000 ---p 00000000 00:00 0 
+7f1971acf000-7f1971bcd000 rwxp 00000000 00:00 0                          [stack:30150]
+7f1971bcd000-7f1971bd0000 ---p 00000000 00:00 0 
+7f1971bd0000-7f1971cce000 rwxp 00000000 00:00 0                          [stack:30149]
+7f1971cce000-7f1971e57000 r-xp 00000000 08:05 289167                     /usr/lib/locale/locale-archive
+7f1971e57000-7f1971e5a000 ---p 00000000 00:00 0 
+7f1971e5a000-7f1971f58000 rwxp 00000000 00:00 0                          [stack:30148]
+7f1971f58000-7f1971f5b000 ---p 00000000 00:00 0 
+7f1971f5b000-7f1972059000 rwxp 00000000 00:00 0                          [stack:30147]
+7f1972059000-7f197205a000 ---p 00000000 00:00 0 
+7f197205a000-7f1972693000 rwxp 00000000 00:00 0                          [stack:30146]
+7f1972693000-7f197282b000 r-xs 03027000 08:05 149317                     /opt/java/jre/lib/rt.jar
+7f197282b000-7f1972853000 rwxp 00000000 00:00 0 
+7f1972853000-7f1972854000 ---p 00000000 00:00 0 
+7f1972854000-7f1972954000 rwxp 00000000 00:00 0                          [stack:30145]
+7f1972954000-7f1972955000 ---p 00000000 00:00 0 
+7f1972955000-7f1972a55000 rwxp 00000000 00:00 0                          [stack:30144]
+7f1972a55000-7f1972a56000 ---p 00000000 00:00 0 
+7f1972a56000-7f1972b56000 rwxp 00000000 00:00 0                          [stack:30143]
+7f1972b56000-7f1972b57000 ---p 00000000 00:00 0 
+7f1972b57000-7f1972c62000 rwxp 00000000 00:00 0                          [stack:30142]
+7f1972c62000-7f1972c80000 rwxp 00000000 00:00 0 
+7f1972c80000-7f1972c94000 rwxp 00000000 00:00 0 
+7f1972c94000-7f1972dc0000 rwxp 00000000 00:00 0 
+7f1972dc0000-7f1972dcb000 rwxp 00000000 00:00 0 
+7f1972dcb000-7f1972de9000 rwxp 00000000 00:00 0 
+7f1972de9000-7f1972dfd000 rwxp 00000000 00:00 0 
+7f1972dfd000-7f1972f29000 rwxp 00000000 00:00 0 
+7f1972f29000-7f1972f33000 rwxp 00000000 00:00 0 
+7f1972f33000-7f1972fc9000 rwxp 00000000 00:00 0 
+7f1972fc9000-7f1972fca000 rwxp 00000000 00:00 0 
+7f1972fca000-7f1972fd8000 r-xp 00000000 08:05 149409                     /opt/java/jre/lib/amd64/libzip.so
+7f1972fd8000-7f19730da000 ---p 0000e000 08:05 149409                     /opt/java/jre/lib/amd64/libzip.so
+7f19730da000-7f19730dd000 rwxp 00010000 08:05 149409                     /opt/java/jre/lib/amd64/libzip.so
+7f19730dd000-7f19730de000 rwxp 00000000 00:00 0 
+7f19730de000-7f19730ea000 r-xp 00000000 08:05 18563                      /lib/libnss_files-2.16.so
+7f19730ea000-7f19732e9000 ---p 0000c000 08:05 18563                      /lib/libnss_files-2.16.so
+7f19732e9000-7f19732ea000 r-xp 0000b000 08:05 18563                      /lib/libnss_files-2.16.so
+7f19732ea000-7f19732eb000 rwxp 0000c000 08:05 18563                      /lib/libnss_files-2.16.so
+7f19732eb000-7f19732f2000 r-xp 00000000 08:05 149406                     /opt/java/jre/lib/amd64/native_threads/libhpi.so
+7f19732f2000-7f19733f3000 ---p 00007000 08:05 149406                     /opt/java/jre/lib/amd64/native_threads/libhpi.so
+7f19733f3000-7f19733f5000 rwxp 00008000 08:05 149406                     /opt/java/jre/lib/amd64/native_threads/libhpi.so
+7f19733f5000-7f19733f6000 rwxp 00000000 00:00 0 
+7f19733f6000-7f197340b000 r-xp 00000000 08:05 18588                      /lib/libnsl-2.16.so
+7f197340b000-7f197360a000 ---p 00015000 08:05 18588                      /lib/libnsl-2.16.so
+7f197360a000-7f197360b000 r-xp 00014000 08:05 18588                      /lib/libnsl-2.16.so
+7f197360b000-7f197360c000 rwxp 00015000 08:05 18588                      /lib/libnsl-2.16.so
+7f197360c000-7f197360e000 rwxp 00000000 00:00 0 
+7f197360e000-7f1973637000 r-xp 00000000 08:05 149413                     /opt/java/jre/lib/amd64/libjava.so
+7f1973637000-7f1973736000 ---p 00029000 08:05 149413                     /opt/java/jre/lib/amd64/libjava.so
+7f1973736000-7f197373d000 rwxp 00028000 08:05 149413                     /opt/java/jre/lib/amd64/libjava.so
+7f197373d000-7f197374a000 r-xp 00000000 08:05 149370                     /opt/java/jre/lib/amd64/libverify.so
+7f197374a000-7f1973849000 ---p 0000d000 08:05 149370                     /opt/java/jre/lib/amd64/libverify.so
+7f1973849000-7f197384c000 rwxp 0000c000 08:05 149370                     /opt/java/jre/lib/amd64/libverify.so
+7f197384c000-7f1973853000 r-xp 00000000 08:05 18562                      /lib/librt-2.16.so
+7f1973853000-7f1973a52000 ---p 00007000 08:05 18562                      /lib/librt-2.16.so
+7f1973a52000-7f1973a53000 r-xp 00006000 08:05 18562                      /lib/librt-2.16.so
+7f1973a53000-7f1973a54000 rwxp 00007000 08:05 18562                      /lib/librt-2.16.so
+7f1973a54000-7f1973a57000 ---p 00000000 00:00 0 
+7f1973a57000-7f1973b55000 rwxp 00000000 00:00 0                          [stack:30141]
+7f1973b55000-7f1973c4e000 r-xp 00000000 08:05 18554                      /lib/libm-2.16.so
+7f1973c4e000-7f1973e4d000 ---p 000f9000 08:05 18554                      /lib/libm-2.16.so
+7f1973e4d000-7f1973e4e000 r-xp 000f8000 08:05 18554                      /lib/libm-2.16.so
+7f1973e4e000-7f1973e4f000 rwxp 000f9000 08:05 18554                      /lib/libm-2.16.so
+7f1973e4f000-7f197468d000 r-xp 00000000 08:05 149372                     /opt/java/jre/lib/amd64/server/libjvm.so
+7f197468d000-7f197478c000 ---p 0083e000 08:05 149372                     /opt/java/jre/lib/amd64/server/libjvm.so
+7f197478c000-7f1974920000 rwxp 0083d000 08:05 149372                     /opt/java/jre/lib/amd64/server/libjvm.so
+7f1974920000-7f1974959000 rwxp 00000000 00:00 0 
+7f1974959000-7f1974af4000 r-xp 00000000 08:05 18566                      /lib/libc-2.16.so
+7f1974af4000-7f1974cf3000 ---p 0019b000 08:05 18566                      /lib/libc-2.16.so
+7f1974cf3000-7f1974cf7000 r-xp 0019a000 08:05 18566                      /lib/libc-2.16.so
+7f1974cf7000-7f1974cf9000 rwxp 0019e000 08:05 18566                      /lib/libc-2.16.so
+7f1974cf9000-7f1974cfd000 rwxp 00000000 00:00 0 
+7f1974cfd000-7f1974d00000 r-xp 00000000 08:05 18578                      /lib/libdl-2.16.so
+7f1974d00000-7f1974eff000 ---p 00003000 08:05 18578                      /lib/libdl-2.16.so
+7f1974eff000-7f1974f00000 r-xp 00002000 08:05 18578                      /lib/libdl-2.16.so
+7f1974f00000-7f1974f01000 rwxp 00003000 08:05 18578                      /lib/libdl-2.16.so
+7f1974f01000-7f1974f18000 r-xp 00000000 08:05 18572                      /lib/libpthread-2.16.so
+7f1974f18000-7f1975117000 ---p 00017000 08:05 18572                      /lib/libpthread-2.16.so
+7f1975117000-7f1975118000 r-xp 00016000 08:05 18572                      /lib/libpthread-2.16.so
+7f1975118000-7f1975119000 rwxp 00017000 08:05 18572                      /lib/libpthread-2.16.so
+7f1975119000-7f197511d000 rwxp 00000000 00:00 0 
+7f197511d000-7f197513e000 r-xp 00000000 08:05 18589                      /lib/ld-2.16.so
+7f197513e000-7f1975140000 r-xs 0000c000 08:04 1392658                    /droop/Boulot/workspace/DimaX/lib/smackx-debug.jar
+7f1975140000-7f197514a000 rwxp 00000000 00:00 0 
+7f197514a000-7f1975200000 rwxp 00000000 00:00 0 
+7f1975200000-7f1975203000 rwxp 00000000 00:00 0 
+7f1975203000-7f197520a000 r-xp 00000000 08:05 149415                     /opt/java/jre/lib/amd64/jli/libjli.so
+7f197520a000-7f197530b000 ---p 00007000 08:05 149415                     /opt/java/jre/lib/amd64/jli/libjli.so
+7f197530b000-7f197530d000 rwxp 00008000 08:05 149415                     /opt/java/jre/lib/amd64/jli/libjli.so
+7f197530d000-7f197530e000 rwxp 00000000 00:00 0 
+7f197530e000-7f197531f000 r-xs 001f7000 08:04 1392644                    /droop/Boulot/workspace/DimaX/lib/icu4j.jar
+7f197531f000-7f1975329000 r-xs 00079000 08:04 1392647                    /droop/Boulot/workspace/DimaX/lib/dom4j-full.jar
+7f1975329000-7f197532b000 r-xs 0000d000 08:04 1392654                    /droop/Boulot/workspace/DimaX/lib/dl.jar
+7f197532b000-7f1975330000 r-xs 00020000 08:04 1392657                    /droop/Boulot/workspace/DimaX/lib/concurrent-1.3.0.jar
+7f1975330000-7f1975333000 r-xs 00016000 08:04 1392660                    /droop/Boulot/workspace/DimaX/lib/antlr.debug.jar
+7f1975333000-7f197533b000 rwxs 00000000 08:05 174507                     /tmp/hsperfdata_droop/30136
+7f197533b000-7f197533c000 rwxp 00000000 00:00 0 
+7f197533c000-7f197533d000 r-xp 00000000 00:00 0 
+7f197533d000-7f197533e000 rwxp 00000000 00:00 0 
+7f197533e000-7f197533f000 r-xp 00021000 08:05 18589                      /lib/ld-2.16.so
+7f197533f000-7f1975340000 rwxp 00022000 08:05 18589                      /lib/ld-2.16.so
+7f1975340000-7f1975341000 rwxp 00000000 00:00 0 
+7fff8f0be000-7fff8f0df000 rwxp 00000000 00:00 0                          [stack]
+7fff8f1ff000-7fff8f200000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -ea -Dfile.encoding=UTF-8 
+java_command: frameworks.faulttolerance.solver.KnitroAllocationSolver
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/opt/java
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/android-sdk/platform-tools:/opt/android-sdk/tools:/opt/java/bin:/opt/java/db/bin:/opt/java/jre/bin:/home/droop/.local/bin
+LD_LIBRARY_PATH=/opt/java/jre/lib/amd64/server:/opt/java/jre/lib/amd64:/opt/java/jre/../lib/amd64
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x791b30], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x791b30], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x640ba0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x640ba0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGXFSZ: [libjvm.so+0x640ba0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x640ba0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x643780], sa_mask[0]=0x00000004, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x643380], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x643380], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x643380], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x643380], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:Linux
+uname:Linux 3.4.7-1-ARCH #1 SMP PREEMPT Sun Jul 29 22:02:56 CEST 2012 x86_64
+libc:glibc 2.16 NPTL 2.16 
+rlimit: STACK 8192k, CORE 0k, NPROC 30661, NOFILE 4096, AS infinity
+load average:0.89 0.65 0.53
+
+/proc/meminfo:
+MemTotal:        3930052 kB
+MemFree:          361892 kB
+Buffers:           23920 kB
+Cached:           500268 kB
+SwapCached:       224508 kB
+Active:          2171560 kB
+Inactive:         982628 kB
+Active(anon):    2031672 kB
+Inactive(anon):   829656 kB
+Active(file):     139888 kB
+Inactive(file):   152972 kB
+Unevictable:      140828 kB
+Mlocked:          132652 kB
+SwapTotal:       8190972 kB
+SwapFree:        5218360 kB
+Dirty:               288 kB
+Writeback:           220 kB
+AnonPages:       2724352 kB
+Mapped:           141588 kB
+Shmem:            231340 kB
+Slab:             112384 kB
+SReclaimable:      47068 kB
+SUnreclaim:        65316 kB
+KernelStack:        4504 kB
+PageTables:        65964 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    10155996 kB
+Committed_AS:    8601352 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:      382448 kB
+VmallocChunk:   34359289260 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:    788480 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       14144 kB
+DirectMap2M:     4061184 kB
+
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 42 stepping 7, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, ht
+
+Memory: 4k page, physical 3930052k(361892k free), swap 8190972k(5218360k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (19.1-b02) for linux-amd64 JRE (1.6.0_24-b07), built on Feb  2 2011 16:55:54 by "java_re" with gcc 3.2.2 (SuSE Linux)
+
+time: Tue Sep 11 19:37:28 2012
+elapsed time: 0 seconds
+

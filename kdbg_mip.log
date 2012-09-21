@@ -1,0 +1,207 @@
+--- BEGIN DUMP of MINLP GUB -------------------------
+GUBs in the application
+  Number of GUB constraints = 0
+---   END DUMP of MINLP GUB -------------------------
+--- BEGIN DUMP of MINLP linear constraints -----------
+Cuts after knapsack
+  Number of variables   = 9
+  Number of constraints = 0
+  Number of nonzeroes = 0
+---   END DUMP of MINLP linear constraints -----------
+
+[    1] Initializing new KNITRO to solve Root MINLP-R
+KNITRO finished with status -101
+  Final objective =   4.0807933060078510e+00
+  Final abs feas error = 0.00000e+00
+  Final abs opt error  = 4.45114e-02
+  # of iterations      =       33
+  # of function evals  =      285
+  # of gradient evals  =       33
+  # of Hessian evals   =       81
+  # of Hessian-vector  =        0
+
+----------------------------------------------------------------------------
+   Node    Left    Iinf     Objective         Best relaxatn  Best incumbent
+  ------  ------  ------  --------------     --------------  --------------
+       1       0       9    4.080793e+00       4.080793e+00                
+----------------------------------------------------------------------------
+
+Added two new child nodes.
+--- BEGIN DUMP of MINLP node -------------------------
+New child 1
+  Node address = 0x7fc4343dcc20.
+  Node is unused = 0.
+  Parent node address = 0x7fc434247d30.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 1
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.0807933060078510e+00
+  Branching on var    0.0 <= x[7] <=    0.0
+---   END DUMP of MINLP node -------------------------
+--- BEGIN DUMP of MINLP node -------------------------
+New child 2
+  Node address = 0x7fc4343dc910.
+  Node is unused = 0.
+  Parent node address = 0x7fc434247d30.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 1
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.0807933060078510e+00
+  Branching on var    1.0 <= x[7] <=    1.0
+---   END DUMP of MINLP node -------------------------
+Selected the next node for MINLP BB to be (0x7fc4343dcc20).
+--- BEGIN DUMP of MINLP node -------------------------
+Next selected node
+  Node address = 0x7fc4343dcc20.
+  Node is unused = 0.
+  Parent node address = 0x7fc434247d30.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 1
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.0807933060078510e+00
+  Branching on var    0.0 <= x[7] <=    0.0
+---   END DUMP of MINLP node -------------------------
+
+[    2] Initializing new KNITRO to solve BB MINLP-R
+KNITRO finished with status -101
+  Final objective =   4.2003223542632506e+00
+  Final abs feas error = 0.00000e+00
+  Final abs opt error  = 5.62839e-02
+  # of iterations      =       14
+  # of function evals  =      176
+  # of gradient evals  =       15
+  # of Hessian evals   =       12
+  # of Hessian-vector  =        0
+
+Rounding heuristic computed a point where
+  f(x) =   4.0218310082354858e+00, |c| =   0.00000000e+00
+Making this integer feasible point the new incumbent.
+Added two new child nodes.
+--- BEGIN DUMP of MINLP node -------------------------
+New child 1
+  Node address = 0x7fc4343dcf80.
+  Node is unused = 0.
+  Parent node address = 0x7fc4343dcc20.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 2
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.2003223542632506e+00
+  Branching on var    0.0 <= x[2] <=    0.0
+---   END DUMP of MINLP node -------------------------
+--- BEGIN DUMP of MINLP node -------------------------
+New child 2
+  Node address = 0x7fc4343dcdd0.
+  Node is unused = 0.
+  Parent node address = 0x7fc4343dcc20.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 2
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.2003223542632506e+00
+  Branching on var    1.0 <= x[2] <=    1.0
+---   END DUMP of MINLP node -------------------------
+Selected the next node for MINLP BB to be (0x7fc4343dcf80).
+--- BEGIN DUMP of MINLP node -------------------------
+Next selected node
+  Node address = 0x7fc4343dcf80.
+  Node is unused = 0.
+  Parent node address = 0x7fc4343dcc20.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 2
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.2003223542632506e+00
+  Branching on var    0.0 <= x[2] <=    0.0
+---   END DUMP of MINLP node -------------------------
+
+[    3] Initializing new KNITRO to solve BB MINLP-R
+KNITRO finished with status -101
+  Final objective =   4.2444414322850825e+00
+  Final abs feas error = 0.00000e+00
+  Final abs opt error  = 7.32739e-02
+  # of iterations      =        6
+  # of function evals  =      147
+  # of gradient evals  =        7
+  # of Hessian evals   =        4
+  # of Hessian-vector  =        0
+
+Rounding heuristic computed a point where
+  f(x) =   4.2447168897385783e+00, |c| =   0.00000000e+00
+Making this integer feasible point the new incumbent.
+Added two new child nodes.
+--- BEGIN DUMP of MINLP node -------------------------
+New child 1
+  Node address = 0x7fc4343dd2e0.
+  Node is unused = 0.
+  Parent node address = 0x7fc4343dcf80.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 3
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.2444414322850825e+00
+  Branching on var    0.0 <= x[4] <=    0.0
+---   END DUMP of MINLP node -------------------------
+--- BEGIN DUMP of MINLP node -------------------------
+New child 2
+  Node address = 0x7fc4343dd130.
+  Node is unused = 0.
+  Parent node address = 0x7fc4343dcf80.
+    Child 1 is NULL, status =  NONE (not defined yet)
+    Child 2 is NULL, status =  NONE (not defined yet)
+  Node status = NONE (not finished yet)
+  Node level = 3
+  Objective: MAXIMIZE.
+  Is current subproblem NLP (vs HQG LP) = -1.
+  Relaxed subproblem solution not found yet.
+  No relaxation bound yet, parent bound =   4.2444414322850825e+00
+  Branching on var    1.0 <= x[4] <=    1.0
+---   END DUMP of MINLP node -------------------------
+Stopping because integrality gap is small enough.
+--- BEGIN DUMP of MINLP tree -------------------------
+Finished optimizing
+  Select rule: BEST BOUND (2)
+  Objective: MAXIMIZE.
+  Number of allocated nodes = 100 + root
+    Number allocated still in use = 6 + root
+  Number active nodes = 4
+  Depth-first active list:
+    Number slots allocated = 1000
+    Next free slot         = 4
+---   END DUMP of MINLP tree -------------------------
+
+Timing information for MINLP
+----------------------------
+Total program time (secs)           =       0.04524 (     0.057 CPU time)
+Time spent in all node subproblems  =       0.04270 ( 94.4% )
+  Root node subproblem              =       0.02612 ( 57.8% )
+  Relaxed subproblems               =       0.01658 ( 36.7% )
+  Fixed int subproblems             =       0.00000 (  0.0% )
+Time spent in heuristic search      =       0.00000 (  0.0% )
+Time spent in rounding              =       0.00011 (  0.2% )
+Time spent in strong branching      =       0.00000 (  0.0% )
+

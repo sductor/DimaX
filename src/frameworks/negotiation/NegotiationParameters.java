@@ -11,6 +11,7 @@ public class NegotiationParameters {
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 
+	public static final long opinionDiffusionFrequency = NegotiationParameters._timeToCollect/2;
 
 	/**
 	 * Clés statiques
@@ -29,13 +30,4 @@ public class NegotiationParameters {
 	public final static String key4OptSelect = "opt select";
 	public static final String key4BetterSelect = "better select";
 
-	//
-	// Quantile
-	//
-
-//	public static final long _statusObservationFrequency = 250;//10 * ReplicationExperimentationProtocol._timeToCollect;// (long)
-	// (0.25*_contractExpirationTime);
-	public static final double alpha_low = 1;
-	public static final double alpha_high = 0.5;
-	public static final long opinionDiffusionFrequency = _timeToCollect/2;
 }

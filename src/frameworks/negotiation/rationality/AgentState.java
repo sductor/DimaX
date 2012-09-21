@@ -12,23 +12,18 @@ public interface AgentState extends Information {
 	@Override
 	public AgentIdentifier getMyAgentIdentifier();
 
-	//	void resetUptime();
-
 	public Collection<? extends AgentIdentifier> getMyResourceIdentifiers();
+	public boolean hasResource(AgentIdentifier id);
 
 	public Class<? extends AgentState> getMyResourcesClass();
-
 
 	//droit = satisfaction
 	public boolean isValid();
 
-	//	// Return true if action had an effect
-	//	boolean setLost(ResourceIdentifier h, boolean isLost);
-
-
 	public int getStateCounter();
 
 	public AgentState clone();
+
 }
 
 // public interface SocialState<State extends AgentState> extends
@@ -36,5 +31,10 @@ public interface AgentState extends Information {
 //
 // }
 //
+
+	//	void resetUptime();
+	//	// Return true if action had an effect
+	//	boolean setLost(ResourceIdentifier h, boolean isLost);
+
 
 // void reset();

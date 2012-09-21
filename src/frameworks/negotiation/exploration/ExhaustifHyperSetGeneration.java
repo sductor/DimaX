@@ -50,7 +50,7 @@ public abstract class ExhaustifHyperSetGeneration<T> {
 		final Collection<Collection<T>> result = new ArrayList<Collection<T>>();
 		for (int i = 0; i < Math.pow(2, s.size()); i++){
 			final String[] number = Integer.toBinaryString(i).split("");
-			//			assert number.length-1< s.size():" i : "+i+"\n number "+Arrays.asList(number)+"\n s "+s;
+			assert number.length-1< s.size():" i : "+i+"\n number "+Arrays.asList(number)+"\n s "+s;
 			final List<T> subset = new ArrayList<T>();
 			int pos = s.size()-1;
 			for (int j =number.length-1; j > 0; j--){
@@ -114,10 +114,10 @@ public abstract class ExhaustifHyperSetGeneration<T> {
 		for (int i = 0; i < Math.pow(2, s.size()); i++){
 			final String[] number = Integer.toBinaryString(i).split("");
 			assert number.length< s.size();
-			System.out.println("so?  "+Integer.toBinaryString(i)+" "+Arrays.asList(number));
+			System.out.println("so?  "+i+" "+Integer.toBinaryString(i)+" "+Arrays.asList(number));
 			final List<String> subset = new ArrayList<String>();
 			int pos = s.size()-1;
-			for (int j =number.length-1; j > 0; j--){
+			for (int j =number.length-1; j >= 0; j--){
 				System.out.println("------------------->"+j+" : "+number[j]);
 				if (number[j].equals("1")) {
 					subset.add(s.get(pos));

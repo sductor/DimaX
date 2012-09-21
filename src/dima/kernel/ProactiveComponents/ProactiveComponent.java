@@ -106,10 +106,14 @@ Tests wheter a proactive object has reached it goal or
 		while(this.isAlive()) {
 			if (this.isActive()){
 				this.preActivity();
+				Thread.yield();
 				this.step();
+				Thread.yield();
 				this.postActivity();
+				Thread.yield();
 			} else {
 				this.tryToResumeActivity();
+				this.wwait(1000);
 			}
 		}
 	}

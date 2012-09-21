@@ -4,17 +4,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import dima.introspectionbasedagents.modules.faults.Assert;
+
+import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.algo.BasicAlgorithm;
 import frameworks.faulttolerance.dcop.algo.LockingBasicAlgorithm;
 import frameworks.faulttolerance.dcop.algo.TerminateMessage;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Program;
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.CPUFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.Helper;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 import frameworks.faulttolerance.dcop.exec.DCOPApplication;
 import frameworks.faulttolerance.dcop.exec.Stats;
+import frameworks.negotiation.rationality.AgentState;
 
 public class AlgoKOptAPO extends LockingBasicAlgorithm {
 
@@ -26,20 +37,28 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 	DPOPTreeNode lockingNode;
 	int gIdCounter;
 
+<<<<<<< HEAD
 	public AlgoKOptAPO(AbstractVariable v, int kk) {
+=======
+	public AlgoKOptAPO(ReplicationVariable v, int kk) {
+>>>>>>> dcopX
 		super(v, true, kk);
 		k = kk;
 		init();
 	}
 
+<<<<<<< HEAD
 	public AlgoKOptAPO(AbstractVariable v, int kk, boolean s, int ws) {
+=======
+	public AlgoKOptAPO(ReplicationVariable v, int kk, boolean s, int ws) {
+>>>>>>> dcopX
 		super(v, s, ws);
 		k = kk;
 		init();
 	}
 
 	protected void init() {
-		self.value = Helper.random.nextInt(self.domain);
+		self.setValue(self.getInitialValue());
 		localTreeSet = new HashSet<HashSet<Integer>>();
 		activeSet = new HashSet<Integer>();
 		localTreeMap = new HashMap<Integer, DPOPTreeNode>();
@@ -111,12 +130,16 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 
 				if (msg instanceof ValueMsg) {
 					ValueMsg vmsg = (ValueMsg) msg;
+<<<<<<< HEAD
 					AbstractVariable v = view.varMap.get(vmsg.id);
+=======
+					ReplicationVariable v = view.varMap.get(vmsg.id);
+>>>>>>> dcopX
 					assert v != null;
 					if (vmsg.ttl > 1)
 						out().broadcast(vmsg.forward());
-					if (v.value != vmsg.value) {
-						v.value = vmsg.value;
+					if (v.getValue() != vmsg.value) {
+						v.setValue(vmsg.value);
 						// TODO
 						if (waiting) {
 							TreeNode node = lockingNode.find(v.id);
@@ -140,46 +163,83 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 					Integer lastTTL = conTTLMap.get(lmsg.id);
 					if (lastTTL == null) {
 						conTTLMap.put(lmsg.id, lmsg.ttl);
+<<<<<<< HEAD
 						AbstractVariable v = view.varMap.get(lmsg.id);
 						if (v == null) {
 							v = new AbstractVariable(lmsg.id, lmsg.domain, view);
+=======
+						ReplicationVariable v = view.varMap.get(lmsg.id);
+						if (v == null) {
+							v = DCOPFactory.constructVariable(lmsg.id, lmsg.domain, lmsg.state, view.getSocialWelfare());
+>>>>>>> dcopX
 							view.varMap.put(v.id, v);
 						}
 						v.fixed = false;
 						for (double[] enc : lmsg.data) {
 							if (enc[0] == v.id) {
+<<<<<<< HEAD
 								AbstractVariable n = view.varMap.get((int)enc[2]);
 								if (n == null) {
 									n = new AbstractVariable((int)enc[2], (int)enc[3], view);
+=======
+								ReplicationVariable n = view.varMap.get((int)enc[2]);
+								if (n == null) {
+									assert Assert.Imply(!DCOPFactory.isClassical(),lmsg.dataStates!=null);
+									AgentState s = null;
+									if (!DCOPFactory.isClassical())
+										s = lmsg.dataStates.get((int)enc[2]);
+									n = DCOPFactory.constructVariable((int)enc[2], (int)enc[3], s,view.getSocialWelfare());
+>>>>>>> dcopX
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
+<<<<<<< HEAD
 									AbstractConstraint c = new AbstractConstraint(v, n);
+=======
+									MemFreeConstraint c = DCOPFactory.constructConstraint(v, n);
+>>>>>>> dcopX
 									view.conList.add(c);
-									for (int i = 0; i < c.d1; i++)
-										for (int j = 0; j < c.d2; j++) {
-											c.f[i][j] = enc[4 + i * c.d2 + j];
-										}
-									c.cache();
+									if (DCOPFactory.isClassical()){
+										for (int i = 0; i < c.d1; i++)
+											for (int j = 0; j < c.d2; j++) {
+												((CPUFreeConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
+											}
+										((CPUFreeConstraint)c).cache();
+									}
 								}
 							} else {
+<<<<<<< HEAD
 								AbstractVariable n = view.varMap.get((int)enc[0]);
 								if (n == null) {
 									n = new AbstractVariable((int)enc[0], (int)enc[1], view);
+=======
+								ReplicationVariable n = view.varMap.get((int)enc[0]);
+								if (n == null) {
+									AgentState s = null;
+									if (!DCOPFactory.isClassical())
+										s = lmsg.dataStates.get((int)enc[0]);
+									n = DCOPFactory.constructVariable((int)enc[0], (int)enc[1], s,view.getSocialWelfare());
+>>>>>>> dcopX
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
 									view.varMap.put(n.id, n);
 								}
 								if (!v.hasNeighbor(n.id)) {
+<<<<<<< HEAD
 									AbstractConstraint c = new AbstractConstraint(n, v);
+=======
+									MemFreeConstraint c = DCOPFactory.constructConstraint(n, v);
+>>>>>>> dcopX
 									view.conList.add(c);
-									for (int i = 0; i < c.d1; i++)
-										for (int j = 0; j < c.d2; j++) {
-											c.f[i][j] = enc[4 + i * c.d2 + j];
-										}
-									c.cache();
+									if (DCOPFactory.isClassical()){
+										for (int i = 0; i < c.d1; i++)
+											for (int j = 0; j < c.d2; j++) {
+												((CPUFreeConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
+											}
+										((CPUFreeConstraint)c).cache();
+									}
 								}
 							}
 						}
@@ -213,11 +273,11 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 													true));
 									for (TreeNode n : root.children) {
 										out(outChannelMap.get(n.id))
-												.send(
-														new LockMsg(lkmsg.gid,
-																lkmsg.val,
-																lkmsg.attempt,
-																n, true));
+										.send(
+												new LockMsg(lkmsg.gid,
+														lkmsg.val,
+														lkmsg.attempt,
+														n, true));
 									}
 								}
 							} else if (lockVal == -1) {
@@ -269,19 +329,27 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 									Stats st = new Stats();
 									double pregain = view.evaluate();
 									view.backup();
+<<<<<<< HEAD
 									for (AbstractVariable v : view.varMap.values()) {
+=======
+									for (ReplicationVariable v : view.varMap.values()) {
+>>>>>>> dcopX
 										TreeNode node = lockingNode.find(v.id);
 										if (node != null)
-											v.value=node.value;
+											v.setValue(node.value);
 									}
 									st.gain = view.evaluate() - pregain; 
 									view.recover();
-																																												
+
 									st.varChanged = 0;
+<<<<<<< HEAD
 									for (AbstractVariable v : view.varMap.values()) {
+=======
+									for (ReplicationVariable v : view.varMap.values()) {
+>>>>>>> dcopX
 										TreeNode node = lockingNode.find(v.id);
-										if (node != null && v.value != node.value)
-									    	st.varChanged++;
+										if (node != null && v.getValue() != node.value)
+											st.varChanged++;
 									}
 									st.attempts = attempt - preAttempt;
 									int present = getTime();
@@ -291,13 +359,13 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 									preAttempt = attempt;
 									statList.add(st);																
 									/////////////////////////////////////////
-							
+
 									lockBase = 1;
-									if (self.value != lockVal) {
+									if (self.getValue() != lockVal) {
 										System.out.println(self.id + " "
-												+ self.id + " " + self.value
+												+ self.id + " " + self.getValue()
 												+ "->" + lockVal);
-										self.value = lockVal;
+										self.setValue(lockVal);
 										out().broadcast(
 												new ValueMsg(self, k / 2 + 1));
 									}
@@ -329,10 +397,10 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 					if (att == null || att != cmsg.attempt) {
 						continue;
 					}
-					if (self.value != lockVal) {
+					if (self.getValue() != lockVal) {
 						System.out.println(cmsg.gid + " " + self.id + " "
-								+ self.value + "->" + lockVal);
-						self.value = lockVal;
+								+ self.getValue() + "->" + lockVal);
+						self.setValue(lockVal);
 						out().broadcast(new ValueMsg(self, k / 2 + 1));
 					}
 					removeLock(cmsg.gid);
@@ -380,35 +448,43 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 							Stats st = new Stats();
 							double pregain = view.evaluate();
 							view.backup();
+<<<<<<< HEAD
 							for (AbstractVariable v : view.varMap.values()) {
+=======
+							for (ReplicationVariable v : view.varMap.values()) {
+>>>>>>> dcopX
 								TreeNode node = lockingNode.find(v.id);
 								if (node != null)
-									v.value=node.value;
+									v.setValue(node.value);
 							}
 							st.gain = view.evaluate() - pregain; 
 							view.recover();
-																																										
+
 							st.varChanged = 0;
+<<<<<<< HEAD
 							for (AbstractVariable v : view.varMap.values()) {
+=======
+							for (ReplicationVariable v : view.varMap.values()) {
+>>>>>>> dcopX
 								TreeNode node = lockingNode.find(v.id);
-								if (node != null && v.value != node.value)
-							    	st.varChanged++;
+								if (node != null && v.getValue() != node.value)
+									st.varChanged++;
 							}
 							st.attempts = attempt - preAttempt;
-							
+
 							int present = getTime();
 							st.cycles = present - preCycles; 
-							
+
 							st.varLocked = lockingNode.getMarkedNodeSize();
 							st.maxLockedDistance = lockingNode.maxdistanceMarkedNode();
 							preAttempt = attempt;
 							statList.add(st);																
 							/////////////////////////////////////////					
 							lockBase = 1;
-							if (self.value != lockVal) {
+							if (self.getValue() != lockVal) {
 								System.out.println(self.id + " " + self.id
-										+ " " + self.value + "->" + lockVal);
-								self.value = lockVal;
+										+ " " + self.getValue() + "->" + lockVal);
+								self.setValue(lockVal);
 								out().broadcast(new ValueMsg(self, k / 2 + 1));
 							}
 							waiting = false;
@@ -429,16 +505,16 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 							if (msg.node.value == lockVal) {
 								lockSet.put(msg.gid, msg.attempt);
 								out(outChannelMap.get(msg.node.parent.id))
-										.send(
-												new ResponseMsg(self.id,
-														msg.attempt,
-														msg.node.parent, true));
+								.send(
+										new ResponseMsg(self.id,
+												msg.attempt,
+												msg.node.parent, true));
 							} else {
 								out(outChannelMap.get(msg.node.parent.id))
-										.send(
-												new ResponseMsg(self.id,
-														msg.attempt,
-														msg.node.parent, false));
+								.send(
+										new ResponseMsg(self.id,
+												msg.attempt,
+												msg.node.parent, false));
 							}
 						} else {
 							waiting = false;
@@ -496,7 +572,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 		queue.add(root);
 		while (!queue.isEmpty()) {
 			DPOPTreeNode p = queue.remove(0);
-			view.varMap.get(p.id).value = p.value;
+			view.varMap.get(p.id).setValue(p.value);
 			for (TreeNode n : p.children) {
 				DPOPTreeNode dn = (DPOPTreeNode) n;
 				queue.add(dn);
@@ -509,8 +585,13 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 	}
 
 	private boolean computeOpt(DPOPTreeNode root) {
+<<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values())
+=======
+		for (ReplicationVariable v : view.varMap.values()){
+>>>>>>> dcopX
 			v.fixed = true;
+		}
 		ArrayList<DPOPTreeNode> queue = new ArrayList<DPOPTreeNode>();
 		queue.add(root);
 		while (!queue.isEmpty()) {
@@ -523,10 +604,17 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 		}
 		HashMap<Integer, Integer> sol = view.solve();
 		HashSet<Integer> set = new HashSet<Integer>();
+<<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values()) {
 			if (v.value != sol.get(v.id)) {
 				set.add(v.id);
 				for (AbstractConstraint c : v.neighbors) {
+=======
+		for (ReplicationVariable v : view.varMap.values()) {
+			if (v.getValue() != sol.get(v.id)) {
+				set.add(v.id);
+				for (MemFreeConstraint c : v.getNeighbors()) {
+>>>>>>> dcopX
 					set.add(c.getNeighbor(v).id);
 				}
 			}
@@ -536,21 +624,22 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 		while (!queue.isEmpty()) {
 			DPOPTreeNode p = queue.remove(0);
 			// if (set.contains(p.id))
-			p.mark = true;
-			if (p.value != sol.get(p.id)) {
-				f = true;
-			}
-			p.value = sol.get(p.id);
-			for (TreeNode n : p.children) {
-				DPOPTreeNode dn = (DPOPTreeNode) n;
-				queue.add(dn);
-			}
+				p.mark = true;
+				if (p.value != sol.get(p.id)) {
+					f = true;
+				}
+				p.value = sol.get(p.id);
+				for (TreeNode n : p.children) {
+					DPOPTreeNode dn = (DPOPTreeNode) n;
+					queue.add(dn);
+				}
 		}
-		
+
 		if (!subsetlocking)
 			root.markAll();
 		return f;
 	}
+	
 	private void lock(DPOPTreeNode root) {
 		attempt++;
 		acceptSet.clear();
@@ -572,6 +661,7 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 		// TODO Auto-generated method stub
 		HashMap<Integer, Integer> minDis = new HashMap<Integer, Integer>();
 		int maxId = 0;
+<<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values())
 			if (v.id > maxId)
 				maxId = v.id;
@@ -589,17 +679,37 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				for (AbstractConstraint c : var.neighbors) {
 					AbstractVariable n = c.getNeighbor(var);
 					if (n.fixed)
+=======
+		for (ReplicationVariable v : view.varMap.values())
+			if (v.id > maxId)
+				maxId = v.id;
+				maxId++;
+				for (ReplicationVariable v : view.varMap.values()) {
+					if (v.fixed)
+>>>>>>> dcopX
 						continue;
-					if (!visited.contains(n.id)) {
-						queue.add(n);
-						int depth = minDis.get(v.id * maxId + var.id);
-						visited.add(n.id);
-						minDis.put(v.id * maxId + n.id, depth + 1);
+					ArrayList<ReplicationVariable> queue = new ArrayList<ReplicationVariable>();
+					queue.add(v);
+					minDis.put(v.id * maxId + v.id, 0);
+					HashSet<Integer> visited = new HashSet<Integer>();
+					visited.add(v.id);
+					while (!queue.isEmpty()) {
+						ReplicationVariable var = queue.remove(0);
+						for (MemFreeConstraint c : var.getNeighbors()) {
+							ReplicationVariable n = c.getNeighbor(var);
+							if (n.fixed)
+								continue;
+							if (!visited.contains(n.id)) {
+								queue.add(n);
+								int depth = minDis.get(v.id * maxId + var.id);
+								visited.add(n.id);
+								minDis.put(v.id * maxId + n.id, depth + 1);
+							}
+						}
 					}
 				}
-			}
-		}
 
+<<<<<<< HEAD
 		HashSet<Integer> pSet = new HashSet<Integer>();
 		HashSet<Integer> cSet = new HashSet<Integer>();
 		for (AbstractConstraint c : self.neighbors) {
@@ -608,6 +718,16 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				cSet.add(n.id);
 		}
 		this.enumerate(pSet, cSet, minDis, maxId);
+=======
+				HashSet<Integer> pSet = new HashSet<Integer>();
+				HashSet<Integer> cSet = new HashSet<Integer>();
+				for (MemFreeConstraint c : self.getNeighbors()) {
+					ReplicationVariable n = c.getNeighbor(self);
+					if (!n.fixed)
+						cSet.add(n.id);
+				}
+				this.enumerate(pSet, cSet, minDis, maxId);
+>>>>>>> dcopX
 	}
 
 	private void enumerate(HashSet<Integer> pSet, HashSet<Integer> cSet,
@@ -648,18 +768,24 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				int count = 0;
 				while (!queue.isEmpty()) {
 					DPOPTreeNode node = queue.remove(0);
+<<<<<<< HEAD
 					AbstractVariable v = view.varMap.get(node.id);
 					for (AbstractConstraint c : v.neighbors) {
 						AbstractVariable n = c.getNeighbor(v);
+=======
+					ReplicationVariable v = view.varMap.get(node.id);
+					for (MemFreeConstraint c : v.getNeighbors()) {
+						ReplicationVariable n = c.getNeighbor(v);
+>>>>>>> dcopX
 						if (visited.contains(n.id))
 							continue;
 						visited.add(n.id);
 						if (!pSet.contains(n.id)) {
 							DPOPTreeNode child = new DPOPTreeNode(n.id,
-									node.gid, n.value, true, node);
+									node.gid, n.getValue(), true, node);
 						} else {
 							DPOPTreeNode child = new DPOPTreeNode(n.id,
-									node.gid, n.value, false, node);
+									node.gid, n.getValue(), false, node);
 							count++;
 							queue.add(child);
 						}
@@ -694,9 +820,15 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 				continue;
 			pSet.add(j);
 			HashSet<Integer> add = new HashSet<Integer>();
+<<<<<<< HEAD
 			AbstractVariable v = view.getVar(j);
 			for (AbstractConstraint c : v.neighbors) {
 				AbstractVariable n = c.getNeighbor(v);
+=======
+			ReplicationVariable v = view.getVar(j);
+			for (MemFreeConstraint c : v.getNeighbors()) {
+				ReplicationVariable n = c.getNeighbor(v);
+>>>>>>> dcopX
 				if (!n.fixed && !pSet.contains(n.id) && !cSet.contains(n.id))
 					add.add(n.id);
 			}
@@ -710,8 +842,13 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 
 	public String getText() {
 		String val = "";
+<<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values()) {
 			val += v.id + "  " + v.value + " " + (v.fixed ? "F" : "") + "\n";
+=======
+		for (ReplicationVariable v : view.varMap.values()) {
+			val += v.id + "  " + v.getValue() + " " + (v.fixed ? "F" : "") + "\n";
+>>>>>>> dcopX
 		}
 		val += "LockSet: ";
 		for (Integer i : lockSet.values()) {
@@ -725,8 +862,8 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 		}
 		val += "\n";
 
-		return val + "ID: " + self.id + "\nVal: " + self.value + "\nLockVal: "
-				+ lockVal + "\nNextLock: " + reLockTime
-				+ (done ? "\nDONE" : "");
+		return val + "ID: " + self.id + "\nVal: " + self.getValue() + "\nLockVal: "
+		+ lockVal + "\nNextLock: " + reLockTime
+		+ (done ? "\nDONE" : "");
 	}
 }

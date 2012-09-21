@@ -8,6 +8,7 @@ import choco.cp.solver.CPSolver;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.BasicAgentModule;
+import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -15,7 +16,7 @@ import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public abstract class ChocoAllocationSolver<
 Contract extends MatchingCandidature,
-PersonalState extends AgentState> extends BasicAgentModule implements AllocationSolver<Contract, PersonalState> {
+PersonalState extends AgentState> extends BasicAgentModule implements ResourceAllocationSolver<Contract, PersonalState> {
 
 	/**
 	 *
@@ -24,12 +25,12 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 
 	protected CPSolver s;
 
-	protected Contract[] concerned;
-	protected IntegerVariable[] replicas;
 	protected IntegerVariable socialWelfareValue;
 
 	protected final SocialChoiceType socialWelfare;
 
+	protected Contract[] concerned;
+	protected IntegerVariable[] candidatureAllocation;
 
 	public ChocoAllocationSolver(final SocialChoiceType socialWelfare){
 		this.socialWelfare = socialWelfare;
@@ -58,7 +59,7 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 	 */
 	@Deprecated
 	@Override
-	public Collection<Contract> getBestSolution(){
+	public Collection<Contract> getBestLocalSolution(){
 		this.s.resetSearchStrategy();
 		this.s.setObjective(this.s.getVar(this.socialWelfareValue));
 		Boolean feasible = this.s.maximize(true);
@@ -104,13 +105,13 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 	 * @see negotiation.negotiationframework.exploration.AllocationSolver#getAllSolution()
 	 */
 	@Override
-	public Collection<Contract> getNextSolution(){
+	public Collection<Contract> getNextLocalSolution(){
 		assert Assert.Imply(s.isFeasible()!=null,hasNext==s.isFeasible()):hasNext+" "+s.isFeasible();
 		if (!this.hasNext){
 			throw new NoSuchElementException();
 		} else if (hasNext==null){
 			hasNext();
-			return getNextSolution();
+			return getNextLocalSolution();
 		} else {
 			assert hasNext:hasNext;
 			final Collection<Contract> result = this.generateSolution();
@@ -123,23 +124,19 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 		}
 	}
 
-	/*
-	 *
-	 */
-
 	/**
 	 * Transforme la solution actuelle du solveur en candidature accepté
 	 * @return la liste des candidature de la solution du solveur différentes de l'allcoation courante
 	 */
 	private Collection<Contract> generateSolution(){
-		assert this.concerned.length==this.replicas.length;
-//		assert this.s.isFeasible()!=null && this.s.isFeasible():this.s.isFeasible()+" "+hasNext;
-//		assert hasNext:hasNext;
+		assert this.concerned.length==this.candidatureAllocation.length;
+		//		assert this.s.isFeasible()!=null && this.s.isFeasible():this.s.isFeasible()+" "+hasNext;
+		//		assert hasNext:hasNext;
 		final ArrayList<Contract> results = new ArrayList<Contract>();
 
 		for (int i = 0; i < this.concerned.length; i++){
-			assert this.s.getVar(this.replicas[i]).getVal()==1 || this.s.getVar(this.replicas[i]).getVal()==0;
-			final boolean allocated = this.s.getVar(this.replicas[i]).getVal()==1;
+			assert this.s.getVar(this.candidatureAllocation[i]).getVal()==1 || this.s.getVar(this.candidatureAllocation[i]).getVal()==0;
+			final boolean allocated = this.s.getVar(this.candidatureAllocation[i]).getVal()==1;
 			final Contract c = this.concerned[i];
 
 			if (c.isMatchingCreation() && allocated || !c.isMatchingCreation() && !allocated) {
@@ -148,8 +145,7 @@ PersonalState extends AgentState> extends BasicAgentModule implements Allocation
 		}
 		return results;
 	}
-
-
+	
 }
 
 

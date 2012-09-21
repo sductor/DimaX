@@ -43,18 +43,20 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			final SelectionCore participantCore,
 			final int simultaneousCandidature,
 			final boolean dynamicCriticity,
-			final AgentIdentifier myLaborantin) throws CompetenceException{
+			final AgentIdentifier myLaborantin,
+			double alpha_low, double alpha_high) throws CompetenceException{
 		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
-		this.soc=new StatusObservationCompetence(myLaborantin,true, ReplicaState.class);
+		this.soc=new StatusObservationCompetence(myLaborantin,true, ReplicaState.class, alpha_low, alpha_high);
 	}
 	public StatusReplica(final AgentIdentifier id,
 			final ReplicaState myState,
 			final SelectionCore participantCore,
 			final int simultaneousCandidature,
 			final boolean dynamicCriticity,
-			final int numberToContact) throws CompetenceException{
+			final int numberToContact,
+			double alpha_low, double alpha_high) throws CompetenceException{
 		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
-		this.soc=new StatusObservationCompetence(numberToContact, true, ReplicaState.class);
+		this.soc=new StatusObservationCompetence(numberToContact, true, ReplicaState.class, alpha_low, alpha_high);
 	}
 
 	private StatusReplica(final AgentIdentifier id,

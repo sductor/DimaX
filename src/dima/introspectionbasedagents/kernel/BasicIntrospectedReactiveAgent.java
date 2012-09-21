@@ -56,13 +56,13 @@ public abstract class BasicIntrospectedReactiveAgent extends BasicReactiveAgent 
 	public void proactivityInitialize() {
 		this.myShell =this.initiateMyShell();
 		this.myShell.proactivityInitialize(this.creation);
-		Thread.yield();
+//		Thread.yield();
 	}
 
 	@Override
 	public void preActivity() {
 		this.myShell.preActivity(this.creation);
-		Thread.yield();
+//		Thread.yield();
 	}
 
 	@Override
@@ -73,13 +73,13 @@ public abstract class BasicIntrospectedReactiveAgent extends BasicReactiveAgent 
 	@Override
 	public void postActivity(){
 		this.myShell.postActivity(this.creation);
-		Thread.yield();
+//		Thread.yield();
 	}
 
 	@Override
 	public void proactivityTerminate() {
 		this.myShell.proactivityTerminate(this.creation);
-		Thread.yield();
+//		Thread.yield();
 	}
 
 	//

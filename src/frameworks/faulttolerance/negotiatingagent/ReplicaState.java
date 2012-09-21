@@ -96,6 +96,20 @@ public class ReplicaState  extends SimpleAgentState  {
 				init.getStateCounter()+1);
 	}
 
+
+	public ReplicaState allocate (final HostState newRep, boolean creation) {
+		assert newRep!=null;
+		assert newRep.getMyAgentIdentifier()!=null;
+		assert this.myReplicas!=null;
+		boolean ok = 
+				(creation && !this.myReplicas.contains(newRep.getMyAgentIdentifier())) 
+				|| 
+				(!creation && this.myReplicas.contains(newRep.getMyAgentIdentifier()));
+		if (ok)
+			return allocate(newRep);
+		else
+			return this;
+	}
 	// Clone with modification of replicas
 	public ReplicaState allocate (final HostState newRep) {
 		final HashSet<ResourceIdentifier> rep = new HashSet<ResourceIdentifier>(this.myReplicas);
@@ -118,6 +132,25 @@ public class ReplicaState  extends SimpleAgentState  {
 				this.getStateCounter()+1);
 	}
 
+	public ReplicaState allocateAll(Collection<HostState> toAllocate){
+		ReplicaState s = this;
+		for (HostState ress : toAllocate)	{		
+				s =  s.allocate(ress);
+		}
+		return s;
+	}
+	
+	public ReplicaState freeAllResources() {
+
+		return new ReplicaState(this.getMyAgentIdentifier(),
+				this.myCriticity,
+				new HashSet<ResourceIdentifier>(),
+				this.myProcCharge,
+				this.myMemCharge,
+				1.,
+				this.socialWelfare,
+				this.getStateCounter()+1);
+	}
 	// private constructor for opinions
 	ReplicaState(
 			final AgentIdentifier myAgent,
@@ -172,8 +205,10 @@ public class ReplicaState  extends SimpleAgentState  {
 	public Collection<ResourceIdentifier> getMyResourceIdentifiers() {
 		return this.myReplicas;
 	}
-
-
+	@Override
+	public boolean hasResource(AgentIdentifier id) {
+		return  this.myReplicas.contains(id);
+	}
 	@Override
 	public Class<HostState> getMyResourcesClass() {
 		return HostState.class;
@@ -251,6 +286,7 @@ public class ReplicaState  extends SimpleAgentState  {
 	public Double getMyFailureProb() {
 		return myFailureProb;
 	}
+
 
 }
 

@@ -51,16 +51,25 @@ ProposerCore
 		}
 
 		this.myKnownHosts.removeAll(this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
-		assert this.KnownHostValidityVerification();
-		final Iterator<ResourceIdentifier> itMyHosts = this.myKnownHosts.iterator();
 		final Set<Contract> candidatures = new HashSet<Contract>();
 
-		while (itMyHosts.hasNext() && candidatures.size()<this.k){
-			final Contract c = this.constructCandidature(itMyHosts.next());
-			candidatures.add(c);
-			itMyHosts.remove();
+		if (myKnownHosts.isEmpty())
+			try {
+				Thread.sleep(1000, 10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		else {
+			assert this.KnownHostValidityVerification();
+			final Iterator<ResourceIdentifier> itMyHosts = this.myKnownHosts.iterator();
+			while (itMyHosts.hasNext() && candidatures.size()<this.k){
+				final Contract c = this.constructCandidature(itMyHosts.next());
+				candidatures.add(c);
+				itMyHosts.remove();
+			}
+			assert this.candidatureValidityVerification(candidatures);
 		}
-		assert this.candidatureValidityVerification(candidatures);
 		return candidatures;
 	}
 

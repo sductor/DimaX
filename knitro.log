@@ -1,0 +1,107 @@
+
+======================================
+  Trial Ziena License (NOT FOR COMMERCIAL USE)
+             KNITRO 8.0.0
+          Ziena Optimization
+======================================
+
+mip_debug:            1
+mip_knapsack:         2
+mip_outinterval:      1
+KNITRO changing mip_method from AUTO to 1.
+KNITRO changing mip_rootalg from AUTO to 1.
+KNITRO changing mip_lpalg from AUTO to 3.
+KNITRO changing mip_branchrule from AUTO to 2.
+KNITRO changing mip_selectrule from AUTO to 2.
+KNITRO changing mip_rounding from AUTO to 3.
+KNITRO changing mip_heuristic from AUTO to 1.
+KNITRO changing mip_pseudoinit from AUTO to 1.
+
+Problem Characteristics
+-----------------------
+Objective goal:  Maximize
+Number of variables:                    20
+    bounded below:                       0
+    bounded above:                       0
+    bounded below and above:            20
+    fixed:                               0
+    free:                                0
+Number of binary variables:             20
+Number of integer variables:             0
+Number of constraints:                   3
+    linear equalities:                   0
+    nonlinear equalities:                0
+    linear inequalities:                 2
+    nonlinear inequalities:              1
+    range:                               2
+Number of nonzeros in Jacobian:         40
+Number of nonzeros in Hessian:          20
+
+No start point provided -- KNITRO computing one.
+
+KNITRO detected 0 GUB constraints
+KNITRO derived 1 knapsack covers after examining 2 constraints
+KNITRO solving root node relaxation
+KNITRO MIP using Branch and Bound method
+
+   Node    Left    Iinf     Objective         Best relaxatn  Best incumbent
+  ------  ------  ------  --------------     --------------  --------------
+       1       0      20    1,136922e+00       1,136922e+00                
+       2       1      19    1,027886e+00       1,136922e+00                
+*      2       1                          r                    1,027845e+00
+       3       2             FAILED -400       1,136922e+00    1,027845e+00
+       4       3             FAILED -400       1,136922e+00    1,027845e+00
+       5       4             FAILED -400       1,136922e+00    1,027845e+00
+       6       5             FAILED -400       1,136922e+00    1,027845e+00
+       7       6             FAILED -400       1,136922e+00    1,027845e+00
+       8       7             FAILED -400       1,136922e+00    1,027845e+00
+       9       8             FAILED -400       1,136922e+00    1,027845e+00
+      10       9             FAILED -400       1,136922e+00    1,027845e+00
+      11      10             FAILED -400       1,136922e+00    1,027845e+00
+      12      11             FAILED -400       1,136922e+00    1,027845e+00
+      13      12             FAILED -400       1,136922e+00    1,027845e+00
+      14      13             FAILED -400       1,136922e+00    1,027845e+00
+      15      14             FAILED -400       1,136922e+00    1,027845e+00
+      16      15       6    1,314893e+00       1,136922e+00    1,027845e+00
+*     16      15                          r                    1,044203e+00
+      17      16             FAILED -400       1,136922e+00    1,044203e+00
+      18      17             FAILED -400       1,136922e+00    1,044203e+00
+      19      18       4    1,341622e+00       1,136922e+00    1,044203e+00
+*     19      18                          r                    1,341626e+00
+
+EXIT: Optimal solution found.
+
+Final Statistics for MIP
+------------------------
+Final objective value               =   1,34162553594476e+00
+Final integrality gap (abs / rel)   = -2,05e-01 /  -1,53e-01 (-15,26%)
+# of nodes processed                =       19
+# of subproblems solved             =       19
+Total program time (secs)           =       8,32918 (     8,406 CPU time)
+Time spent in evaluations (secs)    =       2,99455
+
+Solution Vector
+---------------
+x[       0] =   0,00000000000e+00  (binary variable)
+x[       1] =   0,00000000000e+00  (binary variable)
+x[       2] =   0,00000000000e+00  (binary variable)
+x[       3] =   0,00000000000e+00  (binary variable)
+x[       4] =   0,00000000000e+00  (binary variable)
+x[       5] =   0,00000000000e+00  (binary variable)
+x[       6] =   0,00000000000e+00  (binary variable)
+x[       7] =   0,00000000000e+00  (binary variable)
+x[       8] =   0,00000000000e+00  (binary variable)
+x[       9] =   0,00000000000e+00  (binary variable)
+x[      10] =   0,00000000000e+00  (binary variable)
+x[      11] =   0,00000000000e+00  (binary variable)
+x[      12] =   1,00000000000e+00  (binary variable)
+x[      13] =   0,00000000000e+00  (binary variable)
+x[      14] =   1,00000000000e+00  (binary variable)
+x[      15] =   0,00000000000e+00  (binary variable)
+x[      16] =   0,00000000000e+00  (binary variable)
+x[      17] =   1,00000000000e+00  (binary variable)
+x[      18] =   0,00000000000e+00  (binary variable)
+x[      19] =   1,00000000000e+00  (binary variable)
+
+===========================================================================
+

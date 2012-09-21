@@ -4,16 +4,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.algo.BasicAlgorithm;
 import frameworks.faulttolerance.dcop.algo.TerminateMessage;
 import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Program;
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.CPUFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
+import frameworks.faulttolerance.dcop.dcop.Helper;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
+import frameworks.negotiation.rationality.AgentState;
 
 public class AlgoKOptOriginal extends BasicAlgorithm {
 
@@ -36,13 +46,20 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 
 	int sync;
 
+<<<<<<< HEAD
 	DcopAbstractGraph korigView;
 	AbstractVariable korigSelf;
 
 	public AlgoKOptOriginal(AbstractVariable v, int kk) {
+=======
+	DcopReplicationGraph korigView;
+	ReplicationVariable korigSelf;
+
+	public AlgoKOptOriginal(ReplicationVariable v, int kk) {
+>>>>>>> dcopX
 		super(v);
 		k = kk;
-		self.value = Helper.random.nextInt(self.domain);
+		self.setValue(self.getInitialValue());
 		init();
 	}
 
@@ -60,6 +77,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 		gainInfoCounter = 0;
 		commitInfoCounter = 0;
 		state = 0;
+<<<<<<< HEAD
 		for (AbstractConstraint c : self.neighbors) {
 			c.getNeighbor(self).value = -1;
 		}
@@ -71,10 +89,25 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 		for (AbstractConstraint c : view.conList) {
 			AbstractConstraint cc = new AbstractConstraint(korigView.getVar(c.getFirst().id),
 					korigView.getVar(c.getSecond().id));
+=======
+		for (MemFreeConstraint c : self.getNeighbors()) {
+			c.getNeighbor(self).setValue(-1);
+		}
+		korigView = DCOPFactory.constructDCOPGraph(self.getSocialWelfare());
+		for (ReplicationVariable v : view.varMap.values()) {
+			korigView.varMap.put(v.id, DCOPFactory.constructVariable(v.id, v.getDomain(), v.getState(), korigView.getSocialWelfare()));
+		}
+		korigSelf = korigView.varMap.get(self.id);
+		for (MemFreeConstraint c : view.conList) {
+			MemFreeConstraint cc = DCOPFactory.constructConstraint(korigView.getVar(c.first.id),
+					korigView.getVar(c.second.id));
+>>>>>>> dcopX
 			korigView.conList.add(cc);
+			if (DCOPFactory.isClassical()){
 			for (int i = 0; i < c.d1; i++)
 				for (int j = 0; j < c.d2; j++)
-					cc.f[i][j] = c.f[i][j];
+					((CPUFreeConstraint)cc).f[i][j] = ((CPUFreeConstraint)c).f[i][j];
+			}
 		}
 		sync = 0;
 	}
@@ -86,7 +119,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 				localInfoSet.add(lmsg.id);
 				for (LocalInfo l : lmsg.map.values())
 					localInfoMap.put(l.id, l);
-				if (localInfoSet.size() == self.neighbors.size()) {
+				if (localInfoSet.size() == self.getNeighbors().size()) {
 					localInfoSet.clear();
 					localInfoCounter++;
 					if (localInfoCounter < k / 2 + 1)
@@ -102,7 +135,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 				gainInfoSet.add(gmsg.id);
 				for (GainInfo g : gmsg.map.values())
 					gainInfoMap.put(g.id, g);
-				if (gainInfoSet.size() == self.neighbors.size()) {
+				if (gainInfoSet.size() == self.getNeighbors().size()) {
 					gainInfoSet.clear();
 					gainInfoCounter++;
 					if (gainInfoCounter < k / 2 + 1)
@@ -117,7 +150,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 				commitInfoSet.add(cmsg.id);
 				for (CommitInfo g : cmsg.map.values())
 					commitInfoMap.put(g.id, g);
-				if (commitInfoSet.size() == self.neighbors.size()) {
+				if (commitInfoSet.size() == self.getNeighbors().size()) {
 					commitInfoSet.clear();
 					commitInfoCounter++;
 					if (commitInfoCounter < k + 1)
@@ -155,10 +188,15 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 					break;
 				} else if (msg instanceof KorigValueMsg) {
 					KorigValueMsg vmsg = (KorigValueMsg) msg;
-					view.varMap.get(sender).value = vmsg.value;
+					view.varMap.get(sender).setValue(vmsg.value);
 					boolean f = true;
+<<<<<<< HEAD
 					for (AbstractConstraint c : self.neighbors) {
 						if (c.getNeighbor(self).value == -1) {
+=======
+					for (MemFreeConstraint c : self.getNeighbors()) {
+						if (c.getNeighbor(self).getValue() == -1) {
+>>>>>>> dcopX
 							f = false;
 							break;
 						}
@@ -187,6 +225,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 
 				if (localInfoCounter == k / 2 + 1) {
 					localInfoCounter = 0;
+<<<<<<< HEAD
 					for (AbstractVariable v : view.varMap.values()) {
 						korigView.varMap.get(v.id).value = v.value;
 					}
@@ -195,10 +234,21 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 						AbstractVariable v = korigView.varMap.get(l.id);
 						if (v == null) {
 							v = new AbstractVariable(l.id, l.domain, korigView);
+=======
+					for (ReplicationVariable v : view.varMap.values()) {
+						korigView.varMap.get(v.id).setValue(v.getValue());
+					}
+					
+					for (LocalInfo l : localInfoMap.values()) {
+						ReplicationVariable v = korigView.varMap.get(l.id);
+						if (v == null) {
+							v = DCOPFactory.constructVariable(l.id, l.domain, l.state,korigView.getSocialWelfare());
+>>>>>>> dcopX
 							korigView.varMap.put(v.id, v);
 						}
 						for (double[] enc : l.data) {
 							if (enc[0] == v.id) {
+<<<<<<< HEAD
 								AbstractVariable n = korigView.varMap.get((int)enc[2]);
 								if (n == null) {
 									n = new AbstractVariable((int)enc[2], (int)enc[3], korigView);
@@ -206,13 +256,28 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 								}
 								if (!v.hasNeighbor(n.id)) {
 									AbstractConstraint c = new AbstractConstraint(v, n);
+=======
+								ReplicationVariable n = korigView.varMap.get((int)enc[2]);
+								if (n == null) {
+									AgentState s = null;
+									if (!DCOPFactory.isClassical())
+										s = l.dataStates.get((int)enc[2]);
+									n = DCOPFactory.constructVariable((int)enc[2], (int)enc[3], s, korigView.getSocialWelfare());
+									korigView.varMap.put(n.id, n);
+								}
+								if (!v.hasNeighbor(n.id)) {
+									MemFreeConstraint c = DCOPFactory.constructConstraint(v, n);
+>>>>>>> dcopX
 									korigView.conList.add(c);
+									if (DCOPFactory.isClassical()){
 									for (int i = 0; i < c.d1; i++)
 										for (int j = 0; j < c.d2; j++) {
-											c.f[i][j] = enc[4 + i * c.d2 + j];
+											((CPUFreeConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
 										}
+									}
 								}
 							} else {
+<<<<<<< HEAD
 								AbstractVariable n = korigView.varMap.get((int)enc[0]);
 								if (n == null) {
 									n = new AbstractVariable((int)enc[0], (int)enc[1], korigView);
@@ -220,22 +285,40 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 								}
 								if (!v.hasNeighbor(n.id)) {
 									AbstractConstraint c = new AbstractConstraint(n, v);
+=======
+								ReplicationVariable n = korigView.varMap.get((int)enc[0]);
+								if (n == null) {
+									AgentState s = null;
+									if (!DCOPFactory.isClassical())
+										s = l.dataStates.get((int)enc[2]);
+									n = DCOPFactory.constructVariable((int)enc[0], (int)enc[1], s, korigView.getSocialWelfare());
+									korigView.varMap.put(n.id, n);
+								}
+								if (!v.hasNeighbor(n.id)) {
+									MemFreeConstraint c = DCOPFactory.constructConstraint(n, v);
+>>>>>>> dcopX
 									korigView.conList.add(c);
+									if (DCOPFactory.isClassical()){
 									for (int i = 0; i < c.d1; i++)
 										for (int j = 0; j < c.d2; j++) {
-											c.f[i][j] = enc[4 + i * c.d2 + j];
+											((CPUFreeConstraint)c).f[i][j] = enc[4 + i * c.d2 + j];
 										}
+									}
 								}
 							}
 						}
 						for (Integer i : l.valMap.keySet())
-							korigView.varMap.get(i).value = l.valMap.get(i);
+							korigView.varMap.get(i).setValue(l.valMap.get(i));
 					}
 
 					HashSet<Integer> kgroup = new HashSet<Integer>();
 					ArrayList<Integer> cList = new ArrayList<Integer>();
 					kgroup.add(korigSelf.id);
+<<<<<<< HEAD
 					for (AbstractConstraint c : korigSelf.neighbors) {
+=======
+					for (MemFreeConstraint c : korigSelf.getNeighbors()) {
+>>>>>>> dcopX
 						cList.add(c.getNeighbor(korigSelf).id);
 					}
 					while (kgroup.size() < k) {
@@ -244,8 +327,13 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 						int idx = cList.remove(Helper.random.nextInt(cList
 								.size()));
 						kgroup.add(idx);
+<<<<<<< HEAD
 						AbstractVariable v = korigView.getVar(idx);
 						for (AbstractConstraint c : v.neighbors) {
+=======
+						ReplicationVariable v = korigView.getVar(idx);
+						for (MemFreeConstraint c : v.getNeighbors()) {
+>>>>>>> dcopX
 							int nid = c.getNeighbor(v).id;
 							if (localInfoMap.containsKey(nid)
 									&& !cList.contains(nid)
@@ -254,7 +342,11 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 						}
 					}
 
+<<<<<<< HEAD
 					for (AbstractVariable v : korigView.varMap.values())
+=======
+					for (ReplicationVariable v : korigView.varMap.values())
+>>>>>>> dcopX
 						v.fixed = true;
 					for (Integer i : kgroup) {
 						korigView.getVar(i).fixed = false;
@@ -263,10 +355,17 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 					double gain = korigView.evaluate(sol) - korigView.evaluate();
 					HashMap<Integer, Integer> vMap = new HashMap<Integer, Integer>();
 					for (Integer i : kgroup) {
+<<<<<<< HEAD
 						AbstractVariable v = korigView.getVar(i);
 						vMap.put(v.id, sol.get(v.id));
 						for (AbstractConstraint c : v.neighbors) {
 							AbstractVariable n = c.getNeighbor(v);
+=======
+						ReplicationVariable v = korigView.getVar(i);
+						vMap.put(v.id, sol.get(v.id));
+						for (MemFreeConstraint c : v.getNeighbors()) {
+							ReplicationVariable n = c.getNeighbor(v);
+>>>>>>> dcopX
 							vMap.put(n.id, sol.get(n.id));
 						}
 					}
@@ -308,11 +407,11 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 							double gain = gainInfoMap.get(leader).gain;
 							int newValue = gainInfoMap.get(leader).valMap
 									.get(self.id);
-							if (self.value != newValue)
+							if (self.getValue() != newValue)
 								System.out.println(leader + " " + self.id + " "
-										+ self.value + "->" + newValue + " : "
+										+ self.getValue() + "->" + newValue + " : "
 										+ gain);
-							self.value = newValue;
+							self.setValue(newValue);
 						}
 					}
 					init();
@@ -327,8 +426,13 @@ class KorigValueMsg extends Message {
 	int id;
 	int value;
 
+<<<<<<< HEAD
 	public KorigValueMsg(AbstractVariable v) {
 		value = v.value;
+=======
+	public KorigValueMsg(ReplicationVariable v) {
+		value = v.getValue();
+>>>>>>> dcopX
 	}
 
 	public int getSize() {

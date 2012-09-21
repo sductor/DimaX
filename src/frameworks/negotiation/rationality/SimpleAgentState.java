@@ -1,5 +1,6 @@
 package frameworks.negotiation.rationality;
 
+import java.util.Collection;
 import java.util.Date;
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -74,4 +75,5 @@ public abstract class SimpleAgentState implements AgentState {
 			throw new RuntimeException("wtf");
 		}
 	}
+
 }

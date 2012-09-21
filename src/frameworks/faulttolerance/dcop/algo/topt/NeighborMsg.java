@@ -1,8 +1,13 @@
 package frameworks.faulttolerance.dcop.algo.topt;
 
 import frameworks.faulttolerance.dcop.daj.Message;
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 
 public class NeighborMsg extends Message {
 	int id;
@@ -13,12 +18,20 @@ public class NeighborMsg extends Message {
 		super();
 	}
 
+<<<<<<< HEAD
 	public NeighborMsg(AbstractVariable v, int t) {
+=======
+	public NeighborMsg(ReplicationVariable v, int t) {
+>>>>>>> dcopX
 		super();
 		id = v.id;
-		neighbors = new int[v.neighbors.size()];
+		neighbors = new int[v.getNeighbors().size()];
 		int i = 0;
+<<<<<<< HEAD
 		for (AbstractConstraint c : v.neighbors) {
+=======
+		for (MemFreeConstraint c : v.getNeighbors()) {
+>>>>>>> dcopX
 			neighbors[i] = c.getNeighbor(v).id;
 			i++;
 		}

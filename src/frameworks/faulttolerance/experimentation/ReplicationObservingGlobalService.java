@@ -290,8 +290,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		if (i < ObservingGlobalService.getNumberOfTimePoints()) {
 			this.agentsSaturationEvolution[i].add(
 					(double)ag.getNumberOfAllocatedResources()/
-					(this.getMyAgent().getSimulationParameters().completGraph?
-							this.getMyAgent().getSimulationParameters().nbHosts:this.getMyAgent().getSimulationParameters().agentAccessiblePerHost));
+					(this.getMyAgent().getSimulationParameters().agentAccessiblePerHost));
 			this.agentsExpectedReliabilityEvolution[i].add(ag.getReliability(SocialChoiceType.Utility));
 			this.agentsMinReliabilityEvolution[i].add(ag.getReliability(SocialChoiceType.Leximin));
 			this.agentsDispoEvolution[i].add(ag.getDisponibility());

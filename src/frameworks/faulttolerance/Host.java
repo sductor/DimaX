@@ -3,6 +3,8 @@ package frameworks.faulttolerance;
 import java.io.Serializable;
 import java.util.Collection;
 
+import choco.cp.solver.constraints.global.geost.dataStructures.LinkedList;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
@@ -38,7 +40,6 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 
 	@Competence
 	ObservingSelfService mySelfObservationService = new ObservingSelfService() {
-
 		/**
 		 *
 		 */

@@ -12,6 +12,7 @@ import java.util.Set;
 
 
 import jtp.util.UnexpectedException;
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.modules.mappedcollections.ElementsNotLinkedException;
@@ -353,7 +354,10 @@ Comparable<VirtualNetworkState> {
 		}
 		return myResIds;
 	}
-
+	@Override
+	public boolean hasResource(AgentIdentifier id) {
+		return getMyResourceIdentifiers().contains(id);
+	}
 	/**
 	 * Resources of the VirtualNetwork are SubstrateNodes.
 	 * 

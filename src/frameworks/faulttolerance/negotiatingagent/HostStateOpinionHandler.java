@@ -57,11 +57,11 @@ implements OpinionHandler<HostState>{
 
 		return new HostState(
 				myAgentIdentifer,
-				null,
 				meanLambda.getRepresentativeElement(),
 				meanProcMax.getRepresentativeElement(),
 				meanProcCu.getRepresentativeElement(),
 				meanMemMax.getRepresentativeElement(),
+				null,
 				meanMemCu.getRepresentativeElement(),
 				-1);
 	}
@@ -91,11 +91,11 @@ implements OpinionHandler<HostState>{
 
 		return new HostState(
 				myAgentIdentifer,
-				null,
 				meanProcMax.getRepresentativeElement(),
 				meanProcCu.getRepresentativeElement(),
 				meanMemMax.getRepresentativeElement(),
 				meanMemCu.getRepresentativeElement(),
+				null,
 				meanLambda.getRepresentativeElement(),
 				-1);
 	}

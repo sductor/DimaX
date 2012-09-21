@@ -1,7 +1,11 @@
 package frameworks.faulttolerance.dcop.algo.topt;
 
 import frameworks.faulttolerance.dcop.daj.Message;
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 
 public class ValueMsg extends Message {
 	int id;
@@ -12,10 +16,15 @@ public class ValueMsg extends Message {
 		super();
 	}
 
+<<<<<<< HEAD
 	public ValueMsg(AbstractVariable v, int t) {
+=======
+	public ValueMsg(ReplicationVariable v, int t) {
+>>>>>>> dcopX
 		super();
+		assert value!=-1;
 		id = v.id;
-		value = v.value;
+		value = v.getValue();
 		// if (value == -1)
 		// System.out.println("Surprise");
 		ttl = t;

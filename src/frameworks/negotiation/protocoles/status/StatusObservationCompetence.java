@@ -60,6 +60,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	private Double lowerThreshold = Double.NaN;
 	private Double higherThreshold = Double.NaN;
 
+	public final double alpha_low;
+	public final double alpha_high;
 	//
 	// Constructor
 	//
@@ -67,7 +69,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	public StatusObservationCompetence(
 			final int numberTodiffuse,
 			final boolean iDiffuseOriginalState,
-			final Class<? extends AgentState> stateTypeToDiffuse)
+			final Class<? extends AgentState> stateTypeToDiffuse,
+			double alpha_low, double alpha_high)
 					throws UnrespectedCompetenceSyntaxException {
 		this.rand = new Random();
 		this.centralised = false;
@@ -75,13 +78,16 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		this.numberTodiffuse = numberTodiffuse;
 		this.iDiffuseOriginalState=iDiffuseOriginalState;
 		this.stateTypeToDiffuse=stateTypeToDiffuse;
+		this.alpha_low=alpha_low;
+		this.alpha_high=alpha_high;
 //		assert iDiffuseOriginalState?stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType()):true;
 	}
 
 	public StatusObservationCompetence(
 			final AgentIdentifier myLaborantin,
 			final boolean iDiffuseOriginalState,
-			final Class<? extends AgentState> stateTypeToDiffuse)
+			final Class<? extends AgentState> stateTypeToDiffuse,
+			double alpha_low, double alpha_high)
 					throws UnrespectedCompetenceSyntaxException {
 		this.rand = new Random();
 		this.centralised = true;
@@ -89,6 +95,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		this.numberTodiffuse = null;
 		this.iDiffuseOriginalState=iDiffuseOriginalState;
 		this.stateTypeToDiffuse=stateTypeToDiffuse;
+		this.alpha_low=alpha_low;
+		this.alpha_high=alpha_high;
 	}
 	//
 	// Accessors
@@ -187,8 +195,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			min = getMyOpinionHandler().getNumericValue(o.getMinInfo());
 			max = getMyOpinionHandler().getNumericValue(o.getMaxInfo());
 
-			this.lowerThreshold = NegotiationParameters.alpha_low * mean + (1-NegotiationParameters.alpha_low) * min;
-			this.higherThreshold = NegotiationParameters.alpha_high * mean + (1-NegotiationParameters.alpha_high) * max;
+			this.lowerThreshold = alpha_low * mean + (1-alpha_low) * min;
+			this.higherThreshold = alpha_high * mean + (1-alpha_high) * max;
 		} catch (final Exception e) {
 			this.getMyAgent().signalException(
 					"impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"

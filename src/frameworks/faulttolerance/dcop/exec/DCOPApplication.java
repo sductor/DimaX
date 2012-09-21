@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.algo.*;
 import frameworks.faulttolerance.dcop.algo.korig.AlgoKOptOriginal;
 import frameworks.faulttolerance.dcop.algo.topt.AlgoKOptAPO;
@@ -12,16 +13,23 @@ import frameworks.faulttolerance.dcop.daj.Application;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Node;
 import frameworks.faulttolerance.dcop.daj.Program;
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
+import frameworks.faulttolerance.dcop.dcop.Helper;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 public class DCOPApplication extends Application {
 	private static final long serialVersionUID = 380092569934615212L;
 
-	public DcopAbstractGraph g;
+	public DcopReplicationGraph g;
 	Algorithm algo;
 	HashMap<Integer, Node> nodeMap;
 	private static final int radius = 200;
@@ -69,7 +77,7 @@ public class DCOPApplication extends Application {
 		numberConflicts = 0;
 		wastedCycles = 0;
 		
-		g = ReplicationExperimentationParameters.constructDCOPGraph(filename);
+		g = DCOPFactory.constructDCOPGraph(filename);
 		//algo = Algorithm.MGM1;
 		this.grouping = kort;
 		this.algo = a;		
@@ -99,7 +107,7 @@ public class DCOPApplication extends Application {
 		numberConflicts = 0;
 		wastedCycles = 0;
 		
-		g = ReplicationExperimentationParameters.constructDCOPGraph(filename);
+		g = DCOPFactory.constructDCOPGraph(filename);
 		//algo = Algorithm.MGM1;
 		this.grouping = kort;
 		this.algo = a;
@@ -146,7 +154,11 @@ public class DCOPApplication extends Application {
 		Node controller = node(new Controller(this), "Simulator",
 				20 + (radius - 30), 20 + (radius - 30));
 
+<<<<<<< HEAD
 		for (AbstractVariable v : g.varMap.values()) {
+=======
+		for (ReplicationVariable v : g.varMap.values()) {
+>>>>>>> dcopX
 			Node node = node(getAlgo(v), "" + v.id, (int) (20 + (radius - 30)
 					* (1 + Math.cos(angle))), (int) (20 + (radius - 30)
 					* (1 + Math.sin(angle))));
@@ -154,9 +166,15 @@ public class DCOPApplication extends Application {
 			angle += delta;
 			link(controller, node);
 		}
+<<<<<<< HEAD
 		for (AbstractConstraint c : g.conList) {
 			Node first = nodeMap.get(c.getFirst().id);
 			Node second = nodeMap.get(c.getSecond().id);
+=======
+		for (MemFreeConstraint c : g.conList) {
+			Node first = nodeMap.get(c.first.id);
+			Node second = nodeMap.get(c.second.id);
+>>>>>>> dcopX
 			link(first, second);
 			link(second, first);
 		}
@@ -175,7 +193,7 @@ public class DCOPApplication extends Application {
 	 */
 	public static void main(String[] args) {
 //		args = new String[]{"conf/1.dcop","TOPT","3","50"};
-		args = new String[]{"conf/1.dcop","","4","50"};
+		args = DCOPFactory.getArgs();
 		String temp = args[0];
 		DCOPApplication app = null;
 		boolean isGUI = true;
@@ -207,15 +225,18 @@ public class DCOPApplication extends Application {
 		Helper.app = app;
 		app.run();
 
-		for (Integer i : app.nodeMap.keySet()){
-			app.g.varMap.get(i).value = ((BasicAlgorithm) app.nodeMap.get(i).getProgram()).getValue();
+		for (Object i : app.nodeMap.keySet()){
+			((ReplicationVariable)app.g.varMap.get((Integer)i)).setValue(((BasicAlgorithm)((Node) app.nodeMap.get(i)).getProgram()).getValue());
 		}
-
 		System.out.println("Quality:\t" + app.g.evaluate());
 		System.out.println("GlobalTime:\t" + app.getNetwork().getScheduler().getTime());		
 	}
 	
+<<<<<<< HEAD
 	private BasicAlgorithm getAlgo(AbstractVariable v) {
+=======
+	private BasicAlgorithm getAlgo(ReplicationVariable v) {
+>>>>>>> dcopX
 		switch(this.algo){
 			case TOPTAPO: 
 				if(!isWin){
@@ -260,7 +281,7 @@ class Controller extends Program {
 					if (prog[i] == this)
 						continue;
 					BasicAlgorithm p = (BasicAlgorithm) prog[i];
-					app.g.varMap.get(p.getID()).value = p.getValue();
+					app.g.varMap.get(p.getID()).setValue(p.getValue());
 					if (!p.isStable())
 						done = false;
 				}

@@ -354,6 +354,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				agentCriticityMean, agentCriticityDispersion, 
 				_usedProtocol, _socialWelfare, 
 				_agentSelection, _hostSelection, 
+				alpha_low, alpha_high,
 				dynamicCriticity, faultOccurs);
 	}
 	

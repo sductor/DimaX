@@ -617,7 +617,6 @@ public class AlgoKOptAPO extends LockingBasicAlgorithm {
 						}
 					}
 				}
-
 				HashSet<Integer> pSet = new HashSet<Integer>();
 				HashSet<Integer> cSet = new HashSet<Integer>();
 				for (MemFreeConstraint c : self.getNeighbors()) {

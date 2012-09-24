@@ -200,6 +200,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 						ReplicationVariable v = korigView.varMap.get(l.id);
 						if (v == null) {
 							v = DCOPFactory.constructVariable(l.id, l.domain, l.state,korigView.getSocialWelfare());
+
 							korigView.varMap.put(v.id, v);
 						}
 						for (double[] enc : l.data) {
@@ -214,6 +215,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 								}
 								if (!v.hasNeighbor(n.id)) {
 									MemFreeConstraint c = DCOPFactory.constructConstraint(v, n);
+
 									korigView.conList.add(c);
 									if (DCOPFactory.isClassical()){
 									for (int i = 0; i < c.d1; i++)
@@ -233,6 +235,7 @@ public class AlgoKOptOriginal extends BasicAlgorithm {
 								}
 								if (!v.hasNeighbor(n.id)) {
 									MemFreeConstraint c = DCOPFactory.constructConstraint(n, v);
+
 									korigView.conList.add(c);
 									if (DCOPFactory.isClassical()){
 									for (int i = 0; i < c.d1; i++)

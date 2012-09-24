@@ -17,6 +17,7 @@ import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 public class DCOPApplication extends Application {

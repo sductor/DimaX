@@ -36,9 +36,10 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	@Override
 	public boolean connect(String[] args) {
 		boolean b = super.connect(new String[]{"talk.google.com", "5222", "gmail.com",loginname+"@gmail.com","false"});
-		friends.add(receiveFromUSer("new friend?"));
-		friends.add(receiveFromUSer("new friend?"));
-		log = new File(LogService.getDimaXDir()+"log/__Messages.log");
+		friends.add(receiveHiddenFromUSer("new friend?"));
+//		friends.add(receiveFromUSer("new friend?"));
+		log = new File("/local/ductors/__Messages.log");
+		handlePresenceChangement(connection.getRoster().getPresence(friends.iterator().next()));
 		return b;
 	}
 
@@ -52,8 +53,8 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	@Override
 	public void handlePresenceChangement(Presence presence) {
 		if (friends.contains(StringUtils.parseBareAddress(presence.getFrom()))){
-			String text = "on "+new Date()+" new presence : "+presence.getFrom()+" : "+presence;
-			System.out.println(text);
+			String text = "on "+new Date()+" new presence : "+/*presence.getFrom()+*/" : "+presence;
+//			System.out.println(text);
 			LogService.logOnFile(log, text, false, false);
 		}
 	}

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 package frameworks.faulttolerance.dcop.dcop;
 
 import java.io.BufferedReader;
@@ -228,6 +229,8 @@ public abstract class DcopReplicationGraph<Value> extends DcopAbstractGraph<Valu
 	}
 }
 =======
+=======
+>>>>>>> dcopX
 package frameworks.faulttolerance.dcop.dcop;
 
 import java.io.BufferedReader;
@@ -579,4 +582,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 		return result;
 	}
 }
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX

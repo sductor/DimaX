@@ -8,16 +8,22 @@ import dima.introspectionbasedagents.modules.faults.Assert;
 import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.daj.Program;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopAbstractGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 =======
+=======
+>>>>>>> dcopX
 import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.CPUFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 import frameworks.faulttolerance.dcop.exec.Stats;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
@@ -28,8 +34,13 @@ public abstract class BasicAlgorithm extends Program {
 	protected int lockBase;
 	protected int reLockTime;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	protected DcopAbstractGraph view;
 	protected AbstractVariable self;
+=======
+	protected DcopReplicationGraph view;
+	protected ReplicationVariable self;
+>>>>>>> dcopX
 =======
 	protected DcopReplicationGraph view;
 	protected ReplicationVariable self;
@@ -45,6 +56,7 @@ public abstract class BasicAlgorithm extends Program {
 	public int nlockReq;
 	public int preCycles;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	public BasicAlgorithm(AbstractVariable v) {
 		view = ReplicationExperimentationParameters.constructDCOPGraph();
@@ -66,6 +78,8 @@ public abstract class BasicAlgorithm extends Program {
 				}
 			cc.cache();
 =======
+=======
+>>>>>>> dcopX
 	public BasicAlgorithm(ReplicationVariable v) {
 		view = DCOPFactory.constructDCOPGraph(v.getSocialWelfare());
 		assert v.getState()!=null:v;
@@ -88,6 +102,9 @@ public abstract class BasicAlgorithm extends Program {
 					}
 				((CPUFreeConstraint)cc).cache();
 			}
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 			view.conList.add(cc);
 		}

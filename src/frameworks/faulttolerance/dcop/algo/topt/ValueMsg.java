@@ -2,7 +2,11 @@ package frameworks.faulttolerance.dcop.algo.topt;
 
 import frameworks.faulttolerance.dcop.daj.Message;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+>>>>>>> dcopX
 =======
 import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 >>>>>>> dcopX
@@ -17,7 +21,11 @@ public class ValueMsg extends Message {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public ValueMsg(AbstractVariable v, int t) {
+=======
+	public ValueMsg(ReplicationVariable v, int t) {
+>>>>>>> dcopX
 =======
 	public ValueMsg(ReplicationVariable v, int t) {
 >>>>>>> dcopX

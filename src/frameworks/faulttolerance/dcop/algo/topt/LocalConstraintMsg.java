@@ -6,8 +6,14 @@ import java.util.HashMap;
 import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.daj.Message;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
+=======
+import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+import frameworks.negotiation.rationality.AgentState;
+>>>>>>> dcopX
 =======
 import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
@@ -27,7 +33,11 @@ public class LocalConstraintMsg extends Message {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public LocalConstraintMsg(AbstractVariable v, int t) {
+=======
+	public LocalConstraintMsg(ReplicationVariable v, int t) {
+>>>>>>> dcopX
 =======
 	public LocalConstraintMsg(ReplicationVariable v, int t) {
 >>>>>>> dcopX
@@ -36,12 +46,18 @@ public class LocalConstraintMsg extends Message {
 		domain = v.getDomain();
 		data = new ArrayList<double[]>();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (AbstractConstraint c : v.neighbors) {
 =======
+=======
+>>>>>>> dcopX
 		if (!DCOPFactory.isClassical())
 			dataStates=new HashMap<Integer, AgentState>();
 		state = v.getState();
 		for (MemFreeConstraint c : v.getNeighbors()) {
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 			data.add(c.encode());
 			if (!DCOPFactory.isClassical()){

@@ -12,14 +12,20 @@ import frameworks.faulttolerance.dcop.daj.Channel;
 import frameworks.faulttolerance.dcop.daj.Message;
 import frameworks.faulttolerance.dcop.daj.Program;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 =======
+=======
+>>>>>>> dcopX
 import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.CPUFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.Helper;
 import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 import frameworks.faulttolerance.dcop.exec.DCOPApplication;
 import frameworks.faulttolerance.dcop.exec.Stats;
@@ -33,7 +39,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	public boolean trivial;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public AlgoTOptAPO(AbstractVariable v, int tt) {
+=======
+	public AlgoTOptAPO(ReplicationVariable v, int tt) {
+>>>>>>> dcopX
 =======
 	public AlgoTOptAPO(ReplicationVariable v, int tt) {
 >>>>>>> dcopX
@@ -43,7 +53,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public AlgoTOptAPO(AbstractVariable v, int tt, boolean s, int ws) {
+=======
+	public AlgoTOptAPO(ReplicationVariable v, int tt, boolean s, int ws) {
+>>>>>>> dcopX
 =======
 	public AlgoTOptAPO(ReplicationVariable v, int tt, boolean s, int ws) {
 >>>>>>> dcopX
@@ -109,7 +123,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 				if (msg instanceof ValueMsg) {
 					ValueMsg vmsg = (ValueMsg) msg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 					AbstractVariable v = view.varMap.get(vmsg.id);
+=======
+					ReplicationVariable v = view.varMap.get(vmsg.id);
+>>>>>>> dcopX
 =======
 					ReplicationVariable v = view.varMap.get(vmsg.id);
 >>>>>>> dcopX
@@ -127,9 +145,15 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 					if (lastTTL == null) {
 						conTTLMap.put(lmsg.id, lmsg.ttl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 						AbstractVariable v = view.varMap.get(lmsg.id);
 						if (v == null) {
 							v = new AbstractVariable(lmsg.id, lmsg.domain, view);
+=======
+						ReplicationVariable v = view.varMap.get(lmsg.id);
+						if (v == null) {
+							v = DCOPFactory.constructVariable(lmsg.id, lmsg.domain, lmsg.state, view.getSocialWelfare());
+>>>>>>> dcopX
 =======
 						ReplicationVariable v = view.varMap.get(lmsg.id);
 						if (v == null) {
@@ -141,16 +165,22 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 						for (double[] enc : lmsg.data) {
 							if (enc[0] == v.id) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 								AbstractVariable n = view.varMap.get((int) enc[2]);
 								if (n == null) {
 									n = new AbstractVariable((int) enc[2],(int) enc[3], view);
 =======
+=======
+>>>>>>> dcopX
 								ReplicationVariable n = view.varMap.get((int) enc[2]);
 								if (n == null) {
 									AgentState s = null;
 									if (!DCOPFactory.isClassical())
 										s = lmsg.dataStates.get((int)enc[2]);
 									n = DCOPFactory.constructVariable((int) enc[2],(int) enc[3], s, view.getSocialWelfare());
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
@@ -158,7 +188,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 								}
 								if (!v.hasNeighbor(n.id)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 									AbstractConstraint c = new AbstractConstraint(v, n);
+=======
+									MemFreeConstraint c = DCOPFactory.constructConstraint(v, n);
+>>>>>>> dcopX
 =======
 									MemFreeConstraint c = DCOPFactory.constructConstraint(v, n);
 >>>>>>> dcopX
@@ -173,16 +207,22 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 								}
 							} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 								AbstractVariable n = view.varMap.get((int) enc[0]);
 								if (n == null) {
 									n = new AbstractVariable((int)enc[0], (int)enc[1], view);
 =======
+=======
+>>>>>>> dcopX
 								ReplicationVariable n = view.varMap.get((int) enc[0]);
 								if (n == null) {
 									AgentState s = null;
 									if (!DCOPFactory.isClassical())
 										s = lmsg.dataStates.get((int)enc[0]);
 									n = DCOPFactory.constructVariable((int)enc[0], (int)enc[1], s, view.getSocialWelfare());
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 									if (lmsg.ttl <= 1)
 										n.fixed = true;
@@ -190,7 +230,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 								}
 								if (!v.hasNeighbor(n.id)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 									AbstractConstraint c = new AbstractConstraint(n, v);
+=======
+									MemFreeConstraint c = DCOPFactory.constructConstraint(n, v);
+>>>>>>> dcopX
 =======
 									MemFreeConstraint c = DCOPFactory.constructConstraint(n, v);
 >>>>>>> dcopX
@@ -312,8 +356,13 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 											- view.evaluate();
 									st.varChanged = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 									for (AbstractVariable v : view.varMap.values())
 										if (v.value != bestSolution.get(v.id))
+=======
+									for (ReplicationVariable v : view.varMap.values())
+										if (v.getValue() != bestSolution.get(v.id))
+>>>>>>> dcopX
 =======
 									for (ReplicationVariable v : view.varMap.values())
 										if (v.getValue() != bestSolution.get(v.id))
@@ -419,8 +468,13 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 									- view.evaluate();
 							st.varChanged = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 							for (AbstractVariable v : view.varMap.values()) {
 								if (v.value != bestSolution.get(v.id))
+=======
+							for (ReplicationVariable v : view.varMap.values()) {
+								if (v.getValue() != bestSolution.get(v.id))
+>>>>>>> dcopX
 =======
 							for (ReplicationVariable v : view.varMap.values()) {
 								if (v.getValue() != bestSolution.get(v.id))
@@ -545,8 +599,13 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 
 	private void checkSolution() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values())
 			if (v.fixed && v.value == -1) {
+=======
+		for (ReplicationVariable v : view.varMap.values())
+			if (v.fixed && v.getValue() == -1) {
+>>>>>>> dcopX
 =======
 		for (ReplicationVariable v : view.varMap.values())
 			if (v.fixed && v.getValue() == -1) {
@@ -575,7 +634,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 			root.mark = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ArrayList<AbstractVariable> queue = new ArrayList<AbstractVariable>();
+=======
+		ArrayList<ReplicationVariable> queue = new ArrayList<ReplicationVariable>();
+>>>>>>> dcopX
 =======
 		ArrayList<ReplicationVariable> queue = new ArrayList<ReplicationVariable>();
 >>>>>>> dcopX
@@ -584,15 +647,21 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 		map.put(self.id, root);
 		while (!queue.isEmpty()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			AbstractVariable v = queue.remove(0);
 			TreeNode p = map.get(v.id);
 			for (AbstractConstraint c : v.neighbors) {
 				AbstractVariable n = c.getNeighbor(v);
 =======
+=======
+>>>>>>> dcopX
 			ReplicationVariable v = queue.remove(0);
 			TreeNode p = map.get(v.id);
 			for (MemFreeConstraint c : v.getNeighbors()) {
 				ReplicationVariable n = c.getNeighbor(v);
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 				if (!map.containsKey(n.id)) {
 					queue.add(n);
@@ -620,7 +689,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 		if (bestSolution == null)
 			return false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values()) {
+=======
+		for (ReplicationVariable v : view.varMap.values()) {
+>>>>>>> dcopX
 =======
 		for (ReplicationVariable v : view.varMap.values()) {
 >>>>>>> dcopX
@@ -639,6 +712,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 	private boolean isTrivial() {
 		HashMap<Integer, Integer> minDis = new HashMap<Integer, Integer>();
 		int maxId = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values())
 			if (v.id > maxId)
@@ -660,6 +734,8 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 						visited.add(n.id);
 						minDis.put(v.id * maxId + n.id, depth + 1);
 =======
+=======
+>>>>>>> dcopX
 		for (ReplicationVariable v : view.varMap.values())
 			if (v.id > maxId)
 				maxId = v.id;
@@ -681,6 +757,7 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 								minDis.put(v.id * maxId + n.id, depth + 1);
 							}
 						}
+<<<<<<< HEAD
 >>>>>>> dcopX
 					}
 				}
@@ -708,6 +785,11 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 		}
 		return false;
 =======
+=======
+					}
+				}
+
+>>>>>>> dcopX
 				int minD = 0;
 				for (ReplicationVariable v : view.varMap.values()) {
 					int m = minDis.get(self.id * maxId + v.id);
@@ -729,14 +811,22 @@ public class AlgoTOptAPO extends LockingBasicAlgorithm {
 					// return true;
 				}
 				return false;
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 	}
 
 	public String getText() {
 		String val = "";
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (AbstractVariable v : view.varMap.values()) {
 			val += v.id + "  " + v.value + "/"
+=======
+		for (ReplicationVariable v : view.varMap.values()) {
+			val += v.id + "  " + v.getValue() + "/"
+>>>>>>> dcopX
 =======
 		for (ReplicationVariable v : view.varMap.values()) {
 			val += v.id + "  " + v.getValue() + "/"

@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import frameworks.faulttolerance.dcop.dcop.AbstractConstraint;
 import frameworks.faulttolerance.dcop.dcop.AbstractVariable;
 =======
+=======
+>>>>>>> dcopX
 import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
 import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
 import frameworks.negotiation.rationality.AgentState;
+<<<<<<< HEAD
+>>>>>>> dcopX
+=======
 >>>>>>> dcopX
 
 public class LocalInfo {
@@ -23,7 +29,11 @@ public class LocalInfo {
 	HashMap<Integer, Integer> valMap;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public LocalInfo(AbstractVariable v) {
+=======
+	public LocalInfo(ReplicationVariable v) {
+>>>>>>> dcopX
 =======
 	public LocalInfo(ReplicationVariable v) {
 >>>>>>> dcopX
@@ -36,9 +46,15 @@ public class LocalInfo {
 			dataStates=new HashMap<Integer, AgentState>();
 		valMap = new HashMap<Integer, Integer>();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (AbstractConstraint c : v.neighbors) {
 			AbstractVariable n = c.getNeighbor(v);
 			valMap.put(n.id, n.value);
+=======
+		for (MemFreeConstraint c : v.getNeighbors()) {
+			ReplicationVariable n = c.getNeighbor(v);
+			valMap.put(n.id, n.getValue());
+>>>>>>> dcopX
 =======
 		for (MemFreeConstraint c : v.getNeighbors()) {
 			ReplicationVariable n = c.getNeighbor(v);

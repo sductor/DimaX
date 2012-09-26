@@ -34,9 +34,15 @@ import frameworks.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaCore;
+<<<<<<< HEAD
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.solver.ChocoReplicationAllocationSolver;
 import frameworks.faulttolerance.solver.SolverFactory;
+=======
+import frameworks.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.faulttolerance.solver.ChocoReplicationAllocationSolver;
+import frameworks.faulttolerance.solver.SolverFactory;
+>>>>>>> dcopX
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
@@ -353,13 +359,21 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				agentCriticityMean, agentCriticityDispersion, 
 				_usedProtocol, _socialWelfare, 
 				_agentSelection, _hostSelection, 
+				alpha_low, alpha_high,
 				dynamicCriticity, faultOccurs);
 	}
 	
+<<<<<<< HEAD
 	@Override
 	public void initiateParameters() throws IfailedException {
 		instanciateReg();
 		reg.initiateParameters();
+=======
+	@Override
+	public void initiateParameters() throws IfailedException {
+		instanciateReg();
+		reg.initiateParameters();
+>>>>>>> dcopX
 	}
 
 	@Override

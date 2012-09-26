@@ -51,12 +51,16 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 			DispersionSymbolicValue agentCriticityDispersion,
 			String usedProtocol, SocialChoiceType socialWelfare,
 			String agentSelection, String hostSelection,
+			double alpha_low,
+			double alpha_high,
 			boolean dynamicCriticty, boolean faultOccurs) {
 		super(nbAgents, nbHosts, k,
 				hostFaultProbabilityMean, hostFaultProbabilityDispersion,
 				agentLoadMean, agentLoadDispersion, hostCapacityMean,
 				hostcapacityDispersion, agentCriticityMean, agentCriticityDispersion,
 				usedProtocol, socialWelfare, agentSelection, hostSelection,
+				alpha_low,
+				alpha_high,
 				dynamicCriticty, faultOccurs);
 		// TODO Auto-generated constructor stub
 	}
@@ -438,6 +442,8 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 				SocialChoiceType.Utility,
 				NegotiationParameters.key4greedySelect,//NegotiationParameters.key4rouletteWheelSelect,//
 				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
+				0.3,
+				0.6,
 				false,
 				false);
 	}

@@ -6,9 +6,15 @@ public class Dependence {
 	public int[] values;
 	
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public Dependence(AbstractVariable child, AbstractConstraint c) {
 		cid = child.id;
 		AbstractVariable parent = c.getNeighbor(child);
+=======
+	public Dependence(ReplicationVariable child, MemFreeConstraint c) {
+		cid = child.id;
+		ReplicationVariable parent = c.getNeighbor(child);
+>>>>>>> dcopX
 =======
 	public Dependence(ReplicationVariable child, MemFreeConstraint c) {
 		cid = child.id;

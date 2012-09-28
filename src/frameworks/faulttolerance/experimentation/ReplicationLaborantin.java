@@ -1,6 +1,7 @@
 package frameworks.faulttolerance.experimentation;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 
 
@@ -101,9 +102,9 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 
 		final Experimentator exp =
 				new Experimentator(
-						ReplicationExperimentationGenerator.getDefaultParameters(),
+						new ReplicationExperimentationGenerator().getDefaultParameters(),
 						new FinalExperimentsLogger(),
-						ReplicationExperimentationGenerator.iterationNumber);
+						Arrays.asList(new ReplicationExperimentationGenerator().getSeeds()));
 		exp.run(args);
 	}
 

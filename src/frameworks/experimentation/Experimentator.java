@@ -1,8 +1,12 @@
 package frameworks.experimentation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+
+import jtp.context.IterativeDeepening;
 
 import org.jdom.JDOMException;
 
@@ -43,7 +47,7 @@ public final class Experimentator extends APIAgent{
 	public LinkedList<ExperimentationParameters> allSimu=new LinkedList();
 	public LinkedList<ExperimentationParameters> simuToLaunch;
 	final ExperimentLogger el;
-	int iteartiontime;
+	List<Long>iteartionSeeds;
 
 	//	public final Map<AgentIdentifier, Laborantin> launchedSimu =
 	//			new HashMap<AgentIdentifier, Laborantin>();
@@ -53,7 +57,7 @@ public final class Experimentator extends APIAgent{
 	// Constructor
 	//
 
-	public Experimentator(final ExperimentationParameters myProtocol, final ExperimentLogger el, final int iteartiontime) throws CompetenceException {
+	public Experimentator(final ExperimentationParameters myProtocol, final ExperimentLogger el, final List<Long> seeds) throws CompetenceException {
 		super(myProtocol.experimentatorId);
 		//		this.machines = new MachineNetwork(machines);
 		//		Writing.log(
@@ -62,7 +66,7 @@ public final class Experimentator extends APIAgent{
 		//				true, false);
 		this.myProtocol=myProtocol;
 		this.el=el;
-		this.iteartiontime=iteartiontime;
+		this.iteartionSeeds=seeds;
 		
 
 		this.myProtocol.setMyAgent(this);
@@ -92,12 +96,12 @@ public final class Experimentator extends APIAgent{
 
 		if (this.awaitingAnswer==0){
 			//Toute les expériences sont faites!!
-
-			LogService.logOnFile(this.myProtocol.finalResultPath, "\n\nIteration number -"+this.iteartiontime+" : \n", true, false);
+			assert !iteartionSeeds.isEmpty();
+			LogService.logOnFile(this.myProtocol.finalResultPath, "\n seed"+this.iteartionSeeds.get(0)+" : \n", true, false);
 			//			el.write(myProtocol.finalResultPath);
-			this.iteartiontime--;
+			this.iteartionSeeds.remove(0);
 
-			if (this.iteartiontime==0){
+			if (this.iteartionSeeds.isEmpty()){
 				this.logWarning("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 				this.setAlive(false);
 				//			this.logWarning(this.myProtocol.toString(),LogService.onBoth);
@@ -116,6 +120,7 @@ public final class Experimentator extends APIAgent{
 				//				while (!this.simuToLaunch.isEmpty()){
 
 				nextSimu = this.simuToLaunch.pop();
+				nextSimu.setSeed(iteartionSeeds.get(0));
 				Laborantin l;
 				try {
 

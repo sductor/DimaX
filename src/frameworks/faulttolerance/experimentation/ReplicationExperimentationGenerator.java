@@ -1,6 +1,7 @@
 package frameworks.faulttolerance.experimentation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import choco.cp.solver.constraints.reified.leaves.arithm.MaxNode;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
@@ -18,6 +21,7 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.support.GimaObject;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.IfailedException;
 import frameworks.experimentation.Laborantin;
@@ -30,6 +34,7 @@ import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.solver.SolverFactory;
 import frameworks.negotiation.NegotiationParameters;
+import frameworks.negotiation.NegotiationParameters.SelectionType;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.rationality.RationalAgent;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
@@ -39,44 +44,95 @@ import frameworks.negotiation.selection.OptimalSelectionModule;
 import frameworks.negotiation.selection.SimpleSelectionCore;
 import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 
-public class ReplicationExperimentationGenerator extends ReplicationExperimentationParameters{
+public class ReplicationExperimentationGenerator extends GimaObject{
 
-	ReplicationExperimentationGenerator(int nbAgents, int nbHosts,
-			double k, Double hostFaultProbabilityMean,
-			DispersionSymbolicValue hostFaultProbabilityDispersion,
-			Double agentLoadMean, DispersionSymbolicValue agentLoadDispersion,
-			Double hostCapacityMean,
-			DispersionSymbolicValue hostcapacityDispersion,
-			Double agentCriticityMean,
-			DispersionSymbolicValue agentCriticityDispersion,
-			String usedProtocol, SocialChoiceType socialWelfare,
-			String agentSelection, String hostSelection,
-			double alpha_low,
-			double alpha_high,
-			boolean dynamicCriticty, boolean faultOccurs) {
-		super(nbAgents, nbHosts, k,
-				hostFaultProbabilityMean, hostFaultProbabilityDispersion,
-				agentLoadMean, agentLoadDispersion, hostCapacityMean,
-				hostcapacityDispersion, agentCriticityMean, agentCriticityDispersion,
-				usedProtocol, socialWelfare, agentSelection, hostSelection,
-				alpha_low,
-				alpha_high,
-				dynamicCriticty, faultOccurs);
-		// TODO Auto-generated constructor stub
+	//problem
+	private Long[] seeds = new Long[]{(long) 5564864,(long) 646464,(long) 94864};
+
+	private Integer[] nbAgentDomain = new Integer[]{30,100,250,500,1000};
+	 int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
+
+	private Integer[] nbHostDomain = new Integer[]{48};
+	 int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
+
+	private Double[] hostCapacity = new Double[]{-((double) maxAgentNb/((double) maxHostNb)),0.3,0.6};
+	private Double[] graphDensityDomain = new Double[]{15., 30.};
+
+	private SocialChoiceType[] welfareDomain = new SocialChoiceType[]{SocialChoiceType.Utility};	
+	private String[] protosDomain = new String[]{
+			NegotiationParameters.key4mirrorProto,
+			NegotiationParameters.key4statusProto
+	};
+//	private Selctio[] selectDomain = new String[]{
+//			NegotiationParameters.key4greedySelect,
+////			NegotiationParameters.key4randomSelect,
+//			NegotiationParameters.key4rouletteWheelSelect,
+//			NegotiationParameters.key4BetterSelect,
+//			NegotiationParameters.key4OptSelect};
+
+	//solveur
+	private Integer[] kDomain= new Integer[]{10,100,500};
+
+	//Social
+	private Double[][] alphaDomain= new Double[][]{new Double[]{Double.NaN,Double.NaN},new Double[]{0.3,0.6}, new Double[]{0.5,0.75}, new Double[]{0.25,0.5}};
+	private Double[] kOpinionDomain= new Double[]{Double.NaN,0.3,0.6,1.};
+
+
+	private Double getValue(Double value, double ref){
+		if (value.equals(Double.NaN))
+			return Double.NaN;
+		else if (value <0)
+			return -value;
+		else{
+			assert value<=1.:value;
+			return value*ref;
+		}
 	}
 
-	public static final int startingNbHosts = 3;
-	public static int startingNbAgents =8;
-	
+	Double[] dispoMeanDomain = new Double[]{0.7};
+	Double[] criticityMeanDomain = new Double[]{0.5};
+	Double[] agentLoadMeanDomain = new Double[]{0.5};
+	DispersionSymbolicValue[] dispersionDomain = new DispersionSymbolicValue[]{
+			DispersionSymbolicValue.Moyen,
+			DispersionSymbolicValue.Nul,
+			DispersionSymbolicValue.Max};
+
+
+
+	static boolean varyProtocol=false;
+	static boolean  varyOptimizers=false;
+
+	static boolean varyAgents=true;
+	static boolean varyHosts=false;
+
+	static boolean varyAccessibleAgent=true;
+	static boolean varySimultaneousAcceptation=true;
+	static boolean varyOpinionDiffusion=false;
+	static boolean varyAlpha=false;
+
+	static boolean varyAgentSelection=false;
+	static boolean varyHostSelection=false;
+
+	static boolean varyHostDispo=false;
+	static boolean varyHostFaultDispersion=false;
+
+	static boolean varyAgentLoad=false;
+	static boolean varyAgentLoadDispersion=false;
+
+	static boolean varyHostCapacity=true;
+	static boolean varyHostCapacityDispersion=false;
+
+	static boolean varyAgentCriticity=false;
+	static boolean varyAgentCriticityDispersion=false;
+
+	//	static boolean varyFault=false;
+	static int dynamicCriticityKey=-1; //-1 never dynamics, 1 always dynamics, 0 both
+
+
 	//		startingNbAgents =(int)((startingNbHosts * hostCapacityMean)/agentLoadMean);
 
-
-	public final boolean completGraph = true;
 	public static final boolean multiDim=true;
 
-	private  boolean withOptimal = false;
-	private final int maxOptimal = 50;
-	
 	//
 	//	public static final int startingNbHosts = 8;
 	//	public static int startingNbAgents =15;
@@ -85,243 +141,6 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	//		public static int startingNbAgents =10;
 
 
-	//
-	// Methods
-	//
-
-	@Override
-	public final void initiateParameters() throws IfailedException{
-		this.rig = new ReplicationInstanceGraph(_socialWelfare);
-
-		rig.randomInitiaition(getSimulationName(), randSeed,
-				nbAgents, nbHosts, startingNbAgents,
-				agentCriticityMean, agentCriticityDispersion, 
-				agentLoadMean, agentLoadDispersion, hostCapacityMean, 
-				hostCapacityDispersion, hostFaultProbabilityMean, hostFaultProbabilityDispersion, 
-				maxHostAccessibleParAgent, agentAccessiblePerHost);
-
-
-		if (this.withOptimal){
-			this.logMonologue("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& wtttttttfffffffffffff ", LogService.onBoth);
-//			ReplicationOptimalSolver ros=null;
-//			ros = new ReplicationOptimalSolver(this.getMyAgent());
-//			this.logMonologue("beggining optimal computation &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", LogService.onBoth);
-//			ros.solve();
-//			this.logMonologue("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& ending optimal computation ", LogService.onBoth);
-		}
-
-		String initialisationStatus = "Neighborhoog... :\n";
-		if (this.completGraph) {
-			initialisationStatus+="using a complete accesiblity graph";
-		} else {
-			for (final AgentIdentifier r : this.rig.getAgentsIdentifier()){
-				initialisationStatus+=r+"  has acces to  "+this.rig.getAccessibleHosts(r)+"\n";
-			}
-		}
-		initialisationStatus += "\n Initializing allocation... :\n";
-		for (final HostState h : this.rig.getHostsStates()){
-			initialisationStatus+=h.getMyAgentIdentifier()+"  has allocated  "+h.getMyResourceIdentifiers()+"\n";
-		}
-		this.logMonologue(initialisationStatus, LogService.onFile);
-	}
-
-
-	//
-	// Protocol
-	//
-
-
-
-
-
-	/*
-	 * Instanciation
-	 */
-
-	@Override
-	protected Collection<RationalAgent> instanciateAgents()throws CompetenceException {
-		//		System.out.println(this.getMyAgent()+" "+this.getMyAgent().
-		//				myStatusObserver);
-		//		assert !this._usedProtocol
-		//		.equals(NegotiationParameters.key4CentralisedstatusProto) ||
-		//		this.getMyAgent().
-		//		myStatusObserver.iObserveStatus():
-		//			this._usedProtocol
-		//			.equals(NegotiationParameters.key4CentralisedstatusProto)+" "+this.getMyAgent().myStatusObserver.iObserveStatus();
-
-		//		this.logMonologue("Initializing agents... ",LogService.onBoth);
-		final Map<AgentIdentifier,RationalAgent> result = new HashMap<AgentIdentifier, RationalAgent>();
-
-		/*
-		 * Agent instanciation
-		 */
-
-		for (final AgentIdentifier replicaId : this.getReplicasIdentifier()) {
-
-			final SimpleRationalAgent rep;
-			if (this._usedProtocol
-					.equals(NegotiationParameters.key4mirrorProto)) { //Collaborative
-
-				rep = new CollaborativeReplica(
-						replicaId,
-						this.rig.getAgentState(replicaId),
-						this._socialWelfare,
-						this.simultaneousCandidature,
-						this.dynamicCriticity);
-
-			}else if (this._usedProtocol
-					.equals(NegotiationParameters.key4CentralisedstatusProto)){
-				rep = new StatusReplica(
-						replicaId,
-						this.rig.getAgentState(replicaId),
-						this.getSelectionCore(this._agentSelection),
-						this.simultaneousCandidature,
-						this.dynamicCriticity,
-						this.getMyAgentIdentifier(),
-						alpha_low, alpha_high);
-			}else  if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){ //Status
-
-				rep = new StatusReplica(
-						replicaId,
-						this.rig.getAgentState(replicaId),
-						this.getSelectionCore(this._agentSelection),
-						this.simultaneousCandidature,
-						this.dynamicCriticity,
-						this.opinionDiffusionDegree,
-						alpha_low, alpha_high);
-
-
-			} else {
-				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
-			}
-
-			//Ajout des acquaintances
-			rep.getMyInformation().addAll(this.rig.getAccessibleHosts(replicaId));
-
-			//gestion des état initiaux
-			for (final AgentIdentifier host : rep.getMyCurrentState().getMyResourceIdentifiers()){
-				if (rep.getMyCore().iMemorizeMyRessourceState()) {
-					rep.getMyInformation().add(this.rig.getHostState((ResourceIdentifier)host));
-				}
-				if (rep.getMyCore().iObserveMyRessourceChanges()) {
-					rep.addObserver(host,
-							SimpleRationalAgent.stateChangementObservation);
-				}
-			}
-			result.put(rep.getId(),rep);
-			getMyAgent().myInformationService.add(rep.getMyCurrentState());
-		}
-
-		/*
-		 * Host instanciation
-		 */
-
-		for (final ResourceIdentifier hostId : this.getHostsIdentifier()) {
-
-			final RationalAgent hostAg;
-			if (this._usedProtocol
-					.equals(NegotiationParameters.key4mirrorProto)) {
-				hostAg = new CollaborativeHost(
-						hostId,
-						this.rig.getHostState(hostId),
-						this._socialWelfare,
-						this.simultaneousAcceptation,
-						this.getGreedySelectionType(this._hostSelection),
-						this.maxComputingTime);
-			}else if (this._usedProtocol
-					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
-				hostAg = new StatusHost(
-						hostId,
-						this.rig.getHostState(hostId),
-						this.getSelectionCore(this._hostSelection),
-						this._socialWelfare,
-						this.getMyAgentIdentifier(),
-						alpha_low, alpha_high);
-
-			} else if (this._usedProtocol
-					.equals(NegotiationParameters.key4statusProto)) {
-				hostAg = new StatusHost(
-						hostId,
-						this.rig.getHostState(hostId),
-						this.getSelectionCore(this._hostSelection),
-						this._socialWelfare,
-						this.opinionDiffusionDegree,
-						alpha_low, alpha_high);
-			}else {
-				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
-			}
-
-			//pas d'acquaintance pour les ressources
-
-			//gestion des état initiaux
-			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
-				if ((hostAg.getMyCore()).iMemorizeMyRessourceState()) {
-					hostAg.getMyInformation().add(this.rig.getAgentState(ag));
-				}
-				if ((hostAg.getMyCore()).iObserveMyRessourceChanges()) {
-					hostAg.addObserver(ag,
-							SimpleRationalAgent.stateChangementObservation);
-				}
-			}
-
-			result.put(hostAg.getIdentifier(),hostAg);
-			getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
-		}
-
-		/*
-		 *
-		 */
-
-
-		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class) + this.getMyAgent().myInformationService.show(ReplicaState.class),LogService.onFile);
-		return result.values();
-	}
-
-	private SimpleSelectionCore getSelectionCore(final String selection){
-
-		if (selection
-				.equals(NegotiationParameters.key4greedySelect)) {
-			return new SimpleSelectionCore(
-					true, false, new GreedySelectionModule(GreedySelectionType.Greedy));
-		} else if (selection
-				.equals(NegotiationParameters.key4rouletteWheelSelect)) {
-			return new SimpleSelectionCore(
-					true, false, new GreedySelectionModule(GreedySelectionType.RooletteWheel));
-		} else if (selection
-				.equals(NegotiationParameters.key4randomSelect)) {
-			return new SimpleSelectionCore(
-					true, false, new GreedySelectionModule(GreedySelectionType.Random));
-		} else if (selection
-				.equals(NegotiationParameters.key4OptSelect)) {
-			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(SolverFactory.getLocalSolver(_socialWelfare), true, maxComputingTime));
-		}else if (selection
-				.equals(NegotiationParameters.key4BetterSelect)) {
-			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(SolverFactory.getLocalSolver(_socialWelfare), false, maxComputingTime));
-		} else {
-			throw new RuntimeException(
-					"Static parameters est mal conf : selection = "+ selection);
-		}
-	}
-	private GreedySelectionType getGreedySelectionType(final String selection){
-
-		if (selection
-				.equals(NegotiationParameters.key4greedySelect)) {
-			return GreedySelectionType.Greedy;
-		} else if (selection
-				.equals(NegotiationParameters.key4rouletteWheelSelect)) {
-			return GreedySelectionType.RooletteWheel;
-		} else if (selection
-				.equals(NegotiationParameters.key4OptSelect)) {
-			throw new RuntimeException(
-					"todo!!! "+ selection);
-			//				select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
-		} else {
-			throw new RuntimeException(
-					"Static parameters est mal conf : selection = "+ selection);
-		}
-	}
 
 	//
 	// Protocole
@@ -334,116 +153,42 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	//
 	// Set of values
 	//
-
-	static List<String> protos = Arrays.asList(new String[]{
-			NegotiationParameters.key4mirrorProto,
-			NegotiationParameters.key4CentralisedstatusProto
-			//			,NegotiationParameters.key4statusProto
-	});
-	static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin,SocialChoiceType.Nash});//
-	static List<String> select = Arrays.asList(new String[]{
-			NegotiationParameters.key4greedySelect,
-			NegotiationParameters.key4randomSelect,
-			NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
-	static List<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{
-			DispersionSymbolicValue.Nul,
-			DispersionSymbolicValue.Moyen,
-			DispersionSymbolicValue.Max});
-	static List<Double> doubleParameters = Arrays.asList(new Double[]{
-			0.1,
-			0.5,
-			1.});
-	static List<Double> doubleParameters4 = Arrays.asList(new Double[]{
-			0.3,
-			0.6,
-			1.});
-	static List<Double> doubleParameters5 = Arrays.asList(new Double[]{
-			0.1,
-			0.33
-			,0.66
-			//			,1.
-	});
-	static List<Double> doubleParameters2 = Arrays.asList(new Double[]{
-			0.,
-			0.5,
-			1.});
-	static List<Double> doubleParameters3 = Arrays.asList(new Double[]{
-			0.,
-			0.25,
-			0.5,
-			0.75,
-			1.});
-	static List<Double> doubleParameters6 = Arrays.asList(new Double[]{
-			//			0.01,
-			0.1,
-			//			0.25,
-			0.5,
-			//			0.75,
-			//			1.
-	});
-	//pref TODO : Non imple chez l'agent!!
-	//	Collection<String> agentPref = Arrays.asList(new String[]{
-	//			ReplicationExperimentationProtocol.key4agentKey_Relia,
-	//			ReplicationExperimentationProtocol.key4agentKey_loadNRelia});
-	//	static final String key4agentKey_Relia="onlyRelia";
-	//	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";
-
+	//
 	//
 	// Variation configuration
 	//
-
-	public static final int iterationNumber=10;
-
-	static boolean varyProtocol=false;
-	static boolean  varyOptimizers=false;
-
-	static boolean varyAgents=false;
-	static boolean varyHosts=false;
-
-	static boolean varyAccessibleHost=false;
-
-	static boolean varyAgentSelection=false;
-	static boolean varyHostSelection=false;
-
-	static boolean varyHostDispo=false;
-	static boolean varyHostFaultDispersion=false;
-
-	static boolean varyAgentLoad=false;
-	static boolean varyAgentLoadDispersion=false;
-
-	static boolean varyHostCapacity=false;
-	static boolean varyHostCapacityDispersion=false;
-
-	static boolean varyAgentCriticity=false;
-	static boolean varyAgentCriticityDispersion=false;
-
-//	static boolean varyFault=false;
-	static int dynamicCriticityKey=-1; //-1 never dynamics, 1 always dynamics, 0 both
-
 
 	//
 	// Default values
 	//
 
-	static ReplicationExperimentationParameters getDefaultParameters() {
+	public Long[] getSeeds() {
+		return seeds;
+	}
+
+	ReplicationExperimentationParameters getDefaultParameters() {
+		assert alphaDomain[0][1]!=0.;
 		return new ReplicationExperimentationParameters(
-				ReplicationExperimentationGenerator.startingNbAgents,
-				ReplicationExperimentationGenerator.startingNbHosts,
-				0.5,//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
-				0.7,//dispo mean
+				nbAgentDomain[0],
+				nbHostDomain[0],
+				graphDensityDomain[0],//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
+				dispoMeanDomain[0],//dispo mean
 				DispersionSymbolicValue.Moyen,//dispo dispersion
-				1.,//0.25,//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
-				DispersionSymbolicValue.Nul,//DispersionSymbolicValue.Moyen,//load dispersion
-				3.,//(double)ReplicationExperimentationParameters.startingNbAgents/(double)ReplicationExperimentationParameters.startingNbHosts,//ReplicationExperimentationParameters.doubleParameters.get(1),//capacity mean2.5,//
+				agentLoadMeanDomain[0],//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
+				DispersionSymbolicValue.Moyen,//DispersionSymbolicValue.Moyen,//load dispersion
+				getValue(hostCapacity[0],nbAgentDomain[0]),//capacity mean//(double)ReplicationExperimentationParameters.startingNbAgents/(double)ReplicationExperimentationParameters.startingNbHosts,//ReplicationExperimentationParameters.doubleParameters.get(1),2.5,//
 				DispersionSymbolicValue.Nul,//DispersionSymbolicValue.Faible,//capcity dispersion
-				ReplicationExperimentationGenerator.doubleParameters.get(1),//criticity mean
+				criticityMeanDomain[0],//criticity mean
 				DispersionSymbolicValue.Fort,//criticity dispersion
-				NegotiationParameters.key4mirrorProto,//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
-				SocialChoiceType.Utility,
-				NegotiationParameters.key4greedySelect,//NegotiationParameters.key4rouletteWheelSelect,//
-				NegotiationParameters.key4rouletteWheelSelect,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
-				0.3,
-				0.6,
+				(int)kDomain[0],
+				(int)maxAgentNb,
+				getValue(kOpinionDomain[0],nbAgentDomain[0]),
+				protosDomain[0],//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
+				welfareDomain[0],
+				SelectionType.Greedy,//NegotiationParameters.key4rouletteWheelSelect,//
+				SelectionType.RoolettWheel,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
+				alphaDomain[0][0],
+				alphaDomain[0][1],
 				false,
 				false);
 	}
@@ -457,27 +202,38 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 				+ (ReplicationExperimentationGenerator.varyHostDispo?"varyHostDispo":"")
 				+ (ReplicationExperimentationGenerator.varyHostSelection?"varyHostSelection":"")
 				+ (ReplicationExperimentationGenerator.varyOptimizers?"varyOptimizers":"")
-				+ (ReplicationExperimentationGenerator.varyAccessibleHost?"varyAccessibleHost":"")
+				+ (ReplicationExperimentationGenerator.varyAccessibleAgent?"varyAccessibleHost":"")
+				+ (ReplicationExperimentationGenerator.varySimultaneousAcceptation?"varySimultaneousAcceptation":"")
+				+ (ReplicationExperimentationGenerator.varyOpinionDiffusion?"varyOpinionDiffusion":"")
 				+ (ReplicationExperimentationGenerator.varyAgentLoad?"varyAgentLoad":"")
 				+ (ReplicationExperimentationGenerator.varyHostCapacity?"varyHostCapacity":"");
 	}
 
-	@Override
 	public LinkedList<ExperimentationParameters<ReplicationLaborantin>> generateSimulation() {
 		//		final String usedProtocol, agentSelection, hostSelection;
 		//		f.mkdirs();
 		new File(LogService.getMyPath()+"result_"+ReplicationExperimentationGenerator.getProtocolId()+"/").mkdirs();
 		Collection<ReplicationExperimentationParameters> simuToLaunch =
 				new HashSet<ReplicationExperimentationParameters>();
-		simuToLaunch.add(ReplicationExperimentationGenerator.getDefaultParameters());
+		simuToLaunch.add(getDefaultParameters());
+		assert getDefaultParameters().alpha_high!=0;
 		if (ReplicationExperimentationGenerator.varyAgents) {
 			simuToLaunch = this.varyAgents(simuToLaunch);
 		}
 		if (ReplicationExperimentationGenerator.varyHosts) {
 			simuToLaunch = this.varyHosts(simuToLaunch);
 		}
-		if (ReplicationExperimentationGenerator.varyAccessibleHost) {
+		if (ReplicationExperimentationGenerator.varyAccessibleAgent) {
 			simuToLaunch = this.varyAccessibleHost(simuToLaunch);
+		}
+		if (ReplicationExperimentationGenerator.varyOpinionDiffusion) {
+			simuToLaunch = this.varyOpinionDiffusion(simuToLaunch);
+		}
+		if (ReplicationExperimentationGenerator.varyAlpha) {
+			simuToLaunch = this.varyAlpha(simuToLaunch);
+		}
+		if (ReplicationExperimentationGenerator.varySimultaneousAcceptation) {
+			simuToLaunch = this.varySimultaneousAcceptation(simuToLaunch);
 		}
 		if (ReplicationExperimentationGenerator.varyHostDispo) {
 			simuToLaunch = this.varyHostDispo(simuToLaunch);
@@ -515,9 +271,9 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 		if (ReplicationExperimentationGenerator.varyProtocol) {
 			simuToLaunch = this.varyProtocol(simuToLaunch);
 		}
-//		if (ReplicationExperimentationGenerator.varyFault) {
-//			simuToLaunch = this.varyMaxSimultFailure(simuToLaunch);
-//		}
+		//		if (ReplicationExperimentationGenerator.varyFault) {
+		//			simuToLaunch = this.varyMaxSimultFailure(simuToLaunch);
+		//		}
 
 		simuToLaunch = this.varyDynamicCriticity(simuToLaunch);
 
@@ -534,7 +290,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 		final LinkedList<ExperimentationParameters<ReplicationLaborantin>> simus =
 				new LinkedList<ExperimentationParameters<ReplicationLaborantin>>();
 		for (final ReplicationExperimentationParameters p : simuToLaunch) {
-			if (this.isValid(p)){
+			if (p.isValid()){
 				simus.add(p);
 			}else{
 				//				this.logWarning("ABORTED !!! "+(p.nbHosts*p.agentAccessiblePerHost<p.nbAgents)+" "+(p.agentAccessiblePerHost<=0)+" \n"+p, LogService.onBoth);
@@ -542,38 +298,6 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 		}
 		Collections.sort(simus,comp);
 		return simus;
-	}
-
-
-	private boolean isValid(final ReplicationExperimentationParameters p) {
-		if (p.nbHosts*p.agentAccessiblePerHost<this.nbAgents || p.agentAccessiblePerHost<=0) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public Laborantin createLaborantin(final APILauncherModule api)
-			throws CompetenceException, IfailedException,
-			NotEnoughMachinesException {
-		final ReplicationLaborantin l = new ReplicationLaborantin(this, api);
-		this.setMyAgent(l);
-		return l;
-	}
-
-
-	/*
-	 *Distribution
-	 */
-
-	final double nbSimuPerMAchine = 1;
-	@Override
-	public Integer getMaxNumberOfAgent(final HostIdentifier id) {
-		return new Integer((int) this.nbSimuPerMAchine*
-				//				(nbAgents + nbHosts)+1);
-				(ReplicationExperimentationGenerator.startingNbAgents + ReplicationExperimentationGenerator.startingNbHosts)+1);
-		//		return new Integer(10);
 	}
 
 
@@ -591,7 +315,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyProtocol(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final String v : ReplicationExperimentationGenerator.protos){
+			for (final String v : Arrays.asList(protosDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._usedProtocol=v;
 				result.add(n);
@@ -600,11 +324,12 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 		return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyAgentSelection(final Collection<ReplicationExperimentationParameters> exps){
+		assert false:"la selection agent est tjs greedy";
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final String v : ReplicationExperimentationGenerator.select){
+			for (final SelectionType v : SelectionType.RoolettWheel.values()){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.setAgentSelection(v);
+				n._agentSelection=v;
 				result.add(n);
 			}
 		}
@@ -613,7 +338,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyHostSelection(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final String v : ReplicationExperimentationGenerator.select){
+			for (final SelectionType v : SelectionType.RoolettWheel.values()){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._hostSelection=v;
 				result.add(n);
@@ -624,7 +349,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyOptimizers(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final SocialChoiceType v : ReplicationExperimentationGenerator.welfare){
+			for (final SocialChoiceType v : Arrays.asList(welfareDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._socialWelfare=v;
 				result.add(n);
@@ -632,22 +357,23 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 		}
 		return result;
 	}
+	//	private Collection<ReplicationExperimentationParameters> varyAgents(final Collection<ReplicationExperimentationParameters> exps){
+	//		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+	//		for (final ReplicationExperimentationParameters p : exps) {
+	//			for (final Double v : ReplicationExperimentationGenerator.doubleParameters6){
+	//				final ReplicationExperimentationParameters n =  p.clone();
+	//				n.nbAgents=(int)(v*ReplicationExperimentationGenerator.startingNbAgents);
+	//				//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
+	//				result.add(n);
+	//			}
+	//		}
+	//		return result;
+	//	}
 	private Collection<ReplicationExperimentationParameters> varyAgents(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationGenerator.doubleParameters6){
-				final ReplicationExperimentationParameters n =  p.clone();
-				n.nbAgents=(int)(v*ReplicationExperimentationGenerator.startingNbAgents);
-				//				n.nbAgents=(int)((v  * n.nbHosts * n.hostCapacityMean)/n.agentLoadMean);
-				result.add(n);
-			}
-		}
-		return result;
-	}
-	private Collection<ReplicationExperimentationParameters> varyAgents2(final Collection<ReplicationExperimentationParameters> exps){
-		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps) {
-			final List<Integer> nbAgentsList = Arrays.asList(new Integer[]{10,20,40,80,100,150,200,350,500,750,1000,2000,5000});
+assert p.alpha_high!=0;
+			final List<Integer> nbAgentsList = Arrays.asList(nbAgentDomain);
 			for (final Integer v : nbAgentsList){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.nbAgents=v;
@@ -683,9 +409,10 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyHosts(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationGenerator.doubleParameters6){
+			for (final Integer v : Arrays.asList(nbHostDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.nbHosts=(int)(v*ReplicationExperimentationGenerator.startingNbHosts);
+				n.nbHosts=v;
+				result.add(n);
 			}
 		}
 		return result;
@@ -693,9 +420,45 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyAccessibleHost(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationGenerator.doubleParameters4){
+			for (final Double v : Arrays.asList(graphDensityDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.setkAccessible(v);
+				n.agentAccessiblePerHost=(int) v.intValue();
+				result.add(n);
+			}
+		}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyOpinionDiffusion(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps) {
+			for (final Double v : Arrays.asList(kOpinionDomain)){
+				final ReplicationExperimentationParameters n =  p.clone();
+				n.opinionDiffusionDegree=getValue(v,new Double(p.nbAgents));
+				result.add(n);
+			}
+		}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varyAlpha(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps) {
+			for (final Double[] v : Arrays.asList(alphaDomain)){
+				final ReplicationExperimentationParameters n =  p.clone();
+				assert n.alpha_high!=0.;
+				n.alpha_low=v[0];
+				n.alpha_high=v[1];
+				result.add(n);
+//				System.out.println(n.alpha_high);
+			}
+		}
+		return result;
+	}
+	private Collection<ReplicationExperimentationParameters> varySimultaneousAcceptation(final Collection<ReplicationExperimentationParameters> exps){
+		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+		for (final ReplicationExperimentationParameters p : exps) {
+			for (final Integer v : Arrays.asList(kDomain)){
+				final ReplicationExperimentationParameters n =  p.clone();
+				n.agentAccessiblePerHost=v;
 				result.add(n);
 			}
 		}
@@ -704,7 +467,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyHostDispo(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationGenerator.doubleParameters5){
+			for (final Double v :  Arrays.asList(dispoMeanDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.hostFaultProbabilityMean=v;
 				result.add(n);
@@ -716,7 +479,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyHostFaultDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final DispersionSymbolicValue v : ReplicationExperimentationGenerator.dispersion){
+			for (final DispersionSymbolicValue v : Arrays.asList(dispersionDomain)){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.hostFaultProbabilityDispersion=v;
 				result.add(n);
@@ -728,7 +491,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyAgentLoad(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationGenerator.doubleParameters5){
+			for (final Double v : Arrays.asList(agentLoadMeanDomain)){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentLoadMean=v;
 				result.add(n);
@@ -740,7 +503,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyAgentLoadDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final DispersionSymbolicValue v : ReplicationExperimentationGenerator.dispersion){
+			for (final DispersionSymbolicValue v : Arrays.asList(dispersionDomain)){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentLoadDispersion=v;
 				result.add(n);
@@ -762,20 +525,12 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 
 	private Collection<ReplicationExperimentationParameters> varyHostCapacity(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		final List<Double> capacitiesList = Arrays.asList(new Double[]{0.10,0.30,0.60,1.});
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : capacitiesList){
-				//variant resources capacity
+			for (final Double v : Arrays.asList(hostCapacity)){
 				final ReplicationExperimentationParameters n = p.clone();
-				n.hostCapacityMean=v*p.nbAgents;
+				n.hostCapacityMean=getValue(v,p.nbAgents);
 				if (n.hostCapacityMean>n.nbAgents/n.nbHosts){
 					result.add(n);
-				}
-				//fixed resources capacity
-				final ReplicationExperimentationParameters n2 = p.clone();
-				n2.hostCapacityMean=(double)ReplicationExperimentationGenerator.startingNbAgents/(double)ReplicationExperimentationGenerator.startingNbHosts;
-				if (n2.hostCapacityMean>n2.nbAgents/n2.nbHosts){
-					result.add(n2);
 				}
 			}
 		}
@@ -785,7 +540,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 			final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final DispersionSymbolicValue v : ReplicationExperimentationGenerator.dispersion){
+			for (final DispersionSymbolicValue v : Arrays.asList(dispersionDomain)){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.hostCapacityDispersion=v;
 				result.add(n);
@@ -796,7 +551,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyAgentCriticity(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final Double v : ReplicationExperimentationGenerator.doubleParameters){
+			for (final Double v : Arrays.asList(criticityMeanDomain)){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentCriticityMean=v;
 				result.add(n);
@@ -807,7 +562,7 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 	private Collection<ReplicationExperimentationParameters> varyAgentCriticityDispersion(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final DispersionSymbolicValue v : ReplicationExperimentationGenerator.dispersion){
+			for (final DispersionSymbolicValue v : Arrays.asList(dispersionDomain)){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.agentCriticityDispersion=v;
 				result.add(n);
@@ -816,17 +571,17 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 		return result;
 	}
 
-//	private Collection<ReplicationExperimentationParameters> varyMaxSimultFailure(final Collection<ReplicationExperimentationParameters> exps){
-//		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-//		for (final ReplicationExperimentationParameters p : exps) {
-//			for (final Double v : ReplicationExperimentationGenerator.doubleParameters2){
-//				final ReplicationExperimentationParameters n = p.clone();
-//				n.setMaxSimultFailure(v);
-//				result.add(n);
-//			}
-//		}
-//		return result;
-//	}
+	//	private Collection<ReplicationExperimentationParameters> varyMaxSimultFailure(final Collection<ReplicationExperimentationParameters> exps){
+	//		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+	//		for (final ReplicationExperimentationParameters p : exps) {
+	//			for (final Double v : ReplicationExperimentationGenerator.doubleParameters2){
+	//				final ReplicationExperimentationParameters n = p.clone();
+	//				n.setMaxSimultFailure(v);
+	//				result.add(n);
+	//			}
+	//		}
+	//		return result;
+	//	}
 	private Collection<ReplicationExperimentationParameters> varyDynamicCriticity(
 			final Collection<ReplicationExperimentationParameters> exps) {
 		assert ReplicationExperimentationGenerator.dynamicCriticityKey>=-1 && ReplicationExperimentationGenerator.dynamicCriticityKey<=1;
@@ -845,6 +600,63 @@ public class ReplicationExperimentationGenerator extends ReplicationExperimentat
 			}
 		}
 		return result;
+
 	}
 
 }
+
+
+
+
+//static List<String> protos = Arrays.asList(new String[]{
+//		NegotiationParameters.key4mirrorProto,
+//		NegotiationParameters.key4CentralisedstatusProto
+//		//			,NegotiationParameters.key4statusProto
+//});
+//static List<SocialChoiceType> welfare = Arrays.asList(new SocialChoiceType[]{SocialChoiceType.Utility, SocialChoiceType.Leximin,SocialChoiceType.Nash});//
+//static List<String> select = Arrays.asList(new String[]{
+//		NegotiationParameters.key4greedySelect,
+//		NegotiationParameters.key4randomSelect,
+//		NegotiationParameters.key4rouletteWheelSelect});//,key4AllocSelect
+//static List<DispersionSymbolicValue> dispersion = Arrays.asList(new DispersionSymbolicValue[]{
+//		DispersionSymbolicValue.Nul,
+//		DispersionSymbolicValue.Moyen,
+//		DispersionSymbolicValue.Max});
+//static List<Double> doubleParameters = Arrays.asList(new Double[]{
+//		0.1,
+//		0.5,
+//		1.});
+//static List<Double> doubleParameters4 = Arrays.asList(new Double[]{
+//		0.3,
+//		0.6,
+//		1.});
+//static List<Double> doubleParameters5 = Arrays.asList(new Double[]{
+//		0.1,
+//		0.33
+//		,0.66
+//			,1.
+//});
+//static List<Double> doubleParameters2 = Arrays.asList(new Double[]{
+//		0.,
+//		0.5,
+//		1.});
+//static List<Double> doubleParameters3 = Arrays.asList(new Double[]{
+//		0.,
+//		0.25,
+//		0.5,
+//		0.75,
+//		1.});
+//static List<Double> doubleParameters6 = Arrays.asList(new Double[]{
+//		//			0.01,
+//		0.1,
+//		//			0.25,
+//		0.5,
+//		//			0.75,
+//		//			1.
+//});
+//pref TODO : Non imple chez l'agent!!
+//	Collection<String> agentPref = Arrays.asList(new String[]{
+//			ReplicationExperimentationProtocol.key4agentKey_Relia,
+//			ReplicationExperimentationProtocol.key4agentKey_loadNRelia});
+//	static final String key4agentKey_Relia="onlyRelia";
+//	static final String key4agentKey_loadNRelia="firstLoadSecondRelia";

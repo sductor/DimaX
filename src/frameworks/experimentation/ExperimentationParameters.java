@@ -15,6 +15,7 @@ import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
+import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 
 /**
@@ -36,6 +37,10 @@ import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 public abstract class ExperimentationParameters<Agent extends Laborantin>
 extends BasicAgentModule<Agent> implements Comparable{
 	private static final long serialVersionUID = -1735965270944987539L;
+
+
+	protected long randSeed;
+
 
 
 
@@ -80,6 +85,9 @@ extends BasicAgentModule<Agent> implements Comparable{
 		return this.resultPath;
 	}
 
+	public void setSeed(Long seed) {
+		this.randSeed = seed;
+	}
 	//
 	// Abstract Methods
 	//
@@ -152,6 +160,9 @@ extends BasicAgentModule<Agent> implements Comparable{
 		result+="**************";
 		return result;
 	}
+
+	public abstract boolean isValid();
+
 
 
 }

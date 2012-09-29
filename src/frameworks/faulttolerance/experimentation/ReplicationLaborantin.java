@@ -96,10 +96,12 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 	// Main
 	//
 
+	public static Integer informativeParameter;
+	
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, IfailedException, NotEnoughMachinesException{
 		//		System.out.println(1<<10000);
-
+		informativeParameter = new Integer(args[2]);
 		final Experimentator exp =
 				new Experimentator(
 						new ReplicationExperimentationGenerator().getDefaultParameters(),

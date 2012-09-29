@@ -107,8 +107,8 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 	static boolean varyAccessibleAgent=true;
 	static boolean varySimultaneousAcceptation=true;
-	static boolean varyOpinionDiffusion=false;
-	static boolean varyAlpha=false;
+	static boolean varyOpinionDiffusion=true;
+	static boolean varyAlpha=true;
 
 	static boolean varyAgentSelection=false;
 	static boolean varyHostSelection=false;
@@ -183,7 +183,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 				(int)kDomain[0],
 				(int)maxAgentNb,
 				getValue(kOpinionDomain[0],nbAgentDomain[0]),
-				protosDomain[0],//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
+				ReplicationLaborantin.informativeParameter.equals(0)?protosDomain[0]:protosDomain[1],//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
 				welfareDomain[0],
 				SelectionType.Greedy,//NegotiationParameters.key4rouletteWheelSelect,//
 				SelectionType.RoolettWheel,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//

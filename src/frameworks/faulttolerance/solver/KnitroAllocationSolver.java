@@ -13,6 +13,7 @@ import com.ziena.knitro.KnitroJava;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.dcop.DcopSolver;
 import frameworks.faulttolerance.experimentation.ReplicationGraph;
@@ -39,6 +40,10 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 		this.parallel = numberOfThreads>1;
 	}
 
+	static {
+//		System.setProperty("java.library.path",System.getProperty("java.library.path")+":"+LogService.getDimaXDir()+"lib/");// System.getProperty("java.library.path")+":"+
+		System.out.println(System.getProperty("java.library.path"));
+	}
 
 	/*
 	 * 
@@ -647,7 +652,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 	public static void main(String[] args) throws Exception {
 		Random rand = new Random(65646);
 		for (int i = 0; i < 200; i++){
-			ReplicationInstanceGraph rig = new ReplicationInstanceGraph(SocialChoiceType.Nash);
+			ReplicationInstanceGraph rig = new ReplicationInstanceGraph(SocialChoiceType.Utility);
 
 			try {
 				rig.randomInitiaition(

@@ -1,4 +1,7 @@
-oarsub -p "host='big7'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
+oarsub -p "host='big3'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
+oarsub -p "host='big8'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
 oarsub -p "host='big22'" -l "{type='default'}/core=7,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
-oarsub -p "host='big6'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
 
+
+
+java -Djava.library.path=/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64/server:/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64:/usr/lib/jvm/java-6-openjdk-amd64/jre/../lib/amd64:/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib:/home/ductors/workspace/DimaX/lib/ -cp $CLASSPATH:../lib/* frameworks.faulttolerance.solver.KnitroAllocationSolver

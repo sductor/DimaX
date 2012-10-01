@@ -18,6 +18,6 @@
 	<classpathentry kind="lib" path="lib/smackx-debug.jar"/>
 	<classpathentry kind="lib" path="lib/smackx-jingle.jar"/>
 	<classpathentry kind="lib" path="lib/smackx.jar"/>
-	<classpathentry kind="lib" path="lib/knitro-8.0.0-z/examples/Java/knitro800java.jar"/>
+	<classpathentry kind="lib" path="lib/knitro800java.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

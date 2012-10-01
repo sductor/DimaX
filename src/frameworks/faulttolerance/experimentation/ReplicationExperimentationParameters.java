@@ -647,11 +647,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public boolean isValid() {
 		assert alpha_high!=0.;
 		if (nbHosts*agentAccessiblePerHost<nbAgents || agentAccessiblePerHost<=0) {
-			System.out.println("agentAccessiblePerHost not valid");
+//			System.out.println("agentAccessiblePerHost not valid");
 			return false;
 		} 
 		if (!this._agentSelection.equals(SelectionType.Greedy)){
-			System.out.println("_agentSelection0 not valid");
+//			System.out.println("_agentSelection0 not valid");
 			return false;
 		}
 
@@ -660,29 +660,29 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
 			if (alpha_high.equals(Double.NaN) || alpha_low.equals(Double.NaN)){
 				assert alpha_high.equals(Double.NaN) && alpha_low.equals(Double.NaN);
-				System.out.println("alpha1 not valid");
+//				System.out.println("alpha1 not valid");
 				return false;
 			} if (this.opinionDiffusionDegree.equals(Double.NaN)){
-				System.out.println("opinionDiffusionDegree1 not valid");
+//				System.out.println("opinionDiffusionDegree1 not valid");
 				return false;
 			}
 			if (!this._agentSelection.equals(SelectionType.RoolettWheel)){
-				System.out.println("_agentSelection1 not valid");
+//				System.out.println("_agentSelection1 not valid");
 				return false;
 			}
 
 		} else if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
 			if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN)){
-				System.out.println("alpha 2not valid "+alpha_high+" "+alpha_low);
+//				System.out.println("alpha 2not valid "+alpha_high+" "+alpha_low);
 				assert !alpha_high.equals(Double.NaN) && !alpha_low.equals(Double.NaN);
 				return false;
 			}
 			if (!this.opinionDiffusionDegree.equals(Double.NaN)){
-				System.out.println("opinionDiffusionDegree 2not valid "+opinionDiffusionDegree);
+//				System.out.println("opinionDiffusionDegree 2not valid "+opinionDiffusionDegree);
 				return false;
 			}
 			if (!this._agentSelection.equals(SelectionType.Greedy)){
-				System.out.println("_agentSelection 2not valid");
+//				System.out.println("_agentSelection 2not valid");
 				return false;
 			}
 

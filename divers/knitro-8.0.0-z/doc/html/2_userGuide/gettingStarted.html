@@ -1,0 +1,140 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started &mdash; KNITRO user guide 8.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '8.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="KNITRO user guide 8.0 documentation" href="../index.html" />
+    <link rel="up" title="User guide" href="../2_userGuide.html" />
+    <link rel="next" title="Getting started with AMPL" href="gettingStarted/startAmpl.html" />
+    <link rel="prev" title="User guide" href="../2_userGuide.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="gettingStarted/startAmpl.html" title="Getting started with AMPL"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../2_userGuide.html" title="User guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../2_userGuide.html" accesskey="U">User guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started</h1>
+<p id="index-0">KNITRO can take its input from many different calling programs
+and programming languages, with various levels of abstraction.
+There are essentially three ways to interact with KNITRO (in
+addition, specific interfaces for Microsoft Excel and Labview
+are available):</p>
+<ul class="simple">
+<li>via a modeling language like AMPL, AIMMS, GAMS, or MPL;</li>
+<li>via a numerical computing environment like Matlab or Mathematica;</li>
+<li>via a programming language such as C/C++, Java, Fortran.</li>
+</ul>
+<p>The first two methods are usually simpler, and the first has the
+advantage of providing derivatives &#8220;for free&#8221; since modellers
+compute derivatives behind the scene (see Section <a class="reference internal" href="derivatives.html#sec-derivatives"><em>Derivatives</em></a>).
+Calling from a programming language adds some complexity but offers
+a very fine control over the solver&#8217;s behaviour.</p>
+<p>This section provides a hands-on example for each method, using AMPL,
+Matlab and C++.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">KNITRO&#8217;s behaviour can be controlled by <em>user parameters</em>.
+Depending on the interface used, user parameters will be defined by their text
+name such as &#8220;alg&#8221; (this would be the case in AMPL) or by programming language
+identifiers such as KTR_PARAM_ALG (that would be the case in C/C++).</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingStarted/startAmpl.html">Getting started with AMPL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingStarted/startMatlab.html">Getting started with MATLAB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingStarted/startCallableLibrary.html">Getting started with the callable library</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../2_userGuide.html"
+                        title="previous chapter">User guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gettingStarted/startAmpl.html"
+                        title="next chapter">Getting started with AMPL</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="gettingStarted/startAmpl.html" title="Getting started with AMPL"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../2_userGuide.html" title="User guide"
+             >previous</a> |</li>
+        <li><a href="../index.html">KNITRO user guide 8.0 documentation</a> &raquo;</li>
+          <li><a href="../2_userGuide.html" >User guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Ziena Optimization LLC.
+    </div>
+  </body>
+</html>

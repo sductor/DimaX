@@ -59,7 +59,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public  boolean activateCommSendtoScreen = false;
 	public  boolean activateCommReceivtoScreen = false;
 	public  boolean activateExceptoScreen = true;
-	public static  Boolean activateMonotoScreen = true;
+	public static  Boolean activateMonotoScreen = false;
 	//Order or the log to be written in specific files
 	public static Boolean activateMonoToFiles = false;
 	public boolean activateCommSendtoFiles = false;

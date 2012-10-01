@@ -12,6 +12,7 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.kernel.LaunchableCompetentComponent;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.Experimentator;
 import frameworks.experimentation.IfailedException;

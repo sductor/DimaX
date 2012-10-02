@@ -53,7 +53,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	@Override
 	public void handlePresenceChangement(Presence presence) {
 		if (friends.contains(StringUtils.parseBareAddress(presence.getFrom()))){
-			String text = "on "+new Date()+" new presence : "+/*presence.getFrom()+*/" : "+presence;
+			String text = "on "+new Date()+" new presence : "+presence.getFrom()+" : "+presence;
 //			System.out.println(text);
 			LogService.logOnFile(log, text, false, false);
 		}

@@ -100,7 +100,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 			assert agentVar.getDomain()==(int)Math.pow(2, agentVar.getNeighbors().size()):
 				agentVar.id+" "+agentVar.getDomain()+" "+agentVar.getNeighbors();
 		}
-		
+
 		if (DCOPFactory.isClassical()){
 			instanciateConstraintsValues();
 		}
@@ -178,7 +178,7 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 		return DCOPFactory.evaluate(this);
 	}
 	public  HashMap<Integer, Integer> solve(){
-			return SolverFactory.solve(this);
+		return SolverFactory.solve(this);
 	}
 
 
@@ -265,6 +265,10 @@ public class DcopReplicationGraph extends GimaObject implements ReplicationGraph
 			}
 		}
 		return result;
+	}
+
+	public ReplicationVariable getVariable(AgentIdentifier id){
+		return varMap.get(DCOPFactory.identifierToInt(id));
 	}
 
 	//

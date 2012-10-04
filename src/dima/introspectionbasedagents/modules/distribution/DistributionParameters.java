@@ -28,6 +28,7 @@ Serializable {
 	// Constructor
 	//
 
+	
 	public DistributionParameters(final Collection<K> population,
 			final double moyenne, final double ecartType, Random rand) {
 		this.g = new NormalLaw(moyenne, ecartType, rand);
@@ -37,22 +38,39 @@ Serializable {
 		}
 	}
 
-	//Normalis�
+	/**
+	 * Normalis� entre [0,1] si withExtrem et ]0,1[ sinon
+	 */
 	public DistributionParameters(final Collection<K> population,
-			final ZeroOneSymbolicValue moyenne,final DispersionSymbolicValue ecartType, Random rand) {
+			final ZeroOneSymbolicValue moyenne,final DispersionSymbolicValue ecartType, Random rand, boolean withExtrem) {
 		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {
-			this.put(individu,  this.g.nextNormalizedNonExtremeValue());
+			if (withExtrem){
+				this.put(individu,  this.g.nextNormalizedValue());
+			} else {
+				this.put(individu,  this.g.nextNormalizedNonExtremeValue());
+			}
 		}
 	}
-	//Normalis�
+	/**
+	 * Normalis�entre [0,1] si withExtrem et ]0,1[ sinon
+	 * @param population
+	 * @param moyenne
+	 * @param ecartType
+	 * @param rand
+	 * @param withExtrem
+	 */
 	public DistributionParameters(final Collection<K> population,
-			final Double moyenne,final DispersionSymbolicValue ecartType, Random rand) {
+			final Double moyenne,final DispersionSymbolicValue ecartType, Random rand, boolean withExtrem) {
 		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {
-			this.put(individu,  this.g.nextNormalizedNonExtremeValue());
+			if (withExtrem){
+				this.put(individu,  this.g.nextNormalizedValue());
+			} else {
+				this.put(individu,  this.g.nextNormalizedNonExtremeValue());
+			}
 		}
 	}
 }

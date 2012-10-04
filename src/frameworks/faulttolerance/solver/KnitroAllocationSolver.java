@@ -25,11 +25,13 @@ import frameworks.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.exploration.Solver;
+import frameworks.negotiation.exploration.Solver.UnsatisfiableException;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public class KnitroAllocationSolver extends ResourceAllocationProblem{
+public class KnitroAllocationSolver extends ResourceAllocationInterface<SimpleSolutionType>{
 
+	
 	public KnitroAllocationSolver(SocialChoiceType socialChoice,
 			boolean isAgent, boolean isHost, int algo, boolean cplex,
 			int numberOfThreads) {
@@ -40,10 +42,10 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 		this.parallel = numberOfThreads>1;
 	}
 
-	static {
-//		System.setProperty("java.library.path",System.getProperty("java.library.path")+":"+LogService.getDimaXDir()+"lib/");// System.getProperty("java.library.path")+":"+
-		System.out.println(System.getProperty("java.library.path"));
-	}
+//	static {
+////		System.setProperty("java.library.path",System.getProperty("java.library.path")+":"+LogService.getDimaXDir()+"lib/");// System.getProperty("java.library.path")+":"+
+////		System.out.println(System.getProperty("java.library.path"));
+//	}
 
 	/*
 	 * 
@@ -122,6 +124,17 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 	}
 
 	@Override
+	protected double read(SimpleSolutionType var, int agent, int host) {
+		assert var!=null;
+		return var.getSol()[getPos(agent, host)];
+	}
+
+	@Override
+	public SimpleSolutionType getInitialAllocAsSolution(double[] intialAlloc) {
+		return new SimpleSolutionType(intialAlloc);
+	}
+
+	@Override
 	public void setTimeLimit(int millisec) {
 		solver.setIntParamByName("mip_maxtime_cpu", millisec/1000);
 	}
@@ -133,18 +146,9 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 	int jvarNonNul;
 	int hvarNonNul;
 
-	public static String asMatrix(double[] vect, int nbCol) {
-		String result ="[ ";
-		for (int i = 0; i < vect.length; i++){
-			if (i%nbCol==0)
-				result+="\n ";
-			result+=vect[i]+" ";
-		}
-		return result;
-	}
 
 	protected void initiateSolver() throws UnsatisfiableException  {
-		numVar = n*m;
+		numVar = getVariableNumber();
 		try {
 			solver = new KnitroJava();
 		} catch (Exception e) {
@@ -166,7 +170,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 
 		//constraints 
 
-		setNumConstraint();
+		numConstraint=getConstraintNumber();
 
 		double[] conslb = new double[numConstraint];
 		double[] consub = new double[numConstraint];
@@ -198,7 +202,8 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 		}
 
 		if (isLocal()){
-			conslb[getLocalConstraintPos()]=getMinimalWelfare();
+			assert intialSolution!=null;
+			conslb[getLocalConstraintPos()]=getSocWelfare(intialSolution);
 			consub[getLocalConstraintPos()] = KnitroJava.KTR_INFBOUND;
 			consType[getLocalConstraintPos()]=KnitroJava.KTR_CONTYPE_GENERAL;
 			consFnType[getLocalConstraintPos()]=socialChoice.equals(SocialChoiceType.Nash)?KnitroJava.KTR_FNTYPE_NONCONVEX:KnitroJava.KTR_FNTYPE_UNCERTAIN;
@@ -298,6 +303,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 		}
 	}
 
+
 	//
 	//	public static void main (String[] args) throws Exception{
 	//		KnitroAllocationSolver kas = new KnitroAllocationSolver();
@@ -307,7 +313,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 	//		kas.initiate();
 	//	}
 
-	protected double[] solveProb(boolean opt) throws UnsatisfiableException {
+	protected SimpleSolutionType solveProb(boolean opt) throws UnsatisfiableException {
 		initiateSolver();
 		boolean ok;
 		if (opt){
@@ -441,7 +447,8 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 					+ solver.getMipNumSolves());
 		}
 		finishingStatus=nKnStatus;
-		return daX;
+		if (opt) solver.destroyInstance();
+		return new SimpleSolutionType(daX);
 	}
 
 	@Override
@@ -491,7 +498,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 		if (isAgent){
 			//n first : survivability of agent i
 			for (int agent_i = 0; agent_i < n; agent_i++){
-				daC[getAgentConstraintPos(agent_i)]=getAgentSurvie(daX, agent_i);					
+				daC[getAgentConstraintPos(agent_i)]=getAgentSurvie(new SimpleSolutionType(daX), agent_i);					
 			}
 		}
 
@@ -499,12 +506,12 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 			//m next proc  of host i
 			//m next mem  of host i	
 			for (int host_j = 0; host_j < m; host_j++){
-				daC[getHostConstraintPos(host_j, true)]=getMemCharge(daX, host_j);
-				daC[getHostConstraintPos(host_j, false)]=getProcCharge(daX, host_j);
+				daC[getHostConstraintPos(host_j, true)]=getHostMemoryCharge(new SimpleSolutionType(daX), host_j);
+				daC[getHostConstraintPos(host_j, false)]=getHostProcessorCharge(new SimpleSolutionType(daX), host_j);
 			}
 		}	
 
-		return getSocWelfare(daX);
+		return getSocWelfare(new SimpleSolutionType(daX));
 	}
 
 	/** Compute the function and constraint first deriviatives at x.
@@ -516,7 +523,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 		for (int agent_i = 0; agent_i < n; agent_i++){
 			for (int host_j = 0; host_j < m; host_j++){
 				//obj
-				double dRondSocWelfare = getDRondSocWelfare(daX, agent_i, host_j);
+				double dRondSocWelfare = getDRondSocWelfare(new SimpleSolutionType(daX), agent_i, host_j);
 				daObjGrad[getPos(agent_i,host_j)]=dRondSocWelfare;
 				//surv
 				if (isAgent){
@@ -547,7 +554,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 				for (int host_j = 0; host_j < m; host_j++){
 					for (int host_jp = host_j; host_jp < m; host_jp++){
 						daHess[pos]=0;
-						double dRond2SocWelfare = getDRondDeuxSocWelfare(daX, agent_i, host_j, agent_i, host_jp);
+						double dRond2SocWelfare = getDRondDeuxSocWelfare(new SimpleSolutionType(daX), agent_i, host_j, agent_i, host_jp);
 						if (withObj)
 							daHess[pos]+=dRond2SocWelfare;
 
@@ -565,7 +572,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 					for (int host_j = 0; host_j < m; host_j++){
 						for (int host_jp = host_j; host_jp < m; host_jp++){
 							daHess[pos]=0;
-							double dRond2SocWelfare = getDRondDeuxSocWelfare(daX, agent_i, host_j, agent_ip, host_jp);
+							double dRond2SocWelfare = getDRondDeuxSocWelfare(new SimpleSolutionType(daX), agent_i, host_j, agent_ip, host_jp);
 							if (withObj)
 								daHess[pos]+=dRond2SocWelfare;
 
@@ -589,15 +596,7 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 	/******                   *******/
 
 
-	private void setNumConstraint() {
-		numConstraint=0;
-		if (isAgent)
-			numConstraint+=n;
-		if (isHost)
-			numConstraint+=2*m;
-		if (isLocal())
-			numConstraint++;
-	}
+
 
 	private int getHostConstraintPos(int host_j, boolean isMemory) {
 		assert isHost;
@@ -645,60 +644,73 @@ public class KnitroAllocationSolver extends ResourceAllocationProblem{
 		if (isMemory)
 			start=0;
 		else
-			start = n*m;
+			start = getVariableNumber();
 		return start+getPos( agent_i, host_j);
 	}
+	
+	
+	/**
+	 *
+	 */
 
-	public static void main(String[] args) throws Exception {
-		Random rand = new Random(65646);
-		for (int i = 0; i < 200; i++){
-			ReplicationInstanceGraph rig = new ReplicationInstanceGraph(SocialChoiceType.Utility);
-
-			try {
-				rig.randomInitiaition(
-						"to", rand.nextInt(),
-						5+rand.nextInt(5), 1,1000,//nbAgent,nbHost
-						0.5, DispersionSymbolicValue.Moyen, //criticity
-						0.25, DispersionSymbolicValue.Nul, //agent load
-						1., DispersionSymbolicValue.Nul, //hostCap
-						0.5, DispersionSymbolicValue.Moyen, //hostDisp
-						100,100);
-			} catch (IfailedException e1) {
-				e1.printStackTrace();
-			}
-			rig = rig.getUnallocatedGraph();
-			//			System.out.println(rig);
-			//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 5, false, 5);
-			KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 2, false, -1);
-			kas.myState=rig.getHostsStates().iterator().next();
-			kas.setProblem(rig);
-			kas.initiateSolver();
-			double[] bestSolution = kas.solveProb(true);
-
-			//		System.out.println("charge "+kas.getMemCharge(bestSolution, 0)+"  max  "+kas.getMemCharge(new double[]{1.,1.,1.,1.}, 0));
-			//		System.out.println(print(kas.agents));
-			List<ReplicaState> best = new ArrayList<ReplicaState>();
-			double[] bestPossible = kas.getBestTriviaSol(best,4);
-			System.out.println("best found    !!!!!!!!!!!!!!!! "+kas.getSocWelfare(bestSolution)+" \t \t"+print(bestSolution));
-			System.out.println("best possible !!!!!!!!!!!!!!!! "+" "+kas.getSocWelfare(bestPossible)+" \t \t"+print(bestPossible));
-			//		System.out.println("1 1 1 0  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,1.,0.}));
-			//		System.out.println("0 1 1 1  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,1.,1.,1.}));
-			//		System.out.println("1 1 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,0.,0.}));
-			//		System.out.println("1 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,0.,0.,0.}));
-			//		System.out.println("0 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,0.,0.,0.}));
-			//		for (AgentState s : kas.getAllocation(bestSolution).values()){
-			//			if (s instanceof HostState)
-			//				System.out.println(s);
-			//		}
-			//		System.out.println(best);
-			//		for (int i = 1; i < 5; i++)
-			//		for (AgentState s : kas.getAllocation(kas.getBestSolution()).values()){
-			//			if (s instanceof HostState)
-			//				System.out.println(s);
-			//		}
-			//		System.out.println(kas.getSolution(kas.bestSolution));
-		}
+	protected double[] getBestTriviaSol(List<ReplicaState> best, double hostCap) {
+		double[] r = super.getBestTriviaSol(best, hostCap);
+		solver.destroyInstance();
+		return r;
 	}
-
-
+	
 }
+
+
+
+//public static void main(String[] args) throws Exception {
+//	Random rand = new Random(65646);
+//	for (int i = 0; i < 200; i++){
+//		ReplicationInstanceGraph rig = new ReplicationInstanceGraph(SocialChoiceType.Utility);
+//
+//		try {
+//			rig.randomInitiaition(
+//					"to", rand.nextInt(),
+//					5+rand.nextInt(5), 1,1000,//nbAgent,nbHost
+//					0.5, DispersionSymbolicValue.Moyen, //criticity
+//					0.25, DispersionSymbolicValue.Nul, //agent load
+//					1., DispersionSymbolicValue.Nul, //hostCap
+//					0.5, DispersionSymbolicValue.Moyen, //hostDisp
+//					100,100);
+//		} catch (IfailedException e1) {
+//			e1.printStackTrace();
+//		}
+//		rig = rig.getUnallocatedGraph();
+//		//			System.out.println(rig);
+//		//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 5, false, 5);
+//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 2, false, -1);
+//		kas.myState=rig.getHostsStates().iterator().next();
+//		kas.setProblem(rig);
+//		kas.initiateSolver();
+//		KnitroSolution bestSolution = kas.solveProb(true);
+//
+//		//		System.out.println("charge "+kas.getMemCharge(bestSolution, 0)+"  max  "+kas.getMemCharge(new double[]{1.,1.,1.,1.}, 0));
+//		//		System.out.println(print(kas.agents));
+//		List<ReplicaState> best = new ArrayList<ReplicaState>();
+//		double[] bestPossible = kas.getBestTriviaSol(best,4);
+//		System.out.println("best found    !!!!!!!!!!!!!!!! "+kas.getSocWelfare(bestSolution)+" \t \t"+kas.print(bestSolution));
+//		System.out.println("best possible !!!!!!!!!!!!!!!! "+" "+kas.getSocWelfare(kas.new KnitroSolution(bestPossible))
+//				+" \t \t"+kas.print(kas.new KnitroSolution(bestPossible)));
+//		//		System.out.println("1 1 1 0  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,1.,0.}));
+//		//		System.out.println("0 1 1 1  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,1.,1.,1.}));
+//		//		System.out.println("1 1 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,0.,0.}));
+//		//		System.out.println("1 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,0.,0.,0.}));
+//		//		System.out.println("0 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,0.,0.,0.}));
+//		//		for (AgentState s : kas.getAllocation(bestSolution).values()){
+//		//			if (s instanceof HostState)
+//		//				System.out.println(s);
+//		//		}
+//		//		System.out.println(best);
+//		//		for (int i = 1; i < 5; i++)
+//		//		for (AgentState s : kas.getAllocation(kas.getBestSolution()).values()){
+//		//			if (s instanceof HostState)
+//		//				System.out.println(s);
+//		//		}
+//		//		System.out.println(kas.getSolution(kas.bestSolution));
+//	}
+//}

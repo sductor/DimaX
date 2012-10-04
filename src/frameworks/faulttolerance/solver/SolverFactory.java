@@ -45,7 +45,7 @@ public class SolverFactory {
 			else
 				return new DcopDPOPSolver().solve(drg);
 		case Knitro :
-			ResourceAllocationProblem kas = new KnitroAllocationSolver(drg.getSocialWelfare(),true,true,1,false,-1);
+			ResourceAllocationInterface kas = new KnitroAllocationSolver(drg.getSocialWelfare(),true,true,1,false,-1);
 			return kas.solve(drg);
 		case Choco :
 			return new ChocoReplicationAllocationSolver(drg.getSocialWelfare()).solve(drg);

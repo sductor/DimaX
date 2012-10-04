@@ -70,12 +70,12 @@ public class NormalLaw extends GimaObject {
 		result = this.moyenne +
 				Math.max(-1, Math.min(1, this.ecartType/2.6 * randNumNorm))*Math.min(1-this.moyenne, this.moyenne);
 
-//		if (result==0) {
-//			result+=0.001;
-//		}
-//		if (result==1) {
-//			result-=0.001;
-//		}
+		if (result==0) {
+			result+=0.001;
+		}
+		if (result==1) {
+			result-=0.001;
+		}
 		return result;
 	}
 

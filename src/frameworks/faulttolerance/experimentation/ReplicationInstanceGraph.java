@@ -262,27 +262,27 @@ extends GimaObject implements ReplicationGraph{
 		final DistributionParameters<AgentIdentifier> agentCriticity = new DistributionParameters<AgentIdentifier>(
 				this.agents.keySet(),
 				agentCriticityMean,
-				agentCriticityDispersion,rand);
+				agentCriticityDispersion,rand,false);
 		final DistributionParameters<AgentIdentifier>  agentProcessor = new DistributionParameters<AgentIdentifier>(
 				this.agents.keySet(),
 				agentLoadMean,
-				agentLoadDispersion,rand);
+				agentLoadDispersion,rand, true);
 		final DistributionParameters<AgentIdentifier> agentMemory = new DistributionParameters<AgentIdentifier>(
 				this.agents.keySet(),
 				agentLoadMean,
-				agentLoadDispersion,rand);
+				agentLoadDispersion,rand, true);
 		final DistributionParameters<ResourceIdentifier> hostMemCapacity = new DistributionParameters<ResourceIdentifier>(
 				this.hosts.keySet(),
 				hostCapacityMean,
-				hostCapacityDispersion,rand);
+				hostCapacityDispersion,rand, true);
 		final DistributionParameters<ResourceIdentifier> hostProcCapacity = new DistributionParameters<ResourceIdentifier>(
 				this.hosts.keySet(),
 				hostCapacityMean,
-				hostCapacityDispersion,rand);
+				hostCapacityDispersion,rand, true);
 		final DistributionParameters<ResourceIdentifier> fault = new DistributionParameters<ResourceIdentifier>(
 				this.hosts.keySet(),
 				hostFaultProbabilityMean,
-				hostDisponibilityDispersion,rand);
+				hostDisponibilityDispersion,rand,false);
 
 		for (final AgentIdentifier id : this.agents.keySet()){
 			this.agents.put(id,

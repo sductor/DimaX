@@ -49,7 +49,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//problem
 	private Long[] seeds = new Long[]{(long) 5564864,(long) 646464,(long) 94864};
 
-	private Integer[] nbAgentDomain = new Integer[]{30,100,250,500,1000};
+	private Integer[] nbAgentDomain = new Integer[]{30,100/*,250,500,1000*/};
 	 int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
 	private Integer[] nbHostDomain = new Integer[]{48};

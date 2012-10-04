@@ -6,10 +6,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Vector;
 
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
+import dima.introspectionbasedagents.modules.faults.Assert;
 
 import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.dcop.DCOPFactory;
@@ -25,28 +28,103 @@ import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteCon
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public class DcopBranchAndBoundSolver implements DcopSolver, ResourceAllocationSolver<ReplicationCandidature, HostState>{
+public class DcopBranchAndBoundSolver extends ResourceAllocationInterface<HashMap<Integer, Integer>>
+implements DcopSolver, ResourceAllocationSolver<ReplicationCandidature, HostState>{
+
 
 	private double _maxReward;
 	private HashMap<Integer, Integer> _bestSolution;
+	private LinkedList<HashMap<Integer, Integer>> foundSolution=null;
 
-	
-	protected final SocialChoiceType socialWelfare;	
+	long startTime;
+	int timeLimit=Integer.MAX_VALUE;
 
 
-	public DcopBranchAndBoundSolver(SocialChoiceType socialChoice) {
-		super();
-		this.socialWelfare = socialChoice;
+	public DcopBranchAndBoundSolver(SocialChoiceType socialChoice,
+			boolean isAgent, boolean isHost) {
+		super(socialChoice, isAgent, isHost);
 	}
 
 
-	public HashMap<Integer, Integer> solve(DcopReplicationGraph drg){
-		startTime=new Date().getTime();
-		_bestSolution=ResourceAllocationProblem.getFailedSolution(drg);
-		_maxReward=Double.NEGATIVE_INFINITY;
-		return branchBoundSolve(drg);
+
+	@Override
+	protected HashMap<Integer, Integer> solveProb(boolean opt)
+			throws UnsatisfiableException {
+		if (opt || foundSolution==null){
+			startTime=new Date().getTime();
+			if (isLocal()){
+				_bestSolution=intialSolution;
+				_maxReward=getSocWelfare(_bestSolution);			
+			} else {
+				_bestSolution=getFailedSolution(drg);
+				_maxReward=Double.NEGATIVE_INFINITY;
+			}
+			return branchBoundSolve(drg);
+		} else {
+			assert !foundSolution.isEmpty();
+			return foundSolution.pop();
+		}
 	}
 
+
+	@Override
+	protected void initiateSolver() throws UnsatisfiableException {
+		if (drg==null)
+			drg=new DcopReplicationGraph(rig);
+	}
+
+
+
+	@Override
+	protected HashMap<Integer, Integer> getInitialAllocAsSolution(double[] intialAlloc) {
+		HashMap<Integer, Integer> result = new HashMap<Integer, Integer>();
+		Collection<AgentIdentifier> allocated = new ArrayList<AgentIdentifier>();
+		allocated.add(myState.getMyAgentIdentifier());
+		Collection<AgentIdentifier> unAllocated=new ArrayList<AgentIdentifier>();
+
+		for (int i = 0; i < n; i++){
+			ReplicationVariable var = drg.getVariable(getAgentIdentifier(i));
+			result.put(var.id, var.getValue(intialAlloc[i]==0?unAllocated:allocated));
+		}
+		return result;
+	}
+
+	@Override
+	protected double read(HashMap<Integer, Integer> var, int agent, int host) {
+		AgentIdentifier agId = drg.getVariable(getAgentIdentifier(agent)).getAgentIdentifier();
+		AgentIdentifier hostId = drg.getVariable(getAgentIdentifier(host)).getAgentIdentifier();
+		int agAlloc = var.get( drg.getVariable(getAgentIdentifier(agent)).id);
+		int hostAlloc = var.get( drg.getVariable(getAgentIdentifier(host)).id);
+		if (rig.getAccessibleHosts(agId).contains(hostId)){
+			assert Assert.IIF(drg.getVariable(agId).hasAllocatedRessource(hostId, agAlloc),drg.getVariable(hostId).hasAllocatedRessource(agId, hostAlloc));
+			return drg.getVariable(agId).hasAllocatedRessource(hostId, agAlloc)?1.0:0.0;
+		} else {
+			return 0.;
+		}
+	}
+
+
+	@Override
+	public boolean hasNext() {
+		if (foundSolution==null){
+			foundSolution=new LinkedList<HashMap<Integer,Integer>>();
+			return true;
+		} else if (foundSolution.isEmpty()){
+			foundSolution=null;
+			return false;
+		} else
+			return true;
+	}
+
+
+	@Override
+	public void setTimeLimit(int millisec) {
+		timeLimit=millisec;
+	}
+
+	//
+	// Primitives
+	//
 
 	private HashMap<Integer, Integer> branchBoundSolve(DcopReplicationGraph drg) {
 		ArrayList<ReplicationVariable> list = new ArrayList<ReplicationVariable>();
@@ -71,37 +149,42 @@ public class DcopBranchAndBoundSolver implements DcopSolver, ResourceAllocationS
 		drg.backup();
 
 		for (ReplicationVariable v : drg.varMap.values())
-			if (!v.fixed && v.getValue() == -1)
+			if (!v.fixed && v.getValue() == -1){
 				v.setValue(0);
+			}
 
-				_maxReward = drg.evaluate();
-				_bestSolution = drg.getSolution();
+		_maxReward = drg.evaluate();
+		_bestSolution = drg.getSolution();
 
-				// int r = _maxReward;
+		// int r = _maxReward;
 
-				for (ReplicationVariable v : drg.varMap.values()) {
-					if (!v.fixed)
-						v.setValue(-1);
-				}
+		for (ReplicationVariable v : drg.varMap.values()) {
+			if (!v.fixed)
+				v.setValue(-1);
+		}
 
-				_bbEnumerate(drg, queue, 0);
+		_bbEnumerate(drg, queue, 0);
 
-				// int rr = _maxReward;
+		// int rr = _maxReward;
 
-				drg.recover();
+		drg.recover();
 
-				return _bestSolution;
+		return _bestSolution;
 
 	}
 
 	private void _bbEnumerate(DcopReplicationGraph drg, int[] queue, int idx) {
 		if (hasExpired())
 			return;
+		HashMap<Integer, Integer> solution = drg.getSolution();
+		if (isViable(solution))
+			foundSolution.add(solution);
+
 		if (idx == queue.length) {
 			double val = drg.evaluate();
 			if (val > _maxReward) {
 				_maxReward = val;
-				_bestSolution = drg.getSolution();
+				_bestSolution = solution;
 			}
 			return;
 		}
@@ -120,57 +203,7 @@ public class DcopBranchAndBoundSolver implements DcopSolver, ResourceAllocationS
 		}
 	}
 
-	/*
-	 * 
-	 */
-	
-
-	long startTime;
-	int timeLimit=Integer.MAX_VALUE;
-
-	@Override
-	public void setTimeLimit(int millisec) {
-		timeLimit=millisec;
-	}
-	public boolean hasExpired(){
+	private boolean hasExpired(){
 		return new Date().getTime()-startTime>timeLimit;
 	}
-	
-	/*
-	 * Negotiation
-	 */
-
-
-	DcopReplicationGraph drg;
-	Collection<ReplicationCandidature> concerned;
-	boolean hasNext=true;
-
-	@Override
-	public void initiate(Collection<ReplicationCandidature> concerned) {
-		drg = ResourceAllocationProblem.toDrg(concerned, socialWelfare);
-		this.concerned=concerned;
-	}
-
-
-	@Override
-	public Collection<ReplicationCandidature> getBestLocalSolution()
-			throws UnsatisfiableException, ExceedLimitException {
-		hasNext=false;
-		return ResourceAllocationProblem.getContractSolution(drg, concerned, solve(drg));
-	}
-
-
-	@Override
-	public boolean hasNext() {
-		return hasNext;
-	}
-
-
-	@Override
-	public Collection<ReplicationCandidature> getNextLocalSolution() {
-		hasNext=false;
-		return ResourceAllocationProblem.getContractSolution(drg, concerned, solve(drg));
-	}
-
-
 }

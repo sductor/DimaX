@@ -67,7 +67,7 @@ public final class Experimentator extends APIAgent{
 		this.myProtocol=myProtocol;
 		this.el=el;
 		this.iteartionSeeds=seeds;
-		
+
 
 		this.myProtocol.setMyAgent(this);
 		this.simuToLaunch = this.myProtocol.generateSimulation();
@@ -99,8 +99,11 @@ public final class Experimentator extends APIAgent{
 			assert !iteartionSeeds.isEmpty();
 			LogService.logOnFile(this.myProtocol.finalResultPath, "\n seed"+this.iteartionSeeds.get(0)+" : \n", true, false);
 			//			el.write(myProtocol.finalResultPath);
-			this.iteartionSeeds.remove(0);
-
+			try{
+				this.iteartionSeeds.remove(0);
+			}catch(Exception e){
+				logWarning("uhh malotru!",e);
+			}
 			if (this.iteartionSeeds.isEmpty()){
 				this.logWarning("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
 				this.setAlive(false);
@@ -124,9 +127,9 @@ public final class Experimentator extends APIAgent{
 				Laborantin l;
 				try {
 
-//					ExperimentationParameters.currentlyInstanciating=true;
+					//					ExperimentationParameters.currentlyInstanciating=true;
 					l = nextSimu.createLaborantin(this.getApi());//new Laborantin(nextSimu, this.getApi(), nextSimu.getNumberOfAgentPerMachine());
-//					ExperimentationParameters.currentlyInstanciating=false;
+					//					ExperimentationParameters.currentlyInstanciating=false;
 					l.addObserver(this.getIdentifier(), SimulationEndedMessage.class);
 					this.launch(l);
 					this.startActivity(l);

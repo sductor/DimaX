@@ -109,7 +109,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	//
 
 	public static void setLog(final boolean b) {
-		//		LogService.activateMonotoScreen = b;
+		LogService.activateMonotoScreen = b;
 		LogService.activateMonoToFiles = b;
 	}
 

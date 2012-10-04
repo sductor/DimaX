@@ -75,10 +75,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public SocialChoiceType _socialWelfare;
 
 	public int agentAccessiblePerHost;
-	public final int maxHostAccessibleParAgent=30;
+	public static int maxHostAccessibleParAgent;
 
 	public  int simultaneousCandidature;
-	public  int simultaneousAcceptation;
+	public  int kSolver;
 	public  Double	opinionDiffusionDegree;
 	//	this.simultaneousCandidature = Math.min(nbHosts,this.simultaneousCandidature);
 	//		simultaneousAcceptation = (int) Math.min(nbAgents,Math.max(simultaneousAcceptation,(int)((double)startingNbAgents)/((double)startingNbHosts)+1));
@@ -194,7 +194,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.hostCapacityMean=hostCapacityMean;//41.5;//0.30*nbAgents;//hostCapacityMean;
 		this.hostCapacityDispersion=hostcapacityDispersion;
 		this.simultaneousCandidature=simultaneousCandidature;
-		this.simultaneousAcceptation=simultaneousAcceptation;
+		this.kSolver=simultaneousAcceptation;
 		this.opinionDiffusionDegree=opinionDiffusionDegree;
 		this.alpha_low=alpha_low;
 		this.alpha_high=alpha_high;
@@ -395,7 +395,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						hostId,
 						this.rig.getHostState(hostId),
 						this._socialWelfare,
-						this.simultaneousAcceptation,
+						this.kSolver,
 						this.getGreedySelectionType(this._hostSelection),
 						this.maxComputingTime);
 			}else if (this._usedProtocol
@@ -513,7 +513,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					this.alpha_low.equals(that.alpha_low) &&
 					this.alpha_high.equals(that.alpha_high) &&
 					this.simultaneousCandidature==that.simultaneousCandidature &&
-					this.simultaneousAcceptation==that.simultaneousAcceptation &&
+					this.kSolver==that.kSolver &&
 					this._usedProtocol.equals(that._usedProtocol) &&
 					this._socialWelfare.equals(that._socialWelfare) &&
 					this._agentSelection.equals(that._agentSelection) &&
@@ -542,7 +542,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				+16000*this.hostCapacityMean.hashCode()
 				+32000*this.hostCapacityDispersion.hashCode()
 				+64000*this.simultaneousCandidature
-				+128000*this.simultaneousAcceptation
+				+128000*this.kSolver
 				+256000*this.opinionDiffusionDegree.intValue()
 				+500000*this.alpha_low.intValue()
 				+1000000*this.alpha_high.intValue();
@@ -564,7 +564,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				this.agentCriticityMean,
 				this.agentCriticityDispersion,
 				this.simultaneousCandidature,
-				this.simultaneousAcceptation,
+				this.kSolver,
 				this.opinionDiffusionDegree,
 				this._usedProtocol,
 				this._socialWelfare,
@@ -601,8 +601,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						if (!this._hostSelection.equals(that._hostSelection)){
 							return this._hostSelection.compareTo(that._hostSelection);
 						} else {
-							if (this.simultaneousAcceptation!=that.simultaneousAcceptation){
-								return this.simultaneousAcceptation-that.simultaneousAcceptation;
+							if (this.kSolver!=that.kSolver){
+								return this.kSolver-that.kSolver;
 							} else {
 								if (this.nbAgents!=that.nbAgents){
 									return this.nbAgents-that.nbAgents;
@@ -666,10 +666,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 //				System.out.println("opinionDiffusionDegree1 not valid");
 				return false;
 			}
-			if (!this._agentSelection.equals(SelectionType.RoolettWheel)){
+//			if (!this._agentSelection.equals(SelectionType.RoolettWheel)){
 //				System.out.println("_agentSelection1 not valid");
-				return false;
-			}
+//				return false;
+//			}
 
 		} else if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
 			if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN)){

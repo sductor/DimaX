@@ -195,7 +195,7 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 				rog.getNashWelfare(),
 				rog.getUtilWelfare(),
 				rog.getSimulationParameters().simultaneousCandidature,
-				rog.getSimulationParameters().simultaneousAcceptation,
+				rog.getSimulationParameters().kSolver,
 				rog.getSimulationParameters().maxComputingTime,
 				rog.getSimulationParameters()._maxSimulationTime);
 	}

@@ -16,9 +16,9 @@ import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class SolverFactory {
 
-	public enum SolverType {Dpop, BranchNBound, Mixed, Knitro, Choco};
+	public enum SolverType {Dpop, BranchNBound, Mixed, Knitro, Choco, GA};
 
-	private static SolverType solvertype=SolverType.Knitro;//Choco;//BranchNBound;//
+	private static SolverType solvertype=SolverType.GA;//Choco;//BranchNBound;//
 
 	/*
 	 * 
@@ -38,10 +38,10 @@ public class SolverFactory {
 		case Dpop:
 			return new DcopDPOPSolver().solve(drg);
 		case BranchNBound :
-			return new DcopBranchAndBoundSolver(drg.getSocialWelfare()).solve(drg);
+			return new DcopBranchAndBoundSolver(drg.getSocialWelfare(),false,true).solve(drg);
 		case Mixed :	
 			if (drg.conList.size() > drg.varMap.size() * drg.varMap.size() / 4)
-				return new DcopBranchAndBoundSolver(drg.getSocialWelfare()).solve(drg);
+				return new DcopBranchAndBoundSolver(drg.getSocialWelfare(),false,true).solve(drg);
 			else
 				return new DcopDPOPSolver().solve(drg);
 		case Knitro :
@@ -49,6 +49,8 @@ public class SolverFactory {
 			return kas.solve(drg);
 		case Choco :
 			return new ChocoReplicationAllocationSolver(drg.getSocialWelfare()).solve(drg);
+		case GA :
+			return new RessAllocJMetalSolver(drg.getSocialWelfare(), true, true).solve(drg);
 		default :
 			throw new RuntimeException();
 		}
@@ -60,13 +62,15 @@ public class SolverFactory {
 		case Dpop:
 			return null;//new DcopDPOPSolver();
 		case BranchNBound :
-			return new DcopBranchAndBoundSolver(socialWelfare);
+			return new DcopBranchAndBoundSolver(socialWelfare,false,true);
 		case Mixed :	
 				return null;
 		case Knitro :
 			return new KnitroAllocationSolver(socialWelfare,false,true,1,false,-1);
 		case Choco :
 			return new ChocoReplicationAllocationSolver(socialWelfare);
+		case GA :
+			return new RessAllocJMetalSolver(socialWelfare, false, true);
 		default :
 			throw new RuntimeException();
 		}

@@ -62,7 +62,7 @@ import jmetal.util.comparators.FPGAFitnessComparator;
 import jmetal.util.comparators.FitnessComparator;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public class JMetalSolver extends ResourceAllocationInterface<Solution> {
+public class JMetalClassicalSolver extends ResourceAllocationInterface<Solution> {
 
 	private Algorithm algorithm;
 
@@ -75,7 +75,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 
 	private Iterator<Solution> solutions;
 
-	public JMetalSolver(SocialChoiceType socialChoice, boolean isAgent,
+	public JMetalClassicalSolver(SocialChoiceType socialChoice, boolean isAgent,
 			boolean isHost, int heuristic) {
 		super(socialChoice, isAgent, isHost);
 		this.heuristic=heuristic;
@@ -85,10 +85,10 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 
 
 		RessAllocJMetalProblem(boolean useBinary) throws UnsatisfiableException, ClassNotFoundException{  
-			JMetalSolver.this.useBinary=useBinary;
-			numberOfVariables_   = JMetalSolver.this.getVariableNumber() ;
+			JMetalClassicalSolver.this.useBinary=useBinary;
+			numberOfVariables_   = JMetalClassicalSolver.this.getVariableNumber() ;
 			numberOfObjectives_  = singleObj?1:n;                              ;
-			numberOfConstraints_ = JMetalSolver.this.getConstraintNumber();
+			numberOfConstraints_ = JMetalClassicalSolver.this.getConstraintNumber();
 			problemName_         = "RessAllocJMetalProblem";
 			if (useBinary){
 				length_ = new int[numberOfVariables_];
@@ -271,7 +271,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 
 				if (o1.getNumberOfViolatedConstraint()==0&&o2.getNumberOfViolatedConstraint()==0){
 					int c = Double.compare(o2.getObjective(0),o1.getObjective(0));
-					assert isViable(o1)&&isViable(o2):JMetalSolver.this.print(o1)+" ::: "+JMetalSolver.this.print(o2)+
+					assert isViable(o1)&&isViable(o2):JMetalClassicalSolver.this.print(o1)+" ::: "+JMetalClassicalSolver.this.print(o2)+
 					"\n"+o1.getOverallConstraintViolation()+" "+o2.getOverallConstraintViolation()+" "+o1.getNumberOfViolatedConstraint()+" "+o2.getNumberOfViolatedConstraint();
 					//					if (c==1){
 					//						System.out.println("safe "+JMetalSolver.this.print(o1)+" > "+JMetalSolver.this.print(o2));
@@ -279,7 +279,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 					//						System.out.println("safe "+JMetalSolver.this.print(o2)+" > "+JMetalSolver.this.print(o1));
 					return c;
 				} else {
-					assert !isViable(o1)||!isViable(o2):JMetalSolver.this.print(o1)+" ::: "+JMetalSolver.this.print(o2);
+					assert !isViable(o1)||!isViable(o2):JMetalClassicalSolver.this.print(o1)+" ::: "+JMetalClassicalSolver.this.print(o2);
 					int c =Double.compare(o2.getOverallConstraintViolation(),o1.getOverallConstraintViolation());
 					//					if (c==1){
 					//						System.out.println("not safe "+JMetalSolver.this.print(o1)+" > "+JMetalSolver.this.print(o2));
@@ -318,7 +318,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 			/* Mutation and Crossover for Real codification */
 			parameters = new HashMap() ;
 			parameters.put("probability", 1.) ;
-			parameters.put("problem", JMetalSolver.this) ;
+			parameters.put("problem", JMetalClassicalSolver.this) ;
 			mutation = new RessAllocBitFlipMutation(parameters);   
 			//			mutation = MutationFactory.getMutationOperator("BitFlipMutation", parameters);                 
 

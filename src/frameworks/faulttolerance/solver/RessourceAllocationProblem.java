@@ -44,7 +44,11 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 
 	public double[] currentCharges=null;
 
-	
+	private double hostChargeTotal;
+	private double agentChargeTotal;
+
+
+
 	protected ReplicationGraph rig;
 
 
@@ -82,6 +86,10 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		agId= new AgentIdentifier[n];
 		hostId= new ResourceIdentifier[m] ;
 
+
+		hostChargeTotal=0;
+		agentChargeTotal=0;
+
 		agCrit= new double[n];
 		hostLambda= new double[n];
 
@@ -101,6 +109,7 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 			agCrit[i]=agentStates.get(i).getMyCriticity();
 			agProcCharge[i]=agentStates.get(i).getMyProcCharge();
 			agMemCharge[i]=agentStates.get(i).getMyMemCharge();
+			agentChargeTotal+=Math.max(agMemCharge[i], agProcCharge[i]);
 			if (isLocal()){
 				assert m==1;
 				ReplicaState neOS=agentStates.get(i).allocate(myState, false);
@@ -113,16 +122,20 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 			hostLambda[j]=hostsStates.get(j).getFailureProb();
 			hostProcMax[j]=hostsStates.get(j).getProcChargeMax();
 			hostMemMax[j]=hostsStates.get(j).getMemChargeMax();
+
+			hostChargeTotal+=Math.max(hostProcMax[j],hostMemMax[j] );
 			if (isLocal()){
 				assert m==1;
 				HostState neoS=hostsStates.get(j);
-				for (ReplicaState rep : agentStates)
+				for (ReplicaState rep : agentStates){
 					neoS = neoS.allocate(rep,false);
-						hostInitMemCharge[j]=neoS.getCurrentMemCharge();
-						hostInitProcCharge[j]=neoS.getCurrentProcCharge();
+				}
+				hostInitMemCharge[j]=neoS.getCurrentMemCharge();
+				hostInitProcCharge[j]=neoS.getCurrentProcCharge();
+				hostChargeTotal-=Math.max(hostInitProcCharge[j],hostInitMemCharge[j] );				
 			}			
 		}
-
+		//		averageNumberOfAgentPerHost=(Rep)
 		//		assert this.socialChoice==rig.getSocialWelfare();
 		//		System.out.println(hosts);
 		//		System.out.println(agents);
@@ -160,8 +173,10 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		if (variablePos==null){
 			return posIJ;			
 		}else {
-			assert variablePos.containsKey(posIJ);
-			return variablePos.get(posIJ);
+			if (variablePos.containsKey(posIJ))
+				return variablePos.get(posIJ);
+			else 
+				return -1;
 		}
 	}
 
@@ -224,7 +239,7 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		assert Assert.Imply(!isAgent && isHost,m==1):isAgent +" "+isHost+" "+m;
 		return !isAgent && isHost;
 	}
-	
+
 	/*
 	 * Variables
 	 */
@@ -235,6 +250,15 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		for (int j = 0; j < m; j++){
 			currentCharges[j]=getHostCurrentCharge(daX, j);
 		}
+	}
+
+
+	public double getHostsChargeTotal() {
+		return hostChargeTotal;
+	}
+
+	public double getAgentsChargeTotal() {
+		return agentChargeTotal;
 	}
 
 	protected double getAgentCriticality(int i) {
@@ -264,16 +288,19 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	protected double getHostMaxCharge(int j) {
 		return Math.max(getHostMaxProcessor(j), getHostMaxMemory(j)) ;
 	}
-	
 
-	private double getHostInitialMemory(int j) {
+	protected double getHostAvailableCharge(int j) {
+		return Math.max(getHostMaxProcessor(j)-getHostInitialProcessor(j), getHostMaxMemory(j)-getHostInitialMemory(j)) ;
+	}
+
+	protected double getHostInitialMemory(int j) {
 		if (!isLocal())
 			return 0.;
 		else
 			return hostInitMemCharge[j];
 	}
 
-	private double getHostInitialProcessor(int j) {
+	protected double getHostInitialProcessor(int j) {
 		if (!isLocal())
 			return 0.;
 		else

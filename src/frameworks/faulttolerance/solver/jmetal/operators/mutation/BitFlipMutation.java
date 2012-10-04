@@ -19,23 +19,18 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package frameworks.faulttolerance.solver;
+package frameworks.faulttolerance.solver.jmetal.operators.mutation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import frameworks.faulttolerance.solver.jmetal.core.Operator;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.IntSolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
-import frameworks.faulttolerance.solver.jmetal.operators.mutation.Mutation;
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
 import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
@@ -45,35 +40,24 @@ import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to binary or integer solutions, considering the
  * whole solution as a single variable.
  */
-public class RessAllocBitFlipMutation extends Mutation {
-	/**
-	 * Valid solution types to apply this operator 
-	 */
-	private static List VALID_TYPES = Arrays.asList(BinarySolutionType.class, 
-			IntSolutionType.class) ;
+public class BitFlipMutation extends Mutation {
+  /**
+   * Valid solution types to apply this operator 
+   */
+  private static List VALID_TYPES = Arrays.asList(BinarySolutionType.class, 
+      IntSolutionType.class) ;
 
-	private Double mutationProbability_ = null ;
-	RessourceAllocationProblem p;
-	ArrayList<Integer> agentOrder;
-	double[] addedCharge;
-
+  private Double mutationProbability_ = null ;
+  
 	/**
 	 * Constructor
 	 * Creates a new instance of the Bit Flip mutation operator
 	 */
-	public RessAllocBitFlipMutation(HashMap<String, Object> parameters) {
+	public BitFlipMutation(HashMap<String, Object> parameters) {
 		super(parameters) ;
-		if (parameters.get("probability") != null)
-			mutationProbability_ = (Double) parameters.get("probability") ; 
-		if (parameters.get("problem") != null)
-			p = (RessourceAllocationProblem) parameters.get("problem") ;
-		agentOrder=new ArrayList<Integer>(p.n);
-		for (int i = 0; i<p.n;i++){
-			agentOrder.add(i);
-		}
-		addedCharge=new double[p.m];
+  	if (parameters.get("probability") != null)
+  		mutationProbability_ = (Double) parameters.get("probability") ;  		
 	} // BitFlipMutation
-
 
 	/**
 	 * Perform the mutation operation
@@ -81,22 +65,38 @@ public class RessAllocBitFlipMutation extends Mutation {
 	 * @param solution The solution to mutate
 	 * @throws JMException
 	 */
-	public  void doMutation(double probability, Solution solution){
-		for (int j = 0; j < p.m; j++){
-			Collections.shuffle(agentOrder);
-			addedCharge[j]=0.;
-			double alphaChargeJ= p.getHostAvailableCharge(j)*p.n/p.getAgentsChargeTotal();
-			for (Integer i : agentOrder){
-				boolean allocated=((Binary) solution.getDecisionVariables()[p.getPos(i, j)]).bits_.get(0);
-				double optimistAgentcharge=Math.min(p.getAgentMemorycharge(i), p.getAgentProcessorCharge(i));
-				double mutProb= getMutationProbability(probability,allocated, i, j, p.currentCharges[j]+addedCharge[j],optimistAgentcharge,alphaChargeJ);
-				if (PseudoRandom.randDouble() < mutProb) {
-					((Binary) solution.getDecisionVariables()[p.getPos(i, j)]).bits_.flip(0);
-					addedCharge[j]+=allocated?-optimistAgentcharge:+optimistAgentcharge;
+	public void doMutation(double probability, Solution solution) throws JMException {
+		try {
+			if ((solution.getType().getClass() == BinarySolutionType.class) ) {
+				for (int i = 0; i < solution.getDecisionVariables().length; i++) {
+					for (int j = 0; j < ((Binary) solution.getDecisionVariables()[i]).getNumberOfBits(); j++) {
+						if (PseudoRandom.randDouble() < probability) {
+							((Binary) solution.getDecisionVariables()[i]).bits_.flip(j);
+						}
+					}
 				}
-			}
+
+				for (int i = 0; i < solution.getDecisionVariables().length; i++) {
+					((Binary) solution.getDecisionVariables()[i]).decode();
+				}
+			} // if
+			else { // Integer representation
+				for (int i = 0; i < solution.getDecisionVariables().length; i++)
+					if (PseudoRandom.randDouble() < probability) {
+						int value = (int) (PseudoRandom.randInt(
+								(int)solution.getDecisionVariables()[i].getLowerBound(),
+								(int)solution.getDecisionVariables()[i].getUpperBound()));
+						solution.getDecisionVariables()[i].setValue(value);
+					} // if
+			} // else
+		} catch (ClassCastException e1) {
+			Configuration.logger_.severe("BitFlipMutation.doMutation: " +
+					"ClassCastException error" + e1.getMessage());
+			Class cls = java.lang.String.class;
+			String name = cls.getName();
+			throw new JMException("Exception in " + name + ".doMutation()");
 		}
-	}
+	} // doMutation
 
 	/**
 	 * Executes the operation
@@ -117,29 +117,7 @@ public class RessAllocBitFlipMutation extends Mutation {
 			throw new JMException("Exception in " + name + ".execute()");
 		} // if 
 
-		double proba = mutationProbability_;//*PseudoRandom.randDouble();
-		doMutation(proba, solution);
+		doMutation(mutationProbability_, solution);
 		return solution;
 	} // execute
-
-	private double getMutationProbability(double probability, boolean allocated, int agent, int host, double hostCharge,double optimistAgentcharge, double alphaChargeHost){
-
-		double hostChargePercent=Math.max(1,hostCharge/p.getHostMaxCharge(host));
-		if (!allocated){
-			//			if (hostCharge+optimistAgentcharge>p.getHostMaxCharge(host))
-			//				return 0;
-			//			else {
-			double agentSoftCrit=Math.pow(p.getAgentCriticality(agent),3);
-			return probability*agentSoftCrit*(1-hostChargePercent)*(alphaChargeHost/p.n);
-			//			}
-		} else {
-			double agentSoftCrit;
-			if (hostCharge>p.getHostMaxCharge(host))
-				agentSoftCrit=Math.pow(p.getAgentCriticality(agent),3);
-			else
-				agentSoftCrit=Math.pow(p.getAgentCriticality(agent),5);				
-			return probability*hostChargePercent*(1-agentSoftCrit);			
-		}
-	}
-
 } // BitFlipMutation

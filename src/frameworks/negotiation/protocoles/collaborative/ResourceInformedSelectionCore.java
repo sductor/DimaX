@@ -174,7 +174,7 @@ InformedCandidature<Contract>> {
 						//						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!"+contracts.getReallocationContracts(),
 						//								AbstractCommunicationProtocol.log_selectionStep);
 						this.logMonologue("upgrading contracts founds! yyeeeeaaaaahhhhhh!!!!!",
-								LogService.onScreen);
+								LogService.onBoth);
 					} else {
 						this.logMonologue("NO upgrading contracts founds!",
 								AbstractCommunicationProtocol.log_selectionStep);
@@ -195,7 +195,7 @@ InformedCandidature<Contract>> {
 						this.logMonologue(
 								"upgrading contracts applied! heeelllll yyeeeeaaaaahhhhhh!!!!!", AbstractCommunicationProtocol.log_selectionStep);
 						this.logMonologue(
-								"heeelllll yyeeeeaaaaahhhhhh!!!!!", LogService.onScreen);
+								"heeelllll yyeeeeaaaaahhhhhh!!!!!", LogService.onBoth);
 						for (final Contract c : r) {
 							try {
 								rejected.remove(contracts.getContract(c.getIdentifier()));

@@ -161,7 +161,6 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 				i++;
 			}		
 
-			intialSolution=getInitialAllocAsSolution(intialAlloc);
 
 			ReplicationInstanceGraph rig = new ReplicationInstanceGraph(null);
 			rig.setAgents(replicasStates);
@@ -171,6 +170,7 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 			}
 			setProblem(rig);
 			initiateSolver();
+			intialSolution=getInitialAllocAsSolution(intialAlloc);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException();

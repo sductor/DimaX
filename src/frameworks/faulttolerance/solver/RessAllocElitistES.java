@@ -21,21 +21,29 @@
 
 package frameworks.faulttolerance.solver;
 
-import jmetal.core.*;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
-import jmetal.util.comparators.*;
-import jmetal.util.*;
-
+import frameworks.faulttolerance.solver.RessAllocJMetalSolver.RessAllocJMetalProblem;
+import frameworks.faulttolerance.solver.jmetal.core.Algorithm;
+import frameworks.faulttolerance.solver.jmetal.core.Operator;
+import frameworks.faulttolerance.solver.jmetal.core.Problem;
+import frameworks.faulttolerance.solver.jmetal.core.Solution;
+import frameworks.faulttolerance.solver.jmetal.core.SolutionSet;
+import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
+import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
+import frameworks.faulttolerance.solver.jmetal.util.Configuration;
+import frameworks.faulttolerance.solver.jmetal.util.JMException;
+import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 /** 
  * Class implementing a (mu + lambda) ES. Lambda must be divisible by mu
  */
 public class RessAllocElitistES extends Algorithm {
 	private int     mu_     ;
 	private int     lambda_ ;
-
+	Solution[] intialParents;
 	/**
 	 * Constructor
 	 * Create a new ElitistES instance.
@@ -43,10 +51,14 @@ public class RessAllocElitistES extends Algorithm {
 	 * @mu Mu
 	 * @lambda Lambda
 	 */
-	public RessAllocElitistES(Problem problem, int mu, int lambda){
+	public RessAllocElitistES(Problem problem, int mu, int lambda,Solution[] intialParents){
 		super(problem) ;
+		if (((double)lambda/(double)mu!=lambda/mu) || (lambda<2*mu*mu))
+			throw new IllegalArgumentException("divis?"+((double)lambda/(double)mu!=lambda/mu)+" range?"+lambda+", "+2*mu*mu);
 		mu_      = mu     ;
 		lambda_  = lambda ;
+		this.intialParents=intialParents;
+		assert intialParents!=null;
 	} // ElitistES
 
 	/**
@@ -75,7 +87,7 @@ public class RessAllocElitistES extends Algorithm {
 
 		// Initialize the variables
 		population          = new SolutionSet(mu_) ;   
-		offspringPopulation = new SolutionSet(mu_ + lambda_ + 2*mu_* mu_) ;
+		offspringPopulation = new SolutionSet(mu_ + lambda_) ;
 
 		evaluations  = 0;                
 
@@ -87,7 +99,15 @@ public class RessAllocElitistES extends Algorithm {
 
 		// Create the parent population of mu solutions
 		Solution newIndividual;
-		for (int i = 0; i < mu_; i++) {
+		assert intialParents!=null;
+		for (int i = 0; i < intialParents.length; i++) {
+			assert intialParents[i]!=null:Arrays.asList(intialParents);
+			problem_.evaluate(intialParents[i]); 
+			problem_.evaluateConstraints(intialParents[i]) ;         
+			evaluations++;
+			population.add(intialParents[i]);
+		}
+		for (int i = 0; i < mu_-intialParents.length; i++) {
 			newIndividual = new Solution(problem_);                    
 			problem_.evaluate(newIndividual); 
 			problem_.evaluateConstraints(newIndividual) ;           
@@ -97,10 +117,12 @@ public class RessAllocElitistES extends Algorithm {
 
 		// Main loop
 		int offsprings ;
-		offsprings = lambda_ / mu_; 
+		int generation=0;
+		offsprings = (lambda_ - 2*mu_* mu_)/ mu_ ; 
 		while (evaluations < maxEvaluations && new Date().getTime()-startTime<timeLimits) {
+//			System.out.println("evolving generation "+generation);
+			generation++;
 			// STEP 1. Generate the mu+lambda population
-
 			//STEP 1.1 CrossOver
 			for (int i = 0; i < mu_; i++) {
 				for (int j = 0; j < mu_; j++) {

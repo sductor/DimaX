@@ -49,14 +49,14 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//problem
 	private Long[] seeds = new Long[]{(long) 5564864,(long) 646464,(long) 94864};
 
-	private Integer[] nbAgentDomain = new Integer[]{30,100/*,250,500,1000*/};
+	private Integer[] nbAgentDomain = new Integer[]{30,100,250,500/*,1000*/};
 	 int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
-	private Integer[] nbHostDomain = new Integer[]{48};
+	private Integer[] nbHostDomain = new Integer[]{24};
 	 int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
 
 	private Double[] hostCapacity = new Double[]{-((double) maxAgentNb/((double) maxHostNb)),0.3,0.6};
-	private Double[] graphDensityDomain = new Double[]{15., 30.};
+	private Double[] graphDensityDomain = new Double[]{30.};//15., 
 
 	private SocialChoiceType[] welfareDomain = new SocialChoiceType[]{SocialChoiceType.Utility};	
 	private String[] protosDomain = new String[]{
@@ -71,11 +71,11 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			NegotiationParameters.key4OptSelect};
 
 	//solveur
-	private Integer[] kDomain= new Integer[]{10,100,500};
+	private Integer[] kDomain= new Integer[]{30};//10,100,500
 
 	//Social
-	private Double[][] alphaDomain= new Double[][]{new Double[]{Double.NaN,Double.NaN},new Double[]{0.3,0.6}, new Double[]{0.5,0.75}, new Double[]{0.25,0.5}};
-	private Double[] kOpinionDomain= new Double[]{Double.NaN,0.3,0.6,1.};
+	private Double[][] alphaDomain= new Double[][]{new Double[]{Double.NaN,Double.NaN},new Double[]{0.3,0.6}};//, new Double[]{0.5,0.75}, new Double[]{0.25,0.5}};
+	private Double[] kOpinionDomain= new Double[]{Double.NaN,0.3};//,0.6,1.};
 
 
 	private Double getValue(Double value, double ref){
@@ -99,7 +99,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 
 
-	static boolean varyProtocol=false;
+	static boolean varyProtocol=true;
 	static boolean  varyOptimizers=false;
 
 	static boolean varyAgents=true;
@@ -290,7 +290,9 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		final LinkedList<ExperimentationParameters<ReplicationLaborantin>> simus =
 				new LinkedList<ExperimentationParameters<ReplicationLaborantin>>();
 		for (final ReplicationExperimentationParameters p : simuToLaunch) {
+//			System.out.println("considering "+p);
 			if (p.isValid()){
+//				System.out.println("added!");
 				simus.add(p);
 			}else{
 				//				this.logWarning("ABORTED !!! "+(p.nbHosts*p.agentAccessiblePerHost<p.nbAgents)+" "+(p.agentAccessiblePerHost<=0)+" \n"+p, LogService.onBoth);

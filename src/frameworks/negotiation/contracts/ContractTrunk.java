@@ -67,11 +67,12 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	public Contract getContract(final ContractIdentifier id)
 			throws UnknownContractException {
 		final Contract contract = this.identifier2contract.get(id);
-		assert contract.getIdentifier().contractCreation.equals(id.contractCreation):
-			"un agent a envoyé deux prop dans la mm session!!\n"+id+contract;
 		if (contract == null) {
 			throw new UnknownContractException(id);
 		} else {
+			assert contract.getContractIdentifier()!=null;
+			assert contract.getContractIdentifier().contractCreation.equals(id.contractCreation):
+				"un agent a envoyé deux prop dans la mm session!!\n"+id+contract;
 			return contract;
 		}
 	}
@@ -220,7 +221,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 					}
 
 					if (actualState==null || !actualState.equals(newState)){
-						modifiedContracts.add(c.getIdentifier());
+						modifiedContracts.add(c.getContractIdentifier());
 						try {
 							c.setInitialState(newState);
 						} catch (AssertionError e){
@@ -250,8 +251,9 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		//			e.printStackTrace();
 		//			assert false:"incomplete contract added "+c;
 		//		}
-		c.setInitialState(getMyAgent().getMyCurrentState());
-		this.identifier2contract.put(c.getIdentifier(), c);
+		if (c.getAllParticipants().contains(getMyAgent().getIdentifier()))
+			c.setInitialState(getMyAgent().getMyCurrentState());
+		this.identifier2contract.put(c.getContractIdentifier(), c);
 		this.waitContracts.add(c);
 		if (c.getInitiator().equals(this.getMyAgentIdentifier())) {
 			this.initiatorContracts.add(c);
@@ -262,7 +264,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	}
 
 	public void addAcceptation(final AgentIdentifier id, final Contract c) {
-		assert this.identifier2contract.containsKey(c.getIdentifier()):c;
+		assert this.identifier2contract.containsKey(c.getContractIdentifier()):c;
 		//		if (c instanceof DestructionOrder)
 		//			throw new RuntimeException();
 		this.acceptedContracts.add(id, c);
@@ -275,7 +277,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	}
 
 	public void addRejection(final AgentIdentifier id, final Contract c) {
-		assert this.identifier2contract.containsKey(c.getIdentifier()):c;
+		assert this.identifier2contract.containsKey(c.getContractIdentifier()):c;
 		assert id.equals(c.getInitiator()) || !this.acceptedContracts.get(id).contains(c):"impossible to reject " + c
 		+ " : "+id+" is participant t previously accepted";
 		//		if (c instanceof DestructionOrder)
@@ -368,7 +370,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	}
 
 	public void remove(final Contract c) {
-		this.identifier2contract.remove(c.getIdentifier());
+		this.identifier2contract.remove(c.getContractIdentifier());
 
 		this.acceptedContracts.removeAvalue(c);
 		this.rejectedContracts.removeAvalue(c);

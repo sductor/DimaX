@@ -119,7 +119,7 @@ extends ContractTransition {
 		//			isviable="unavailable";
 		//		}
 
-		return this.getIdentifier() + " -> ("
+		return this.getContractIdentifier() + " -> ("
 		+ (this.creation ? "create" : "destruct") + ")"
 		//		+",consensual?"+isConsensual()+"("+agentHasAccepted+","+resourceHasAccepted+")";
 		+"\n  -----> agent specif : "+agentSpecif

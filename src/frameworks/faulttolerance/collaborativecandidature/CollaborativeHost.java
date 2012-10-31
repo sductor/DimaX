@@ -34,7 +34,7 @@ public class CollaborativeHost extends Host{
 				myId,
 				myState,
 				new InformedCandidatureRationality(new HostCore(socialWelfare,true,true),false),
-				new ResourceInformedSelectionCore(SolverFactory.getLocalSolver(socialWelfare),maxCAccepts,initialSelectionType,maxComputingTime){
+				new ResourceInformedSelectionCore(SolverFactory.getHostSolver(socialWelfare),maxCAccepts,initialSelectionType,maxComputingTime){
 					private static final long serialVersionUID = -1578866978817500691L;
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {
@@ -53,15 +53,15 @@ public class CollaborativeHost extends Host{
 	}
 
 
-	@Override
-	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-		return new ReplicationCandidature((ResourceIdentifier) getIdentifier(),id,false,false);
-	}
-
-
-	@Override
-	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-		assert false;
-		return null;
-	}
+//	@Override
+//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+//		return new ReplicationCandidature((ResourceIdentifier) getIdentifier(),id,false,false);
+//	}
+//
+//
+//	@Override
+//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+//		assert false;
+//		return null;
+//	}
 }

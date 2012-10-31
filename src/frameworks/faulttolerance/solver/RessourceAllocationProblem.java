@@ -1,6 +1,7 @@
 package frameworks.faulttolerance.solver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,29 +10,34 @@ import java.util.List;
 import java.util.Map;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.modules.faults.Assert;
-import frameworks.faulttolerance.dcop.DcopSolver;
+import dima.introspectionbasedagents.services.BasicAgentModule;
 import frameworks.faulttolerance.experimentation.ReplicationGraph;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
+import frameworks.faulttolerance.olddcop.DcopSolver;
+import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.exploration.Solver;
 import frameworks.negotiation.exploration.Solver.UnsatisfiableException;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
-public abstract class RessourceAllocationProblem<SolutionType>{
+public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgentModule<CompetentComponent>{
 
 	protected final SocialChoiceType socialChoice;
 	protected final boolean isAgent;
 	protected final boolean isHost;
 	/******                    *******/
-	protected int n;
-	protected int m;
+	public int n;
+	public int m;
 	private AgentIdentifier[] agId;
 	private ResourceIdentifier[] hostId;
+	protected Map<AgentIdentifier,Integer> reverseAgId;
+	protected Map<ResourceIdentifier,Integer> reverseHostId;
 	private double[] agCrit;
 	private double[] hostLambda;
 	private double[] agProcCharge;
@@ -43,17 +49,18 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	private double[] hostInitMemCharge;
 
 	public double[] currentCharges=null;
+	public double[] currentRepNumber=null;
 
 	private double hostChargeTotal;
 	private double agentChargeTotal;
+	private double agMeanCriticality;
 
 
-
-	protected ReplicationGraph rig;
+	public ReplicationGraph rig;
 
 
 	protected Collection<AgentIdentifier> fixedVar = new ArrayList<AgentIdentifier>();
-	protected SolutionType intialSolution;
+	protected SolutionType initialSolution;
 	HostState myState;
 
 	//
@@ -71,9 +78,10 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	//
 	//
 
-	public void setProblem(ReplicationGraph rig) {
+	public void setProblem(ReplicationGraph rig, Collection<AgentIdentifier> fixedVar) {
 
 		this.rig = rig;
+		this.fixedVar=fixedVar;
 
 		List<ReplicaState> agentStates = new ArrayList<ReplicaState>(rig.getAgentStates());
 		List<HostState> hostsStates = new ArrayList<HostState>(rig.getHostsStates());
@@ -85,13 +93,14 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 
 		agId= new AgentIdentifier[n];
 		hostId= new ResourceIdentifier[m] ;
-
+		reverseAgId=new HashMap<AgentIdentifier, Integer>();
+		reverseHostId=new HashMap<ResourceIdentifier, Integer>();
 
 		hostChargeTotal=0;
 		agentChargeTotal=0;
 
 		agCrit= new double[n];
-		hostLambda= new double[n];
+		hostLambda= new double[m];
 
 		agProcCharge= new double[n];
 		agMemCharge= new double[n];
@@ -106,7 +115,9 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		for (int i = 0; i < n; i++){
 			assert agentStates.get(i)!=null;
 			agId[i]=agentStates.get(i).getMyAgentIdentifier();
+			reverseAgId.put(agentStates.get(i).getMyAgentIdentifier(), i);
 			agCrit[i]=agentStates.get(i).getMyCriticity();
+			agMeanCriticality+=agCrit[i];
 			agProcCharge[i]=agentStates.get(i).getMyProcCharge();
 			agMemCharge[i]=agentStates.get(i).getMyMemCharge();
 			agentChargeTotal+=Math.max(agMemCharge[i], agProcCharge[i]);
@@ -116,9 +127,11 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 				agInitLambda[i]=neOS.getMyFailureProb();
 			}			
 		}
+		agMeanCriticality=agMeanCriticality/n;
 
 		for (int j = 0; j < m; j++){
 			hostId[j]=hostsStates.get(j).getMyAgentIdentifier();
+			reverseHostId.put(hostsStates.get(j).getMyAgentIdentifier(), j);
 			hostLambda[j]=hostsStates.get(j).getFailureProb();
 			hostProcMax[j]=hostsStates.get(j).getProcChargeMax();
 			hostMemMax[j]=hostsStates.get(j).getMemChargeMax();
@@ -139,8 +152,41 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		//		assert this.socialChoice==rig.getSocialWelfare();
 		//		System.out.println(hosts);
 		//		System.out.println(agents);
+		assert  boundValidity();
 	}
 
+	protected boolean boundValidity(){
+		try {
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < m; j++){
+					AgentIdentifier agentIdentifier = getAgentIdentifier(i);
+					ResourceIdentifier hostIdentifier = getHostIdentifier(j);
+					assert getAllocationLowerBound(i, j)<=getAllocationUpperBound(i, j);
+
+					assert Assert.IIF(
+							rig.getAccessibleAgents(hostIdentifier).contains(agentIdentifier), 
+							rig.getAccessibleAgents(hostIdentifier).contains(agentIdentifier));
+					if (rig.getAccessibleAgents(hostIdentifier).contains(agentIdentifier)){
+						assert Assert.IIF(
+								fixedVar.contains(agentIdentifier) || fixedVar.contains(hostIdentifier), 
+								getAllocationLowerBound(i, j)==getAllocationUpperBound(i, j));
+						assert Assert.IIF(
+								rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
+								rig.getHostState(hostIdentifier).hasResource(agentIdentifier));
+						assert Assert.Imply(
+								rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
+								getAllocationUpperBound(i, j)==1);
+						assert Assert.Imply(
+								!rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
+								getAllocationLowerBound(i, j)==0);
+					} else {
+						assert getAllocationLowerBound(i, j)==getAllocationUpperBound(i, j) && getAllocationUpperBound(i, j)==0;
+					}
+				}	} catch (UnsatisfiableException e) {
+					throw new RuntimeException(e);
+				}
+		return true;
+	}
 	//
 	// Position handling
 	//
@@ -158,18 +204,42 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		for (int i = 0; i < n; i++){
 			for (int j = 0; j < m; j++){
 
-				int posIJ=i*m+j;
+				assert Assert.IIF(getAllocationLowerBound(i, j)==getAllocationUpperBound(i, j), 
+						fixedVar.contains(getAgentIdentifier(i)) || 
+						fixedVar.contains(getHostIdentifier(j)) || 
+						!rig.getAccessibleHosts(getAgentIdentifier(i)).contains(getHostIdentifier(j)));
 
-				if(!(getAllocationLowerBound(i, j)==getAllocationUpperBound(i, j))){
-					variablePos.put(posIJ, currentVariablePos);
-					currentVariablePos++;
-				}
+				assert Assert.Imply(
+						getAllocationLowerBound(i, j)==getAllocationUpperBound(i, j) && getAllocationUpperBound(i, j)==1,
+						rig.getAgentState(getAgentIdentifier(i)).hasResource(getHostIdentifier(j))):
+							getAgentIdentifier(i)+" "+getHostIdentifier(j)+" "+isLocal()
+							+" "+fixedVar.contains(getAgentIdentifier(i))+" "+fixedVar.contains(getHostIdentifier(j))+" "+
+							getAllocationLowerBound(i, j)+" "+getAllocationUpperBound(i, j)+" "+
+							rig.getAgentState(getAgentIdentifier(i)).hasResource(getHostIdentifier(j))
+							+" "+rig.getHostState(getHostIdentifier(j)).hasResource(getAgentIdentifier(i));
+
+
+						if((getAllocationLowerBound(i, j)!=getAllocationUpperBound(i, j))){
+							int posIJ = getVectorNotation(i, j);
+							variablePos.put(posIJ, currentVariablePos);
+							currentVariablePos++;
+						}
 			}
 		}
 	}
 
+	private int getVectorNotation(int i, int j) {
+		int posIJ=i*m+j;
+		return posIJ;
+	}
+
+	protected boolean isConstant(int agent_i, int host_j){
+		assert Assert.IIF(getPos(agent_i, host_j)==-1,variablePos!=null && !variablePos.containsKey(getVectorNotation(agent_i, host_j)));
+		return variablePos!=null && !variablePos.containsKey(getVectorNotation(agent_i, host_j));
+	}
+
 	protected int getPos(int agent_i, int host_j) {
-		int posIJ = agent_i*m+host_j;
+		int posIJ = getVectorNotation(agent_i, host_j);
 		if (variablePos==null){
 			return posIJ;			
 		}else {
@@ -205,19 +275,29 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	protected abstract SolutionType getInitialAllocAsSolution(double[] intialAlloc);
 
 
-	protected abstract double read(SolutionType var,  int agent_i, int host_j);
+	protected abstract double readVariable(SolutionType var,  int varPos);
 
-	private double readVariable(SolutionType var,  int agent_i, int host_j){
-		if (variablePos==null || variablePos.containsKey(getPos(agent_i, host_j))){
-			return read(var, agent_i, host_j);
-		}else {
+	protected final double read(SolutionType var,  int agent_i, int host_j){
+		int varPos = getPos(agent_i, host_j);
+		assert Assert.Imply(fixedVar.contains(getAgentIdentifier(agent_i)) || fixedVar.contains(getHostIdentifier(host_j)), getPos(agent_i, host_j)==-1); 
+		if (varPos!=-1)//une variable
+			return readVariable(var, varPos);
+		else //une constante
 			try {
-				assert getAllocationLowerBound(agent_i, host_j)==getAllocationUpperBound(agent_i, host_j);
+				assert getAllocationLowerBound(agent_i, host_j)==getAllocationUpperBound(agent_i, host_j):
+					"("+agent_i+","+host_j+") "+"("+getAgentIdentifier(agent_i)+","+getHostIdentifier(host_j)+")\n"
+					+getAllocationLowerBound(agent_i, host_j)+" "+getAllocationUpperBound(agent_i, host_j)+" "+getPos(agent_i, host_j)
+					+"\n"+variablePos;
+				assert Assert.Imply(
+						rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j)), 
+						getAllocationLowerBound(agent_i, host_j)==1);
+				assert Assert.Imply(
+						!rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j)), 
+						getAllocationUpperBound(agent_i, host_j)==0);
 				return  getAllocationLowerBound(agent_i, host_j);
 			} catch (UnsatisfiableException e) {
 				throw new RuntimeException("impossible");
 			}
-		}
 	}
 
 
@@ -252,6 +332,18 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		}
 	}
 
+	public void updateCurrentReplicasNumber(SolutionType solution) {
+
+		if (currentRepNumber==null)
+			currentRepNumber=new double[n];
+		for (int i = 0; i < n; i++){
+			for (int j = 0; j < m; j++){
+				currentRepNumber[i]+=read(solution, i, j);
+			}
+
+		}
+
+	}
 
 	public double getHostsChargeTotal() {
 		return hostChargeTotal;
@@ -260,7 +352,9 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	public double getAgentsChargeTotal() {
 		return agentChargeTotal;
 	}
-
+	protected double getAgentMeanCriticality() {
+		return agMeanCriticality;
+	}
 	protected double getAgentCriticality(int i) {
 		return agCrit[i];
 	}
@@ -314,81 +408,69 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 			return agInitLambda[i];
 	}
 
+	private int getFixedBound(int agent_i, int host_j)
+			throws UnsatisfiableException{
+		AgentIdentifier agentIdentifier = getAgentIdentifier(agent_i);
+		ResourceIdentifier hostIdentifier = getHostIdentifier(host_j);
+		assert fixedVar.contains(agentIdentifier) || fixedVar.contains(hostIdentifier);
+		assert rig.getAccessibleAgents(hostIdentifier).contains(agentIdentifier);
+		assert rig.getAccessibleHosts(agentIdentifier).contains(hostIdentifier);
+		if (fixedVar.contains(agentIdentifier) && fixedVar.contains(hostIdentifier)){
+			if (rig.getHostState(hostIdentifier).hasResource(agentIdentifier)!=
+					rig.getAgentState(agentIdentifier).hasResource(hostIdentifier)){
+				throw new UnsatisfiableException(agentIdentifier+" "+hostIdentifier+"\n"+rig);
+			} else {
+				return rig.getHostState(hostIdentifier).hasResource(agentIdentifier)?1:0;
+			}
+		} else if (fixedVar.contains(agentIdentifier)){
+			return rig.getAgentState(agentIdentifier).hasResource(hostIdentifier)?1:0;
+		} else {//	
+			assert fixedVar.contains(hostIdentifier);
+			return rig.getHostState(hostIdentifier).hasResource(agentIdentifier)?1:0;
+		}
+	}
+
 	protected int getAllocationLowerBound(int agent_i, int host_j)
 			throws UnsatisfiableException {
+		AgentIdentifier agentIdentifier = getAgentIdentifier(agent_i);
+		ResourceIdentifier hostIdentifier = getHostIdentifier(host_j);
+
+		Collection<ResourceIdentifier> hostAccessibletoAgent_i = rig.getAccessibleHosts(agentIdentifier);
+		Collection<AgentIdentifier> agentsAccessibleToHost_j = rig.getAccessibleAgents(hostIdentifier);
+		assert agentsAccessibleToHost_j.contains(agentIdentifier)==hostAccessibletoAgent_i.contains(hostIdentifier);
 		if (isLocal()){
-
-			assert rig.getAccessibleHosts(getAgentIdentifier(agent_i)).contains(getHostIdentifier(host_j))
-			&& rig.getAccessibleAgents(getHostIdentifier(host_j)).contains(getAgentIdentifier(agent_i));
+			assert hostAccessibletoAgent_i.contains(hostIdentifier)
+			&& agentsAccessibleToHost_j.contains(agentIdentifier);
 			return 0;
-
-		} else if (rig.getAccessibleAgents(getHostIdentifier(host_j)).contains(getAgentIdentifier(agent_i))){
-
-			assert rig.getAccessibleHosts(getAgentIdentifier(agent_i)).contains(getHostIdentifier(host_j));
-
-			if (!fixedVar.contains(getAgentIdentifier(agent_i)) && !fixedVar.contains(getHostIdentifier(host_j))){
-				return 0;
-
-			} else if (fixedVar.contains(getAgentIdentifier(agent_i)) && fixedVar.contains(getHostIdentifier(host_j))){
-				if (
-						(rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i))&& 
-								rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j)))
-								||
-								(!rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i)) && 
-										!rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j)))){
-					throw new UnsatisfiableException();
-				} else
-					return rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i))?1:0;
-
-			}else if (fixedVar.contains(getAgentIdentifier(agent_i))){
-				return rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j))?1:0;
-
-			} else {//	
-				assert fixedVar.contains(getHostIdentifier(host_j));
-				return rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i))?1:0;
-			}
+		} else if (!agentsAccessibleToHost_j.contains(agentIdentifier)){
+			assert !hostAccessibletoAgent_i.contains(hostIdentifier);
+			return 0;	
+		} else if (!fixedVar.contains(agentIdentifier) && !fixedVar.contains(hostIdentifier)){
+			return 0;		
 		} else {
-			assert !rig.getAccessibleHosts(getAgentIdentifier(agent_i)).contains(getHostIdentifier(host_j));
-			return 0;
+			return getFixedBound(agent_i, host_j);
 		}
 	}
 
 	protected int getAllocationUpperBound(int agent_i, int host_j)
 			throws UnsatisfiableException {
+		AgentIdentifier agentIdentifier = getAgentIdentifier(agent_i);
+		ResourceIdentifier hostIdentifier = getHostIdentifier(host_j);
+
+		Collection<ResourceIdentifier> hostAccessibletoAgent_i = rig.getAccessibleHosts(agentIdentifier);
+		Collection<AgentIdentifier> agentsAccessibleToHost_j = rig.getAccessibleAgents(hostIdentifier);
+
 		if (isLocal()){
-
-			assert rig.getAccessibleHosts(getAgentIdentifier(agent_i)).contains(getHostIdentifier(host_j))
-			&& rig.getAccessibleAgents(getHostIdentifier(host_j)).contains(getAgentIdentifier(agent_i));
+			assert hostAccessibletoAgent_i.contains(hostIdentifier)
+			&& agentsAccessibleToHost_j.contains(agentIdentifier);
 			return 1;
-
-		} else if (rig.getAccessibleAgents(getHostIdentifier(host_j)).contains(getAgentIdentifier(agent_i))){
-
-			assert rig.getAccessibleHosts(getAgentIdentifier(agent_i)).contains(getHostIdentifier(host_j));
-
-			if (!fixedVar.contains(getAgentIdentifier(agent_i)) && !fixedVar.contains(getHostIdentifier(host_j))){
-				return 1;
-
-			} else if (fixedVar.contains(getAgentIdentifier(agent_i)) && fixedVar.contains(getHostIdentifier(host_j))){
-				if (
-						(rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i))&& 
-								rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j)))
-								||
-								(!rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i)) && 
-										!rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j)))){
-					throw new UnsatisfiableException();
-				} else
-					return rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i))?1:0;
-
-			}else if (fixedVar.contains(getAgentIdentifier(agent_i))){
-				return rig.getAgentState(getAgentIdentifier(agent_i)).hasResource(getHostIdentifier(host_j))?1:0;
-
-			} else {//	
-				assert fixedVar.contains(getHostIdentifier(host_j));
-				return rig.getHostState(getHostIdentifier(host_j)).hasResource(getAgentIdentifier(agent_i))?1:0;
-			}
+		} else if (!agentsAccessibleToHost_j.contains(agentIdentifier)){
+			assert !hostAccessibletoAgent_i.contains(hostIdentifier);
+			return 0;	
+		} else if (!fixedVar.contains(agentIdentifier) && !fixedVar.contains(hostIdentifier)){
+			return 1;		
 		} else {
-			assert !rig.getAccessibleHosts(getAgentIdentifier(agent_i)).contains(getHostIdentifier(host_j));
-			return 0;
+			return getFixedBound(agent_i, host_j);
 		}
 	}
 
@@ -433,13 +515,40 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		return f;
 	}
 
+	public Collection<AgentIdentifier> getRessources(SolutionType daX, AgentIdentifier id) {
+		Collection<AgentIdentifier> result = new ArrayList<AgentIdentifier>();
+		if (id instanceof ResourceIdentifier){
+			int h = reverseHostId.get((ResourceIdentifier)id);
+
+			for (int ag = 0; ag < n; ag++){
+				if (read(daX, ag, h)==1.0){
+					result.add(agId[ag]);
+				} else {
+					assert read(daX, ag, h)==0.;
+				}
+			}
+		} else {
+			int ag = reverseAgId.get(id);
+
+			for (int h = 0; h < m; h++){
+				if (read(daX, ag, h)==1.0){
+					assert hostId!=null;
+					result.add(hostId[h]);
+				} else {
+					assert read(daX, ag, h)==0.;
+				}
+			}
+		}
+		return result;
+	}
+
 	protected double getDispo(SolutionType daX, int agent_i) {
 		double failProb = getAgentInitialFailureProbability(agent_i);
 		for (int host_j = 0; host_j < m; host_j++){
 			//					assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
 			failProb *= Math.pow(
 					getHostFailureProbability(host_j),
-					readVariable(daX,agent_i,host_j));	
+					read(daX,agent_i,host_j));	
 		}	
 		return 1 - failProb;
 	}
@@ -451,21 +560,21 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	/*
 	 * Constraints 
 	 */
-
-	protected double getAgentSurvie(SolutionType daX, int agent_i) {
-		double result=0;
-		for (int host_j=0; host_j < m; host_j++){
-			result+=readVariable(daX,agent_i,host_j);
-			//			assert result<=m:result+" "+m+" "+print(daX);
-		}
-		return result;
-	}
+	//
+	//	protected double getAgentSurvie(SolutionType daX, int agent_i) {
+	//		double result=0;
+	//		for (int host_j=0; host_j < m; host_j++){
+	//			result+=read(daX,agent_i,host_j);
+	//			//			assert result<=m:result+" "+m+" "+print(daX);
+	//		}
+	//		return result;
+	//	}
 
 	protected double getHostMemoryCharge(SolutionType daX, int host_j) {
 		double c=getHostInitialMemory(host_j);
 		for (int agent_i=0; agent_i < n; agent_i++){
 			//			assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
-			c+=readVariable(daX,agent_i,host_j)*getAgentMemorycharge(agent_i);
+			c+=read(daX,agent_i,host_j)*getAgentMemorycharge(agent_i);
 		}
 		return c;
 	}
@@ -474,7 +583,7 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		double c=getHostInitialProcessor(host_j);
 		for (int agent_i=0; agent_i < n; agent_i++){
 			//			assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
-			c+=readVariable(daX,agent_i,host_j)*getAgentProcessorCharge(agent_i);
+			c+=read(daX,agent_i,host_j)*getAgentProcessorCharge(agent_i);
 		}
 		return c;
 	}
@@ -484,12 +593,32 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	}
 
 	protected boolean isViableForAgent(SolutionType daX, int agent_i) {
-		return !isAgent || getAgentSurvie(daX, agent_i)>0;
+		return !isAgent || getDispo(daX, agent_i)>0;
 	}
 
 	protected boolean isViableForhost(SolutionType daX, int host_j) {
 		return !isHost || (getHostMemoryCharge(daX, host_j)<=getHostMaxMemory(host_j) && getHostProcessorCharge(daX, host_j)<=getHostMaxProcessor(host_j));
 	}
+
+	protected boolean assertIsViable(SolutionType daX) {
+		for (int i = 0; i < n; i++){
+			assert isViableForAgent(daX, i):
+				getAgentIdentifier(i)+" :\n "+getDispo(daX, i)+" "+getAgentInitialFailureProbability(i)+"\n fixed var "+
+				fixedVar+"\n bounds "+printBounds()+"\n "+print(daX)+"\n "+getRessources(daX, getAgentIdentifier(i));
+		}
+		for (int j = 0; j < m; j++){
+			assert isViableForhost(daX, j): getHostIdentifier(j)+" "+getHostMemoryCharge(daX, j)+" "+getHostProcessorCharge(daX, j)+"\n fixed var "+
+					fixedVar+getRessources(daX,getHostIdentifier(j))+"\n  "+print(daX)+"";;
+		}
+
+		for (int i = 0; i < n; i++){
+			for (int j = 0; j < m; j++){
+				assert (read(daX,i,j)==1.0 || read(daX,i,j)==0.0);
+			}
+		}
+		return !isLocal() || isUpgrading(daX);
+	}
+
 
 	protected boolean isViable(SolutionType daX) {
 		for (int i = 0; i < n; i++){
@@ -505,7 +634,7 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 
 		for (int i = 0; i < n; i++){
 			for (int j = 0; j < m; j++){
-				if(!(readVariable(daX,i,j)==1.0 || readVariable(daX,i,j)==0.0))
+				if(!(read(daX,i,j)==1.0 || read(daX,i,j)==0.0))
 					return false;
 			}
 		}
@@ -513,7 +642,7 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 	}
 
 	protected boolean isUpgrading(SolutionType solution) {
-		return getSocWelfare(solution)>=getSocWelfare(intialSolution);
+		return getSocWelfare(solution)>=getSocWelfare(initialSolution);
 	}
 
 
@@ -531,7 +660,7 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 			for (int j = 0; j < m; j++){
 				r *= Math.pow(
 						getHostFailureProbability(j),
-						readVariable(daX,agent_i,j));
+						read(daX,agent_i,j));
 			}
 			for (int i = 0; i < n; i++){
 				if (i!=agent_i){
@@ -556,13 +685,13 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 			for (int j = 0; j < m; j++){
 				r *= Math.pow(
 						getHostFailureProbability(j),
-						readVariable(daX,agent_i,j));
+						read(daX,agent_i,j));
 			}			
 			r*=-Math.log(getHostFailureProbability(host_jp));
 			for (int j = 0; j < m; j++){
 				r *= Math.pow(
 						getHostFailureProbability(j),
-						readVariable(daX,agent_ip,j));
+						read(daX,agent_ip,j));
 			}
 			for (int i = 0; i < n; i++){
 				if (i!=agent_i && i!=agent_ip){
@@ -645,14 +774,32 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		return result;
 	}
 
+	public String printBounds(){
+
+		try {
+			String result ="\n[ "+Arrays.asList(agId)+"]\n";
+			for (int j = 0; j < m; j++){
+				result+="HOST "+getHostIdentifier(j)+" :  ";
+				for (int i = 0; i < n; i++){
+					result+="("+getAllocationLowerBound(i, j)+","+getAllocationUpperBound(i, j)+")"+" \t ";
+				}
+				result+="\n";
+			}
+			result+="]";
+			return result;
+		} catch (UnsatisfiableException e) {
+			throw new RuntimeException();
+		}
+	}
 
 	public String print(SolutionType vect) {
-		String result ="[ ";
+		String result ="\n[ "+Arrays.asList(agId)+"]\n";
 		for (int j = 0; j < m; j++){
-			result+="HOST :  ";
+			result+="HOST "+getHostIdentifier(j)+" :  ";
 			for (int i = 0; i < n; i++){
-				result+=readVariable(vect, i,j)+" \t ";
+				result+=read(vect, i,j)+" \t ";
 			}
+			result+="\n";
 		}
 		result+="]";
 		return result;
@@ -685,5 +832,6 @@ public abstract class RessourceAllocationProblem<SolutionType>{
 		result+="]";
 		return result;
 	}
+
 
 }

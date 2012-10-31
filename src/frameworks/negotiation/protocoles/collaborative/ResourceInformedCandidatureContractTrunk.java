@@ -70,7 +70,7 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 		assert this.containsAllKey(realloc.getIdentifiers()):this+"\n ---> "+realloc;
 		for (final Contract c : realloc) {
 			try {
-				this.upgradingContracts.add(this.getContract(c.getIdentifier()),realloc);
+				this.upgradingContracts.add(this.getContract(c.getContractIdentifier()),realloc);
 			} catch (final UnknownContractException e) {
 				throw new RuntimeException(e);
 			}
@@ -156,7 +156,7 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 						}
 
 						if (!actualState.equals(newState)){
-							modifiedContracts.add(c.getIdentifier());
+							modifiedContracts.add(c.getContractIdentifier());
 						}
 					}
 				}
@@ -209,7 +209,7 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 			assert this.getAllContracts().contains(c);
 			try {
 				if (!c.isMatchingCreation()) {
-					if (!this.isRequestable(this.getContract(c.getIdentifier()))) {
+					if (!this.isRequestable(this.getContract(c.getContractIdentifier()))) {
 						//						logMonologue(r + " is not requestable !! =( because of "+c, AbstractCommunicationProtocol.log_selectionStep);
 						return false;
 					}

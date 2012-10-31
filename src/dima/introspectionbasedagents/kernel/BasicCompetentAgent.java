@@ -552,6 +552,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		try {
 			return new BasicCompetenceShell<BasicCompetentAgent>(this, this.creation);
 		} catch (final Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException(this+" ("+this.getClass()+") can not instanciate the competence shield!", e);
 		}
 	}

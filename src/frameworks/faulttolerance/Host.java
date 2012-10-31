@@ -115,6 +115,7 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	//allow to continue to receive messages
 	@Override
 	public void tryToResumeActivity(){
+		logMonologue("host is trying to resume activity",ObservingSelfService.observationLog);
 		super.tryToResumeActivity();
 		this.mySelfObservationService.tryToResumeActivity();
 	}
@@ -122,8 +123,6 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 		return this.getMyCurrentState().isFaulty();
 	}
 
-	public abstract ReplicationCandidature generateDestructionContract(final AgentIdentifier id);
-	public abstract ReplicationCandidature generateCreationContract(final AgentIdentifier id);
 	//
 	// Behavior
 	//

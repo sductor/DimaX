@@ -21,7 +21,10 @@ public class UserCommunicationHandler extends SystemCommunicationService{
 	public void sendToUser(String text){
 		if (useGui){
 			try {
-				this.execute("zenity  --info "+text);
+//				this.execute("zenity  --info --text="+text);
+//				this.execute("kdialog --passivepopup '"+text+"' &");
+				this.execute("notify-send "+text);
+
 			} catch (ErrorOnProcessExecutionException e) {
 				e.printStackTrace();
 			}

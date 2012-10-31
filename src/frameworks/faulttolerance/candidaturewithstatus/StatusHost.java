@@ -68,12 +68,12 @@ public class StatusHost extends Host {
 		
 	}
 
-	@Override
-	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-		return new ReplicationCandidature((ResourceIdentifier) this.getIdentifier(),id,  false, false);
-	}
-	@Override
-	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-		return new ReplicationCandidature((ResourceIdentifier)  this.getIdentifier(),id, true, false);
-	}
+//	@Override
+//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+//		return new ReplicationCandidature((ResourceIdentifier) this.getIdentifier(),id,  false, false);
+//	}
+//	@Override
+//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+//		return new ReplicationCandidature((ResourceIdentifier)  this.getIdentifier(),id, true, false);
+//	}
 }

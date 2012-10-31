@@ -96,9 +96,6 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 	}
 
 
-	public abstract ReplicationCandidature generateDestructionContract(final AgentIdentifier id);
-	public abstract ReplicationCandidature generateCreationContract(final AgentIdentifier id);
-	
 	@StepComposant(ticker=ReplicationExperimentationParameters._criticity_update_frequency)
 	public void updateMyCriticity() {
 		if (this.dynamicCrticity){

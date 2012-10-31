@@ -8,6 +8,13 @@ package frameworks.negotiation;
  */
 public class NegotiationException extends Exception {
 
+	public NegotiationException() {
+	}
+	
+	public NegotiationException(String string) {
+		super(string);
+	}
+
 	/**
 	 *
 	 */

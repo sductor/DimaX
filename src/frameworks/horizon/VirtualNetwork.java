@@ -17,7 +17,7 @@ import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.Selection
  * 
  * @author Vincent Letard
  */
-public class VirtualNetwork extends
+public abstract class VirtualNetwork extends
 SimpleNegotiatingAgent<VirtualNetworkState, HorizonContract> {
 
 	/**

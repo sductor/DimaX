@@ -49,10 +49,10 @@ public class SimpleExampleApi extends APIAgent{
 	 * @throws IllegalArgumentException 
 	 * @throws MissingCompetenceException
 	 */
-	public static void main(final String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, NotEnoughMachinesException, IfailedException {
+	public static void main(String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, NotEnoughMachinesException, IfailedException {
 		final SimpleExampleApi apiAgent = new SimpleExampleApi();
-		apiAgent.initAPI(false);//SCHEDULED
-		//		apiAgent.initAPI(true);//FIPA
+		args=new String[]{"scheduled","log"};//SCHEDULED
+		args=new String[]{"fipa","log"};//FIPA
 		//		apiAgent.initAPI(7777,7776);//DARX LOCAL
 		//		apiAgent.initAPI("lip6.xml");//DARX Deployed
 		apiAgent.run(args);

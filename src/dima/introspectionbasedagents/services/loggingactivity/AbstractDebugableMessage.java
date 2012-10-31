@@ -16,7 +16,8 @@ public abstract class AbstractDebugableMessage extends CommunicationObject imple
 		String result = "Protocol Trace :";
 		AbstractDebugableMessage inReplyToStack = this;
 		while (inReplyToStack!=null){
-			result+="\n"+" |--> ("+inReplyToStack.getSender()+") \t "+inReplyToStack.getDebugCallingMethod().toGenericString()
+			String debug = inReplyToStack.getDebugCallingMethod()!=null?inReplyToStack.getDebugCallingMethod().toGenericString():"erreur : pas d'info sur la méthode!";
+			result+="\n"+" |--> ("+inReplyToStack.getSender()+") \t "+debug
 					;
 			inReplyToStack = inReplyToStack.getDebugInReplyTo();
 		}

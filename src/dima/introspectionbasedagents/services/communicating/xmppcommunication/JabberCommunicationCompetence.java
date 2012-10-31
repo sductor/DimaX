@@ -109,54 +109,62 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 			String pass = this.receiveHiddenFromUSer("Provide password for "+args[3]);
 			connection.login(args[3], pass, "smackThat");
 
-			RosterListener rl = new RosterListener() {
+			setRosterListener();
 
-				public void entriesAdded(Collection<String> addresses) {
-					handleNewAcquaintances(addresses);
-					for (String user : addresses){
-						acquaintances.put(new AgentName(user), connection.getRoster().getPresence(user));
-					}
-				}
-
-				public void entriesDeleted(Collection<String> addresses) {
-					handleRemovedAcquaintances(addresses);
-					for (String user : addresses){
-						acquaintances.remove(new AgentName(user));
-					}
-				}
-
-				public void entriesUpdated(Collection<String> addresses) {
-									handleUpdatedAcquaintances(addresses);			
-					for (String user : addresses){
-						acquaintances.put(new AgentName(user), connection.getRoster().getPresence(user));
-					}
-				}
-
-
-
-				public void presenceChanged(Presence presence) {
-					handlePresenceChangement(presence);
-				}
-
-
-
-			};
-			connection.getRoster().addRosterListener(rl);
-
-			connection.getChatManager().addChatListener(new ChatManagerListener() {
-
-				@Override
-				public void chatCreated(Chat chat, boolean createdLocally) {
-					chat.addMessageListener(myMessageListener);
-
-				}
-			});
+//			setChatManager();
 
 		} catch (XMPPException e) {
 			e.printStackTrace();
 			return false;
 		} 
 		return true;
+	}
+
+	private void setChatManager() {
+		connection.getChatManager().addChatListener(new ChatManagerListener() {
+
+			@Override
+			public void chatCreated(Chat chat, boolean createdLocally) {
+				chat.addMessageListener(myMessageListener);
+
+			}
+		});
+	}
+
+	private void setRosterListener() {
+		RosterListener rl = new RosterListener() {
+
+			public void entriesAdded(Collection<String> addresses) {
+				handleNewAcquaintances(addresses);
+				for (String user : addresses){
+					acquaintances.put(new AgentName(user), connection.getRoster().getPresence(user));
+				}
+			}
+
+			public void entriesDeleted(Collection<String> addresses) {
+				handleRemovedAcquaintances(addresses);
+				for (String user : addresses){
+					acquaintances.remove(new AgentName(user));
+				}
+			}
+
+			public void entriesUpdated(Collection<String> addresses) {
+								handleUpdatedAcquaintances(addresses);			
+				for (String user : addresses){
+					acquaintances.put(new AgentName(user), connection.getRoster().getPresence(user));
+				}
+			}
+
+
+
+			public void presenceChanged(Presence presence) {
+				handlePresenceChangement(presence);
+			}
+
+
+
+		};
+		connection.getRoster().addRosterListener(rl);
 	}
 
 	@Override

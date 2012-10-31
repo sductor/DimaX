@@ -15,20 +15,25 @@ import javax.management.RuntimeErrorException;
 import com.ziena.knitro.KnitroJava;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashList;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
+import dima.introspectionbasedagents.services.loggingactivity.LogWarning;
 
-import frameworks.faulttolerance.dcop.DCOPFactory;
-import frameworks.faulttolerance.dcop.DcopSolver;
-import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
-import frameworks.faulttolerance.dcop.dcop.MemFreeConstraint;
-import frameworks.faulttolerance.dcop.dcop.ReplicationVariable;
+import frameworks.faulttolerance.experimentation.ReplicationGraph;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
+import frameworks.faulttolerance.olddcop.DCOPFactory;
+import frameworks.faulttolerance.olddcop.DcopSolver;
+import frameworks.faulttolerance.olddcop.dcop.DcopReplicationGraph;
+import frameworks.faulttolerance.olddcop.dcop.MemFreeConstraint;
+import frameworks.faulttolerance.olddcop.dcop.ReplicationVariable;
+import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
+import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.exploration.Solver;
 import frameworks.negotiation.exploration.Solver.UnsatisfiableException;
@@ -36,7 +41,7 @@ import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public abstract class ResourceAllocationInterface<SolutionType> extends RessourceAllocationProblem<SolutionType>
-implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, HostState>  {
+implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  {
 
 
 	protected abstract void initiateSolver() throws UnsatisfiableException;
@@ -58,75 +63,75 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 		super(socialChoice, isAgent, isHost);
 	}
 
-	/******                    *******/
-	/******  DCOP Interface    *******/ 
-	/******                    *******/
-
-	DcopReplicationGraph drg;
+	Map<AgentIdentifier,ReplicationCandidature> concerned=null;
 
 	@Override
-	public HashMap<Integer, Integer> solve(DcopReplicationGraph drg){
-		this.drg=drg;
-
-		for (ReplicationVariable var : drg.varMap.values()){
-			if (var.fixed)
-				fixedVar.add(var.getAgentIdentifier());
-		}
-		setProblem(drg);
-		//		System.out.println("Agents are \n"+Arrays.asList(agents));
-		//		System.out.println("Hosts  Are \n"+Arrays.asList(hosts));
-		//		System.out.println("fixed are \n"+fixedVar);
-
+	public void setProblem(ReplicationGraph rig, Collection<AgentIdentifier> fixedVar) {
 		try {
+			assert ((ReplicationInstanceGraph)rig).assertAllocValid();
+			super.setProblem(rig, fixedVar);
 			initiateSolver();
-			return getDCOPSolution(solveProb(true));
-		} catch (UnsatisfiableException e) {
-			return getFailedSolution(drg);
-		}
-	}
+			assert reverseHostId!=null;
+			double[] intialAlloc = new double[getVariableNumber()];
 
-	private HashMap<Integer, Integer> getDCOPSolution(SolutionType solvSol) {
-		if (solvSol==null || solvSol!=null)
-			return getFailedSolution(drg);
-
-		HashedHashSet<AgentIdentifier,AgentIdentifier>  map = new HashedHashSet<AgentIdentifier,AgentIdentifier> ();
-
-		for (int i = 0; i < n; i++){
-			for (int j=0; j < m; j++){
-				if(!(read(solvSol,i,j)==1.0 || read(solvSol,i,j)==0.0))
-					return getFailedSolution(drg);
-				if (read(solvSol,i,j)==1.0){
-					map.add(getAgentIdentifier(i), getHostIdentifier(j));
-					map.add(getHostIdentifier(j), getAgentIdentifier(i));
+			for (int i = 0; i < n; i++){
+				for (int j=0; j < m; j++){
+					if (!isConstant(i, j)){
+						ResourceIdentifier hostIdentifier = getHostIdentifier(j);
+						AgentIdentifier agentIdentifier = getAgentIdentifier(i);
+						assert rig.getAgentState(getAgentIdentifier(i)).hasResource(getHostIdentifier(j))==rig.getHostState(hostIdentifier).hasResource(agentIdentifier);
+						intialAlloc[getPos(i,j)]=rig.getAgentState(getAgentIdentifier(i)).hasResource(getHostIdentifier(j))?1.:0.;
+					}
 				}
 			}
-		}		
-
-		HashMap<Integer, Integer> result = new HashMap<Integer, Integer>();
-		for (Integer id : drg.varMap.keySet()){
-			AgentIdentifier agid = DCOPFactory.intToIdentifier(id);
-			result.put(id,drg.varMap.get(id).getValue(map.get(agid)));
+			assert  boundValidity();
+			//			assert  initialAllocOk(intialAlloc);
+			initialSolution=getInitialAllocAsSolution(intialAlloc);
+			assert ((ReplicationInstanceGraph)rig).assertAllocValid();
+			assert initialAllocOk(intialAlloc);
+			assert  boundValidity();
+			try {
+				assert assertIsViable(initialSolution):rig;
+			} catch (AssertionError e){
+				System.err.println(rig);
+				e.printStackTrace();
+			}
+			assert initialSolution!=null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
 		}
-		return result;
 	}
-
-	public HashMap<Integer, Integer> getFailedSolution(DcopReplicationGraph drg){
-
-		HashMap<Integer, Integer> result = new HashMap<Integer, Integer>();
-		for (Integer id : drg.varMap.keySet()){
-			result.put(id,0);
+	private boolean initialAllocOk(double[] intialAlloc){
+		for (int i=0; i <n; i++){
+			for (int j=0; j<m; j++){
+				if (!isConstant(i, j)){
+				ResourceIdentifier hostIdentifier = getHostIdentifier(j);
+				AgentIdentifier agentIdentifier = getAgentIdentifier(i);
+				assert Assert.IIF(rig.getAgentState(agentIdentifier).hasResource(hostIdentifier),intialAlloc[getPos(i,j)]==1.0);
+				assert Assert.IIF(rig.getHostState(hostIdentifier).hasResource(agentIdentifier), intialAlloc[getPos(i,j)]==1.0);
+				assert Assert.IIF(!rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), intialAlloc[getPos(i,j)]==0.);
+				assert Assert.IIF(!rig.getHostState(hostIdentifier).hasResource(agentIdentifier), intialAlloc[getPos(i,j)]==0.);
+			}
+			}
 		}
-		return result;
+		if (initialSolution!=null){
+			for (int i=0; i <n; i++){
+				for (int j=0; j<m; j++){
+					ResourceIdentifier hostIdentifier = getHostIdentifier(j);
+					AgentIdentifier agentIdentifier = getAgentIdentifier(i);
+					assert Assert.IIF(rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), read(initialSolution,i,j)==1.0):agentIdentifier+" "+hostIdentifier+" "+printBounds()+"\n"+print(initialSolution)+"\n"+print(intialAlloc)+"\n"+rig;
+					assert Assert.IIF(rig.getHostState(hostIdentifier).hasResource(agentIdentifier), read(initialSolution,i,j)==1.0);
+					assert Assert.IIF(!rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), read(initialSolution,i,j)==0.);
+					assert Assert.IIF(!rig.getHostState(hostIdentifier).hasResource(agentIdentifier), read(initialSolution,i,j)==0.);
+				}
+			}
+		}
+		return true;
 	}
-
-	/******                    *******/
-	/******  NEGO Interface    *******/ 
-	/******                    *******/
-
-	Map<AgentIdentifier,ReplicationCandidature> concerned;
 
 	@Override
-	public void initiate(Collection<ReplicationCandidature> concerned) {
+	public void setProblem(Collection<ReplicationCandidature> concerned) {
 		try {
 			assert !isAgent && isHost;
 			n=concerned.size();
@@ -134,7 +139,7 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 			this.concerned= new HashMap<AgentIdentifier, ReplicationCandidature>();					
 			Collection<ReplicaState> replicasStates = new ArrayList<ReplicaState>();
 			Collection<HostState> hostsStates = new ArrayList<HostState>();
-			double[] intialAlloc = new double[n];
+			double[] intialAlloc = new double[n*1];
 
 			this.myState=concerned.iterator().next().getResourceInitialState();
 			hostsStates.add(myState);
@@ -168,9 +173,13 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 			for (AgentIdentifier id : rig.getAgentsIdentifier()){
 				rig.addAcquaintance(id, myState.getMyAgentIdentifier());
 			}
-			setProblem(rig);
+
+
+			super.setProblem(rig, new ArrayList<AgentIdentifier>());
 			initiateSolver();
-			intialSolution=getInitialAllocAsSolution(intialAlloc);
+			initialSolution=getInitialAllocAsSolution(intialAlloc);
+			assert isViable(initialSolution);
+			assert initialSolution!=null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException();
@@ -195,7 +204,7 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 		}
 
 		if (isUpgrading(solution))
-			intialSolution=solution;
+			initialSolution=solution;
 
 		return  getContractSolution(solution);
 	}
@@ -213,11 +222,29 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 		if (!isViable(sol))
 			return results;
 		else {
-			for (int i = 0; i < this.concerned.size(); i++){
-				ReplicationCandidature c = concerned.get(getAgentIdentifier(i));
-				boolean allocated = read(sol,i,0)==1; 
-				if (c.isMatchingCreation() && allocated || !c.isMatchingCreation() && !allocated) {
-					results.add(c);
+			if (concerned!=null){
+				for (int i = 0; i < this.concerned.size(); i++){
+					ReplicationCandidature c = concerned.get(getAgentIdentifier(i));
+					boolean allocated = read(sol,i,0)==1; 
+					if (c.isMatchingCreation() && allocated || !c.isMatchingCreation() && !allocated) {
+						results.add(c);
+					}
+				}
+			} else {
+				for (int i = 0; i < n; i++){
+					for (int j = 0; j < m; j++){
+						boolean orignallyAllocated = rig.getAgentState(getAgentIdentifier(i)).hasResource(getHostIdentifier(j));
+						assert rig.getHostState(getHostIdentifier(j)).hasResource(getAgentIdentifier(i))==orignallyAllocated;
+						boolean allocatedinSol = read(sol,i,0)==1; 
+						if (orignallyAllocated != allocatedinSol) {
+							ReplicationCandidature c = 
+									new ReplicationCandidature(getMyAgentIdentifier(), getHostIdentifier(j), getAgentIdentifier(i), allocatedinSol);
+							c.setInitialState(rig.getHostState(getHostIdentifier(j)));
+							c.setInitialState(rig.getAgentState(getAgentIdentifier(i)));
+							results.add(c);
+						}
+
+					}
 				}
 			}
 			return results;
@@ -289,6 +316,8 @@ implements Solver, DcopSolver, ResourceAllocationSolver<ReplicationCandidature, 
 		}
 		return results;
 	}
+
+
 }
 
 

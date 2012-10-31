@@ -52,7 +52,7 @@ implements SelectionModule<Agent, PersonalState, Contract> {
 		
 		if (!contractsToExplore.isEmpty()){
 			
-			solver.initiate(contractsToExplore);
+			solver.setProblem(contractsToExplore);
 			this.solver.setTimeLimit((int) this.maxComputingTime);
 			
 			if (forceOptimal){

@@ -113,13 +113,13 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 	public void updateThreshold() {
 		this.soc.updateThreshold();
 	}
-	@Override
-	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), false, true);
-	}
-	@Override
-	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), true, true);
-	}
+//	@Override
+//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+//		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), false, true);
+//	}
+//	@Override
+//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+//		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), true, true);
+//	}
 
 }

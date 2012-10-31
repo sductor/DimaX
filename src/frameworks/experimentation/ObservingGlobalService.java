@@ -186,21 +186,23 @@ extends BasicCommunicatingCompetence<Agent>{
 
 		assert this.verification(results);
 
-		for (final ExperimentationResults r : results) {
-			this.updateInfo(r);
+		if (!results.isEmpty()){
+			for (final ExperimentationResults r : results) {
+				this.updateInfo(r);
 
-			if (r.isLastInfo()){
-				this.setAgentHasEnded(r.getId());
+				if (r.isLastInfo()){
+					this.setAgentHasEnded(r.getId());
 
-				this.logMonologue(r.getId()
-						+" has finished!, " +
-						"\n * remaining agents "+this.remainingAgent.size()
-						//					+"\n * remaining hosts "+remainingHost.size()
-						,LogService.onFile);
+					this.logMonologue(r.getId()
+							+" has finished!, " +
+							"\n * remaining agents "+this.remainingAgent.size()
+							//					+"\n * remaining hosts "+remainingHost.size()
+							,LogService.onFile);
+				}
 			}
-		}
 
-		this.finalStates.add(results.getLast());
+			this.finalStates.add(results.getLast());
+		}
 
 	}
 
@@ -344,16 +346,17 @@ extends BasicCommunicatingCompetence<Agent>{
 
 		//		assert !received.get(i).contains(ag.getId());
 		//		received.get(i).add(ag.getId());
-
-		final ExperimentationResults resultType= results.getLast();
-		assert !this.alreadyReceived.contains(resultType.getId()):"argh! already received"+resultType.getId();
-		this.alreadyReceived.add(resultType.getId());
-		assert results.size()<=ObservingGlobalService.getNumberOfTimePoints():"arg : "+results.size()+"\n"+results;
-		//		String result ="Agent has sended results \n"+resultType.getId()+"   "+_state_snapshot_frequency+" :";
-		//		for (final ExperimentationResults r : results){
-		//			result+=r.getUptime()+"  "+getTimeStep(r)+"\n";
-		//		}
-		//		getMyAgent().logMonologue(result, LogService.onBoth);
+		if (!results.isEmpty()){
+			final ExperimentationResults resultType= results.getLast();
+			assert !this.alreadyReceived.contains(resultType.getId()):"argh! already received"+resultType.getId();
+			this.alreadyReceived.add(resultType.getId());
+			assert results.size()<=ObservingGlobalService.getNumberOfTimePoints():"arg : "+results.size()+"\n"+results;
+			//		String result ="Agent has sended results \n"+resultType.getId()+"   "+_state_snapshot_frequency+" :";
+			//		for (final ExperimentationResults r : results){
+			//			result+=r.getUptime()+"  "+getTimeStep(r)+"\n";
+			//		}
+			//		getMyAgent().logMonologue(result, LogService.onBoth);
+		}
 		return true;
 	}
 }

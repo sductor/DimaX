@@ -3,7 +3,9 @@ package frameworks.negotiation.rationality;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -36,6 +38,8 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 
 	public Class<? extends AgentState> myStateType;
 	public final int initialStateNumber;
+	
+	public Collection<AgentIdentifier> knownResources;
 
 	public static final String stateChangementObservation="my state has changed!!";
 
@@ -179,9 +183,18 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	// this.myInformation.addAll(agents);
 	// }
 
+	public Collection<AgentIdentifier> getKnownResources(){
+		return Collections.unmodifiableCollection(knownResources);
+	}
+	
+	public void setKnownResources(Collection<AgentIdentifier> knownResources) {
+		this.knownResources = knownResources;
+	}
 	/*
 	 * Transition
 	 */
+
+
 
 
 	/* (non-Javadoc)

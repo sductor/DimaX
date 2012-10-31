@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Random;
 
 
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
+import frameworks.faulttolerance.olddcop.DcopBranchAndBoundSolver;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -26,7 +28,7 @@ public class SolverTEster {
 		boolean knitro=false;
 		boolean metal=true; 
 		boolean bbTest=false;
-		boolean bestTest=true;
+		boolean bestTest=false;
 		
 
 		double knitroOp=0;
@@ -50,9 +52,9 @@ public class SolverTEster {
 		double metalBetterKnitro=0;
 		LogService.logOnFile(new File("yo"),"*************************",false,false);
 			
-		int nbAgent=30;
+		int nbAgent=512;
 		double hostCap=200;
-		for (hostCap=1; hostCap<31; hostCap+=5)  {
+		for (hostCap=64; hostCap<nbAgent; hostCap*=2)  {
 			
 //		for (int heuristic=1; heuristic<=2; heuristic++){
 //			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+heuristic);
@@ -65,28 +67,28 @@ public class SolverTEster {
 					try {
 						rig.randomInitiaition(
 								"to", rand.nextInt(),
-								/*5+rand.nextInt(5)*/nbAgent, 1,1000,//nbAgent,nbHost
+								/*5+rand.nextInt(5)*/nbAgent, 50,//nbAgent,nbHost
 								0.5, DispersionSymbolicValue.Moyen, //criticity
 								1., DispersionSymbolicValue.Nul, //agent load
 								hostCap, DispersionSymbolicValue.Nul, //hostCap
 								0.5, DispersionSymbolicValue.Moyen, //hostDisp
 								100,100);
 					} catch (IfailedException e1) {
-						//				e1.printStackTrace();
+										e1.printStackTrace();
 					}
-					rig = rig.getUnallocatedGraph();
+//					rig = rig.getUnallocatedGraph();
 					//			System.out.println(rig);
 					//
 					// Opt
 					//
-					KnitroAllocationSolver kas2 = null;
+					KnitroResourceAllocationSolver kas2 = null;
 					double[] bestPossible = null;
 					if (bestTest){
 					List<ReplicaState> best = new ArrayList<ReplicaState>();
-					kas2 = new KnitroAllocationSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
+					kas2 = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
 					kas2.myState=rig.getHostsStates().iterator().next();
-					kas2.setProblem(rig);
-					if(rig.getHostsIdentifier().size()==1)	kas2.intialSolution=kas2.getInitialAllocAsSolution(new double[kas2.getVariableNumber()]);
+					kas2.setProblem(rig, new ArrayList<AgentIdentifier>());
+					if(rig.getHostsIdentifier().size()==1)	kas2.initialSolution=kas2.getInitialAllocAsSolution(new double[kas2.getVariableNumber()]);
 					kas2.initiateSolver();
 					bestPossible = kas2.getBestTriviaSol(best,hostCap);
 					}
@@ -94,15 +96,15 @@ public class SolverTEster {
 					// Knitro
 					//
 
-					SimpleSolutionType kasbestSolution=null;
-					KnitroAllocationSolver kas = null;
+					RessourceAllocationSimpleSolutionType kasbestSolution=null;
+					KnitroResourceAllocationSolver kas = null;
 					if (knitro){
 						//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 5, false, 5);
 						initTime = System.currentTimeMillis();
-						kas = new KnitroAllocationSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
+						kas = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
 						kas.myState=rig.getHostsStates().iterator().next();
-						kas.setProblem(rig);
-						if(rig.getHostsIdentifier().size()==1)	kas.intialSolution=kas.getInitialAllocAsSolution(new double[kas.getVariableNumber()]);
+						kas.setProblem(rig, new ArrayList<AgentIdentifier>());
+						if(rig.getHostsIdentifier().size()==1)	kas.initialSolution=kas.getInitialAllocAsSolution(new double[kas.getVariableNumber()]);
 						kas.initiateSolver();
 						kasbestSolution = kas.solveProb(true);
 						knitorEstimatedTime += System.currentTimeMillis() - initTime;
@@ -113,14 +115,14 @@ public class SolverTEster {
 					//
 
 					Solution jmsbestSolution=null;
-					RessAllocJMetalSolver jms=null;
+					JMetalSolver jms=null;
 					if (metal){
 						initTime = System.currentTimeMillis();
-						jms = new RessAllocJMetalSolver(rig.getSocialWelfare(), rig.getHostsIdentifier().size()>1, true);
+						jms = new JMetalSolver(rig.getSocialWelfare(), rig.getHostsIdentifier().size()>1, true);
 						jms.myState=rig.getHostsStates().iterator().next();
-						jms.setProblem(rig);
-						jms.initiateSolver();						
-						if(rig.getHostsIdentifier().size()==1)jms.intialSolution=jms.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
+						jms.setProblem(rig, new ArrayList<AgentIdentifier>());
+//						if(rig.getHostsIdentifier().size()==1)jms.initialSolution=jms.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
+						jms.setTimeLimit(30000);					
 						jmsbestSolution = jms.solveProb(true);
 						metalEstimatedTime += System.currentTimeMillis() - initTime;
 					}
@@ -132,16 +134,16 @@ public class SolverTEster {
 
 					HashMap<Integer, Integer> bbbestSolution=null;
 					DcopBranchAndBoundSolver bb=null;
-					if (bbTest){
-						initTime = System.currentTimeMillis();
-						bb = new DcopBranchAndBoundSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true);
-						bb.myState=rig.getHostsStates().iterator().next();
-						bb.setProblem(rig);
-						bb.initiateSolver();
-						if(rig.getHostsIdentifier().size()==1)bb.intialSolution=bb.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
-						bbbestSolution = bb.solveProb(true);
-						bbEstimatedTime += System.currentTimeMillis() - initTime;
-					}
+//					if (bbTest){
+//						initTime = System.currentTimeMillis();
+//						bb = new DcopBranchAndBoundSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true);
+//						bb.myState=rig.getHostsStates().iterator().next();
+//						bb.setProblem(rig);
+//						bb.initiateSolver();
+//						if(rig.getHostsIdentifier().size()==1)bb.initialSolution=bb.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
+//						bbbestSolution = bb.solveProb(true);
+//						bbEstimatedTime += System.currentTimeMillis() - initTime;
+//					}
 					//
 					// Result
 					// 
@@ -151,8 +153,8 @@ public class SolverTEster {
 					if (bbTest)System.out.println("bb best     !!!!!!!!!!!!!!!! "+bb.getSocWelfare(bbbestSolution)+"\t\t"+bb.isViable(bbbestSolution)+"\t"+bb.print(bbbestSolution));
 
 					if (bestTest)
-					System.out.println("best possible !!!!!!!!!!!!!!! "+" "+kas2.getSocWelfare(new SimpleSolutionType(bestPossible))
-							+"\t\t\t"+kas2.print(new SimpleSolutionType(bestPossible)));
+					System.out.println("best possible !!!!!!!!!!!!!!! "+" "+kas2.getSocWelfare(new RessourceAllocationSimpleSolutionType(bestPossible))
+							+"\t\t\t"+kas2.print(new RessourceAllocationSimpleSolutionType(bestPossible)));
 
 					if (knitro && bestTest){
 						if (kas.getSocWelfare(kasbestSolution)==kas.getSocWelfare(kas.getInitialAllocAsSolution(bestPossible)))

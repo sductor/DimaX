@@ -143,6 +143,14 @@ public class Binary extends Variable {
     return distance;
   } // hammingDistance
 
+  public boolean equals(Object o){
+	  if (!(o instanceof Binary)){
+		  return false;
+	  }  else {
+		  return ((Binary)o).bits_.equals(this.bits_);
+	  }
+  }
+  
  /**
   *  
   */

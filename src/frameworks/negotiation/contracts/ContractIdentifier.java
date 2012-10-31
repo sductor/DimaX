@@ -49,7 +49,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 		return result;
 	}
 
-	public Collection<AgentIdentifier> getParticipants() {
+	public Collection<AgentIdentifier> getAllParticipants() {
 		return this.participants;
 	}
 
@@ -79,7 +79,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 			if (((ContractIdentifier) that).initiator.equals(this.initiator)
 					&& ((ContractIdentifier) that).participants.equals(this.participants)) {
 //				assert ((ContractIdentifier)that).contractCreation.equals(this.contractCreation):
-//					"un agent a envoyé deux prop dans la mm session!!\n"+this+that;
+//					"un agent a envoyé deux prop DIFFERENTE dans la mm session!!\n"+this+that;
 				return true;
 			}
 		}
@@ -93,7 +93,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 				+ ") (init : "
 				+ this.initiator
 				+ ", part : "
-				+ this.getParticipants()
+				+ this.getAllParticipants()
 				+ "),(expired?"
 				+ this.hasReachedExpirationTime()
 				+ ", will expire?"

@@ -1,6 +1,7 @@
 package frameworks.faulttolerance.experimentation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import frameworks.faulttolerance.dcop.dcop.DcopReplicationGraph;
+import frameworks.faulttolerance.dcoprealloc.DcopAgent;
+import frameworks.faulttolerance.dcoprealloc.DcopHost;
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -29,18 +31,26 @@ import frameworks.experimentation.Laborantin;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 import frameworks.faulttolerance.candidaturewithstatus.StatusHost;
 import frameworks.faulttolerance.candidaturewithstatus.StatusReplica;
+import frameworks.faulttolerance.centralizedsolver.CentralizedCoordinator;
+import frameworks.faulttolerance.centralizedsolver.CentralizedHost;
+import frameworks.faulttolerance.centralizedsolver.CentralizedReplica;
 import frameworks.faulttolerance.collaborativecandidature.CollaborativeHost;
 import frameworks.faulttolerance.collaborativecandidature.CollaborativeReplica;
 import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.faulttolerance.solver.ChocoReplicationAllocationSolver;
+import frameworks.faulttolerance.olddcop.ChocoReplicationAllocationSolver;
+import frameworks.faulttolerance.olddcop.dcop.DcopReplicationGraph;
+import frameworks.faulttolerance.solver.JMetalSolver;
+import frameworks.faulttolerance.solver.RessourceAllocationProblem;
 import frameworks.faulttolerance.solver.SolverFactory;
+import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.NegotiationParameters.SelectionType;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import frameworks.negotiation.protocoles.dcopProtocol.DCOPLeaderProtocol;
 import frameworks.negotiation.rationality.RationalAgent;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -66,11 +76,12 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 * Variables &  Constantes
 	 */
 
-	public  long maxComputingTime = 120000;//2 min
+//	public  long maxComputingTime = 120000;//2 min
+//	public  long maxComputingTime = 3000;//30 sec
+	public  long maxComputingTime = _maxSimulationTime/10;//2 min
 
 	public int nbAgents;
 	public int nbHosts;
-	public int nbAgentMax=10000;
 	public String _usedProtocol;
 	public SocialChoiceType _socialWelfare;
 
@@ -264,7 +275,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.rig = new ReplicationInstanceGraph(_socialWelfare);
 
 		rig.randomInitiaition(getSimulationName(), randSeed,
-				nbAgents, nbHosts, nbAgentMax,
+				nbAgents, nbHosts, 
 				agentCriticityMean, agentCriticityDispersion, 
 				agentLoadMean, agentLoadDispersion, hostCapacityMean, 
 				hostCapacityDispersion, hostFaultProbabilityMean, hostFaultProbabilityDispersion, 
@@ -360,6 +371,20 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.opinionDiffusionDegree.intValue(),
 						alpha_low, alpha_high);
 
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4DcopProto)){
+
+				rep = new DcopAgent(
+						replicaId,
+						this.rig.getAgentState(replicaId),
+						this.kSolver,
+						this.dynamicCriticity);
+
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4GeneticProto)){
+				rep = new CentralizedReplica(
+						replicaId,
+						this.rig.getAgentState(replicaId),this.dynamicCriticity);
 
 			} else {
 				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
@@ -367,6 +392,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 			//Ajout des acquaintances
 			rep.getMyInformation().addAll(this.rig.getAccessibleHosts(replicaId));
+			rep.setKnownResources(this.rig.getAccessibleHosts(replicaId));
 
 			//gestion des état initiaux
 			for (final AgentIdentifier host : rep.getMyCurrentState().getMyResourceIdentifiers()){
@@ -385,10 +411,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		/*
 		 * Host instanciation
 		 */
-
+		CentralizedCoordinator cc =null;
 		for (final ResourceIdentifier hostId : this.getHostsIdentifier()) {
 
-			final RationalAgent hostAg;
+			final SimpleRationalAgent hostAg;
 			if (this._usedProtocol
 					.equals(NegotiationParameters.key4mirrorProto)) {
 				hostAg = new CollaborativeHost(
@@ -417,12 +443,38 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this._socialWelfare,
 						this.opinionDiffusionDegree.intValue(),
 						alpha_low, alpha_high);
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4DcopProto)){
+
+				hostAg = new DcopHost(
+						hostId,
+						this.rig.getHostState(hostId),
+						this._socialWelfare,
+						this.kSolver,SolverFactory.getGlobalSolver(this._socialWelfare),
+						this.maxComputingTime);
+
+			}else if (this._usedProtocol
+					.equals(NegotiationParameters.key4GeneticProto)){
+				JMetalSolver p = new JMetalSolver(_socialWelfare, true, true);
+				p.setProblem(rig, new ArrayList<AgentIdentifier>());
+				if (cc==null){
+					hostAg = new CentralizedCoordinator(
+							hostId,
+							this.rig.getHostState(hostId),p);
+					cc=(CentralizedCoordinator) hostAg;
+
+				} else {
+					hostAg = new CentralizedHost(
+							hostId,
+							this.rig.getHostState(hostId),p);
+					cc.register((CentralizedHost) hostAg);
+				}
 			}else {
 				throw new RuntimeException("impossible : usedProtocol = "+this._usedProtocol);
 			}
 
 			//pas d'acquaintance pour les ressources
-
+			hostAg.setKnownResources(rig.getAccessibleAgents(hostId));
 			//gestion des état initiaux
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
 				if ((hostAg.getMyCore()).iMemorizeMyRessourceState()) {
@@ -441,7 +493,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		/*
 		 *
 		 */
-
 
 		this.logMonologue("Initializing agents done!:\n" + this.getMyAgent().myInformationService.show(HostState.class) + this.getMyAgent().myInformationService.show(ReplicaState.class),LogService.onFile);
 		return result.values();
@@ -464,11 +515,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		} else if (selection
 				.equals(SelectionType.Opt)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(SolverFactory.getLocalSolver(_socialWelfare), true, maxComputingTime));
+					true, false, new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), true, maxComputingTime));
 		}else if (selection
 				.equals(SelectionType.Better)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(SolverFactory.getLocalSolver(_socialWelfare), false, maxComputingTime));
+					true, false, new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), false, maxComputingTime));
 		} else {
 			throw new RuntimeException(
 					"Static parameters est mal conf : selection = "+ selection);
@@ -607,7 +658,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 								if (this.nbAgents!=that.nbAgents){
 									return this.nbAgents-that.nbAgents;
 								} else {
-//									assert this.equals(that):this+"\n-->"+that;
+									//									assert this.equals(that):this+"\n-->"+that;
 									return 0;
 								}
 							}
@@ -647,11 +698,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public boolean isValid() {
 		assert alpha_high!=0.;
 		if (nbHosts*agentAccessiblePerHost<nbAgents || agentAccessiblePerHost<=0) {
-//			System.out.println("agentAccessiblePerHost not valid");
+			//			System.out.println("agentAccessiblePerHost not valid");
 			return false;
 		} 
 		if (!this._agentSelection.equals(SelectionType.Greedy)){
-//			System.out.println("_agentSelection0 not valid");
+			//			System.out.println("_agentSelection0 not valid");
 			return false;
 		}
 
@@ -660,29 +711,29 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
 			if (alpha_high.equals(Double.NaN) || alpha_low.equals(Double.NaN)){
 				assert alpha_high.equals(Double.NaN) && alpha_low.equals(Double.NaN);
-//				System.out.println("alpha1 not valid");
+				//				System.out.println("alpha1 not valid");
 				return false;
 			} if (this.opinionDiffusionDegree.equals(Double.NaN)){
-//				System.out.println("opinionDiffusionDegree1 not valid");
+				//				System.out.println("opinionDiffusionDegree1 not valid");
 				return false;
 			}
-//			if (!this._agentSelection.equals(SelectionType.RoolettWheel)){
-//				System.out.println("_agentSelection1 not valid");
-//				return false;
-//			}
+			//			if (!this._agentSelection.equals(SelectionType.RoolettWheel)){
+			//				System.out.println("_agentSelection1 not valid");
+			//				return false;
+			//			}
 
 		} else if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
 			if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN)){
-//				System.out.println("alpha 2not valid "+alpha_high+" "+alpha_low);
+				//				System.out.println("alpha 2not valid "+alpha_high+" "+alpha_low);
 				assert !alpha_high.equals(Double.NaN) && !alpha_low.equals(Double.NaN);
 				return false;
 			}
 			if (!this.opinionDiffusionDegree.equals(Double.NaN)){
-//				System.out.println("opinionDiffusionDegree 2not valid "+opinionDiffusionDegree);
+				//				System.out.println("opinionDiffusionDegree 2not valid "+opinionDiffusionDegree);
 				return false;
 			}
 			if (!this._agentSelection.equals(SelectionType.Greedy)){
-//				System.out.println("_agentSelection 2not valid");
+				//				System.out.println("_agentSelection 2not valid");
 				return false;
 			}
 

@@ -9,7 +9,7 @@ import frameworks.negotiation.rationality.AgentState;
 public interface AbstractContractTransition
 extends DimaComponentInterface {
 
-	public ContractIdentifier getIdentifier();
+	public ContractIdentifier getContractIdentifier();
 
 	public AgentIdentifier getInitiator();
 

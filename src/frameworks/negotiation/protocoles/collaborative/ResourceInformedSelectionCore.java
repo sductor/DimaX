@@ -198,8 +198,8 @@ InformedCandidature<Contract>> {
 								"heeelllll yyeeeeaaaaahhhhhh!!!!!", LogService.onBoth);
 						for (final Contract c : r) {
 							try {
-								rejected.remove(contracts.getContract(c.getIdentifier()));
-								accepted.add(contracts.getContract(c.getIdentifier()));
+								rejected.remove(contracts.getContract(c.getContractIdentifier()));
+								accepted.add(contracts.getContract(c.getContractIdentifier()));
 							} catch (final UnknownContractException e) {
 								e.printStackTrace();
 							}
@@ -363,7 +363,7 @@ InformedCandidature<Contract>> {
 		//generating allocgen : allocgen contains the set of upgrading reallocation contracts
 		try {
 			assert kConcerned!=null;
-			this.solver.initiate(kConcerned);
+			this.solver.setProblem(kConcerned);
 			this.solver.setTimeLimit((int) this.maxComputingTime);
 			final Set<InformedCandidature<Contract>> alreadyDone =
 					new HashSet<InformedCandidature<Contract>>();

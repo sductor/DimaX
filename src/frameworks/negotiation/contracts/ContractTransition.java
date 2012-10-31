@@ -93,7 +93,7 @@ AbstractContractTransition {
 	@Override
 	public AgentState getInitialState(final AgentIdentifier id) throws IncompleteContractException{
 		if (!this.initState.containsKey(id)) {
-			throw new IncompleteContractException(id+"missing in "+this.getIdentifier()+"\n----------- "+this.initState);
+			throw new IncompleteContractException(id+"missing in "+this.getContractIdentifier()+"\n----------- "+this.initState);
 		} else {
 			return this.initState.get(id);
 		}
@@ -156,7 +156,7 @@ AbstractContractTransition {
 			//				this.initState.get(state.getMyAgentIdentifier())+" "+state;
 			this.initState.put(state.getMyAgentIdentifier(), state);
 		} else {
-			throw new RuntimeException("unappropriate specification set");
+			throw new RuntimeException("unappropriate specification set "+this+" "+state);
 		}
 
 		try {
@@ -293,7 +293,7 @@ AbstractContractTransition {
 	 */
 
 	@Override
-	public ContractIdentifier getIdentifier() {
+	public ContractIdentifier getContractIdentifier() {
 		return new ContractIdentifier(this.creator, this.creationTime,
 				this.validityTime, this.actors);
 	}
@@ -335,14 +335,14 @@ AbstractContractTransition {
 		if (o instanceof ContractTransition) {
 			@SuppressWarnings("unchecked")
 			final ContractTransition that = (ContractTransition) o;
-			return that.getIdentifier().equals(this.getIdentifier());
+			return that.getContractIdentifier().equals(this.getContractIdentifier());
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getIdentifier().hashCode();
+		return this.getContractIdentifier().hashCode();
 	}
 
 	@Override

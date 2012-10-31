@@ -18,9 +18,9 @@ public class InactiveProposerCore<
 ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends	BasicAgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>
+extends	BasicAgentCompetence<NegotiatingAgent<PersonalState, Contract>>
 implements ProposerCore<
-SimpleNegotiatingAgent<PersonalState, Contract>,
+NegotiatingAgent<PersonalState, Contract>,
 PersonalState,
 Contract>  {
 	private static final long serialVersionUID = -5019973485455813800L;

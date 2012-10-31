@@ -217,8 +217,8 @@ implements AbstractContractTransition{
 	}
 
 	@Override
-	public ContractIdentifier getIdentifier() {
-		return this.candidature.getIdentifier();
+	public ContractIdentifier getContractIdentifier() {
+		return this.candidature.getContractIdentifier();
 	}
 
 

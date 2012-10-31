@@ -30,5 +30,7 @@ public interface ReplicationGraph {
 
 	SocialChoiceType getSocialWelfare();
 
+	boolean areLinked(AgentIdentifier a1, AgentIdentifier a2);
+
 
 }

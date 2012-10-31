@@ -21,6 +21,8 @@
 
 package frameworks.faulttolerance.solver.jmetal.core;
 
+import java.util.Arrays;
+
 /**
  * Abstract class representing solution types, which define the types of the 
  * variables constituting a solution 
@@ -53,6 +55,7 @@ public abstract class SolutionType {
 		
 		variables = new Variable[vars.length];
 		for (int var = 0; var < vars.length; var++) {
+			assert vars[var]!=null:Arrays.asList(vars);
 			variables[var] = vars[var].deepCopy();
 		} // for
 		

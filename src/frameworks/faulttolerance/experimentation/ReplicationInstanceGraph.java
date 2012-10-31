@@ -20,12 +20,13 @@ import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.support.GimaObject;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.IfailedException;
-import frameworks.faulttolerance.dcop.DCOPFactory;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
+import frameworks.faulttolerance.olddcop.DCOPFactory;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
+import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class ReplicationInstanceGraph
@@ -38,13 +39,13 @@ extends GimaObject implements ReplicationGraph{
 
 	//	private final int kAccessible;
 
-	private Map<AgentIdentifier, ReplicaState> agents;
-	private Map<ResourceIdentifier, HostState> hosts;
+	private Map<AgentIdentifier, ReplicaState> agents=new HashMap<AgentIdentifier, ReplicaState>();
+	private Map<ResourceIdentifier, HostState> hosts=new HashMap<ResourceIdentifier, HostState>();
 
 	private HashedHashSet<AgentIdentifier, ResourceIdentifier> accHosts=
-	new HashedHashSet<AgentIdentifier, ResourceIdentifier>();
+			new HashedHashSet<AgentIdentifier, ResourceIdentifier>();
 	private HashedHashSet<ResourceIdentifier, AgentIdentifier> accAgents =
-	new HashedHashSet<ResourceIdentifier, AgentIdentifier>();
+			new HashedHashSet<ResourceIdentifier, AgentIdentifier>();
 
 	final SocialChoiceType socialWelfare;
 
@@ -66,13 +67,47 @@ extends GimaObject implements ReplicationGraph{
 		}
 	}
 
-
-	public void addAcquaintance(final AgentIdentifier ag, final ResourceIdentifier h){
+	public void setAgentState(AgentState s){
+		assert s!=null;
+		if (s instanceof HostState){
+			hosts.put(((HostState)s).getMyAgentIdentifier(), (HostState)s);
+		} else {
+			assert s instanceof ReplicaState:s;
+		agents.put(s.getMyAgentIdentifier(), (ReplicaState)s);
+		}
+	}
+	public void addAcquaintance(final AgentIdentifier a1, final AgentIdentifier a2){
+		final AgentIdentifier ag;
+		final ResourceIdentifier h;
+		if (a1 instanceof ResourceIdentifier){
+			assert !(a2 instanceof ResourceIdentifier);
+			ag = a2;
+			h = (ResourceIdentifier) a1;
+		} else {
+			assert (a2 instanceof ResourceIdentifier);
+			ag = a1;
+			h = (ResourceIdentifier) a2;			
+		}
 		this.accHosts.add(ag,h);
 		this.accAgents.add(h, ag);
 		//		assert this.accAgents.get(h).size() <= this.kAccessible:this.accAgents;
 	}
-	
+	public AgentState getState(AgentIdentifier id) {
+		if (id instanceof ResourceIdentifier){
+			return getHostState((ResourceIdentifier)id);
+		} else {		
+			return getAgentState(id);
+		}
+	}
+	public Collection<? extends AgentIdentifier> getAcquaintances(final AgentIdentifier id){
+		if (id instanceof ResourceIdentifier){
+			return getAccessibleAgents((ResourceIdentifier)id);
+		} else {		
+			return getAccessibleHosts(id);
+		}
+		//		assert this.accAgents.get(h).size() <= this.kAccessible:this.accAgents;
+	}
+
 	public ReplicationInstanceGraph(SocialChoiceType socialWelfare) {
 		super();
 		this.socialWelfare = socialWelfare;
@@ -83,6 +118,14 @@ extends GimaObject implements ReplicationGraph{
 		return socialWelfare;
 	}
 
+
+	public Collection<AgentIdentifier> getEveryIdentifier() {
+		Collection<AgentIdentifier> result = new ArrayList<AgentIdentifier>();
+		result.addAll(this.agents.keySet());
+		result.addAll(this.hosts.keySet());
+		return result;
+	}
+	
 	@Override
 	public Collection<AgentIdentifier> getAgentsIdentifier() {
 		return this.agents.keySet();
@@ -133,13 +176,29 @@ extends GimaObject implements ReplicationGraph{
 		return Collections.unmodifiableSet(this.accAgents.get(id));
 	}
 
+	@Override
+	public boolean areLinked(AgentIdentifier a1, AgentIdentifier a2) {
+		final AgentIdentifier ag;
+		final ResourceIdentifier h;
+		if (a1 instanceof ResourceIdentifier){
+			assert !(a2 instanceof ResourceIdentifier);
+			ag = a2;
+			h = (ResourceIdentifier) a1;
+		} else {
+			assert (a2 instanceof ResourceIdentifier);
+			ag = a1;
+			h = (ResourceIdentifier) a2;			
+		}
+		assert getAccessibleAgents(h).contains(ag)==getAccessibleHosts(ag).contains(h);
+		return getAccessibleAgents(h).contains(ag);
+	}
 	//
 	// Methods
 	//
 
 	public void randomInitiaition(
 			final String simulationName,long randSeed,
-			final int nbAgents, int nbHosts,int nbAgentMax,
+			final int nbAgents, int nbHosts,
 			final Double agentCriticityMean,final DispersionSymbolicValue agentCriticityDispersion,
 			final Double agentLoadMean,final DispersionSymbolicValue agentLoadDispersion,
 			final Double hostCapacityMean,final DispersionSymbolicValue hostCapacityDispersion,
@@ -149,7 +208,7 @@ extends GimaObject implements ReplicationGraph{
 		rand = new Random(randSeed);
 		this.initiateAgents(
 				simulationName, rand,
-				nbAgents, nbHosts, nbAgentMax,
+				nbAgents, nbHosts, 
 				agentCriticityMean, agentCriticityDispersion, 
 				agentLoadMean, agentLoadDispersion, 
 				hostCapacityMean, hostCapacityDispersion, hostFaultProbabilityMean, hostDisponibilityDispersion);
@@ -164,6 +223,7 @@ extends GimaObject implements ReplicationGraph{
 				iFailed=false;
 				this.setVoisinage(agentAccessiblePerHost, maxHostAccessiblePerAgent, rand);
 				this.initialRep(rand);
+				this.assertValidity();
 			} catch (final IfailedException e) {
 				iFailed=true;
 				//				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG "+count+e, LogService.onBoth);
@@ -190,20 +250,20 @@ extends GimaObject implements ReplicationGraph{
 		ReplicationInstanceGraph rig = new ReplicationInstanceGraph(this.getSocialWelfare());
 		rig.setAgents(repSt);
 		rig.setHosts(hostSt);
-		
+
 		rig.accAgents=this.accAgents;
 		rig.accHosts=this.accHosts;
-		
+
 		return rig;
 	}
-	
+
 	public static Integer identifierToInt(AgentIdentifier id){
 		return new Integer(id.toString().split("-=-")[1]);
 	}
 
 	public static AgentIdentifier intToIdentifier(
-			String simulationName, int nbAgents, int i){
-		if (i <= nbAgents)
+			String simulationName, int i){
+		if (i%2==0)
 			return new AgentName("#"+simulationName+"#DomainAgent_-=-"+i+"-=-");
 		else
 			return new ResourceIdentifier("#"+simulationName+"#HostManager_-=-"+i+"-=-",77);
@@ -233,7 +293,6 @@ extends GimaObject implements ReplicationGraph{
 	private void initiateAgents(
 			final String simulationName,Random rand,
 			final int nbAgents, int nbHosts,
-			final int nbAgentsMax,
 			final Double agentCriticityMean,final DispersionSymbolicValue agentCriticityDispersion,
 			final Double agentLoadMean,final DispersionSymbolicValue agentLoadDispersion,
 			final Double hostCapacityMean,final DispersionSymbolicValue hostCapacityDispersion,
@@ -246,12 +305,12 @@ extends GimaObject implements ReplicationGraph{
 		agents =new HashMap<AgentIdentifier, ReplicaState>();
 		hosts =	new HashMap<ResourceIdentifier, HostState>();
 
-		for (int i=0; i<nbAgents; i++) {
-			this.agents.put(intToIdentifier(simulationName,nbAgents,i),null);
+		for (int i=0; i<2*nbAgents; i+=2) {
+			this.agents.put(intToIdentifier(simulationName,i),null);
 		}
 
-		for (int i=5*nbAgentsMax; i<5*nbAgentsMax+nbHosts; i++) {
-			this.hosts.put((ResourceIdentifier) intToIdentifier(simulationName,nbAgents,i),null);
+		for (int i=1; i<2*nbHosts+1; i+=2) {
+			this.hosts.put((ResourceIdentifier) intToIdentifier(simulationName,i),null);
 		}
 
 
@@ -391,6 +450,8 @@ extends GimaObject implements ReplicationGraph{
 			final Map<AgentIdentifier, ReplicaState> agents,
 			final Map<ResourceIdentifier, HostState> hosts){
 		try {
+			assert getAccessibleAgents(h).contains(r);
+			assert getAccessibleHosts(r).contains(h);
 			final ReplicationCandidature c = new ReplicationCandidature(
 					h,
 					r,
@@ -408,6 +469,36 @@ extends GimaObject implements ReplicationGraph{
 		} catch (final IncompleteContractException e) {
 			throw new RuntimeException();
 		}
+	}
+
+	public boolean assertAllocValid(){
+
+		for (ReplicaState s: agents.values()){
+			assert s.isValid();
+		}
+		for (HostState s: hosts.values()){
+			assert s.isValid();			
+		}
+		
+		return true;
+	}
+	
+	public boolean assertValidity(){
+		for (ReplicaState s: agents.values()){
+			for (ResourceIdentifier r : s.getMyResourceIdentifiers()){
+				assert getAccessibleHosts(s.getMyAgentIdentifier()).contains(r) :s.getMyAgentIdentifier()+" "+r;
+				assert getAccessibleAgents(r).contains(s.getMyAgentIdentifier());
+				assert hosts.get(r).hasResource(s.getMyAgentIdentifier());
+		}
+		}
+		for (HostState s: hosts.values()){
+			for (AgentIdentifier r : s.getMyResourceIdentifiers()){
+				assert getAccessibleAgents(s.getMyAgentIdentifier()).contains(r) ;
+				assert getAccessibleHosts(r).contains(s.getMyAgentIdentifier());
+				assert agents.get(r).hasResource(s.getMyAgentIdentifier());
+		}
+		}
+		return true;
 	}
 
 }

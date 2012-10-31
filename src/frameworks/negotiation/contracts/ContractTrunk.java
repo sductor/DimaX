@@ -72,7 +72,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		} else {
 			assert contract.getContractIdentifier()!=null;
 			assert contract.getContractIdentifier().contractCreation.equals(id.contractCreation):
-				"un agent a envoyé deux prop dans la mm session!!\n"+id+contract;
+				"un agent a envoyé deux prop dans la mm session!!\n"+id+contract.getContractIdentifier();
 			return contract;
 		}
 	}
@@ -203,7 +203,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 			AgentState assertedState = null;
 
 			for (final Contract c : this.getAllContracts()) {
-				if (c.getAllInvolved().contains(id)) {
+				if (c.getAllParticipants().contains(id)) {
 					AgentState actualState;
 					try {
 						actualState = c.getInitialState(id);
@@ -422,7 +422,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	}
 
 	public String statusOf(final Contract c) {
-		String result = "\n*Status of " + c+"\n";
+		String result = "\n*Status of " + c.getContractIdentifier()+"\n";
 		if (this.getOnWaitContracts().contains(c)) {
 			result += "wait;";
 		}
@@ -451,6 +451,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 
 		return result;
 	}
+
 
 }
 

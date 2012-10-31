@@ -38,6 +38,7 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 
 	@PostStepComposant(ticker=ObservingGlobalService._state_snapshot_frequency)
 	public void notifyMyState(){
+		this.logMonologue("notifying my results",ObservingSelfService.observationLog);
 		this.l.add(this.generateMyResults());
 	}
 
@@ -85,6 +86,7 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 	@ResumeActivity
 	//allow to continue to receive messages
 	public void tryToResumeActivity(){
+		this.logMonologue("trying to resume activity",ObservingSelfService.observationLog);
 		//		if (getMyAgent().hasAppliStarted()) logMonologue("resuming", ObservingSelfService.observationLog);
 		final Collection<AbstractMessage> messages = new ArrayList<AbstractMessage>();
 		while (this.getMyAgent().getMailBox().hasMail()){
@@ -93,7 +95,7 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 				//				logMonologue("recieving end simulation order in resuming",ObservingSelfService.observationLog);
 				this.simulationEndORder((SimulationEndedMessage)m);
 			} else {
-				//				logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
+								logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
 				messages.add(m);
 			}
 		}

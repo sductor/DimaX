@@ -108,24 +108,71 @@ public abstract class ExhaustifHyperSetGeneration<T> {
 
 	}
 
-	public static void main(final String[] args){
-		final List<String> s = Arrays.asList(new String[]{"a","b","c"});
+//	public static void main(final String[] args){
+//		final List<String> s = Arrays.asList(new String[]{"a","b","c"});
+//
+//		for (int i = 0; i < Math.pow(2, s.size()); i++){
+//			final String[] number = Integer.toBinaryString(i).split("");
+//			assert number.length< s.size();
+//			System.out.println("so?  "+i+" "+Integer.toBinaryString(i)+" "+Arrays.asList(number));
+//			final List<String> subset = new ArrayList<String>();
+//			int pos = s.size()-1;
+//			for (int j =number.length-1; j >= 0; j--){
+//				System.out.println("------------------->"+j+" : "+number[j]);
+//				if (number[j].equals("1")) {
+//					subset.add(s.get(pos));
+//				}
+//				pos--;
+//			}
+//			System.out.println("yo "+ subset);
+//		}
+//	}
 
-		for (int i = 0; i < Math.pow(2, s.size()); i++){
-			final String[] number = Integer.toBinaryString(i).split("");
-			assert number.length< s.size();
-			System.out.println("so?  "+i+" "+Integer.toBinaryString(i)+" "+Arrays.asList(number));
-			final List<String> subset = new ArrayList<String>();
-			int pos = s.size()-1;
-			for (int j =number.length-1; j >= 0; j--){
-				System.out.println("------------------->"+j+" : "+number[j]);
-				if (number[j].equals("1")) {
-					subset.add(s.get(pos));
-				}
-				pos--;
-			}
-			System.out.println("yo "+ subset);
+
+
+
+
+
+
+	//
+	// Combinaison
+	// 
+
+	// construction recursive des listes possibles
+	public static void permut(int size) {
+		permutRec(0,size);
+	}
+
+	// construction recursive des listes possibles
+	public static void permutRec(int rank, int size) {
+		// table des elements utilisés 
+		boolean[] elements = new boolean[size];
+		// liste construite par la recursion
+		int[] liste = new int[size];
+		if (rank>=size) {
+			// la liste est construite -> FIN 
+			System.out.println(Arrays.toString(liste));
+			return;
 		}
+
+		// parcours les elements
+		for(int i=0;i<size;i++) {
+			// deja utilisé -> suivant
+			if (elements[i]) continue;
+			// sinon on choisi cet element
+			elements[i]=true;
+			// on l'ajoute a la liste
+			liste[rank]=i;
+			// on construit le reste de la liste par recursion
+			permutRec(rank+1,size);
+			// on libere cet element
+			elements[i]=false;
+		}
+
+	}
+	public static void main(final String[] args){
+		permut(2);
+		
 	}
 }
 

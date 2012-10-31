@@ -1,5 +1,7 @@
 package frameworks.negotiation;
 
+import dima.basicagentcomponents.AgentIdentifier;
+import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.ProposerCore;
@@ -19,4 +21,11 @@ extends RationalAgent<PersonalState, Contract> {
 	public SelectionCore<? extends NegotiatingAgent,PersonalState, Contract> getMySelectionCore();
 
 	void setInformation(AgentState o);
+
+	
+
+//	public abstract Contract generateDestructionContract(final AgentIdentifier id);
+	
+//	public abstract Contract generateCreationContract(final AgentIdentifier id);
+	
 }

@@ -103,7 +103,7 @@ AbstractContractTransition{
 	//
 
 	@Override
-	public ContractIdentifier getIdentifier() {
+	public ContractIdentifier getContractIdentifier() {
 		return new ContractIdentifier(this.creator, this.creationTime,
 				this.validityTime, this.getAllParticipants());
 	}
@@ -394,20 +394,20 @@ AbstractContractTransition{
 		if (o instanceof ContractTransition) {
 			@SuppressWarnings("unchecked")
 			final ContractTransition that = (ContractTransition) o;
-			return that.getIdentifier().equals(this.getIdentifier());
+			return that.getContractIdentifier().equals(this.getContractIdentifier());
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getIdentifier().hashCode();
+		return this.getContractIdentifier().hashCode();
 	}
 
 	public Collection<ContractIdentifier> getIdentifiers() {
 		final Collection<ContractIdentifier> myIds = new HashSet<ContractIdentifier>();
 		for (final Contract c : this) {
-			myIds.add(c.getIdentifier());
+			myIds.add(c.getContractIdentifier());
 		}
 		return myIds;
 	}

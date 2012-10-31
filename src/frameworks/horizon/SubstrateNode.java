@@ -22,7 +22,7 @@ import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.Selection
  * 
  * @author Vincent Letard
  */
-public class SubstrateNode extends
+public abstract class SubstrateNode extends
 SimpleNegotiatingAgent<SubstrateNodeState, HorizonContract> {
 
 	/**

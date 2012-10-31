@@ -11,6 +11,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
+import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService.ErrorOnProcessExecutionException;
 import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
@@ -39,7 +40,9 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 		friends.add(receiveHiddenFromUSer("new friend?"));
 //		friends.add(receiveFromUSer("new friend?"));
 		log = new File("/local/ductors/__Messages.log");
+		LogService.logOnFile(log, "\n\n restarting \n\n", false, false);
 		handlePresenceChangement(connection.getRoster().getPresence(friends.iterator().next()));
+		communicateWithUSerWithGui(true);
 		return b;
 	}
 
@@ -54,8 +57,9 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	public void handlePresenceChangement(Presence presence) {
 		if (friends.contains(StringUtils.parseBareAddress(presence.getFrom()))){
 			String text = "on "+new Date()+" new presence : "+presence.getFrom()+" : "+presence;
-//			System.out.println(text);
+			System.out.println(new Date()+" "+presence);
 			LogService.logOnFile(log, text, false, false);
+//			sendToUser(text);
 		}
 	}
 

@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import choco.cp.solver.CPSolver;
 import choco.kernel.model.variables.integer.IntegerVariable;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
@@ -16,7 +17,7 @@ import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public abstract class ChocoAllocationSolver<
 Contract extends MatchingCandidature,
-PersonalState extends AgentState> extends BasicAgentModule implements ResourceAllocationSolver<Contract, PersonalState> {
+PersonalState extends AgentState> extends BasicAgentModule<CompetentComponent> implements ResourceAllocationSolver<Contract, PersonalState> {
 
 	/**
 	 *
@@ -40,7 +41,7 @@ PersonalState extends AgentState> extends BasicAgentModule implements ResourceAl
 	 * @see negotiation.negotiationframework.exploration.AllocationSolver#initiate(java.util.List, PersonalState, java.lang.String)
 	 */
 	@Override
-	public abstract void initiate(Collection<Contract> concerned);
+	public abstract void setProblem(Collection<Contract> concerned);
 
 	@Override
 	public void setTimeLimit(final int millisec) {

@@ -4,6 +4,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
+import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
@@ -16,12 +17,14 @@ import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import frameworks.negotiation.protocoles.dcopProtocol.DCOPLeaderProtocol;
+import frameworks.negotiation.protocoles.dcopProtocol.DcopAgentProtocol;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.RationalCore;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
 import frameworks.negotiation.rationality.SocialChoiceFunction;
 
-public class SimpleNegotiatingAgent<
+public abstract class SimpleNegotiatingAgent<
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
 extends SimpleRationalAgent<PersonalState, Contract>
@@ -70,10 +73,11 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, LogService.onNone);
-		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, LogService.onNone);
+		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, LogService.onFile);
 		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, LogService.onNone);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, LogService.onNone);
 		this.addLogKey(ObservingSelfService.observationLog, LogService.onNone);
+		this.addLogKey(DCOPLeaderProtocol.dcopProtocol, LogService.onBoth);
 	}
 
 	//
@@ -98,11 +102,15 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	@Override
 	public void setNewState(final PersonalState s) {
 		super.setNewState(s);
-		if (this.protocol!=null) {
+		if (this.protocol!=null && !(this.protocol instanceof DcopAgentProtocol)) {
 			setInformation(s);
 		}
 	}
-	
+
+//	@StepComposant(ticker=1000)
+//	public void sayAlive() {
+//		logMonologue("I'M STILL ALIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",LogService.onBoth);
+//	}
 	//
 	// Behavior
 	//
@@ -153,6 +161,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	@Override
 	public void setInformation(
 			final AgentState o) {
+		assert o!=null;
 		if (o!=null){
 			this.getMyInformation().add(o);
 			this.getMyProtocol().getContracts().updateContracts(o);

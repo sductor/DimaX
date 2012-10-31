@@ -25,6 +25,8 @@ public interface RationalAgent<PersonalState extends AgentState, Contract extend
 	
 	public abstract Collection<? extends AgentState> getMyResources();
 
+	public Collection<AgentIdentifier> getKnownResources();
+	
 	public abstract AgentState getResource(AgentIdentifier id)
 			throws NoInformationAvailableException;
 

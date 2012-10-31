@@ -22,6 +22,8 @@ public class NegotiationParameters {
 	public final static String key4CentralisedstatusProto = "Centralised status protocol";
 	public final static String key4statusProto = "status protocol";
 	public final static String key4multiLatProto = "multi lateral protocol";
+	public static final String key4DcopProto = "dcop proto";
+	public static final String key4GeneticProto = "genetic proto";
 
 	//Selection algorithms
 	public enum SelectionType{RoolettWheel, Greedy, Better, Opt, Random}

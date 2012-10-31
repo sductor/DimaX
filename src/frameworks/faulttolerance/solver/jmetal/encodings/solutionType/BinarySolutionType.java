@@ -52,5 +52,9 @@ public class BinarySolutionType extends SolutionType {
     	variables[var] = new Binary(problem_.getLength(var)); 
     
     return variables ;
-	} // createVariables
-} // BinarySolutionType
+	} 
+	
+	public boolean equals(Object o){
+		return (o instanceof BinarySolutionType);
+	}
+}

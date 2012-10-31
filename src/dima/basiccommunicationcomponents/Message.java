@@ -202,7 +202,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 */
 	@Override
 	public void setSender(final dima.basicagentcomponents.AgentIdentifier newSender) {
-		assert this.sender==null || this.sender.equals(newSender);
+//		assert this.sender==null || this.sender.equals(newSender);
 		this.sender = newSender;
 	}
 	/**

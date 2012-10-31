@@ -26,7 +26,12 @@ MatchingCandidature {
 				NegotiationParameters._contractExpirationTime);
 		this.setCreation(creation);
 	}
-
+	public ReplicationCandidature(final AgentIdentifier initiator, final ResourceIdentifier r,
+			final AgentIdentifier a, final boolean creation) {
+		super(initiator, a, r,
+				NegotiationParameters._contractExpirationTime);
+		this.setCreation(creation);
+	}
 	//
 	// Methods
 	//
@@ -106,10 +111,10 @@ MatchingCandidature {
 	@Override
 	public AbstractContractTransition clone(){
 		final ReplicationCandidature clone = new ReplicationCandidature(
+				this.getInitiator(),
 				this.getResource(),
 				this.getAgent(),
-				this.isMatchingCreation(),
-				this.getInitiator().equals(this.getAgent()));
+				this.isMatchingCreation());
 		for (final AgentIdentifier id : this.initState.keySet()){
 			clone.initState.put(id, this.initState.get(id).clone());
 		}

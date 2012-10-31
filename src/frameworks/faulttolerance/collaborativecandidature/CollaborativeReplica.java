@@ -55,17 +55,17 @@ public class CollaborativeReplica extends Replica<InformedCandidature<Replicatio
 	}
 
 
-	@Override
-	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-		return new ReplicationCandidature((ResourceIdentifier) id,this.getIdentifier(),false,true);	
-		}
-
-
-	@Override
-	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-		assert false;
-		return null;
-	}
+//	@Override
+//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+//		return new ReplicationCandidature((ResourceIdentifier) id,this.getIdentifier(),false,true);	
+//		}
+//
+//
+//	@Override
+//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+//		assert false;
+//		return null;
+//	}
 
 }
 

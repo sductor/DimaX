@@ -71,15 +71,15 @@ MatchingCandidature {
 
 	private ReplicaState getAgentResultingState(final ReplicaState fromState) throws IncompleteContractException {
 
-		assert this.getInitialState(this.getResource()) != null:"wtf? " + this;
-		assert fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == true:
-			"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
-		assert !fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == false:
-			"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
-
 		if (!fromState.getMyAgentIdentifier().equals(this.getAgent())) {
 			return fromState;
 		} else {
+			assert this.getInitialState(this.getResource()) != null:"wtf? " + this;
+			assert fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == true:
+				"aaahhhhhhhhhhhhhhhhh  =(  ALREADY CREATED" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
+			assert !fromState.getMyResourceIdentifiers().contains(this.getResource()) || this.creation == false:
+				"aaaahhhhhhhhhhhhhhhhh   =(  CAN NOT DESTRUCT" + this.getResource()+" \n contract : "+this	+ "\n --> fromState " + fromState;
+
 			final ReplicaState r =fromState.allocate(this.getResourceInitialState());
 			assert r.getMyResourceIdentifiers().size()==fromState.getMyResourceIdentifiers().size()+(this.creation?1:-1):
 				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();
@@ -89,17 +89,17 @@ MatchingCandidature {
 
 	private HostState getResourceResultingState(final HostState fromState) throws IncompleteContractException {
 
-		assert this.getInitialState(this.getAgent()) != null:"wtf? " + this;
-		assert fromState.Ihost(this.getAgent()) || this.creation == true:
-			" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"+ this.getAgent()+" \n contract : "+this	+ "\n --> fromState " + fromState;
-		assert !fromState.Ihost(this.getAgent()) || this.creation == false:
-			" : ooohhhhhhhhhhhhhhhhh  =( "+(this.creation?"agent already created!":"CAN NOT DESTRUCT ")+" \n contract : "+this	+ "\n --> fromState " + fromState
-			+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
-
-
 		if (!fromState.getMyAgentIdentifier().equals(this.getResource())) {
 			return fromState;
 		} else {
+			assert this.getInitialState(this.getAgent()) != null:"wtf? " + this;
+			assert fromState.Ihost(this.getAgent()) || this.creation == true:
+				" : oohhhhhhhhhhhhhhhhh  =( ALREADY CREATED"+ this.getAgent()+" \n contract : "+this	+ "\n --> fromState " + fromState;
+			assert !fromState.Ihost(this.getAgent()) || this.creation == false:
+				" : ooohhhhhhhhhhhhhhhhh  =( "+(this.creation?"agent already created!":"CAN NOT DESTRUCT ")+" \n contract : "+this	+ "\n --> fromState " + fromState
+				+"\n CONTRACT CAN DESTRUCT INITIALLY? "+this.getResourceInitialState().Ihost(this.getAgent());
+
+
 			final HostState r = fromState.allocate(this.getAgentInitialState());
 			assert r.getMyResourceIdentifiers().size()==fromState.getMyResourceIdentifiers().size()+(this.creation?1:-1):
 				r.getMyResourceIdentifiers()+"\n --------------- \n"+fromState.getMyResourceIdentifiers();

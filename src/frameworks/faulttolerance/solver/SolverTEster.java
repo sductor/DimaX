@@ -25,8 +25,8 @@ public class SolverTEster {
 		Random rand = new Random(65646);
 		PseudoRandom.seed=rand.nextDouble();
 
-		boolean knitro=false;
-		boolean metal=true; 
+		boolean knitro=true;
+		boolean metal=false; 
 		boolean bbTest=false;
 		boolean bestTest=false;
 		

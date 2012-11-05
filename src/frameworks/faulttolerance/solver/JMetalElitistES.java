@@ -25,6 +25,7 @@ package frameworks.faulttolerance.solver;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 
 import frameworks.faulttolerance.solver.jmetal.core.Algorithm;
 import frameworks.faulttolerance.solver.jmetal.core.Operator;
@@ -88,6 +89,12 @@ public class JMetalElitistES extends Algorithm {
 //		System.out.println("execute");
 		initialize();
 		run();
+		Iterator<Solution> sols = populationCourante.iterator();
+		while (sols.hasNext()){
+			if (sols.next().getNumberOfViolatedConstraint()>0){
+				sols.remove();
+			}
+		}
 				System.out.println("fin : "+populationCourante.best(getProblem().getComparator())+"  "+populationCourante);
 		return populationCourante ;
 	} // execute

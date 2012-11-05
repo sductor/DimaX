@@ -74,7 +74,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	 * @see negotiation.negotiationframework.rationality.RationalAgent#getMyInformation()
 	 */
 	@Override
-	public ObservationService getMyInformation() {
+	public ObservationService<RationalAgent<PersonalState, Contract>> getMyInformation() {
 		return this.myInformation;
 	}
 
@@ -167,7 +167,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 			AgentState ress;
 			try {
 				ress = this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
-				assert ress.getMyResourceIdentifiers().contains(this.getIdentifier());
+				assert ress.getMyResourceIdentifiers().contains(this.getIdentifier()):ress+"\n---\n"+this.getMyCurrentState()+"\n---\n"+s;
 			} catch (final NoInformationAvailableException e) {
 //								assert false:e;
 			}

@@ -21,6 +21,7 @@ import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.Selection
 import frameworks.negotiation.protocoles.dcopProtocol.DCOPLeaderProtocol;
 import frameworks.negotiation.protocoles.dcopProtocol.DcopLeaderProposerCore;
 import frameworks.negotiation.protocoles.dcopProtocol.DcopLeaderSelectionCore;
+import frameworks.negotiation.protocoles.dcopProtocol.LocalViewInformationService;
 import frameworks.negotiation.rationality.AltruistRationalCore;
 import frameworks.negotiation.rationality.RationalCore;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -36,10 +37,10 @@ public class DcopHost extends Host {
 			final long maxComputingTime) throws CompetenceException {
 		super(id, myState, 
 				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),
-						new HostCore(socialWelfare,true,true)),
+						new HostCore(socialWelfare,false,true)),
 				new DcopLeaderSelectionCore(), 
 		new DcopLeaderProposerCore(), 
-		new SimpleObservationService(),
+		new LocalViewInformationService(),
 		new DCOPLeaderProtocol(k,1,solver,maxComputingTime));
 	}
 //	@StepComposant(ticker=1000)

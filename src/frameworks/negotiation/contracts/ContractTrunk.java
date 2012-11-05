@@ -212,13 +212,13 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 					}
 
 					//debut assertion vérification que tous les contrats sont cohérents
-					if (assertedState==null) {
-						assertedState = actualState;
-					}
-					else {
-						assert assertedState.equals(actualState);
-						//fin assertion
-					}
+//					if (assertedState==null) {
+//						assertedState = actualState;
+//					}
+//					else {
+//						assert assertedState.equals(actualState);
+//						//fin assertion
+//					}
 
 					if (actualState==null || !actualState.equals(newState)){
 						modifiedContracts.add(c.getContractIdentifier());

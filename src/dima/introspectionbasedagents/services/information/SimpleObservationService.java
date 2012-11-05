@@ -10,13 +10,14 @@ import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.support.GimaObject;
 
-public class SimpleObservationService extends
-BasicAgentCompetence<BasicCompetentAgent> implements
-ObservationService {
+public class SimpleObservationService<Agent extends CompetentComponent> extends
+BasicAgentCompetence<Agent> implements
+ObservationService<Agent> {
 
 	//
 	// Fields

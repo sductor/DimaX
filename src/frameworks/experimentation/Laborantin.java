@@ -59,10 +59,10 @@ public class Laborantin extends BasicCompetentAgent {
 	//
 
 	@Competence
-	public ObservationService myInformationService = new SimpleObservationService();
+	public ObservationService<Laborantin> myInformationService = new SimpleObservationService();
 
 	@Competence
-	public ObservingGlobalService observingService;
+	public ObservingGlobalService<Laborantin> observingService;
 
 	//
 	// Constructor

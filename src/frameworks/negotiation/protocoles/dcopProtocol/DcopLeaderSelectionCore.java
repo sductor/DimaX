@@ -39,7 +39,7 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 				Collection<ReplicationInstanceGraph> rigToRemove = new ArrayList<ReplicationInstanceGraph>();
 				for (ReplicationInstanceGraph rig : getMyProtocol().lockedNodesToRig.get(failedContract)){
 					if (everyoneHasAnswered(cs, rig)){
-						logMonologue("canceling : some agent of the group have refused",DCOPLeaderProtocol.dcopProtocol);
+						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("canceling : some agent of the group have refused",LogService.onFile);
 						rigToRemove.add(rig);
 						getMyProtocol().gainFlag.add(rig);
 						getMyProtocol().lockedRigs.remove(rig);
@@ -76,6 +76,8 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 				logWarning("committing consensual change",DCOPLeaderProtocol.dcopProtocol);
 				toAccept.addAll(getMyProtocol().gainContracts.get(rig));
 				toPutOnWait.removeAll(getMyProtocol().gainContracts.get(rig));
+				toReject.addAll(toPutOnWait);
+				toPutOnWait.clear();
 				getMyProtocol().gainContracts.remove(rig);
 				rigToRemove.add(rig);
 				getMyProtocol().lockedNodesToRig.removeAvalue(rig);
@@ -99,7 +101,7 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 					agsWaited.addAll(c.getAllParticipants());
 //					status+=getMyProtocol().getContracts().statusOf(c)+"\n";
 				}
-				logMonologue("wainting for "+agsWaited+"\n--\n"+status,DCOPLeaderProtocol.dcopProtocol);
+				logMonologue("wainting for "+agsWaited+"\n--\n"+status,LogService.onFile);
 			}
 		}
 	}

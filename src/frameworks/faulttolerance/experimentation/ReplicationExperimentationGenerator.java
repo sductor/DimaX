@@ -47,12 +47,12 @@ import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionTyp
 public class ReplicationExperimentationGenerator extends GimaObject{
 
 	//problem
-	private Long[] seeds = new Long[]{(long) 5564864,(long) 646464,(long) 94864};
+	private Long[] seeds = new Long[]{(long) 4532134,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
 
 	private Integer[] nbAgentDomain = new Integer[]{7/*30,100,250,500,1000*/};
 	 int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
-	private Integer[] nbHostDomain = new Integer[]{2/*24*/};
+	private Integer[] nbHostDomain = new Integer[]{4/*24*/};
 	 int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
 
 	private Double[] hostCapacity = new Double[]{-((double) maxAgentNb/((double) maxHostNb)),0.3,0.6};

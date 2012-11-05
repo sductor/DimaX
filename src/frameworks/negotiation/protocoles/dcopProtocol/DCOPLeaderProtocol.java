@@ -16,6 +16,7 @@ import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import frameworks.experimentation.ExperimentationParameters;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.contracts.ContractTrunk;
@@ -40,12 +41,10 @@ extends DcopAgentProtocol<State, Contract>{
 	final long maxComputingTime;
 	//Map fringe node to k- group their are fringe of and this agent is leader
 	//
-	
-	public final int maxWainttime=100;
+
+	public final int maxWainttime=10000;
 	public int waitTime=0;
 
-	//local view of the leader
-	ReplicationInstanceGraph localView = new ReplicationInstanceGraph(null);
 	//the local view structure has changed
 	boolean graphChanged=true;
 	final int numberOfSimulateonuslyOptimizedRig;
@@ -100,6 +99,9 @@ extends DcopAgentProtocol<State, Contract>{
 		this.maxComputingTime=maxComputingTime;
 	}
 
+	LocalViewInformationService<State, Contract> getMyInformation(){
+		return (LocalViewInformationService<State, Contract>) getMyAgent().getMyInformation();
+	}
 
 	//
 	// Behavior
@@ -108,9 +110,9 @@ extends DcopAgentProtocol<State, Contract>{
 	@ProactivityInitialisation
 	public void initView(){
 		//		logMonologue("init");
-		localView.setAgentState(getMyAgent().getMyCurrentState());
+		getMyInformation().setState(getMyAgent().getMyCurrentState());
 		for (AgentIdentifier id : getMyAgent().getKnownResources()){
-			localView.addAcquaintance(getIdentifier(), id);		
+			getMyInformation().addAcquaintance(getIdentifier(), id);		
 		}
 		neighberhood.add(getIdentifier());
 	}
@@ -122,12 +124,12 @@ extends DcopAgentProtocol<State, Contract>{
 			//			if (m.getVariable() instanceof ResourceIdentifier)logMonologue("receiving  constraint message of "+m.getVariable());
 			DcopConstraintsMessage<State> constraintM = (DcopConstraintsMessage<State> )m;
 			assert constraintM.getMyState()!=null;
-			localView.setAgentState(constraintM.getMyState());
+			getMyInformation().setState(constraintM.getMyState());
 			if (m.mustBeForwarded()){//It belongs to my k-distance neighberhood
 				if (neighberhood.add(constraintM.getVariable())){
-					logMonologue("grapChanged",DCOPLeaderProtocol.dcopProtocol);						
+					if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("grapChanged",LogService.onFile);						
 					for (AgentIdentifier id : constraintM.getMyAcquaintances()){
-						localView.addAcquaintance(constraintM.getVariable(), id);
+						getMyInformation().addAcquaintance(constraintM.getVariable(), id);
 					}
 				}
 			}
@@ -135,11 +137,11 @@ extends DcopAgentProtocol<State, Contract>{
 			//						logMonologue("receiving new value message of "+m.getVariable(),DCOPLeaderProtocol.dcopProtocol);
 			//trigger new computation for fringe variable
 			if (fringeNodes2ring.containsKey(m.getVariable()) && 
-					(localView.getAgentsIdentifier().contains(m.getVariable()) && !localView.getAgentState(m.getVariable()).equals(((DcopValueMessage<State>)m).getMyState()))
-					|| !localView.getAgentsIdentifier().contains(m.getVariable())){
+					(getMyInformation().getAgentsIdentifier().contains(m.getVariable()) && !getMyInformation().getAgentState(m.getVariable()).equals(((DcopValueMessage<State>)m).getMyState()))
+					|| !getMyInformation().getAgentsIdentifier().contains(m.getVariable())){
 				changeFlag.addAll(fringeNodes2ring.get(m.getVariable()));
 			}
-			localView.setAgentState(((DcopValueMessage<State>)m).getMyState());
+			getMyInformation().setState(((DcopValueMessage<State>)m).getMyState());
 		}
 		//forward
 		super.beInformed(m);
@@ -147,14 +149,18 @@ extends DcopAgentProtocol<State, Contract>{
 
 	public boolean iveFullInfo(Collection<AgentIdentifier> group){
 		for (AgentIdentifier id : group){
+			if (getMyInformation().getState(id)==null)
+				return false;
 			//			logMonologue(group+"\n"+localView);
-			for (AgentIdentifier ac : localView.getAcquaintances(id))
-				if (localView.getState(ac)==null)
+			for (AgentIdentifier ac : getMyInformation().getAcquaintances(id)){
+				if (getMyInformation().getState(ac)==null)
 					return false;
+				if  (getMyInformation().getState(ac).hasResource(id)!=getMyInformation().getState(id).hasResource(ac))
+					return false;
+			}
 		}
 		return true;
 	}
-
 
 	@StepComposant
 	public void computeLeaderShip(){
@@ -168,16 +174,16 @@ extends DcopAgentProtocol<State, Contract>{
 				//				logMonologue("analysing "+group);
 				if ( iveFullInfo(group) && iMLeader(group)){
 					//					logWarning("double    yeeaaaaaaaaaa yeah!");
-					logMonologue("i'm leader of "+group,DCOPLeaderProtocol.dcopProtocol);
+					if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("i'm leader of "+group,LogService.onFile);
 					//Initialisation du rig
-					assert localView.assertValidity();
+					//						assert getMyInformation().assertValidity();
 					ReplicationInstanceGraph neoRig = new ReplicationInstanceGraph(null);
 					for (AgentIdentifier id : group){
-						neoRig.setAgentState(localView.getState(id));
-						for (AgentIdentifier r : localView.getAcquaintances(id)){
+						neoRig.setState(getMyInformation().getState(id));
+						for (AgentIdentifier r : getMyInformation().getAcquaintances(id)){
 							neoRig.addAcquaintance(id, r);
-							neoRig.setAgentState(localView.getState(r));
-							for (AgentIdentifier rp : localView.getAcquaintances(r)){
+							neoRig.setState(getMyInformation().getState(r));
+							for (AgentIdentifier rp : getMyInformation().getAcquaintances(r)){
 								if (neoRig.getEveryIdentifier().contains(rp)){
 									//								if (group.contains(rp)){
 									neoRig.addAcquaintance(r, rp);
@@ -186,9 +192,9 @@ extends DcopAgentProtocol<State, Contract>{
 						}
 					}
 					try {
-						assert neoRig.assertValidity():localView+"\n----------------------------------\n"+neoRig;
+						assert neoRig.assertNeigborhoodValidity():getMyInformation()+"\n----------------------------------\n"+neoRig;
 					} catch (AssertionError e){
-						logWarning(group+"\n"+localView+"\n----------------------------------\n"+neoRig,e);
+						logWarning("is not valid!!! :"+group+"\n"+getMyInformation()+"\n----------------------------------\n"+neoRig,e);
 					}
 					//Calcul des fringe	
 					Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
@@ -225,8 +231,8 @@ extends DcopAgentProtocol<State, Contract>{
 
 	public boolean localViewCheck(){
 		Collection<AgentIdentifier> allKnownStates = new ArrayList<AgentIdentifier>();
-		allKnownStates.addAll(localView.getAgentsIdentifier());
-		allKnownStates.addAll(localView.getHostsIdentifier());
+		allKnownStates.addAll(getMyInformation().getAgentsIdentifier());
+		allKnownStates.addAll(getMyInformation().getHostsIdentifier());
 		assert allKnownStates.containsAll(neighberhood);
 		return true;
 	}
@@ -271,12 +277,13 @@ extends DcopAgentProtocol<State, Contract>{
 	public void computeNewGain(){
 		if (!changeFlag.isEmpty()){
 			for (ReplicationInstanceGraph rig : changeFlag){
-				assert rig.assertValidity();
+				assert rig.assertNeigborhoodValidity();
 				solver.setProblem(rig, rig2fringeNodes.get(rig));
 				solver.setTimeLimit((int) maxComputingTime);
 				try {
 					//					logMonologue("compution new allocation "+rig.getEveryIdentifier());// for "+rig+"\n fringe are "+rig2fringeNodes.get(rig));
 					Set<Contract> opt =  new HashSet(solver.getBestLocalSolution());
+					assert solValidity(opt);
 					//					logMonologue("new allo computed");// for "+rig+"\n fringe are "+rig2fringeNodes.get(rig));
 					Collection<Contract> fusedContract= gainContracts.getAllValues();
 					for (Contract c : fusedContract){
@@ -310,6 +317,26 @@ extends DcopAgentProtocol<State, Contract>{
 		changeFlag.clear();
 	}
 
+	private boolean solValidity(Set<Contract> opt){
+		ReplicationInstanceGraph rig = new ReplicationInstanceGraph(null);
+		for (AgentState s : getMyInformation().getAgentStates()){
+			rig.setState(s);
+		}
+		for (AgentState s : getMyInformation().getHostsStates()){
+			rig.setState(s);
+		}
+		for (Contract c : opt){
+			try {
+				rig.setState(c.computeResultingState(rig.getState(c.getAgent())));
+				rig.setState(c.computeResultingState(rig.getState(c.getResource())));
+			} catch (IncompleteContractException e) {
+				throw new RuntimeException("impossible");
+			}
+		}
+		assert rig.assertAllocValid();
+		return true;
+	}
+
 	/*
 	 * Selection Core
 	 */
@@ -332,12 +359,32 @@ extends DcopAgentProtocol<State, Contract>{
 			if (c.getInitiator().equals(getMyAgent().getIdentifier())){
 				confirm.add(c);
 				myLock.get(c.getInitiator()).remove(c.getContractIdentifier());
+				ArrayList<Contract> cs = new ArrayList<Contract>(getContracts().getAllContracts());
 				try {
-					localView.setAgentState(c.computeResultingState(localView.getAgentState(c.getAgent())));
-					localView.setAgentState(c.computeResultingState(localView.getHostState(c.getResource())));
+					AgentState newRessState = c.computeResultingState(getMyInformation().getState(c.getResource()));
+					AgentState newAgState = c.computeResultingState(getMyInformation().getState(c.getAgent()));
+					if (!c.getResource().equals(getIdentifier())){
+						getMyInformation().setState(newRessState);
+					}
+					getMyInformation().setState(newAgState);
+					for (ReplicationInstanceGraph rig : currentlyOptimizedRig){
+						if (!c.getResource().equals(getIdentifier())){
+							rig.setState(newRessState);
+						}
+						rig.setState(newAgState);						
+					}
+
+
 				} catch (IncompleteContractException e) {
 					throw new RuntimeException("impossible");
 				}
+				//				for (Contract c2 : cs){
+				//					if (!c2.equals(c) && c2.getAllParticipants().equals(c.getAllParticipants())){
+				//						//						System.err.println(c2+" "+c);
+				//						assert c2.isMatchingCreation()==c.isMatchingCreation();
+				//						getContracts().remove(c2);
+				//					}
+				//				}
 			} else {
 				acceptLock.add(c);
 				//				myLock.add(c.getInitiator(),c);

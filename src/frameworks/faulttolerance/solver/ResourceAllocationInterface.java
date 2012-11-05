@@ -218,7 +218,7 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 		//		assert this.s.isFeasible()!=null && this.s.isFeasible():this.s.isFeasible()+" "+hasNext;
 		//		assert hasNext:hasNext;
 		final ArrayList<ReplicationCandidature> results = new ArrayList<ReplicationCandidature>();
-
+		assert isViable(sol);
 		if (!isViable(sol))
 			return results;
 		else {
@@ -235,7 +235,7 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 					for (int j = 0; j < m; j++){
 						boolean orignallyAllocated = rig.getAgentState(getAgentIdentifier(i)).hasResource(getHostIdentifier(j));
 						assert rig.getHostState(getHostIdentifier(j)).hasResource(getAgentIdentifier(i))==orignallyAllocated;
-						boolean allocatedinSol = read(sol,i,0)==1; 
+						boolean allocatedinSol = read(sol,i,j)==1; 
 						if (orignallyAllocated != allocatedinSol) {
 							ReplicationCandidature c = 
 									new ReplicationCandidature(getMyAgentIdentifier(), getHostIdentifier(j), getAgentIdentifier(i), allocatedinSol);

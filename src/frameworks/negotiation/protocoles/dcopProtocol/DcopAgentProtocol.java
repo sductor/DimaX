@@ -142,7 +142,6 @@ extends AbstractCommunicationProtocol<State, Contract>{
 		super.receiveConfirm(delta);		
 	}
 
-
 	public boolean iCanAcceptLock(Contract lockRequest){
 		boolean iHaveRessource = getMyAgent().getMyCurrentState().hasResource(lockRequest.getAgent())
 				|| getMyAgent().getMyCurrentState().hasResource(lockRequest.getResource());

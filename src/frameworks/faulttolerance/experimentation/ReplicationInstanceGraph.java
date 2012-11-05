@@ -67,7 +67,7 @@ extends GimaObject implements ReplicationGraph{
 		}
 	}
 
-	public void setAgentState(AgentState s){
+	public void setState(AgentState s){
 		assert s!=null;
 		if (s instanceof HostState){
 			hosts.put(((HostState)s).getMyAgentIdentifier(), (HostState)s);
@@ -112,7 +112,6 @@ extends GimaObject implements ReplicationGraph{
 		super();
 		this.socialWelfare = socialWelfare;
 	}
-
 	@Override
 	public SocialChoiceType getSocialWelfare() {
 		return socialWelfare;
@@ -125,7 +124,7 @@ extends GimaObject implements ReplicationGraph{
 		result.addAll(this.hosts.keySet());
 		return result;
 	}
-	
+
 	@Override
 	public Collection<AgentIdentifier> getAgentsIdentifier() {
 		return this.agents.keySet();
@@ -223,7 +222,7 @@ extends GimaObject implements ReplicationGraph{
 				iFailed=false;
 				this.setVoisinage(agentAccessiblePerHost, maxHostAccessiblePerAgent, rand);
 				this.initialRep(rand);
-				this.assertValidity();
+				this.assertNeigborhoodValidity();
 			} catch (final IfailedException e) {
 				iFailed=true;
 				//				this.logWarning("I'v faileeeeeddddddddddddd RETRYINNNGGGGG "+count+e, LogService.onBoth);
@@ -471,32 +470,58 @@ extends GimaObject implements ReplicationGraph{
 		}
 	}
 
+	public boolean isCoherent(){
+		for (ReplicaState s: agents.values()){
+			for (ResourceIdentifier r : s.getMyResourceIdentifiers()){
+				if (hosts.containsValue(r)){
+					if (!getAccessibleHosts(s.getMyAgentIdentifier()).contains(r) ||
+							!getAccessibleAgents(r).contains(s.getMyAgentIdentifier()) ||
+							!hosts.get(r).hasResource(s.getMyAgentIdentifier())){
+						return false;
+					}
+				}
+			}
+		}
+		for (HostState s: hosts.values()){
+			for (AgentIdentifier r : s.getMyResourceIdentifiers()){
+				if (agents.containsValue(r)){
+					if (!getAccessibleAgents(s.getMyAgentIdentifier()).contains(r) ||
+							!getAccessibleHosts(r).contains(s.getMyAgentIdentifier()) || 
+							!agents.get(r).hasResource(s.getMyAgentIdentifier())){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	public boolean assertAllocValid(){
 
 		for (ReplicaState s: agents.values()){
-			assert s.isValid();
+			assert s.isValid():s;
 		}
 		for (HostState s: hosts.values()){
 			assert s.isValid();			
 		}
-		
+
 		return true;
 	}
-	
-	public boolean assertValidity(){
+
+	public boolean assertNeigborhoodValidity(){
 		for (ReplicaState s: agents.values()){
 			for (ResourceIdentifier r : s.getMyResourceIdentifiers()){
 				assert getAccessibleHosts(s.getMyAgentIdentifier()).contains(r) :s.getMyAgentIdentifier()+" "+r;
 				assert getAccessibleAgents(r).contains(s.getMyAgentIdentifier());
 				assert hosts.get(r).hasResource(s.getMyAgentIdentifier());
-		}
+			}
 		}
 		for (HostState s: hosts.values()){
 			for (AgentIdentifier r : s.getMyResourceIdentifiers()){
 				assert getAccessibleAgents(s.getMyAgentIdentifier()).contains(r) ;
 				assert getAccessibleHosts(r).contains(s.getMyAgentIdentifier());
 				assert agents.get(r).hasResource(s.getMyAgentIdentifier());
-		}
+			}
 		}
 		return true;
 	}

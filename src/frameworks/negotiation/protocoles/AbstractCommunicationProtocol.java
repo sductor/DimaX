@@ -9,6 +9,7 @@ import java.util.Set;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.kernel.NotReadyException;
@@ -142,7 +143,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 	protected abstract boolean ImAllowedToNegotiate(ContractTrunk<Contract> contracts);
 
 	// @role(NegotiationInitiatorRole.class)
-	@PreStepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
+	@PostStepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
 		if (this.isActive() &&
 				ImAllowedToNegotiate(this.contracts)
@@ -185,7 +186,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 	 */
 
 	// @role(NegotiationParticipant.class)
-	@StepComposant(ticker = NegotiationParameters._timeToCollect)
+	@PreStepComposant(ticker = NegotiationParameters._timeToCollect)
 	protected void answer() {
 		if (this.isActive() && !this.getContracts().isEmpty()) {
 

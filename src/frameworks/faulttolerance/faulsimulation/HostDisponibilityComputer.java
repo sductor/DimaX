@@ -140,7 +140,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 //		}
 //	}
 
-	public static Collection<? extends ResourceIdentifier> getHosts(final ObservationService myAgentInformation) {
+	public static Collection<? extends ResourceIdentifier> getHosts(final ObservationService<?> myAgentInformation) {
 		final Collection<ResourceIdentifier> host = new ArrayList<ResourceIdentifier>();
 		for (final AgentIdentifier id : myAgentInformation.getKnownAgents()) {
 			if (id instanceof ResourceIdentifier) {
@@ -153,7 +153,7 @@ public class HostDisponibilityComputer implements DimaComponentInterface {
 	// Primitive
 	//
 
-	private static  Double getLambda(final ObservationService myAgentInformation, final ResourceIdentifier h) {
+	private static  Double getLambda(final ObservationService<?>  myAgentInformation, final ResourceIdentifier h) {
 		try {
 			return myAgentInformation.getInformation(HostState.class, h)
 					.getLambda();

@@ -159,11 +159,11 @@ AbstractContractTransition {
 			throw new RuntimeException("unappropriate specification set "+this+" "+state);
 		}
 
-		try {
-			if (!ExperimentationParameters.currentlyInstanciating) {
-				assert this.isInitiallyValid():this;
-			}
-		} catch (final IncompleteContractException e){/*ok!*/}
+//		try {
+//			if (!ExperimentationParameters.currentlyInstanciating) {
+////				assert this.isInitiallyValid():this;
+//			}
+//		} catch (final IncompleteContractException e){/*ok!*/}
 	}
 
 	/*

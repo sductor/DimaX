@@ -100,6 +100,7 @@ public class ReplicaState  extends SimpleAgentState  {
 	public ReplicaState allocate (final HostState newRep, boolean creation) {
 		assert newRep!=null;
 		assert newRep.getMyAgentIdentifier()!=null;
+		assert !(newRep.getMyAgentIdentifier() instanceof ResourceIdentifier);
 		assert this.myReplicas!=null;
 		boolean ok = 
 				(creation && !this.myReplicas.contains(newRep.getMyAgentIdentifier())) 

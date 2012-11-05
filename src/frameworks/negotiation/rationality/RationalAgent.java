@@ -15,7 +15,7 @@ import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteCon
 
 public interface RationalAgent<PersonalState extends AgentState, Contract extends AbstractContractTransition> extends CommunicatingCompetentComponent, LaunchableCompetentComponent {
 
-	public abstract ObservationService getMyInformation();
+	public abstract ObservationService<RationalAgent<PersonalState, Contract>> getMyInformation();
 
 	public abstract RationalCore<? extends SimpleRationalAgent, PersonalState, Contract> getMyCore();
 

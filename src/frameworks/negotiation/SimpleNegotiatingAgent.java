@@ -102,7 +102,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	@Override
 	public void setNewState(final PersonalState s) {
 		super.setNewState(s);
-		if (this.protocol!=null && !(this.protocol instanceof DcopAgentProtocol)) {
+		if (this.protocol!=null) {
 			setInformation(s);
 		}
 	}

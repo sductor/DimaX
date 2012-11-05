@@ -9,6 +9,7 @@ import java.util.Set;
 import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.contracts.ContractTrunk;
@@ -63,7 +64,7 @@ ProposerCore<NegotiatingAgent<State,Contract>, State, Contract> {
 				itGainFlag.remove();
 				getMyProtocol().lockedRigs.add(rig);
 				assert !contractToPropose.isEmpty();
-				logMonologue("i propose ",DCOPLeaderProtocol.dcopProtocol);
+				if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("i propose ",LogService.onFile);
 			}
 		}
 		//		try {

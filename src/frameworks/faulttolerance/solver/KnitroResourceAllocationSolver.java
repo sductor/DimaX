@@ -178,7 +178,7 @@ public abstract class KnitroResourceAllocationSolver extends
 			conslb[getLocalConstraintPos()]=getSocWelfare(initialSolution);
 			consub[getLocalConstraintPos()] = KnitroJava.KTR_INFBOUND;
 			consType[getLocalConstraintPos()]=KnitroJava.KTR_CONTYPE_GENERAL;
-			consFnType[getLocalConstraintPos()]=socialChoice.equals(SocialChoiceType.Nash)?KnitroJava.KTR_FNTYPE_NONCONVEX:KnitroJava.KTR_FNTYPE_UNCERTAIN;
+			consFnType[getLocalConstraintPos()]=KnitroJava.KTR_FNTYPE_CONVEX;
 		}
 
 		//jacobienne

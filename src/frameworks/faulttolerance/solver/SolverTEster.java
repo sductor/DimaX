@@ -52,22 +52,22 @@ public class SolverTEster {
 		double metalBetterKnitro=0;
 		LogService.logOnFile(new File("yo"),"*************************",false,false);
 			
-		int nbAgent=512;
+		int nbAgent=50;
 		double hostCap=200;
-		for (hostCap=64; hostCap<nbAgent; hostCap*=2)  {
+		for (hostCap=16; hostCap<nbAgent; hostCap*=2)  {
 			
 //		for (int heuristic=1; heuristic<=2; heuristic++){
+			System.out.println("yo");
 //			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+heuristic);
 //			try {
 				for (int i = 0; i < 10; i++){
-//					System.out.println("Heurisitic "+heuristic+" tour "+i);
 					total++;
 					ReplicationInstanceGraph rig = new ReplicationInstanceGraph(SocialChoiceType.Utility);
 
 					try {
 						rig.randomInitiaition(
 								"to", rand.nextInt(),
-								/*5+rand.nextInt(5)*/nbAgent, 50,//nbAgent,nbHost
+								/*5+rand.nextInt(5)*/nbAgent, 3,//nbAgent,nbHost
 								0.5, DispersionSymbolicValue.Moyen, //criticity
 								1., DispersionSymbolicValue.Nul, //agent load
 								hostCap, DispersionSymbolicValue.Nul, //hostCap
@@ -76,7 +76,7 @@ public class SolverTEster {
 					} catch (IfailedException e1) {
 										e1.printStackTrace();
 					}
-//					rig = rig.getUnallocatedGraph();
+					rig = rig.getUnallocatedGraph();
 					//			System.out.println(rig);
 					//
 					// Opt
@@ -99,14 +99,18 @@ public class SolverTEster {
 					RessourceAllocationSimpleSolutionType kasbestSolution=null;
 					KnitroResourceAllocationSolver kas = null;
 					if (knitro){
+						System.out.println("knitro");
 						//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 5, false, 5);
 						initTime = System.currentTimeMillis();
 						kas = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
+//						kas = new KnitroAllocationLocalSolver(rig.getSocialWelfare(),  false, true, 2, false, -1);
 						kas.myState=rig.getHostsStates().iterator().next();
 						kas.setProblem(rig, new ArrayList<AgentIdentifier>());
 						if(rig.getHostsIdentifier().size()==1)	kas.initialSolution=kas.getInitialAllocAsSolution(new double[kas.getVariableNumber()]);
 						kas.initiateSolver();
+						System.out.println("solving");
 						kasbestSolution = kas.solveProb(true);
+						System.out.println("ok");
 						knitorEstimatedTime += System.currentTimeMillis() - initTime;
 					}
 

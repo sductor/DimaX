@@ -74,6 +74,7 @@ public class KnitroAllocationLocalSolver extends KnitroResourceAllocationSolver 
 
 	@Override
 	protected int setNumNonNulJAc() {
+		System.out.println(2*n);
 		return 2*n;
 	}//ET LOCAL ALORS?????
 

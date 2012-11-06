@@ -473,7 +473,7 @@ extends GimaObject implements ReplicationGraph{
 	public boolean isCoherent(){
 		for (ReplicaState s: agents.values()){
 			for (ResourceIdentifier r : s.getMyResourceIdentifiers()){
-				if (hosts.containsValue(r)){
+				if (hosts.containsKey(r)){
 					if (!getAccessibleHosts(s.getMyAgentIdentifier()).contains(r) ||
 							!getAccessibleAgents(r).contains(s.getMyAgentIdentifier()) ||
 							!hosts.get(r).hasResource(s.getMyAgentIdentifier())){
@@ -484,7 +484,7 @@ extends GimaObject implements ReplicationGraph{
 		}
 		for (HostState s: hosts.values()){
 			for (AgentIdentifier r : s.getMyResourceIdentifiers()){
-				if (agents.containsValue(r)){
+				if (agents.containsKey(r)){
 					if (!getAccessibleAgents(s.getMyAgentIdentifier()).contains(r) ||
 							!getAccessibleHosts(r).contains(s.getMyAgentIdentifier()) || 
 							!agents.get(r).hasResource(s.getMyAgentIdentifier())){
@@ -511,16 +511,20 @@ extends GimaObject implements ReplicationGraph{
 	public boolean assertNeigborhoodValidity(){
 		for (ReplicaState s: agents.values()){
 			for (ResourceIdentifier r : s.getMyResourceIdentifiers()){
-				assert getAccessibleHosts(s.getMyAgentIdentifier()).contains(r) :s.getMyAgentIdentifier()+" "+r;
-				assert getAccessibleAgents(r).contains(s.getMyAgentIdentifier());
-				assert hosts.get(r).hasResource(s.getMyAgentIdentifier());
+				if (hosts.containsKey(r)){
+					assert getAccessibleHosts(s.getMyAgentIdentifier()).contains(r) :s.getMyAgentIdentifier()+" "+r;
+					assert getAccessibleAgents(r).contains(s.getMyAgentIdentifier());
+					assert hosts.get(r).hasResource(s.getMyAgentIdentifier());
+				}
 			}
 		}
 		for (HostState s: hosts.values()){
 			for (AgentIdentifier r : s.getMyResourceIdentifiers()){
-				assert getAccessibleAgents(s.getMyAgentIdentifier()).contains(r) ;
-				assert getAccessibleHosts(r).contains(s.getMyAgentIdentifier());
-				assert agents.get(r).hasResource(s.getMyAgentIdentifier());
+				if (agents.containsKey(r)){
+					assert getAccessibleAgents(s.getMyAgentIdentifier()).contains(r) ;
+					assert getAccessibleHosts(r).contains(s.getMyAgentIdentifier());
+					assert agents.get(r).hasResource(s.getMyAgentIdentifier());
+				}
 			}
 		}
 		return true;

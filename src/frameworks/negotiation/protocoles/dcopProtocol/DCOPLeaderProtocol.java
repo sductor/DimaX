@@ -42,7 +42,7 @@ extends DcopAgentProtocol<State, Contract>{
 	//Map fringe node to k- group their are fringe of and this agent is leader
 	//
 
-	public final int maxWainttime=10000;
+	public final int maxWainttime=100000;
 	public int waitTime=0;
 
 	//the local view structure has changed
@@ -165,65 +165,67 @@ extends DcopAgentProtocol<State, Contract>{
 	@StepComposant
 	public void computeLeaderShip(){
 		//		logMonologue("computing leader ship"+localView.getHostsIdentifier());
-		if ((graphChanged || (currentlyOptimizedRig.size()<numberOfSimulateonuslyOptimizedRig))){// && iveFullInfo()){
-			assert localViewCheck(); 
-			if (kSizeGroups==null || !kSizeGroups.hasNext())kSizeGroups=new CombinaisonIterator<AgentIdentifier>(new ArrayList(neighberhood), k);
-			while (kSizeGroups.hasNext()){
-				Collection<AgentIdentifier> group = kSizeGroups.next();
-				//				if ( iveFullInfo(group) ) logWarning("yeah!");
-				//				logMonologue("analysing "+group);
-				if ( iveFullInfo(group) && iMLeader(group)){
-					//					logWarning("double    yeeaaaaaaaaaa yeah!");
-					if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("i'm leader of "+group,LogService.onFile);
-					//Initialisation du rig
-					//						assert getMyInformation().assertValidity();
-					ReplicationInstanceGraph neoRig = new ReplicationInstanceGraph(null);
-					for (AgentIdentifier id : group){
-						neoRig.setState(getMyInformation().getState(id));
-						for (AgentIdentifier r : getMyInformation().getAcquaintances(id)){
-							neoRig.addAcquaintance(id, r);
-							neoRig.setState(getMyInformation().getState(r));
-							for (AgentIdentifier rp : getMyInformation().getAcquaintances(r)){
-								if (neoRig.getEveryIdentifier().contains(rp)){
-									//								if (group.contains(rp)){
-									neoRig.addAcquaintance(r, rp);
+		if (getMyInformation().isCoherent()){
+			if ((graphChanged || (currentlyOptimizedRig.size()<numberOfSimulateonuslyOptimizedRig))){// && iveFullInfo()){
+				assert localViewCheck(); 
+				if (kSizeGroups==null || !kSizeGroups.hasNext())kSizeGroups=new CombinaisonIterator<AgentIdentifier>(new ArrayList(neighberhood), k);
+				while (kSizeGroups.hasNext()){
+					Collection<AgentIdentifier> group = kSizeGroups.next();
+					//				if ( iveFullInfo(group) ) logWarning("yeah!");
+					//				logMonologue("analysing "+group);
+					if ( iveFullInfo(group) && iMLeader(group)){
+						//					logWarning("double    yeeaaaaaaaaaa yeah!");
+						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("i'm leader of "+group,LogService.onFile);
+						//Initialisation du rig
+						//						assert getMyInformation().assertValidity();
+						ReplicationInstanceGraph neoRig = new ReplicationInstanceGraph(null);
+						for (AgentIdentifier id : group){
+							neoRig.setState(getMyInformation().getState(id));
+							for (AgentIdentifier r : getMyInformation().getAcquaintances(id)){
+								neoRig.addAcquaintance(id, r);
+								neoRig.setState(getMyInformation().getState(r));
+								for (AgentIdentifier rp : getMyInformation().getAcquaintances(r)){
+									if (neoRig.getEveryIdentifier().contains(rp)){
+										//																	if (group.contains(rp)){
+										neoRig.addAcquaintance(r, rp);
+									}
 								}
 							}
 						}
+						try {
+							//						assert neoRig.assertNeigborhoodValidity():group+"\n----------------------------------\n"+getMyInformation()+"\n----------------------------------\n"+neoRig;
+						} catch (AssertionError e){
+							logWarning("is not valid!!! :"+group+"\n"+getMyInformation()+"\n----------------------------------\n"+neoRig,e);
+						}
+						//Calcul des fringe	
+						Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
+						fringeNodes.addAll(neoRig.getAgentsIdentifier());
+						fringeNodes.addAll(neoRig.getHostsIdentifier());
+						fringeNodes.removeAll(group);
+						for (AgentIdentifier f : fringeNodes){
+							this.fringeNodes2ring.add(f,neoRig);
+							this.rig2fringeNodes.add(neoRig,f);
+						}
+						//					Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
+						//					fringeNodes.addAll(neoRig.getAgentsIdentifier());
+						//					fringeNodes.addAll(neoRig.getHostsIdentifier());
+						//					for (AgentIdentifier id : neoRig.getAgentsIdentifier()){
+						//						fringeNodes.removeAll(neoRig.getAccessibleHosts(id));
+						//					}
+						//					for (ResourceIdentifier id : neoRig.getHostsIdentifier()){
+						//						fringeNodes.removeAll(neoRig.getAccessibleAgents(id));
+						//					}
+						//					for (AgentIdentifier f : fringeNodes){
+						//						this.fringeNodes.add(f,neoRig);
+						//					}
+						//update
+						changeFlag.add(neoRig);
+						currentlyOptimizedRig.add(neoRig);
+						graphChanged=false;
+						break;
+					} else {					
+						//					logMonologue("no ! leader is  ");
 					}
-					try {
-						assert neoRig.assertNeigborhoodValidity():getMyInformation()+"\n----------------------------------\n"+neoRig;
-					} catch (AssertionError e){
-						logWarning("is not valid!!! :"+group+"\n"+getMyInformation()+"\n----------------------------------\n"+neoRig,e);
-					}
-					//Calcul des fringe	
-					Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
-					fringeNodes.addAll(neoRig.getAgentsIdentifier());
-					fringeNodes.addAll(neoRig.getHostsIdentifier());
-					fringeNodes.removeAll(group);
-					for (AgentIdentifier f : fringeNodes){
-						this.fringeNodes2ring.add(f,neoRig);
-						this.rig2fringeNodes.add(neoRig,f);
-					}
-					//					Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
-					//					fringeNodes.addAll(neoRig.getAgentsIdentifier());
-					//					fringeNodes.addAll(neoRig.getHostsIdentifier());
-					//					for (AgentIdentifier id : neoRig.getAgentsIdentifier()){
-					//						fringeNodes.removeAll(neoRig.getAccessibleHosts(id));
-					//					}
-					//					for (ResourceIdentifier id : neoRig.getHostsIdentifier()){
-					//						fringeNodes.removeAll(neoRig.getAccessibleAgents(id));
-					//					}
-					//					for (AgentIdentifier f : fringeNodes){
-					//						this.fringeNodes.add(f,neoRig);
-					//					}
-					//update
-					changeFlag.add(neoRig);
-					currentlyOptimizedRig.add(neoRig);
-					graphChanged=false;
-					break;
-				} else {					
-					//					logMonologue("no ! leader is  ");
 				}
 			}
 		}
@@ -277,7 +279,7 @@ extends DcopAgentProtocol<State, Contract>{
 	public void computeNewGain(){
 		if (!changeFlag.isEmpty()){
 			for (ReplicationInstanceGraph rig : changeFlag){
-				assert rig.assertNeigborhoodValidity();
+				assert rig.assertNeigborhoodValidity():rig;
 				solver.setProblem(rig, rig2fringeNodes.get(rig));
 				solver.setTimeLimit((int) maxComputingTime);
 				try {

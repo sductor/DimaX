@@ -70,7 +70,7 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 		try {
 			assert ((ReplicationInstanceGraph)rig).assertAllocValid();
 			super.setProblem(rig, fixedVar);
-//			initiateSolver();
+			initiateSolver();
 			assert reverseHostId!=null;
 			double[] intialAlloc = new double[getVariableNumber()];
 

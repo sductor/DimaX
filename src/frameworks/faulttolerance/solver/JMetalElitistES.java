@@ -166,26 +166,27 @@ public class JMetalElitistES extends Algorithm {
 
 				//STEP 0 Aléatoire
 				if (nbGen>0){
-					if (!populationGenere.contains(getProblem().getAllallocatedSolution())){
-						populationGenere.removeWorst();
-						populationGenere.add(getProblem().getAllallocatedSolution());
+					if (!populationCourante.contains(getProblem().getAllallocatedSolution())){
+						populationCourante.remove(populationCourante.worst(getProblem().getComparator()));
+						populationCourante.add(getProblem().getAllallocatedSolution());
 					}
 
-					if (!populationGenere.contains(getProblem().getUnallocatedSolution())){
-						populationGenere.removeWorst();
-						populationGenere.add(getProblem().getUnallocatedSolution());
+					if (!populationCourante.contains(getProblem().getUnallocatedSolution())){
+						populationCourante.remove(populationCourante.worst(getProblem().getComparator()));
+						populationCourante.add(getProblem().getUnallocatedSolution());
 					}
 
 					for (int i = 2; i < getProblem().diversi; i++){
 						if (hasExpired()) break;
-						Solution newIndividual = new Solution(problem_); 
-						while (populationGenere.contains(newIndividual)){
+						Solution newIndividual = new Solution(problem_);
+						getProblem().evaluate(newIndividual);  
+						while (populationCourante.contains(newIndividual)){
 							if (hasExpired()) break;
 							newIndividual = new Solution(problem_); 
 							getProblem().evaluate(newIndividual); 
 						} 
-						populationGenere.removeWorst();
-						populationGenere.add(newIndividual);
+						populationCourante.remove(populationCourante.worst(getProblem().getComparator()));
+						populationCourante.add(newIndividual);
 					}
 				}
 				assert populationGenere.size()==getProblem().mu:populationGenere.size()+" "+populationCourante.size()+" "+populationGenere;

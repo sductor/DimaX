@@ -103,7 +103,7 @@ public class JMetalBitFlipMutation extends Mutation {
 			for (Integer i : agentOrder){
 				if (p.getPos(i, j)!=-1){
 
-					double agentSoftCrit = Math.pow(p.getAgentCriticality(i)-p.getAgentMeanCriticality(),equityInd)/2.;
+					double agentSoftCrit = 0.5+Math.pow(p.getAgentCriticality(i)-p.getAgentMeanCriticality(),equityInd)/2.;
 					boolean allocated=((Binary) solution.getDecisionVariables()[p.getPos(i, j)]).bits_.get(0);
 					double optimistAgentcharge=Math.min(p.getAgentMemorycharge(i), p.getAgentProcessorCharge(i));
 
@@ -164,7 +164,7 @@ public class JMetalBitFlipMutation extends Mutation {
 				agentSoftCrit=Math.pow(2*agentSoftCrit,3)/2.;
 				ammortissement=1;
 			}else {
-				ammortissement=((double)(1-numberOfAgent))/((double)p.n);
+				ammortissement=1-((double)(numberOfAgent)/(double)p.n);
 			}
 			return probability*hostChargePercent*(1-agentSoftCrit);			
 		}

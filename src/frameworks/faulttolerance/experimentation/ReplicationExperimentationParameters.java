@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.omg.CORBA._PolicyStub;
+
 import frameworks.faulttolerance.dcoprealloc.DcopAgent;
 import frameworks.faulttolerance.dcoprealloc.DcopHost;
 
@@ -40,8 +42,6 @@ import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.faulttolerance.olddcop.ChocoReplicationAllocationSolver;
-import frameworks.faulttolerance.olddcop.dcop.DcopReplicationGraph;
 import frameworks.faulttolerance.solver.JMetalSolver;
 import frameworks.faulttolerance.solver.RessourceAllocationProblem;
 import frameworks.faulttolerance.solver.SolverFactory;
@@ -53,9 +53,11 @@ import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.Selection
 import frameworks.negotiation.protocoles.dcopProtocol.DCOPLeaderProtocol;
 import frameworks.negotiation.rationality.RationalAgent;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
+import frameworks.negotiation.rationality.SocialChoiceFunction;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 import frameworks.negotiation.selection.GreedySelectionModule;
 import frameworks.negotiation.selection.OptimalSelectionModule;
+import frameworks.negotiation.selection.SelectionModule;
 import frameworks.negotiation.selection.SimpleSelectionCore;
 import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 
@@ -77,8 +79,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	 */
 
 //	public  long maxComputingTime = 120000;//2 min
-//	public  long maxComputingTime = 3000;//30 sec
-	public  long maxComputingTime = _maxSimulationTime/5;//2 min
+	//	public  long maxComputingTime = 3000;//30 sec
+		public  long maxComputingTime = _maxSimulationTime/6;
 
 	public int nbAgents;
 	public int nbHosts;
@@ -422,7 +424,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.rig.getHostState(hostId),
 						this._socialWelfare,
 						this.kSolver,
-						this.getGreedySelectionType(this._hostSelection),
+						this.getSelectionModule(this._hostSelection),
 						this.maxComputingTime);
 			}else if (this._usedProtocol
 					.equals(NegotiationParameters.key4CentralisedstatusProto)){ //Status
@@ -525,19 +527,20 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					"Static parameters est mal conf : selection = "+ selection);
 		}
 	}
-	private GreedySelectionType getGreedySelectionType(final SelectionType selection){
+	private SelectionModule getSelectionModule(final SelectionType selection){
 
 		if (selection
 				.equals(SelectionType.Greedy)) {
-			return GreedySelectionType.Greedy;
+			return new GreedySelectionModule(GreedySelectionType.Greedy);
 		} else if (selection
 				.equals(SelectionType.RoolettWheel)) {
-			return GreedySelectionType.RooletteWheel;
+			return new GreedySelectionModule(GreedySelectionType.RooletteWheel);
 		} else if (selection
 				.equals(SelectionType.Opt)) {
-			throw new RuntimeException(
-					"todo!!! "+ selection);
-			//				select = new AllocationSelectionCore<ReplicationSpecification, ReplicaState, ReplicationCandidature>(true, false);
+			return new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), true, this.maxComputingTime);
+		}else if (selection
+				.equals(SelectionType.Better)) {
+			return new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), false, this.maxComputingTime);
 		} else {
 			throw new RuntimeException(
 					"Static parameters est mal conf : selection = "+ selection);
@@ -696,47 +699,84 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	@Override
 	public boolean isValid() {
+		//
+		if (!parametresCoherents()){
+			return false;
+		}
+
+		return true;
+		//SOUHAITE
+		//
+		//		if (
+		//				kSolver==1000 &&
+		//				_hostSelection.equals(SelectionType.RoolettWheel)){
+		//			if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
+		//				return alpha_low==0.6 
+		//						&& alpha_high==0.8 
+		//						&& opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(0.6,new Double(nbAgents)));
+		//			} else {
+		//				return alpha_high.equals(Double.NaN) && alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
+		//			}
+		//		}
+		//
+		//		if (kSolver==250 &&
+		//				nbAgents==2500 &&
+		//				_socialWelfare.equals(SocialChoiceType.Utility) &&
+		//				(
+		//						_usedProtocol.equals(NegotiationParameters.key4mirrorProto) ||
+		//						(
+		//								_usedProtocol.equals(NegotiationParameters.key4statusProto) &&
+		//								(
+		//										(alpha_low==0.6 && alpha_high==0.8) ||
+		//										((alpha_low!=0.6 && alpha_high!=0.8) &&
+		//												opinionDiffusionDegree.equals(
+		//														ReplicationExperimentationGenerator.getValue(0.6,new Double(nbAgents))) &&
+		//														_hostSelection.equals(SelectionType.RoolettWheel)))
+		//								)
+		//						)
+		//				)
+		//		{
+		//			return true;
+		//		}
+		//
+		//		if (nbAgents==2500 &&
+		//				_hostSelection.equals(SelectionType.RoolettWheel) && 
+		//				//				(alpha_low==Double.NaN && alpha_high==Double.NaN && opinionDiffusionDegree==Double.NaN) &&
+		//				_socialWelfare.equals(SocialChoiceType.Utility) &&
+		//				(_usedProtocol.equals(NegotiationParameters.key4mirrorProto) || _usedProtocol.equals(NegotiationParameters.key4DcopProto))){
+		//			return true;
+		//		}
+		//
+		//		return false;
+	}
+
+	private boolean parametresCoherents() {
+		//INCOHERENT
+
 		assert alpha_high!=0.;
+
 		if (nbHosts*agentAccessiblePerHost<nbAgents || agentAccessiblePerHost<=0) {
 			//			System.out.println("agentAccessiblePerHost not valid");
 			return false;
 		} 
+
+		if (this.kSolver>nbAgents)
+			return false;
+
 		if (!this._agentSelection.equals(SelectionType.Greedy)){
 			//			System.out.println("_agentSelection0 not valid");
 			return false;
 		}
 
-
-
 		if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
-			if (alpha_high.equals(Double.NaN) || alpha_low.equals(Double.NaN)){
-				assert alpha_high.equals(Double.NaN) && alpha_low.equals(Double.NaN);
-				//				System.out.println("alpha1 not valid");
-				return false;
-			} if (this.opinionDiffusionDegree.equals(Double.NaN)){
-				//				System.out.println("opinionDiffusionDegree1 not valid");
+			if (alpha_high.equals(Double.NaN) || alpha_low.equals(Double.NaN) || this.opinionDiffusionDegree.equals(Double.NaN)){
 				return false;
 			}
-			//			if (!this._agentSelection.equals(SelectionType.RoolettWheel)){
-			//				System.out.println("_agentSelection1 not valid");
-			//				return false;
-			//			}
-
-		} else if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
-			if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN)){
-				//				System.out.println("alpha 2not valid "+alpha_high+" "+alpha_low);
-				assert !alpha_high.equals(Double.NaN) && !alpha_low.equals(Double.NaN);
+		} else {
+			if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN) || !this.opinionDiffusionDegree.equals(Double.NaN)){
+				//				System.out.println("alpha1 et opinionDiffusionDegree1not valid");
 				return false;
 			}
-			if (!this.opinionDiffusionDegree.equals(Double.NaN)){
-				//				System.out.println("opinionDiffusionDegree 2not valid "+opinionDiffusionDegree);
-				return false;
-			}
-			if (!this._agentSelection.equals(SelectionType.Greedy)){
-				//				System.out.println("_agentSelection 2not valid");
-				return false;
-			}
-
 		}
 		return true;
 	}
@@ -787,7 +827,23 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 
 
-
+//	
+//if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
+//	if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN)){
+//		//				System.out.println("alpha 2not valid "+alpha_high+" "+alpha_low);
+//		assert !alpha_high.equals(Double.NaN) && !alpha_low.equals(Double.NaN);
+//		return false;
+//	}
+//	if (!this.opinionDiffusionDegree.equals(Double.NaN)){
+//		//				System.out.println("opinionDiffusionDegree 2not valid "+opinionDiffusionDegree);
+//		return false;
+//	}
+//	if (!this._agentSelection.equals(SelectionType.Greedy)){
+//		//				System.out.println("_agentSelection 2not valid");
+//		return false;
+//	}
+//
+//}
 
 
 //			for (final AgentIdentifier h : rep.getMyCurrentState().getMyResourceIdentifiers()){

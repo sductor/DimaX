@@ -230,6 +230,8 @@ public abstract class PatternObserverService extends BasicCommunicatingCompetenc
 			protocol = ObservationProtocol.class,
 			attachementSignature = {String.class })
 	public void registrationOfNewObserver(final FipaACLMessage m) {
+		assert m!=null;
+		assert m.getArgs()!=null:m.getClass();
 		final String key = (String) m.getArgs()[0];
 		if (m.getContent().equals(ObservationProtocol.Observe)) {
 			this.registeredObservers.add(key, m.getSender());

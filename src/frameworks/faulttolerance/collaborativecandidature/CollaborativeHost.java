@@ -17,6 +17,8 @@ import frameworks.negotiation.protocoles.collaborative.ResourceInformedSelection
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
+import frameworks.negotiation.selection.SelectionModule;
+import frameworks.negotiation.selection.SimpleSelectionCore;
 
 public class CollaborativeHost extends Host{
 	private static final long serialVersionUID = -8478683967125467116L;
@@ -27,7 +29,7 @@ public class CollaborativeHost extends Host{
 			final HostState myState,
 			final SocialChoiceType socialWelfare,
 			final int maxCAccepts,
-			final GreedySelectionType initialSelectionType,
+			final SelectionModule initialSelectionType,
 			final long maxComputingTime)
 					throws CompetenceException {
 		super(

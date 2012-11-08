@@ -27,6 +27,7 @@ CompetentComponent & AsynchronousCommunicationComponent> extends BasicAgentCompe
 	}
 
 	public void sendMessage(final Collection<? extends AgentIdentifier> ids, final AbstractMessageInterface m){
+		assert m!=null:m;
 //		assert new HashSet(ids).size()==ids.size();
 		for (final AgentIdentifier id :ids) {
 			if (id!=this.myAgent.getIdentifier()) {

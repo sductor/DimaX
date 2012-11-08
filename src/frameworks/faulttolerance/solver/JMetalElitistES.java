@@ -91,11 +91,11 @@ public class JMetalElitistES extends Algorithm {
 		run();
 		Iterator<Solution> sols = populationCourante.iterator();
 		while (sols.hasNext()){
-			if (sols.next().getNumberOfViolatedConstraint()>0){
+			if (!getProblem().p.isViable(sols.next())){
 				sols.remove();
 			}
 		}
-				System.out.println("fin : "+populationCourante.best(getProblem().getComparator())+"  "+populationCourante);
+//				System.out.println("fin : "+populationCourante.best(getProblem().getComparator())+"  "+populationCourante);
 		return populationCourante ;
 	} // execute
 
@@ -157,8 +157,8 @@ public class JMetalElitistES extends Algorithm {
 		SolutionSortedSet populationGenere = new SolutionSortedSet(getProblem().mu,getProblem().getComparator()) ;
 		try{
 			while (nbGen < getProblem().maxGeneration && !hasExpired()) {
-				System.out.println("gen "+nbGen+" "+populationCourante.best(getProblem().getComparator()).getObjective(0)
-						+" date : "+new Date().getTime()+" "+(new Date().getTime()-startTime)+" "+getProblem().timeLimit);
+//				System.out.println("gen "+nbGen+" "+populationCourante.best(getProblem().getComparator()).getObjective(0)
+//						+" date : "+new Date().getTime()+" "+(new Date().getTime()-startTime)+" "+getProblem().timeLimit);
 				//+" iital alloc "+problem.p.initialSolution);//+"  "+populationCourante);
 				populationGenere.addAll(populationCourante);
 				assert populationGenere.size()==getProblem().mu:populationGenere.size()+" "+populationCourante.size()+"\n "+populationGenere+"\n "+populationCourante;

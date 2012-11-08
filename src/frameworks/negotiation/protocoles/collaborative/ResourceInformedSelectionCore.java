@@ -29,6 +29,8 @@ import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.Selection
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.selection.GreedySelectionModule;
 import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
+import frameworks.negotiation.selection.SelectionModule;
+import frameworks.negotiation.selection.SimpleSelectionCore;
 
 public abstract class ResourceInformedSelectionCore <
 PersonalState extends AgentState,
@@ -44,7 +46,7 @@ InformedCandidature<Contract>> {
 	final ResourceAllocationSolver<Contract, PersonalState> solver;
 	final int kMax;
 	final long maxComputingTime;
-	final GreedySelectionType initialSelectionType;
+	final SelectionModule gsm;
 
 	Random rand = new Random();
 
@@ -55,13 +57,13 @@ InformedCandidature<Contract>> {
 	public ResourceInformedSelectionCore(
 			final ResourceAllocationSolver<Contract, PersonalState> solver,
 			final int kMax,
-			final GreedySelectionType initialSelectionType,
+			final SelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>> initialSelectionType,
 			final long maxComputingTime)
 					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.solver = solver;
 		this.kMax=kMax;
-		this.initialSelectionType=initialSelectionType;
+		this.gsm=initialSelectionType;
 		this.maxComputingTime=maxComputingTime;
 	}
 
@@ -131,8 +133,8 @@ InformedCandidature<Contract>> {
 						}
 					}
 				} else {
-					final GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>> gsm =
-							new GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>>(this.initialSelectionType);
+//					final GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>> gsm =
+//							new GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>>(this.initialSelectionType);
 					gsm.setMyAgent(this.getMyAgent());
 					accepted.addAll(gsm.selection(currentState, allContracts));
 					try {

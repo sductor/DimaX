@@ -106,7 +106,7 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 		ReplicationExperimentationParameters.maxHostAccessibleParAgent=30;
 		
 		
-		informativeParameter = 0;//new Integer(args[2]);
+		informativeParameter = new Integer(args[2]);
 		Experimentator exp =
 				new Experimentator(
 						new ReplicationExperimentationGenerator().getDefaultParameters(),

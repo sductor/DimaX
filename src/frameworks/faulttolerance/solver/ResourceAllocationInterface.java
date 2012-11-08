@@ -26,11 +26,6 @@ import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
-import frameworks.faulttolerance.olddcop.DCOPFactory;
-import frameworks.faulttolerance.olddcop.DcopSolver;
-import frameworks.faulttolerance.olddcop.dcop.DcopReplicationGraph;
-import frameworks.faulttolerance.olddcop.dcop.MemFreeConstraint;
-import frameworks.faulttolerance.olddcop.dcop.ReplicationVariable;
 import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.contracts.ResourceIdentifier;
@@ -140,14 +135,11 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 			m=1;
 			this.concerned= new HashMap<AgentIdentifier, ReplicationCandidature>();					
 			Collection<ReplicaState> replicasStates = new ArrayList<ReplicaState>();
-			Collection<HostState> hostsStates = new ArrayList<HostState>();
 			double[] intialAlloc = new double[n*1];
 
 			this.myState=concerned.iterator().next().getResourceInitialState();
-			hostsStates.add(myState);
 
 			Iterator<ReplicationCandidature> itC = concerned.iterator();
-			int i =0;
 			while (itC.hasNext()){
 				ReplicationCandidature rc = itC.next();
 				this.concerned.put(rc.getAgent(), rc);
@@ -158,20 +150,20 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 						rc.getAgentResultingState().getMyProcCharge());
 				assert rc.getResource().equals(myState.getMyAgentIdentifier());
 
+//				replicasStates.add(rc.getAgentInitialState());
 				if (rc.isMatchingCreation()){
 					replicasStates.add(rc.getAgentInitialState());
-					intialAlloc[i]=0.;
 				}else{
 					replicasStates.add(rc.getAgentResultingState());
-					intialAlloc[i]=1.;
+					myState = rc.computeResultingState(myState);
+					assert !myState.hasResource(rc.getAgent());
 				}
-				i++;
 			}		
 
 
 			ReplicationInstanceGraph rig = new ReplicationInstanceGraph(null);
 			rig.setAgents(replicasStates);
-			rig.setHosts(hostsStates);
+			rig.setState(myState);
 			for (AgentIdentifier id : rig.getAgentsIdentifier()){
 				rig.addAcquaintance(id, myState.getMyAgentIdentifier());
 			}
@@ -179,8 +171,21 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 
 			super.setProblem(rig, new ArrayList<AgentIdentifier>());
 			initiateSolver();
+
+			itC = concerned.iterator();		
+			while (itC.hasNext()){	
+				ReplicationCandidature rc = itC.next();
+//				replicasStates.add(rc.getAgentInitialState());
+				if (rc.isMatchingCreation()){
+					intialAlloc[reverseAgId.get(rc.getAgent())]=0.;
+				}else{
+					intialAlloc[reverseAgId.get(rc.getAgent())]=1.;
+				}
+			}
+			
+			
 			initialSolution=getInitialAllocAsSolution(intialAlloc);
-			assert isViable(initialSolution);
+			assert assertIsViable(initialSolution);
 			assert initialSolution!=null;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -253,75 +258,93 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 			return results;
 		}
 	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/******                           *******/
 	/******  NEGO to Drg Interface    *******/ 
-	/******                           *******/
+//	/******                           *******/
+//
+//	public static DcopReplicationGraph toDrg(Collection<ReplicationCandidature> concerned, SocialChoiceType socialWelfare) {
+//		assert concerned.size()<31;
+//		try {
+//			HashMap<Integer, ReplicationVariable> varMap;
+//			Vector<MemFreeConstraint> conList;		
+//			varMap = new HashMap<Integer, ReplicationVariable>();
+//			conList = new Vector<MemFreeConstraint>();
+//
+//			ReplicationCandidature hostC = concerned.iterator().next();
+//			ReplicationVariable hostVar = DCOPFactory.constructVariable(
+//					DCOPFactory.identifierToInt(hostC.getResource()), 
+//					(int)Math.pow(2, concerned.size()),
+//					hostC.getResourceInitialState(),
+//					socialWelfare);
+//			varMap.put(hostVar.id, hostVar);
+//			for (ReplicationCandidature c : concerned){
+//				ReplicationVariable agentVar;
+//				agentVar = DCOPFactory.constructVariable(
+//						DCOPFactory.identifierToInt(c.getAgent()), 
+//						2,
+//						c.getAgentInitialState(),
+//						socialWelfare);
+//
+//				assert !varMap.containsKey(DCOPFactory.identifierToInt(c.getAgent()));
+//				varMap.put(agentVar.id, agentVar);
+//				MemFreeConstraint con = DCOPFactory.constructConstraint(agentVar, hostVar);
+//				conList.add(con);
+//			}
+//
+//			DcopReplicationGraph drg = new DcopReplicationGraph(varMap, conList, socialWelfare);
+//
+//
+//			if (DCOPFactory.isClassical()){
+//				drg.instanciateConstraintsValues();
+//			}		
+//			return drg;
+//		} catch (IncompleteContractException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}	
+//
+//	/**
+//	 * Transforme la solution actuelle du solveur en candidature accepté
+//	 * @return la liste des candidature de la solution du solveur différentes de l'allcoation courante
+//	 */
+//	public static Collection<ReplicationCandidature> getContractSolution(
+//			DcopReplicationGraph drg, Collection<ReplicationCandidature> concerned,HashMap<Integer,Integer> sol){
+//		assert concerned.size()==sol.size();
+//		//		assert this.s.isFeasible()!=null && this.s.isFeasible():this.s.isFeasible()+" "+hasNext;
+//		//		assert hasNext:hasNext;
+//		final ArrayList<ReplicationCandidature> results = new ArrayList<ReplicationCandidature>();
+//		AgentIdentifier host = concerned.iterator().next().getResource();
+//		for (ReplicationCandidature c : concerned){
+//			ReplicationVariable agent = drg.getVar(DCOPFactory.identifierToInt(c.getAgent()));
+//			boolean allocated = agent.hasAllocatedRessource(host, sol.get(agent.id));
+//			if (c.isMatchingCreation() && allocated || !c.isMatchingCreation() && !allocated) {
+//				results.add(c);
+//			}
+//		}
+//		return results;
+//	}
 
-	public static DcopReplicationGraph toDrg(Collection<ReplicationCandidature> concerned, SocialChoiceType socialWelfare) {
-		assert concerned.size()<31;
-		try {
-			HashMap<Integer, ReplicationVariable> varMap;
-			Vector<MemFreeConstraint> conList;		
-			varMap = new HashMap<Integer, ReplicationVariable>();
-			conList = new Vector<MemFreeConstraint>();
 
-			ReplicationCandidature hostC = concerned.iterator().next();
-			ReplicationVariable hostVar = DCOPFactory.constructVariable(
-					DCOPFactory.identifierToInt(hostC.getResource()), 
-					(int)Math.pow(2, concerned.size()),
-					hostC.getResourceInitialState(),
-					socialWelfare);
-			varMap.put(hostVar.id, hostVar);
-			for (ReplicationCandidature c : concerned){
-				ReplicationVariable agentVar;
-				agentVar = DCOPFactory.constructVariable(
-						DCOPFactory.identifierToInt(c.getAgent()), 
-						2,
-						c.getAgentInitialState(),
-						socialWelfare);
-
-				assert !varMap.containsKey(DCOPFactory.identifierToInt(c.getAgent()));
-				varMap.put(agentVar.id, agentVar);
-				MemFreeConstraint con = DCOPFactory.constructConstraint(agentVar, hostVar);
-				conList.add(con);
-			}
-
-			DcopReplicationGraph drg = new DcopReplicationGraph(varMap, conList, socialWelfare);
-
-
-			if (DCOPFactory.isClassical()){
-				drg.instanciateConstraintsValues();
-			}		
-			return drg;
-		} catch (IncompleteContractException e) {
-			throw new RuntimeException(e);
-		}
-	}	
-
-	/**
-	 * Transforme la solution actuelle du solveur en candidature accepté
-	 * @return la liste des candidature de la solution du solveur différentes de l'allcoation courante
-	 */
-	public static Collection<ReplicationCandidature> getContractSolution(
-			DcopReplicationGraph drg, Collection<ReplicationCandidature> concerned,HashMap<Integer,Integer> sol){
-		assert concerned.size()==sol.size();
-		//		assert this.s.isFeasible()!=null && this.s.isFeasible():this.s.isFeasible()+" "+hasNext;
-		//		assert hasNext:hasNext;
-		final ArrayList<ReplicationCandidature> results = new ArrayList<ReplicationCandidature>();
-		AgentIdentifier host = concerned.iterator().next().getResource();
-		for (ReplicationCandidature c : concerned){
-			ReplicationVariable agent = drg.getVar(DCOPFactory.identifierToInt(c.getAgent()));
-			boolean allocated = agent.hasAllocatedRessource(host, sol.get(agent.id));
-			if (c.isMatchingCreation() && allocated || !c.isMatchingCreation() && !allocated) {
-				results.add(c);
-			}
-		}
-		return results;
-	}
-
-
-}
+//}
 
 
 

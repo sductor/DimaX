@@ -18,7 +18,6 @@ import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
-import frameworks.faulttolerance.olddcop.DcopSolver;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
@@ -87,7 +86,7 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 		List<HostState> hostsStates = new ArrayList<HostState>(rig.getHostsStates());
 		n=agentStates.size();
 		m=hostsStates.size();
-		assert n>0;
+		assert n>0:n+"\n"+rig;
 		assert m>0;
 		assert Assert.Imply(isLocal(), fixedVar.isEmpty());
 
@@ -172,13 +171,14 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 								getAllocationLowerBound(i, j)==getAllocationUpperBound(i, j));
 						assert Assert.IIF(
 								rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
-								rig.getHostState(hostIdentifier).hasResource(agentIdentifier));
-						assert Assert.Imply(
-								rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
-								getAllocationUpperBound(i, j)==1);
-						assert Assert.Imply(
-								!rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
-								getAllocationLowerBound(i, j)==0);
+								rig.getHostState(hostIdentifier).hasResource(agentIdentifier)):
+									""+rig.getAgentState(agentIdentifier)+rig.getHostState(hostIdentifier);
+								assert Assert.Imply(
+										rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
+										getAllocationUpperBound(i, j)==1);
+								assert Assert.Imply(
+										!rig.getAgentState(agentIdentifier).hasResource(hostIdentifier), 
+										getAllocationLowerBound(i, j)==0);
 					} else {
 						assert getAllocationLowerBound(i, j)==getAllocationUpperBound(i, j) && getAllocationUpperBound(i, j)==0;
 					}
@@ -607,8 +607,9 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 				fixedVar+"\n bounds "+printBounds()+"\n "+print(daX)+"\n "+getRessources(daX, getAgentIdentifier(i));
 		}
 		for (int j = 0; j < m; j++){
-			assert isViableForhost(daX, j): getHostIdentifier(j)+" "+getHostMemoryCharge(daX, j)+" "+getHostProcessorCharge(daX, j)+"\n fixed var "+
-					fixedVar+getRessources(daX,getHostIdentifier(j))+"\n  "+print(daX)+"";;
+			assert isViableForhost(daX, j): 
+				getHostIdentifier(j)+" "+getHostMemoryCharge(daX, j)+" "+getHostProcessorCharge(daX, j)+"\n fixed var "+
+				fixedVar+getRessources(daX,getHostIdentifier(j))+"\n  "+print(daX)+"";;
 		}
 
 		for (int i = 0; i < n; i++){
@@ -616,7 +617,8 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 				assert (read(daX,i,j)==1.0 || read(daX,i,j)==0.0);
 			}
 		}
-		return !isLocal() || isUpgrading(daX);
+		assert !isLocal() || isUpgrading(daX);
+		return true;
 	}
 
 
@@ -638,7 +640,12 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 					return false;
 			}
 		}
-		return !isLocal() || isUpgrading(daX);
+		
+		if (!(!isLocal() || isUpgrading(daX))){
+			return false;
+		}
+		
+		return true;
 	}
 
 	protected boolean isUpgrading(SolutionType solution) {

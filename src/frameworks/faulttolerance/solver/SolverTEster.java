@@ -14,7 +14,6 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.faulttolerance.olddcop.DcopBranchAndBoundSolver;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -137,7 +136,7 @@ public class SolverTEster {
 					//
 
 					HashMap<Integer, Integer> bbbestSolution=null;
-					DcopBranchAndBoundSolver bb=null;
+//					DcopBranchAndBoundSolver bb=null;
 //					if (bbTest){
 //						initTime = System.currentTimeMillis();
 //						bb = new DcopBranchAndBoundSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true);
@@ -154,7 +153,7 @@ public class SolverTEster {
 
 					if (knitro)System.out.println("kas best     !!!!!!!!!!!!!!!! "+kas.getSocWelfare(kasbestSolution)+"\t\t"+kas.isViable(kasbestSolution)+"\t"+kas.print(kasbestSolution));
 					if (metal)System.out.println("jms best      !!!!!!!!!!!!!!! "+jms.getSocWelfare(jmsbestSolution)+"\t\t"+jms.isViable(jmsbestSolution)+"\t"+jms.print(jmsbestSolution));
-					if (bbTest)System.out.println("bb best     !!!!!!!!!!!!!!!! "+bb.getSocWelfare(bbbestSolution)+"\t\t"+bb.isViable(bbbestSolution)+"\t"+bb.print(bbbestSolution));
+//					if (bbTest)System.out.println("bb best     !!!!!!!!!!!!!!!! "+bb.getSocWelfare(bbbestSolution)+"\t\t"+bb.isViable(bbbestSolution)+"\t"+bb.print(bbbestSolution));
 
 					if (bestTest)
 					System.out.println("best possible !!!!!!!!!!!!!!! "+" "+kas2.getSocWelfare(new RessourceAllocationSimpleSolutionType(bestPossible))
@@ -177,15 +176,15 @@ public class SolverTEster {
 
 						metalApprox+=jms.getSocWelfare(jmsbestSolution)/jms.getSocWelfare(jms.getInitialAllocAsSolution(bestPossible));
 					}
-					if (bbTest && bestTest){
-						if (bb.getSocWelfare(bbbestSolution)==kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible)))
-							bbOpt++;
-						if (!bb.isViable(bbbestSolution)){
-							bbfaux++;
-						}
-
-						bbApprox+=bb.getSocWelfare(bbbestSolution)/kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible));
-					}
+//					if (bbTest && bestTest){
+//						if (bb.getSocWelfare(bbbestSolution)==kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible)))
+//							bbOpt++;
+//						if (!bb.isViable(bbbestSolution)){
+//							bbfaux++;
+//						}
+//
+//						bbApprox+=bb.getSocWelfare(bbbestSolution)/kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible));
+//					}
 					if (knitro && metal){
 						if (jms.getSocWelfare(jmsbestSolution)>kas.getSocWelfare(kasbestSolution))
 							metalBetterKnitro++;

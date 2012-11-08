@@ -38,6 +38,7 @@ import frameworks.negotiation.NegotiationParameters.SelectionType;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.rationality.RationalAgent;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
+import frameworks.negotiation.rationality.SocialChoiceFunction;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 import frameworks.negotiation.selection.GreedySelectionModule;
 import frameworks.negotiation.selection.OptimalSelectionModule;
@@ -49,38 +50,72 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//problem
 	private Long[] seeds = new Long[]{(long) 889757,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
 
-	private Integer[] nbAgentDomain = new Integer[]{100,1000,5000,10000};
-	 int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
+	//	private Integer[] nbAgentDomain = new Integer[]{2500,5000,7500,10000};
+	private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
+	//	private Integer[] nbAgentDomain = new Integer[]{50};
+	int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
-	private Integer[] nbHostDomain = new Integer[]{24};
-	 int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
+	//	private Integer[] nbHostDomain = new Integer[]{24};
+	private Integer[] nbHostDomain = new Integer[]{16};
+	int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
 
-	private Double[] hostCapacity = new Double[]{0.3,0.6};//-((double) maxAgentNb/((double) maxHostNb)),
-	private Double[] graphDensityDomain = new Double[]{-Double.MAX_VALUE,0.3};//15., 
+	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),
+	//	private Double[] graphDensityDomain = new Double[]{0.5};//15.,
+	private static Double[] hostCapacity = null;//new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
+	private static  Double[] graphDensityDomain = null;// new Double[]{0.8,0.2};//15., 
 
-	private SocialChoiceType[] welfareDomain = new SocialChoiceType[]{SocialChoiceType.Utility};	
+	static{
+		if (ReplicationLaborantin.informativeParameter==0){
+			hostCapacity = new Double[]{0.2};
+			graphDensityDomain = new Double[]{0.2};
+
+		} else if (ReplicationLaborantin.informativeParameter==1){
+			hostCapacity = new Double[]{0.8};
+			graphDensityDomain = new Double[]{0.2};			
+		} else if (ReplicationLaborantin.informativeParameter==2){
+			hostCapacity = new Double[]{0.2};
+			graphDensityDomain = new Double[]{0.8};			
+		} else if (ReplicationLaborantin.informativeParameter==3){
+			hostCapacity = new Double[]{0.8};
+			graphDensityDomain = new Double[]{0.2};			
+		}
+	}
+
+	private SocialChoiceType[] welfareDomain = 
+			new SocialChoiceType[]{SocialChoiceType.Utility,
+			SocialChoiceType.Nash,
+			SocialChoiceType.Leximin};
+
 	private String[] protosDomain = new String[]{
 			NegotiationParameters.key4mirrorProto,
-			NegotiationParameters.key4statusProto,
-			NegotiationParameters.key4GeneticProto,
-			NegotiationParameters.key4DcopProto
+			//			NegotiationParameters.key4statusProto,
+			//			NegotiationParameters.key4GeneticProto,
+			//			NegotiationParameters.key4DcopProto
 	};
-//	private Selection[] selectDomain = new String[]{
-//			NegotiationParameters.key4greedySelect,
-////			NegotiationParameters.key4randomSelect,
-//			NegotiationParameters.key4rouletteWheelSelect,
-//			NegotiationParameters.key4BetterSelect,
-//			NegotiationParameters.key4OptSelect};
+	private SelectionType[] selectDomain = new SelectionType[]{
+			//			SelectionType.Opt,
+			//			SelectionType.Greedy,
+			//			SelectionType.Better,
+			//			SelectionType.Random,
+			SelectionType.RoolettWheel};
 
 	//solveur
-	private Integer[] kDomain= new Integer[]{1,50,100,250,500};
+	//	private Integer[] kDomain= new Integer[]{250,500,750,1000};
+	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
+	//	private Integer[] kDomain= new Integer[]{20};//50,250,500,750,1000};
 
 	//Social
-	private Double[][] alphaDomain= new Double[][]{new Double[]{Double.NaN,Double.NaN},new Double[]{0.2,0.4}, new Double[]{0.4,0.6}, new Double[]{0.6,0.8}, new Double[]{0.2,0.8}};
-	private Double[] kOpinionDomain= new Double[]{Double.NaN,0.3};//,0.6,1.};
+	private Double[][] alphaDomain= 
+			new Double[][]{new Double[]{Double.NaN,Double.NaN},
+			new Double[]{0.2,0.4},
+			new Double[]{0.4,0.6}, 
+			new Double[]{0.6,0.8}, 
+			new Double[]{0.2,0.8}};
+	private Double[] kOpinionDomain= 
+			new Double[]{Double.NaN,0.3,0.6};//,0.6,1.};
 
 
-	private Double getValue(Double value, double ref){
+	public static Double getValue(Double value, double ref){
 		if (value.equals(Double.NaN))
 			return Double.NaN;
 		else if (value <0)
@@ -102,7 +137,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 
 	static boolean varyProtocol=true;
-	static boolean  varyOptimizers=false;
+	static boolean  varyOptimizers=true;
 
 	static boolean varyAgents=true;
 	static boolean varyHosts=false;
@@ -113,7 +148,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	static boolean varyAlpha=true;
 
 	static boolean varyAgentSelection=false;
-	static boolean varyHostSelection=false;
+	static boolean varyHostSelection=true;
 
 	static boolean varyHostDispo=false;
 	static boolean varyHostFaultDispersion=false;
@@ -186,13 +221,13 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 				(int)kDomain[0],
 				getValue(kOpinionDomain[0],nbAgentDomain[0]),
 				ReplicationLaborantin.informativeParameter.equals(0)?protosDomain[0]:protosDomain[1],//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
-				welfareDomain[0],
-				SelectionType.Greedy,//NegotiationParameters.key4rouletteWheelSelect,//
-				SelectionType.RoolettWheel,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
-				alphaDomain[0][0],
-				alphaDomain[0][1],
-				false,
-				false);
+						welfareDomain[0],
+						SelectionType.Greedy,//NegotiationParameters.key4rouletteWheelSelect,//
+						SelectionType.RoolettWheel,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
+						alphaDomain[0][0],
+						alphaDomain[0][1],
+						false,
+						false);
 	}
 
 	public static String getProtocolId() {
@@ -292,9 +327,9 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		final LinkedList<ExperimentationParameters<ReplicationLaborantin>> simus =
 				new LinkedList<ExperimentationParameters<ReplicationLaborantin>>();
 		for (final ReplicationExperimentationParameters p : simuToLaunch) {
-//			System.out.println("considering "+p);
+			//			System.out.println("considering "+p);
 			if (p.isValid()){
-//				System.out.println("added!");
+				//				System.out.println("added!");
 				simus.add(p);
 			}else{
 				//				this.logWarning("ABORTED !!! "+(p.nbHosts*p.agentAccessiblePerHost<p.nbAgents)+" "+(p.agentAccessiblePerHost<=0)+" \n"+p, LogService.onBoth);
@@ -329,20 +364,20 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	}
 	private Collection<ReplicationExperimentationParameters> varyAgentSelection(final Collection<ReplicationExperimentationParameters> exps){
 		assert false:"la selection agent est tjs greedy";
-		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
-		for (final ReplicationExperimentationParameters p : exps) {
-			for (final SelectionType v : SelectionType.RoolettWheel.values()){
-				final ReplicationExperimentationParameters n =  p.clone();
-				n._agentSelection=v;
-				result.add(n);
-			}
+	final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
+	for (final ReplicationExperimentationParameters p : exps) {
+		for (final SelectionType v : Arrays.asList(selectDomain)){
+			final ReplicationExperimentationParameters n =  p.clone();
+			n._agentSelection=v;
+			result.add(n);
 		}
-		return result;
+	}
+	return result;
 	}
 	private Collection<ReplicationExperimentationParameters> varyHostSelection(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-			for (final SelectionType v : SelectionType.RoolettWheel.values()){
+			for (final SelectionType v : Arrays.asList(selectDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
 				n._hostSelection=v;
 				result.add(n);
@@ -376,7 +411,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	private Collection<ReplicationExperimentationParameters> varyAgents(final Collection<ReplicationExperimentationParameters> exps){
 		final Collection<ReplicationExperimentationParameters> result=new HashSet<ReplicationExperimentationParameters>();
 		for (final ReplicationExperimentationParameters p : exps) {
-assert p.alpha_high!=0;
+			assert p.alpha_high!=0;
 			final List<Integer> nbAgentsList = Arrays.asList(nbAgentDomain);
 			for (final Integer v : nbAgentsList){
 				final ReplicationExperimentationParameters n =  p.clone();
@@ -439,6 +474,7 @@ assert p.alpha_high!=0;
 				final ReplicationExperimentationParameters n =  p.clone();
 				n.opinionDiffusionDegree=getValue(v,new Double(p.nbAgents));
 				result.add(n);
+				//				System.out.println(Arrays.asList(v)+" "+n.opinionDiffusionDegree);
 			}
 		}
 		return result;
@@ -452,7 +488,7 @@ assert p.alpha_high!=0;
 				n.alpha_low=v[0];
 				n.alpha_high=v[1];
 				result.add(n);
-//				System.out.println(n.alpha_high);
+				//				if (n.opinionDiffusionDegree.equals(0.6))System.out.println(Arrays.asList(v));
 			}
 		}
 		return result;
@@ -462,7 +498,7 @@ assert p.alpha_high!=0;
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Integer v : Arrays.asList(kDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.agentAccessiblePerHost=v;
+				n.kSolver=v;
 				result.add(n);
 			}
 		}

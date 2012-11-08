@@ -23,7 +23,6 @@ import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
-import frameworks.faulttolerance.olddcop.DCOPFactory;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.rationality.AgentState;

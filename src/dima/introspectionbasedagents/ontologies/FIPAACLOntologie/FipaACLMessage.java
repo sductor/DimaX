@@ -80,6 +80,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 	public FipaACLMessage clone(){
 		FipaACLMessage neo = new FipaACLMessage(performative,content, protocol);
+		neo.setArgs(getArgs());
 		neo.language=this.language;
 		neo.ontology=this.ontology;
 		neo.inreplyto=this.inreplyto;
@@ -311,9 +312,9 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 				+ "content : " + this.getContent()  + "\n"
 				+"args?   : "
 				+ (this.getArgs() != null ? this.getArgs().length != 0 : false)
-				+"\n *Performative:" + this.performative + "\n *Protocol:"
-				+ this.protocol.getSimpleName() + "\n *signature:"
-				+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
+				+"\n *Performative:" + this.performative + "\n *Protocol:"	+ this.protocol.getSimpleName()
+				+"\n *signature:"+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
+				+"\n *content:" +  this.content==null?"":content
 				//		+ Arrays.asList(this.getArgs())==null?
 				//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
 				+ "\n" + "details : " + this.description();

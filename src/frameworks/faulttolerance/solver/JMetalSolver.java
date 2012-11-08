@@ -68,7 +68,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 				}
 				assert solutions.hasNext();
 				Solution sik = solutions.next();
-				assert isViable(sik);
+				assert assertIsViable(sik):sik;
 				return sik;
 			} else {
 				Solution bestSol = algorithm.execute().best(((JMetalRessAllocProblem)algorithm.getProblem()).getComparator());

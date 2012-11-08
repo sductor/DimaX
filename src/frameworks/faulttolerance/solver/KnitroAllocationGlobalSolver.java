@@ -19,7 +19,6 @@ import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
-import frameworks.faulttolerance.olddcop.DcopSolver;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.exploration.Solver;

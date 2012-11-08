@@ -247,16 +247,19 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			participant.addAll(c.getAllParticipants());
 			participant.remove(this.getIdentifier());
 			this.sendMessage(participant, m);
+//			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		case NotInitiatingParticipant :
 			participant = new ArrayList<AgentIdentifier>();
 			participant.addAll(c.getNotInitiatingParticipants());
 			participant.remove(this.getIdentifier());
 			this.sendMessage(participant, m);
+//			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		case Initiator :
 			assert !this.getIdentifier().equals(c.getInitiator());
 			this.sendMessage(c.getInitiator(), m);
+//			logMonologue("sending to "+c.getInitiator()+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		}
 	}
@@ -633,7 +636,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			return this.answeredContract;
 		}
 
-		public String detail() {
+		public String description() {
 			return "Answer of contract " + this.answeredContract;
 		}
 
@@ -661,6 +664,13 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			this.myInitialState = myInitialState;
 		}
 
+		public SimpleContractAnswer clone(){
+			SimpleContractAnswer m = new SimpleContractAnswer(getPerformative(), answeredContract);
+			m.mySpec=mySpec;
+			m.myNewState=myNewState;
+			m.myInitialState=myInitialState;
+			return m;
+		}
 	}
 
 	//
@@ -682,19 +692,22 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 				myContract.setInitialState(
 						AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState());
 			// this.myContract = (Contract) myContract.clone();
-			this.myContract = (Contract) myContract.clone();
+			this.myContract = (Contract) myContract;
 			//			this.attachedInfos=attachedInfos;
 		}
 
 		public Contract getMyContract() {
 			return this.myContract;
 		}
+		public SimpleContractProposal clone(){
+			return new SimpleContractProposal(getPerformative(), (Contract)myContract.clone());
+		}
 
 		public ContractIdentifier getContractIdentifier() {
 			return this.myContract.getContractIdentifier();
 		}
 
-		public String detail() {
+		public String description() {
 			return "Envellope of contract " + this.myContract.getContractIdentifier();
 		}
 	}

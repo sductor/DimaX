@@ -24,9 +24,9 @@ public class KnitroAllocationLocalSolver extends KnitroResourceAllocationSolver 
 	 */
 
 	@Override
-	protected void initiateSolver() throws UnsatisfiableException {
+	protected void initiateSolverPost() throws UnsatisfiableException {
 		assert m==1;
-		super.initiateSolver();
+		super.initiateSolverPost();
 		for (int i = 0; i < n; i++){
 			unallocatedValue[i] = this.rig.getAgentState(this.getAgentIdentifier(i)).allocate(myState, false).getMyReliability();
 			allocatedValue[i] = this.rig.getAgentState(this.getAgentIdentifier(i)).allocate(myState, true).getMyReliability();
@@ -75,7 +75,7 @@ public class KnitroAllocationLocalSolver extends KnitroResourceAllocationSolver 
 	@Override
 	protected int setNumNonNulJAc() {
 		System.out.println(2*n);
-		return 2*n;
+		return 2*n+1;
 	}//ET LOCAL ALORS?????
 
 	@Override

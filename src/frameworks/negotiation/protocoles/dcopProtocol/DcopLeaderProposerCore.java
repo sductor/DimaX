@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.modules.faults.Assert;
+import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
@@ -26,6 +28,8 @@ extends BasicAgentCompetence<NegotiatingAgent<State,Contract>>
 implements 
 ProposerCore<NegotiatingAgent<State,Contract>, State, Contract> {
 
+	HashedHashSet<AgentIdentifier, Contract> iWannaLock=new HashedHashSet<AgentIdentifier, Contract>();
+
 	public DCOPLeaderProtocol<State, Contract> getMyProtocol(){
 		return (DCOPLeaderProtocol<State, Contract>) getMyAgent().getMyProtocol();
 	}
@@ -36,7 +40,7 @@ ProposerCore<NegotiatingAgent<State,Contract>, State, Contract> {
 
 	@Override
 	public boolean IWantToNegotiate(ContractTrunk<Contract> contracts) {
-		//		logMonologue("i want to negotiaite? "+!getMyProtocol().gainFlag.isEmpty());
+//				logMonologue("i want to negotiaite? "+!getMyProtocol().gainFlag.isEmpty());
 		if (getMyProtocol().waitTime>0)
 			getMyProtocol().waitTime--;
 		return getMyProtocol().waitTime==0 && getMyProtocol().myLock.isEmpty() && !getMyProtocol().gainFlag.isEmpty();
@@ -45,20 +49,21 @@ ProposerCore<NegotiatingAgent<State,Contract>, State, Contract> {
 	@Override
 	public Set<? extends Contract> getNextContractsToPropose()
 			throws NotReadyException {
-		//		logMonologue("negotiating");
+				logMonologue("negotiating");
 		Set<Contract> contractToPropose = new HashSet<Contract>();
-		Iterator<ReplicationInstanceGraph> itGainFlag = getMyProtocol().gainFlag.iterator();
+		Iterator<Collection<AgentIdentifier>> itGainFlag = getMyProtocol().gainFlag.iterator();
 		assert getMyProtocol().gainFlag.size()<=1;
 		while (itGainFlag.hasNext()){
-			ReplicationInstanceGraph rig =itGainFlag.next();
+			Collection<AgentIdentifier> rig =itGainFlag.next();
 
 			if (!getMyProtocol().lockedRigs.contains(rig)){//s'il a un gain et qui est locké il est d'abord delocke parle selection
-
+				iWannaLock.clear();
 				for (Contract c : getMyProtocol().gainContracts.get(rig)){
 					assert (!getMyProtocol().lockedNodesToRig.keySet().contains(c));
 					contractToPropose.add(c);
 					//						
-					getMyProtocol().myLock.add(c.getInitiator(), c);				
+					iWannaLock.add(c.getInitiator(), c);		
+//					getMyProtocol().myLock.add(c.getInitiator(), c);				
 					getMyProtocol().lockedNodesToRig.add(c, rig);
 				}
 				itGainFlag.remove();

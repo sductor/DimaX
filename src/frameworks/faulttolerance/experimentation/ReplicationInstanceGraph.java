@@ -72,8 +72,8 @@ extends GimaObject implements ReplicationGraph{
 		if (s instanceof HostState){
 			hosts.put(((HostState)s).getMyAgentIdentifier(), (HostState)s);
 		} else {
-			assert s instanceof ReplicaState:s;
-		agents.put(s.getMyAgentIdentifier(), (ReplicaState)s);
+			assert (s instanceof ReplicaState):s;
+			agents.put(s.getMyAgentIdentifier(), (ReplicaState)s);
 		}
 	}
 	public void addAcquaintance(final AgentIdentifier a1, final AgentIdentifier a2){

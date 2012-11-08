@@ -62,7 +62,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	public static  Boolean activateMonotoScreen = false;
 	//Order or the log to be written in specific files
 	public static Boolean activateMonoToFiles = false;
-	public boolean activateCommSendtoFiles = false;
+	public boolean activateCommSendtoFiles =  false;
 	public boolean activateCommReceivtoFiles = false;
 	public  boolean activateExceptoFile = true;
 

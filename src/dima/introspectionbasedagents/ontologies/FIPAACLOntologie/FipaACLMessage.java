@@ -50,7 +50,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 	//private Object[] attachement = {};
 	private Class<?>[] attachementSignature = {};
 
-	private final Date creationTime;
+	private Date creationTime;
 	private String additionalInformation = "";
 	private Throwable attachedException = null;
 
@@ -78,6 +78,21 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		this.protocol = p;
 	}
 
+	public FipaACLMessage clone(){
+		FipaACLMessage neo = new FipaACLMessage(performative,content, protocol);
+		neo.language=this.language;
+		neo.ontology=this.ontology;
+		neo.inreplyto=this.inreplyto;
+		neo.replywith=this.replywith;
+		neo.replyto=this.replyto;
+		neo.replyBy=this.replyBy;
+		neo.attachementSignature=this.attachementSignature;
+		neo.creationTime=this.creationTime;
+		neo.additionalInformation=this.additionalInformation;
+		neo.attachedException=this.attachedException;
+		return neo;
+	}
+	
 	//
 	// Accessor
 	//
@@ -228,12 +243,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 
 	@Override
 	public String description() {
-		return "\n *Performative:" + this.performative + "\n *Protocol:"
-				+ this.protocol.getSimpleName() + "\n *signature:"
-				+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
-				//		+ Arrays.asList(this.getArgs())==null?
-				//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
-				;
+		return "";
 	}
 
 	@Override
@@ -301,6 +311,11 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 				+ "content : " + this.getContent()  + "\n"
 				+"args?   : "
 				+ (this.getArgs() != null ? this.getArgs().length != 0 : false)
+				+"\n *Performative:" + this.performative + "\n *Protocol:"
+				+ this.protocol.getSimpleName() + "\n *signature:"
+				+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
+				//		+ Arrays.asList(this.getArgs())==null?
+				//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
 				+ "\n" + "details : " + this.description();
 	}
 }

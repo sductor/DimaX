@@ -45,6 +45,7 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 
 
 	protected abstract void initiateSolver() throws UnsatisfiableException;
+	protected abstract void initiateSolverPost() throws UnsatisfiableException;
 
 	protected abstract SolutionType solveProb(boolean opt)	throws UnsatisfiableException;
 
@@ -90,6 +91,7 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 			assert ((ReplicationInstanceGraph)rig).assertAllocValid();
 			assert initialAllocOk(intialAlloc);
 			assert  boundValidity();
+			initiateSolverPost();
 			try {
 				assert assertIsViable(initialSolution):rig;
 			} catch (AssertionError e){
@@ -241,6 +243,7 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 									new ReplicationCandidature(getMyAgentIdentifier(), getHostIdentifier(j), getAgentIdentifier(i), allocatedinSol);
 							c.setInitialState(rig.getHostState(getHostIdentifier(j)));
 							c.setInitialState(rig.getAgentState(getAgentIdentifier(i)));
+							c.setSocialValue(getSocWelfare(sol));
 							results.add(c);
 						}
 

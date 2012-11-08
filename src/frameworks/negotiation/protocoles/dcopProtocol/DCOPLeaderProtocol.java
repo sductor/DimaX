@@ -3,6 +3,7 @@ package frameworks.negotiation.protocoles.dcopProtocol;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteCon
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
+import frameworks.negotiation.contracts.ValuedContract;
 import frameworks.negotiation.exploration.CombinaisonIterator;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.exploration.Solver.ExceedLimitException;
@@ -42,7 +44,7 @@ extends DcopAgentProtocol<State, Contract>{
 	//Map fringe node to k- group their are fringe of and this agent is leader
 	//
 
-	public final int maxWainttime=100000;
+	public final int maxWainttime=100000;//1000;//
 	public int waitTime=0;
 
 	//the local view structure has changed
@@ -51,34 +53,34 @@ extends DcopAgentProtocol<State, Contract>{
 	CombinaisonIterator<AgentIdentifier> kSizeGroups;
 	//all the node that the leader can modify
 	Collection<AgentIdentifier> neighberhood = new HashSet<AgentIdentifier>();
-	LinkedList<ReplicationInstanceGraph> currentlyOptimizedRig=new LinkedList<ReplicationInstanceGraph>();
+	LinkedList<Collection<AgentIdentifier>> currentlyOptimizedRig=new LinkedList<Collection<AgentIdentifier>>();
 
 	/*
 	 * flags trigering actions
 	 */
 	//some of the fringe nodes of these groups has changed their value
-	Set<ReplicationInstanceGraph> changeFlag=
-			new HashSet<ReplicationInstanceGraph>();
+	Set<Collection<AgentIdentifier>> changeFlag=
+			new HashSet<Collection<AgentIdentifier>>();
 	//a better allocation has been found for those groups
-	Set<ReplicationInstanceGraph> gainFlag=
-			new HashSet<ReplicationInstanceGraph>();
+	Set<Collection<AgentIdentifier>> gainFlag=
+			new HashSet<Collection<AgentIdentifier>>();
 	//those groups has been locked
-	Set<ReplicationInstanceGraph> lockedRigs=
-			new HashSet<ReplicationInstanceGraph>();
+	Set<Collection<AgentIdentifier>> lockedRigs=
+			new HashSet<Collection<AgentIdentifier>>();
 	/*
 	 * info
 	 */
 	// the diferent group and their respectiv fringe nodes
-	HashedHashSet<AgentIdentifier, ReplicationInstanceGraph> fringeNodes2ring=
-			new HashedHashSet<AgentIdentifier, ReplicationInstanceGraph>();
-	HashedHashSet<ReplicationInstanceGraph, AgentIdentifier> rig2fringeNodes=
-			new HashedHashSet<ReplicationInstanceGraph, AgentIdentifier>();
+	HashedHashSet<AgentIdentifier, Collection<AgentIdentifier>> fringeNodes2ring=
+			new HashedHashSet<AgentIdentifier, Collection<AgentIdentifier>>();
+	HashedHashSet<Collection<AgentIdentifier>, AgentIdentifier> rig2fringeNodes=
+			new HashedHashSet<Collection<AgentIdentifier>, AgentIdentifier>();
 	//reallocation the leader want to apply
-	HashedHashSet<ReplicationInstanceGraph,Contract> gainContracts=
-			new HashedHashSet<ReplicationInstanceGraph, Contract>();
+	HashedHashSet<Collection<AgentIdentifier>,Contract> gainContracts=
+			new HashedHashSet<Collection<AgentIdentifier>, Contract>();
 	//	//all the locked nodes and the group their belongs to : needed for cancelling global request after one reject
-	HashedHashSet<Contract,ReplicationInstanceGraph> lockedNodesToRig=
-			new HashedHashSet<Contract,ReplicationInstanceGraph>();
+	HashedHashSet<Contract,Collection<AgentIdentifier>> lockedNodesToRig=
+			new HashedHashSet<Contract,Collection<AgentIdentifier>>();
 
 
 
@@ -175,36 +177,18 @@ extends DcopAgentProtocol<State, Contract>{
 					//				logMonologue("analysing "+group);
 					if ( iveFullInfo(group) && iMLeader(group)){
 						//					logWarning("double    yeeaaaaaaaaaa yeah!");
-						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("i'm leader of "+group,LogService.onFile);
+						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("i'm leader of "+group,LogService.onBoth);
 						//Initialisation du rig
 						//						assert getMyInformation().assertValidity();
-						ReplicationInstanceGraph neoRig = new ReplicationInstanceGraph(null);
-						for (AgentIdentifier id : group){
-							neoRig.setState(getMyInformation().getState(id));
-							for (AgentIdentifier r : getMyInformation().getAcquaintances(id)){
-								neoRig.addAcquaintance(id, r);
-								neoRig.setState(getMyInformation().getState(r));
-								for (AgentIdentifier rp : getMyInformation().getAcquaintances(r)){
-									if (neoRig.getEveryIdentifier().contains(rp)){
-										//																	if (group.contains(rp)){
-										neoRig.addAcquaintance(r, rp);
-									}
-								}
-							}
-						}
-						try {
-							//						assert neoRig.assertNeigborhoodValidity():group+"\n----------------------------------\n"+getMyInformation()+"\n----------------------------------\n"+neoRig;
-						} catch (AssertionError e){
-							logWarning("is not valid!!! :"+group+"\n"+getMyInformation()+"\n----------------------------------\n"+neoRig,e);
-						}
+						ReplicationInstanceGraph neoRig = getRig(group);
 						//Calcul des fringe	
 						Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
 						fringeNodes.addAll(neoRig.getAgentsIdentifier());
 						fringeNodes.addAll(neoRig.getHostsIdentifier());
 						fringeNodes.removeAll(group);
 						for (AgentIdentifier f : fringeNodes){
-							this.fringeNodes2ring.add(f,neoRig);
-							this.rig2fringeNodes.add(neoRig,f);
+							this.fringeNodes2ring.add(f,group);
+							this.rig2fringeNodes.add(group,f);
 						}
 						//					Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
 						//					fringeNodes.addAll(neoRig.getAgentsIdentifier());
@@ -219,8 +203,8 @@ extends DcopAgentProtocol<State, Contract>{
 						//						this.fringeNodes.add(f,neoRig);
 						//					}
 						//update
-						changeFlag.add(neoRig);
-						currentlyOptimizedRig.add(neoRig);
+						changeFlag.add(group);
+						currentlyOptimizedRig.add(group);
 						graphChanged=false;
 						break;
 					} else {					
@@ -229,6 +213,29 @@ extends DcopAgentProtocol<State, Contract>{
 				}
 			}
 		}
+	}
+
+	private ReplicationInstanceGraph getRig(Collection<AgentIdentifier> group) {
+		ReplicationInstanceGraph neoRig = new ReplicationInstanceGraph(null);
+		for (AgentIdentifier id : group){
+			neoRig.setState(getMyInformation().getState(id));
+			for (AgentIdentifier r : getMyInformation().getAcquaintances(id)){
+				neoRig.addAcquaintance(id, r);
+				neoRig.setState(getMyInformation().getState(r));
+				for (AgentIdentifier rp : getMyInformation().getAcquaintances(r)){
+					if (neoRig.getEveryIdentifier().contains(rp)){
+						//																	if (group.contains(rp)){
+						neoRig.addAcquaintance(r, rp);
+					}
+				}
+			}
+		}
+		try {
+			//						assert neoRig.assertNeigborhoodValidity():group+"\n----------------------------------\n"+getMyInformation()+"\n----------------------------------\n"+neoRig;
+		} catch (AssertionError e){
+			logWarning("is not valid!!! :"+group+"\n"+getMyInformation()+"\n----------------------------------\n"+neoRig,e);
+		}
+		return neoRig;
 	}
 
 	public boolean localViewCheck(){
@@ -277,10 +284,11 @@ extends DcopAgentProtocol<State, Contract>{
 
 	@StepComposant
 	public void computeNewGain(){
-		if (!changeFlag.isEmpty()){
-			for (ReplicationInstanceGraph rig : changeFlag){
+		if (!changeFlag.isEmpty() && getMyInformation().isCoherent()){
+			for (Collection<AgentIdentifier> group : changeFlag){
+				ReplicationInstanceGraph rig = getRig(group);
 				assert rig.assertNeigborhoodValidity():rig;
-				solver.setProblem(rig, rig2fringeNodes.get(rig));
+				solver.setProblem(rig, rig2fringeNodes.get(group));
 				solver.setTimeLimit((int) maxComputingTime);
 				try {
 					//					logMonologue("compution new allocation "+rig.getEveryIdentifier());// for "+rig+"\n fringe are "+rig2fringeNodes.get(rig));
@@ -299,12 +307,12 @@ extends DcopAgentProtocol<State, Contract>{
 							opt.add(c);
 						}
 					}
-					Collection<Contract> courant = gainContracts.containsKey(rig)?gainContracts.get(rig):new ArrayList<Contract>();
+					Collection<Contract> courant = gainContracts.containsKey(group)?gainContracts.get(group):new ArrayList<Contract>();
 					assert opt!=null;
 					assert courant!=null;
 					if (getMyAgent().getMyAllocationPreferenceComparator().compare(opt, courant)>0){
-						gainContracts.put(rig,opt);
-						gainFlag.add(rig);
+						gainContracts.put(group,opt);
+						gainFlag.add(group);
 						logMonologue("new allocation  find!!!!!!!!!!!!!!! =D ",DCOPLeaderProtocol.dcopProtocol);
 					}
 				} 
@@ -347,12 +355,31 @@ extends DcopAgentProtocol<State, Contract>{
 	 * Protocol
 	 */
 
+	public HashedHashSet<AgentIdentifier, Contract> getWannaLockContract(){
+		return ((DcopLeaderProposerCore)getMyAgent().getMyProposerCore()).iWannaLock;
+	}
+
+	public boolean iCanAcceptLock(Contract lockRequest){
+		if (!super.iCanAcceptLock(lockRequest))
+			return false;
+		else {
+			List<Contract> myContracts = new ArrayList(getWannaLockContract().getAllValues());
+			Contract myBest = Collections.min(myContracts, getContractComparator());
+			assert myBest.getInitiator().equals(getIdentifier());
+			
+			return getContractComparator().compare(lockRequest,myBest)<=0;
+		}
+	}
 
 	@Override
 	protected boolean ImAllowedToNegotiate(ContractTrunk<Contract> contracts) {
 		return true;
 	}
-
+	
+	protected Receivers getProposalReceivers() {
+		return Receivers.NotInitiatingParticipant;
+	}
+	
 	@Override
 	protected void answerAccepted(Collection<Contract> toAccept) {
 		Collection<Contract> confirm = new ArrayList<Contract>();
@@ -369,12 +396,12 @@ extends DcopAgentProtocol<State, Contract>{
 						getMyInformation().setState(newRessState);
 					}
 					getMyInformation().setState(newAgState);
-					for (ReplicationInstanceGraph rig : currentlyOptimizedRig){
-						if (!c.getResource().equals(getIdentifier())){
-							rig.setState(newRessState);
-						}
-						rig.setState(newAgState);						
-					}
+//					for (ReplicationInstanceGraph rig : currentlyOptimizedRig){
+//						if (!c.getResource().equals(getIdentifier())){
+//							rig.setState(newRessState);
+//						}
+//						rig.setState(newAgState);						
+//					}
 
 
 				} catch (IncompleteContractException e) {

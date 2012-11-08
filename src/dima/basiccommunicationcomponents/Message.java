@@ -227,6 +227,7 @@ public class Message extends AbstractMessage implements Serializable {
 	@Override
 	public Message clone(){
 		return this;
+//		throw new RuntimeException("clone must be implemented");
 		//		Message m = new Message((String) content, args);
 		//		m.type=new String(this.type);
 		//		m.sender=sender.clone();

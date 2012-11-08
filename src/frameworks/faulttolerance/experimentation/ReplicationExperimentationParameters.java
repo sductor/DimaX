@@ -78,7 +78,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 //	public  long maxComputingTime = 120000;//2 min
 //	public  long maxComputingTime = 3000;//30 sec
-	public  long maxComputingTime = _maxSimulationTime/10;//2 min
+	public  long maxComputingTime = _maxSimulationTime/5;//2 min
 
 	public int nbAgents;
 	public int nbHosts;
@@ -194,7 +194,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				);
 		this.nbAgents = nbAgents;
 		this.nbHosts= nbHosts;
-		this.agentAccessiblePerHost=(int) Math.max(agentAccessiblePerHost,30);
+		this.agentAccessiblePerHost=(int) agentAccessiblePerHost;
 		//		assert this.agentAccessiblePerHost>0;
 		this.hostFaultProbabilityMean = hostFaultProbabilityMean;
 		this.hostFaultProbabilityDispersion=hostFaultProbabilityDispersion;

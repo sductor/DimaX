@@ -49,6 +49,9 @@ implements AbstractContractTransition{
 	 *
 	 */
 
+	public Double getSocialValue() {
+		return null;
+	}
 	public Contract getCandidature() {
 		return this.candidature;
 	}

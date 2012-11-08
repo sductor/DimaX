@@ -119,7 +119,7 @@ public abstract class KnitroResourceAllocationSolver extends
 	private int jvarNonNul;
 	private int hvarNonNul;
 
-	protected void initiateSolver() throws UnsatisfiableException  {
+	protected void initiateSolverPost() throws UnsatisfiableException  {
 		numVar = getVariableNumber();
 		try {
 			solver = new KnitroJava();
@@ -221,6 +221,11 @@ public abstract class KnitroResourceAllocationSolver extends
 		}
 	}
 
+	@Override
+	protected void initiateSolver() throws UnsatisfiableException {
+		// TODO Auto-generated method stub
+		
+	}
 	protected RessourceAllocationSimpleSolutionType solveProb(boolean opt) throws UnsatisfiableException {
 		initiateSolver();
 		boolean ok;

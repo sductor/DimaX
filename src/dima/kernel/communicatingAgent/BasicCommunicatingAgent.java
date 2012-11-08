@@ -415,7 +415,7 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 		if (this.aquaintances.containsKey(agentId.toString())) {
 			this.com.sendMessage(
 					this.aquaintances.get(agentId.toString()),
-					am);
+					am.clone());
 		} else {
 			this.com.sendMessage(agentId,am.clone());
 		}

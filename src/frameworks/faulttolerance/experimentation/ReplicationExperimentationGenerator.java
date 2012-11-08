@@ -47,25 +47,25 @@ import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionTyp
 public class ReplicationExperimentationGenerator extends GimaObject{
 
 	//problem
-	private Long[] seeds = new Long[]{(long) 4532134,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
+	private Long[] seeds = new Long[]{(long) 889757,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
 
-	private Integer[] nbAgentDomain = new Integer[]{7/*30,100,250,500,1000*/};
+	private Integer[] nbAgentDomain = new Integer[]{100,1000,5000,10000};
 	 int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
-	private Integer[] nbHostDomain = new Integer[]{4/*24*/};
+	private Integer[] nbHostDomain = new Integer[]{24};
 	 int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
 
-	private Double[] hostCapacity = new Double[]{-((double) maxAgentNb/((double) maxHostNb)),0.3,0.6};
-	private Double[] graphDensityDomain = new Double[]{30.};//15., 
+	private Double[] hostCapacity = new Double[]{0.3,0.6};//-((double) maxAgentNb/((double) maxHostNb)),
+	private Double[] graphDensityDomain = new Double[]{-Double.MAX_VALUE,0.3};//15., 
 
 	private SocialChoiceType[] welfareDomain = new SocialChoiceType[]{SocialChoiceType.Utility};	
 	private String[] protosDomain = new String[]{
-//			NegotiationParameters.key4mirrorProto,
-//			NegotiationParameters.key4statusProto,
-//			NegotiationParameters.key4GeneticProto,
+			NegotiationParameters.key4mirrorProto,
+			NegotiationParameters.key4statusProto,
+			NegotiationParameters.key4GeneticProto,
 			NegotiationParameters.key4DcopProto
 	};
-//	private Selctio[] selectDomain = new String[]{
+//	private Selection[] selectDomain = new String[]{
 //			NegotiationParameters.key4greedySelect,
 ////			NegotiationParameters.key4randomSelect,
 //			NegotiationParameters.key4rouletteWheelSelect,
@@ -73,10 +73,10 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			NegotiationParameters.key4OptSelect};
 
 	//solveur
-	private Integer[] kDomain= new Integer[]{5/*30*/};//10,100,500
+	private Integer[] kDomain= new Integer[]{1,50,100,250,500};
 
 	//Social
-	private Double[][] alphaDomain= new Double[][]{new Double[]{Double.NaN,Double.NaN},new Double[]{0.3,0.6}};//, new Double[]{0.5,0.75}, new Double[]{0.25,0.5}};
+	private Double[][] alphaDomain= new Double[][]{new Double[]{Double.NaN,Double.NaN},new Double[]{0.2,0.4}, new Double[]{0.4,0.6}, new Double[]{0.6,0.8}, new Double[]{0.2,0.8}};
 	private Double[] kOpinionDomain= new Double[]{Double.NaN,0.3};//,0.6,1.};
 
 
@@ -173,7 +173,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		return new ReplicationExperimentationParameters(
 				nbAgentDomain[0],
 				nbHostDomain[0],
-				graphDensityDomain[0],//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
+				getValue(graphDensityDomain[0],nbAgentDomain[0]),//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
 				dispoMeanDomain[0],//dispo mean
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				agentLoadMeanDomain[0],//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
@@ -426,7 +426,7 @@ assert p.alpha_high!=0;
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : Arrays.asList(graphDensityDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.agentAccessiblePerHost=(int) v.intValue();
+				n.agentAccessiblePerHost=getValue(v,new Double(p.nbAgents)).intValue();
 				result.add(n);
 			}
 		}

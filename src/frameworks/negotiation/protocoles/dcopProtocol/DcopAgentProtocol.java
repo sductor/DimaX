@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,6 +28,7 @@ import frameworks.negotiation.contracts.ContractIdentifier;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.UnknownContractException;
+import frameworks.negotiation.contracts.ValuedContract;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.rationality.AgentState;
 
@@ -44,7 +46,21 @@ extends AbstractCommunicationProtocol<State, Contract>{
 		this.k = k;
 	}
 
+	public Comparator<ValuedContract> getContractComparator(){
+		return new Comparator<ValuedContract>() {
 
+			@Override
+			public int compare(ValuedContract o1,ValuedContract o2) {
+
+				int valuecomp = o1.getSocialValue().compareTo(o2.getSocialValue());
+				if (valuecomp==0){
+					return o1.getInitiator().toString().compareTo(o2.getInitiator().toString());
+				} else {
+					return valuecomp;
+				}
+			}
+		};
+	}
 	//
 	// Behavior
 	//
@@ -107,7 +123,7 @@ extends AbstractCommunicationProtocol<State, Contract>{
 	protected void answerAccepted(Collection<Contract> toAccept) {
 		for (Contract c : toAccept){
 			assert myLock.isEmpty() || myLock.containsKey(c.getInitiator()):myLock+"\n\n------\n"+c;
-//			myLock.add(c.getInitiator(),c);
+			//			myLock.add(c.getInitiator(),c);
 		}
 		acceptContract(toAccept, Receivers.Initiator);
 	}
@@ -123,22 +139,23 @@ extends AbstractCommunicationProtocol<State, Contract>{
 	@Override
 	protected void receiveCancel(final SimpleContractAnswer delta) {
 		myLock.remove(delta.getIdentifier().getInitiator());
-//		assert myLock.isEmpty():myLock+"\n\n------\n"+delta.getIdentifier();
+		//		assert myLock.isEmpty():myLock+"\n\n------\n"+delta.getIdentifier();
 		//		assert ok;
 		super.receiveCancel(delta);
 	}
 
 	protected void receiveConfirm(final SimpleContractAnswer delta) {
-		assert !myLock.isEmpty() && myLock.containsKey(delta.getIdentifier().getInitiator());
+//		assert !myLock.isEmpty() && myLock.containsKey(delta.getIdentifier().getInitiator());
 		logMonologue("updating state!!",DCOPLeaderProtocol.dcopProtocol);
 		sendMessage(getMyAgent().getKnownResources(), new DcopValueMessage<State>(k+2, getMyAgent().getIdentifier(), getMyAgent().getMyCurrentState()));
 
-		try {	
-			myLock.remove(delta.getIdentifier().getInitiator(), getContracts().getContract(delta.getIdentifier()));	
-		} catch (UnknownContractException e) {
-			throw new RuntimeException("impossible");
-		}
-		
+//		try {	
+//			myLock.remove(delta.getIdentifier().getInitiator(), getContracts().getContract(delta.getIdentifier()));	
+			myLock.remove(delta.getIdentifier().getInitiator());
+//		} catch (UnknownContractException e) {
+//			throw new RuntimeException("impossible");
+//		}
+
 		super.receiveConfirm(delta);		
 	}
 
@@ -152,7 +169,7 @@ extends AbstractCommunicationProtocol<State, Contract>{
 		} else if (myLock.isEmpty()) {
 			assert lockRequest.getAllParticipants().contains(getIdentifier()):"should not have received";
 			return true;
-		} else if  (myLock.equals(lockRequest.getInitiator())){
+		} else if  (myLock.containsKey(lockRequest.getInitiator())){
 			assert lockRequest.getAllParticipants().contains(getIdentifier()):"should not have received";
 			return true;
 		} else {

@@ -1,9 +1,13 @@
 package frameworks.negotiation.contracts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
@@ -13,7 +17,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 	private static final long serialVersionUID = -2323466527487757579L;
 
 	private final AgentIdentifier initiator;
-	private final Collection<AgentIdentifier> participants;
+	private final List<AgentIdentifier> participants;
 	final Date contractCreation;
 	private final long validityTime;
 
@@ -23,21 +27,35 @@ public class ContractIdentifier implements DimaComponentInterface {
 		super();
 		this.contractCreation = date;
 		this.initiator = intiator;
-		this.participants = participants;
+		this.participants = new ArrayList<AgentIdentifier>(participants);
+		Collections.sort(this.participants,idComp());
 		//		this.participants.remove(this.getInitiator());
 		this.validityTime = validityTime;
 	}
 
+	
 	public ContractIdentifier(final AgentIdentifier intiator, final Date date,
 			final long validityTime, final AgentIdentifier... participants) {
 		super();
 		this.contractCreation = date;
 		this.initiator = intiator;
-		this.participants = Arrays.asList(participants);
+		this.participants = new ArrayList<AgentIdentifier>(Arrays.asList(participants));
+		Collections.sort(this.participants,idComp());
 		//		this.participants.remove(this.getInitiator());
 		this.validityTime = validityTime;
 	}
 
+	Comparator<AgentIdentifier> idComp(){
+		return new Comparator<AgentIdentifier>() {
+
+			@Override
+			public int compare(AgentIdentifier o1, AgentIdentifier o2) {
+				return o1.toString().compareTo(o2.toString());
+			}
+			
+		};
+	}
+	
 	public AgentIdentifier getInitiator() {
 		return this.initiator;
 	}
@@ -86,6 +104,7 @@ public class ContractIdentifier implements DimaComponentInterface {
 		return false;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "\nContract ("

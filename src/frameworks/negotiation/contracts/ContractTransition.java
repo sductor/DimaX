@@ -156,7 +156,8 @@ AbstractContractTransition {
 			//				this.initState.get(state.getMyAgentIdentifier())+" "+state;
 			this.initState.put(state.getMyAgentIdentifier(), state);
 		} else {
-			throw new RuntimeException("unappropriate specification set "+this+" "+state);
+			//on s'en fout
+			//throw new RuntimeException("unappropriate specification set "+this+" "+state);
 		}
 
 //		try {
@@ -352,7 +353,15 @@ AbstractContractTransition {
 	// Assertion
 	//
 
-
+	public static <Contract extends AbstractContractTransition>
+	 Collection<AgentIdentifier> toInitiator(final Collection<Contract> cs){
+		Collection<AgentIdentifier> r = new ArrayList<AgentIdentifier>();
+		for (final Contract c : cs) {
+			assert r.add(c.getInitiator());
+		}
+		return r;
+	}
+	
 	public static <Contract extends AbstractContractTransition>
 	boolean allViable(final Collection<Contract> contracts)
 			throws IncompleteContractException{

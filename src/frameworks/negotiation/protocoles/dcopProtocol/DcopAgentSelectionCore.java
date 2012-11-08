@@ -3,6 +3,7 @@ package frameworks.negotiation.protocoles.dcopProtocol;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,9 +14,11 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.negotiation.NegotiatingAgent;
+import frameworks.negotiation.contracts.ContractTransition;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.UnknownContractException;
+import frameworks.negotiation.contracts.ValuedContract;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.rationality.AgentState;
@@ -36,8 +39,14 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract> {
 			Collection<Contract> toAccept, Collection<Contract> toReject,
 			Collection<Contract> toPutOnWait) {
 
-		toPutOnWait.addAll(cs.getAllContracts());
-		//Answering lockRequest
+		toPutOnWait.addAll(cs.getAllContracts());		
+		toPutOnWait.removeAll(cs.getParticipantOnWaitContracts());
+//		if (this.getClass().isAssignableFrom(DcopAgentSelectionCore.class)){
+//			logMonologue("hoyoyo");
+//			assert toPutOnWait.containsAll(cs.getParticipantAlreadyAcceptedContracts()):cs;
+//			assert cs.getParticipantAlreadyAnsweredContracts().containsAll(toPutOnWait):cs;
+//		}
+		
 		List<Contract> contractsToAnswer = cs.getParticipantOnWaitContracts();
 
 		//Refusing obsolete contract
@@ -57,18 +66,21 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract> {
 				}
 			}
 		}
-
-
-		Collections.sort(contractsToAnswer,Collections.reverseOrder(getMyAgent().getMyPreferenceComparator()));
+		
+		//Answering lockRequest
+		Collections.sort((List<ValuedContract>)contractsToAnswer,getMyProtocol().getContractComparator());
+//		String log = "i will select :"+ContractTransition.toInitiator(contractsToAnswer)
+//				+"\n ---- my lock is "+getMyProtocol().myLock.keySet();
 		for (Contract lockRequest : contractsToAnswer){
 			if (getMyProtocol().iCanAcceptLock(lockRequest)){
 				toAccept.add(lockRequest);
+//				log+="\naccepting "+lockRequest.getInitiator();
 				getMyProtocol().myLock.add(lockRequest.getInitiator(),lockRequest);
 			} else {
 				toReject.add(lockRequest);
+//				log+="\nrejecting "+lockRequest.getInitiator();
 			}
 		}
-
-		toPutOnWait.removeAll(cs.getParticipantOnWaitContracts());
+//		logMonologue(log+"\n",LogService.onBoth);
 	}
 }

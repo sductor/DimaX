@@ -165,6 +165,12 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		return l;
 	}
 
+	public List<Contract> getParticipantAlreadyAnsweredContracts() {
+		final ArrayList<Contract> l = new ArrayList<Contract>(participantContracts);
+		l.removeAll(this.acceptedContracts.get(this.getMyAgentIdentifier()));
+		l.removeAll(this.rejectedContracts.get(this.getMyAgentIdentifier()));
+		return l;
+	}
 	/*
 	 * 
 	 */

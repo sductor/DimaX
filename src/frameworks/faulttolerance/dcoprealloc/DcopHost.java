@@ -37,7 +37,7 @@ public class DcopHost extends Host {
 			final long maxComputingTime) throws CompetenceException {
 		super(id, myState, 
 				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),
-						new HostCore(socialWelfare,false,true)),
+						new HostCore(socialWelfare,false,false)),
 				new DcopLeaderSelectionCore(), 
 		new DcopLeaderProposerCore(), 
 		new LocalViewInformationService(),

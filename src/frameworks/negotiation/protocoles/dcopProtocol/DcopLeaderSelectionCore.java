@@ -31,15 +31,21 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 			Collection<Contract> toPutOnWait) {
 
 		super.select(cs, currentState, toAccept, toReject, toPutOnWait);
+		
+//		if (toAccept.isEmpty() && !getMyProtocol().getWannaLockContract().isEmpty()){
+//			getMyProtocol().myLock.putAll(getMyProtocol().getWannaLockContract());
+//			getMyProtocol().getWannaLockContract().clear();
+//		}
 
 		//Cancelling partially refused requests
 		for (Contract failedContract: cs.getFailedContracts()){
 			if (getMyProtocol().lockedNodesToRig.containsKey(failedContract)){
 				getMyProtocol().waitTime=getRandom().nextInt(getMyProtocol().maxWainttime);
-				Collection<ReplicationInstanceGraph> rigToRemove = new ArrayList<ReplicationInstanceGraph>();
-				for (ReplicationInstanceGraph rig : getMyProtocol().lockedNodesToRig.get(failedContract)){
+				Collection<Collection<AgentIdentifier>> rigToRemove = new ArrayList<Collection<AgentIdentifier>>();
+				for (Collection<AgentIdentifier> rig : getMyProtocol().lockedNodesToRig.get(failedContract)){
 					if (everyoneHasAnswered(cs, rig)){
-						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("canceling : some agent of the group have refused",LogService.onFile);
+						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))
+							logMonologue("canceling : some agent of the group have refused"+failedContract.getAllParticipants(),LogService.onScreen);
 						rigToRemove.add(rig);
 						getMyProtocol().gainFlag.add(rig);
 						getMyProtocol().lockedRigs.remove(rig);
@@ -49,14 +55,14 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 						toAccept.removeAll(getMyProtocol().gainContracts.get(rig));
 					}
 				}
-				for (ReplicationInstanceGraph rig : rigToRemove){
+				for (Collection<AgentIdentifier> rig : rigToRemove){
 					getMyProtocol().lockedNodesToRig.removeAvalue(rig);
 				}
 			}
 		}
 
 		//Cancelling obsolete requests
-		for (ReplicationInstanceGraph rig : getMyProtocol().gainFlag){
+		for (Collection<AgentIdentifier> rig : getMyProtocol().gainFlag){
 			if (getMyProtocol().lockedRigs.contains(rig) && everyoneHasAnswered(cs, rig)){
 				logMonologue("canceling : a new gain has been found",DCOPLeaderProtocol.dcopProtocol);
 				toReject.addAll(getMyProtocol().gainContracts.get(rig));
@@ -65,13 +71,14 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 				//
 				getMyProtocol().lockedRigs.remove(rig);
 				getMyProtocol().lockedNodesToRig.removeAvalue(rig);
+				getMyProtocol().getWannaLockContract().clear();
 			} 
 		}
 
 		//Confirming consensual requests
 		Collection<Contract> consensualcontracts = cs.getInitiatorRequestableContracts();
-		Collection<ReplicationInstanceGraph> rigToRemove = new ArrayList<ReplicationInstanceGraph>();
-		for (ReplicationInstanceGraph rig : getMyProtocol().lockedRigs){
+		Collection<Collection<AgentIdentifier>> rigToRemove = new ArrayList<Collection<AgentIdentifier>>();
+		for (Collection<AgentIdentifier> rig : getMyProtocol().lockedRigs){
 			if (consensualcontracts.containsAll(getMyProtocol().gainContracts.get(rig))){
 				logWarning("committing consensual change",DCOPLeaderProtocol.dcopProtocol);
 				toAccept.addAll(getMyProtocol().gainContracts.get(rig));
@@ -89,7 +96,7 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 				}
 			}
 		}
-		for (ReplicationInstanceGraph rig : rigToRemove){
+		for (Collection<AgentIdentifier> rig : rigToRemove){
 			getMyProtocol().lockedRigs.remove(rig);
 		}
 
@@ -98,7 +105,15 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 				HashSet<AgentIdentifier> agsWaited = new HashSet<AgentIdentifier>();
 				String status = "";
 				for (Contract c : toPutOnWait){
-					agsWaited.addAll(c.getAllParticipants());
+					for (AgentIdentifier id : c.getAllParticipants()){
+						if (getMyProtocol().getContracts().getContractsAcceptedBy(id).contains(c) || 
+						getMyProtocol().getContracts().getContractsRejectedBy(id).contains(c)){
+							// c cool
+						} else {
+							agsWaited.add(id);
+						}
+					}
+					
 //					status+=getMyProtocol().getContracts().statusOf(c)+"\n";
 				}
 				logMonologue("wainting for "+agsWaited+"\n--\n"+status,LogService.onFile);
@@ -107,7 +122,7 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 	}
 
 
-	private boolean everyoneHasAnswered(ContractTrunk<Contract> cs, ReplicationInstanceGraph rig){
+	private boolean everyoneHasAnswered(ContractTrunk<Contract> cs, Collection<AgentIdentifier> rig){
 //		for (Contract c  : getMyProtocol().gainContracts.get(rig)){
 //			for (AgentIdentifier id : c.getNotInitiatingParticipants()){
 //				if (!(cs.getContractsAcceptedBy(id).contains(c) || cs.getContractsRejectedBy(id).contains(c)))

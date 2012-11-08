@@ -6,8 +6,8 @@ public class NegotiationParameters {
 	// Negotiation Tickers
 	//
 
-	public static final long _timeToCollect =5000;//500;//
-	public static final long _initiatorPropositionFrequency = 10;//(long) (ExperimentationProtocol._timeToCollect*0.5);//(long)
+	public static final long _timeToCollect =1000;//500;//
+	public static final long _initiatorPropositionFrequency = 10;//10;//(long) (ExperimentationProtocol._timeToCollect*0.5);//(long)
 	// public static final long _initiator_analysisFrequency = (long) (_timeToCollect*2);
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 

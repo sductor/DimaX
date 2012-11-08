@@ -5,16 +5,29 @@ import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
+import frameworks.negotiation.contracts.ValuedContract;
 import frameworks.negotiation.rationality.AgentState;
 
 public class ReplicationCandidature extends
-MatchingCandidature {
+MatchingCandidature
+implements ValuedContract {
 	private static final long serialVersionUID = -313913132536347399L;
 
 	//
 	// Fields
 	//
 
+	Double socialValue=null;
+
+	
+	public Double getSocialValue() {
+		return socialValue;
+	}
+
+	public void setSocialValue(Double socialValue) {
+		this.socialValue = socialValue;
+	}
+	
 
 	//
 	// Constructors
@@ -123,6 +136,7 @@ MatchingCandidature {
 				clone.specs.put(id, this.specs.get(id).clone());
 			}
 		}
+		clone.setSocialValue(getSocialValue());
 		clone.creationTime=this.creationTime;
 		return clone;
 	}

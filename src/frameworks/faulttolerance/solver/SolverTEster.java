@@ -52,9 +52,9 @@ public class SolverTEster {
 		double metalBetterKnitro=0;
 		LogService.logOnFile(new File("yo"),"*************************",false,false);
 			
-		int nbAgent=50;
+		int nbAgent=10;
 		double hostCap=200;
-		for (hostCap=16; hostCap<nbAgent; hostCap*=2)  {
+		for (hostCap=5; hostCap<nbAgent; hostCap*=2)  {
 			
 //		for (int heuristic=1; heuristic<=2; heuristic++){
 			System.out.println("yo");
@@ -67,14 +67,14 @@ public class SolverTEster {
 					try {
 						rig.randomInitiaition(
 								"to", rand.nextInt(),
-								/*5+rand.nextInt(5)*/nbAgent, 3,//nbAgent,nbHost
+								/*5+rand.nextInt(5)*/nbAgent, 1,//nbAgent,nbHost
 								0.5, DispersionSymbolicValue.Moyen, //criticity
 								1., DispersionSymbolicValue.Nul, //agent load
 								hostCap, DispersionSymbolicValue.Nul, //hostCap
 								0.5, DispersionSymbolicValue.Moyen, //hostDisp
 								100,100);
 					} catch (IfailedException e1) {
-										e1.printStackTrace();
+//										e1.printStackTrace();
 					}
 					rig = rig.getUnallocatedGraph();
 					//			System.out.println(rig);
@@ -102,8 +102,8 @@ public class SolverTEster {
 						System.out.println("knitro");
 						//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 5, false, 5);
 						initTime = System.currentTimeMillis();
-						kas = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
-//						kas = new KnitroAllocationLocalSolver(rig.getSocialWelfare(),  false, true, 2, false, -1);
+//						kas = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
+						kas = new KnitroAllocationLocalSolver(rig.getSocialWelfare(),  false, true, 2, false, -1);
 						kas.myState=rig.getHostsStates().iterator().next();
 						kas.setProblem(rig, new ArrayList<AgentIdentifier>());
 						if(rig.getHostsIdentifier().size()==1)	kas.initialSolution=kas.getInitialAllocAsSolution(new double[kas.getVariableNumber()]);

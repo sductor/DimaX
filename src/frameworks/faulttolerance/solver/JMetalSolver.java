@@ -154,6 +154,12 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 		return p;
 	}
 
+	@Override
+	protected void initiateSolverPost() throws UnsatisfiableException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 
 

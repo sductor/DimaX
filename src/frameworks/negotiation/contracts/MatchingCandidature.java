@@ -5,7 +5,8 @@ import java.util.Collection;
 import dima.basicagentcomponents.AgentIdentifier;
 
 public abstract class MatchingCandidature
-extends ContractTransition {
+extends ContractTransition
+implements ValuedContract {
 
 	/**
 	 *

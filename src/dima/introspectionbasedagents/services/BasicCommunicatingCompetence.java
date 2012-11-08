@@ -30,6 +30,8 @@ CompetentComponent & AsynchronousCommunicationComponent> extends BasicAgentCompe
 //		assert new HashSet(ids).size()==ids.size();
 		for (final AgentIdentifier id :ids) {
 			if (id!=this.myAgent.getIdentifier()) {
+				m.setReceiver(id);
+				m.setSender(getIdentifier());
 				this.sendMessage(id, m);
 			}
 		}

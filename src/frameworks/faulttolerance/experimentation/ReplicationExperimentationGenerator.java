@@ -88,9 +88,9 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 	private String[] protosDomain = new String[]{
 			NegotiationParameters.key4mirrorProto,
-			//			NegotiationParameters.key4statusProto,
-			//			NegotiationParameters.key4GeneticProto,
-			//			NegotiationParameters.key4DcopProto
+			NegotiationParameters.key4statusProto,
+			NegotiationParameters.key4GeneticProto,
+			NegotiationParameters.key4DcopProto
 	};
 	private SelectionType[] selectDomain = new SelectionType[]{
 			//			SelectionType.Opt,
@@ -220,14 +220,14 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 				Integer.MAX_VALUE,
 				(int)kDomain[0],
 				getValue(kOpinionDomain[0],nbAgentDomain[0]),
-				ReplicationLaborantin.informativeParameter.equals(0)?protosDomain[0]:protosDomain[1],//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
-						welfareDomain[0],
-						SelectionType.Greedy,//NegotiationParameters.key4rouletteWheelSelect,//
-						SelectionType.RoolettWheel,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
-						alphaDomain[0][0],
-						alphaDomain[0][1],
-						false,
-						false);
+				protosDomain[0],//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
+				welfareDomain[0],
+				SelectionType.Greedy,//NegotiationParameters.key4rouletteWheelSelect,//
+				SelectionType.RoolettWheel,//NegotiationParameters.key4BetterSelect,//NegotiationParameters.key4greedySelect,//
+				alphaDomain[0][0],
+				alphaDomain[0][1],
+				false,
+				false);
 	}
 
 	public static String getProtocolId() {

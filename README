@@ -1,6 +1,10 @@
 oarsub -p "host='big3'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
 oarsub -p "host='big8'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
-oarsub -p "host='big22'" -l "{type='default'}/core=7,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
+oarsub -p "host='big22'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 0"
+oarsub -p "host='big23'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 1"
+oarsub -p "host='big24'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 2"
+oarsub -p "host='big25'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 3"
+
 
 
 

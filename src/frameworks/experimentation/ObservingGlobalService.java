@@ -172,6 +172,8 @@ extends BasicCommunicatingCompetence<Agent>{
 			//			} else {
 			this.allAgent.add(id);
 			this.remainingAgent.add(id);
+			assert !remainingAgent.contains(getIdentifier());
+			remainingAgent.remove(getIdentifier());
 			//			}
 		}
 	}

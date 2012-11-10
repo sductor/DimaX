@@ -81,7 +81,7 @@ public class Laborantin extends BasicCompetentAgent {
 		observingService.initiate();
 		p.setMyAgent(this);
 
-		this.logMonologue("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
+		this.logWarning("launching :\n--> "+new Date().toString()+" simulation named : ******************     "+
 				this.getSimulationParameters().getSimulationName()+"\n"+this.p,LogService.onBoth);//agents.values());
 
 		p.initiateParameters();

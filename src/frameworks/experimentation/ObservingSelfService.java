@@ -96,7 +96,7 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 				this.simulationEndORder((SimulationEndedMessage)m);
 			} else {
 								logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
-				messages.add(m);
+//				messages.add(m);
 			}
 		}
 		for (final AbstractMessage m : messages) {

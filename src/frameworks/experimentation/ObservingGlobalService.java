@@ -52,7 +52,7 @@ extends BasicCommunicatingCompetence<Agent>{
 		return this.rep;
 	}
 
-	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 10;
+	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 60;
 
 	//
 	// Abstract
@@ -132,13 +132,13 @@ extends BasicCommunicatingCompetence<Agent>{
 		}
 	}
 
+	protected long timeBeforeForcingSimulationEnd() {
+		return ExperimentationParameters._maxSimulationTime+300000;//+10min/*+1min*///300000){//+5min
+	}
 	protected long timeBeforeKillingSimulation() {
-		return ExperimentationParameters._maxSimulationTime+120000;/*+2min*///600000){//+10min
+		return ExperimentationParameters._maxSimulationTime+600000;//+5min/*+2min*///600000){//+10min
 	}
 
-	protected long timeBeforeForcingSimulationEnd() {
-		return ExperimentationParameters._maxSimulationTime+60000;/*+1min*///300000){//+5min
-	}
 
 
 	boolean endRequestSended= false;

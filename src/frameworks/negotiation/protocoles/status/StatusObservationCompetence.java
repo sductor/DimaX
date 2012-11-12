@@ -197,6 +197,11 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 
 			this.lowerThreshold = alpha_low * mean + (1-alpha_low) * min;
 			this.higherThreshold = alpha_high * mean + (1-alpha_high) * max;
+			
+			assert lowerThreshold - higherThreshold < 0.000001:"arg";
+			if (lowerThreshold> higherThreshold){
+				lowerThreshold=higherThreshold;
+			}
 		} catch (final Exception e) {
 			this.getMyAgent().signalException(
 					"impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"

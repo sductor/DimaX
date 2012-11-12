@@ -459,6 +459,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					.equals(NegotiationParameters.key4GeneticProto)){
 				JMetalSolver p = new JMetalSolver(_socialWelfare, true, true);
 				p.setProblem(rig, new ArrayList<AgentIdentifier>());
+				p.setTimeLimit((int) this._maxSimulationTime);
 				if (cc==null){
 					hostAg = new CentralizedCoordinator(
 							hostId,
@@ -469,6 +470,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					hostAg = new CentralizedHost(
 							hostId,
 							this.rig.getHostState(hostId),p);
+				
 					cc.register((CentralizedHost) hostAg);
 				}
 			}else {

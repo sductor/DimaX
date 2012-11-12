@@ -1,9 +1,9 @@
 oarsub -p "host='big3'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
 oarsub -p "host='big8'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* negotiation/faulttolerance/experimentation/ReplicationLaborantin fipa nolog"
-oarsub -p "host='big22'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 0"
-oarsub -p "host='big23'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 1"
-oarsub -p "host='big24'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 2"
-oarsub -p "host='big25'" -l "{type='default'}/core=16,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 3"
+oarsub -p "host='big3'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 0"
+oarsub -p "host='big4'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 1"
+oarsub -p "host='big5'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 2"
+oarsub -p "host='big9'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 3"
 
 
 
@@ -11,3 +11,12 @@ oarsub -p "host='big25'" -l "{type='default'}/core=16,walltime=100:0:0" "java -X
 java -Djava.library.path=/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64/server:/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64:/usr/lib/jvm/java-6-openjdk-amd64/jre/../lib/amd64:/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib:/home/ductors/workspace/DimaX/lib/ -cp $CLASSPATH:../lib/* frameworks.faulttolerance.solver.KnitroAllocationSolver
 
 oarsub -p "host='big8'" -l "{type='default'}/core=24,walltime=100:0:0" "java -Djava.library.path=/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64/server:/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/amd64:/usr/lib/jvm/java-6-openjdk-amd64/jre/../lib/amd64:/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib:/home/ductors/DimaX/lib/ -cp $CLASSPATH:../lib/* frameworks.faulttolerance.solver.KnitroAllocationSolver"
+
+
+
+
+
+
+
+
+oarsub -p "host='big3'" -l "{host = 'big1' or host ='big2' or host = 'big3' or host ='big4' or host = 'big5' or host ='big6' or host = 'big7' or host ='big8' or host ='big9'}/{type='default'}/core=24,walltime=50:0:0" "java -Xms120g -Xmx120g -cp $CLASSPATH:../lib/* frameworks/faulttolerance/experimentation/ReplicationLaborantin fipa nolog 0"

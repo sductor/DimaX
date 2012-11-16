@@ -49,16 +49,29 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 	//problem
 	private Long[] seeds = new Long[]{(long) 889757,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
-
-	//	private Integer[] nbAgentDomain = new Integer[]{2500,5000,7500,10000};
-	private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
-	//	private Integer[] nbAgentDomain = new Integer[]{50};
+	//
+//		private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
+//	public static int _AgentDefault=2500;
+		private Integer[] nbAgentDomain = new Integer[]{50,250,500,750,1000};
+		public static int _AgentDefault=250;
+//	private Integer[] nbAgentDomain = new Integer[]{20};
 	int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
-		private Integer[] nbHostDomain = new Integer[]{24};
-//	private Integer[] nbHostDomain = new Integer[]{16};
+//	private Integer[] nbHostDomain = new Integer[]{4};
+			private Integer[] nbHostDomain = new Integer[]{24};
+//		private Integer[] nbHostDomain = new Integer[]{16};
 	int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
 
+	//solveur
+//	private Integer[] kDomain= new Integer[]{5};
+	//	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
+//		public static int _kDefault1=1000;
+//		public static int _kDefault2=200;
+		private Integer[] kDomain= new Integer[]{5,25,50,75,100};
+		public static int _kDefault1=100;
+		public static int _kDefault2=20;
+
+		
 	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),
 	//	private Double[] graphDensityDomain = new Double[]{0.5};//15.,
 	private static Double[] hostCapacity = null;//new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
@@ -93,26 +106,30 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 			NegotiationParameters.key4DcopProto
 	};
 	private SelectionType[] selectDomain = new SelectionType[]{
-			//			SelectionType.Opt,
+//			SelectionType.Opt,
 			//			SelectionType.Greedy,
 			//			SelectionType.Better,
 			//			SelectionType.Random,
 			SelectionType.RoolettWheel};
 
-	//solveur
-	//	private Integer[] kDomain= new Integer[]{250,500,750,1000};
-	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
-	//	private Integer[] kDomain= new Integer[]{20};//50,250,500,750,1000};
-
-	//Social
+	//Social	
 	private Double[][] alphaDomain= 
 			new Double[][]{new Double[]{Double.NaN,Double.NaN},
-			new Double[]{0.2,0.4},
-			new Double[]{0.4,0.6}, 
-			new Double[]{0.6,0.8}, 
-			new Double[]{0.2,0.8}};
+			new Double[]{0.3,0.3},
+			new Double[]{0.6,0.6}, 
+			new Double[]{0.6,0.3}, 
+			new Double[]{0.3,0.6}};
+	static Double _alpha_lowDefault=0.6;
+	static Double _alpha_highDefault=0.6;
+	//	private Double[][] alphaDomain= 
+	//			new Double[][]{new Double[]{Double.NaN,Double.NaN},
+	//			new Double[]{0.2,0.4},
+	//			new Double[]{0.4,0.6}, 
+	//			new Double[]{0.6,0.8}, 
+	//			new Double[]{0.2,0.8}};
 	private Double[] kOpinionDomain= 
 			new Double[]{Double.NaN,0.3,0.6};//,0.6,1.};
+	static Double _kOpinionDefault=0.6;
 
 
 	public static Double getValue(Double value, double ref){
@@ -311,6 +328,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		//		if (ReplicationExperimentationGenerator.varyFault) {
 		//			simuToLaunch = this.varyMaxSimultFailure(simuToLaunch);
 		//		}
+//		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"+simuToLaunch);
 
 		simuToLaunch = this.varyDynamicCriticity(simuToLaunch);
 
@@ -327,12 +345,12 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		final LinkedList<ExperimentationParameters<ReplicationLaborantin>> simus =
 				new LinkedList<ExperimentationParameters<ReplicationLaborantin>>();
 		for (final ReplicationExperimentationParameters p : simuToLaunch) {
-			//			System.out.println("considering "+p);
+//			System.out.println("considering "+p);
 			if (p.isValid()){
-				//				System.out.println("added!");
+//				System.out.println("added!");
 				simus.add(p);
 			}else{
-				//				this.logWarning("ABORTED !!! "+(p.nbHosts*p.agentAccessiblePerHost<p.nbAgents)+" "+(p.agentAccessiblePerHost<=0)+" \n"+p, LogService.onBoth);
+				//								this.logWarning("ABORTED !!! "+(p.nbHosts*p.agentAccessiblePerHost<p.nbAgents)+" "+(p.agentAccessiblePerHost<=0)+" \n"+p, LogService.onBoth);
 			}
 		}
 		Collections.sort(simus,comp);
@@ -569,9 +587,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 			for (final Double v : Arrays.asList(hostCapacity)){
 				final ReplicationExperimentationParameters n = p.clone();
 				n.hostCapacityMean=getValue(v,p.nbAgents);
-				if (n.hostCapacityMean>n.nbAgents/n.nbHosts){
-					result.add(n);
-				}
+				result.add(n);
 			}
 		}
 		return result;

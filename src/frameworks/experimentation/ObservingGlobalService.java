@@ -133,10 +133,10 @@ extends BasicCommunicatingCompetence<Agent>{
 	}
 
 	protected long timeBeforeForcingSimulationEnd() {
-		return ExperimentationParameters._maxSimulationTime+300000;//+10min/*+1min*///300000){//+5min
+		return ExperimentationParameters._maxSimulationTime+rep.maxIndividualComputingTime+(60000 * 2);//+10min/*+1min*///300000){//+5min
 	}
 	protected long timeBeforeKillingSimulation() {
-		return ExperimentationParameters._maxSimulationTime+600000;//+5min/*+2min*///600000){//+10min
+		return ExperimentationParameters._maxSimulationTime+3*rep.maxIndividualComputingTime+(60000 * 2);//+5min/*+2min*///600000){//+10min
 	}
 
 

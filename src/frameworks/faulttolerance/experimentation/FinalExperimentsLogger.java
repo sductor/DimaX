@@ -196,7 +196,7 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 				rog.getUtilWelfare(),
 				rog.getSimulationParameters().simultaneousCandidature,
 				rog.getSimulationParameters().kSolver,
-				rog.getSimulationParameters().maxComputingTime,
+				rog.getSimulationParameters().maxIndividualComputingTime,
 				rog.getSimulationParameters()._maxSimulationTime);
 	}
 
@@ -300,7 +300,7 @@ class IndivdualExperiementLog implements DimaComponentInterface{
 	 */
 
 	public String entete() {
-		return "nbAgent ; nbHost ; instance size ; agent number	 ; hostCapacityMean ; hostCapacityPercent" +
+		return "nbAgent ; nbHost ; instance size ; agent number	 ; hostCapacityMean ; hostCapacityPercent ; " +
 				"minState ; aveState ; maxState ;	" +
 				"minStab ; aveStab ; maxStab ; " +
 				"minValue ; nashValue ; utilValue ; socChoice ; " +

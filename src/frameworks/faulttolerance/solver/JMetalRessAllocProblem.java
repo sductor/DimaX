@@ -25,12 +25,12 @@ public class JMetalRessAllocProblem extends Problem	{
 	int timeLimit=Integer.MAX_VALUE;
 	int maxGeneration=Integer.MAX_VALUE;
 
-	public int mu     = 30 ;
+	public int mu     = 15 ;
 
 	int diversi=5;
 	int nbMutation = 10;
-	int nbCroisement = 10;
-	int stagnationCounter=5;
+	int nbCroisement = 5;
+	int stagnationCounter=4;
 
 	public JMetalRessAllocProblem(RessourceAllocationProblem<Solution> p){ 
 		try {

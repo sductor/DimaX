@@ -23,14 +23,14 @@ public class JMetalRessAllocProblem extends Problem	{
 
 
 	int timeLimit=Integer.MAX_VALUE;
-	int maxGeneration=Integer.MAX_VALUE;
+	private int maxGeneration=Integer.MAX_VALUE;
 
 	public int mu     = 15 ;
 
 	int diversi=5;
 	int nbMutation = 10;
 	int nbCroisement = 5;
-	int stagnationCounter=4;
+	private int stagnationCounter=4;
 
 	public JMetalRessAllocProblem(RessourceAllocationProblem<Solution> p){ 
 		try {
@@ -239,6 +239,30 @@ public class JMetalRessAllocProblem extends Problem	{
 			assert y.variable_[i]!=null:y;
 		}
 		return true;
+	}
+
+	public int getMaxGeneration() {
+		return maxGeneration;
+	}
+
+	public void setMaxGeneration(int maxGeneration) {
+		this.maxGeneration = maxGeneration;
+	}
+
+	public int getTimeLimit() {
+		return timeLimit;
+	}
+
+	public void setTimeLimit(int timeLimit) {
+		this.timeLimit = timeLimit;
+	}
+
+	public int getStagnationCounter() {
+		return stagnationCounter;
+	}
+
+	public void setStagnationCounter(int stagnationCounter) {
+		this.stagnationCounter = stagnationCounter;
 	}
 }
 

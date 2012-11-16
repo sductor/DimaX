@@ -152,11 +152,11 @@ public class JMetalElitistES extends Algorithm {
 			return;
 //		System.out.println("runn:ing");
 		int   nbGen=0;
-		int  stagnationCounter=problem.stagnationCounter;
+		int  stagnationCounter=problem.getStagnationCounter();
 		double bestFound= populationCourante.best(getProblem().getComparator()).getObjective(0);; 
 		SolutionSortedSet populationGenere = new SolutionSortedSet(getProblem().mu,getProblem().getComparator()) ;
 		try{
-			while (nbGen < getProblem().maxGeneration && !hasExpired()) {
+			while (nbGen < getProblem().getMaxGeneration() && !hasExpired()) {
 //				System.out.println("gen "+nbGen+" "+populationCourante.best(getProblem().getComparator()).getObjective(0)
 //						+" date : "+new Date().getTime()+" "+(new Date().getTime()-startTime)+" "+getProblem().timeLimit);
 				//+" iital alloc "+problem.p.initialSolution);//+"  "+populationCourante);
@@ -260,7 +260,7 @@ public class JMetalElitistES extends Algorithm {
 					}
 				} else {
 					bestFound=populationCourante.best(getProblem().getComparator()).getObjective(0);
-					stagnationCounter=getProblem().stagnationCounter;
+					stagnationCounter=getProblem().getStagnationCounter();
 				}
 
 				nbGen++;
@@ -274,6 +274,6 @@ public class JMetalElitistES extends Algorithm {
 	}
 
 	private boolean hasExpired(){
-		return (new Date().getTime()-startTime)>getProblem().timeLimit;
+		return (new Date().getTime()-startTime)>getProblem().getTimeLimit();
 	}
 } // ElitistES

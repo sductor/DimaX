@@ -92,6 +92,7 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 
 	@EventHookedMethod(HostState.class)
 	public void updateStateStatus(final HostState h){
+		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
 		//		if (firstModifTime==-2){
 		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
 		//			firstModifTime=-1;

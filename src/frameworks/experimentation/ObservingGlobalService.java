@@ -103,7 +103,7 @@ extends BasicCommunicatingCompetence<Agent>{
 				this.endRequestSended=true;
 			}
 			return false;
-		}else if (this.getMyAgent().getUptime()>this.timeBeforeForcingSimulationEnd()){
+		}else if (this.getMyAgent().getUptime()>this.timeBeforeForcingSimulationEnd() && this.getMyAgent().getUptime()<=this.timeBeforeKillingSimulation()){
 			//			if (!endRequestSended){
 			if (!this.shouldHAveEndedActivated) {
 				this.logWarning("FORCING END REQUEST!!!! I SHOULD HAVE ALREADY END!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
@@ -131,13 +131,9 @@ extends BasicCommunicatingCompetence<Agent>{
 			return false;
 		}
 	}
-
-	protected long timeBeforeForcingSimulationEnd() {
-		return ExperimentationParameters._maxSimulationTime+rep.maxIndividualComputingTime+(60000 * 2);//+10min/*+1min*///300000){//+5min
-	}
-	protected long timeBeforeKillingSimulation() {
-		return ExperimentationParameters._maxSimulationTime+3*rep.maxIndividualComputingTime+(60000 * 2);//+5min/*+2min*///600000){//+10min
-	}
+	
+	protected abstract long timeBeforeForcingSimulationEnd();
+	protected abstract long timeBeforeKillingSimulation();
 
 
 

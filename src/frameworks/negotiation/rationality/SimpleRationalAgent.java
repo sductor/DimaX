@@ -11,6 +11,7 @@ import java.util.List;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
+import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
@@ -147,14 +148,16 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	 */
 	@Override
 	public void setNewState(final PersonalState s) {
-//		assert s.isValid();
 //		assert this.myInformation.hasMyInformation(this.myStateType)?this.verifyStateValidity(s):true;
+//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),!s.equals(getMyCurrentState()));
+//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),this.verifyStateValidity(s));
+		assert s.isValid():s;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
 		assert this.getMyCurrentState().equals(s):this.getMyCurrentState()+"\n"+s+"\n---------"+(s.isNewerThan(this.getMyCurrentState())>0);
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-//		this.notify(this.getMyCurrentState());
+		this.notify(this.getMyCurrentState());
 		
 	}
 

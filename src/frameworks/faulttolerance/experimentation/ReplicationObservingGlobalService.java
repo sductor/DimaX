@@ -234,12 +234,12 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 	@Override
 	protected long timeBeforeForcingSimulationEnd() {
-		return ExperimentationParameters._maxSimulationTime+this.getSimulationParameters().maxIndividualComputingTime+120000;/*+2min*///300000){//+5min
+		return ExperimentationParameters._maxSimulationTime+this.getSimulationParameters().maxIndividualComputingTime+(60000 * 2);/*+2min*///300000){//+5min
 	}
 
 	@Override
 	protected long timeBeforeKillingSimulation() {
-		return ExperimentationParameters._maxSimulationTime+this.getSimulationParameters().maxIndividualComputingTime+300000;/*+5min*///600000){//+10min
+		return ExperimentationParameters._maxSimulationTime+3*this.getSimulationParameters().maxIndividualComputingTime+(60000 * 2);/*+5min*///600000){//+10min
 	}
 
 	//
@@ -259,7 +259,9 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 			if (ag.isLastInfo()) {
-				for (i = ObservingGlobalService.getTimeStep(ag) + 1; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
+				for (i = ObservingGlobalService.getTimeStep(ag) + 1; 
+						i < ObservingGlobalService.getNumberOfTimePoints(); 
+						i++) {
 					this.updateAnAgentValue(ag, i);
 				}
 			}
@@ -328,13 +330,13 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						+ this.getMyAgent().getSimulationParameters() + "\n results are :",
 						true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantileTimeEvolutionObs("reliability",
+				.getQuantileTimeEvolutionObs("Expected reliability",
 						this.agentsExpectedReliabilityEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-				.getQuantileTimeEvolutionObs("reliability",
+				.getQuantileTimeEvolutionObs("min reliability",
 						this.agentsMinReliabilityEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,

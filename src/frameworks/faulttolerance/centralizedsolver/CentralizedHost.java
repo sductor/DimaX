@@ -1,12 +1,15 @@
 package frameworks.faulttolerance.centralizedsolver;
 
 import dima.introspectionbasedagents.annotations.MessageHandler;
+import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
+import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import frameworks.experimentation.ExperimentationParameters;
 import frameworks.faulttolerance.Host;
 import frameworks.faulttolerance.centralizedsolver.CentralizedCoordinator.StateUpdate;
 import frameworks.faulttolerance.negotiatingagent.HostCore;
@@ -41,12 +44,20 @@ public class CentralizedHost extends Host{
 				new SimpleObservationService(),
 				new InactiveCommunicationProtocole());
 		solver = new JMetalElitistES(p.getProblem());
+		solver.getProblem().setMaxGeneration(1);
+		solver.getProblem().setStagnationCounter(Integer.MAX_VALUE);
+	}
+
+	@PreStepComposant@Transient
+	public boolean intitialize(){
+		solver.initialize();
+		return true;
 	}
 
 	@StepComposant
 	public void solve(){
-			solver.initialize();
-			solver.run();
+		solver.getProblem().setTimeLimit((int) (ExperimentationParameters._maxSimulationTime-getUptime()));
+		solver.run();
 	}
 
 	@MessageHandler

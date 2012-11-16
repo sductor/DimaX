@@ -10,6 +10,7 @@ import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
+import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
@@ -34,7 +35,6 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 	//
 
 	protected abstract ExperimentationResults generateMyResults();
-
 
 	@PostStepComposant(ticker=ObservingGlobalService._state_snapshot_frequency)
 	public void notifyMyState(){

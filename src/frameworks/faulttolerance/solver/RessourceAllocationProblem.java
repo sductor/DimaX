@@ -543,14 +543,18 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 	}
 
 	protected double getDispo(SolutionType daX, int agent_i) {
-		double failProb = getAgentInitialFailureProbability(agent_i);
-		for (int host_j = 0; host_j < m; host_j++){
-			//					assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
-			failProb *= Math.pow(
-					getHostFailureProbability(host_j),
-					read(daX,agent_i,host_j));	
-		}	
-		return 1 - failProb;
+		if (fixedVar.contains(getAgentIdentifier(agent_i))){
+			return rig.getAgentState(getAgentIdentifier(agent_i)).getMyDisponibility();
+		} else {
+			double failProb = getAgentInitialFailureProbability(agent_i);
+			for (int host_j = 0; host_j < m; host_j++){
+				//					assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
+				failProb *= Math.pow(
+						getHostFailureProbability(host_j),
+						read(daX,agent_i,host_j));	
+			}	
+			return 1 - failProb;
+		}
 	}
 
 	protected double getIndividualWelfare(SolutionType daX, int agent_i) {
@@ -571,21 +575,29 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 	//	}
 
 	protected double getHostMemoryCharge(SolutionType daX, int host_j) {
-		double c=getHostInitialMemory(host_j);
-		for (int agent_i=0; agent_i < n; agent_i++){
-			//			assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
-			c+=read(daX,agent_i,host_j)*getAgentMemorycharge(agent_i);
+		if (fixedVar.contains(getHostIdentifier(host_j))){
+			return rig.getHostState(getHostIdentifier(host_j)).getCurrentMemCharge();
+		} else {
+			double c=getHostInitialMemory(host_j);
+			for (int agent_i=0; agent_i < n; agent_i++){
+				//			assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
+				c+=read(daX,agent_i,host_j)*getAgentMemorycharge(agent_i);
+			}
+			return c;
 		}
-		return c;
 	}
 
 	protected double getHostProcessorCharge(SolutionType daX, int host_j) {
-		double c=getHostInitialProcessor(host_j);
-		for (int agent_i=0; agent_i < n; agent_i++){
-			//			assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
-			c+=read(daX,agent_i,host_j)*getAgentProcessorCharge(agent_i);
+		if (fixedVar.contains(getHostIdentifier(host_j))){
+			return rig.getHostState(getHostIdentifier(host_j)).getCurrentProcCharge();
+		} else {
+			double c=getHostInitialProcessor(host_j);
+			for (int agent_i=0; agent_i < n; agent_i++){
+				//			assert daX[getPos(agent_i,host_j)]==1. || daX[getPos(agent_i,host_j)]==0.:daX[getPos(agent_i,host_j)];
+				c+=read(daX,agent_i,host_j)*getAgentProcessorCharge(agent_i);
+			}
+			return c;
 		}
-		return c;
 	}
 
 	protected double getHostCurrentCharge(SolutionType daX, int host_j) {
@@ -640,11 +652,11 @@ public abstract class RessourceAllocationProblem<SolutionType> extends BasicAgen
 					return false;
 			}
 		}
-		
+
 		if (!(!isLocal() || isUpgrading(daX))){
 			return false;
 		}
-		
+
 		return true;
 	}
 

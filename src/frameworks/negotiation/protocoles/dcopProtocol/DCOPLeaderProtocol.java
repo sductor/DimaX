@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
+import frameworks.faulttolerance.experimentation.SearchTimeNotif;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
@@ -288,11 +290,13 @@ extends DcopAgentProtocol<State, Contract>{
 			for (Collection<AgentIdentifier> group : changeFlag){
 				ReplicationInstanceGraph rig = getRig(group);
 				assert rig.assertNeigborhoodValidity():rig;
+				Date startingExploringTime=new Date();
 				solver.setProblem(rig, rig2fringeNodes.get(group));
 				solver.setTimeLimit((int) maxComputingTime);
 				try {
 					//					logMonologue("compution new allocation "+rig.getEveryIdentifier());// for "+rig+"\n fringe are "+rig2fringeNodes.get(rig));
 					Set<Contract> opt =  new HashSet(solver.getBestLocalSolution());
+					this.notify(new SearchTimeNotif(new Double(new Date().getTime() - startingExploringTime.getTime())));
 					assert solValidity(opt);
 					//					logMonologue("new allo computed");// for "+rig+"\n fringe are "+rig2fringeNodes.get(rig));
 					Collection<Contract> fusedContract= gainContracts.getAllValues();
@@ -362,7 +366,9 @@ extends DcopAgentProtocol<State, Contract>{
 	public boolean iCanAcceptLock(Contract lockRequest){
 		if (!super.iCanAcceptLock(lockRequest))
 			return false;
-		else {
+		else if (getWannaLockContract().isEmpty())  {
+			return true;
+		} else {
 			List<Contract> myContracts = new ArrayList(getWannaLockContract().getAllValues());
 			Contract myBest = Collections.min(myContracts, getContractComparator());
 			assert myBest.getInitiator().equals(getIdentifier());

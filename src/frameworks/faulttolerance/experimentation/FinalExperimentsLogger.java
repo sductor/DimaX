@@ -75,10 +75,10 @@ public class FinalExperimentsLogger implements ExperimentLogger  {
 			this.nashValue+=iel.getNashValue();
 			this.utilValue+=iel.getUtilValue();
 
-			assert this.simultaneousCandidature==iel.getSimultaneousCandidature();
-			assert this.simultaneousAcceptation==iel.getSimultaneousAcceptation();
-			assert this.maxComputingTime==iel.getMaxComputingTime();
-			assert this.time==iel.getTime();
+//			assert this.simultaneousCandidature==iel.getSimultaneousCandidature();
+//			assert this.simultaneousAcceptation==iel.getSimultaneousAcceptation():this+"\n"+iel;
+//			assert this.maxComputingTime==iel.getMaxComputingTime();
+//			assert this.time==iel.getTime();
 		}
 
 		@Override

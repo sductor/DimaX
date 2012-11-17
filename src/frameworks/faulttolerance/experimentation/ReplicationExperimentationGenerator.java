@@ -76,8 +76,8 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //		public static int _kDefault1=100;
 //		public static int _kDefault2=20;
 		private Integer[] kDomain= new Integer[]{5,10,50,100,500,1000};
-		public static int _kDefault1=500;
-		public static int _kDefault2=50;
+		public static int _kDefault=100;
+		public static int _kDefaultAll=100;
 
 		
 	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),

@@ -147,6 +147,7 @@ public class JMetalElitistES extends Algorithm {
 			throw new  RuntimeException("impossible");
 		}
 	}
+	boolean allowStagnStop=false;//on peut arreter sur stagn que si on a deja trouver une meilleure solution
 	public void run()  {
 		if (hasExpired())
 			return;
@@ -252,8 +253,10 @@ public class JMetalElitistES extends Algorithm {
 				assert populationCourante.size()==getProblem().mu:populationCourante;
 
 				populationGenere.clear();
-
-				if (bestFound==populationCourante.best(getProblem().getComparator()).getObjective(0)){
+				if (populationCourante.best(getProblem().getComparator()).getObjective(0)>0 &&
+						populationCourante.best(getProblem().getComparator()).getObjective(0)>bestFound)
+					allowStagnStop=true;
+				if (allowStagnStop && bestFound==populationCourante.best(getProblem().getComparator()).getObjective(0)){
 					stagnationCounter--;
 					if (stagnationCounter==0){
 						break;

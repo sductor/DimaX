@@ -92,7 +92,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 		} else if (ReplicationLaborantin.informativeParameter==1){
 			hostCapacity = new Double[]{0.8};
-			graphDensityDomain = new Double[]{0.2};			
+			graphDensityDomain = new Double[]{0.8};			
 		} else if (ReplicationLaborantin.informativeParameter==2){
 			hostCapacity = new Double[]{0.2};
 			graphDensityDomain = new Double[]{0.8};			

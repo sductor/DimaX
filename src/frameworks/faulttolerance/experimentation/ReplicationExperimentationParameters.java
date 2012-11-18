@@ -646,23 +646,23 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) || 
 						that._usedProtocol.equals(NegotiationParameters.key4statusProto)){//en premier
 					if (this._usedProtocol.equals(NegotiationParameters.key4statusProto))
-						return 1;
-					else
 						return -1;
+					else
+						return 1;
 
-				} else  if (this._usedProtocol.equals(NegotiationParameters.key4DcopProto) || 
-						that._usedProtocol.equals(NegotiationParameters.key4DcopProto)){//en deuxieme
-					if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto))
-						return 1;
-					else
+				} else  if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) || 
+						that._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){//en deuxieme
+					if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto))
 						return -1;
+					else
+						return 1;
 
 				} else  if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto) || 
 						that._usedProtocol.equals(NegotiationParameters.key4GeneticProto)){//en troisieme
 					if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto))
-						return 1;
-					else
 						return -1;
+					else
+						return 1;
 				} else {
 					throw new RuntimeException("impossible avec 4 protos");
 				}
@@ -730,15 +730,15 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		if (!parametresCoherents()){
 			return false;
 		}
-
+//		return true;
 		//SOUHAITE
 		//
 		if (
 				kSolver==ReplicationExperimentationGenerator._kDefaultAll &&
 				_hostSelection.equals(SelectionType.RoolettWheel)){
 			if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
-				return alpha_low==ReplicationExperimentationGenerator._alpha_lowDefault
-						&& alpha_high==ReplicationExperimentationGenerator._alpha_highDefault
+				return alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
+						&& alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)
 						&& opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
 								ReplicationExperimentationGenerator._kOpinionDefault,new Double(nbAgents)));
 			} else {
@@ -754,10 +754,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						(
 								_usedProtocol.equals(NegotiationParameters.key4statusProto) &&
 								(
-										(alpha_low==ReplicationExperimentationGenerator._alpha_lowDefault 
-										&& alpha_high==ReplicationExperimentationGenerator._alpha_highDefault) ||
-										((alpha_low!=ReplicationExperimentationGenerator._alpha_lowDefault 
-										&& alpha_high!=ReplicationExperimentationGenerator._alpha_highDefault) &&
+										(alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
+										&& alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)) ||
+										((!alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
+										&& !alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)) &&
 										opinionDiffusionDegree.equals(
 												ReplicationExperimentationGenerator.getValue(
 														ReplicationExperimentationGenerator._kOpinionDefault,new Double(nbAgents))) &&
@@ -797,12 +797,17 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			//			System.out.println("_agentSelection0 not valid");
 			return false;
 		}
-
+//		if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
+//				|| _usedProtocol.equals(NegotiationParameters.key4DcopProto) 
+//				|| _usedProtocol.equals(NegotiationParameters.key4GeneticProto)){
+//			return false;
+//		}
+//
 		if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
 			if (alpha_high.equals(Double.NaN) || alpha_low.equals(Double.NaN) || this.opinionDiffusionDegree.equals(Double.NaN)){
 				return false;
-			} else if (this.kSolver!=ReplicationExperimentationGenerator._kDefault){
-				return false;
+//			} else if (this.kSolver!=ReplicationExperimentationGenerator._kDefault){
+//				return false;
 			}
 		} else {
 			if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN) || !this.opinionDiffusionDegree.equals(Double.NaN)){

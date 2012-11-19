@@ -18,6 +18,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
+import frameworks.faulttolerance.experimentation.ReplicationObservingGlobalService;
 
 
 /**
@@ -69,6 +70,7 @@ public final class Experimentator extends APIAgent{
 		this.iteartionSeeds=seeds;
 
 
+
 		this.myProtocol.setMyAgent(this);
 		this.simuToLaunch = this.myProtocol.generateSimulation();
 		this.allSimu.addAll(this.simuToLaunch);
@@ -84,6 +86,7 @@ public final class Experimentator extends APIAgent{
 
 	@ProactivityInitialisation
 	public void initialise() throws CompetenceException{
+		LogService.logOnFile(this.myProtocol.finalResultPath, ReplicationObservingGlobalService.entete(), true, false);	
 		this.logWarning("Experimentator created for: "+this.simuToLaunch.size()+" experiences to launch! ",LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());this.myProtocol.toString()
 		this.logWarning(this.getDescription(),LogService.onBoth);
 		this.launchSimulation();
@@ -173,7 +176,7 @@ public final class Experimentator extends APIAgent{
 
 	public String getDescription(){
 		return "Experimentator of "+this.simuToLaunch.size()+" experiences of "+ExperimentationParameters._maxSimulationTime+" seconds ";
-	}
+	}		
 }
 
 

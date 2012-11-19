@@ -56,8 +56,10 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //		public static int _AgentDefault=250;
 //	private Integer[] nbAgentDomain = new Integer[]{10};
 //		public static int _AgentDefault=10;
-		private Integer[] nbAgentDomain = new Integer[]{50,100,500,1000,5000,10000};
-		public static int _AgentDefault=1000;
+//		private Integer[] nbAgentDomain = new Integer[]{50,100,500,1000,5000,10000};
+//		public static int _AgentDefault=1000;
+	private Integer[] nbAgentDomain = new Integer[]{100,500,1000};
+	public static int _AgentDefault=100;
 	int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
 //	private Integer[] nbHostDomain = new Integer[]{6};
@@ -72,12 +74,12 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
 //		public static int _kDefault1=1000;
 //		public static int _kDefault2=200;
-//		private Integer[] kDomain= new Integer[]{5,25,50,75,100};
-//		public static int _kDefault1=100;
-//		public static int _kDefault2=20;
-		private Integer[] kDomain= new Integer[]{5,10,50,100,500,1000};
-		public static int _kDefault=100;
-		public static int _kDefaultAll=100;
+		private Integer[] kDomain= new Integer[]{5,25,75};
+		public static int _kDefault=25;
+		public static int _kDefaultAll=25;
+//		private Integer[] kDomain= new Integer[]{5,10,50,100,500,1000};
+//		public static int _kDefault=100;
+//		public static int _kDefaultAll=100;
 
 		
 	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),
@@ -86,19 +88,22 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	private static  Double[] graphDensityDomain = null;// new Double[]{0.8,0.2};//15., 
 
 	static{
-		if (ReplicationLaborantin.informativeParameter==0){
-			hostCapacity = new Double[]{0.2};
-			graphDensityDomain = new Double[]{0.2};
+		if (ReplicationLaborantin.informativeParameter4Graph==0){
+			hostCapacity = new Double[]{0.3};
+			graphDensityDomain = new Double[]{1.};
 
-		} else if (ReplicationLaborantin.informativeParameter==1){
+		} else if (ReplicationLaborantin.informativeParameter4Graph==1){
 			hostCapacity = new Double[]{0.8};
 			graphDensityDomain = new Double[]{0.8};			
-		} else if (ReplicationLaborantin.informativeParameter==2){
+		} else if (ReplicationLaborantin.informativeParameter4Graph==2){
 			hostCapacity = new Double[]{0.2};
 			graphDensityDomain = new Double[]{0.8};			
-		} else if (ReplicationLaborantin.informativeParameter==3){
+		} else if (ReplicationLaborantin.informativeParameter4Graph==3){
 			hostCapacity = new Double[]{0.8};
 			graphDensityDomain = new Double[]{0.2};			
+		} else if (ReplicationLaborantin.informativeParameter4Graph==4){
+			hostCapacity = new Double[]{0.2};
+			graphDensityDomain = new Double[]{0.2};
 		}
 	}
 

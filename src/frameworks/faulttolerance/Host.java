@@ -35,7 +35,7 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	// Fields
 	//
 	//	private long firstModifTime=-2;
-	private long lastModifTime=-1;
+//	private long lastModifTime=-1;
 	private final LightAverageDoubleAggregation searchTime = new LightAverageDoubleAggregation();
 
 	@Competence
@@ -49,8 +49,9 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 		protected ExperimentationResults generateMyResults() {
 			return new ReplicationResultHost(
 					Host.this.getMyCurrentState(),//firstModifTime,
-					Host.this.lastModifTime,
-					Host.this.getCreationTime(),Host.this.initialStateNumber,Host.this.searchTime);
+//					Host.this.lastModifTime,
+					Host.this.getCreationTime(),//Host.this.initialStateNumber
+					Host.this.searchTime);
 		}
 	};
 
@@ -90,19 +91,19 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	}
 
 
-	@EventHookedMethod(HostState.class)
-	public void updateStateStatus(final HostState h){
-//		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
-		//		if (firstModifTime==-2){
-		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
-		//			firstModifTime=-1;
-		//		}else if (firstModifTime==-1){
-		//			assert h.getStateCounter()==initialStateNumber+1;
-		//			firstModifTime=getUptime();
-		//		}
-		//
-		this.lastModifTime=this.getUptime();
-	}
+//	@EventHookedMethod(HostState.class)
+//	public void updateStateStatus(final HostState h){
+////		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+//		//		if (firstModifTime==-2){
+//		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
+//		//			firstModifTime=-1;
+//		//		}else if (firstModifTime==-1){
+//		//			assert h.getStateCounter()==initialStateNumber+1;
+//		//			firstModifTime=getUptime();
+//		//		}
+//		//
+//		this.lastModifTime=this.getUptime();
+//	}
 
 	//
 	// Accessor

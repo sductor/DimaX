@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
+import sun.net.www.content.text.plain;
+
 
 
 import dima.basicagentcomponents.AgentIdentifier;
@@ -227,7 +229,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	}
 
 
-	
+
 	//
 	// Accessors
 	//
@@ -259,6 +261,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 			if (ag.isLastInfo()) {
+				this.lastReplicationtime.add(new Double(ag.getLastModifTime()));
+				this.nbOfStateModif.add(new Double(ag.nbOfModif));
 				for (i = ObservingGlobalService.getTimeStep(ag) + 1; 
 						i < ObservingGlobalService.getNumberOfTimePoints(); 
 						i++) {
@@ -273,10 +277,10 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 			if (h.isLastInfo()) {
 				//				if (h.nbOfModif!=0){
-				this.lastReplicationtime.add(new Double(h.getLastModifTime()));
+//				this.lastReplicationtime.add(new Double(h.getLastModifTime()));
 				//					firstReplicationtime.add(new Double(h.getFirstModifTime()));
 				//				}
-				this.nbOfStateModif.add(new Double(h.nbOfModif));
+//				this.nbOfStateModif.add(new Double(h.nbOfModif));
 				for (i = ObservingGlobalService.getTimeStep(h) + 1;
 						i < ObservingGlobalService.getNumberOfTimePoints();
 						i++) {
@@ -329,6 +333,15 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						+ this.getMyAgent().getSimulationParameters().getSimulationName()
 						+ this.getMyAgent().getSimulationParameters() + "\n results are :",
 						true, false);
+		
+
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(),entete(),
+				true,
+				false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(),getResult(),
+				true,
+				false);
+		
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantileTimeEvolutionObs("Expected reliability",
 						this.agentsExpectedReliabilityEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
@@ -365,13 +378,13 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						"Time Since Last Action",
 						this.lastReplicationtime,
 						0.75,
-						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
+						this.getMyAgent().getSimulationParameters().nbAgents), true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantilePointObs(
 						"State Modif number",
 						this.nbOfStateModif,
 						0.75,
-						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
+						this.getMyAgent().getSimulationParameters().nbAgents), true, false);
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
 				.getQuantilePointObs(
 						"Search time",
@@ -440,6 +453,42 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	//			this.remainingHost--;
 	//		}
 	//	}
+
+
+	public static String entete(){
+		return "protocol ; welfare ; nbagent ; k; alpha_low ; alpha_high ; opinion ; mean util ; mean min ; mean dispo ; nbModif ; lastTime ; repId ; randomSeed";			
+	}
+
+	public String getResult(){
+		return ""+
+				this.getMyAgent().getSimulationParameters()._usedProtocol +" ; "+
+				this.getMyAgent().getSimulationParameters()._socialWelfare +" ; "+
+				this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
+				this.getMyAgent().getSimulationParameters().kSolver +" ; "+
+				this.getMyAgent().getSimulationParameters().alpha_low +" ; "+
+				this.getMyAgent().getSimulationParameters().alpha_high +" ; "+
+				this.getMyAgent().getSimulationParameters().opinionDiffusionDegree/this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
+				agentsExpectedReliabilityEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
+				agentsMinReliabilityEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
+				agentsDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
+				nbOfStateModif.getRepresentativeElement()+" ; "+
+				lastReplicationtime.getRepresentativeElement()+" ; "+
+				this.getMyAgent().getSimulationParameters().getSimulationName()+" ; "+
+				this.getMyAgent().getSimulationParameters().randSeed
+				
+				+"\n"+
+				this.getMyAgent().getSimulationParameters()._usedProtocol +" ; "+
+				this.getMyAgent().getSimulationParameters()._socialWelfare +" ; "+
+				this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
+				this.getMyAgent().getSimulationParameters().kSolver +" ; "+
+				this.getMyAgent().getSimulationParameters().alpha_low +" ; "+
+				this.getMyAgent().getSimulationParameters().alpha_high +" ; "+
+				this.getMyAgent().getSimulationParameters().opinionDiffusionDegree/this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
+				agentsExpectedReliabilityEvolution[0].getRepresentativeElement()+" ; "+
+				agentsMinReliabilityEvolution[0].getRepresentativeElement()+" ; "+
+				agentsDispoEvolution[0].getRepresentativeElement();
+	}
+
 
 	//
 	// Primitives

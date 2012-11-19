@@ -3,6 +3,8 @@ package frameworks.faulttolerance.experimentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 
 
@@ -98,7 +100,8 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 	// Main
 	//
 
-	public static Integer informativeParameter;
+	public static Integer informativeParameter4Graph;
+	public static Integer informativeParameterNumber;
 	
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, IfailedException, NotEnoughMachinesException{
@@ -106,11 +109,14 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 		ReplicationExperimentationParameters.maxHostAccessibleParAgent=30;
 		
 		
-		informativeParameter = new Integer(args[2]);
+		informativeParameter4Graph = 0;
+		
+		informativeParameterNumber = new Integer(args[2]);
+		
 		Experimentator exp =
 				new Experimentator(
 						new ReplicationExperimentationGenerator().getDefaultParameters(),
-						new FinalExperimentsLogger(),
+						new SimpleExperiementsLogger(),
 						new ArrayList(Arrays.asList(new ReplicationExperimentationGenerator().getSeeds())));
 		exp.run(args);		
 //		informativeParameter = 1;//new Integer(args[2]);
@@ -123,4 +129,6 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 	}
 
 
+
+	
 }

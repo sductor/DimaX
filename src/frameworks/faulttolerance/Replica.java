@@ -8,6 +8,7 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import frameworks.experimentation.ExperimentationResults;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
@@ -32,6 +33,7 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 	//
 
 	private final boolean dynamicCrticity;
+	private long lastModifTime=-1;
 
 	//	public boolean replicate = true;
 
@@ -49,17 +51,32 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 			if (Replica.this instanceof StatusAgent) {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
+						Replica.this.lastModifTime,Replica.this.initialStateNumber,
 						Replica.this.getCreationTime(),
 						((StatusAgent) Replica.this).getMyStatus());
 			} else {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
+						Replica.this.lastModifTime,
 						Replica.this.getCreationTime());
 			}
 			return myInfo;
 		}
 	};
-
+	
+	@EventHookedMethod(ReplicaState.class)
+	public void updateStateStatus(final ReplicaState h){
+//		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+		//		if (firstModifTime==-2){
+		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
+		//			firstModifTime=-1;
+		//		}else if (firstModifTime==-1){
+		//			assert h.getStateCounter()==initialStateNumber+1;
+		//			firstModifTime=getUptime();
+		//		}
+		//
+		this.lastModifTime=this.getUptime();
+	}
 //	@Competence
 //	FaultObservationService myFaultAwareService =
 //	new FaultObservationService() {

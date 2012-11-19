@@ -21,7 +21,7 @@ public class ReplicationResultHost implements ExperimentationResults {
 	private final long creation;
 
 	//	private long firstModifTime=-1;
-	private final long lastModifTime;
+//	private final long lastModifTime;
 
 	final ResourceIdentifier id;
 	final Double charge;
@@ -34,8 +34,9 @@ public class ReplicationResultHost implements ExperimentationResults {
 	boolean lastInfo;
 
 	public ReplicationResultHost(final HostState s, //long firstModifTime,
-			final long lastModifTime,
-			final Date agentCreationTime, final int initialStateCounter,
+//			final long lastModifTime,
+			final Date agentCreationTime, 
+//			final int initialStateCounter,
 			final LightAverageDoubleAggregation searchTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
@@ -44,12 +45,12 @@ public class ReplicationResultHost implements ExperimentationResults {
 		this.isFaulty = s.isFaulty();
 		this.id = s.getMyAgentIdentifier();
 		this.lastInfo = false;
-		this.nbOfModif = s.getStateCounter()-initialStateCounter;
+//		this.nbOfModif = s.getStateCounter()-initialStateCounter;
 		//		assert !(this.firstModifTime==1) || nbOfModif==0;
 		//		assert !(nbOfModif==0) || ((firstModifTime==-2 || firstModifTime==-1) && lastModifTime==-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
 		//		assert (nbOfModif==0) || (firstModifTime!=-2 && firstModifTime!=-1 && lastModifTime!=-1):nbOfModif+" "+s.getStateCounter()+" "+initialStateCounter+" "+firstModifTime+" "+lastModifTime;
 		//		this.firstModifTime=firstModifTime;
-		this.lastModifTime=lastModifTime;
+//		this.lastModifTime=lastModifTime;
 		this.searchTime=searchTime.getRepresentativeElement();
 	}
 
@@ -67,9 +68,9 @@ public class ReplicationResultHost implements ExperimentationResults {
 	//		return firstModifTime;
 	//	}
 
-	public long getLastModifTime() {
-		return this.lastModifTime;
-	}
+//	public long getLastModifTime() {
+//		return this.lastModifTime;
+//	}
 
 	public boolean isFaulty() {
 		return this.isFaulty;

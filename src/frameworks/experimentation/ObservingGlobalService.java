@@ -52,7 +52,7 @@ extends BasicCommunicatingCompetence<Agent>{
 		return this.rep;
 	}
 
-	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 60;
+	public static final long _state_snapshot_frequency = 30000;//ExperimentationParameters._maxSimulationTime / 60;
 
 	//
 	// Abstract

@@ -113,14 +113,15 @@ PersonalState, Contract> {
 	@Override
 	public boolean IWantToNegotiate(
 			final ContractTrunk<Contract> contracts) {
-		this.getMyAgent().updateThreshold();
+//		this.getMyAgent().updateThreshold();
 		//		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
 		//				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
 		//						.getStatus(s).equals(AgentStateStatus.Wastefull))));
 		final PersonalState s = this.getMyAgent().getMyCurrentState();
+		AgentStateStatus status = this.getMyAgent().getStatus(s);
 		return super.IWantToNegotiate(contracts)
-				&& (this.getMyAgent().getStatus(s).equals(AgentStateStatus.Fragile) ||
-						this.getMyAgent().getStatus(s).equals(AgentStateStatus.Wastefull));
+				&& (status.equals(AgentStateStatus.Fragile) ||
+						status.equals(AgentStateStatus.Wastefull));
 	}
 
 }

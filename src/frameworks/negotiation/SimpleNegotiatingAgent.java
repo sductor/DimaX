@@ -73,11 +73,11 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	@ProactivityInitialisation
 	public void initialisation(){
 		this.addLogKey(SocialChoiceFunction.log_socialWelfareOrdering, LogService.onNone);
-		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, LogService.onFile);
+		this.addLogKey(AbstractCommunicationProtocol.log_negotiationStep, LogService.onNone);
 		this.addLogKey(AbstractCommunicationProtocol.log_selectionStep, LogService.onNone);
 		this.addLogKey(AbstractCommunicationProtocol.log_contractDataBaseManipulation, LogService.onNone);
 		this.addLogKey(ObservingSelfService.observationLog, LogService.onNone);
-		this.addLogKey(DCOPLeaderProtocol.dcopProtocol, LogService.onBoth);
+		this.addLogKey(DCOPLeaderProtocol.dcopProtocol, LogService.onNone);
 	}
 
 	//

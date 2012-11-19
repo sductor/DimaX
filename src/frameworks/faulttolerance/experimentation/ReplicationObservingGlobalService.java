@@ -460,7 +460,14 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	}
 
 	public String getResult(){
-		return ""+
+		if (result==null)
+			makeResult();
+		return result;
+	}
+
+	String result=null;
+	public void makeResult(){
+		result =
 				this.getMyAgent().getSimulationParameters()._usedProtocol +" ; "+
 				this.getMyAgent().getSimulationParameters()._socialWelfare +" ; "+
 				this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
@@ -488,7 +495,6 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				agentsMinReliabilityEvolution[0].getRepresentativeElement()+" ; "+
 				agentsDispoEvolution[0].getRepresentativeElement();
 	}
-
 
 	//
 	// Primitives

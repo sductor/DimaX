@@ -62,9 +62,9 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	public static int _AgentDefault=100;
 	int maxAgentNb = Collections.max(Arrays.asList(nbAgentDomain));
 
-//	private Integer[] nbHostDomain = new Integer[]{6};
+	private Integer[] nbHostDomain = new Integer[]{6};
 //			private Integer[] nbHostDomain = new Integer[]{24};
-		private Integer[] nbHostDomain = new Integer[]{16};
+//		private Integer[] nbHostDomain = new Integer[]{16};
 	int maxHostNb = Collections.max(Arrays.asList(nbHostDomain));
 
 	//solveur
@@ -74,7 +74,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
 //		public static int _kDefault1=1000;
 //		public static int _kDefault2=200;
-		private Integer[] kDomain= new Integer[]{5,25,75};
+		private Integer[] kDomain= new Integer[]{5,25,100};
 		public static int _kDefault=25;
 //		private Integer[] kDomain= new Integer[]{5,10,50,100,500,1000};
 //		public static int _kDefault=100;
@@ -132,7 +132,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 			new Double[]{0.6,0.3}, 
 			new Double[]{0.3,0.6}};
 	static Double _alpha_lowDefault=0.6;
-	static Double _alpha_highDefault=0.6;
+	static Double _alpha_highDefault=0.3;
 	//	private Double[][] alphaDomain= 
 	//			new Double[][]{new Double[]{Double.NaN,Double.NaN},
 	//			new Double[]{0.2,0.4},
@@ -171,7 +171,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	static boolean varyAgents=true;
 	static boolean varyHosts=false;
 
-	static boolean varyAccessibleAgent=false;//valeur ecrasé dans les default parameter
+	static boolean varyAccessibleAgent=true;
 	static boolean varySimultaneousAcceptation=true;
 	static boolean varyOpinionDiffusion=true;
 	static boolean varyAlpha=true;

@@ -76,6 +76,7 @@ public final class Experimentator extends APIAgent{
 		this.allSimu.addAll(this.simuToLaunch);
 		Collections.sort(this.allSimu);
 		Collections.sort(this.simuToLaunch);
+		System.out.println(this.simuToLaunch);
 		this.awaitingAnswer=this.simuToLaunch.size();
 	}
 

@@ -742,7 +742,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				return true;
 			} else if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
 				if ((!alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
-						&& !alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))){
+						|| !alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))){
 					return opinionDiffusionDegree.equals(
 							ReplicationExperimentationGenerator.getValue(
 									ReplicationExperimentationGenerator._kOpinionDefault,new Double(nbAgents))) &&
@@ -750,8 +750,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				} else {
 					return true;
 				}
-			} else {
-				return false;
 			}
 		}
 		

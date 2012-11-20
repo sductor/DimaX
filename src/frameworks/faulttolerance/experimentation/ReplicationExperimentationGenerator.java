@@ -34,7 +34,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//		public static int _AgentDefault=10;
 	//		private Integer[] nbAgentDomain = new Integer[]{50,100,500,1000,5000,10000};
 	//		public static int _AgentDefault=1000;
-	private final Integer[] nbAgentDomain = new Integer[]{100,500,1000};
+	private final Integer[] nbAgentDomain = new Integer[]{100,250,500,750,1000,5000,10000};
 	public static int _AgentDefault=100;
 	int maxAgentNb = Collections.max(Arrays.asList(this.nbAgentDomain));
 
@@ -50,7 +50,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
 	//		public static int _kDefault1=1000;
 	//		public static int _kDefault2=200;
-	private final Integer[] kDomain= new Integer[]{5,25,100};
+	private final Integer[] kDomain= new Integer[]{5,25,50,75,100};
 	public static int _kDefault=25;
 	//		private Integer[] kDomain= new Integer[]{5,10,50,100,500,1000};
 	//		public static int _kDefault=100;

@@ -51,13 +51,16 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 			if (Replica.this instanceof StatusAgent) {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
-						Replica.this.lastModifTime,Replica.this.initialStateNumber,
+						Replica.this.lastModifTime,
+						Replica.this.getMyProtocol().messageSended,
+						Replica.this.initialStateNumber,
 						Replica.this.getCreationTime(),
 						((StatusAgent) Replica.this).getMyStatus());
 			} else {
 				myInfo = new ReplicationResultAgent(
 						Replica.this.getMyCurrentState(),
 						Replica.this.lastModifTime,
+						Replica.this.getMyProtocol().messageSended,
 						Replica.this.getCreationTime());
 			}
 			return myInfo;

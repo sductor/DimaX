@@ -118,7 +118,7 @@ implements RationalCore<SimpleRationalAgent<HostState, ReplicationCandidature>,H
 				for (final ReplicationCandidature c : destruction){
 					this.handleResourceInformation(c.getAgentInitialState(),false);//the state is maybe not the actual one but  valid with regard to the couple (host,agent)
 					ReplicationHandler.killReplica(c.getAgent());
-					System.out.println(getMyAgent().getIdentifier()+"  ->I have killed " + c.getAgent());
+//					System.out.println(getMyAgent().getIdentifier()+"  ->I have killed " + c.getAgent());
 					this.logMonologue( "  ->I have killed " + c.getAgent(),LogService.onBoth);
 					newState = c.computeResultingState(newState);
 				}
@@ -126,7 +126,7 @@ implements RationalCore<SimpleRationalAgent<HostState, ReplicationCandidature>,H
 				for (final ReplicationCandidature c : creation){
 					this.handleResourceInformation(c.getAgentResultingState(),true);//the state is maybe not the actual one but  valid with regard to the couple (host,agent)
 					ReplicationHandler.replicate(c.getAgent());
-					System.out.println(getMyAgent().getIdentifier()+"  ->I have replicated " + c.getAgent());
+//					System.out.println(getMyAgent().getIdentifier()+"  ->I have replicated " + c.getAgent());
 					this.logMonologue( "  ->I have replicated " + c.getAgent(),LogService.onBoth);
 					newState = c.computeResultingState(newState);
 				}

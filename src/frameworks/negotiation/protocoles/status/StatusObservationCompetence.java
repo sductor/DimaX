@@ -57,8 +57,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	private final boolean iDiffuseOriginalState;
 	private final Class<? extends AgentState> stateTypeToDiffuse;
 
-	private Double lowerThreshold = Double.NaN;
-	private Double higherThreshold = Double.NaN;
+	private Float lowerThreshold = Float.NaN;
+	private Float higherThreshold = Float.NaN;
 
 	public final double alpha_low;
 	public final double alpha_high;
@@ -139,12 +139,10 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 									+" "+(getMyOpinionHandler().getNumericValue(this.getMyAgent().getMyCurrentState()) > this.getHigherThreshold())
 									+wastefull+" "+fragile+" "+(wastefull && fragile));
 				} else if (full && !wastefull) {
-					System.out.println("yo1");
 					return AgentStateStatus.Full;
 				} else if (empty && !fragile) {
 					return AgentStateStatus.Empty;
 				} else if (!wastefull && !fragile) {
-					System.out.println("yo3");
 					return AgentStateStatus.Thrifty;
 				} else if (wastefull && !empty) {
 					return AgentStateStatus.Wastefull;
@@ -180,7 +178,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 
 	@MessageHandler
 	void updateAgent4StatusObservation(final StatusMessage n) {
-		//this.getMyAgent().getMyInformation().add(n.getTransmittedState());
+		this.getMyAgent().getMyInformation().add(n.getTransmittedState());
 	}
 
 	//
@@ -191,29 +189,28 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		try {
 			assert this.getMyAgent().getMyInformation().getInformation(this.getMyAgent().getMyStateType()).size()==1;
 			assert this.stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType());
-			if (this.getMyAgent().getMyInformation().getInformation(this.getMyAgent().getMyStateType()).size()==1){
-				this.lowerThreshold=getMyOpinionHandler()
-						.getNumericValue(this.getMyAgent().getMyCurrentState());
-				this.higherThreshold = getMyOpinionHandler()
-						.getNumericValue(this.getMyAgent().getMyCurrentState());
-			} else {
+//			if (this.getMyAgent().getMyInformation().getInformation(this.getMyAgent().getMyStateType()).size()==1){
+//				this.lowerThreshold=getMyOpinionHandler()
+//						.getNumericValue(this.getMyAgent().getMyCurrentState());
+//				this.higherThreshold = getMyOpinionHandler()
+//						.getNumericValue(this.getMyAgent().getMyCurrentState());
+//			} else {
 
-			final Opinion<PersonalState> o = 
-					(Opinion<PersonalState>) ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType());
+				final Opinion<PersonalState> o = 
+						(Opinion<PersonalState>) ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType());
 
 				Double mean, min, max;
 				mean = getMyOpinionHandler().getNumericValue(o.getMeanInfo());
 				min = getMyOpinionHandler().getNumericValue(o.getMinInfo());
 				max = getMyOpinionHandler().getNumericValue(o.getMaxInfo());
 
-				this.lowerThreshold = alpha_low * mean + (1-alpha_low) * min;
-				this.higherThreshold = alpha_high * mean + (1-alpha_high) * max;
-			}
-
+				this.lowerThreshold = new Float(alpha_low * mean + (1-alpha_low) * min);
+				this.higherThreshold = new Float(alpha_high * mean + (1-alpha_high) * max);
+//			}
 
 			assert lowerThreshold - higherThreshold < 0.000001:"arg";
 			if (lowerThreshold> higherThreshold){
-				System.out.println("argh");
+				assert min<=mean && max>=mean:min+" "+mean+" "+max;
 				lowerThreshold=higherThreshold;
 			}
 		} catch (final Exception e) {
@@ -247,7 +244,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		if (this.lowerThreshold.equals(Double.NaN)) {
 			return Double.POSITIVE_INFINITY;
 		} else {
-			return this.lowerThreshold;
+			return new Double(this.lowerThreshold);
 		}
 	}
 
@@ -255,7 +252,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		if (this.higherThreshold.equals(Double.NaN)) {
 			return Double.POSITIVE_INFINITY;
 		} else {
-			return this.higherThreshold;
+			return new Double(this.higherThreshold);
 		}
 	}
 

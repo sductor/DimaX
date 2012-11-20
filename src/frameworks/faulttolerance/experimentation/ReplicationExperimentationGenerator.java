@@ -74,9 +74,8 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
 //		public static int _kDefault1=1000;
 //		public static int _kDefault2=200;
-		private Integer[] kDomain= new Integer[]{5,25,75, 100};
+		private Integer[] kDomain= new Integer[]{5,25,75};
 		public static int _kDefault=25;
-		public static int _kDefaultAll=25;
 //		private Integer[] kDomain= new Integer[]{5,10,50,100,500,1000};
 //		public static int _kDefault=100;
 //		public static int _kDefaultAll=100;
@@ -84,28 +83,28 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		
 	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),
 	//	private Double[] graphDensityDomain = new Double[]{0.5};//15.,
-	private static Double[] hostCapacity = null;//new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
-	private static  Double[] graphDensityDomain = null;// new Double[]{0.8,0.2};//15., 
+	private static Double[] hostCapacity = new Double[]{0.3};//null;//new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
+	private static  Double[] graphDensityDomain =new Double[]{ 1.0};//	null;// new Double[]{0.8,0.2};//15., 
 
-	static{
-		if (ReplicationLaborantin.informativeParameter4Graph==0){
-			hostCapacity = new Double[]{0.3};
-			graphDensityDomain = new Double[]{1.};
-
-		} else if (ReplicationLaborantin.informativeParameter4Graph==1){
-			hostCapacity = new Double[]{0.8};
-			graphDensityDomain = new Double[]{0.8};			
-		} else if (ReplicationLaborantin.informativeParameter4Graph==2){
-			hostCapacity = new Double[]{0.2};
-			graphDensityDomain = new Double[]{0.8};			
-		} else if (ReplicationLaborantin.informativeParameter4Graph==3){
-			hostCapacity = new Double[]{0.8};
-			graphDensityDomain = new Double[]{0.2};			
-		} else if (ReplicationLaborantin.informativeParameter4Graph==4){
-			hostCapacity = new Double[]{0.2};
-			graphDensityDomain = new Double[]{0.2};
-		}
-	}
+//	static{
+//		if (ReplicationLaborantin.informativeParameter4Graph==0){
+//			hostCapacity = new Double[]{0.3};
+//			graphDensityDomain = new Double[]{1.};
+//
+//		} else if (ReplicationLaborantin.informativeParameter4Graph==1){
+//			hostCapacity = new Double[]{0.8};
+//			graphDensityDomain = new Double[]{0.8};			
+//		} else if (ReplicationLaborantin.informativeParameter4Graph==2){
+//			hostCapacity = new Double[]{0.2};
+//			graphDensityDomain = new Double[]{0.8};			
+//		} else if (ReplicationLaborantin.informativeParameter4Graph==3){
+//			hostCapacity = new Double[]{0.8};
+//			graphDensityDomain = new Double[]{0.2};			
+//		} else if (ReplicationLaborantin.informativeParameter4Graph==4){
+//			hostCapacity = new Double[]{0.2};
+//			graphDensityDomain = new Double[]{0.2};
+//		}
+//	}
 
 	private SocialChoiceType[] welfareDomain = 
 			new SocialChoiceType[]{SocialChoiceType.Utility,
@@ -172,7 +171,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	static boolean varyAgents=true;
 	static boolean varyHosts=false;
 
-	static boolean varyAccessibleAgent=true;
+	static boolean varyAccessibleAgent=false;//valeur ecrasé dans les default parameter
 	static boolean varySimultaneousAcceptation=true;
 	static boolean varyOpinionDiffusion=true;
 	static boolean varyAlpha=true;
@@ -238,7 +237,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		return new ReplicationExperimentationParameters(
 				nbAgentDomain[0],
 				nbHostDomain[0],
-				getValue(graphDensityDomain[0],nbAgentDomain[0]),//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
+				getValue(graphDensityDomain[0],nbAgentDomain[0]).intValue(),//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
 				dispoMeanDomain[0],//dispo mean
 				DispersionSymbolicValue.Moyen,//dispo dispersion
 				agentLoadMeanDomain[0],//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean

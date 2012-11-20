@@ -238,6 +238,8 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 
 	public enum Receivers { EveryParticipant, NotInitiatingParticipant, Initiator, None}
 
+	public int messageSended=0;
+	
 	private void send(final Contract c, final Receivers receivers, final Message m){
 		Collection<AgentIdentifier> participant;
 
@@ -247,6 +249,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			participant.addAll(c.getAllParticipants());
 			participant.remove(this.getIdentifier());
 			this.sendMessage(participant, m);
+			messageSended+=participant.size();
 //			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		case NotInitiatingParticipant :
@@ -254,11 +257,13 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			participant.addAll(c.getNotInitiatingParticipants());
 			participant.remove(this.getIdentifier());
 			this.sendMessage(participant, m);
+			messageSended+=participant.size();
 //			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		case Initiator :
 			assert !this.getIdentifier().equals(c.getInitiator());
 			this.sendMessage(c.getInitiator(), m);
+			messageSended+=1;
 //			logMonologue("sending to "+c.getInitiator()+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		}

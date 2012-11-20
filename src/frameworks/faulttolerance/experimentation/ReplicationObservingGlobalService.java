@@ -51,6 +51,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	Integer optimalTime=null;
 	Integer firstoptimaltime=null;
 	boolean iObserveStatus;
+	LightAverageDoubleAggregation lastTimeInfo;
 	/*
 	 * Agent
 	 */
@@ -68,6 +69,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	LightAverageDoubleAggregation lastReplicationtime;
 	LightAverageDoubleAggregation nbOfStateModif;
 	LightAverageDoubleAggregation searchTime;
+	LightAverageDoubleAggregation agMessageSEnded;
+	LightAverageDoubleAggregation hostMessageSEnded;
 	// Map<AgentIdentifier, Double> firstReplicationtime =
 	// new HashMap<AgentIdentifier, Double>();
 	// Map<AgentIdentifier, Double> lifeTime =
@@ -130,6 +133,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		this.agentsMinReliabilityEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsDispoEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.criticite = new LightWeightedAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.lastTimeInfo = new LightAverageDoubleAggregation();
 		this.hostsChargeEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.faulty = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsSaturationEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
@@ -137,6 +141,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		this.lastReplicationtime = new LightAverageDoubleAggregation();
 		this.nbOfStateModif = new LightAverageDoubleAggregation();
 		this.searchTime = new LightAverageDoubleAggregation();
+		this.agMessageSEnded = new LightAverageDoubleAggregation();
+		this.hostMessageSEnded = new LightAverageDoubleAggregation();
 		for (int i = 0; i < ObservingGlobalService.getNumberOfTimePoints(); i++) {
 			this.hostsChargeEvolution[i] = new LightAverageDoubleAggregation();
 			this.agentsSaturationEvolution[i] = new LightAverageDoubleAggregation();
@@ -261,6 +267,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 			if (ag.isLastInfo()) {
+				this.lastTimeInfo.add(new Double(ObservingGlobalService.getTimeStep(ag)));
 				this.lastReplicationtime.add(new Double(ag.getLastModifTime()));
 				this.nbOfStateModif.add(new Double(ag.nbOfModif));
 				for (i = ObservingGlobalService.getTimeStep(ag) + 1; 
@@ -268,6 +275,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						i++) {
 					this.updateAnAgentValue(ag, i);
 				}
+				this.agMessageSEnded.add(new Double(ag.messageSended));
 			}
 		} else if (notification instanceof ReplicationResultHost){
 			final ReplicationResultHost h = (ReplicationResultHost) notification;
@@ -276,6 +284,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 			if (h.isLastInfo()) {
+				this.lastTimeInfo.add(new Double(ObservingGlobalService.getTimeStep(h)));
 				//				if (h.nbOfModif!=0){
 //				this.lastReplicationtime.add(new Double(h.getLastModifTime()));
 				//					firstReplicationtime.add(new Double(h.getFirstModifTime()));
@@ -286,7 +295,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						i++) {
 					this.updateAnHostValue(h, i);
 				}
-
+				this.hostMessageSEnded.add(new Double(h.messageSended));
 				this.searchTime.add(h.searchTime);
 			}
 		} else {
@@ -333,7 +342,15 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						+ this.getMyAgent().getSimulationParameters().getSimulationName()
 						+ this.getMyAgent().getSimulationParameters() + "\n results are :",
 						true, false);
-		
+
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), "max="+(ObservingGlobalService.getNumberOfTimePoints()-1+"\n")+
+		ObservingGlobalService
+				.getQuantilePointObs(
+						"Last time info",
+						this.lastTimeInfo,
+						0.75,
+						this.getMyAgent().getSimulationParameters().nbAgents), true, false);
+				
 
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(),entete(),
 				true,
@@ -389,6 +406,18 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				.getQuantilePointObs(
 						"Search time",
 						this.searchTime,
+						0.75,
+						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+				.getQuantilePointObs(
+						"AgMessages",
+						this.agMessageSEnded,
+						0.75,
+						this.getMyAgent().getSimulationParameters().nbAgents), true, false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+				.getQuantilePointObs(
+						"Host message",
+						this.hostMessageSEnded,
 						0.75,
 						this.getMyAgent().getSimulationParameters().nbHosts), true, false);
 		//		 Writing.log(this.p.f, getQuantilePointObs("Life Time",
@@ -456,7 +485,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 	public static String entete(){
-		return "protocol ; welfare ; nbagent ; k; alpha_low ; alpha_high ; opinion ; mean util ; mean min ; mean dispo ; nbModif ; lastTime ; repId ; randomSeed";			
+		return "protocol ; welfare ; nbagent ; k; alpha_low ; alpha_high ; opinion ; mean util ; mean min ; mean dispo ; nbModif ; lastTime ; nbMessage/ag ; nbMessage/h ; repId ; randomSeed";			
 	}
 
 	public String getResult(){
@@ -480,20 +509,22 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				agentsDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
 				nbOfStateModif.getRepresentativeElement()+" ; "+
 				lastReplicationtime.getRepresentativeElement()+" ; "+
+				agMessageSEnded.getRepresentativeElement()+" ; "+
+				hostMessageSEnded.getRepresentativeElement()+" ; "+
 				this.getMyAgent().getSimulationParameters().getSimulationName()+" ; "+
 				this.getMyAgent().getSimulationParameters().randSeed
-				
-				+"\n"+
-				this.getMyAgent().getSimulationParameters()._usedProtocol +" ; "+
-				this.getMyAgent().getSimulationParameters()._socialWelfare +" ; "+
-				this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
-				this.getMyAgent().getSimulationParameters().kSolver +" ; "+
-				this.getMyAgent().getSimulationParameters().alpha_low +" ; "+
-				this.getMyAgent().getSimulationParameters().alpha_high +" ; "+
-				this.getMyAgent().getSimulationParameters().opinionDiffusionDegree/this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
-				agentsExpectedReliabilityEvolution[0].getRepresentativeElement()+" ; "+
-				agentsMinReliabilityEvolution[0].getRepresentativeElement()+" ; "+
-				agentsDispoEvolution[0].getRepresentativeElement();
+				;
+//				+"\n"+
+//				this.getMyAgent().getSimulationParameters()._usedProtocol +" ; "+
+//				this.getMyAgent().getSimulationParameters()._socialWelfare +" ; "+
+//				this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
+//				this.getMyAgent().getSimulationParameters().kSolver +" ; "+
+//				this.getMyAgent().getSimulationParameters().alpha_low +" ; "+
+//				this.getMyAgent().getSimulationParameters().alpha_high +" ; "+
+//				this.getMyAgent().getSimulationParameters().opinionDiffusionDegree/this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
+//				agentsExpectedReliabilityEvolution[0].getRepresentativeElement()+" ; "+
+//				agentsMinReliabilityEvolution[0].getRepresentativeElement()+" ; "+
+//				agentsDispoEvolution[0].getRepresentativeElement();
 	}
 
 	//

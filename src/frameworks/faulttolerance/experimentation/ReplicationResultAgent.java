@@ -24,6 +24,8 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	final Double disponibility;
 	private final long lastModifTime;
 	int nbOfModif;
+	
+	final int messageSended;
 
 	final int numberOfAllocatedResources;
 	//	public void setiAmDead(final boolean iAmDead) {
@@ -36,6 +38,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 
 	public ReplicationResultAgent(final ReplicaState s,
 			final long lastModifTime,
+			int messageSended,
 			final int initialStateCounter,
 			final Date agentCreationTime, final AgentStateStatus status) {
 		super();
@@ -48,10 +51,12 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.nbOfModif = s.getStateCounter()-initialStateCounter;
 		this.numberOfAllocatedResources=s.getMyResourceIdentifiers().size();
 		this.status = status;
+		this.messageSended=messageSended;
 	}
 
 	public ReplicationResultAgent(final ReplicaState s,
 			final long lastModifTime,
+			int messageSended,
 			final Date agentCreationTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
@@ -62,6 +67,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.lastModifTime=lastModifTime;
 		this.numberOfAllocatedResources=s.getMyResourceIdentifiers().size();
 		this.status = null;
+		this.messageSended=messageSended;
 	}
 
 	@Override

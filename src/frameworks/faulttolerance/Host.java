@@ -49,6 +49,7 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 		protected ExperimentationResults generateMyResults() {
 			return new ReplicationResultHost(
 					Host.this.getMyCurrentState(),//firstModifTime,
+					Host.this.getMyProtocol().messageSended,
 //					Host.this.lastModifTime,
 					Host.this.getCreationTime(),//Host.this.initialStateNumber
 					Host.this.searchTime);

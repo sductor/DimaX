@@ -2,6 +2,7 @@ package frameworks.faulttolerance.solver;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -24,8 +25,8 @@ public class SolverTEster {
 		Random rand = new Random(65646);
 		PseudoRandom.seed=rand.nextDouble();
 
-		boolean knitro=true;
-		boolean metal=false; 
+		boolean knitro=false;
+		boolean metal=true; 
 		boolean bbTest=false;
 		boolean bestTest=false;
 		
@@ -51,12 +52,12 @@ public class SolverTEster {
 		double metalBetterKnitro=0;
 		LogService.logOnFile(new File("yo"),"*************************",false,false);
 			
-		int nbAgent=10;
-		double hostCap=200;
-		for (hostCap=5; hostCap<nbAgent; hostCap*=2)  {
+		int nbAgent=500;
+		double hostCap=150;
+//		for (hostCap=5; hostCap<nbAgent; hostCap*=2)  {
 			
 //		for (int heuristic=1; heuristic<=2; heuristic++){
-			System.out.println("yo");
+//			System.out.println("yo");
 //			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+heuristic);
 //			try {
 				for (int i = 0; i < 10; i++){
@@ -75,7 +76,7 @@ public class SolverTEster {
 					} catch (IfailedException e1) {
 //										e1.printStackTrace();
 					}
-					rig = rig.getUnallocatedGraph();
+//					rig = rig.getUnallocatedGraph();
 					//			System.out.println(rig);
 					//
 					// Opt
@@ -125,8 +126,10 @@ public class SolverTEster {
 						jms.myState=rig.getHostsStates().iterator().next();
 						jms.setProblem(rig, new ArrayList<AgentIdentifier>());
 //						if(rig.getHostsIdentifier().size()==1)jms.initialSolution=jms.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
-						jms.setTimeLimit(30000);					
+//						jms.setTimeLimit(30000);	
+						System.out.println("solving "+new Date()+" "+jms.initialSolution);		
 						jmsbestSolution = jms.solveProb(true);
+						System.out.println("ok "+ new Date()+" "+jmsbestSolution);
 						metalEstimatedTime += System.currentTimeMillis() - initTime;
 					}
 
@@ -204,7 +207,7 @@ public class SolverTEster {
 //				System.out.println("heuristic number "+heuristic+" has raised "+e);
 //				e.printStackTrace();
 //			}
-		}
+//		}
 	}
 //}
 

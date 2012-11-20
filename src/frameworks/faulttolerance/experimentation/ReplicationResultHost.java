@@ -30,11 +30,13 @@ public class ReplicationResultHost implements ExperimentationResults {
 	Double searchTime;
 
 
+	int messageSended;
 	final boolean isFaulty;
 	boolean lastInfo;
 
 	public ReplicationResultHost(final HostState s, //long firstModifTime,
 //			final long lastModifTime,
+			int messageSended,
 			final Date agentCreationTime, 
 //			final int initialStateCounter,
 			final LightAverageDoubleAggregation searchTime) {
@@ -52,6 +54,7 @@ public class ReplicationResultHost implements ExperimentationResults {
 		//		this.firstModifTime=firstModifTime;
 //		this.lastModifTime=lastModifTime;
 		this.searchTime=searchTime.getRepresentativeElement();
+		this.messageSended=messageSended;
 	}
 
 	@Override

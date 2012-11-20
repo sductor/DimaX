@@ -76,7 +76,6 @@ public final class Experimentator extends APIAgent{
 		this.allSimu.addAll(this.simuToLaunch);
 		Collections.sort(this.allSimu);
 		Collections.sort(this.simuToLaunch);
-		System.out.println(this.simuToLaunch);
 		this.awaitingAnswer=this.simuToLaunch.size();
 	}
 
@@ -87,7 +86,7 @@ public final class Experimentator extends APIAgent{
 
 	@ProactivityInitialisation
 	public void initialise() throws CompetenceException{
-		LogService.logOnFile(this.myProtocol.finalResultPath, ReplicationObservingGlobalService.entete(), true, false);	
+		LogService.logOnFile(this.myProtocol.finalResultPath, ReplicationObservingGlobalService.entete(), false, false);	
 		this.logWarning("Experimentator created for: "+this.simuToLaunch.size()+" experiences to launch! ",LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());this.myProtocol.toString()
 		this.logWarning(this.getDescription(),LogService.onBoth);
 		this.launchSimulation();

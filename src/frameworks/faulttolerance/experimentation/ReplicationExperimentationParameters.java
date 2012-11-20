@@ -85,7 +85,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public SocialChoiceType _socialWelfare;
 
 	public int agentAccessiblePerHost;
-	public static int maxHostAccessibleParAgent;
+	public static int maxHostAccessibleParAgent=Integer.MAX_VALUE;
 
 	public  int simultaneousCandidature;
 	public  int kSolver;

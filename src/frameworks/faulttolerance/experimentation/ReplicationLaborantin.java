@@ -106,7 +106,6 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, IfailedException, NotEnoughMachinesException{
 		//		System.out.println(1<<10000);
-		ReplicationExperimentationParameters.maxHostAccessibleParAgent=30;
 		
 		
 		informativeParameter4Graph = 0;

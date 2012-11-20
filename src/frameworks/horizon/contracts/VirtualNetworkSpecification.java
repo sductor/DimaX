@@ -49,6 +49,7 @@ public class VirtualNetworkSpecification extends HorizonSpecification {
 		return this.node;
 	}
 
+	@Override
 	public VirtualNetworkSpecification clone(){
 		return this;
 	}

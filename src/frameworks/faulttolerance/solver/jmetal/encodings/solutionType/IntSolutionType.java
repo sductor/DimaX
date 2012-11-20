@@ -3,7 +3,7 @@
 //  Author:
 //       Antonio J. Nebro <antonio@lcc.uma.es>
 //       Juan J. Durillo <durillo@lcc.uma.es>
-// 
+//
 //  Copyright (c) 2011 Antonio J. Nebro, Juan J. Durillo
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -28,16 +28,16 @@ import frameworks.faulttolerance.solver.jmetal.encodings.variable.Int;
 
 
 /**
- * Class representing the solution type of solutions composed of Int variables 
+ * Class representing the solution type of solutions composed of Int variables
  */
 public class IntSolutionType extends SolutionType {
 
 	/**
 	 * Constructor
 	 * @param problem
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
-	public IntSolutionType(Problem problem) throws ClassNotFoundException {
+	public IntSolutionType(final Problem problem) throws ClassNotFoundException {
 		super(problem) ;
 	} // Constructor
 
@@ -45,12 +45,14 @@ public class IntSolutionType extends SolutionType {
 	 * Creates the variables of the solution
 	 * @param decisionVariables
 	 */
+	@Override
 	public Variable[] createVariables() {
-		Variable[] variables = new Variable[problem_.getNumberOfVariables()];
+		final Variable[] variables = new Variable[this.problem_.getNumberOfVariables()];
 
-		for (int var = 0; var < problem_.getNumberOfVariables(); var++)
-			variables[var] = new Int((int)problem_.getLowerLimit(var),
-					(int)problem_.getUpperLimit(var));    
+		for (int var = 0; var < this.problem_.getNumberOfVariables(); var++) {
+			variables[var] = new Int((int)this.problem_.getLowerLimit(var),
+					(int)this.problem_.getUpperLimit(var));
+		}
 
 		return variables ;
 	} // createVariables

@@ -8,9 +8,9 @@ import dima.basicinterfaces.DimaComponentInterface;
 public interface AcquaintancesHandler extends DimaComponentInterface {
 
 	public Collection<AgentIdentifier> getAcquaintances();
-	
+
 	public boolean addAcquaintance(AgentIdentifier id);
-	
+
 	public boolean removeAcquaintance(AgentIdentifier id);
-	
+
 }

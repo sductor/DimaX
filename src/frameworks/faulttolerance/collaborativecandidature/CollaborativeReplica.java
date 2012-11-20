@@ -1,10 +1,6 @@
 package frameworks.faulttolerance.collaborativecandidature;
 
-import java.io.Serializable;
-import java.util.Collection;
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import frameworks.faulttolerance.Replica;
@@ -12,7 +8,6 @@ import frameworks.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
-import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.AtMostKCandidaturesProposer;
 import frameworks.negotiation.protocoles.collaborative.AgentInformedSelectionCore;
@@ -21,7 +16,6 @@ import frameworks.negotiation.protocoles.collaborative.InformedCandidatureRation
 import frameworks.negotiation.protocoles.collaborative.OneDeciderCommunicationProtocol;
 import frameworks.negotiation.rationality.AltruistRationalCore;
 import frameworks.negotiation.rationality.RationalAgent;
-import frameworks.negotiation.rationality.SimpleRationalAgent;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class CollaborativeReplica extends Replica<InformedCandidature<ReplicationCandidature>> {
@@ -39,6 +33,11 @@ public class CollaborativeReplica extends Replica<InformedCandidature<Replicatio
 				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),new InformedCandidatureRationality(new ReplicaCore(false,false),true)),
 				new AgentInformedSelectionCore(),
 				new AtMostKCandidaturesProposer(simulateanousKCadidature){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 7420996429787531141L;
+
 			@Override
 			public InformedCandidature<ReplicationCandidature> constructCandidature(
 					final ResourceIdentifier id) {
@@ -55,17 +54,17 @@ public class CollaborativeReplica extends Replica<InformedCandidature<Replicatio
 	}
 
 
-//	@Override
-//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-//		return new ReplicationCandidature((ResourceIdentifier) id,this.getIdentifier(),false,true);	
-//		}
-//
-//
-//	@Override
-//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-//		assert false;
-//		return null;
-//	}
+	//	@Override
+	//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+	//		return new ReplicationCandidature((ResourceIdentifier) id,this.getIdentifier(),false,true);
+	//		}
+	//
+	//
+	//	@Override
+	//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+	//		assert false;
+	//		return null;
+	//	}
 
 }
 

@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
-import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.ontologies.Protocol;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLEnvelopeClass.FipaACLEnvelope;
@@ -19,9 +16,6 @@ import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.FipaACLMessage;
 import dima.introspectionbasedagents.ontologies.FIPAACLOntologie.Performative;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.faulttolerance.Host;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.NegotiationParameters;
@@ -30,10 +24,7 @@ import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.contracts.ContractIdentifier;
 import frameworks.negotiation.contracts.ContractTransition;
 import frameworks.negotiation.contracts.ContractTrunk;
-import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.UnknownContractException;
-import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
-import frameworks.negotiation.protocoles.dcopProtocol.DcopAgentProtocol;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
 
@@ -146,7 +137,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 	@PostStepComposant(ticker = NegotiationParameters._initiatorPropositionFrequency)
 	public void initiateNegotiation() {
 		if (this.isActive() &&
-				ImAllowedToNegotiate(this.contracts)
+				this.ImAllowedToNegotiate(this.contracts)
 				&& this.getMyAgent().getMyProposerCore().IWantToNegotiate(this.contracts)) {
 			try {
 				final Collection<? extends Contract> cs =
@@ -155,18 +146,23 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 
 				this.logMonologue("\n\n**************> I propose "+cs,AbstractCommunicationProtocol.log_negotiationStep);
 				for (final Contract c : cs){
-					assert c.getInitiator().equals(getMyAgent().getIdentifier()):c;
-					if (c.getAllParticipants().contains(getIdentifier()))this.getMyAgent().setMySpecif(c);
-					if (c.getAllParticipants().contains(getIdentifier()))c.setInitialState(this.getMyAgent().getMyCurrentState());
-					//				for (AgentIdentifier id : c .getNotInitiatingParticipants()){
-					//					try {
-					//						c.setInitialState(this.getMyAgent().getMyInformation().getInformation(
-					//								getMyAgent().getMyCurrentState().getMyResourcesClass(), 
-					//								id));
-					//					} catch (NoInformationAvailableException e) {}
-					//				}
+					assert c.getInitiator().equals(this.getMyAgent().getIdentifier()):c;
+					if (c.getAllParticipants().contains(this.getIdentifier())) {
+						this.getMyAgent().setMySpecif(c);
+					}
+					if (c.getAllParticipants().contains(this.getIdentifier()))
+					{
+						c.setInitialState(this.getMyAgent().getMyCurrentState());
+						//				for (AgentIdentifier id : c .getNotInitiatingParticipants()){
+						//					try {
+						//						c.setInitialState(this.getMyAgent().getMyInformation().getInformation(
+						//								getMyAgent().getMyCurrentState().getMyResourcesClass(),
+						//								id));
+						//					} catch (NoInformationAvailableException e) {}
+						//				}
+					}
 
-					this.send(c, getProposalReceivers(), new SimpleContractProposal(Performative.Propose, c));
+					this.send(c, this.getProposalReceivers(), new SimpleContractProposal(Performative.Propose, c));
 					this.contracts.addContract(c);
 					assert this.receivedContract.add(c.getContractIdentifier());
 					//, (Collection<Information>) this.getMyAgent().getMyResources()));
@@ -206,7 +202,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			//			assert ContractTransition.allComplete(getContracts().getAllContracts());
 
 			this.getMyAgent().getMySelectionCore().select(
-					this.getContracts(), getMyAgent().getMyCurrentState(),toAccept, toReject, toPutOnWait);
+					this.getContracts(), this.getMyAgent().getMyCurrentState(),toAccept, toReject, toPutOnWait);
 
 			//
 			// Validity
@@ -239,7 +235,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 	public enum Receivers { EveryParticipant, NotInitiatingParticipant, Initiator, None}
 
 	public int messageSended=0;
-	
+
 	private void send(final Contract c, final Receivers receivers, final Message m){
 		Collection<AgentIdentifier> participant;
 
@@ -249,22 +245,22 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			participant.addAll(c.getAllParticipants());
 			participant.remove(this.getIdentifier());
 			this.sendMessage(participant, m);
-			messageSended+=participant.size();
-//			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
+			this.messageSended+=participant.size();
+			//			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		case NotInitiatingParticipant :
 			participant = new ArrayList<AgentIdentifier>();
 			participant.addAll(c.getNotInitiatingParticipants());
 			participant.remove(this.getIdentifier());
 			this.sendMessage(participant, m);
-			messageSended+=participant.size();
-//			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
+			this.messageSended+=participant.size();
+			//			logMonologue("sending to "+participant+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		case Initiator :
 			assert !this.getIdentifier().equals(c.getInitiator());
 			this.sendMessage(c.getInitiator(), m);
-			messageSended+=1;
-//			logMonologue("sending to "+c.getInitiator()+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
+			this.messageSended+=1;
+			//			logMonologue("sending to "+c.getInitiator()+"\n"+m,AbstractCommunicationProtocol.log_negotiationStep );
 			break;
 		}
 	}
@@ -331,7 +327,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 					AbstractCommunicationProtocol.log_negotiationStep);
 		}
 
-		AgentState myInitialState = this.getMyAgent().getMyCurrentState();
+		final AgentState myInitialState = this.getMyAgent().getMyCurrentState();
 		this.contracts.removeAll(contracts);
 		//		assert contractsAreClean(contracts);
 		this.getMyAgent().execute(contracts);
@@ -350,10 +346,12 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 	}
 
 	private boolean contractsAreClean(final Collection<Contract> cs){
-		for (Contract n:cs){
-			for (AgentIdentifier id : n.getAllParticipants())
-				if (!id.equals(getMyAgent().getIdentifier()))
-					assert getContracts().getContracts(id).isEmpty():id+" -->\n"+getContracts().getContracts(id);
+		for (final Contract n:cs){
+			for (final AgentIdentifier id : n.getAllParticipants()) {
+				if (!id.equals(this.getMyAgent().getIdentifier())) {
+					assert this.getContracts().getContracts(id).isEmpty():id+" -->\n"+this.getContracts().getContracts(id);
+				}
+			}
 		}
 		return true;
 	}
@@ -563,7 +561,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			assert this.alreadyCancelled.add(c);
 			this.contracts.remove(contract);
 		} catch (final UnknownContractException e) {
-//			this.faceAnUnknownContract(e);
+			//			this.faceAnUnknownContract(e);
 			return;
 		}
 	}
@@ -641,6 +639,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			return this.answeredContract;
 		}
 
+		@Override
 		public String description() {
 			return "Answer of contract " + this.answeredContract;
 		}
@@ -662,18 +661,19 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 		}
 
 		public AgentState getMyInitialState() {
-			return myInitialState;
+			return this.myInitialState;
 		}
 
-		public void setMyInitialState(AgentState myInitialState) {
+		public void setMyInitialState(final AgentState myInitialState) {
 			this.myInitialState = myInitialState;
 		}
 
+		@Override
 		public SimpleContractAnswer clone(){
-			SimpleContractAnswer m = new SimpleContractAnswer(getPerformative(), answeredContract);
-			m.mySpec=mySpec;
-			m.myNewState=myNewState;
-			m.myInitialState=myInitialState;
+			final SimpleContractAnswer m = new SimpleContractAnswer(this.getPerformative(), this.answeredContract);
+			m.mySpec=this.mySpec;
+			m.myNewState=this.myNewState;
+			m.myInitialState=this.myInitialState;
 			return m;
 		}
 	}
@@ -693,25 +693,28 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			super(performative, AbstractCommunicationProtocol.class);
 			assert myContract != null;
 			AbstractCommunicationProtocol.this.getMyAgent().setMySpecif(myContract);
-			if (myContract.getAllParticipants().contains(getMyAgent().getIdentifier()))
+			if (myContract.getAllParticipants().contains(AbstractCommunicationProtocol.this.getMyAgent().getIdentifier())) {
 				myContract.setInitialState(
 						AbstractCommunicationProtocol.this.getMyAgent().getMyCurrentState());
+			}
 			// this.myContract = (Contract) myContract.clone();
-			this.myContract = (Contract) myContract;
+			this.myContract = myContract;
 			//			this.attachedInfos=attachedInfos;
 		}
 
 		public Contract getMyContract() {
 			return this.myContract;
 		}
+		@Override
 		public SimpleContractProposal clone(){
-			return new SimpleContractProposal(getPerformative(), (Contract)myContract.clone());
+			return new SimpleContractProposal(this.getPerformative(), (Contract)this.myContract.clone());
 		}
 
 		public ContractIdentifier getContractIdentifier() {
 			return this.myContract.getContractIdentifier();
 		}
 
+		@Override
 		public String description() {
 			return "Envellope of contract " + this.myContract.getContractIdentifier();
 		}
@@ -743,8 +746,8 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 				//			this.sendMessage(e.getId().getParticipants(), new ShowYourPocket(
 				//					this.getIdentifier(), "facing an unknown contract"));
 			}
-		} catch (Exception ex){
-			//			this.signalException("facing unknonw contract!!!!! ",e);			
+		} catch (final Exception ex){
+			//			this.signalException("facing unknonw contract!!!!! ",e);
 		}
 	}
 

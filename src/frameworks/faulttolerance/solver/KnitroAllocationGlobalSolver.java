@@ -1,29 +1,5 @@
 package frameworks.faulttolerance.solver;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Random;
-
-import com.ziena.knitro.KnitroJava;
-
-import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
-import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import frameworks.experimentation.IfailedException;
-import frameworks.faulttolerance.experimentation.ReplicationGraph;
-import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
-import frameworks.faulttolerance.negotiatingagent.HostState;
-import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
-import frameworks.faulttolerance.negotiatingagent.ReplicationSocialOptimisation;
-import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.exploration.ResourceAllocationSolver;
-import frameworks.negotiation.exploration.Solver;
-import frameworks.negotiation.exploration.Solver.UnsatisfiableException;
-import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class KnitroAllocationGlobalSolver extends KnitroResourceAllocationSolver{
@@ -40,9 +16,14 @@ public class KnitroAllocationGlobalSolver extends KnitroResourceAllocationSolver
 	 * 
 	 */
 
-	public KnitroAllocationGlobalSolver(SocialChoiceType socialChoice,
-			boolean isAgent, boolean isHost, int algo, boolean cplex,
-			int numberOfThreads) {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7664321918415297517L;
+
+	public KnitroAllocationGlobalSolver(final SocialChoiceType socialChoice,
+			final boolean isAgent, final boolean isHost, final int algo, final boolean cplex,
+			final int numberOfThreads) {
 		super(socialChoice, isAgent, isHost, algo, cplex, numberOfThreads);
 	}
 
@@ -64,26 +45,27 @@ public class KnitroAllocationGlobalSolver extends KnitroResourceAllocationSolver
 	 *  For more information about the arguments, refer to the KNITRO
 	 *  manual, especially the section on the Callable Library.
 	 */
-	protected double evaluateFC(double[] daX, double[] daC) {
+	@Override
+	protected double evaluateFC(final double[] daX, final double[] daC) {
 
 		//constraints
-		if (isAgent){
+		if (this.isAgent){
 			//n first : survivability of agent i
-			for (int agent_i = 0; agent_i < n; agent_i++){
-				daC[getAgentConstraintPos(agent_i)]=getDispo(new RessourceAllocationSimpleSolutionType(daX), agent_i);					
+			for (int agent_i = 0; agent_i < this.n; agent_i++){
+				daC[this.getAgentConstraintPos(agent_i)]=this.getDispo(new RessourceAllocationSimpleSolutionType(daX), agent_i);
 			}
 		}
 
-		if (isHost){
+		if (this.isHost){
 			//m next proc  of host i
-			//m next mem  of host i	
-			for (int host_j = 0; host_j < m; host_j++){
-				daC[getHostConstraintPos(host_j, true)]=getHostMemoryCharge(new RessourceAllocationSimpleSolutionType(daX), host_j);
-				daC[getHostConstraintPos(host_j, false)]=getHostProcessorCharge(new RessourceAllocationSimpleSolutionType(daX), host_j);
+			//m next mem  of host i
+			for (int host_j = 0; host_j < this.m; host_j++){
+				daC[this.getHostConstraintPos(host_j, true)]=this.getHostMemoryCharge(new RessourceAllocationSimpleSolutionType(daX), host_j);
+				daC[this.getHostConstraintPos(host_j, false)]=this.getHostProcessorCharge(new RessourceAllocationSimpleSolutionType(daX), host_j);
 			}
-		}	
+		}
 
-		return getSocWelfare(new RessourceAllocationSimpleSolutionType(daX));
+		return this.getSocWelfare(new RessourceAllocationSimpleSolutionType(daX));
 	}
 
 	/** Compute the function and constraint first deriviatives at x.
@@ -91,24 +73,25 @@ public class KnitroAllocationGlobalSolver extends KnitroResourceAllocationSolver
 	 *  For more information about the arguments, refer to the KNITRO
 	 *  manual, especially the section on the Callable Library.
 	 */
-	protected void evaluateGA(double[]  daX, double[]  daObjGrad, double[]  daJac) {
-		for (int agent_i = 0; agent_i < n; agent_i++){
-			for (int host_j = 0; host_j < m; host_j++){
+	@Override
+	protected void evaluateGA(final double[]  daX, final double[]  daObjGrad, final double[]  daJac) {
+		for (int agent_i = 0; agent_i < this.n; agent_i++){
+			for (int host_j = 0; host_j < this.m; host_j++){
 				//obj
-				double dRondSocWelfare = getDRondSocWelfare(new RessourceAllocationSimpleSolutionType(daX), agent_i, host_j);
-				daObjGrad[getPos(agent_i,host_j)]=dRondSocWelfare;
+				final double dRondSocWelfare = this.getDRondSocWelfare(new RessourceAllocationSimpleSolutionType(daX), agent_i, host_j);
+				daObjGrad[this.getPos(agent_i,host_j)]=dRondSocWelfare;
 				//surv
-				if (isAgent){
-					daJac[getJacSurvieConstraintPos(agent_i, host_j)]=1;
+				if (this.isAgent){
+					daJac[this.getJacSurvieConstraintPos(agent_i, host_j)]=1;
 				}
-				if (isHost){
+				if (this.isHost){
 					//mem
-					daJac[getJacChargeConstraintPos(agent_i, host_j, true)]=getAgentMemorycharge(agent_i);
+					daJac[this.getJacChargeConstraintPos(agent_i, host_j, true)]=this.getAgentMemorycharge(agent_i);
 					//proc
-					daJac[getJacChargeConstraintPos(agent_i, host_j, false)]=getAgentProcessorCharge(agent_i);
+					daJac[this.getJacChargeConstraintPos(agent_i, host_j, false)]=this.getAgentProcessorCharge(agent_i);
 				}
-				if (isLocal()){
-					daJac[getLocalConstraintPos()]=dRondSocWelfare;
+				if (this.isLocal()){
+					daJac[this.getLocalConstraintPos()]=dRondSocWelfare;
 				}
 			}
 		}
@@ -119,37 +102,40 @@ public class KnitroAllocationGlobalSolver extends KnitroResourceAllocationSolver
 	 *  For more information about the arguments, refer to the KNITRO
 	 *  manual, especially the section on the Callable Library.
 	 */
-	protected void evaluateH(double[]  daX, double[]  daLambda, double[]  daHess, boolean withObj) {
+	@Override
+	protected void evaluateH(final double[]  daX, final double[]  daLambda, final double[]  daHess, final boolean withObj) {
 		int pos=0;
-		if (socialChoice.equals(SocialChoiceType.Utility)){
-			for (int agent_i = 0; agent_i < n; agent_i++){
-				for (int host_j = 0; host_j < m; host_j++){
-					for (int host_jp = host_j; host_jp < m; host_jp++){
+		if (this.socialChoice.equals(SocialChoiceType.Utility)){
+			for (int agent_i = 0; agent_i < this.n; agent_i++){
+				for (int host_j = 0; host_j < this.m; host_j++){
+					for (int host_jp = host_j; host_jp < this.m; host_jp++){
 						daHess[pos]=0;
-						double dRond2SocWelfare = getDRondDeuxSocWelfare(new RessourceAllocationSimpleSolutionType(daX), agent_i, host_j, agent_i, host_jp);
-						if (withObj)
+						final double dRond2SocWelfare = this.getDRondDeuxSocWelfare(new RessourceAllocationSimpleSolutionType(daX), agent_i, host_j, agent_i, host_jp);
+						if (withObj) {
 							daHess[pos]+=dRond2SocWelfare;
+						}
 
-						if (isLocal()){
-							daHess[pos]+=daLambda[getLocalConstraintPos()] * dRond2SocWelfare;								
+						if (this.isLocal()){
+							daHess[pos]+=daLambda[this.getLocalConstraintPos()] * dRond2SocWelfare;
 						}
 
 						pos++;
 					}
 				}
 			}
-		} else if (socialChoice.equals(SocialChoiceType.Nash)){
-			for (int agent_i = 0; agent_i < n;  agent_i++){
-				for (int agent_ip =  agent_i;  agent_ip < n;  agent_ip++){
-					for (int host_j = 0; host_j < m; host_j++){
-						for (int host_jp = host_j; host_jp < m; host_jp++){
+		} else if (this.socialChoice.equals(SocialChoiceType.Nash)){
+			for (int agent_i = 0; agent_i < this.n;  agent_i++){
+				for (int agent_ip =  agent_i;  agent_ip < this.n;  agent_ip++){
+					for (int host_j = 0; host_j < this.m; host_j++){
+						for (int host_jp = host_j; host_jp < this.m; host_jp++){
 							daHess[pos]=0;
-							double dRond2SocWelfare = getDRondDeuxSocWelfare(new RessourceAllocationSimpleSolutionType(daX), agent_i, host_j, agent_ip, host_jp);
-							if (withObj)
+							final double dRond2SocWelfare = this.getDRondDeuxSocWelfare(new RessourceAllocationSimpleSolutionType(daX), agent_i, host_j, agent_ip, host_jp);
+							if (withObj) {
 								daHess[pos]+=dRond2SocWelfare;
+							}
 
-							if (isLocal()){
-								daHess[pos]+=daLambda[getLocalConstraintPos()] * dRond2SocWelfare;								
+							if (this.isLocal()){
+								daHess[pos]+=daLambda[this.getLocalConstraintPos()] * dRond2SocWelfare;
 							}
 
 							pos++;
@@ -160,53 +146,58 @@ public class KnitroAllocationGlobalSolver extends KnitroResourceAllocationSolver
 
 
 		} else {
-			assert (socialChoice.equals(SocialChoiceType.Leximin));
+			assert this.socialChoice.equals(SocialChoiceType.Leximin);
 			throw new RuntimeException();
 		}
 	}
 
+	@Override
 	protected int setNumNonNulJAc() {
 		int jvarNonNul=0;
-		if (isAgent)
-			jvarNonNul += (m*n);
-		if (isHost)
-			jvarNonNul += 2*(m*n);
+		if (this.isAgent) {
+			jvarNonNul += this.m*this.n;
+		}
+		if (this.isHost) {
+			jvarNonNul += 2*this.m*this.n;
+		}
 		return jvarNonNul;
 	}//ET LOCAL ALORS?????
 
+	@Override
 	protected int setNumNonNulHess() {
 		int hvarNonNul=0;
-		if (socialChoice.equals(SocialChoiceType.Utility)){
-			hvarNonNul=n*((m*m-m)/2+m);//pour chaque agent on a un carré sans diag de card (m*m-m)/2 et on rajoute la diag de m elem
-		} else if (socialChoice.equals(SocialChoiceType.Nash)){
-			hvarNonNul=n*m*n*m;
+		if (this.socialChoice.equals(SocialChoiceType.Utility)){
+			hvarNonNul=this.n*((this.m*this.m-this.m)/2+this.m);//pour chaque agent on a un carré sans diag de card (m*m-m)/2 et on rajoute la diag de m elem
+		} else if (this.socialChoice.equals(SocialChoiceType.Nash)){
+			hvarNonNul=this.n*this.m*this.n*this.m;
 		} else {
-			assert (socialChoice.equals(SocialChoiceType.Leximin));
+			assert this.socialChoice.equals(SocialChoiceType.Leximin);
 			throw new RuntimeException();
 		}
 		return hvarNonNul;
 	}
 
-	protected void setHessian(int[] hIndexRow, int[] hIndexCol) {
-		if (socialChoice.equals(SocialChoiceType.Utility)){
+	@Override
+	protected void setHessian(final int[] hIndexRow, final int[] hIndexCol) {
+		if (this.socialChoice.equals(SocialChoiceType.Utility)){
 			int pos=0;
-			for (int i = 0; i < n; i++){
-				for (int j = 0; j < m; j++){
-					for (int jp = j; jp < m; jp++){
-						hIndexRow[pos]=getPos(i, j);
-						hIndexCol[pos]=getPos(i, jp);
+			for (int i = 0; i < this.n; i++){
+				for (int j = 0; j < this.m; j++){
+					for (int jp = j; jp < this.m; jp++){
+						hIndexRow[pos]=this.getPos(i, j);
+						hIndexCol[pos]=this.getPos(i, jp);
 						pos++;
 					}
 				}
 			}
-		} else if (socialChoice.equals(SocialChoiceType.Nash)){
+		} else if (this.socialChoice.equals(SocialChoiceType.Nash)){
 			int pos=0;
-			for (int i = 0; i < n; i++){
-				for (int ip = i; ip < n; ip++){
-					for (int j = 0; j < m; j++){
-						for (int jp = j; jp < m; jp++){
-							hIndexRow[pos]=getPos(i, j);
-							hIndexCol[pos]=getPos(ip, jp);
+			for (int i = 0; i < this.n; i++){
+				for (int ip = i; ip < this.n; ip++){
+					for (int j = 0; j < this.m; j++){
+						for (int jp = j; jp < this.m; jp++){
+							hIndexRow[pos]=this.getPos(i, j);
+							hIndexCol[pos]=this.getPos(ip, jp);
 							pos++;
 						}
 					}
@@ -215,27 +206,28 @@ public class KnitroAllocationGlobalSolver extends KnitroResourceAllocationSolver
 
 
 		} else {
-			assert (socialChoice.equals(SocialChoiceType.Leximin));
+			assert this.socialChoice.equals(SocialChoiceType.Leximin);
 			throw new RuntimeException();
 		}
 	}
 
-	protected  void setJacobian(int[] jacIndexVars, int[] jacIndexCons) {
-		for (int i = 0; i < n; i++){
-			for (int j = 0; j < m; j++){
-				if (isHost){
+	@Override
+	protected  void setJacobian(final int[] jacIndexVars, final int[] jacIndexCons) {
+		for (int i = 0; i < this.n; i++){
+			for (int j = 0; j < this.m; j++){
+				if (this.isHost){
 					//mem de j : la case getPos(i,j) suivant les case de survie correspond à la contrainte de mem du jeme hote
-					jacIndexVars[getJacChargeConstraintPos(i, j,true)]=getPos(i, j);
-					jacIndexCons[getJacChargeConstraintPos(i, j,true)]=getHostConstraintPos(j, true);
+					jacIndexVars[this.getJacChargeConstraintPos(i, j,true)]=this.getPos(i, j);
+					jacIndexCons[this.getJacChargeConstraintPos(i, j,true)]=this.getHostConstraintPos(j, true);
 
 					//proc de j :la case getPos(i,j) suivant les case de survie et de mémoire correspond à la contrainte de proc du jeme hote
-					jacIndexVars[getJacChargeConstraintPos(i, j,false)]=getPos(i, j);
-					jacIndexCons[getJacChargeConstraintPos(i, j,false)]=getHostConstraintPos(j, false);
+					jacIndexVars[this.getJacChargeConstraintPos(i, j,false)]=this.getPos(i, j);
+					jacIndexCons[this.getJacChargeConstraintPos(i, j,false)]=this.getHostConstraintPos(j, false);
 				}
-				if (isAgent){
+				if (this.isAgent){
 					//survie : la case getPos(i,j) correspond a la survie du ieme agent
-					jacIndexVars[getJacSurvieConstraintPos(i,j)]=getPos(i, j);
-					jacIndexCons[getJacSurvieConstraintPos(i,j)]=getAgentConstraintPos(i);
+					jacIndexVars[this.getJacSurvieConstraintPos(i,j)]=this.getPos(i, j);
+					jacIndexCons[this.getJacSurvieConstraintPos(i,j)]=this.getAgentConstraintPos(i);
 				}
 			}
 		}

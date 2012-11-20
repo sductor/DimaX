@@ -7,13 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import darx.DarxMessage;
-import darx.Logger;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.annotations.Competence;
-import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -23,15 +19,14 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 import dima.introspectionbasedagents.services.darxkernel.DimaXTask;
 import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.launch.ApiLaunchService;
-import dima.introspectionbasedagents.services.launch.LaunchableComponent;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
 import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
-import dima.introspectionbasedagents.services.loggingactivity.AbstractDebugableMessageInterface;
+import dima.introspectionbasedagents.services.launch.ApiLaunchService;
+import dima.introspectionbasedagents.services.launch.LaunchableComponent;
 import dima.introspectionbasedagents.services.loggingactivity.DebugProtocol;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
+import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice;
 
 public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent implements CommunicatingCompetentComponent, LaunchableComponent{
@@ -46,7 +41,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public DimaXTask<BasicCompetentAgent> darxEngine=null;
 	private Random r;
 	boolean isActive=true;
-	
+
 	@Competence
 	DebugProtocol sage = new DebugProtocol();
 
@@ -101,7 +96,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	public SimpleAgentStatus getMyCurrentStatus(){
-		return getMyShell().getStatus();
+		return this.getMyShell().getStatus();
 	}
 
 	@Override
@@ -145,17 +140,20 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.getMyShell().loadedCompetence;
 	}
 
+	@Override
 	public Random getRandom(){
-		if (r==null)
-			r=new Random();
-		return r;
+		if (this.r==null) {
+			this.r=new Random();
+		}
+		return this.r;
 	}
-	
-	public void setRandomSeed(long seed){
-		if (r==null)
-			r=new Random(seed);
-		else
-			r.setSeed(seed);		
+
+	public void setRandomSeed(final long seed){
+		if (this.r==null) {
+			this.r=new Random(seed);
+		} else {
+			this.r.setSeed(seed);
+		}
 	}
 	//
 	// Hook
@@ -280,26 +278,32 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	public
 	final ApiLaunchService apiService;
 
+	@Override
 	public boolean hasAppliStarted() {
 		return this.apiService.hasAppliStarted();
 	}
 
+	@Override
 	public boolean launchWith(final APILauncherModule api) {
 		return this.apiService.launchWith(api);
 	}
 
+	@Override
 	public boolean launchWith(final APILauncherModule api, final HostIdentifier h) {
 		return this.apiService.launchWith(api, h);
 	}
 
+	@Override
 	public boolean start(final StartActivityMessage m) {
 		return this.apiService.start(m);
 	}
 
+	@Override
 	public boolean endLive(final EndLiveMessage m) {
 		return this.apiService.endLive(m);
 	}
 
+	@Override
 	public boolean endLive() {
 		return this.apiService.endLive();
 	}
@@ -492,15 +496,16 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	 * Message
 	 */
 
-//	private Map<AgentIdentifier,Integer> lastMsgs=null;
+	//	private Map<AgentIdentifier,Integer> lastMsgs=null;
 	private Map<AgentIdentifier,AbstractMessageInterface> lastMsgs=null;
-	private int serial=-1;
-	
+	private final int serial=-1;
+
 	boolean acceptMsg(final AbstractMessageInterface msg) {
-		if (lastMsgs==null)
-			lastMsgs=new HashMap<AgentIdentifier, AbstractMessageInterface>();
+		if (this.lastMsgs==null) {
+			this.lastMsgs=new HashMap<AgentIdentifier, AbstractMessageInterface>();
+		}
 		final AgentIdentifier sender_name = msg.getSender();
-		AbstractMessageInterface lastMsg = this.lastMsgs.get(sender_name);
+		final AbstractMessageInterface lastMsg = this.lastMsgs.get(sender_name);
 		if (this.lastMsgs.containsKey(sender_name)
 				&& lastMsg.getSerial() > msg
 				.getSerial()) {
@@ -512,18 +517,18 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 			return true;
 		} else {
 			// Accept message
-//			this.lastMsgs.put(sender_name, new Integer(msg.getSerial()));
+			//			this.lastMsgs.put(sender_name, new Integer(msg.getSerial()));
 			this.lastMsgs.put(sender_name, msg);
 			return true;
 		}
 	}
-	
+
 	@Override
 	public void sendMessage(final AgentIdentifier agentId, final AbstractMessageInterface am) {
-//		assert am.setSerial(serial++);
-		am.setDebugCallingMethod(myShell.getStatus().getCurrentlyExecutedBehavior());
-		am.setDebugInReplyTo(myShell.getStatus().getCurrentlyReadedMail());
-//		am.instanciateLocalStackTrace();
+		//		assert am.setSerial(serial++);
+		am.setDebugCallingMethod(this.myShell.getStatus().getCurrentlyExecutedBehavior());
+		am.setDebugInReplyTo(this.myShell.getStatus().getCurrentlyReadedMail());
+		//		am.instanciateLocalStackTrace();
 
 		super.sendMessage(agentId, am);
 		assert am.getSender().equals(this.getIdentifier());
@@ -531,14 +536,14 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	public void sendMessage(final Collection<? extends AgentIdentifier> agentId, final AbstractMessageInterface am) {
-		for (AgentIdentifier id : agentId){
-			sendMessage(agentId, am);
+		for (final AgentIdentifier id : agentId){
+			this.sendMessage(agentId, am);
 		}
 	}
 
 	@Override
 	public void receive(final AbstractMessageInterface m) {
-//		assert acceptMsg(m);
+		//		assert acceptMsg(m);
 		//		assert m.getReceiver().equals(this.getIdentifier());
 		this.log.logCommunication(m, MessageStatus.MessageReceived);
 		super.receive(m);

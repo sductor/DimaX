@@ -28,9 +28,9 @@ Serializable {
 	// Constructor
 	//
 
-	
+
 	public DistributionParameters(final Collection<K> population,
-			final double moyenne, final double ecartType, Random rand) {
+			final double moyenne, final double ecartType, final Random rand) {
 		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {
@@ -42,7 +42,7 @@ Serializable {
 	 * Normalis� entre [0,1] si withExtrem et ]0,1[ sinon
 	 */
 	public DistributionParameters(final Collection<K> population,
-			final ZeroOneSymbolicValue moyenne,final DispersionSymbolicValue ecartType, Random rand, boolean withExtrem) {
+			final ZeroOneSymbolicValue moyenne,final DispersionSymbolicValue ecartType, final Random rand, final boolean withExtrem) {
 		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {
@@ -62,7 +62,7 @@ Serializable {
 	 * @param withExtrem
 	 */
 	public DistributionParameters(final Collection<K> population,
-			final Double moyenne,final DispersionSymbolicValue ecartType, Random rand, boolean withExtrem) {
+			final Double moyenne,final DispersionSymbolicValue ecartType, final Random rand, final boolean withExtrem) {
 		this.g = new NormalLaw(moyenne, ecartType, rand);
 
 		for (final K individu : population) {

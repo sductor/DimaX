@@ -1,18 +1,12 @@
 package dima.introspectionbasedagents.services.information;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
-import dima.introspectionbasedagents.modules.aggregator.FunctionnalCompensativeAggregator;
-import dima.introspectionbasedagents.modules.aggregator.UtilitaristAnalyser;
 import dima.introspectionbasedagents.services.AgentCompetence;
 
 public interface ObservationService<Agent extends CompetentComponent> extends AgentCompetence<Agent> {

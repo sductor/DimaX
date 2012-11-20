@@ -1,9 +1,6 @@
 package dima.introspectionbasedagents.services.communicating;
 
-import java.util.Collection;
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.DimaComponentInterface;
 
 public interface AsynchronousCommunicationComponent extends DimaComponentInterface {
@@ -11,7 +8,7 @@ public interface AsynchronousCommunicationComponent extends DimaComponentInterfa
 	/*
 	 * 
 	 */
-	
+
 	boolean isConnected(String[] args);
 
 	boolean connect(String[] args);

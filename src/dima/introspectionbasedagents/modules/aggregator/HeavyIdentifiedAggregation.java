@@ -90,13 +90,13 @@ UtilitaristAnalyser<Element> {
 	@Override
 	public double getEcartType() {
 		throw new RuntimeException();
-//		return FunctionalDispersionAgregator.getEcartType(this, this.elements.values());
+		//		return FunctionalDispersionAgregator.getEcartType(this, this.elements.values());
 	}
 
 	@Override
 	public double getVariationCoefficient() {
 		throw new RuntimeException();
-//		return FunctionalDispersionAgregator.getVariationCoefficient(this, this.elements.values());
+		//		return FunctionalDispersionAgregator.getVariationCoefficient(this, this.elements.values());
 	}
 
 	/*

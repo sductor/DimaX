@@ -7,8 +7,8 @@ import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 
 
 public class SimpleObserverAgent extends BasicCompetentAgent {

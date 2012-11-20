@@ -49,6 +49,7 @@ implements AbstractContractTransition{
 	 *
 	 */
 
+	@Override
 	public Double getSocialValue() {
 		return null;
 	}

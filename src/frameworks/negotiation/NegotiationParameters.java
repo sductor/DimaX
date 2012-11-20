@@ -27,10 +27,10 @@ public class NegotiationParameters {
 
 	//Selection algorithms
 	public enum SelectionType{RoolettWheel, Greedy, Better, Opt, Random}
-//	public final static String key4greedySelect = "greedy select";
-//	public final static String key4rouletteWheelSelect = "roolette wheel select";
-//	public final static String key4randomSelect = "random select";
-//	public final static String key4OptSelect = "opt select";
-//	public static final String key4BetterSelect = "better select";
+	//	public final static String key4greedySelect = "greedy select";
+	//	public final static String key4rouletteWheelSelect = "roolette wheel select";
+	//	public final static String key4randomSelect = "random select";
+	//	public final static String key4OptSelect = "opt select";
+	//	public static final String key4BetterSelect = "better select";
 
 }

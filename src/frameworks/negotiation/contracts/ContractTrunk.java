@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.BasicAgentModule;
-import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.protocoles.AtMostCContractSelectioner;
@@ -166,7 +164,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 	}
 
 	public List<Contract> getParticipantAlreadyAnsweredContracts() {
-		final ArrayList<Contract> l = new ArrayList<Contract>(participantContracts);
+		final ArrayList<Contract> l = new ArrayList<Contract>(this.participantContracts);
 		l.removeAll(this.acceptedContracts.get(this.getMyAgentIdentifier()));
 		l.removeAll(this.rejectedContracts.get(this.getMyAgentIdentifier()));
 		return l;
@@ -206,7 +204,7 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		if (newState!=null) {
 
 			final AgentIdentifier id = newState.getMyAgentIdentifier();
-			AgentState assertedState = null;
+			final AgentState assertedState = null;
 
 			for (final Contract c : this.getAllContracts()) {
 				if (c.getAllParticipants().contains(id)) {
@@ -218,20 +216,20 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 					}
 
 					//debut assertion vérification que tous les contrats sont cohérents
-//					if (assertedState==null) {
-//						assertedState = actualState;
-//					}
-//					else {
-//						assert assertedState.equals(actualState);
-//						//fin assertion
-//					}
+					//					if (assertedState==null) {
+					//						assertedState = actualState;
+					//					}
+					//					else {
+					//						assert assertedState.equals(actualState);
+					//						//fin assertion
+					//					}
 
 					if (actualState==null || !actualState.equals(newState)){
 						modifiedContracts.add(c.getContractIdentifier());
 						try {
 							c.setInitialState(newState);
-						} catch (AssertionError e){
-							signalException("current state "+getMyAgent().getMyCurrentState());
+						} catch (final AssertionError e){
+							this.signalException("current state "+this.getMyAgent().getMyCurrentState());
 							throw e;
 						}
 					}
@@ -257,8 +255,9 @@ extends BasicAgentModule<NegotiatingAgent<?, Contract>> {
 		//			e.printStackTrace();
 		//			assert false:"incomplete contract added "+c;
 		//		}
-		if (c.getAllParticipants().contains(getMyAgent().getIdentifier()))
-			c.setInitialState(getMyAgent().getMyCurrentState());
+		if (c.getAllParticipants().contains(this.getMyAgent().getIdentifier())) {
+			c.setInitialState(this.getMyAgent().getMyCurrentState());
+		}
 		this.identifier2contract.put(c.getContractIdentifier(), c);
 		this.waitContracts.add(c);
 		if (c.getInitiator().equals(this.getMyAgentIdentifier())) {

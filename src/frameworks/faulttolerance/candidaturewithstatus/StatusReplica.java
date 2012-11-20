@@ -10,14 +10,13 @@ import frameworks.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.opinion.SimpleOpinionService;
-import frameworks.negotiation.protocoles.ReverseCFPProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.protocoles.status.StatusAgent;
 import frameworks.negotiation.protocoles.status.StatusAgentRationalCore;
 import frameworks.negotiation.protocoles.status.StatusObservationCompetence;
+import frameworks.negotiation.protocoles.status.StatusObservationCompetence.AgentStateStatus;
 import frameworks.negotiation.protocoles.status.StatusProposerCore;
 import frameworks.negotiation.protocoles.status.StatusProtocol;
-import frameworks.negotiation.protocoles.status.StatusObservationCompetence.AgentStateStatus;
 
 public class StatusReplica extends Replica<ReplicationCandidature> implements StatusAgent<ReplicaState, ReplicationCandidature> {
 
@@ -44,7 +43,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			final int simultaneousCandidature,
 			final boolean dynamicCriticity,
 			final AgentIdentifier myLaborantin,
-			double alpha_low, double alpha_high) throws CompetenceException{
+			final double alpha_low, final double alpha_high) throws CompetenceException{
 		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
 		this.soc=new StatusObservationCompetence(myLaborantin,true, ReplicaState.class, alpha_low, alpha_high);
 	}
@@ -54,7 +53,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			final int simultaneousCandidature,
 			final boolean dynamicCriticity,
 			final int numberToContact,
-			double alpha_low, double alpha_high) throws CompetenceException{
+			final double alpha_low, final double alpha_high) throws CompetenceException{
 		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
 		this.soc=new StatusObservationCompetence(numberToContact, true, ReplicaState.class, alpha_low, alpha_high);
 	}
@@ -113,13 +112,13 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 	public void updateThreshold() {
 		this.soc.updateThreshold();
 	}
-//	@Override
-//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-//		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), false, true);
-//	}
-//	@Override
-//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-//		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), true, true);
-//	}
+	//	@Override
+	//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+	//		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), false, true);
+	//	}
+	//	@Override
+	//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+	//		return new ReplicationCandidature((ResourceIdentifier) id, this.getIdentifier(), true, true);
+	//	}
 
 }

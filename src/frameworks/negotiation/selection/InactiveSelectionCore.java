@@ -16,12 +16,17 @@ Contract extends AbstractContractTransition>
 extends	BasicAgentCompetence<NegotiatingAgent<PersonalState, Contract>>
 implements SelectionCore<NegotiatingAgent<PersonalState,Contract>, PersonalState, Contract>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4298182739752070762L;
+
 	@Override
-	public void select(ContractTrunk<Contract> cs, PersonalState currentState,
-			Collection<Contract> toAccept, Collection<Contract> toReject,
-			Collection<Contract> toPutOnWait) {
+	public void select(final ContractTrunk<Contract> cs, final PersonalState currentState,
+			final Collection<Contract> toAccept, final Collection<Contract> toReject,
+			final Collection<Contract> toPutOnWait) {
 		//do nothing
-		
+
 	}
 
 }

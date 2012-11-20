@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -25,80 +25,80 @@ package frameworks.faulttolerance.solver.jmetal.util;
  * Class representing a pseudo-random number generator
  */
 public class PseudoRandom {
-    
- public static double seed;	
-	
-  /**
-   * generator used to obtain the random values
-   */
-  private static RandomGenerator random = null;    
-  
-  /**
-   * other generator used to obtain the random values
-   */
-  private static java.util.Random randomJava = null;
-             
-  /** 
-   * Constructor.
-   * Creates a new instance of PseudoRandom.
-   */
-  private PseudoRandom() {
-    if (random == null){
-      //this.random = new java.util.Random((long)seed);
-      random = new RandomGenerator(seed);
-      randomJava = new java.util.Random((long) seed);            
-    }
-  } // PseudoRandom
-    
-  /** 
-   * Returns a random int value using the Java random generator.
-   * @return A random int value.
-   */
-  public static int randInt() {
-    if (random == null) {
-      new PseudoRandom();
-    }
-    return randomJava.nextInt();
-  } // randInt
-    
-  /** 
-   * Returns a random double value using the PseudoRandom generator.
-   * Returns A random double value.
-   */
-  public static double randDouble() {
-    if (random == null) {
-      new PseudoRandom();
-    }
-    return random.rndreal(0.0,1.0);
-    //return randomJava.nextDouble();
-  } // randDouble
-    
-  /** 
-   * Returns a random int value between a minimum bound and maximum bound using
-   * the PseudoRandom generator.
-   * @param minBound The minimum bound.
-   * @param maxBound The maximum bound.
-   * Return A pseudo random int value between minBound and maxBound.
-   */
-  public static int randInt(int minBound, int maxBound) {
-    if (random == null) {
-      new PseudoRandom();
-    }
-    return random.rnd(minBound,maxBound);
-    //return minBound + randomJava.nextInt(maxBound-minBound+1);
-  } // randInt
-    
-  /** Returns a random double value between a minimum bound and a maximum bound
-   * using the PseudoRandom generator.
-   * @param minBound The minimum bound.
-   * @param maxBound The maximum bound.
-   * @return A pseudo random double value between minBound and maxBound
-   */
-  public static double randDouble(double minBound, double maxBound) {
-    if (random == null) {
-      new PseudoRandom();
-    }
-    return random.rndreal(minBound,maxBound);
-    //return minBound + (maxBound - minBound)*randomJava.nextDouble();
-  } // randDouble    
+
+	public static double seed;
+
+	/**
+	 * generator used to obtain the random values
+	 */
+	private static RandomGenerator random = null;
+
+	/**
+	 * other generator used to obtain the random values
+	 */
+	private static java.util.Random randomJava = null;
+
+	/**
+	 * Constructor.
+	 * Creates a new instance of PseudoRandom.
+	 */
+	private PseudoRandom() {
+		if (PseudoRandom.random == null){
+			//this.random = new java.util.Random((long)seed);
+			PseudoRandom.random = new RandomGenerator(PseudoRandom.seed);
+			PseudoRandom.randomJava = new java.util.Random((long) PseudoRandom.seed);
+		}
+	} // PseudoRandom
+
+	/**
+	 * Returns a random int value using the Java random generator.
+	 * @return A random int value.
+	 */
+	public static int randInt() {
+		if (PseudoRandom.random == null) {
+			new PseudoRandom();
+		}
+		return PseudoRandom.randomJava.nextInt();
+	} // randInt
+
+	/**
+	 * Returns a random double value using the PseudoRandom generator.
+	 * Returns A random double value.
+	 */
+	public static double randDouble() {
+		if (PseudoRandom.random == null) {
+			new PseudoRandom();
+		}
+		return PseudoRandom.random.rndreal(0.0,1.0);
+		//return randomJava.nextDouble();
+	} // randDouble
+
+	/**
+	 * Returns a random int value between a minimum bound and maximum bound using
+	 * the PseudoRandom generator.
+	 * @param minBound The minimum bound.
+	 * @param maxBound The maximum bound.
+	 * Return A pseudo random int value between minBound and maxBound.
+	 */
+	public static int randInt(final int minBound, final int maxBound) {
+		if (PseudoRandom.random == null) {
+			new PseudoRandom();
+		}
+		return PseudoRandom.random.rnd(minBound,maxBound);
+		//return minBound + randomJava.nextInt(maxBound-minBound+1);
+	} // randInt
+
+	/** Returns a random double value between a minimum bound and a maximum bound
+	 * using the PseudoRandom generator.
+	 * @param minBound The minimum bound.
+	 * @param maxBound The maximum bound.
+	 * @return A pseudo random double value between minBound and maxBound
+	 */
+	public static double randDouble(final double minBound, final double maxBound) {
+		if (PseudoRandom.random == null) {
+			new PseudoRandom();
+		}
+		return PseudoRandom.random.rndreal(minBound,maxBound);
+		//return minBound + (maxBound - minBound)*randomJava.nextDouble();
+	} // randDouble
 } // PseudoRandom

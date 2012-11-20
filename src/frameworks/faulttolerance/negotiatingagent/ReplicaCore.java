@@ -32,13 +32,15 @@ RationalCore<RationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, R
 		this.memorizeRessourceState=memorizeRessourceState;
 	}
 
+	@Override
 	public boolean iObserveMyRessourceChanges() {
 		return this.observeResourceChanges;
 	}
+	@Override
 	public boolean iMemorizeMyRessourceState() {
 		return this.memorizeRessourceState;
 	}
-	public void handleResourceInformation(final AgentState c, boolean creation){
+	public void handleResourceInformation(final AgentState c, final boolean creation){
 		if (this.iMemorizeMyRessourceState()) {
 			if (creation) {
 				this.getMyAgent().getMyInformation().add(c);
@@ -98,7 +100,7 @@ RationalCore<RationalAgent<ReplicaState, ReplicationCandidature>,ReplicaState, R
 						destruction.add(c);
 					}
 				}
-				ReplicaState newState = getMyAgent().getMyCurrentState();
+				ReplicaState newState = this.getMyAgent().getMyCurrentState();
 				for (final ReplicationCandidature c : destruction){
 					this.handleResourceInformation(c.getResourceInitialState(),false);//the state is maybe not the actual one but  valid with regard to the couple (host,agent)
 					newState = 	c.computeResultingState(newState);

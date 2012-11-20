@@ -8,8 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
-
-
 import dima.introspectionbasedagents.kernel.BasicCompetenceShell;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.kernel.IntrospectionStaticPrimitivesLibrary;

@@ -11,7 +11,6 @@ import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.rationality.AgentState;
-import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 
 /**
  * Selection Cores must extenbds this class to be coherent with the roles. They
@@ -33,7 +32,7 @@ BasicAgentCompetence<Agent>
 implements SelectionCore<Agent,PersonalState, Contract> {
 	private static final long serialVersionUID = -6733096733805658072L;
 
-	private SelectionModule<Agent, PersonalState,Contract> selectionModule;
+	private final SelectionModule<Agent, PersonalState,Contract> selectionModule;
 
 	private final boolean fuseInitiatorNparticipant;//separate creation and destruction in mirror
 	private final boolean considerOnWait;//cette variable n'a pas de sens puisque elle amene l'agent a accepter des contrat en imaginant que les siens ont été accepté!!
@@ -45,7 +44,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		super();
 		this.fuseInitiatorNparticipant = fuseInitiatorNparticipant;
 		this.considerOnWait = considerOnWait;
-		selectionModule=select;
+		this.selectionModule=select;
 	}
 	@Override
 	public void setMyAgent(final Agent ag)  {
@@ -70,7 +69,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		final Collection<Contract> participantAlreadyAccepted = given.getParticipantAlreadyAcceptedContracts();
 
 		assert given.getFailedContracts().isEmpty():given.getFailedContracts();
-		
+
 		// Verification de la consistance
 		assert currentState.isValid():
 			"what the  (1)!!!!!!"+ currentState+"\n"+this.getMyAgent().getMyCurrentState();
@@ -89,8 +88,8 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		toReject.addAll(participantContractToExplore);
 		toPutOnWait.addAll(initiatorOnWaitContract);
 		toPutOnWait.addAll(participantAlreadyAccepted);
-		
-//		assert toAccept.isEmpty():toAccept;
+
+		//		assert toAccept.isEmpty():toAccept;
 		assert AbstractCommunicationProtocol.partitioning(given.getAllContracts(), toAccept, toReject, toPutOnWait);
 
 		if (this.fuseInitiatorNparticipant) {
@@ -163,7 +162,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		return true;
 	}
 	public SelectionModule<Agent, PersonalState,Contract> getSelectionModule() {
-		return selectionModule;
+		return this.selectionModule;
 	}
 
 }

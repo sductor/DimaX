@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import frameworks.negotiation.NegotiatingAgent;

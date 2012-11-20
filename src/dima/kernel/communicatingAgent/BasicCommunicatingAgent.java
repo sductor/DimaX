@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-
 import dima.basicagentcomponents.AgentAddress;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.AbstractMailBox;
@@ -459,29 +458,29 @@ public abstract class BasicCommunicatingAgent extends BasicReactiveAgent impleme
 	 */
 	@Override
 	public abstract void step();
-//	/**
-//	 * Insert the method's description here.
-//	 * Creation date: (07/05/00 09:28:47)
-//	 */
-//	public AbstractMessage removeFirstMessage() {
-//		return ((SimpleMailBox) this.getMailBox()).readMail();
-//	}
-	
+	//	/**
+	//	 * Insert the method's description here.
+	//	 * Creation date: (07/05/00 09:28:47)
+	//	 */
+	//	public AbstractMessage removeFirstMessage() {
+	//		return ((SimpleMailBox) this.getMailBox()).readMail();
+	//	}
+
 	/*
 	 * 
 	 */
-	
+
 
 	@Override
-	public boolean isConnected(String[] args) {
+	public boolean isConnected(final String[] args) {
 		return true;
 	}
 	@Override
-	public boolean connect(String[] args) {
+	public boolean connect(final String[] args) {
 		return true;
 	}
 	@Override
-	public boolean disconnect(String[] args) {
+	public boolean disconnect(final String[] args) {
 		return true;
 	}
 }

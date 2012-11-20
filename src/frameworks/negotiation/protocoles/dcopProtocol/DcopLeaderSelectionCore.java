@@ -5,10 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-
-import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
@@ -16,119 +13,127 @@ import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.Selection
 import frameworks.negotiation.rationality.AgentState;
 
 public class DcopLeaderSelectionCore<
-State extends AgentState, 
-Contract extends MatchingCandidature> 
+State extends AgentState,
+Contract extends MatchingCandidature>
 extends DcopAgentSelectionCore<State,Contract>
-implements 
+implements
 SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7987714910417261147L;
+
+
+	@Override
 	public DCOPLeaderProtocol<State, Contract> getMyProtocol(){
-		return (DCOPLeaderProtocol<State, Contract>) getMyAgent().getMyProtocol();
+		return (DCOPLeaderProtocol<State, Contract>) this.getMyAgent().getMyProtocol();
 	}
 	@Override
-	public void select(ContractTrunk<Contract> cs, State currentState,
-			Collection<Contract> toAccept, Collection<Contract> toReject,
-			Collection<Contract> toPutOnWait) {
+	public void select(final ContractTrunk<Contract> cs, final State currentState,
+			final Collection<Contract> toAccept, final Collection<Contract> toReject,
+			final Collection<Contract> toPutOnWait) {
 
 		super.select(cs, currentState, toAccept, toReject, toPutOnWait);
-		
-//		if (toAccept.isEmpty() && !getMyProtocol().getWannaLockContract().isEmpty()){
-//			getMyProtocol().myLock.putAll(getMyProtocol().getWannaLockContract());
-//			getMyProtocol().getWannaLockContract().clear();
-//		}
+
+		//		if (toAccept.isEmpty() && !getMyProtocol().getWannaLockContract().isEmpty()){
+		//			getMyProtocol().myLock.putAll(getMyProtocol().getWannaLockContract());
+		//			getMyProtocol().getWannaLockContract().clear();
+		//		}
 
 		//Cancelling partially refused requests
-		for (Contract failedContract: cs.getFailedContracts()){
-			if (getMyProtocol().lockedNodesToRig.containsKey(failedContract)){
-				getMyProtocol().waitTime=getRandom().nextInt(getMyProtocol().maxWainttime);
-				Collection<Collection<AgentIdentifier>> rigToRemove = new ArrayList<Collection<AgentIdentifier>>();
-				for (Collection<AgentIdentifier> rig : getMyProtocol().lockedNodesToRig.get(failedContract)){
-					if (everyoneHasAnswered(cs, rig)){
-						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))
-							logMonologue("canceling : some agent of the group have refused"+failedContract.getAllParticipants(),LogService.onScreen);
+		for (final Contract failedContract: cs.getFailedContracts()){
+			if (this.getMyProtocol().lockedNodesToRig.containsKey(failedContract)){
+				this.getMyProtocol().waitTime=this.getRandom().nextInt(this.getMyProtocol().maxWainttime);
+				final Collection<Collection<AgentIdentifier>> rigToRemove = new ArrayList<Collection<AgentIdentifier>>();
+				for (final Collection<AgentIdentifier> rig : this.getMyProtocol().lockedNodesToRig.get(failedContract)){
+					if (this.everyoneHasAnswered(cs, rig)){
+						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone)) {
+							this.logMonologue("canceling : some agent of the group have refused"+failedContract.getAllParticipants(),LogService.onScreen);
+						}
 						rigToRemove.add(rig);
-						getMyProtocol().gainFlag.add(rig);
-						getMyProtocol().lockedRigs.remove(rig);
+						this.getMyProtocol().gainFlag.add(rig);
+						this.getMyProtocol().lockedRigs.remove(rig);
 						//
-						toReject.addAll(getMyProtocol().gainContracts.get(rig));
-						toPutOnWait.removeAll(getMyProtocol().gainContracts.get(rig));
-						toAccept.removeAll(getMyProtocol().gainContracts.get(rig));
+						toReject.addAll(this.getMyProtocol().gainContracts.get(rig));
+						toPutOnWait.removeAll(this.getMyProtocol().gainContracts.get(rig));
+						toAccept.removeAll(this.getMyProtocol().gainContracts.get(rig));
 					}
 				}
-				for (Collection<AgentIdentifier> rig : rigToRemove){
-					getMyProtocol().lockedNodesToRig.removeAvalue(rig);
+				for (final Collection<AgentIdentifier> rig : rigToRemove){
+					this.getMyProtocol().lockedNodesToRig.removeAvalue(rig);
 				}
 			}
 		}
 
 		//Cancelling obsolete requests
-		for (Collection<AgentIdentifier> rig : getMyProtocol().gainFlag){
-			if (getMyProtocol().lockedRigs.contains(rig) && everyoneHasAnswered(cs, rig)){
-				logMonologue("canceling : a new gain has been found",DCOPLeaderProtocol.dcopProtocol);
-				toReject.addAll(getMyProtocol().gainContracts.get(rig));
-				toPutOnWait.removeAll(getMyProtocol().gainContracts.get(rig));
-				toAccept.removeAll(getMyProtocol().gainContracts.get(rig));
+		for (final Collection<AgentIdentifier> rig : this.getMyProtocol().gainFlag){
+			if (this.getMyProtocol().lockedRigs.contains(rig) && this.everyoneHasAnswered(cs, rig)){
+				this.logMonologue("canceling : a new gain has been found",DCOPLeaderProtocol.dcopProtocol);
+				toReject.addAll(this.getMyProtocol().gainContracts.get(rig));
+				toPutOnWait.removeAll(this.getMyProtocol().gainContracts.get(rig));
+				toAccept.removeAll(this.getMyProtocol().gainContracts.get(rig));
 				//
-				getMyProtocol().lockedRigs.remove(rig);
-				getMyProtocol().lockedNodesToRig.removeAvalue(rig);
-				getMyProtocol().getWannaLockContract().clear();
-			} 
+				this.getMyProtocol().lockedRigs.remove(rig);
+				this.getMyProtocol().lockedNodesToRig.removeAvalue(rig);
+				this.getMyProtocol().getWannaLockContract().clear();
+			}
 		}
 
 		//Confirming consensual requests
-		Collection<Contract> consensualcontracts = cs.getInitiatorRequestableContracts();
-		Collection<Collection<AgentIdentifier>> rigToRemove = new ArrayList<Collection<AgentIdentifier>>();
-		for (Collection<AgentIdentifier> rig : getMyProtocol().lockedRigs){
-			if (consensualcontracts.containsAll(getMyProtocol().gainContracts.get(rig))){
-				logWarning("committing consensual change",DCOPLeaderProtocol.dcopProtocol);
-				toAccept.addAll(getMyProtocol().gainContracts.get(rig));
-				toPutOnWait.removeAll(getMyProtocol().gainContracts.get(rig));
+		final Collection<Contract> consensualcontracts = cs.getInitiatorRequestableContracts();
+		final Collection<Collection<AgentIdentifier>> rigToRemove = new ArrayList<Collection<AgentIdentifier>>();
+		for (final Collection<AgentIdentifier> rig : this.getMyProtocol().lockedRigs){
+			if (consensualcontracts.containsAll(this.getMyProtocol().gainContracts.get(rig))){
+				this.logWarning("committing consensual change",DCOPLeaderProtocol.dcopProtocol);
+				toAccept.addAll(this.getMyProtocol().gainContracts.get(rig));
+				toPutOnWait.removeAll(this.getMyProtocol().gainContracts.get(rig));
 				toReject.addAll(toPutOnWait);
 				toPutOnWait.clear();
-				getMyProtocol().gainContracts.remove(rig);
+				this.getMyProtocol().gainContracts.remove(rig);
 				rigToRemove.add(rig);
-				getMyProtocol().lockedNodesToRig.removeAvalue(rig);
-				if (rig.equals(getMyProtocol().currentlyOptimizedRig.getLast())){
-					getMyProtocol().fringeNodes2ring.removeAvalue(getMyProtocol().currentlyOptimizedRig.getLast());
-					getMyProtocol().rig2fringeNodes.remove(getMyProtocol().currentlyOptimizedRig.getLast());
-					getMyProtocol().currentlyOptimizedRig.removeFirst();
-					getMyProtocol().graphChanged=true;
+				this.getMyProtocol().lockedNodesToRig.removeAvalue(rig);
+				if (rig.equals(this.getMyProtocol().currentlyOptimizedRig.getLast())){
+					this.getMyProtocol().fringeNodes2ring.removeAvalue(this.getMyProtocol().currentlyOptimizedRig.getLast());
+					this.getMyProtocol().rig2fringeNodes.remove(this.getMyProtocol().currentlyOptimizedRig.getLast());
+					this.getMyProtocol().currentlyOptimizedRig.removeFirst();
+					this.getMyProtocol().graphChanged=true;
 				}
 			}
 		}
-		for (Collection<AgentIdentifier> rig : rigToRemove){
-			getMyProtocol().lockedRigs.remove(rig);
+		for (final Collection<AgentIdentifier> rig : rigToRemove){
+			this.getMyProtocol().lockedRigs.remove(rig);
 		}
 
 		if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone)){
 			if (!toPutOnWait.isEmpty()){
-				HashSet<AgentIdentifier> agsWaited = new HashSet<AgentIdentifier>();
-				String status = "";
-				for (Contract c : toPutOnWait){
-					for (AgentIdentifier id : c.getAllParticipants()){
-						if (getMyProtocol().getContracts().getContractsAcceptedBy(id).contains(c) || 
-						getMyProtocol().getContracts().getContractsRejectedBy(id).contains(c)){
+				final HashSet<AgentIdentifier> agsWaited = new HashSet<AgentIdentifier>();
+				final String status = "";
+				for (final Contract c : toPutOnWait){
+					for (final AgentIdentifier id : c.getAllParticipants()){
+						if (this.getMyProtocol().getContracts().getContractsAcceptedBy(id).contains(c) ||
+								this.getMyProtocol().getContracts().getContractsRejectedBy(id).contains(c)){
 							// c cool
 						} else {
 							agsWaited.add(id);
 						}
 					}
-					
-//					status+=getMyProtocol().getContracts().statusOf(c)+"\n";
+
+					//					status+=getMyProtocol().getContracts().statusOf(c)+"\n";
 				}
-				logMonologue("wainting for "+agsWaited+"\n--\n"+status,LogService.onFile);
+				this.logMonologue("wainting for "+agsWaited+"\n--\n"+status,LogService.onFile);
 			}
 		}
 	}
 
 
-	private boolean everyoneHasAnswered(ContractTrunk<Contract> cs, Collection<AgentIdentifier> rig){
-//		for (Contract c  : getMyProtocol().gainContracts.get(rig)){
-//			for (AgentIdentifier id : c.getNotInitiatingParticipants()){
-//				if (!(cs.getContractsAcceptedBy(id).contains(c) || cs.getContractsRejectedBy(id).contains(c)))
-//					return false;
-//			}
-//		}
+	private boolean everyoneHasAnswered(final ContractTrunk<Contract> cs, final Collection<AgentIdentifier> rig){
+		//		for (Contract c  : getMyProtocol().gainContracts.get(rig)){
+		//			for (AgentIdentifier id : c.getNotInitiatingParticipants()){
+		//				if (!(cs.getContractsAcceptedBy(id).contains(c) || cs.getContractsRejectedBy(id).contains(c)))
+		//					return false;
+		//			}
+		//		}
 		return true;
 	}
 
@@ -140,7 +145,7 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 	//		for (AgentIdentifier id : rig.getHostsIdentifier()){
 	//			result.addAll(convertTContract(rig, id));
 	//		}
-	//		return result;	
+	//		return result;
 	//	}
 	//
 	//	public Collection<Contract> convertTContract(ReplicationInstanceGraph rig, AgentIdentifier id){

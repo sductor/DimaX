@@ -6,7 +6,6 @@ import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.ontologies.ClassEnveloppe;
 import dima.introspectionbasedagents.ontologies.MessageInEnvelope;
-import dima.introspectionbasedagents.services.loggingactivity.AbstractDebugableMessageInterface;
 import dima.introspectionbasedagents.services.loggingactivity.DebugProtocol;
 import dima.support.GimaObject;
 
@@ -66,7 +65,7 @@ public class SimpleExceptionHandler extends GimaObject{
 		}
 		result +="\n"+mess.getProtocolTrace();
 		if (status.getCurrentlyExecutedAgent() instanceof CommunicatingCompetentComponent) {
-			CommunicatingCompetentComponent ccc = (CommunicatingCompetentComponent) status.getCurrentlyExecutedAgent();
+			final CommunicatingCompetentComponent ccc = (CommunicatingCompetentComponent) status.getCurrentlyExecutedAgent();
 			DebugProtocol.answerNotUnderstood(ccc, mess, status.getCurrentlyExecutedBehavior().getMethod().toGenericString());
 		}
 		return result;
@@ -93,13 +92,13 @@ public class SimpleExceptionHandler extends GimaObject{
 			final MethodHandler methodHandler,
 			final AbstractMessage abstractMessage,
 			final Throwable e){
-		String result = 
+		final String result =
 				"------> Method : "+methodHandler+
 				"\n ------> On message "+abstractMessage
 				+"\n ------> "+abstractMessage.getProtocolTrace()
 				+"\n ------> has raised an EXCEPTION : ";// + e;
 		if (dimaComponentInterface instanceof CommunicatingCompetentComponent) {
-			CommunicatingCompetentComponent ccc = (CommunicatingCompetentComponent) dimaComponentInterface;
+			final CommunicatingCompetentComponent ccc = (CommunicatingCompetentComponent) dimaComponentInterface;
 			DebugProtocol.answerFailure(ccc, abstractMessage,e);
 		}
 

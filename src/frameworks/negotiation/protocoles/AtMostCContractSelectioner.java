@@ -48,7 +48,7 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 
 	@Override
 	public void select(final ContractTrunk<Contract> cs,
-			PersonalState s,
+			final PersonalState s,
 			final Collection<Contract> toAccept, final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
 		final List<Contract> all = cs.getParticipantOnWaitContracts();

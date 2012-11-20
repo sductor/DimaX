@@ -1,12 +1,15 @@
 package dima.introspectionbasedagents.services.loggingactivity;
 
-import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.CommunicationObject;
 import dima.introspectionbasedagents.kernel.MethodHandler;
 import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 
 public abstract class AbstractDebugableMessage extends CommunicationObject implements AbstractDebugableMessageInterface, AbstractMessageInterface {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2221783027931038958L;
 	private MethodHandler callingMethod;
 	private AbstractDebugableMessage inReplyTo;
 	private Throwable localTrace;
@@ -16,7 +19,7 @@ public abstract class AbstractDebugableMessage extends CommunicationObject imple
 		String result = "Protocol Trace :";
 		AbstractDebugableMessage inReplyToStack = this;
 		while (inReplyToStack!=null){
-			String debug = inReplyToStack.getDebugCallingMethod()!=null?inReplyToStack.getDebugCallingMethod().toGenericString():"erreur : pas d'info sur la méthode!";
+			final String debug = inReplyToStack.getDebugCallingMethod()!=null?inReplyToStack.getDebugCallingMethod().toGenericString():"erreur : pas d'info sur la méthode!";
 			result+="\n"+" |--> ("+inReplyToStack.getSender()+") \t "+debug
 					;
 			inReplyToStack = inReplyToStack.getDebugInReplyTo();
@@ -26,14 +29,14 @@ public abstract class AbstractDebugableMessage extends CommunicationObject imple
 
 	@Override
 	public MethodHandler getDebugCallingMethod() {
-		return callingMethod;
+		return this.callingMethod;
 	}
 
 	@Override
-	public void setDebugCallingMethod(MethodHandler callingMethod) {
+	public void setDebugCallingMethod(final MethodHandler callingMethod) {
 		if (this.callingMethod==null){
 			this.callingMethod = callingMethod;
-			instanciateLocalStackTrace();
+			this.instanciateLocalStackTrace();
 		}else {
 			//on ignore
 		}
@@ -41,33 +44,35 @@ public abstract class AbstractDebugableMessage extends CommunicationObject imple
 
 	@Override
 	public Throwable getLocalStackTrace() {
-		return localTrace;
+		return this.localTrace;
 	}
+	@Override
 	public void printStackTrace(){
-		localTrace.printStackTrace();
+		this.localTrace.printStackTrace();
 	}
 	//	@Override
 	private void instanciateLocalStackTrace() {
 		try {
 			throw new Exception();
-		} catch (Exception e){
+		} catch (final Exception e){
 			this.localTrace = e;
 		}
 	}
 
 	@Override
 	public AbstractDebugableMessage getDebugInReplyTo() {
-		return inReplyTo;
+		return this.inReplyTo;
 	}
 
 	@Override
-	public void setDebugInReplyTo(AbstractDebugableMessage inReplyTo) {
-		if (this.inReplyTo==null)
+	public void setDebugInReplyTo(final AbstractDebugableMessage inReplyTo) {
+		if (this.inReplyTo==null) {
 			this.inReplyTo = inReplyTo;
-		else {
+		} else {
 			//on ignore
 		}
 	}
 
+	@Override
 	public abstract AbstractDebugableMessage clone();
 }

@@ -1,19 +1,15 @@
 package dima.introspectionbasedagents.services.information;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.support.GimaObject;
 
 public class SimpleObservationService<Agent extends CompetentComponent> extends
 BasicAgentCompetence<Agent> implements
@@ -112,7 +108,7 @@ ObservationService<Agent> {
 	public <Info extends Information> Map<AgentIdentifier, Info> getInformation(
 			final Class<Info> informationType) throws NoInformationAvailableException{
 		if (this.infos.get(informationType)!=null) {
-			return ((InformationDataBase<Info>) this.infos.get(informationType));
+			return (InformationDataBase<Info>) this.infos.get(informationType);
 		} else {
 			throw new NoInformationAvailableException();
 		}
@@ -201,7 +197,7 @@ ObservationService<Agent> {
 
 
 
-	public interface InformationDataBase<Info extends Information> 
+	public interface InformationDataBase<Info extends Information>
 	extends Map<AgentIdentifier, Info> {
 
 		public Info add(final Info o) ;

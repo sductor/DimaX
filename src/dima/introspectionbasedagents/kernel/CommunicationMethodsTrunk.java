@@ -2,7 +2,6 @@ package dima.introspectionbasedagents.kernel;
 
 import java.util.Collection;
 
-
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.introspectionbasedagents.kernel.BasicCommunicatingMethodTrunk.UnHandledMessageException;
 import dima.introspectionbasedagents.ontologies.Envelope;

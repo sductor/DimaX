@@ -24,7 +24,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	final Double disponibility;
 	private final long lastModifTime;
 	int nbOfModif;
-	
+
 	final int messageSended;
 
 	final int numberOfAllocatedResources;
@@ -38,7 +38,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 
 	public ReplicationResultAgent(final ReplicaState s,
 			final long lastModifTime,
-			int messageSended,
+			final int messageSended,
 			final int initialStateCounter,
 			final Date agentCreationTime, final AgentStateStatus status) {
 		super();
@@ -56,7 +56,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 
 	public ReplicationResultAgent(final ReplicaState s,
 			final long lastModifTime,
-			int messageSended,
+			final int messageSended,
 			final Date agentCreationTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();

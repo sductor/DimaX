@@ -6,39 +6,43 @@ import java.util.Scanner;
 import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService;
 
 public class UserCommunicationHandler extends SystemCommunicationService{
-	
-	
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6785482451235166705L;
 	public boolean useGui=false;
-	
-	
 
 
-	public void communicateWithUSerWithGui(boolean useGui) {
+
+
+	public void communicateWithUSerWithGui(final boolean useGui) {
 		this.useGui = useGui;
 	}
 
 
-	public void sendToUser(String text){
-		if (useGui){
+	public void sendToUser(final String text){
+		if (this.useGui){
 			try {
-//				this.execute("zenity  --info --text="+text);
-//				this.execute("kdialog --passivepopup '"+text+"' &");
+				//				this.execute("zenity  --info --text="+text);
+				//				this.execute("kdialog --passivepopup '"+text+"' &");
 				this.execute("notify-send "+text);
 
-			} catch (ErrorOnProcessExecutionException e) {
+			} catch (final ErrorOnProcessExecutionException e) {
 				e.printStackTrace();
 			}
 		} else {
 			System.out.println(text);
 		}
 	}
-	
 
-	public String receiveFromUSer(String askingText){
-		if (useGui){
+
+	public String receiveFromUSer(final String askingText){
+		if (this.useGui){
 			try {
 				return this.execute("zenity  --entry ");
-			} catch (ErrorOnProcessExecutionException e) {
+			} catch (final ErrorOnProcessExecutionException e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -47,20 +51,20 @@ public class UserCommunicationHandler extends SystemCommunicationService{
 			return new Scanner(System.in).nextLine();
 		}
 	}
-	
+
 	//Should not be stored in a variable or the variable should be volatile
-	public String receiveHiddenFromUSer(String askingText){
-		if (useGui){
+	public String receiveHiddenFromUSer(final String askingText){
+		if (this.useGui){
 			try {
 				return this.execute("zenity --info "+askingText+" --password ");
-			} catch (ErrorOnProcessExecutionException e) {
+			} catch (final ErrorOnProcessExecutionException e) {
 				e.printStackTrace();
 				return null;
 			}
 		} else {
 			try {
 				return String.valueOf(PasswordField.getPassword(System.in, askingText+" : "));
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 				return null;
 			}

@@ -3,11 +3,9 @@ package frameworks.negotiation.protocoles;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import frameworks.negotiation.NegotiatingAgent;
-import frameworks.negotiation.SimpleNegotiatingAgent;
 import frameworks.negotiation.contracts.AbstractActionSpecif;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.contracts.ContractTrunk;

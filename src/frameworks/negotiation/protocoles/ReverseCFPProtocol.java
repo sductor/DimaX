@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import frameworks.negotiation.contracts.AbstractActionSpecif;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.contracts.ContractTransition;
 import frameworks.negotiation.contracts.ContractTrunk;
@@ -33,17 +32,17 @@ extends AbstractCommunicationProtocol<PeronsalState,Contract>{
 	/*
 	 * 
 	 */
-	
+
 
 	@Override
 	public boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
 		return  contracts.getAllInitiatorContracts().isEmpty();
 	}
-	
+
 	/*
 	 * 
 	 */
-	
+
 	@Override
 	protected void answerAccepted(final Collection<Contract> toAccept) {
 		final ArrayList<Contract> initiator = new ArrayList<Contract>();
@@ -55,7 +54,7 @@ extends AbstractCommunicationProtocol<PeronsalState,Contract>{
 
 		assert ContractTransition.allComplete(initiator);
 		assert ContractTransition.allComplete(participant);
-		
+
 		this.confirmContract(initiator, Receivers.NotInitiatingParticipant);
 		this.acceptContract(participant, Receivers.Initiator);
 	}
@@ -66,7 +65,7 @@ extends AbstractCommunicationProtocol<PeronsalState,Contract>{
 		final ArrayList<Contract> participant = new ArrayList<Contract>();
 
 		this.separateInitiator(toReject, initiator, participant);
-		
+
 		assert ContractTransition.allComplete(initiator);
 		assert ContractTransition.allComplete(participant);
 

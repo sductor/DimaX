@@ -6,17 +6,16 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedTreeSet;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import frameworks.negotiation.NegotiatingAgent;
+import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.contracts.ContractIdentifier;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.contracts.UnknownContractException;
-import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.rationality.AgentState;
 
@@ -127,12 +126,12 @@ extends ContractTrunk<InformedCandidature<Contract>>{
 		final Collection<ContractIdentifier> modifiedContracts = new ArrayList<ContractIdentifier>();
 		boolean isUpdate;
 		if (newState!=null){
-		try {
-			isUpdate= newState.getStateCounter()>
-			getMyAgent().getMyInformation().getInformation(newState.getClass(), newState.getMyAgentIdentifier()).getStateCounter();
-		} catch (NoInformationAvailableException e1) {
-			isUpdate=true;
-		}
+			try {
+				isUpdate= newState.getStateCounter()>
+				this.getMyAgent().getMyInformation().getInformation(newState.getClass(), newState.getMyAgentIdentifier()).getStateCounter();
+			} catch (final NoInformationAvailableException e1) {
+				isUpdate=true;
+			}
 		} else {
 			isUpdate=false;
 		}

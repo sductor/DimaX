@@ -179,13 +179,14 @@ public class BasicIntrospectiveShell extends GimaObject {
 	 * @param myComponent
 	 *            the agent to execute
 	 */
-	protected void executeBehaviors(final Class<? extends Annotation> annotation, final Date creation, boolean forceExecution) {
+	protected void executeBehaviors(final Class<? extends Annotation> annotation, final Date creation, final boolean forceExecution) {
 		for (final MethodHandler mt : this.myMethods.getMethods()) {
 			if (mt.isAnnotationPresent(annotation)) {
 				try {
 					boolean toRemove = false;
-					if (forceExecution || mt.isActive())
+					if (forceExecution || mt.isActive()) {
 						toRemove = this.myMethods.executeStepMethod(mt, creation);
+					}
 					if (toRemove) {
 						this.metToRemove.add(mt);
 					}

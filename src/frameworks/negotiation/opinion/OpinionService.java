@@ -2,19 +2,15 @@ package frameworks.negotiation.opinion;
 
 import java.util.Collection;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.modules.aggregator.AbstractMinMaxAggregation;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
-import dima.introspectionbasedagents.services.information.ObservationService.Information;
 
 public interface OpinionService
 extends ObservationService{
 
-//	public <Info extends Information> Opinion<Info> getOpinion(
-//			Class<Info> informationType, AgentIdentifier agentId) throws NoInformationAvailableException;
+	//	public <Info extends Information> Opinion<Info> getOpinion(
+	//			Class<Info> informationType, AgentIdentifier agentId) throws NoInformationAvailableException;
 
 	public <Info extends Information> Opinion<Info> getGlobalOpinion(
 			Class<Info> myInfoType) throws NoInformationAvailableException, NoOpinionHandlerException;

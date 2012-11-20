@@ -51,10 +51,10 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 
 	public boolean isActive() {
-		return active && caller.isActive();
+		return this.active && this.caller.isActive();
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(final boolean active) {
 		this.active = active;
 	}
 
@@ -123,7 +123,7 @@ public class MethodHandler extends SimpleMethodHandler {
 	//
 
 	private Object execute(final Object myComponent, final Object[] args) throws IllegalArgumentException, InvocationTargetException, IllegalAccessException {
-		if (active){	
+		if (this.active){
 			final Method m = this.getMethod();
 			if (!m.isAccessible()) {
 				m.setAccessible(true);
@@ -254,7 +254,7 @@ class SimpleMethodHandler extends GimaObject {
 	//
 	// Routines static
 	//
-	
+
 	public static  String getCurrentlyExecutedMethod(final int level) {
 		try {
 			throw new Exception();
@@ -322,7 +322,7 @@ class SimpleMethodHandler extends GimaObject {
 	//
 	// Methods
 	//
-	
+
 	public String toGenericString(){
 		return this.getMethod().toGenericString();
 	}

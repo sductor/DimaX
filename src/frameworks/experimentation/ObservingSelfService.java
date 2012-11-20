@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
-
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
-import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.ResumeActivity;
 import dima.introspectionbasedagents.annotations.Transient;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
@@ -95,8 +93,8 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 				//				logMonologue("recieving end simulation order in resuming",ObservingSelfService.observationLog);
 				this.simulationEndORder((SimulationEndedMessage)m);
 			} else {
-								logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
-//				messages.add(m);
+				this.logMonologue("ignoring "+m+" in resuming",ObservingSelfService.observationLog);
+				//				messages.add(m);
 			}
 		}
 		for (final AbstractMessage m : messages) {

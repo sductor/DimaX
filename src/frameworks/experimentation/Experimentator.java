@@ -1,22 +1,16 @@
 package frameworks.experimentation;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import jtp.context.IterativeDeepening;
-
-import org.jdom.JDOMException;
 
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.launch.APIAgent;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
 import frameworks.faulttolerance.experimentation.ReplicationObservingGlobalService;
 
@@ -86,7 +80,7 @@ public final class Experimentator extends APIAgent{
 
 	@ProactivityInitialisation
 	public void initialise() throws CompetenceException{
-		LogService.logOnFile(this.myProtocol.finalResultPath, ReplicationObservingGlobalService.entete(), false, false);	
+		LogService.logOnFile(this.myProtocol.finalResultPath, ReplicationObservingGlobalService.entete(), false, false);
 		this.logWarning("Experimentator created for: "+this.simuToLaunch.size()+" experiences to launch! ",LogService.onBoth);//+" will use :"+getApi().getAvalaibleHosts());this.myProtocol.toString()
 		this.logWarning(this.getDescription(),LogService.onBoth);
 		this.launchSimulation();
@@ -100,13 +94,13 @@ public final class Experimentator extends APIAgent{
 
 		if (this.awaitingAnswer==0){
 			//Toute les expériences sont faites!!
-			assert !iteartionSeeds.isEmpty();
+			assert !this.iteartionSeeds.isEmpty();
 			LogService.logOnFile(this.myProtocol.finalResultPath, "\n seed"+this.iteartionSeeds.get(0)+" : \n", true, false);
 			//			el.write(myProtocol.finalResultPath);
 			try{
 				this.iteartionSeeds.remove(0);
-			}catch(Exception e){
-				logWarning("uhh malotru!",e);
+			}catch(final Exception e){
+				this.logWarning("uhh malotru!",e);
 			}
 			if (this.iteartionSeeds.isEmpty()){
 				this.logWarning("yyyyyyyyeeeeeeeeeeeeaaaaaaaaaaaaahhhhhhhhhhh!!!!!!!!!!!",LogService.onBoth);
@@ -127,7 +121,7 @@ public final class Experimentator extends APIAgent{
 				//				while (!this.simuToLaunch.isEmpty()){
 
 				nextSimu = this.simuToLaunch.pop();
-				nextSimu.setSeed(iteartionSeeds.get(0));
+				nextSimu.setSeed(this.iteartionSeeds.get(0));
 				Laborantin l;
 				try {
 
@@ -176,7 +170,7 @@ public final class Experimentator extends APIAgent{
 
 	public String getDescription(){
 		return "Experimentator of "+this.simuToLaunch.size()+" experiences of "+ExperimentationParameters._maxSimulationTime+" seconds ";
-	}		
+	}
 }
 
 

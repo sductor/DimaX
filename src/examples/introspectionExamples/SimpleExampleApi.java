@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.jdom.JDOMException;
 
-
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -41,12 +40,12 @@ public class SimpleExampleApi extends APIAgent{
 	/**
 	 * @param args
 	 * @throws CompetenceException
-	 * @throws IfailedException 
-	 * @throws NotEnoughMachinesException 
-	 * @throws IOException 
-	 * @throws JDOMException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+	 * @throws IfailedException
+	 * @throws NotEnoughMachinesException
+	 * @throws IOException
+	 * @throws JDOMException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 * @throws MissingCompetenceException
 	 */
 	public static void main(String[] args) throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, NotEnoughMachinesException, IfailedException {

@@ -4,10 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageCollectionHandler;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;

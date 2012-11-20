@@ -1,27 +1,15 @@
 package frameworks.faulttolerance.experimentation;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import org.omg.CORBA._PolicyStub;
-
-import frameworks.faulttolerance.dcoprealloc.DcopAgent;
-import frameworks.faulttolerance.dcoprealloc.DcopHost;
-
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
@@ -38,28 +26,23 @@ import frameworks.faulttolerance.centralizedsolver.CentralizedHost;
 import frameworks.faulttolerance.centralizedsolver.CentralizedReplica;
 import frameworks.faulttolerance.collaborativecandidature.CollaborativeHost;
 import frameworks.faulttolerance.collaborativecandidature.CollaborativeReplica;
-import frameworks.faulttolerance.negotiatingagent.HostCore;
+import frameworks.faulttolerance.dcoprealloc.DcopAgent;
+import frameworks.faulttolerance.dcoprealloc.DcopHost;
 import frameworks.faulttolerance.negotiatingagent.HostState;
-import frameworks.faulttolerance.negotiatingagent.ReplicaCore;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.solver.JMetalSolver;
-import frameworks.faulttolerance.solver.RessourceAllocationProblem;
 import frameworks.faulttolerance.solver.SolverFactory;
-import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.NegotiationParameters.SelectionType;
 import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
-import frameworks.negotiation.protocoles.dcopProtocol.DCOPLeaderProtocol;
 import frameworks.negotiation.rationality.RationalAgent;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
-import frameworks.negotiation.rationality.SocialChoiceFunction;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 import frameworks.negotiation.selection.GreedySelectionModule;
+import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 import frameworks.negotiation.selection.OptimalSelectionModule;
 import frameworks.negotiation.selection.SelectionModule;
 import frameworks.negotiation.selection.SimpleSelectionCore;
-import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 
 public class ReplicationExperimentationParameters extends
 ExperimentationParameters<ReplicationLaborantin> implements Comparable {
@@ -167,7 +150,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 
 	ReplicationExperimentationParameters(
-			final int nbAgents, final int nbHosts, 
+			final int nbAgents, final int nbHosts,
 			final int agentAccessiblePerHost,
 			final Double hostFaultProbabilityMean,
 			final DispersionSymbolicValue hostFaultProbabilityDispersion,
@@ -177,15 +160,15 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			final DispersionSymbolicValue hostcapacityDispersion,
 			final Double agentCriticityMean,
 			final DispersionSymbolicValue agentCriticityDispersion,
-			int simultaneousCandidature,
-			int simultaneousAcceptation,
-			Double	opinionDiffusionDegree,
+			final int simultaneousCandidature,
+			final int simultaneousAcceptation,
+			final Double	opinionDiffusionDegree,
 			final String usedProtocol,
 			final SocialChoiceType socialWelfare,
 			final SelectionType agentSelection,
 			final SelectionType hostSelection,
-			Double alpha_low,
-			Double alpha_high,
+			final Double alpha_low,
+			final Double alpha_high,
 			final boolean dynamicCriticty,
 			final boolean faultOccurs) {
 		super(new AgentName("ziReplExp"),
@@ -220,7 +203,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	//
 
 	public long getRandomSeed() {
-		return randSeed;
+		return this.randSeed;
 	}
 
 	//	public String setAgentSelection(final String agentSelection){
@@ -259,7 +242,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	//		return this.host_maxSimultaneousFailure/this.agentAccessiblePerHost;
 	//	}
 	public Double getMaxSimultFailure(){
-		return this.agentAccessiblePerHost*host_maxSimultaneousFailure;
+		return this.agentAccessiblePerHost*ReplicationExperimentationParameters.host_maxSimultaneousFailure;
 	}
 
 	//
@@ -271,14 +254,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	@Override
 	public final void initiateParameters() throws IfailedException{
-		this.rig = new ReplicationInstanceGraph(_socialWelfare);
+		this.rig = new ReplicationInstanceGraph(this._socialWelfare);
 
-		rig.randomInitiaition(getSimulationName(), randSeed,
-				nbAgents, nbHosts, 
-				agentCriticityMean, agentCriticityDispersion, 
-				agentLoadMean, agentLoadDispersion, hostCapacityMean, 
-				hostCapacityDispersion, hostFaultProbabilityMean, hostFaultProbabilityDispersion, 
-				maxHostAccessibleParAgent, agentAccessiblePerHost);
+		this.rig.randomInitiaition(this.getSimulationName(), this.randSeed,
+				this.nbAgents, this.nbHosts,
+				this.agentCriticityMean, this.agentCriticityDispersion,
+				this.agentLoadMean, this.agentLoadDispersion, this.hostCapacityMean,
+				this.hostCapacityDispersion, this.hostFaultProbabilityMean, this.hostFaultProbabilityDispersion,
+				ReplicationExperimentationParameters.maxHostAccessibleParAgent, this.agentAccessiblePerHost);
 
 		//
 		//		if (this.withOptimal){
@@ -291,7 +274,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		//		}
 
 		String initialisationStatus = "Neighborhoog... :\n";
-		if (agentAccessiblePerHost==nbHosts) {
+		if (this.agentAccessiblePerHost==this.nbHosts) {
 			initialisationStatus+="using a complete accesiblity graph";
 		} else {
 			for (final AgentIdentifier r : this.rig.getAgentsIdentifier()){
@@ -358,7 +341,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.simultaneousCandidature,
 						this.dynamicCriticity,
 						this.getMyAgentIdentifier(),
-						alpha_low, alpha_high);
+						this.alpha_low, this.alpha_high);
 			}else  if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){ //Status
 
 				rep = new StatusReplica(
@@ -368,7 +351,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.simultaneousCandidature,
 						this.dynamicCriticity,
 						this.opinionDiffusionDegree.intValue(),
-						alpha_low, alpha_high);
+						this.alpha_low, this.alpha_high);
 
 			}else if (this._usedProtocol
 					.equals(NegotiationParameters.key4DcopProto)){
@@ -376,7 +359,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				rep = new DcopAgent(
 						replicaId,
 						this.rig.getAgentState(replicaId),
-						getDcopKValue(this.kSolver),
+						this.getDcopKValue(this.kSolver),
 						this.dynamicCriticity);
 
 			}else if (this._usedProtocol
@@ -404,7 +387,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				}
 			}
 			result.put(rep.getId(),rep);
-			getMyAgent().myInformationService.add(rep.getMyCurrentState());
+			this.getMyAgent().myInformationService.add(rep.getMyCurrentState());
 		}
 
 		/*
@@ -431,7 +414,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.getSelectionCore(this._hostSelection),
 						this._socialWelfare,
 						this.getMyAgentIdentifier(),
-						alpha_low, alpha_high);
+						this.alpha_low, this.alpha_high);
 
 			} else if (this._usedProtocol
 					.equals(NegotiationParameters.key4statusProto)) {
@@ -441,7 +424,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.getSelectionCore(this._hostSelection),
 						this._socialWelfare,
 						this.opinionDiffusionDegree.intValue(),
-						alpha_low, alpha_high);
+						this.alpha_low, this.alpha_high);
 			}else if (this._usedProtocol
 					.equals(NegotiationParameters.key4DcopProto)){
 
@@ -449,15 +432,15 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						hostId,
 						this.rig.getHostState(hostId),
 						this._socialWelfare,
-						getDcopKValue(this.kSolver),SolverFactory.getGlobalSolver(this._socialWelfare),
+						this.getDcopKValue(this.kSolver),SolverFactory.getGlobalSolver(this._socialWelfare),
 						this.maxIndividualComputingTime);
 
 			}else if (this._usedProtocol
 					.equals(NegotiationParameters.key4GeneticProto)){
 
-				JMetalSolver p = new JMetalSolver(_socialWelfare, true, true);
-				p.setProblem(rig, new ArrayList<AgentIdentifier>());
-				p.setTimeLimit((int) this._maxSimulationTime);
+				final JMetalSolver p = new JMetalSolver(this._socialWelfare, true, true);
+				p.setProblem(this.rig, new ArrayList<AgentIdentifier>());
+				p.setTimeLimit((int) ExperimentationParameters._maxSimulationTime);
 
 				if (cc==null){
 					hostAg = new CentralizedCoordinator(
@@ -477,20 +460,20 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 
 			//pas d'acquaintance pour les ressources
-			hostAg.setKnownResources(rig.getAccessibleAgents(hostId));
+			hostAg.setKnownResources(this.rig.getAccessibleAgents(hostId));
 			//gestion des état initiaux
 			for (final AgentIdentifier ag : hostAg.getMyCurrentState().getMyResourceIdentifiers()){
-				if ((hostAg.getMyCore()).iMemorizeMyRessourceState()) {
+				if (hostAg.getMyCore().iMemorizeMyRessourceState()) {
 					hostAg.getMyInformation().add(this.rig.getAgentState(ag));
 				}
-				if ((hostAg.getMyCore()).iObserveMyRessourceChanges()) {
+				if (hostAg.getMyCore().iObserveMyRessourceChanges()) {
 					hostAg.addObserver(ag,
 							SimpleRationalAgent.stateChangementObservation);
 				}
 			}
 
 			result.put(hostAg.getIdentifier(),hostAg);
-			getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
+			this.getMyAgent().myInformationService.add(hostAg.getMyCurrentState());
 		}
 
 		/*
@@ -501,7 +484,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		return result.values();
 	}
 
-	int getDcopKValue(int k){
+	int getDcopKValue(final int k){
 		return (int) Math.sqrt(4*k);
 	}
 
@@ -522,11 +505,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		} else if (selection
 				.equals(SelectionType.Opt)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), true, maxIndividualComputingTime));
+					true, false, new OptimalSelectionModule(SolverFactory.getHostSolver(this._socialWelfare), true, this.maxIndividualComputingTime));
 		}else if (selection
 				.equals(SelectionType.Better)) {
 			return new SimpleSelectionCore(
-					true, false, new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), false, maxIndividualComputingTime));
+					true, false, new OptimalSelectionModule(SolverFactory.getHostSolver(this._socialWelfare), false, this.maxIndividualComputingTime));
 		} else {
 			throw new RuntimeException(
 					"Static parameters est mal conf : selection = "+ selection);
@@ -542,10 +525,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			return new GreedySelectionModule(GreedySelectionType.RooletteWheel);
 		} else if (selection
 				.equals(SelectionType.Opt)) {
-			return new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), true, this.maxIndividualComputingTime);
+			return new OptimalSelectionModule(SolverFactory.getHostSolver(this._socialWelfare), true, this.maxIndividualComputingTime);
 		}else if (selection
 				.equals(SelectionType.Better)) {
-			return new OptimalSelectionModule(SolverFactory.getHostSolver(_socialWelfare), false, this.maxIndividualComputingTime);
+			return new OptimalSelectionModule(SolverFactory.getHostSolver(this._socialWelfare), false, this.maxIndividualComputingTime);
 		} else {
 			throw new RuntimeException(
 					"Static parameters est mal conf : selection = "+ selection);
@@ -559,7 +542,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 			return super.equals(that) &&
 					this.nbAgents==that.nbAgents &&
-					this.nbHosts==that.nbHosts && 
+					this.nbHosts==that.nbHosts &&
 					this.agentAccessiblePerHost==that.agentAccessiblePerHost &&
 					this.hostFaultProbabilityMean.equals( that.hostFaultProbabilityMean) &&
 					this.agentLoadMean.equals(that.agentLoadMean) &&
@@ -597,7 +580,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				+1024*this.agentCriticityMean.hashCode()
 				+2048*this.agentCriticityDispersion.hashCode()
 				+4096*this.dynamicCriticity.hashCode()
-				+8192*this.host_maxSimultaneousFailure.hashCode()
+				+8192*ReplicationExperimentationParameters.host_maxSimultaneousFailure.hashCode()
 				+16000*this.hostCapacityMean.hashCode()
 				+32000*this.hostCapacityDispersion.hashCode()
 				+64000*this.simultaneousCandidature
@@ -609,7 +592,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 
 	@Override
 	public ReplicationExperimentationParameters clone(){
-		assert alpha_high!=0.;
+		assert this.alpha_high!=0.;
 		return new ReplicationExperimentationParameters(
 				this.nbAgents,
 				this.nbHosts,
@@ -637,39 +620,42 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	}
 	@Override
 	public int compareTo(final Object o) {
-		assert alpha_high!=0.;
+		assert this.alpha_high!=0.;
 		final ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
 		if (this.nbAgents!=that.nbAgents){
-			return (this.nbAgents-that.nbAgents);
+			return this.nbAgents-that.nbAgents;
 		} else {
-			if (!this._usedProtocol.equals(that._usedProtocol)){  
-				if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) || 
+			if (!this._usedProtocol.equals(that._usedProtocol)){
+				if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) ||
 						that._usedProtocol.equals(NegotiationParameters.key4statusProto)){//en premier
-					if (this._usedProtocol.equals(NegotiationParameters.key4statusProto))
+					if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)) {
 						return -1;
-					else
+					} else {
 						return 1;
+					}
 
-				} else  if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) || 
+				} else  if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) ||
 						that._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){//en deuxieme
-					if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto))
+					if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto)) {
 						return -1;
-					else
+					} else {
 						return 1;
+					}
 
-				} else  if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto) || 
+				} else  if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto) ||
 						that._usedProtocol.equals(NegotiationParameters.key4GeneticProto)){//en troisieme
-					if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto))
+					if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto)) {
 						return -1;
-					else
+					} else {
 						return 1;
+					}
 				} else {
 					throw new RuntimeException("impossible avec 4 protos");
 				}
-			} else {	
+			} else {
 				if (this.kSolver!=that.kSolver){
 					return this.kSolver-that.kSolver;
-				} else {								
+				} else {
 					if (!this._socialWelfare.equals(that._socialWelfare)){
 						return this._socialWelfare.compareTo(that._socialWelfare);
 					} else	{
@@ -683,8 +669,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 							//							return this.opinionDiffusionDegree.compareTo(that.opinionDiffusionDegree);
 							//						} else {
 
-							if ((this.hostCapacityMean/(double)this.nbAgents)!=(that.hostCapacityMean/(double)that.nbAgents)){
-								return new Double((this.hostCapacityMean/(double)this.nbAgents)).compareTo((that.hostCapacityMean/(double)that.nbAgents));
+							if (this.hostCapacityMean/this.nbAgents!=that.hostCapacityMean/that.nbAgents){
+								return new Double(this.hostCapacityMean/this.nbAgents).compareTo(that.hostCapacityMean/that.nbAgents);
 							} else {
 								if (!this._hostSelection.equals(that._hostSelection)){
 									return this._hostSelection.compareTo(that._hostSelection);
@@ -728,52 +714,52 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	public boolean isValid() {
 		//		return true;
 
-		if (!parametresCoherents()){
+		if (!this.parametresCoherents()){
 			return false;
 		}
 		//		return true;
 		//SOUHAITE
 		//
-		if (kSolver==ReplicationExperimentationGenerator._kDefault &&
-				nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
-				_socialWelfare.equals(SocialChoiceType.Utility) &&
-				_hostSelection.equals(SelectionType.RoolettWheel)){
-			if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
+		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
+				this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+				this._socialWelfare.equals(SocialChoiceType.Utility) &&
+				this._hostSelection.equals(SelectionType.RoolettWheel)){
+			if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
 				return true;
-			} else if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
-				if ((!alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
-						|| !alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))){
-					return opinionDiffusionDegree.equals(
+			} else if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
+				if (!this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
+						|| !this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)){
+					return this.opinionDiffusionDegree.equals(
 							ReplicationExperimentationGenerator.getValue(
-									ReplicationExperimentationGenerator._kOpinionDefault,new Double(nbAgents))) &&
-									_hostSelection.equals(SelectionType.RoolettWheel);
+									ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents))) &&
+									this._hostSelection.equals(SelectionType.RoolettWheel);
 				} else {
 					return true;
 				}
 			}
 		}
-		
+
 		if (
-				kSolver==ReplicationExperimentationGenerator._kDefault &&
-						_socialWelfare.equals(SocialChoiceType.Utility)  &&
-				_hostSelection.equals(SelectionType.RoolettWheel)){
-			if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
-				return alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
-						&& alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)
-						&& opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
-								ReplicationExperimentationGenerator._kOpinionDefault,new Double(nbAgents)));
+				this.kSolver==ReplicationExperimentationGenerator._kDefault &&
+				this._socialWelfare.equals(SocialChoiceType.Utility)  &&
+				this._hostSelection.equals(SelectionType.RoolettWheel)){
+			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
+				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
+						&& this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)
+						&& this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
+								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
 			} else {
-				return alpha_high.equals(Double.NaN) && alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
+				return this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
 			}
 		}
 
 
 
-		if (nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
-				_hostSelection.equals(SelectionType.RoolettWheel) && 
+		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+				this._hostSelection.equals(SelectionType.RoolettWheel) &&
 				//				(alpha_low==Double.NaN && alpha_high==Double.NaN && opinionDiffusionDegree==Double.NaN) &&
-				_socialWelfare.equals(SocialChoiceType.Utility) &&
-				(_usedProtocol.equals(NegotiationParameters.key4mirrorProto) || _usedProtocol.equals(NegotiationParameters.key4DcopProto))){
+				this._socialWelfare.equals(SocialChoiceType.Utility) &&
+				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) || this._usedProtocol.equals(NegotiationParameters.key4DcopProto))){
 			return true;
 		}
 
@@ -783,34 +769,35 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	private boolean parametresCoherents() {
 		//INCOHERENT
 
-		assert alpha_high!=0.;
+		assert this.alpha_high!=0.;
 		//
-		if (nbHosts*agentAccessiblePerHost<nbAgents || agentAccessiblePerHost<=0) {
-			System.out.println("agentAccessiblePerHost not valid "+agentAccessiblePerHost+" "+nbHosts*agentAccessiblePerHost+" "+nbAgents);
+		if (this.nbHosts*this.agentAccessiblePerHost<this.nbAgents || this.agentAccessiblePerHost<=0) {
+			System.out.println("agentAccessiblePerHost not valid "+this.agentAccessiblePerHost+" "+this.nbHosts*this.agentAccessiblePerHost+" "+this.nbAgents);
 			return false;
-		} 
+		}
 
-		if (this.kSolver>nbAgents)
+		if (this.kSolver>this.nbAgents) {
 			return false;
+		}
 
 		if (!this._agentSelection.equals(SelectionType.Greedy)){
 			//			System.out.println("_agentSelection0 not valid");
 			return false;
 		}
-		//		if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
-		//				|| _usedProtocol.equals(NegotiationParameters.key4DcopProto) 
+		//		if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)
+		//				|| _usedProtocol.equals(NegotiationParameters.key4DcopProto)
 		//				|| _usedProtocol.equals(NegotiationParameters.key4GeneticProto)){
 		//			return false;
 		//		}
 		//
-		if (_usedProtocol.equals(NegotiationParameters.key4statusProto)){
-			if (alpha_high.equals(Double.NaN) || alpha_low.equals(Double.NaN) || this.opinionDiffusionDegree.equals(Double.NaN)){
+		if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
+			if (this.alpha_high.equals(Double.NaN) || this.alpha_low.equals(Double.NaN) || this.opinionDiffusionDegree.equals(Double.NaN)){
 				return false;
 				//			} else if (this.kSolver!=ReplicationExperimentationGenerator._kDefault){
 				//				return false;
 			}
 		} else {
-			if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN) || !this.opinionDiffusionDegree.equals(Double.NaN)){
+			if (!this.alpha_high.equals(Double.NaN) || !this.alpha_low.equals(Double.NaN) || !this.opinionDiffusionDegree.equals(Double.NaN)){
 				//				System.out.println("alpha1 et opinionDiffusionDegree1not valid");
 				return false;
 			}
@@ -850,23 +837,24 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	ReplicationExperimentationGenerator reg = null;
 
 	private void instanciateReg(){
-		if (reg==null)
-			reg = new ReplicationExperimentationGenerator();
+		if (this.reg==null) {
+			this.reg = new ReplicationExperimentationGenerator();
+		}
 	}
 
 	@Override
 	public LinkedList<ExperimentationParameters<ReplicationLaborantin>> generateSimulation() {
-		instanciateReg();
-		LinkedList<ExperimentationParameters<ReplicationLaborantin>> simulations = reg.generateSimulation();
+		this.instanciateReg();
+		LinkedList<ExperimentationParameters<ReplicationLaborantin>> simulations = this.reg.generateSimulation();
 		Collections.sort(simulations);
-		simulations=getPart(simulations, ReplicationLaborantin.informativeParameterNumber, 4);
+		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, 4);
 		return simulations;
 	}
-	private  <T>  LinkedList<T> getPart(List<T> objets, int partNumber, int numberOfPart){
-		LinkedList<T> results = new LinkedList<T>();
-		int numberOfPartElements = (int) objets.size()/numberOfPart;
-		int startPoint = partNumber*numberOfPartElements;
-		int finalPoint = Math.min(objets.size(), startPoint+numberOfPartElements);
+	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){
+		final LinkedList<T> results = new LinkedList<T>();
+		final int numberOfPartElements = objets.size()/numberOfPart;
+		final int startPoint = partNumber*numberOfPartElements;
+		final int finalPoint = Math.min(objets.size(), startPoint+numberOfPartElements);
 		for (int i = startPoint; i < finalPoint; i++){
 			results.add(objets.get(i));
 		}
@@ -884,9 +872,9 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 //						(
 //								_usedProtocol.equals(NegotiationParameters.key4statusProto) &&
 //								(
-//										(alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
+//										(alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
 //												&& alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)) ||
-//												((!alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
+//												((!alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
 //														&& !alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)) &&
 //														opinionDiffusionDegree.equals(
 //																ReplicationExperimentationGenerator.getValue(
@@ -899,7 +887,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 //			return true;
 //		}
 
-//	
+//
 //if (_usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
 //	if (!alpha_high.equals(Double.NaN) || !alpha_low.equals(Double.NaN)){
 //		//				System.out.println("alpha 2not valid "+alpha_high+" "+alpha_low);

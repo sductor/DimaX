@@ -24,9 +24,6 @@ import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
 import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService;
-import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService.ErrorOnProcessExecutionException;
-import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService.WrongOSException;
-import dima.introspectionbasedagents.services.deployment.hosts.RemoteHostInfo;
 
 
 /**
@@ -56,64 +53,64 @@ public class SSHExecutor extends  SystemCommunicationService {
 
 	public SSHExecutor(final String url, final Integer port, final String privateKeyPath,
 			final String knownHostsPath, final String dir) {
-		myInfo = new SSHInfo(url, port, privateKeyPath, knownHostsPath, dir);
+		this.myInfo = new SSHInfo(url, port, privateKeyPath, knownHostsPath, dir);
 		this.init();
 	}
 
 	public SSHExecutor(final String url, final Integer port, final String privateKeyPath,
 			final String knownHostsPath) {
-		myInfo = new SSHInfo(url, port, privateKeyPath, knownHostsPath);
+		this.myInfo = new SSHInfo(url, port, privateKeyPath, knownHostsPath);
 		this.init();
 	}
 
 	public SSHExecutor(final String url, final Integer port, final String dir) {
-		myInfo = new SSHInfo(url, port, dir);
+		this.myInfo = new SSHInfo(url, port, dir);
 	}
 
 	public SSHExecutor(final String url, final Integer port) {
-		myInfo = new SSHInfo(url, port);
+		this.myInfo = new SSHInfo(url, port);
 		this.init();
 	}
 
 	public SSHExecutor(final String user, final String url, final Integer port,
 			final String privateKeyPath, final String knownHostsPath, final String dir) {
-		myInfo = new SSHInfo(user, url, port, privateKeyPath, knownHostsPath, dir);
+		this.myInfo = new SSHInfo(user, url, port, privateKeyPath, knownHostsPath, dir);
 		this.init();
 	}
 
 	public SSHExecutor(final String user, final String url, final Integer port,
 			final String privateKeyPath, final String knownHostsPath) {
-		myInfo = new SSHInfo(user, url, port, privateKeyPath, knownHostsPath);
+		this.myInfo = new SSHInfo(user, url, port, privateKeyPath, knownHostsPath);
 		this.init();
 	}
 
 	public SSHExecutor(final String user, final String url, final Integer port, final String dir) {
-		myInfo = new SSHInfo(user, url, port, dir);
+		this.myInfo = new SSHInfo(user, url, port, dir);
 		this.init();
 	}
 
 	public SSHExecutor(final String user, final String url, final Integer port) {
-		myInfo = new SSHInfo(user, url, port);
+		this.myInfo = new SSHInfo(user, url, port);
 		this.init();
 
 	}
 
-	public SSHExecutor(SSHInfo i) {
-		myInfo=i;
+	public SSHExecutor(final SSHInfo i) {
+		this.myInfo=i;
 		this.init();
 	}
 
 	private void init(){
-		if (myInfo.privateKeyPath != null) {
+		if (this.myInfo.privateKeyPath != null) {
 			try {
-				this.jsch.addIdentity(myInfo.privateKeyPath);
+				this.jsch.addIdentity(this.myInfo.privateKeyPath);
 			} catch (final JSchException e) {
 				// The user will be asked of its credentials
 			}
 		}
-		if (myInfo.knownHostsPath != null) {
+		if (this.myInfo.knownHostsPath != null) {
 			try {
-				this.jsch.setKnownHosts(myInfo.knownHostsPath);
+				this.jsch.setKnownHosts(this.myInfo.knownHostsPath);
 			} catch (final JSchException e) {
 				// The user will be asked of its credentials
 			}
@@ -144,31 +141,33 @@ public class SSHExecutor extends  SystemCommunicationService {
 	//
 
 	public String getUrl() {
-		return myInfo.getUrl();
+		return this.myInfo.getUrl();
 	}
 
 	public Integer getPort() {
-		return myInfo.getPort();
+		return this.myInfo.getPort();
 	}
 
 	public String getConfDir() {
-		return myInfo.getConfDir();
+		return this.myInfo.getConfDir();
 	}
 
-	public void setGate(String gate) {
-		myInfo.setGate(gate);
+	public void setGate(final String gate) {
+		this.myInfo.setGate(gate);
 	}
 
 	/*
 	 * 
 	 */
 
-	public boolean isConnected(String[] args){
+	@Override
+	public boolean isConnected(final String[] args){
 		return this.channel!=null && this.session!=null;
 	}
 
-	public boolean disconnect(String[] args) {
-		if (!myInfo.isLocal()){
+	@Override
+	public boolean disconnect(final String[] args) {
+		if (!this.myInfo.isLocal()){
 			this.channel.disconnect();
 			this.session.disconnect();
 			this.channel=null;
@@ -177,17 +176,18 @@ public class SSHExecutor extends  SystemCommunicationService {
 		return true;
 	}
 
-	public boolean connect(String[] args) {
+	@Override
+	public boolean connect(final String[] args) {
 		try {
 			// Connecting session
-			this.session = 
-					myInfo.hasGate()?
-							this.jsch.getSession(myInfo.user, myInfo.gateUrl, 22):
-								this.jsch.getSession(myInfo.user, myInfo.url, myInfo.port);
+			this.session =
+					this.myInfo.hasGate()?
+							this.jsch.getSession(this.myInfo.user, this.myInfo.gateUrl, 22):
+								this.jsch.getSession(this.myInfo.user, this.myInfo.url, this.myInfo.port);
 							final UserInfo ui = new MyUserInfo();
 							this.session.setUserInfo(ui);
 							this.session.connect();
-							System.out.println("\n * * SSH : " + myInfo.url + " : Session connected");
+							System.out.println("\n * * SSH : " + this.myInfo.url + " : Session connected");
 
 							//		// Instanciating streams
 							//		final PipedInputStream in = new PipedInputStream();
@@ -198,11 +198,11 @@ public class SSHExecutor extends  SystemCommunicationService {
 							//		this.channel.setOutputStream(System.out);
 							this.channel.connect();
 
-							if (myInfo.hasGate()) {
-								this.execute("ssh "+myInfo.url);
+							if (this.myInfo.hasGate()) {
+								this.execute("ssh "+this.myInfo.url);
 							}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -214,7 +214,7 @@ public class SSHExecutor extends  SystemCommunicationService {
 
 	public void executeWithJava(final Class<?> classe, final String args)
 			throws ErrorOnProcessExecutionException, JSchException, IOException {
-		final String sourceDirectory = myInfo.dir;
+		final String sourceDirectory = this.myInfo.dir;
 		final String binPath = sourceDirectory + "bin";// "src/";// +
 		final String libPath = sourceDirectory + "lib/*";
 		final String command = "cd " + binPath + "; " + "java -cp $CLASSPATH:" + libPath + " "
@@ -227,16 +227,17 @@ public class SSHExecutor extends  SystemCommunicationService {
 	 * Simple Execution
 	 */
 
-	public String execute(final String command) 
+	@Override
+	public String execute(final String command)
 			throws ErrorOnProcessExecutionException {
 
-		if (myInfo.isLocal()){
+		if (this.myInfo.isLocal()){
 			final SystemCommunicationService exec = new SystemCommunicationService();
 			return exec.execute(command);
 		} else {
 			try {
 				return this.connectWithCommand(command);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new ErrorOnProcessExecutionException(e);
 			}
 		}
@@ -250,7 +251,7 @@ public class SSHExecutor extends  SystemCommunicationService {
 
 	public String executeOnchannel(final String command) throws ErrorOnProcessExecutionException, JSchException, IOException{
 
-		if (myInfo.isLocal()){
+		if (this.myInfo.isLocal()){
 			final SystemCommunicationService exec = new SystemCommunicationService();
 			return exec.execute(command);
 		} else {
@@ -276,16 +277,16 @@ public class SSHExecutor extends  SystemCommunicationService {
 	private String connectWithCommand(final String command) throws JSchException, IOException{
 
 		//		ssh -N -f ductors@gate-ia.lip6.fr -L7777:nirvana.lip6.fr:7777
-		final Session session = this.jsch.getSession(myInfo.user, myInfo.url, 22);
+		final Session session = this.jsch.getSession(this.myInfo.user, this.myInfo.url, 22);
 		final UserInfo ui = new MyUserInfo();
 		session.setUserInfo(ui);
 
 		session.connect();
-		System.out.println("\n * * SSH : " + myInfo.url + " : Session connected");
+		System.out.println("\n * * SSH : " + this.myInfo.url + " : Session connected");
 
 		final Channel channel = session.openChannel("exec");
 		((ChannelExec) channel).setCommand(command);
-		System.out.println(" * * SSH : " + myInfo.url+":"+myInfo.port + " : Command executed "
+		System.out.println(" * * SSH : " + this.myInfo.url+":"+this.myInfo.port + " : Command executed "
 				+ command);
 		channel.setInputStream(System.in);
 		((ChannelExec) channel).setOutputStream(System.out);
@@ -304,7 +305,7 @@ public class SSHExecutor extends  SystemCommunicationService {
 		final OutputStream in = this.channel.getOutputStream();
 		in.write(command.getBytes());
 		in.flush();
-		System.out.println(" * * SSH : " + myInfo.url+":"+myInfo.port + " : Command executed "
+		System.out.println(" * * SSH : " + this.myInfo.url+":"+this.myInfo.port + " : Command executed "
 				+ command);
 		return this.getChannelOutput();
 	}

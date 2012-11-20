@@ -33,7 +33,7 @@ HorizonIdentifier {
 	 *            Number of this VirtualNetwork.
 	 */
 	public VirtualNetworkIdentifier(final int number) {
-		super(denomination + number);
+		super(VirtualNetworkIdentifier.denomination + number);
 	}
 
 	/**

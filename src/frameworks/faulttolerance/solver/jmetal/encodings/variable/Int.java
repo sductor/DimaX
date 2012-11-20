@@ -3,7 +3,7 @@
 //  Author:
 //       Antonio J. Nebro <antonio@lcc.uma.es>
 //       Juan J. Durillo <durillo@lcc.uma.es>
-// 
+//
 //  Copyright (c) 2011 Antonio J. Nebro, Juan J. Durillo
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,10 +27,14 @@ import frameworks.faulttolerance.solver.jmetal.util.JMException;
 import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 
 /**
- * This class implements an integer decision variable 
+ * This class implements an integer decision variable
  */
 public class Int extends Variable {
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5302560813889653652L;
 	private int value_;       //Stores the value of the variable
 	private int lowerBound_;  //Stores the lower limit of the variable
 	private int upperBound_;  //Stores the upper limit of the variable
@@ -39,9 +43,9 @@ public class Int extends Variable {
 	 * Constructor
 	 */
 	public Int() {
-		lowerBound_ = java.lang.Integer.MIN_VALUE ;
-		upperBound_ = java.lang.Integer.MAX_VALUE ;
-		value_      = 0                           ;
+		this.lowerBound_ = java.lang.Integer.MIN_VALUE ;
+		this.upperBound_ = java.lang.Integer.MAX_VALUE ;
+		this.value_      = 0                           ;
 	} // Int
 
 	/**
@@ -49,10 +53,10 @@ public class Int extends Variable {
 	 * @param lowerBound Variable lower bound
 	 * @param upperBound Variable upper bound
 	 */
-	public Int(int lowerBound, int upperBound){
-		lowerBound_ = lowerBound;
-		upperBound_ = upperBound;
-		value_ = PseudoRandom.randInt(lowerBound, upperBound) ;
+	public Int(final int lowerBound, final int upperBound){
+		this.lowerBound_ = lowerBound;
+		this.upperBound_ = upperBound;
+		this.value_ = PseudoRandom.randInt(lowerBound, upperBound) ;
 	} // Int
 
 	/**
@@ -61,49 +65,52 @@ public class Int extends Variable {
 	 * @param lowerBound Variable lower bound
 	 * @param upperBound Variable upper bound
 	 */
-	public Int(int value, int lowerBound, int upperBound) {
+	public Int(final int value, final int lowerBound, final int upperBound) {
 		super();
 
-		value_      = value      ;
-		lowerBound_ = lowerBound ;
-		upperBound_ = upperBound ;
+		this.value_      = value      ;
+		this.lowerBound_ = lowerBound ;
+		this.upperBound_ = upperBound ;
 	} // Int
 
 	/**
 	 * Copy constructor.
 	 * @param variable Variable to be copied.
-	 * @throws JMException 
+	 * @throws JMException
 	 */
-	public Int(Variable variable) throws JMException{
-		lowerBound_ = (int)variable.getLowerBound();
-		upperBound_ = (int)variable.getUpperBound();
-		value_ = (int)variable.getValue();        
+	public Int(final Variable variable) throws JMException{
+		this.lowerBound_ = (int)variable.getLowerBound();
+		this.upperBound_ = (int)variable.getUpperBound();
+		this.value_ = (int)variable.getValue();
 	} // Int
 
 	/**
 	 * Returns the value of the variable.
 	 * @return the value.
 	 */
+	@Override
 	public double getValue() {
-		return value_;
+		return this.value_;
 	} // getValue
 
 	/**
 	 * Assigns a value to the variable.
 	 * @param value The value.
-	 */ 
-	public void setValue(double value) {
-		value_ = (int)value;
+	 */
+	@Override
+	public void setValue(final double value) {
+		this.value_ = (int)value;
 	} // setValue
 
 	/**
 	 * Creates an exact copy of the <code>Int</code> object.
 	 * @return the copy.
-	 */ 
+	 */
+	@Override
 	public Variable deepCopy(){
 		try {
 			return new Int(this);
-		} catch (JMException e) {
+		} catch (final JMException e) {
 			Configuration.logger_.severe("Int.deepCopy.execute: JMException");
 			return null ;
 		}
@@ -112,40 +119,45 @@ public class Int extends Variable {
 	/**
 	 * Returns the lower bound of the variable.
 	 * @return the lower bound.
-	 */ 
+	 */
+	@Override
 	public double getLowerBound() {
-		return lowerBound_;
+		return this.lowerBound_;
 	} // getLowerBound
 
 	/**
 	 * Returns the upper bound of the variable.
 	 * @return the upper bound.
-	 */ 
+	 */
+	@Override
 	public double getUpperBound() {
-		return upperBound_;
+		return this.upperBound_;
 	} // getUpperBound
 
 	/**
 	 * Sets the lower bound of the variable.
 	 * @param lowerBound The lower bound value.
-	 */	    
-	public void setLowerBound(double lowerBound)  {
-		lowerBound_ = (int)lowerBound;
+	 */
+	@Override
+	public void setLowerBound(final double lowerBound)  {
+		this.lowerBound_ = (int)lowerBound;
 	} // setLowerBound
 
 	/**
 	 * Sets the upper bound of the variable.
 	 * @param upperBound The new upper bound value.
-	 */          
-	public void setUpperBound(double upperBound) {
-		upperBound_ = (int)upperBound;
+	 */
+	@Override
+	public void setUpperBound(final double upperBound) {
+		this.upperBound_ = (int)upperBound;
 	} // setUpperBound
 
 	/**
 	 * Returns a string representing the object
 	 * @return The string
-	 */ 
+	 */
+	@Override
 	public String toString(){
-		return value_+"";
+		return this.value_+"";
 	} // toString
 } // Int

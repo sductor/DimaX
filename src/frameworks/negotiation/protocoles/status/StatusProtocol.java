@@ -2,26 +2,26 @@ package frameworks.negotiation.protocoles.status;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-
 import frameworks.negotiation.contracts.ContractTransition;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.contracts.UnknownContractException;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
-import frameworks.negotiation.protocoles.ReverseCFPProtocol;
 import frameworks.negotiation.rationality.AgentState;
 
 public class StatusProtocol<
 PersonalState extends AgentState,
-Contract extends MatchingCandidature> 
+Contract extends MatchingCandidature>
 extends AbstractCommunicationProtocol<PersonalState,Contract>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1590563865576327573L;
 	Boolean destructionOptimized;
 
 	/**
@@ -30,7 +30,7 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 	 * @param optimizeDestruction null if not a ressource ; if false, all destruction demand will be automatically confirmed
 	 * @throws UnrespectedCompetenceSyntaxException
 	 */
-	public StatusProtocol(Boolean destructionOptimized)
+	public StatusProtocol(final Boolean destructionOptimized)
 			throws UnrespectedCompetenceSyntaxException {
 		super(new ContractTrunk<Contract>());
 		this.destructionOptimized=destructionOptimized;
@@ -39,23 +39,24 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 	/*
 	 * 
 	 */
+	@Override
 	protected void answer() {
 		if (this.isActive() && !this.getContracts().isEmpty()) {
 
-			assert canonicVerif();
-			Collection<Contract> extractedContracts = new ArrayList<Contract>();
-			if (destructionOptimized!=null && !destructionOptimized){
-				assert getMyAgent().getIdentifier() instanceof ResourceIdentifier;
-				for (Contract n:getContracts().getAllContracts()){
+			assert this.canonicVerif();
+			final Collection<Contract> extractedContracts = new ArrayList<Contract>();
+			if (this.destructionOptimized!=null && !this.destructionOptimized){
+				assert this.getMyAgent().getIdentifier() instanceof ResourceIdentifier;
+				for (final Contract n:this.getContracts().getAllContracts()){
 					if (!n.isMatchingCreation()){
 						extractedContracts.add(n);
 					}
 				}
 				this.confirmContract(extractedContracts, Receivers.Initiator);
 			}
-			assert canonicVerif();
+			assert this.canonicVerif();
 			super.answer();
-			assert canonicVerif();
+			assert this.canonicVerif();
 		}
 	}
 
@@ -82,8 +83,8 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 		assert ContractTransition.allComplete(participant);
 		assert Assert.Imply(!initiator.isEmpty(),participant.isEmpty()):initiator+"\n -----------------------"+participant;
 		assert Assert.Imply(!participant.isEmpty(), initiator.isEmpty()):initiator+"\n -----------------------"+participant;
-		assert Assert.Imply(!participant.isEmpty(),(getMyAgent().getIdentifier() instanceof ResourceIdentifier));
-		assert Assert.Imply(!initiator.isEmpty(),!(getMyAgent().getIdentifier() instanceof ResourceIdentifier));
+		assert Assert.Imply(!participant.isEmpty(),this.getMyAgent().getIdentifier() instanceof ResourceIdentifier);
+		assert Assert.Imply(!initiator.isEmpty(),!(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier));
 
 		this.confirmContract(initiator, Receivers.NotInitiatingParticipant);
 		this.acceptContract(participant, Receivers.Initiator);
@@ -116,8 +117,8 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 		assert ContractTransition.allComplete(participant);
 		assert Assert.Imply(!initiator.isEmpty(),participant.isEmpty()):initiator+"\n -----------------------"+participant;
 		assert Assert.Imply(!participant.isEmpty(), initiator.isEmpty()):initiator+"\n -----------------------"+participant;
-		assert Assert.Imply(!participant.isEmpty(),(getMyAgent().getIdentifier() instanceof ResourceIdentifier));
-		assert Assert.Imply(!initiator.isEmpty(),!(getMyAgent().getIdentifier() instanceof ResourceIdentifier));
+		assert Assert.Imply(!participant.isEmpty(),this.getMyAgent().getIdentifier() instanceof ResourceIdentifier);
+		assert Assert.Imply(!initiator.isEmpty(),!(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier));
 
 		this.cancelContract(initiator, Receivers.NotInitiatingParticipant);
 		this.cancelContract(participant, Receivers.Initiator);
@@ -127,18 +128,20 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 	}
 
 	@Override
-	protected void putOnWait(Collection<Contract> toPutOnWait) {
+	protected void putOnWait(final Collection<Contract> toPutOnWait) {
 		// TODO Auto-generated method stub
 
 	}
 
 	public boolean canonicVerif(){
-		for (Contract n:getContracts().getAllContracts()){
-			for (AgentIdentifier id : n.getAllInvolved())
-				if (!id.equals(getMyAgent().getIdentifier()))
-				assert getContracts().getContracts(id).size()==1:id+" -->\n"+getContracts().getContracts(id);
+		for (final Contract n:this.getContracts().getAllContracts()){
+			for (final AgentIdentifier id : n.getAllInvolved()) {
+				if (!id.equals(this.getMyAgent().getIdentifier())) {
+					assert this.getContracts().getContracts(id).size()==1:id+" -->\n"+this.getContracts().getContracts(id);
+				}
+			}
 		}
-	return true;
+		return true;
 	}
 }
 
@@ -154,7 +157,7 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 //	protected void putOnWait(final Collection<Contract> toPutOnWait) {
 //		// Do nothing
 //	}
-//	
+//
 
 
 
@@ -163,7 +166,7 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 
 
 
-//	
+//
 //	public void receiveProposal(final SimpleContractProposal delta)  {
 //		super.receiveProposal(delta);
 ////		if (optimizeDestruction!=null && !optimizeDestruction && !delta.getMyContract().isMatchingCreation()){
@@ -172,7 +175,7 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 ////			acceptContract(cs, Receivers.Initiator);
 ////		}
 //	}
-//	
+//
 //	public void receiveAccept(final SimpleContractAnswer delta)  {
 //		super.receiveAccept(delta);
 //
@@ -183,11 +186,11 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 //			this.faceAnUnknownContract(e);
 //			return;
 //		}
-//		
+//
 //		if (!contract.isMatchingCreation()){
 //			Collection<Contract> cs = new ArrayList<Contract>();
 //			cs.add(contract);
 //			confirmContract(cs, Receivers.NotInitiatingParticipant);
-//			
+//
 //		}
 //	}

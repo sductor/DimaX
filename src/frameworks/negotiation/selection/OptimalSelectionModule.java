@@ -16,16 +16,20 @@ public class OptimalSelectionModule<
 Agent extends NegotiatingAgent<PersonalState, Contract>,
 PersonalState extends AgentState,
 Contract extends MatchingCandidature>
-extends BasicAgentModule<Agent> 
+extends BasicAgentModule<Agent>
 implements SelectionModule<Agent, PersonalState, Contract> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1023510625245338664L;
 	final ResourceAllocationSolver<Contract, PersonalState> solver;
 	final boolean forceOptimal;
 	final long maxComputingTime;
 
 	public OptimalSelectionModule(
-			ResourceAllocationSolver<Contract, PersonalState> solver, 
-			boolean forceOptimal,
+			final ResourceAllocationSolver<Contract, PersonalState> solver,
+			final boolean forceOptimal,
 			final long maxComputingTime) {
 		this.solver = solver;
 		this.forceOptimal=forceOptimal;
@@ -34,48 +38,50 @@ implements SelectionModule<Agent, PersonalState, Contract> {
 
 	private Collection<Contract> getBestSolution() {
 		try {
-			return solver.getBestLocalSolution();
-		} catch (UnsatisfiableException e) {
+			return this.solver.getBestLocalSolution();
+		} catch (final UnsatisfiableException e) {
 			e.printStackTrace();
 			return null;
-		} catch (ExceedLimitException e) {
+		} catch (final ExceedLimitException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
 
+	@Override
 	public Collection<Contract> selection(
-			PersonalState currentState,
+			final PersonalState currentState,
 			final Collection<Contract> contractsToExplore) {
 		Collection<Contract> result;
-		
+
 		if (!contractsToExplore.isEmpty()){
-			
-			solver.setProblem(contractsToExplore);
+
+			this.solver.setProblem(contractsToExplore);
 			this.solver.setTimeLimit((int) this.maxComputingTime);
-			
-			if (forceOptimal){
-				result = getBestSolution();
-				if (result==null || !getMyAgent().Iaccept(contractsToExplore))
+
+			if (this.forceOptimal){
+				result = this.getBestSolution();
+				if (result==null || !this.getMyAgent().Iaccept(contractsToExplore)) {
 					return  new ArrayList<Contract>();
-				else 
+				} else {
 					return result;
+				}
 
 			} else {
 				final Date startingExploringTime = new Date();
-				while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime)){
-					result = solver.getNextLocalSolution();
-					if (result==null)
+				while (this.solver.hasNext() && new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime){
+					result = this.solver.getNextLocalSolution();
+					if (result==null) {
 						return  new ArrayList<Contract>();
-					else if (getMyAgent().Iaccept(contractsToExplore))
-						return result;	
-					else {
+					} else if (this.getMyAgent().Iaccept(contractsToExplore)) {
+						return result;
+					} else {
 						//on continue a chercher
-					}						
+					}
 				}
 			}
 		}
-		return  new ArrayList<Contract>();	
+		return  new ArrayList<Contract>();
 	}
 }

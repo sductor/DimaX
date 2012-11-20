@@ -28,19 +28,19 @@ public class ContractIdentifier implements DimaComponentInterface {
 		this.contractCreation = date;
 		this.initiator = intiator;
 		this.participants = new ArrayList<AgentIdentifier>(participants);
-		Collections.sort(this.participants,idComp());
+		Collections.sort(this.participants,this.idComp());
 		//		this.participants.remove(this.getInitiator());
 		this.validityTime = validityTime;
 	}
 
-	
+
 	public ContractIdentifier(final AgentIdentifier intiator, final Date date,
 			final long validityTime, final AgentIdentifier... participants) {
 		super();
 		this.contractCreation = date;
 		this.initiator = intiator;
 		this.participants = new ArrayList<AgentIdentifier>(Arrays.asList(participants));
-		Collections.sort(this.participants,idComp());
+		Collections.sort(this.participants,this.idComp());
 		//		this.participants.remove(this.getInitiator());
 		this.validityTime = validityTime;
 	}
@@ -49,13 +49,13 @@ public class ContractIdentifier implements DimaComponentInterface {
 		return new Comparator<AgentIdentifier>() {
 
 			@Override
-			public int compare(AgentIdentifier o1, AgentIdentifier o2) {
+			public int compare(final AgentIdentifier o1, final AgentIdentifier o2) {
 				return o1.toString().compareTo(o2.toString());
 			}
-			
+
 		};
 	}
-	
+
 	public AgentIdentifier getInitiator() {
 		return this.initiator;
 	}
@@ -96,15 +96,15 @@ public class ContractIdentifier implements DimaComponentInterface {
 		if (that instanceof ContractIdentifier) {
 			if (((ContractIdentifier) that).initiator.equals(this.initiator)
 					&& ((ContractIdentifier) that).participants.equals(this.participants)) {
-//				assert ((ContractIdentifier)that).contractCreation.equals(this.contractCreation):
-//					"un agent a envoyé deux prop DIFFERENTE dans la mm session!!\n"+this+that;
+				//				assert ((ContractIdentifier)that).contractCreation.equals(this.contractCreation):
+				//					"un agent a envoyé deux prop DIFFERENTE dans la mm session!!\n"+this+that;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return "\nContract ("

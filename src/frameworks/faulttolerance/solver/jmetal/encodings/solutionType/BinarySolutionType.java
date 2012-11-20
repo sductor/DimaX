@@ -3,7 +3,7 @@
 //  Author:
 //       Antonio J. Nebro <antonio@lcc.uma.es>
 //       Juan J. Durillo <durillo@lcc.uma.es>
-// 
+//
 //  Copyright (c) 2011 Antonio J. Nebro, Juan J. Durillo
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,7 +27,7 @@ import frameworks.faulttolerance.solver.jmetal.core.Variable;
 import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
 
 /**
- * Class representing the solution type of solutions composed of Binary 
+ * Class representing the solution type of solutions composed of Binary
  * variables
  */
 public class BinarySolutionType extends SolutionType {
@@ -35,26 +35,29 @@ public class BinarySolutionType extends SolutionType {
 	/**
 	 * Constructor
 	 * @param problem
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
-	public BinarySolutionType(Problem problem) throws ClassNotFoundException {
+	public BinarySolutionType(final Problem problem) throws ClassNotFoundException {
 		super(problem) ;
 	} // Constructor
-	
+
 	/**
 	 * Creates the variables of the solution
 	 * @param decisionVariables
 	 */
+	@Override
 	public Variable[] createVariables() {
-		Variable[]  variables = new Variable[problem_.getNumberOfVariables()];
-		
-    for (int var = 0; var < problem_.getNumberOfVariables(); var++)
-    	variables[var] = new Binary(problem_.getLength(var)); 
-    
-    return variables ;
-	} 
-	
-	public boolean equals(Object o){
-		return (o instanceof BinarySolutionType);
+		final Variable[]  variables = new Variable[this.problem_.getNumberOfVariables()];
+
+		for (int var = 0; var < this.problem_.getNumberOfVariables(); var++) {
+			variables[var] = new Binary(this.problem_.getLength(var));
+		}
+
+		return variables ;
+	}
+
+	@Override
+	public boolean equals(final Object o){
+		return o instanceof BinarySolutionType;
 	}
 }

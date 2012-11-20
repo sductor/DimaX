@@ -1,30 +1,30 @@
 package dima.introspectionbasedagents.services.communicating.xmppcommunication;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
-import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService.ErrorOnProcessExecutionException;
-import dima.introspectionbasedagents.services.loggingactivity.LogMonologue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2321334450789569922L;
 	final private String loginname;
-	private Collection<String> friends=new HashSet<String>();
+	private final Collection<String> friends=new HashSet<String>();
 	File log;
 	//
 	// Constructors
 	//
 
-	public GTalkCommunicationCompetence(String loginname) {
+	public GTalkCommunicationCompetence(final String loginname) {
 		super();
 		this.loginname = loginname;
 	}
@@ -35,59 +35,59 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	//
 
 	@Override
-	public boolean connect(String[] args) {
-		boolean b = super.connect(new String[]{"talk.google.com", "5222", "gmail.com",loginname+"@gmail.com","false"});
-		friends.add(receiveHiddenFromUSer("new friend?"));
-//		friends.add(receiveFromUSer("new friend?"));
-		log = new File("/local/ductors/__Messages.log");
-		LogService.logOnFile(log, "\n\n restarting \n\n", false, false);
-		handlePresenceChangement(connection.getRoster().getPresence(friends.iterator().next()));
-		communicateWithUSerWithGui(true);
+	public boolean connect(final String[] args) {
+		final boolean b = super.connect(new String[]{"talk.google.com", "5222", "gmail.com",this.loginname+"@gmail.com","false"});
+		this.friends.add(this.receiveHiddenFromUSer("new friend?"));
+		//		friends.add(receiveFromUSer("new friend?"));
+		this.log = new File("/local/ductors/__Messages.log");
+		LogService.logOnFile(this.log, "\n\n restarting \n\n", false, false);
+		this.handlePresenceChangement(this.connection.getRoster().getPresence(this.friends.iterator().next()));
+		this.communicateWithUSerWithGui(true);
 		return b;
 	}
 
 	@Override
-	public void setStatusToServer(boolean available, Presence.Mode mode, String status) {
-		connection.sendPacket(getClientRequestForStatusList());
-		connection.sendPacket(getClientRequest4updateStatus(available, mode, status));
-		connection.sendPacket(getClientRequest4sendPresence(mode));
+	public void setStatusToServer(final boolean available, final Presence.Mode mode, final String status) {
+		this.connection.sendPacket(this.getClientRequestForStatusList());
+		this.connection.sendPacket(this.getClientRequest4updateStatus(available, mode, status));
+		this.connection.sendPacket(this.getClientRequest4sendPresence(mode));
 	}
 
 	@Override
-	public void handlePresenceChangement(Presence presence) {
-		if (friends.contains(StringUtils.parseBareAddress(presence.getFrom()))){
-			String text = "on "+new Date()+" new presence : "+presence.getFrom()+" : "+presence;
+	public void handlePresenceChangement(final Presence presence) {
+		if (this.friends.contains(StringUtils.parseBareAddress(presence.getFrom()))){
+			final String text = "on "+new Date()+" new presence : "+presence.getFrom()+" : "+presence;
 			System.out.println(new Date()+" "+presence);
-			LogService.logOnFile(log, text, false, false);
-//			sendToUser(text);
+			LogService.logOnFile(this.log, text, false, false);
+			//			sendToUser(text);
 		}
 	}
 
 	/*
-	 * Google specific 
+	 * Google specific
 	 */
 
-	public void setBlocked(String user){
-		connection.sendPacket(getClientRequest4setTAttribute(user,"B"));
+	public void setBlocked(final String user){
+		this.connection.sendPacket(this.getClientRequest4setTAttribute(user,"B"));
 	}
 
-	public void setNeverShow(String user){
-		connection.sendPacket(getClientRequest4setTAttribute(user,"H"));
+	public void setNeverShow(final String user){
+		this.connection.sendPacket(this.getClientRequest4setTAttribute(user,"H"));
 	}
 
-	public void setAlwaysShow(String user){
-		connection.sendPacket(getClientRequest4setTAttribute(user,"P"));
+	public void setAlwaysShow(final String user){
+		this.connection.sendPacket(this.getClientRequest4setTAttribute(user,"P"));
 	}
 
-	public void setAuto(String user){
-		connection.sendPacket(getClientRequest4setNoTAttribute(user));
+	public void setAuto(final String user){
+		this.connection.sendPacket(this.getClientRequest4setNoTAttribute(user));
 	}
-	
+
 	public void requestForExtendedFileAttribute(){
-		connection.sendPacket( getClientRequestForExtendedFileAttribute());
-		//ajout d'un paquet listener		
+		this.connection.sendPacket( this.getClientRequestForExtendedFileAttribute());
+		//ajout d'un paquet listener
 	}
-	
+
 	//
 	// Packet primitives
 	//
@@ -98,7 +98,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 			@Override
 			public String toXML() {
-				String output = "";			
+				String output = "";
 				output += "<iq type='get' to='gmail.com'>";
 				output += "<query xmlns='http://jabber.org/protocol/disco#info'/>";
 				output += "</iq>";
@@ -108,7 +108,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	}
 
 	/*
-	 * Shared status 
+	 * Shared status
 	 * https://developers.google.com/talk/jep_extensions/shared_status?hl=fr
 	 * http://community.igniterealtime.org/thread/41274
 	 */
@@ -119,7 +119,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 			@Override
 			public String toXML() {
 				String output = "";
-				output += "<iq type='get' to='"+loginname+"@gmail.com' id='"+Packet.nextID()+"' >";
+				output += "<iq type='get' to='"+GTalkCommunicationCompetence.this.loginname+"@gmail.com' id='"+Packet.nextID()+"' >";
 				output += "<query xmlns='google:shared-status' version='2'/>";
 				output += "</iq>";
 				return output;
@@ -132,8 +132,8 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 			@Override
 			public String toXML() {
-				String output = "";	
-				output += "<iq type='set' to='"+loginname+"@gmail.com' id='"+Packet.nextID()+"'>";
+				String output = "";
+				output += "<iq type='set' to='"+GTalkCommunicationCompetence.this.loginname+"@gmail.com' id='"+Packet.nextID()+"'>";
 				output += "<query xmlns='google:shared-status' version='2'>";
 				output += "<status>"+status+"</status>";
 				output += "<show>"+mode+"</show>";
@@ -150,7 +150,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 			@Override
 			public String toXML() {
-				String output = "";	
+				String output = "";
 				output += "<presence>";
 				output += "<show>"+mode+"</show>";
 				output += "<status>blabla</status>";
@@ -164,7 +164,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	}
 
 	/*
-	 * Extended file attribute 
+	 * Extended file attribute
 	 * https://developers.google.com/talk/jep_extensions/roster_attributes?hl=fr
 	 */
 
@@ -173,8 +173,8 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 			@Override
 			public String toXML() {
-				String output = "";	
-				output += "<iq type='get' from='"+loginname+"@gmail.com'  id='"+Packet.nextID()+"'>";
+				String output = "";
+				output += "<iq type='get' from='"+GTalkCommunicationCompetence.this.loginname+"@gmail.com'  id='"+Packet.nextID()+"'>";
 				output += "<query xmlns='jabber:iq:roster' xmlns:gr='google:roster' gr:ext='2'/>";
 				output += "</iq>";
 				return output;
@@ -188,7 +188,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 			@Override
 			public String toXML() {
-				String output = "";	
+				String output = "";
 				output += "<iq type='set' id='"+Packet.nextID()+"'>";
 				output += "<query xmlns='jabber:iq:roster' xmlns:gr='google:roster' gr:ext='2'>";
 				output += "<item jid='"+user+"' gr:t='"+value+"'/>";
@@ -203,7 +203,7 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 
 			@Override
 			public String toXML() {
-				String output = "";	
+				String output = "";
 				output += "<iq type='set' id='"+Packet.nextID()+"'>";
 				output += "<query xmlns='jabber:iq:roster' xmlns:gr='google:roster' gr:ext='2'>";
 				output += "<item jid='"+user+"' gr:t=''/>";
@@ -217,10 +217,10 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 	// Main
 	//
 
-	public static void main(String[] args) throws Exception{
+	public static void main(final String[] args) throws Exception{
 		final GTalkCommunicationCompetence com = new GTalkCommunicationCompetence("ductor.sylvain");
 		Runtime.getRuntime().addShutdownHook(
-				new Thread(){	
+				new Thread(){
 					@Override
 					public void run() {
 						System.out.println("disconnected!!!");
@@ -229,14 +229,14 @@ public class GTalkCommunicationCompetence extends JabberCommunicationCompetence{
 					};
 				}
 				);
-//				Connection.DEBUG_ENABLED = true;
-		boolean ok =com.connect(null);
+		//				Connection.DEBUG_ENABLED = true;
+		final boolean ok =com.connect(null);
 		System.out.println("connected? "+ok);
 		com.setStatusToServer(false, Presence.Mode.xa, "");
-//		com.setBlocked("coolhibou@gmail.com");
-//		com.setAuto("coolhibou@gmail.com");
+		//		com.setBlocked("coolhibou@gmail.com");
+		//		com.setAuto("coolhibou@gmail.com");
 
-		boolean isRunning = true;
+		final boolean isRunning = true;
 		while (isRunning) {
 			Thread.sleep(50);
 		}

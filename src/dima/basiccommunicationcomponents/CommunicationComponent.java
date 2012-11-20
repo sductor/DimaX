@@ -66,21 +66,21 @@ public class CommunicationComponent extends AgentAddress implements Asynchronous
 		m.setSender(this.agentBehavior.getIdentifier());
 		this.sendMessage((Message) m);
 	}
-	
+
 	/*
 	 * 
 	 */
-	
+
 	@Override
-	public boolean isConnected(String[] args) {
+	public boolean isConnected(final String[] args) {
 		return true;
 	}
 	@Override
-	public boolean connect(String[] args) {
+	public boolean connect(final String[] args) {
 		return true;
 	}
 	@Override
-	public boolean disconnect(String[] args) {
+	public boolean disconnect(final String[] args) {
 		return true;
 	}
 }

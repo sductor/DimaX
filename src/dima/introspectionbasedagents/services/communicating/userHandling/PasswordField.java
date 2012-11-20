@@ -1,7 +1,9 @@
 package dima.introspectionbasedagents.services.communicating.userHandling;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
+import java.util.Arrays;
 
 /**
  * This class prompts the user for a password and attempts to mask input with "*"
@@ -10,11 +12,11 @@ import java.util.*;
 public class PasswordField {
 
 	private PasswordField(){};
-	
+
 	//
 	// Accessor
 	//
-	
+
 	public static PasswordField passwordField = new PasswordField();
 	//
 	// Methods
@@ -25,14 +27,14 @@ public class PasswordField {
 	 *@return The password as entered by the user.
 	 */
 
-	public static final char[] getPassword(InputStream in, String prompt) throws IOException {
-		MaskingThread maskingthread = passwordField.new MaskingThread(prompt);
-		Thread thread = new Thread(maskingthread);
+	public static final char[] getPassword(InputStream in, final String prompt) throws IOException {
+		final MaskingThread maskingthread = PasswordField.passwordField.new MaskingThread(prompt);
+		final Thread thread = new Thread(maskingthread);
 		thread.start();
 
 		char[] lineBuffer;
 		char[] buf;
-		int i;
+		final int i;
 
 		buf = lineBuffer = new char[128];
 
@@ -47,8 +49,8 @@ public class PasswordField {
 				break loop;
 
 			case '\r':
-				int c2 = in.read();
-				if ((c2 != '\n') && (c2 != -1)) {
+				final int c2 = in.read();
+				if (c2 != '\n' && c2 != -1) {
 					if (!(in instanceof PushbackInputStream)) {
 						in = new PushbackInputStream(in);
 					}
@@ -73,11 +75,11 @@ public class PasswordField {
 		if (offset == 0) {
 			return null;
 		}
-		char[] ret = new char[offset];
+		final char[] ret = new char[offset];
 		System.arraycopy(buf, 0, ret, 0, offset);
 		Arrays.fill(buf, ' ');
 		return ret;
-	}  
+	}
 
 	//
 	// Subclass
@@ -88,31 +90,33 @@ public class PasswordField {
 
 	private class MaskingThread extends Thread {
 		private volatile boolean stop;
-		private char echochar = '*';
+		private final char echochar = '*';
 
 		/**
 		 *@param prompt The prompt displayed to the user
 		 */
-		public MaskingThread(String prompt) {
+		public MaskingThread(final String prompt) {
 			System.out.print(prompt);
 		}
 
 		/**
 		 * Begin masking until asked to stop.
 		 */
+		@Override
 		public void run() {
 
-			int priority = Thread.currentThread().getPriority();
+			final int priority = Thread.currentThread().getPriority();
 			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
 			try {
-				stop = true;
-				while(stop) {
-					System.out.print("\010" + echochar);
+				this.stop = true;
+				while(this.stop) {
+					System.out.print("\010" + this.echochar);
 					try {
+						Thread.currentThread();
 						// attempt masking at this rate
-						Thread.currentThread().sleep(1);
-					}catch (InterruptedException iex) {
+						Thread.sleep(1);
+					}catch (final InterruptedException iex) {
 						Thread.currentThread().interrupt();
 						return;
 					}
@@ -129,7 +133,7 @@ public class PasswordField {
 			this.stop = false;
 		}
 	}
-	
+
 	public String convertToString(){
 		return String.valueOf(this);
 	}
@@ -138,11 +142,11 @@ public class PasswordField {
 	//
 	//
 
-	public static void main(String argv[]) {
+	public static void main(final String argv[]) {
 		char password[] = null;
 		try {
 			password = PasswordField.getPassword(System.in, "Enter your password: ");
-		} catch(IOException ioe) {
+		} catch(final IOException ioe) {
 			ioe.printStackTrace();
 		}
 		if(password == null ) {

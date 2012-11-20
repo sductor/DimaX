@@ -1,7 +1,8 @@
 package frameworks.horizon.util;
 
-import frameworks.horizon.util.Interval.Inclusion;
+import junit.framework.Assert;
 import junit.framework.TestCase;
+import frameworks.horizon.util.Interval.Inclusion;
 
 /**
  * TestCase for the class Interval
@@ -81,15 +82,15 @@ public class IntervalTest extends TestCase {
 	 * Checks the behavior of the method isEmpty().
 	 */
 	public void testIsEmpty() {
-		final Interval<Integer> i = Interval.newInterval(bound1, bound1,
+		final Interval<Integer> i = Interval.newInterval(IntervalTest.bound1, IntervalTest.bound1,
 				Inclusion.bothIncluded);
-		assertTrue(EmptyInterval.EMPTY_INTERVAL.isEmpty());
-		assertTrue(!i.isEmpty());
-		assertTrue(Interval.newInterval(bound1, bound1, Inclusion.bothExcluded)
+		Assert.assertTrue(EmptyInterval.EMPTY_INTERVAL.isEmpty());
+		Assert.assertTrue(!i.isEmpty());
+		Assert.assertTrue(Interval.newInterval(IntervalTest.bound1, IntervalTest.bound1, Inclusion.bothExcluded)
 				.isEmpty());
-		assertTrue(Interval.newInterval(bound1, bound1, Inclusion.infExcluded)
+		Assert.assertTrue(Interval.newInterval(IntervalTest.bound1, IntervalTest.bound1, Inclusion.infExcluded)
 				.isEmpty());
-		assertTrue(Interval.newInterval(bound1, bound1, Inclusion.supExcluded)
+		Assert.assertTrue(Interval.newInterval(IntervalTest.bound1, IntervalTest.bound1, Inclusion.supExcluded)
 				.isEmpty());
 	}
 
@@ -97,29 +98,29 @@ public class IntervalTest extends TestCase {
 	 * Tests the results of intersection of Intervals.
 	 */
 	public void testInter() {
-		final Interval<Integer> med = Interval.newInterval(bound2, bound4,
-				Inclusion.bothIncluded), hi = Interval.newInterval(bound2,
-						bound5, Inclusion.bothIncluded), lo = Interval.newInterval(
-								bound1, bound4, Inclusion.bothIncluded), up = Interval
-								.newInterval(bound5, bound5, Inclusion.bothIncluded), down = Interval
-								.newInterval(bound1, bound1, Inclusion.bothIncluded);
-		assertTrue(up.inter(down).isEmpty());
-		assertTrue(med.inter(med).equals(med));
-		assertTrue(hi.inter(lo).equals(med));
-		assertTrue(up.inter(hi).equals(up));
+		final Interval<Integer> med = Interval.newInterval(IntervalTest.bound2, IntervalTest.bound4,
+				Inclusion.bothIncluded), hi = Interval.newInterval(IntervalTest.bound2,
+						IntervalTest.bound5, Inclusion.bothIncluded), lo = Interval.newInterval(
+								IntervalTest.bound1, IntervalTest.bound4, Inclusion.bothIncluded), up = Interval
+								.newInterval(IntervalTest.bound5, IntervalTest.bound5, Inclusion.bothIncluded), down = Interval
+								.newInterval(IntervalTest.bound1, IntervalTest.bound1, Inclusion.bothIncluded);
+		Assert.assertTrue(up.inter(down).isEmpty());
+		Assert.assertTrue(med.inter(med).equals(med));
+		Assert.assertTrue(hi.inter(lo).equals(med));
+		Assert.assertTrue(up.inter(hi).equals(up));
 	}
 
 	/**
 	 * Tests the results of the method belongs()
 	 */
 	public void testBelongs() {
-		final Interval<Integer> hi = Interval.newInterval(bound2, bound5,
-				Inclusion.bothIncluded), down = Interval.newInterval(bound1,
-						bound1, Inclusion.bothIncluded);
+		final Interval<Integer> hi = Interval.newInterval(IntervalTest.bound2, IntervalTest.bound5,
+				Inclusion.bothIncluded), down = Interval.newInterval(IntervalTest.bound1,
+						IntervalTest.bound1, Inclusion.bothIncluded);
 		final Interval<Integer> empty = (Interval<Integer>) EmptyInterval.EMPTY_INTERVAL;
-		assertTrue(!empty.belongs(3));
-		assertTrue(!hi.belongs(bound1));
-		assertTrue(hi.belongs(bound5));
-		assertTrue(down.belongs(bound1));
+		Assert.assertTrue(!empty.belongs(3));
+		Assert.assertTrue(!hi.belongs(IntervalTest.bound1));
+		Assert.assertTrue(hi.belongs(IntervalTest.bound5));
+		Assert.assertTrue(down.belongs(IntervalTest.bound1));
 	}
 }

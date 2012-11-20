@@ -3,10 +3,6 @@ package frameworks.faulttolerance.experimentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-
 
 import org.jdom.JDOMException;
 
@@ -15,7 +11,6 @@ import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.kernel.LaunchableCompetentComponent;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.experimentation.Experimentator;
 import frameworks.experimentation.IfailedException;
@@ -30,7 +25,6 @@ import frameworks.negotiation.opinion.OpinionService;
 import frameworks.negotiation.opinion.SimpleOpinionService;
 import frameworks.negotiation.protocoles.status.CentralisedStatusCompterCompetence;
 import frameworks.negotiation.rationality.RationalAgent;
-import frameworks.negotiation.rationality.SimpleRationalAgent;
 
 public class ReplicationLaborantin extends Laborantin implements Believer {
 
@@ -43,16 +37,17 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 			final APILauncherModule api) throws CompetenceException,
 			IfailedException, NotEnoughMachinesException {
 		super(p, new ReplicationObservingGlobalService(p), api);
-		myInformationService =  new SimpleOpinionService(new ReplicaStateOpinionHandler(p._socialWelfare, this.getIdentifier()));
+		this.myInformationService =  new SimpleOpinionService(new ReplicaStateOpinionHandler(p._socialWelfare, this.getIdentifier()));
 		if (p._usedProtocol.equals(NegotiationParameters.key4CentralisedstatusProto)){
-			cscc.setMyAgent(this);
-			cscc.setActive(true);
-			for (LaunchableCompetentComponent ag : getAgents()){
-				if (ag instanceof Replica)
-					cscc.addAcquaintance(ag.getIdentifier());
+			this.cscc.setMyAgent(this);
+			this.cscc.setActive(true);
+			for (final LaunchableCompetentComponent ag : this.getAgents()){
+				if (ag instanceof Replica) {
+					this.cscc.addAcquaintance(ag.getIdentifier());
+				}
 			}
 		} else {
-			cscc.setActive(false);
+			this.cscc.setActive(false);
 		}
 	}
 
@@ -93,7 +88,7 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 
 	@Override
 	public OpinionService getMyOpinion() {
-		return (OpinionService) myInformationService;
+		return (OpinionService) this.myInformationService;
 	}
 
 	//
@@ -102,32 +97,32 @@ public class ReplicationLaborantin extends Laborantin implements Believer {
 
 	public static Integer informativeParameter4Graph;
 	public static Integer informativeParameterNumber;
-	
+
 	public static void main(final String[] args)
 			throws CompetenceException, IllegalArgumentException, IllegalAccessException, JDOMException, IOException, IfailedException, NotEnoughMachinesException{
 		//		System.out.println(1<<10000);
-		
-		
-		informativeParameter4Graph = 0;
-		
-		informativeParameterNumber = new Integer(args[2]);
-		
-		Experimentator exp =
+
+
+		ReplicationLaborantin.informativeParameter4Graph = 0;
+
+		ReplicationLaborantin.informativeParameterNumber = new Integer(args[2]);
+
+		final Experimentator exp =
 				new Experimentator(
 						new ReplicationExperimentationGenerator().getDefaultParameters(),
 						new SimpleExperiementsLogger(),
 						new ArrayList(Arrays.asList(new ReplicationExperimentationGenerator().getSeeds())));
-		exp.run(args);		
-//		informativeParameter = 1;//new Integer(args[2]);
-//		exp =
-//				new Experimentator(
-//						new ReplicationExperimentationGenerator().getDefaultParameters(),
-//						new FinalExperimentsLogger(),
-//						Arrays.asList(new ReplicationExperimentationGenerator().getSeeds()));
-//		exp.run(args);
+		exp.run(args);
+		//		informativeParameter = 1;//new Integer(args[2]);
+		//		exp =
+		//				new Experimentator(
+		//						new ReplicationExperimentationGenerator().getDefaultParameters(),
+		//						new FinalExperimentsLogger(),
+		//						Arrays.asList(new ReplicationExperimentationGenerator().getSeeds()));
+		//		exp.run(args);
 	}
 
 
 
-	
+
 }

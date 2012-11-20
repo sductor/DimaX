@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basiccommunicationcomponents.Message;
@@ -32,8 +31,8 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 import dima.introspectionbasedagents.services.communicating.MailBoxBasedAsynchronousCommunicatingComponentInterface;
 import dima.introspectionbasedagents.services.loggingactivity.LogCommunication.MessageStatus;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 /**
  * OLD :
  * Le LoggerManager est chargé d'écrire et d'afficher les logs d'activité des
@@ -43,7 +42,7 @@ import dima.introspectionbasedagents.services.observingagent.NotificationEnvelop
  *
  * @author Sylvain Ductor
  */
-public final class LogService<Agent extends CommunicatingCompetentComponent & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+public final class LogService<Agent extends CommunicatingCompetentComponent & MailBoxBasedAsynchronousCommunicatingComponentInterface>
 extends SimpleExceptionHandler
 implements AgentCompetence<Agent>, CompetentComponent{
 	private static final long serialVersionUID = -4511578003487049832L;
@@ -125,13 +124,13 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	@Override
 	public void addLogKey(final String key, final String logType) {
-		if (logType.equals(onScreen)){
+		if (logType.equals(LogService.onScreen)){
 			this.addLogKey(key,true,false);
-		}else if (logType.equals(onFile)){
+		}else if (logType.equals(LogService.onFile)){
 			this.addLogKey(key,false,true);
-		} else if (logType.equals(onBoth)){
+		} else if (logType.equals(LogService.onBoth)){
 			this.addLogKey(key,true,true);
-		}else if (logType.equals(onNone)){
+		}else if (logType.equals(LogService.onNone)){
 			this.addLogKey(key,false,false);
 		} else {
 			throw new RuntimeException("aaarrggh");
@@ -209,7 +208,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 	@Override
 	public Boolean  logMonologue(final String text){
-		return this.logMonologue(text, onBoth);
+		return this.logMonologue(text, LogService.onBoth);
 	}
 	// Communication
 
@@ -380,11 +379,11 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	@Override
 	public Boolean  logWarning(final String text,
 			final Throwable e) {
-		return this.logWarning(text,e,onBoth);
+		return this.logWarning(text,e,LogService.onBoth);
 	}
 	@Override
 	public Boolean  logWarning(final String text) {
-		return this.logWarning(text,onBoth);
+		return this.logWarning(text,LogService.onBoth);
 	}
 	/******************
 	 * LOG WRITING
@@ -573,7 +572,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 
 
 	public static String getMyPath() {
-		return myPath;
+		return LogService.myPath;
 	}
 
 	//
@@ -615,7 +614,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 			final AbstractMessage abstractMessage,
 			final Throwable e){
 		this.stopFaultyMethods(methodHandler);
-		String result="Stopping faulty method!!! "+methodHandler.getMethodName()+"\n"; 
+		String result="Stopping faulty method!!! "+methodHandler.getMethodName()+"\n";
 		result+= super.handleExceptionOnMessage(dimaComponentInterface, methodHandler, abstractMessage, e);
 		this.signalException(result , e);
 		return result;
@@ -646,7 +645,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	private void stopFaultyMethods(final MethodHandler m){
-		
+
 		//		getMyAgent().setActive(false);
 		m.setActive(false);
 		//		if (m.getMyComponent() instanceof AgentCompetence)
@@ -820,12 +819,14 @@ implements AgentCompetence<Agent>, CompetentComponent{
 		this.myAgent.autoObserve(notificationKey);
 	}
 
+	@Override
 	public Date getCreationTime() {
-		return myAgent.getCreationTime();
+		return this.myAgent.getCreationTime();
 	}
 
+	@Override
 	public long getUptime() {
-		return myAgent.getUptime();
+		return this.myAgent.getUptime();
 	}
 
 	@Override

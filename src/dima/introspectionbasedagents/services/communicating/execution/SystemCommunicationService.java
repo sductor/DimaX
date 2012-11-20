@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.services.communicating.SynchronousCommunicationComponent;
@@ -20,41 +19,41 @@ public class SystemCommunicationService implements SynchronousCommunicationCompo
 
 	//
 	// Communication
-	// 
+	//
 
 	@Override
-	public boolean isConnected(String[] args) {
+	public boolean isConnected(final String[] args) {
 		return true;
 	}
 
 	@Override
-	public boolean connect(String[] args) {
+	public boolean connect(final String[] args) {
 		return true;
 	}
 
 	@Override
-	public boolean disconnect(String[] args) {
+	public boolean disconnect(final String[] args) {
 		return true;
 	}
 
 	@Override
-	public Message sendSynchronousMessage(Message a) {
+	public Message sendSynchronousMessage(final Message a) {
 		try {
 			return new Message(this.execute((String) a.getContent()));
-		} catch (ErrorOnProcessExecutionException e) {
+		} catch (final ErrorOnProcessExecutionException e) {
 			e.printStackTrace();
 			return new Message(e.toString());
 		}
 	}
 
-	
-	
-	
+
+
+
 	//
 	// Subclasses
 	//
 
-	
+
 	/**
 	 * This enum list the existing os name as reported by
 	 * System.getProperty("os.name")
@@ -80,13 +79,13 @@ public class SystemCommunicationService implements SynchronousCommunicationCompo
 	/** Cette erreur est lancé lorsque l'on n'a pas réussi a crée le process */
 	public class ErrorOnProcessExecutionException extends ExecutorException {
 		private static final long serialVersionUID = 7799515595704424248L;
-		
+
 		Exception cause;
 
-		public ErrorOnProcessExecutionException(Exception cause) {
+		public ErrorOnProcessExecutionException(final Exception cause) {
 			super();
 			this.cause = cause;
-		}		
+		}
 	}
 
 	//
@@ -281,7 +280,7 @@ public class SystemCommunicationService implements SynchronousCommunicationCompo
 		System.out.println("Commande : " + cmd);
 		String sortie = exec.executeWithBash(cmd);
 		System.out.println("Sortie : " + sortie);
-		
+
 		cmd="zenity  --password ";
 
 		System.out.println("Commande : " + cmd);

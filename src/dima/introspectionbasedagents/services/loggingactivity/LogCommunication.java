@@ -1,7 +1,6 @@
 package dima.introspectionbasedagents.services.loggingactivity;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 
 public class LogCommunication extends LogNotification {

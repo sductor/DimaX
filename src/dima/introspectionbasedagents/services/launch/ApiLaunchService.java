@@ -3,7 +3,6 @@ package dima.introspectionbasedagents.services.launch;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ResumeActivity;

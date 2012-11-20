@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -26,11 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
-
-import frameworks.faulttolerance.solver.jmetal.core.Operator;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.IntSolutionType;
@@ -47,9 +43,14 @@ import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
  */
 public class JMetalBitFlipMutation extends Mutation {
 	/**
-	 * Valid solution types to apply this operator 
+	 * 
 	 */
-	private static List VALID_TYPES = Arrays.asList(BinarySolutionType.class, 
+	private static final long serialVersionUID = -616654849500403866L;
+
+	/**
+	 * Valid solution types to apply this operator
+	 */
+	private static List VALID_TYPES = Arrays.asList(BinarySolutionType.class,
 			IntSolutionType.class) ;
 
 	private Double mutationProbability_ = null ;
@@ -64,23 +65,25 @@ public class JMetalBitFlipMutation extends Mutation {
 	 * Constructor
 	 * Creates a new instance of the Bit Flip mutation operator
 	 */
-	public JMetalBitFlipMutation(HashMap<String, Object> parameters) {
+	public JMetalBitFlipMutation(final HashMap<String, Object> parameters) {
 		super(parameters) ;
-		if (parameters.get("probability") != null)
-			mutationProbability_ = (Double) parameters.get("probability") ; 
-		if (parameters.get("problem") != null)
-			p = (RessourceAllocationProblem) parameters.get("problem") ;
-		agentOrder=new ArrayList<Integer>(p.n);
-		addedRep=new double[p.n];
-		for (int i = 0; i<p.n;i++){
-			agentOrder.add(i);
-			addedRep[i]=0;
+		if (parameters.get("probability") != null) {
+			this.mutationProbability_ = (Double) parameters.get("probability") ;
 		}
-		hostOrder=new ArrayList<Integer>(p.m);
-		for (int j = 0; j<p.m;j++){
-			hostOrder.add(j);
+		if (parameters.get("problem") != null) {
+			this.p = (RessourceAllocationProblem) parameters.get("problem") ;
 		}
-		addedCharge=new double[p.m];
+		this.agentOrder=new ArrayList<Integer>(this.p.n);
+		this.addedRep=new double[this.p.n];
+		for (int i = 0; i<this.p.n;i++){
+			this.agentOrder.add(i);
+			this.addedRep[i]=0;
+		}
+		this.hostOrder=new ArrayList<Integer>(this.p.m);
+		for (int j = 0; j<this.p.m;j++){
+			this.hostOrder.add(j);
+		}
+		this.addedCharge=new double[this.p.m];
 	} // BitFlipMutation
 
 
@@ -90,35 +93,36 @@ public class JMetalBitFlipMutation extends Mutation {
 	 * @param solution The solution to mutate
 	 * @throws JMException
 	 */
-	public  void doMutation(double probability, Solution solution){
-		if (p.isAgent)
-			Collections.shuffle(hostOrder);
+	public  void doMutation(final double probability, final Solution solution){
+		if (this.p.isAgent) {
+			Collections.shuffle(this.hostOrder);
+		}
 
-		for (int j = 0; j < p.m; j++){
+		for (int j = 0; j < this.p.m; j++){
 
-			Collections.shuffle(agentOrder);
-			addedCharge[j]=0.;
+			Collections.shuffle(this.agentOrder);
+			this.addedCharge[j]=0.;
 			int numberOfAgent=0;
-			double alphaChargeJ= p.getHostAvailableCharge(j)*p.n/p.getAgentsChargeTotal();
-			for (Integer i : agentOrder){
-				if (p.getPos(i, j)!=-1){
+			final double alphaChargeJ= this.p.getHostAvailableCharge(j)*this.p.n/this.p.getAgentsChargeTotal();
+			for (final Integer i : this.agentOrder){
+				if (this.p.getPos(i, j)!=-1){
 
-					double agentSoftCrit = 0.5+Math.pow(p.getAgentCriticality(i)-p.getAgentMeanCriticality(),equityInd)/2.;
-					boolean allocated=((Binary) solution.getDecisionVariables()[p.getPos(i, j)]).bits_.get(0);
-					double optimistAgentcharge=Math.min(p.getAgentMemorycharge(i), p.getAgentProcessorCharge(i));
+					final double agentSoftCrit = 0.5+Math.pow(this.p.getAgentCriticality(i)-this.p.getAgentMeanCriticality(),this.equityInd)/2.;
+					final boolean allocated=((Binary) solution.getDecisionVariables()[this.p.getPos(i, j)]).bits_.get(0);
+					final double optimistAgentcharge=Math.min(this.p.getAgentMemorycharge(i), this.p.getAgentProcessorCharge(i));
 
-					double mutProb= getMutationProbability(
+					final double mutProb= this.getMutationProbability(
 							probability,
-							allocated, 
-							i, j, 
-							p.currentCharges[j]+addedCharge[j],
+							allocated,
+							i, j,
+							this.p.currentCharges[j]+this.addedCharge[j],
 							agentSoftCrit,
 							alphaChargeJ,
 							numberOfAgent);
 					if (PseudoRandom.randDouble() < mutProb) {
-						((Binary) solution.getDecisionVariables()[p.getPos(i, j)]).bits_.flip(0);
-						addedCharge[j]+=allocated?-optimistAgentcharge:+optimistAgentcharge;
-						addedRep[i]+=allocated?-1:+1;
+						((Binary) solution.getDecisionVariables()[this.p.getPos(i, j)]).bits_.flip(0);
+						this.addedCharge[j]+=allocated?-optimistAgentcharge:+optimistAgentcharge;
+						this.addedRep[i]+=allocated?-1:+1;
 					}
 				}
 				numberOfAgent++;
@@ -130,43 +134,44 @@ public class JMetalBitFlipMutation extends Mutation {
 	 * Executes the operation
 	 * @param object An object containing a solution to mutate
 	 * @return An object containing the mutated solution
-	 * @throws JMException 
+	 * @throws JMException
 	 */
-	public Object execute(Object object) throws JMException {
-		Solution solution = (Solution) object;
+	@Override
+	public Object execute(final Object object) throws JMException {
+		final Solution solution = (Solution) object;
 
-		if (!VALID_TYPES.contains(solution.getType().getClass())) {
+		if (!JMetalBitFlipMutation.VALID_TYPES.contains(solution.getType().getClass())) {
 			Configuration.logger_.severe("BitFlipMutation.execute: the solution " +
 					"is not of the right type. The type should be 'Binary', " +
 					"'BinaryReal' or 'Int', but " + solution.getType() + " is obtained");
 
-			Class cls = java.lang.String.class;
-			String name = cls.getName();
+			final Class cls = java.lang.String.class;
+			final String name = cls.getName();
 			throw new JMException("Exception in " + name + ".execute()");
-		} // if 
+		} // if
 
-		double proba = mutationProbability_;//*PseudoRandom.randDouble();
-		doMutation(proba, solution);
+		final double proba = this.mutationProbability_;//*PseudoRandom.randDouble();
+		this.doMutation(proba, solution);
 		return solution;
 	} // execute
 
-	private double getMutationProbability(double probability, boolean allocated, int agent, int host, 
-			double hostCharge,double agentSoftCrit, double alphaChargeHost, int numberOfAgent){
+	private double getMutationProbability(final double probability, final boolean allocated, final int agent, final int host,
+			final double hostCharge,double agentSoftCrit, final double alphaChargeHost, final int numberOfAgent){
 
-		double hostChargePercent=Math.max(1,hostCharge/p.getHostMaxCharge(host));
+		final double hostChargePercent=Math.max(1,hostCharge/this.p.getHostMaxCharge(host));
 		if (!allocated){
-			double ammortissement = (alphaChargeHost/p.n);
+			final double ammortissement = alphaChargeHost/this.p.n;
 			return probability*agentSoftCrit*(1-hostChargePercent)*ammortissement;
 			//			}
 		} else {
 			double ammortissement;
-			if (hostCharge>p.getHostMaxCharge(host)){
+			if (hostCharge>this.p.getHostMaxCharge(host)){
 				agentSoftCrit=Math.pow(2*agentSoftCrit,3)/2.;
 				ammortissement=1;
 			}else {
-				ammortissement=1-((double)(numberOfAgent)/(double)p.n);
+				ammortissement=1-(double)numberOfAgent/(double)this.p.n;
 			}
-			return probability*hostChargePercent*(1-agentSoftCrit);			
+			return probability*hostChargePercent*(1-agentSoftCrit);
 		}
 	}
 

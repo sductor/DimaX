@@ -6,17 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
-import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
-import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.experimentation.ReplicationGraph;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.negotiation.SimpleNegotiatingAgent;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.rationality.AgentState;
@@ -25,38 +21,42 @@ import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class LocalViewInformationService<
 PersonalState extends AgentState,
-Contract extends AbstractContractTransition> extends BasicAgentCompetence<RationalAgent<PersonalState, Contract>> 
+Contract extends AbstractContractTransition> extends BasicAgentCompetence<RationalAgent<PersonalState, Contract>>
 implements ObservationService<RationalAgent<PersonalState, Contract>>, ReplicationGraph{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6452101945394034695L;
 	ReplicationInstanceGraph rig=new ReplicationInstanceGraph(null);
 
 	@Override
 	public Set<? extends AgentIdentifier> getKnownAgents() {
-		return new HashSet<AgentIdentifier>(rig.getEveryIdentifier());
+		return new HashSet<AgentIdentifier>(this.rig.getEveryIdentifier());
 	}
 
 	@Override
-	public void add(AgentIdentifier agentId) {
-		throw new RuntimeException("not implemented");		
+	public void add(final AgentIdentifier agentId) {
+		throw new RuntimeException("not implemented");
 	}
 
 	@Override
-	public void addAll(Collection<? extends AgentIdentifier> agents) {
-		throw new RuntimeException("not implemented");		
+	public void addAll(final Collection<? extends AgentIdentifier> agents) {
+		throw new RuntimeException("not implemented");
 	}
 
 	@Override
-	public void remove(AgentIdentifier agentId) {
-		//do nothing	
+	public void remove(final AgentIdentifier agentId) {
+		//do nothing
 	}
 
 	@Override
 	public <Info extends Information> Info getInformation(
-			Class<Info> informationType, AgentIdentifier agentId)
+			final Class<Info> informationType, final AgentIdentifier agentId)
 					throws NoInformationAvailableException {
 		assert informationType.equals(ReplicaState.class) || informationType.equals(HostState.class);
-		Info i = (Info) rig.getState(agentId);
+		final Info i = (Info) this.rig.getState(agentId);
 		if (i==null){
 			throw new NoInformationAvailableException();
 		} else {
@@ -66,167 +66,180 @@ implements ObservationService<RationalAgent<PersonalState, Contract>>, Replicati
 
 	@Override
 	public <Info extends Information> Info getMyInformation(
-			Class<Info> informationType) {
+			final Class<Info> informationType) {
 		assert informationType.equals(ReplicaState.class) || informationType.equals(HostState.class);
-		Info i = (Info) rig.getState(getIdentifier());
+		final Info i = (Info) this.rig.getState(this.getIdentifier());
 		assert i!=null;
 		return i;
 	}
 
 	@Override
 	public <Info extends Information> boolean hasMyInformation(
-			Class<Info> informationType) {
-		return rig.getState(getIdentifier())!= null;
+			final Class<Info> informationType) {
+		return this.rig.getState(this.getIdentifier())!= null;
 	}
 
 	@Override
 	public <Info extends Information> boolean hasInformation(
-			Class<Info> informationType) {
+			final Class<Info> informationType) {
 		return informationType.equals(ReplicaState.class) || informationType.equals(HostState.class);
 	}
 
 	@Override
 	public <Info extends Information> boolean hasInformation(
-			Class<Info> informationType, AgentIdentifier agentId) {
-		return rig.getState(agentId)!= null;		
+			final Class<Info> informationType, final AgentIdentifier agentId) {
+		return this.rig.getState(agentId)!= null;
 	}
 
 	@Override
 	public <Info extends Information> Map<AgentIdentifier, Info> getInformation(
-			Class<Info> informationType) throws NoInformationAvailableException {
-		throw new RuntimeException("not implemented");	
+			final Class<Info> informationType) throws NoInformationAvailableException {
+		throw new RuntimeException("not implemented");
 	}
 
 	@Override
-	public void add(Information information) {
-		rig.setState((AgentState) information);
+	public void add(final Information information) {
+		this.rig.setState((AgentState) information);
 	}
 
 	@Override
-	public void remove(Information information) {
-		//do nothing	
+	public void remove(final Information information) {
+		//do nothing
 	}
 
 	@Override
-	public String show(Class<? extends Information> infotype) {
-		return rig.toString();
+	public String show(final Class<? extends Information> infotype) {
+		return this.rig.toString();
 	}
 
 	//
 	// INSTANCE GRAPH
 	//
 
-	public void setAgents(Collection<ReplicaState> collection) {
-		rig.setAgents(collection);
+	public void setAgents(final Collection<ReplicaState> collection) {
+		this.rig.setAgents(collection);
 	}
 
-	public void setHosts(Collection<HostState> hostsStates) {
-		rig.setHosts(hostsStates);
+	public void setHosts(final Collection<HostState> hostsStates) {
+		this.rig.setHosts(hostsStates);
 	}
 
-	public void setState(AgentState s) {
-		rig.setState(s);
+	public void setState(final AgentState s) {
+		this.rig.setState(s);
 	}
 
+	@Override
 	public int hashCode() {
-		return rig.hashCode();
+		return this.rig.hashCode();
 	}
 
-	public void addAcquaintance(AgentIdentifier a1, AgentIdentifier a2) {
-		rig.addAcquaintance(a1, a2);
+	public void addAcquaintance(final AgentIdentifier a1, final AgentIdentifier a2) {
+		this.rig.addAcquaintance(a1, a2);
 	}
 
-	public AgentState getState(AgentIdentifier id) {
-		return rig.getState(id);
+	public AgentState getState(final AgentIdentifier id) {
+		return this.rig.getState(id);
 	}
 
 	public Collection<? extends AgentIdentifier> getAcquaintances(
-			AgentIdentifier id) {
-		return rig.getAcquaintances(id);
+			final AgentIdentifier id) {
+		return this.rig.getAcquaintances(id);
 	}
 
+	@Override
 	public SocialChoiceType getSocialWelfare() {
-		return rig.getSocialWelfare();
+		return this.rig.getSocialWelfare();
 	}
 
 	public Collection<AgentIdentifier> getEveryIdentifier() {
-		return rig.getEveryIdentifier();
+		return this.rig.getEveryIdentifier();
 	}
 
+	@Override
 	public Collection<AgentIdentifier> getAgentsIdentifier() {
-		return rig.getAgentsIdentifier();
+		return this.rig.getAgentsIdentifier();
 	}
 
+	@Override
 	public Collection<ResourceIdentifier> getHostsIdentifier() {
-		return rig.getHostsIdentifier();
+		return this.rig.getHostsIdentifier();
 	}
 
+	@Override
 	public Collection<ReplicaState> getAgentStates() {
-		return rig.getAgentStates();
+		return this.rig.getAgentStates();
 	}
 
+	@Override
 	public Collection<HostState> getHostsStates() {
-		return rig.getHostsStates();
+		return this.rig.getHostsStates();
 	}
 
-	public boolean equals(Object obj) {
-		return rig.equals(obj);
+	@Override
+	public boolean equals(final Object obj) {
+		return this.rig.equals(obj);
 	}
 
-	public ReplicaState getAgentState(AgentIdentifier id) {
-		return rig.getAgentState(id);
+	@Override
+	public ReplicaState getAgentState(final AgentIdentifier id) {
+		return this.rig.getAgentState(id);
 	}
 
-	public HostState getHostState(ResourceIdentifier id) {
-		return rig.getHostState(id);
+	@Override
+	public HostState getHostState(final ResourceIdentifier id) {
+		return this.rig.getHostState(id);
 	}
 
 	public Collection<ResourceIdentifier> getInitialReplication(
-			AgentIdentifier id) {
-		return rig.getInitialReplication(id);
+			final AgentIdentifier id) {
+		return this.rig.getInitialReplication(id);
 	}
 
 	public Collection<AgentIdentifier> getInitialReplication(
-			ResourceIdentifier id) {
-		return rig.getInitialReplication(id);
+			final ResourceIdentifier id) {
+		return this.rig.getInitialReplication(id);
 	}
 
-	public Collection<ResourceIdentifier> getAccessibleHosts(AgentIdentifier id) {
-		return rig.getAccessibleHosts(id);
+	@Override
+	public Collection<ResourceIdentifier> getAccessibleHosts(final AgentIdentifier id) {
+		return this.rig.getAccessibleHosts(id);
 	}
 
-	public Collection<AgentIdentifier> getAccessibleAgents(ResourceIdentifier id) {
-		return rig.getAccessibleAgents(id);
+	@Override
+	public Collection<AgentIdentifier> getAccessibleAgents(final ResourceIdentifier id) {
+		return this.rig.getAccessibleAgents(id);
 	}
 
-	public boolean areLinked(AgentIdentifier a1, AgentIdentifier a2) {
-		return rig.areLinked(a1, a2);
+	@Override
+	public boolean areLinked(final AgentIdentifier a1, final AgentIdentifier a2) {
+		return this.rig.areLinked(a1, a2);
 	}
 
 
 
 	public ReplicationInstanceGraph getUnallocatedGraph() {
-		return rig.getUnallocatedGraph();
+		return this.rig.getUnallocatedGraph();
 	}
 
+	@Override
 	public String toString() {
-		return rig.toString();
+		return this.rig.toString();
 	}
 
 	public boolean assertAllocValid() {
-		return rig.assertAllocValid();
+		return this.rig.assertAllocValid();
 	}
 
 	public boolean assertValidity() {
-		return rig.assertAllocValid() && rig.assertNeigborhoodValidity();
+		return this.rig.assertAllocValid() && this.rig.assertNeigborhoodValidity();
 	}
 
 	public boolean isCoherent() {
-		return rig.isCoherent();
+		return this.rig.isCoherent();
 	}
 
 	public boolean assertNeigborhoodValidity() {
-		return rig.assertNeigborhoodValidity();
+		return this.rig.assertNeigborhoodValidity();
 	}
 
 }

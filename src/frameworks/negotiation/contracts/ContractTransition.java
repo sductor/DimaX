@@ -9,10 +9,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.negotiation.rationality.AgentState;
@@ -160,11 +158,11 @@ AbstractContractTransition {
 			//throw new RuntimeException("unappropriate specification set "+this+" "+state);
 		}
 
-//		try {
-//			if (!ExperimentationParameters.currentlyInstanciating) {
-////				assert this.isInitiallyValid():this;
-//			}
-//		} catch (final IncompleteContractException e){/*ok!*/}
+		//		try {
+		//			if (!ExperimentationParameters.currentlyInstanciating) {
+		////				assert this.isInitiallyValid():this;
+		//			}
+		//		} catch (final IncompleteContractException e){/*ok!*/}
 	}
 
 	/*
@@ -354,14 +352,14 @@ AbstractContractTransition {
 	//
 
 	public static <Contract extends AbstractContractTransition>
-	 Collection<AgentIdentifier> toInitiator(final Collection<Contract> cs){
-		Collection<AgentIdentifier> r = new ArrayList<AgentIdentifier>();
+	Collection<AgentIdentifier> toInitiator(final Collection<Contract> cs){
+		final Collection<AgentIdentifier> r = new ArrayList<AgentIdentifier>();
 		for (final Contract c : cs) {
 			assert r.add(c.getInitiator());
 		}
 		return r;
 	}
-	
+
 	public static <Contract extends AbstractContractTransition>
 	boolean allViable(final Collection<Contract> contracts)
 			throws IncompleteContractException{

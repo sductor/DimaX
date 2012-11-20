@@ -2,9 +2,7 @@ package dima.introspectionbasedagents.services;
 
 import java.io.Serializable;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 
 /**

@@ -3,7 +3,6 @@ package dima.introspectionbasedagents.kernel;
 import java.util.Collection;
 import java.util.Date;
 
-
 import dima.basiccommunicationcomponents.AbstractMailBox;
 import dima.basiccommunicationcomponents.AbstractMessage;
 import dima.basicinterfaces.ActiveComponentInterface;
@@ -27,7 +26,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	// Constructor
 	//
 
-	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface>
 	BasicCommunicatingShell(
 			final Component myComponent) {
 		super(myComponent, new BasicCommunicatingMethodTrunk());
@@ -35,7 +34,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	}
 
 
-	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface>
 	BasicCommunicatingShell(
 			final Component myComponent,
 			final AbstractMailBox mailBox) {
@@ -47,7 +46,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 	 *
 	 */
 
-	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface>
 	BasicCommunicatingShell(
 			final Component myComponent,
 			final SimpleExceptionHandler exceptionHandler) {
@@ -55,7 +54,7 @@ public class BasicCommunicatingShell extends BasicIntrospectiveShell {
 		this.mailBox=myComponent.getMailBox();
 	}
 
-	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface> 
+	public <Component extends ActiveComponentInterface & IdentifiedComponentInterface & MailBoxBasedAsynchronousCommunicatingComponentInterface>
 	BasicCommunicatingShell(
 			final Component myComponent,
 			final AbstractMailBox mailBox,

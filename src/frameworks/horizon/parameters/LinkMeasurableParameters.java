@@ -1,8 +1,8 @@
 package frameworks.horizon.parameters;
 
-import frameworks.horizon.util.Interval;
-import frameworks.horizon.util.EmptyInterval.EmptyIntervalException;
 import jtp.util.UnexpectedException;
+import frameworks.horizon.util.EmptyInterval.EmptyIntervalException;
+import frameworks.horizon.util.Interval;
 
 /**
  * Gathers non functional parameters on the links.

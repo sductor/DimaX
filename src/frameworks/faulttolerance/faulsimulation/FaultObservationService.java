@@ -7,13 +7,9 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
-import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.contracts.AbstractContractTransition;
-import frameworks.negotiation.contracts.ContractTrunk;
-import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.rationality.AgentState;
 
@@ -38,7 +34,7 @@ BasicAgentCompetence<NegotiatingAgent<PersonalState, Contract>> {
 	//
 
 	public boolean isImFaulty() {
-		return imFaulty;
+		return this.imFaulty;
 	}
 
 
@@ -67,17 +63,19 @@ BasicAgentCompetence<NegotiatingAgent<PersonalState, Contract>> {
 
 	@MessageHandler
 	public void faultObservation(final FaultStatusMessage m){
-		if (m.getHost().equals(getMyAgent().getIdentifier())){
-			logMonologue("my status has changed!! "+m);
-			if (m.isFaultEvent())
-				setImFaulty();
-			else
-				setImRepaired();
+		if (m.getHost().equals(this.getMyAgent().getIdentifier())){
+			this.logMonologue("my status has changed!! "+m);
+			if (m.isFaultEvent()) {
+				this.setImFaulty();
+			} else {
+				this.setImRepaired();
+			}
 		} else {
-			if (m.isFaultEvent())
-				setIsFaulty(m.getHost());
-			else
-				setIsRepaired(m.getHost());
+			if (m.isFaultEvent()) {
+				this.setIsFaulty(m.getHost());
+			} else {
+				this.setIsRepaired(m.getHost());
+			}
 		}
 	}
 
@@ -86,50 +84,52 @@ BasicAgentCompetence<NegotiatingAgent<PersonalState, Contract>> {
 	//
 
 	private void setImFaulty(){
-		getMyAgent().getMyProtocol().getContracts().clear();
-		getMyAgent().getMyProtocol().setActive(false);
-		Collection<? extends AgentIdentifier> myResources = getMyAgent().getMyCurrentState().getMyResourceIdentifiers();
-		PersonalState myState = getMyAgent().getMyCurrentState();
-		for (AgentIdentifier id : myResources){
+		this.getMyAgent().getMyProtocol().getContracts().clear();
+		this.getMyAgent().getMyProtocol().setActive(false);
+		final Collection<? extends AgentIdentifier> myResources = this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers();
+		PersonalState myState = this.getMyAgent().getMyCurrentState();
+		for (final AgentIdentifier id : myResources){
 			try {
-				myState = generateDestructionContract(id).computeResultingState(myState);
-			} catch (IncompleteContractException e) {
+				myState = this.generateDestructionContract(id).computeResultingState(myState);
+			} catch (final IncompleteContractException e) {
 				throw new RuntimeException("impossible");
 			}
 		}
 		((HostState) myState).setFaulty(true);
-		getMyAgent().setNewState(myState);
-		imFaulty = true;
+		this.getMyAgent().setNewState(myState);
+		this.imFaulty = true;
 	}
 
 	private void setImRepaired(){
-		getMyAgent().getMyProtocol().setActive(true);		
+		this.getMyAgent().getMyProtocol().setActive(true);
 	}
 
 	/*
 	 * 
 	 */
 
-	private void setIsFaulty(AgentIdentifier id){
-		Collection<Contract> lost = getMyAgent().getMyProtocol().getContracts().getContracts(id);
-		getMyAgent().getMyProtocol().getContracts().removeAll(lost);
+	private void setIsFaulty(final AgentIdentifier id){
+		final Collection<Contract> lost = this.getMyAgent().getMyProtocol().getContracts().getContracts(id);
+		this.getMyAgent().getMyProtocol().getContracts().removeAll(lost);
 		this.getMyAgent().getMyInformation().remove(id);
 		try {
-			if (getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(id)){
-			logMonologue("argh i'm affected by a fault!!!! "+id);
-			PersonalState myState=generateDestructionContract(id).computeResultingState(getMyAgent().getMyCurrentState());
-			getMyAgent().setNewState(myState);
-			if (!myState.isValid())
-				endSimulation();
+			if (this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers().contains(id)){
+				this.logMonologue("argh i'm affected by a fault!!!! "+id);
+				final PersonalState myState=this.generateDestructionContract(id).computeResultingState(this.getMyAgent().getMyCurrentState());
+				this.getMyAgent().setNewState(myState);
+				if (!myState.isValid()) {
+					this.endSimulation();
+				}
 			}
-		} catch (IncompleteContractException e) {
-			throw new RuntimeException("impossible");			
+		} catch (final IncompleteContractException e) {
+			throw new RuntimeException("impossible");
 		}
 	}
 
-	private void setIsRepaired(AgentIdentifier id){
-		if (initiallyKnownAgent.contains(id)) 
+	private void setIsRepaired(final AgentIdentifier id){
+		if (this.initiallyKnownAgent.contains(id)) {
 			this.getMyAgent().getMyInformation().add(id);
+		}
 	}
 }
 

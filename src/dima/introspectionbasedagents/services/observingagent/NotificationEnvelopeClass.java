@@ -6,7 +6,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 import dima.introspectionbasedagents.kernel.MethodHandler;
 import dima.introspectionbasedagents.ontologies.Envelope;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;

@@ -19,15 +19,16 @@ implements ValuedContract {
 
 	Double socialValue=null;
 
-	
+
+	@Override
 	public Double getSocialValue() {
-		return socialValue;
+		return this.socialValue;
 	}
 
-	public void setSocialValue(Double socialValue) {
+	public void setSocialValue(final Double socialValue) {
 		this.socialValue = socialValue;
 	}
-	
+
 
 	//
 	// Constructors
@@ -136,7 +137,7 @@ implements ValuedContract {
 				clone.specs.put(id, this.specs.get(id).clone());
 			}
 		}
-		clone.setSocialValue(getSocialValue());
+		clone.setSocialValue(this.getSocialValue());
 		clone.creationTime=this.creationTime;
 		return clone;
 	}

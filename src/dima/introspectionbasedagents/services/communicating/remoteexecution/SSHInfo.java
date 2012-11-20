@@ -1,12 +1,15 @@
 package dima.introspectionbasedagents.services.communicating.remoteexecution;
 
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.services.communicating.execution.SystemCommunicationService;
 import dima.introspectionbasedagents.services.deployment.hosts.LocalHost;
 
 
 public class SSHInfo implements DimaComponentInterface {//implements HostIdentifier {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -175937178007966918L;
 	protected String url;
 	protected Integer port;
 	protected String user;

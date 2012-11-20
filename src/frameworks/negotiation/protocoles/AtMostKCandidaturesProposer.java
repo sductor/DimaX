@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
@@ -53,14 +52,14 @@ ProposerCore
 		this.myKnownHosts.removeAll(this.getMyAgent().getMyCurrentState().getMyResourceIdentifiers());
 		final Set<Contract> candidatures = new HashSet<Contract>();
 
-		if (myKnownHosts.isEmpty())
+		if (this.myKnownHosts.isEmpty()) {
 			try {
 				Thread.sleep(1000, 10);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		else {
+		} else {
 			assert this.KnownHostValidityVerification();
 			final Iterator<ResourceIdentifier> itMyHosts = this.myKnownHosts.iterator();
 			while (itMyHosts.hasNext() && candidatures.size()<this.k){

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import frameworks.faulttolerance.solver.jmetal.core.Operator;
 import frameworks.faulttolerance.solver.jmetal.core.Problem;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
+import frameworks.faulttolerance.solver.jmetal.core.Variable;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.IntSolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
@@ -14,10 +15,14 @@ import frameworks.faulttolerance.solver.jmetal.operators.crossover.HUXCrossover;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
 
 public class JMetalRessAllocProblem extends Problem	{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4152853867862709129L;
 	Solution allAllocated;
 	Solution unAllocated;
 	Solution initial;
-	private boolean useBinary=true;
+	private final boolean useBinary=true;
 	RessourceAllocationProblem<Solution> p;
 
 
@@ -32,75 +37,75 @@ public class JMetalRessAllocProblem extends Problem	{
 	int nbCroisement = 10;
 	private int stagnationCounter=2;
 
-	public JMetalRessAllocProblem(RessourceAllocationProblem<Solution> p){ 
+	public JMetalRessAllocProblem(final RessourceAllocationProblem<Solution> p){
 		try {
 			this.p=p;
-			numberOfVariables_   = p.getVariableNumber() ;
-			numberOfObjectives_  = 1;                              ;
-			numberOfConstraints_ = p.getConstraintNumber();
-			problemName_         = "RessAllocJMetalProblem";
-			if (useBinary){
-				length_ = new int[numberOfVariables_];
-				for (int i = 0; i < numberOfVariables_; i++){
-					length_[i] = 1;
+			this.numberOfVariables_   = p.getVariableNumber() ;
+			this.numberOfObjectives_  = 1;                              ;
+			this.numberOfConstraints_ = p.getConstraintNumber();
+			this.problemName_         = "RessAllocJMetalProblem";
+			if (this.useBinary){
+				this.length_ = new int[this.numberOfVariables_];
+				for (int i = 0; i < this.numberOfVariables_; i++){
+					this.length_[i] = 1;
 				}
-				solutionType_ = new BinarySolutionType(this) ;
+				this.solutionType_ = new BinarySolutionType(this) ;
 
 			} else {
-				lowerLimit_  = new double[numberOfVariables_];
-				upperLimit_ = new double[numberOfVariables_]; 
-				for (int i = 0; i < numberOfVariables_; i++){
-					lowerLimit_[i]=0.;
-					upperLimit_[i]=1.;
+				this.lowerLimit_  = new double[this.numberOfVariables_];
+				this.upperLimit_ = new double[this.numberOfVariables_];
+				for (int i = 0; i < this.numberOfVariables_; i++){
+					this.lowerLimit_[i]=0.;
+					this.upperLimit_[i]=1.;
 				}
-				solutionType_ = new IntSolutionType(this) ;
-			}	
+				this.solutionType_ = new IntSolutionType(this) ;
+			}
 
 
 			//setting allalcated
 
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			throw new RuntimeException("impossible");
 		}
 	}
 
 	RessourceAllocationProblem<Solution> getRessAllocProblem(){
-		return p;
+		return this.p;
 	}
 
 	@Override
-	public void evaluate(Solution solution) throws JMException {
+	public void evaluate(final Solution solution) throws JMException {
 		double value = 0;
 		int number = 0;
 
-		if (p.isAgent){
-			for (int i = 0; i < p.n; i++){
-				if (!p.isViableForAgent(solution, i)){
+		if (this.p.isAgent){
+			for (int i = 0; i < this.p.n; i++){
+				if (!this.p.isViableForAgent(solution, i)){
 					number++;
-					value-=10*p.getAgentCriticality(i);
-				}			    		
+					value-=10*this.p.getAgentCriticality(i);
+				}
 			}
 		}
 
-		assert p.isHost;
-		if (p.isHost){
-			for (int host_j = 0; host_j < p.m; host_j++){
-				double memOverhead = p.getHostMemoryCharge(solution, host_j)-p.getHostMaxMemory(host_j);
-				double procOverhead = p.getHostProcessorCharge(solution, host_j)-p.getHostMaxProcessor(host_j);
+		assert this.p.isHost;
+		if (this.p.isHost){
+			for (int host_j = 0; host_j < this.p.m; host_j++){
+				final double memOverhead = this.p.getHostMemoryCharge(solution, host_j)-this.p.getHostMaxMemory(host_j);
+				final double procOverhead = this.p.getHostProcessorCharge(solution, host_j)-this.p.getHostMaxProcessor(host_j);
 				if (memOverhead>0||procOverhead>0){
 					number++;
-					value-=Math.max(memOverhead,procOverhead)/(p.getAgentsChargeTotal()/p.n);				    	 
+					value-=Math.max(memOverhead,procOverhead)/(this.p.getAgentsChargeTotal()/this.p.n);
 				}
 			}
 		}
 
 
-		solution.setOverallConstraintViolation(-value);    
-		solution.setNumberOfViolatedConstraint(number);       
+		solution.setOverallConstraintViolation(-value);
+		solution.setNumberOfViolatedConstraint(number);
 
 		if (number==0){
 			assert value==0;
-			value= p.getSocWelfare(solution);
+			value= this.p.getSocWelfare(solution);
 
 		}
 
@@ -112,14 +117,14 @@ public class JMetalRessAllocProblem extends Problem	{
 		return new Comparator<Solution>() {
 
 			@Override
-			public int compare(Solution o1, Solution o2) {
-				if (o1.getObjective(0)!=o2.getObjective(0))
+			public int compare(final Solution o1, final Solution o2) {
+				if (o1.getObjective(0)!=o2.getObjective(0)) {
 					return Double.compare(o1.getObjective(0), o2.getObjective(0));
-				else {
+				} else {
 					assert o1.variable_.length==o2.variable_.length;
 					for (int i = 0; i < o1.variable_.length; i++){
 						if (!o1.variable_[i].equals(o2.variable_[i])){
-							assert length_[i]==1;
+							assert JMetalRessAllocProblem.this.length_[i]==1;
 							return ((Binary)o1.variable_[i]).getIth(0)?1:-1;
 						}
 					}
@@ -131,100 +136,100 @@ public class JMetalRessAllocProblem extends Problem	{
 	}
 
 	public Solution getUnallocatedSolution(){
-		if (unAllocated==null){
+		if (this.unAllocated==null){
 			try{
 				//setting unallocated
-				if (useBinary){
-					Binary[] vars = new Binary[this.getNumberOfVariables()];
-					for (int i = 0; i < p.n; i++){
-						for (int j=0; j < p.m; j++){
-							if (p.getPos(i,j)!=-1){
-								vars[p.getPos(i,j)]= new Binary(1);
-								vars[p.getPos(i,j)].setIth(0,false);
-							}	
+				if (this.useBinary){
+					final Binary[] vars = new Binary[this.getNumberOfVariables()];
+					for (int i = 0; i < this.p.n; i++){
+						for (int j=0; j < this.p.m; j++){
+							if (this.p.getPos(i,j)!=-1){
+								vars[this.p.getPos(i,j)]= new Binary(1);
+								vars[this.p.getPos(i,j)].setIth(0,false);
+							}
 						}
 					}
-					unAllocated= new Solution(this,vars);
-					evaluate(unAllocated);
+					this.unAllocated= new Solution(this,vars);
+					this.evaluate(this.unAllocated);
 				} else {
-					Int[] vars = new Int[this.getNumberOfVariables()];
-					for (int i = 0; i < p.n; i++){
-						for (int j=0; j < p.m; j++){
-							if (p.getPos(i,j)!=-1){
-								vars[p.getPos(i,j)]= new Int(0,0,1);
-							}	
-						}	
+					final Int[] vars = new Int[this.getNumberOfVariables()];
+					for (int i = 0; i < this.p.n; i++){
+						for (int j=0; j < this.p.m; j++){
+							if (this.p.getPos(i,j)!=-1){
+								vars[this.p.getPos(i,j)]= new Int(0,0,1);
+							}
+						}
 					}
-					unAllocated= new Solution(this,vars);
-					evaluate(unAllocated);
+					this.unAllocated= new Solution(this,vars);
+					this.evaluate(this.unAllocated);
 				}
 
-				assert vectorVerif(unAllocated);
-				return unAllocated;
-			} catch (JMException e) {
+				assert JMetalRessAllocProblem.vectorVerif(this.unAllocated);
+				return this.unAllocated;
+			} catch (final JMException e) {
 				throw new RuntimeException("impossible");
 			}
 
 		} else {
-			assert vectorVerif(unAllocated);
-			return new Solution(unAllocated);
+			assert JMetalRessAllocProblem.vectorVerif(this.unAllocated);
+			return new Solution(this.unAllocated);
 		}
 	}
 	public Solution getAllallocatedSolution(){
 
-		if (allAllocated==null){
+		if (this.allAllocated==null){
 			try{
-				if (useBinary){
-					Binary[] vars = new Binary[this.getNumberOfVariables()];
-					for (int i = 0; i < p.n; i++){
-						for (int j=0; j < p.m; j++){
-							if (p.getPos(i,j)!=-1){
-								vars[p.getPos(i,j)]= new Binary(1);
-								vars[p.getPos(i,j)].setIth(0,true);
-							}	
-						}	
+				if (this.useBinary){
+					final Binary[] vars = new Binary[this.getNumberOfVariables()];
+					for (int i = 0; i < this.p.n; i++){
+						for (int j=0; j < this.p.m; j++){
+							if (this.p.getPos(i,j)!=-1){
+								vars[this.p.getPos(i,j)]= new Binary(1);
+								vars[this.p.getPos(i,j)].setIth(0,true);
+							}
+						}
 					}
-					allAllocated =new Solution(this,vars);
-					evaluate(allAllocated);
+					this.allAllocated =new Solution(this,vars);
+					this.evaluate(this.allAllocated);
 				} else {
-					Int[] vars = new Int[this.getNumberOfVariables()];
-					for (int i = 0; i < p.n; i++){
-						for (int j=0; j < p.m; j++){
-							if (p.getPos(i,j)!=-1){
-								vars[p.getPos(i,j)]= new Int(1,0,1);
-							}	
-						}	
+					final Int[] vars = new Int[this.getNumberOfVariables()];
+					for (int i = 0; i < this.p.n; i++){
+						for (int j=0; j < this.p.m; j++){
+							if (this.p.getPos(i,j)!=-1){
+								vars[this.p.getPos(i,j)]= new Int(1,0,1);
+							}
+						}
 					}
-					allAllocated= new Solution(this,vars);
-					evaluate(allAllocated);
+					this.allAllocated= new Solution(this,vars);
+					this.evaluate(this.allAllocated);
 				}
-				assert vectorVerif(allAllocated);
-				return allAllocated;
-			} catch (JMException e) {
+				assert JMetalRessAllocProblem.vectorVerif(this.allAllocated);
+				return this.allAllocated;
+			} catch (final JMException e) {
 				throw new RuntimeException("impossible");
 			}
 
 		} else {
-			assert vectorVerif(allAllocated);
-			return new Solution(allAllocated);
+			assert JMetalRessAllocProblem.vectorVerif(this.allAllocated);
+			return new Solution(this.allAllocated);
 		}
 	}
 
-	public void updateCurrentCharges(Solution solution) {
-		p.updateCurrentCharges(solution);
+	public void updateCurrentCharges(final Solution solution) {
+		this.p.updateCurrentCharges(solution);
 
 	}
 
-	public void updateCurrentReplicasNumber(Solution solution) {
-		p.updateCurrentReplicasNumber(solution);
+	public void updateCurrentReplicasNumber(final Solution solution) {
+		this.p.updateCurrentReplicasNumber(solution);
 	}
 
-	public JMetalBitFlipMutation getMutationOperator() {		
+	public JMetalBitFlipMutation getMutationOperator() {
 		HashMap parameters;
 		parameters = new HashMap() ;
 		parameters.put("probability", 1.) ;
-		parameters.put("problem", p) ;
-		return new JMetalBitFlipMutation(parameters);  
+		parameters.put("problem", this.p) ;
+		return new JMetalBitFlipMutation(parameters);
 	}
 
 	public Operator getCrossoverOperator() {
@@ -233,35 +238,35 @@ public class JMetalRessAllocProblem extends Problem	{
 		parameters.put("probability", 1.) ;
 		return new HUXCrossover(parameters);
 	}
-	
-	public static <T> boolean vectorVerif(Solution y){
-		for (int i = 0; i < y.variable_.length; i++){
-			assert y.variable_[i]!=null:y;
+
+	public static <T> boolean vectorVerif(final Solution y){
+		for (final Variable element : y.variable_) {
+			assert element!=null:y;
 		}
 		return true;
 	}
 
 	public int getMaxGeneration() {
-		return maxGeneration;
+		return this.maxGeneration;
 	}
 
-	public void setMaxGeneration(int maxGeneration) {
+	public void setMaxGeneration(final int maxGeneration) {
 		this.maxGeneration = maxGeneration;
 	}
 
 	public int getTimeLimit() {
-		return timeLimit;
+		return this.timeLimit;
 	}
 
-	public void setTimeLimit(int timeLimit) {
+	public void setTimeLimit(final int timeLimit) {
 		this.timeLimit = timeLimit;
 	}
 
 	public int getStagnationCounter() {
-		return stagnationCounter;
+		return this.stagnationCounter;
 	}
 
-	public void setStagnationCounter(int stagnationCounter) {
+	public void setStagnationCounter(final int stagnationCounter) {
 		this.stagnationCounter = stagnationCounter;
 	}
 }

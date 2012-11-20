@@ -2,7 +2,6 @@ package dima.basiccommunicationcomponents;
 
 import dima.introspectionbasedagents.services.communicating.AbstractMessageInterface;
 import dima.introspectionbasedagents.services.loggingactivity.AbstractDebugableMessage;
-import dima.introspectionbasedagents.services.loggingactivity.AbstractDebugableMessageInterface;
 
 /**
  * Insert the type's description here.
@@ -11,7 +10,7 @@ import dima.introspectionbasedagents.services.loggingactivity.AbstractDebugableM
  */
 public abstract class AbstractMessage extends AbstractDebugableMessage implements AbstractMessageInterface {
 	private static final long serialVersionUID = -5044580240872440630L;
-	
+
 	Object content;
 	private int serial;
 	static int number=-1;
@@ -41,6 +40,7 @@ public abstract class AbstractMessage extends AbstractDebugableMessage implement
 	 * Creation date: (01/03/2000 23:44:32)
 	 * @return java.lang.Object
 	 */
+	@Override
 	public abstract Object getContent();
 	/**
 	 * Generates a hash code for the receiver.
@@ -75,14 +75,17 @@ public abstract class AbstractMessage extends AbstractDebugableMessage implement
 			return this.getContent().toString();
 		}
 	}
-	
+
+	@Override
 	public AbstractMessage clone(){
 		throw new RuntimeException("clone not overrided!!");
 	}
+	@Override
 	public int getSerial() {
-		return serial;
+		return this.serial;
 	}
-	public boolean setSerial(int serial) {
+	@Override
+	public boolean setSerial(final int serial) {
 		this.serial = serial;
 		return true;
 	}

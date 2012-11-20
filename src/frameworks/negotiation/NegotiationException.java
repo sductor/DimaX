@@ -10,8 +10,8 @@ public class NegotiationException extends Exception {
 
 	public NegotiationException() {
 	}
-	
-	public NegotiationException(String string) {
+
+	public NegotiationException(final String string) {
 		super(string);
 	}
 

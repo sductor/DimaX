@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.kernel.MethodHandler;
@@ -78,9 +77,10 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		this.protocol = p;
 	}
 
+	@Override
 	public FipaACLMessage clone(){
-		FipaACLMessage neo = new FipaACLMessage(performative,content, protocol);
-		neo.setArgs(getArgs());
+		final FipaACLMessage neo = new FipaACLMessage(this.performative,this.content, this.protocol);
+		neo.setArgs(this.getArgs());
 		neo.language=this.language;
 		neo.ontology=this.ontology;
 		neo.inreplyto=this.inreplyto;
@@ -93,7 +93,7 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 		neo.attachedException=this.attachedException;
 		return neo;
 	}
-	
+
 	//
 	// Accessor
 	//
@@ -314,10 +314,10 @@ public class FipaACLMessage extends Message implements MessageInEnvelope, Messag
 				+ (this.getArgs() != null ? this.getArgs().length != 0 : false)
 				+"\n *Performative:" + this.performative + "\n *Protocol:"	+ this.protocol.getSimpleName()
 				+"\n *signature:"+ (this.attachementSignature==null?"":Arrays.asList(this.attachementSignature))
-				+"\n *content:" +  this.content==null?"":content
-				//		+ Arrays.asList(this.getArgs())==null?
-				//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
-				+ "\n" + "details : " + this.description();
+				+"\n *content:" +  this.content==null?"":this.content
+						//		+ Arrays.asList(this.getArgs())==null?
+						//				"":("\n *attachement:"+(Arrays.asList(this.getArgs()).toString()))
+						+ "\n" + "details : " + this.description();
 	}
 }
 

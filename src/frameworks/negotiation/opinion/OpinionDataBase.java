@@ -2,48 +2,44 @@ package frameworks.negotiation.opinion;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.TreeSet;
-
-import javax.sound.midi.SysexMessage;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.DimaComponentInterface;
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.modules.aggregator.AbstractMinMaxAggregation;
 import dima.introspectionbasedagents.modules.aggregator.FunctionalDispersionAgregator;
 import dima.introspectionbasedagents.modules.aggregator.HeavyDoubleAggregation;
 import dima.introspectionbasedagents.modules.aggregator.HeavyParametredAggregation;
-import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
-import dima.introspectionbasedagents.services.information.ObservationService;
-import dima.introspectionbasedagents.services.information.SimpleInformationDataBase;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
+import dima.introspectionbasedagents.services.information.SimpleInformationDataBase;
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.opinion.OpinionService.Opinion;
 
 public class OpinionDataBase<Info extends Information>
 extends SimpleInformationDataBase<Info>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4445640243087103650L;
 	private final AgentIdentifier myAgent;
 	private final OpinionHandler<Info> myOpinionHandler;
 
 	private HashMap<AgentIdentifier,InfoDynamicity> localInfoDynamicity;
 
 	private HashMap<AgentIdentifier, SimpleOpinion> receivedOpinions;
-	private HeavyParametredAggregation<Info> globalMeanOpinions;	
+	private HeavyParametredAggregation<Info> globalMeanOpinions;
 	private HeavyDoubleAggregation globalOpinionDispersion;
 	private TreeSet<IdentifiedInfo> globalMinMaxinfo;
 	private Long globalInfoMaxDynamicity=Long.MIN_VALUE;
 	private Long globalInfoMinDynamicity=Long.MAX_VALUE;
 
-	public OpinionDataBase(AgentIdentifier myAgent,
-			OpinionHandler<Info> myOpinionHandler) {
+	public OpinionDataBase(final AgentIdentifier myAgent,
+			final OpinionHandler<Info> myOpinionHandler) {
 		super();
 		assert myOpinionHandler!=null;
 		this.myAgent = myAgent;
@@ -54,7 +50,7 @@ extends SimpleInformationDataBase<Info>{
 		this.receivedOpinions=new HashMap<AgentIdentifier, SimpleOpinion>();
 		this.globalMeanOpinions = new HeavyParametredAggregation<Info>(myOpinionHandler,new Comparator<Info>() {
 			@Override
-			public int compare(Info o1, Info o2) {
+			public int compare(final Info o1, final Info o2) {
 				return OpinionDataBase.this.myOpinionHandler.getNumericValue(o1).compareTo(
 						OpinionDataBase.this.myOpinionHandler.getNumericValue(o2));
 			}
@@ -62,74 +58,75 @@ extends SimpleInformationDataBase<Info>{
 		this.globalOpinionDispersion = new HeavyDoubleAggregation();
 		this.globalMinMaxinfo = new TreeSet<IdentifiedInfo>(new Comparator<IdentifiedInfo>() {
 			@Override
-			public int compare(IdentifiedInfo o1, IdentifiedInfo o2) {
+			public int compare(final IdentifiedInfo o1, final IdentifiedInfo o2) {
 				return OpinionDataBase.this.myOpinionHandler.getNumericValue(o1.getMyInfo()).compareTo(
 						OpinionDataBase.this.myOpinionHandler.getNumericValue(o2.getMyInfo()));
 			}
 		});
 	}
 
-	public Opinion<Info> getGlobalOpinion() 
+	public Opinion<Info> getGlobalOpinion()
 			throws NoInformationAvailableException{
-		clean();
+		this.clean();
 		try {
-			updateMyOpinion();
-		} catch (NoInformationAvailableException e){/*do nothing*/}
-		Collection<AgentIdentifier> aggAgents = new ArrayList<AgentIdentifier>(getAgents());
+			this.updateMyOpinion();
+		} catch (final NoInformationAvailableException e){/*do nothing*/}
+		final Collection<AgentIdentifier> aggAgents = new ArrayList<AgentIdentifier>(this.getAgents());
 		aggAgents.addAll(this.receivedOpinions.keySet());
 		return new SimpleOpinion(
-				myAgent,
-				aggAgents, 
+				this.myAgent,
+				aggAgents,
 				this.getGlobalMinInfo(),
 				this.getGlobalMeanInfo(),
 				this.getGlobalMaxInfo(),
 				this.getGlobalOpinionDispersion(),
 				this.getGlobalMinInfoDynamicity(),
 				this.getGlobalMaxInfoDynamicity());
-	}	
+	}
 
 	@Override
-	public Info add(Info i){
+	public Info add(final Info i){
 		//Min & Max
-		globalMinMaxinfo.remove(new IdentifiedInfo(i));
-		globalMinMaxinfo.add(new IdentifiedInfo(i));
+		this.globalMinMaxinfo.remove(new IdentifiedInfo(i));
+		this.globalMinMaxinfo.add(new IdentifiedInfo(i));
 		//Local Dynamicity
-		if (localInfoDynamicity.containsKey(i.getMyAgentIdentifier()))
-			localInfoDynamicity.get(i.getMyAgentIdentifier()).update(i);
-		else
-			localInfoDynamicity.put(i.getMyAgentIdentifier(),new InfoDynamicity(i));
-		assert localInfoDynamicity.get(i.getMyAgentIdentifier())!=null;
+		if (this.localInfoDynamicity.containsKey(i.getMyAgentIdentifier())) {
+			this.localInfoDynamicity.get(i.getMyAgentIdentifier()).update(i);
+		} else {
+			this.localInfoDynamicity.put(i.getMyAgentIdentifier(),new InfoDynamicity(i));
+		}
+		assert this.localInfoDynamicity.get(i.getMyAgentIdentifier())!=null;
 		//Update global Dynamicity
-		globalInfoMaxDynamicity=Math.max(
-				globalInfoMaxDynamicity, 
-				localInfoDynamicity.get(i.getMyAgentIdentifier()).getLastInfoDynamicity());
-		globalInfoMinDynamicity=Math.min(
-				globalInfoMaxDynamicity, 
-				localInfoDynamicity.get(i.getMyAgentIdentifier()).getLastInfoDynamicity());
+		this.globalInfoMaxDynamicity=Math.max(
+				this.globalInfoMaxDynamicity,
+				this.localInfoDynamicity.get(i.getMyAgentIdentifier()).getLastInfoDynamicity());
+		this.globalInfoMinDynamicity=Math.min(
+				this.globalInfoMaxDynamicity,
+				this.localInfoDynamicity.get(i.getMyAgentIdentifier()).getLastInfoDynamicity());
 
 		//Information
 		return super.add(i);
 	}
 
-	public void addOpinion(SimpleOpinion o){
-		receivedOpinions.put(o.getMyAgentIdentifier(), o);
+	public void addOpinion(final SimpleOpinion o){
+		this.receivedOpinions.put(o.getMyAgentIdentifier(), o);
 		//Opinion
-		globalMeanOpinions.add(o.getMeanInfo());
+		this.globalMeanOpinions.add(o.getMeanInfo());
 		//Dispersion
-		globalOpinionDispersion.put(
+		this.globalOpinionDispersion.put(
 				o.getOpinionDispersion(),
 				new Double(o.getAggregatedAgents().size()));
 		//Min & max
-		globalMinMaxinfo.remove(new IdentifiedInfo(o.getMinInfo()));
-		globalMinMaxinfo.remove(new IdentifiedInfo(o.getMaxInfo()));
-		globalMinMaxinfo.add(new IdentifiedInfo(o.getMinInfo()));
-		globalMinMaxinfo.add(new IdentifiedInfo(o.getMaxInfo()));
+		this.globalMinMaxinfo.remove(new IdentifiedInfo(o.getMinInfo()));
+		this.globalMinMaxinfo.remove(new IdentifiedInfo(o.getMaxInfo()));
+		this.globalMinMaxinfo.add(new IdentifiedInfo(o.getMinInfo()));
+		this.globalMinMaxinfo.add(new IdentifiedInfo(o.getMaxInfo()));
 		//Dynamicity
-		globalInfoMaxDynamicity=Math.max(
-				globalInfoMaxDynamicity, 
+		this.globalInfoMaxDynamicity=Math.max(
+				this.globalInfoMaxDynamicity,
 				o.getMaxInformationDynamicity());
-		globalInfoMinDynamicity=Math.min(
-				globalInfoMaxDynamicity, 
+		this.globalInfoMinDynamicity=Math.min(
+				this.globalInfoMaxDynamicity,
 				o.getMinInformationDynamicity());
 	}
 
@@ -139,46 +136,50 @@ extends SimpleInformationDataBase<Info>{
 
 	private void clean() {
 		//Opinion
-		Iterator<AgentIdentifier> opIt = receivedOpinions.keySet().iterator();
+		final Iterator<AgentIdentifier> opIt = this.receivedOpinions.keySet().iterator();
 		while (opIt.hasNext()){
-			AgentIdentifier i = opIt.next();
-			if (this.estObsolete(receivedOpinions.get(i).getMeanInfo())){
+			final AgentIdentifier i = opIt.next();
+			if (this.estObsolete(this.receivedOpinions.get(i).getMeanInfo())){
 				opIt.remove();
-				globalMeanOpinions.remove(receivedOpinions.get(i));
-				globalOpinionDispersion.remove(receivedOpinions.get(i).getOpinionDispersion());
-				if (globalInfoMaxDynamicity.equals(receivedOpinions.get(i).getMaxInformationDynamicity()))
-					globalInfoMaxDynamicity=null;
-				if (globalInfoMinDynamicity.equals(receivedOpinions.get(i).getMinInformationDynamicity()))
-					globalInfoMinDynamicity=null;
+				this.globalMeanOpinions.remove(this.receivedOpinions.get(i));
+				this.globalOpinionDispersion.remove(this.receivedOpinions.get(i).getOpinionDispersion());
+				if (this.globalInfoMaxDynamicity.equals(this.receivedOpinions.get(i).getMaxInformationDynamicity())) {
+					this.globalInfoMaxDynamicity=null;
+				}
+				if (this.globalInfoMinDynamicity.equals(this.receivedOpinions.get(i).getMinInformationDynamicity())) {
+					this.globalInfoMinDynamicity=null;
+				}
 			}
 		}
 		//Min & Max
-		Iterator<IdentifiedInfo> mmIt = globalMinMaxinfo.iterator();
+		final Iterator<IdentifiedInfo> mmIt = this.globalMinMaxinfo.iterator();
 		while (mmIt.hasNext()){
-			Info i = mmIt.next().getMyInfo();
-			if (this.estObsolete(i))
+			final Info i = mmIt.next().getMyInfo();
+			if (this.estObsolete(i)) {
 				mmIt.remove();
+			}
 		}
 		//Info & Dynami
-//		for (Info i : super.get(my))//TODO
+		//		for (Info i : super.get(my))//TODO
 	}
 
 	private void updateMyOpinion() throws NoInformationAvailableException {
-		if (receivedOpinions.containsKey(myAgent))
-			globalMeanOpinions.remove(receivedOpinions.get(myAgent));
-		addOpinion(
+		if (this.receivedOpinions.containsKey(this.myAgent)) {
+			this.globalMeanOpinions.remove(this.receivedOpinions.get(this.myAgent));
+		}
+		this.addOpinion(
 				new SimpleOpinion(
-						myAgent,
-						getAgents(), 
+						this.myAgent,
+						this.getAgents(),
 						this.getLocalMinInfo(),
 						this.getLocalMeanInfo(),
 						this.getLocalMaxInfo(),
 						this.getLocalOpinionDispersion(),
 						this.getLocalMinInfoDynamicity(),
-						this.getLocalMaxInfoDynamicity()));		
+						this.getLocalMaxInfoDynamicity()));
 	}
 
-	private boolean estObsolete(Info i){
+	private boolean estObsolete(final Info i){
 		return false;//!i.getMyAgentIdentifier().equals(myAgent) && (i.getUptime()>getGlobalMaxInfoDynamicity());
 	}
 
@@ -187,27 +188,27 @@ extends SimpleInformationDataBase<Info>{
 	 */
 
 	private Info getLocalMeanInfo() {
-		return myOpinionHandler.getRepresentativeElement(this.values());
+		return this.myOpinionHandler.getRepresentativeElement(this.values());
 	}
 
 	private Double getLocalOpinionDispersion() {
-		return FunctionalDispersionAgregator.getVariationCoefficient(myOpinionHandler, this.values());
+		return FunctionalDispersionAgregator.getVariationCoefficient(this.myOpinionHandler, this.values());
 	}
 
 	private Info getLocalMinInfo() throws NoInformationAvailableException {
-		return getGlobalMinInfo();
+		return this.getGlobalMinInfo();
 	}
 
 	private Info getLocalMaxInfo() throws NoInformationAvailableException {
-		return getGlobalMaxInfo();
+		return this.getGlobalMaxInfo();
 	}
 
 	private Long getLocalMinInfoDynamicity() {
-		return getGlobalMinInfoDynamicity();
+		return this.getGlobalMinInfoDynamicity();
 	}
 
 	private Long getLocalMaxInfoDynamicity() {
-		return getGlobalMaxInfoDynamicity();
+		return this.getGlobalMaxInfoDynamicity();
 	}
 
 	/*
@@ -215,36 +216,39 @@ extends SimpleInformationDataBase<Info>{
 	 */
 
 	private Info getGlobalMeanInfo() {
-		return globalMeanOpinions.getRepresentativeElement();
+		return this.globalMeanOpinions.getRepresentativeElement();
 	}
 
 	private Double getGlobalOpinionDispersion() {
-		return globalOpinionDispersion.getRepresentativeElement();
+		return this.globalOpinionDispersion.getRepresentativeElement();
 	}
 
 	private Info getGlobalMinInfo() throws NoInformationAvailableException {
-		if (!globalMinMaxinfo.isEmpty())
-			return globalMinMaxinfo.first().getMyInfo();
-		else
+		if (!this.globalMinMaxinfo.isEmpty()) {
+			return this.globalMinMaxinfo.first().getMyInfo();
+		} else {
 			throw new NoInformationAvailableException();
+		}
 	}
 
 	private Info getGlobalMaxInfo() throws NoInformationAvailableException {
-		if (!globalMinMaxinfo.isEmpty())
-			return globalMinMaxinfo.last().getMyInfo();
-		else
+		if (!this.globalMinMaxinfo.isEmpty()) {
+			return this.globalMinMaxinfo.last().getMyInfo();
+		} else {
 			throw new NoInformationAvailableException();
+		}
 	}
 
 	private Long getGlobalMinInfoDynamicity() {
-		return globalInfoMinDynamicity;
+		return this.globalInfoMinDynamicity;
 	}
 
 	private Long getGlobalMaxInfoDynamicity() {
-		if (globalInfoMaxDynamicity.equals(Long.MIN_VALUE))
+		if (this.globalInfoMaxDynamicity.equals(Long.MIN_VALUE)) {
 			return Long.MAX_VALUE;
-		else
-			return Math.min(4*NegotiationParameters._timeToCollect, globalInfoMaxDynamicity);
+		} else {
+			return Math.min(4*NegotiationParameters._timeToCollect, this.globalInfoMaxDynamicity);
+		}
 	}
 
 	//
@@ -253,11 +257,16 @@ extends SimpleInformationDataBase<Info>{
 
 	public class SimpleOpinion  implements Opinion<Info>{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7189805009370149904L;
+
 		private final AgentIdentifier myAgentIdentifier;
 
 		private final Collection<AgentIdentifier> aggregatedAgents;
 
-		private Date creationTime;
+		private final Date creationTime;
 
 		private final Info minInfo;
 		private final Info meanInfo;
@@ -268,12 +277,12 @@ extends SimpleInformationDataBase<Info>{
 		private final Long maxInformationDynamicity;
 
 		private SimpleOpinion(
-				AgentIdentifier myAgentIdentifier,
-				Collection<AgentIdentifier> aggregatedAgents,
-				Info minInfo, Info meanInfo, Info maxInfo,
-				Double opinionDispersion, 
-				Long minInformationDynamicity,
-				Long maxInformationDynamicity) {
+				final AgentIdentifier myAgentIdentifier,
+				final Collection<AgentIdentifier> aggregatedAgents,
+				final Info minInfo, final Info meanInfo, final Info maxInfo,
+				final Double opinionDispersion,
+				final Long minInformationDynamicity,
+				final Long maxInformationDynamicity) {
 			super();
 			assert aggregatedAgents!=null;
 			this.myAgentIdentifier = myAgentIdentifier;
@@ -289,29 +298,29 @@ extends SimpleInformationDataBase<Info>{
 
 		@Override
 		public Info getMinInfo() {
-			return minInfo;
+			return this.minInfo;
 		}
 		@Override
 		public Info getMeanInfo() {
-			return meanInfo;
+			return this.meanInfo;
 		}
 		@Override
 		public Info getMaxInfo() {
-			return maxInfo;
+			return this.maxInfo;
 		}
 		@Override
 		public Double getOpinionDispersion() {
-			return opinionDispersion;
+			return this.opinionDispersion;
 		}
 		@Override
 		public Long getMinInformationDynamicity() {
-			return minInformationDynamicity;
+			return this.minInformationDynamicity;
 		}
 		@Override
 		public Long getMaxInformationDynamicity() {
-			return maxInformationDynamicity;
+			return this.maxInformationDynamicity;
 		}
-		
+
 
 		/*
 		 * 
@@ -319,11 +328,11 @@ extends SimpleInformationDataBase<Info>{
 
 		@Override
 		public Collection getAggregatedAgents() {
-			return aggregatedAgents;
+			return this.aggregatedAgents;
 		}
 		@Override
 		public boolean isCertain() {
-			return aggregatedAgents.size()<=1;
+			return this.aggregatedAgents.size()<=1;
 		}
 
 		/*
@@ -337,16 +346,16 @@ extends SimpleInformationDataBase<Info>{
 
 		@Override
 		public long getUptime() {
-			return new Date().getTime()-creationTime.getTime();
+			return new Date().getTime()-this.creationTime.getTime();
 		}
 
 		@Override
 		public Long getCreationTime() {
-			return creationTime.getTime();
+			return this.creationTime.getTime();
 		}
 
 		@Override
-		public int isNewerThan(Information that) {
+		public int isNewerThan(final Information that) {
 			// TODO Auto-generated method stub
 			throw new RuntimeException();
 		}
@@ -355,22 +364,25 @@ extends SimpleInformationDataBase<Info>{
 		 * 
 		 */
 
-		public boolean equals(Object o){
-			if (o instanceof OpinionDataBase.SimpleOpinion)
+		@Override
+		public boolean equals(final Object o){
+			if (o instanceof OpinionDataBase.SimpleOpinion) {
 				return ((OpinionDataBase.SimpleOpinion) o).getMyAgentIdentifier().equals(this.getMyAgentIdentifier());
-			else
+			} else {
 				return false;
+			}
 		}
 
 		public int hashcode(){
-			return getMyAgentIdentifier().hashCode();
+			return this.getMyAgentIdentifier().hashCode();
 		}
 
+		@Override
 		public String toString(){
-			return "Opinion of "+myAgentIdentifier+" with "+aggregatedAgents.size()+" ("+aggregatedAgents+") " +
-					"\n --> min info"+minInfo +
-					"\n --> mean info"+meanInfo +
-					"\n --> max info"+maxInfo;
+			return "Opinion of "+this.myAgentIdentifier+" with "+this.aggregatedAgents.size()+" ("+this.aggregatedAgents+") " +
+					"\n --> min info"+this.minInfo +
+					"\n --> mean info"+this.meanInfo +
+					"\n --> max info"+this.maxInfo;
 		}
 	}
 
@@ -422,23 +434,28 @@ extends SimpleInformationDataBase<Info>{
 
 	public class IdentifiedInfo implements DimaComponentInterface {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -57750939693336413L;
 		public final Info myInfo;
 
-		public IdentifiedInfo(Info myInfo) {
+		public IdentifiedInfo(final Info myInfo) {
 			super();
 			this.myInfo = myInfo;
 		}
 
 		public Info getMyInfo() {
-			return myInfo;
+			return this.myInfo;
 		}
 
 		@Override
 		public boolean equals(final Object o) {
-			if (o instanceof OpinionDataBase.IdentifiedInfo)
+			if (o instanceof OpinionDataBase.IdentifiedInfo) {
 				return this.getMyInfo().getMyAgentIdentifier().equals(((IdentifiedInfo) o).getMyInfo().getMyAgentIdentifier());
-			else
+			} else {
 				return false;
+			}
 		}
 
 		@Override

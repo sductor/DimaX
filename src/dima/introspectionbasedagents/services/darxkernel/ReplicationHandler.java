@@ -2,7 +2,6 @@ package dima.introspectionbasedagents.services.darxkernel;
 
 import java.util.Collection;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.services.AgentCompetence;

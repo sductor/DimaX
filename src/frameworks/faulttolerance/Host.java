@@ -1,14 +1,7 @@
 package frameworks.faulttolerance;
 
-import java.io.Serializable;
-import java.util.Collection;
-
-import choco.cp.solver.constraints.global.geost.dataStructures.LinkedList;
-
-import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
@@ -16,7 +9,6 @@ import frameworks.experimentation.ExperimentationResults;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.faulttolerance.experimentation.ReplicationResultHost;
 import frameworks.faulttolerance.experimentation.SearchTimeNotif;
-import frameworks.faulttolerance.faulsimulation.FaultObservationService;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.SimpleNegotiatingAgent;
@@ -35,7 +27,7 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	// Fields
 	//
 	//	private long firstModifTime=-2;
-//	private long lastModifTime=-1;
+	//	private long lastModifTime=-1;
 	private final LightAverageDoubleAggregation searchTime = new LightAverageDoubleAggregation();
 
 	@Competence
@@ -50,29 +42,29 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 			return new ReplicationResultHost(
 					Host.this.getMyCurrentState(),//firstModifTime,
 					Host.this.getMyProtocol().messageSended,
-//					Host.this.lastModifTime,
+					//					Host.this.lastModifTime,
 					Host.this.getCreationTime(),//Host.this.initialStateNumber
 					Host.this.searchTime);
 		}
 	};
 
-//	@Competence
-//	public
-//	FaultObservationService myFaultAwareService =
-//	new FaultObservationService() {
-//
-//		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
-//			return Host.this.generateDestructionContract(id);
-//		}
-//
-//
-//		@Override
-//		public void endSimulation() {
-//			assert false;			
-//		}
-//		
-//
-//	};
+	//	@Competence
+	//	public
+	//	FaultObservationService myFaultAwareService =
+	//	new FaultObservationService() {
+	//
+	//		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
+	//			return Host.this.generateDestructionContract(id);
+	//		}
+	//
+	//
+	//		@Override
+	//		public void endSimulation() {
+	//			assert false;
+	//		}
+	//
+	//
+	//	};
 
 	//
 	// Constructor
@@ -92,19 +84,19 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	}
 
 
-//	@EventHookedMethod(HostState.class)
-//	public void updateStateStatus(final HostState h){
-////		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
-//		//		if (firstModifTime==-2){
-//		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
-//		//			firstModifTime=-1;
-//		//		}else if (firstModifTime==-1){
-//		//			assert h.getStateCounter()==initialStateNumber+1;
-//		//			firstModifTime=getUptime();
-//		//		}
-//		//
-//		this.lastModifTime=this.getUptime();
-//	}
+	//	@EventHookedMethod(HostState.class)
+	//	public void updateStateStatus(final HostState h){
+	////		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+	//		//		if (firstModifTime==-2){
+	//		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
+	//		//			firstModifTime=-1;
+	//		//		}else if (firstModifTime==-1){
+	//		//			assert h.getStateCounter()==initialStateNumber+1;
+	//		//			firstModifTime=getUptime();
+	//		//		}
+	//		//
+	//		this.lastModifTime=this.getUptime();
+	//	}
 
 	//
 	// Accessor
@@ -118,7 +110,7 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 	//allow to continue to receive messages
 	@Override
 	public void tryToResumeActivity(){
-		logMonologue("host is trying to resume activity",ObservingSelfService.observationLog);
+		this.logMonologue("host is trying to resume activity",ObservingSelfService.observationLog);
 		super.tryToResumeActivity();
 		this.mySelfObservationService.tryToResumeActivity();
 	}

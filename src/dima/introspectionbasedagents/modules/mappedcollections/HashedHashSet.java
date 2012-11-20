@@ -29,10 +29,10 @@ public class HashedHashSet<K, V> extends Hashtable<K, Set<V>> {
 	 * @param key
 	 * @param value
 	 * @return <tt>true</tt> if this set contained the specified element
-     * @throws ClassCastException if the type of the specified element
-     *         is incompatible with this set (optional)
-     * @throws NullPointerException if the specified element is null and this
-     *         set does not permit null elements (optional)
+	 * @throws ClassCastException if the type of the specified element
+	 *         is incompatible with this set (optional)
+	 * @throws NullPointerException if the specified element is null and this
+	 *         set does not permit null elements (optional)
 	 */
 	public boolean remove(final K key, final V value) {
 		final boolean r = this.get(key).remove(value);

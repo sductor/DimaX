@@ -16,34 +16,39 @@ public class XMPPCommunicationCompetence extends JabberCommunicationCompetence{
 	//
 	// Privacy List
 	//
-	
-	protected  ArrayList<PrivacyItem> getPrivacyForEveryone(){
-		ArrayList<PrivacyItem> privacyItems = new ArrayList<PrivacyItem>();
 
-		PrivacyItem 	item = new PrivacyItem(PrivacyItem.Type.subscription.toString(), true, 2);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7957143847716750946L;
+
+	protected  ArrayList<PrivacyItem> getPrivacyForEveryone(){
+		final ArrayList<PrivacyItem> privacyItems = new ArrayList<PrivacyItem>();
+
+		final PrivacyItem 	item = new PrivacyItem(PrivacyItem.Type.subscription.toString(), true, 2);
 		item.setValue(PrivacyRule.SUBSCRIPTION_BOTH);
 		privacyItems.add(item);
 
 		return privacyItems;
 	}
 
-	protected  ArrayList<PrivacyItem> getPrivacyFor(Collection<AgentIdentifier> ids){
-		ArrayList<PrivacyItem> privacyItems = new ArrayList<PrivacyItem>();
-		for (AgentIdentifier user : ids){
-			PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.toString(), true, 1);
+	protected  ArrayList<PrivacyItem> getPrivacyFor(final Collection<AgentIdentifier> ids){
+		final ArrayList<PrivacyItem> privacyItems = new ArrayList<PrivacyItem>();
+		for (final AgentIdentifier user : ids){
+			final PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.toString(), true, 1);
 			item.setValue(user.toString());
 			privacyItems.add(item);
 		}
 		return privacyItems;
 	}
 
-	private boolean setPrivacy(String listName, List<PrivacyItem> privacyItems){
+	private boolean setPrivacy(final String listName, final List<PrivacyItem> privacyItems){
 		// Get the privacy manager for the current connection.
-		PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(connection);
+		final PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(this.connection);
 		// Create the new list.
 		try {
 			privacyManager.createPrivacyList(listName, privacyItems);
-		} catch (XMPPException e) {
+		} catch (final XMPPException e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -53,6 +58,6 @@ public class XMPPCommunicationCompetence extends JabberCommunicationCompetence{
 	//
 	//
 	//
-	
-	
+
+
 }

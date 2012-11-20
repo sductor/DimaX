@@ -4,21 +4,19 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
-import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.ShowYourPocket;
-import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.protocoles.dcopProtocol.DCOPLeaderProtocol;
-import frameworks.negotiation.protocoles.dcopProtocol.DcopAgentProtocol;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.RationalCore;
 import frameworks.negotiation.rationality.SimpleRationalAgent;
@@ -103,14 +101,14 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	public void setNewState(final PersonalState s) {
 		super.setNewState(s);
 		if (this.protocol!=null) {
-			setInformation(s);
+			this.setInformation(s);
 		}
 	}
 
-//	@StepComposant(ticker=1000)
-//	public void sayAlive() {
-//		logMonologue("I'M STILL ALIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",LogService.onBoth);
-//	}
+	//	@StepComposant(ticker=1000)
+	//	public void sayAlive() {
+	//		logMonologue("I'M STILL ALIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",LogService.onBoth);
+	//	}
 	//
 	// Behavior
 	//
@@ -155,7 +153,7 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	@NotificationEnvelope(SimpleRationalAgent.stateChangementObservation)
 	public void receiveInformation(
 			final NotificationMessage<AgentState> o) {
-//		setInformation(o.getNotification());
+		//		setInformation(o.getNotification());
 	}
 
 	@Override

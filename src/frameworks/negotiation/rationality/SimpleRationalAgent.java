@@ -5,20 +5,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
-import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.negotiation.contracts.AbstractContractTransition;
-import frameworks.negotiation.contracts.ContractTransition;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
+import frameworks.negotiation.contracts.ContractTransition;
 
 public class SimpleRationalAgent<
 PersonalState extends AgentState,
@@ -39,7 +36,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 
 	public Class<? extends AgentState> myStateType;
 	public final int initialStateNumber;
-	
+
 	public Collection<AgentIdentifier> knownResources;
 
 	public static final String stateChangementObservation="my state has changed!!";
@@ -113,8 +110,9 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 		}
 	}
 
+	@Override
 	public Class<? extends AgentState> getMyStateType(){
-		return myStateType;		
+		return this.myStateType;
 	}
 
 	/* (non-Javadoc)
@@ -148,9 +146,9 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	 */
 	@Override
 	public void setNewState(final PersonalState s) {
-//		assert this.myInformation.hasMyInformation(this.myStateType)?this.verifyStateValidity(s):true;
-//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),!s.equals(getMyCurrentState()));
-//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),this.verifyStateValidity(s));
+		//		assert this.myInformation.hasMyInformation(this.myStateType)?this.verifyStateValidity(s):true;
+		//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),!s.equals(getMyCurrentState()));
+		//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),this.verifyStateValidity(s));
 		assert s.isValid():s;
 		this.logMonologue("NEW STATE !!!!!! "+s,LogService.onFile);
 		this.getMyInformation().add(s);
@@ -158,7 +156,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 		//		if (!getMyCurrentState().equals(s))
 		//			logException("arrrgggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 		this.notify(this.getMyCurrentState());
-		
+
 	}
 
 
@@ -172,7 +170,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 				ress = this.getMyInformation().getInformation(this.getMyCurrentState().getMyResourcesClass(), id);
 				assert ress.getMyResourceIdentifiers().contains(this.getIdentifier()):ress+"\n---\n"+this.getMyCurrentState()+"\n---\n"+s;
 			} catch (final NoInformationAvailableException e) {
-//								assert false:e;
+				//								assert false:e;
 			}
 		}
 		return true;
@@ -186,11 +184,12 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	// this.myInformation.addAll(agents);
 	// }
 
+	@Override
 	public Collection<AgentIdentifier> getKnownResources(){
-		return Collections.unmodifiableCollection(knownResources);
+		return Collections.unmodifiableCollection(this.knownResources);
 	}
-	
-	public void setKnownResources(Collection<AgentIdentifier> knownResources) {
+
+	public void setKnownResources(final Collection<AgentIdentifier> knownResources) {
 		this.knownResources = knownResources;
 	}
 	/*

@@ -3,7 +3,6 @@ package frameworks.experimentation;
 import java.util.Collection;
 import java.util.LinkedList;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 

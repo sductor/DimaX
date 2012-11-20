@@ -123,10 +123,10 @@ implements RationalCore<RationalAgent<PersonalState, InformedCandidature<Contrac
 	 *
 	 */
 
-//	@Override
-//	public boolean isActive() {
-//		return super.isActive() && this.referenceRationality.isActive();
-//	}
+	//	@Override
+	//	public boolean isActive() {
+	//		return super.isActive() && this.referenceRationality.isActive();
+	//	}
 
 
 
@@ -152,8 +152,8 @@ implements RationalCore<RationalAgent<PersonalState, InformedCandidature<Contrac
 		return this.referenceRationality.getIdentifier();
 	}
 
-//	@Override
-//	public void setActive(final boolean active) {
-//		this.referenceRationality.setActive(active);
-//	}
+	//	@Override
+	//	public void setActive(final boolean active) {
+	//		this.referenceRationality.setActive(active);
+	//	}
 }

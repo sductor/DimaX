@@ -18,7 +18,7 @@ public interface LaunchableComponent extends IdentifiedComponentInterface{
 	boolean launchWith(final APILauncherModule api);
 
 	boolean launchWith(final APILauncherModule api, final HostIdentifier h) ;
-	
+
 	boolean start(final StartActivityMessage m);
 
 	boolean endLive(final EndLiveMessage m);

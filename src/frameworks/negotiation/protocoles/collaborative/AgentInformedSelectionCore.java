@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.contracts.AbstractActionSpecif;
+import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
-import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.rationality.AgentState;
 

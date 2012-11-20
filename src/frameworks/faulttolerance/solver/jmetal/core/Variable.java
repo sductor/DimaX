@@ -3,7 +3,7 @@
 //  Author:
 //       Antonio J. Nebro <antonio@lcc.uma.es>
 //       Juan J. Durillo <durillo@lcc.uma.es>
-// 
+//
 //  Copyright (c) 2011 Antonio J. Nebro, Juan J. Durillo
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -38,117 +38,122 @@ import frameworks.faulttolerance.solver.jmetal.util.JMException;
  */
 public abstract class Variable implements Serializable {
 
-  //private VariableType_ type_;
+	//private VariableType_ type_;
 
-  /** 
-   * Creates an exact copy of a <code>Variable</code> object.
-   * @return the copy of the object.
-   */
-  public abstract Variable deepCopy();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -632203786254729011L;
 
-  /**
-   * Gets the double value representating the variable. 
-   * It is used in subclasses of <code>Variable</code> (i.e. <code>Real</code> 
-   * and <code>Int</code>).
-   * As not all objects belonging to a subclass of <code>Variable</code> have a 
-   * double value, a call to this method it is considered a fatal error by 
-   * default, and the program is terminated. Those classes requiring this method 
-   * must redefine it.
-   */
-  public double getValue() throws JMException {
-    Class cls = java.lang.String.class;
-    String name = cls.getName(); 
-    Configuration.logger_.severe("Class " + name + " does not implement " +
-        "method getValue");
-    throw new JMException("Exception in " + name + ".getValue()") ;
-  } // getValue
-  
-  /**
-  * Sets a double value to a variable in subclasses of <code>Variable</code>. 
-  * As not all objects belonging to a subclass of <code>Variable</code> have a 
-  * double value, a call to this method it is considered a fatal error by 
-  * default, and the program is terminated. Those classes requiring this method 
-  * must redefine it.
-  */
-  public void setValue(double value) throws JMException {
-    Class cls = java.lang.String.class;
-    String name = cls.getName(); 
-    Configuration.logger_.severe("Class " + name + " does not implement " +
-        "method setValue");
-    throw new JMException("Exception in " + name + ".setValue()") ;
-  } // setValue
+	/**
+	 * Creates an exact copy of a <code>Variable</code> object.
+	 * @return the copy of the object.
+	 */
+	public abstract Variable deepCopy();
 
-  /**
-   * Gets the lower bound value of a variable. As not all
-   * objects belonging to a subclass of <code>Variable</code> have a lower bound,
-   * a call to this method is considered a fatal error by default,
-   * and the program is terminated.
-   * Those classes requiring this method must redefine it.
-   */
-  public double getLowerBound() throws JMException { 
-    Class cls = java.lang.String.class;
-    String name = cls.getName(); 
-    Configuration.logger_.severe("Class " + name + 
-                       " does not implement method getLowerBound()");
-    throw new JMException("Exception in " + name + ".getLowerBound()") ;
-  } // getLowerBound
-  
-  /**
-   * Gets the upper bound value of a variable. As not all
-   * objects belonging to a subclass of <code>Variable</code> have an upper 
-   * bound, a call to this method is considered a fatal error by default, and the 
-   * program is terminated. Those classes requiring this method must redefine it.
-   */
-  public double getUpperBound() throws JMException {
-    Class cls = java.lang.String.class;
-    String name = cls.getName(); 
-    Configuration.logger_.severe("Class " + name + 
-                       " does not implement method getUpperBound()");
-    throw new JMException("Exception in " + name + ".getUpperBound()") ;
-  } // getUpperBound
-  
-  /**
-   * Sets the lower bound for a variable. As not all objects belonging to a
-   * subclass of <code>Variable</code> have a lower bound, a call to this method 
-   * is considered a fatal error by default and the program is terminated.
-   * Those classes requiring this method must to redefine it.
-   */
-  public void setLowerBound(double lowerBound) throws JMException {
-    Class cls = java.lang.String.class;
-    String name = cls.getName(); 
-    Configuration.logger_.severe("Class " + name + 
-                       " does not implement method setLowerBound()");
-    throw new JMException("Exception in " + name + ".setLowerBound()") ;
-  } // setLowerBound
-  
-  /**
-   * Sets the upper bound for a variable. As not all objects belonging to a 
-   * subclass of <code>Variable</code> have an upper bound, a call to this method
-   * is considered a fatal error by default, and the program is terminated. 
-   * Those classes requiring this method must redefine it.
-   */
-  public void setUpperBound(double upperBound) throws JMException {
-    Class cls = java.lang.String.class;
-    String name = cls.getName(); 
-    Configuration.logger_.severe("Class " + name + 
-                       " does not implement method setUpperBound()");
-    throw new JMException("Exception in " + name + ".setUpperBound()") ;
-  } // setUpperBound
+	/**
+	 * Gets the double value representating the variable.
+	 * It is used in subclasses of <code>Variable</code> (i.e. <code>Real</code>
+	 * and <code>Int</code>).
+	 * As not all objects belonging to a subclass of <code>Variable</code> have a
+	 * double value, a call to this method it is considered a fatal error by
+	 * default, and the program is terminated. Those classes requiring this method
+	 * must redefine it.
+	 */
+	public double getValue() throws JMException {
+		final Class cls = java.lang.String.class;
+		final String name = cls.getName();
+		Configuration.logger_.severe("Class " + name + " does not implement " +
+				"method getValue");
+		throw new JMException("Exception in " + name + ".getValue()") ;
+	} // getValue
 
-  /**
-   * Sets the type of the variable. The types are defined in class Problem.
-   */
-  /*
+	/**
+	 * Sets a double value to a variable in subclasses of <code>Variable</code>.
+	 * As not all objects belonging to a subclass of <code>Variable</code> have a
+	 * double value, a call to this method it is considered a fatal error by
+	 * default, and the program is terminated. Those classes requiring this method
+	 * must redefine it.
+	 */
+	public void setValue(final double value) throws JMException {
+		final Class cls = java.lang.String.class;
+		final String name = cls.getName();
+		Configuration.logger_.severe("Class " + name + " does not implement " +
+				"method setValue");
+		throw new JMException("Exception in " + name + ".setValue()") ;
+	} // setValue
+
+	/**
+	 * Gets the lower bound value of a variable. As not all
+	 * objects belonging to a subclass of <code>Variable</code> have a lower bound,
+	 * a call to this method is considered a fatal error by default,
+	 * and the program is terminated.
+	 * Those classes requiring this method must redefine it.
+	 */
+	public double getLowerBound() throws JMException {
+		final Class cls = java.lang.String.class;
+		final String name = cls.getName();
+		Configuration.logger_.severe("Class " + name +
+				" does not implement method getLowerBound()");
+		throw new JMException("Exception in " + name + ".getLowerBound()") ;
+	} // getLowerBound
+
+	/**
+	 * Gets the upper bound value of a variable. As not all
+	 * objects belonging to a subclass of <code>Variable</code> have an upper
+	 * bound, a call to this method is considered a fatal error by default, and the
+	 * program is terminated. Those classes requiring this method must redefine it.
+	 */
+	public double getUpperBound() throws JMException {
+		final Class cls = java.lang.String.class;
+		final String name = cls.getName();
+		Configuration.logger_.severe("Class " + name +
+				" does not implement method getUpperBound()");
+		throw new JMException("Exception in " + name + ".getUpperBound()") ;
+	} // getUpperBound
+
+	/**
+	 * Sets the lower bound for a variable. As not all objects belonging to a
+	 * subclass of <code>Variable</code> have a lower bound, a call to this method
+	 * is considered a fatal error by default and the program is terminated.
+	 * Those classes requiring this method must to redefine it.
+	 */
+	public void setLowerBound(final double lowerBound) throws JMException {
+		final Class cls = java.lang.String.class;
+		final String name = cls.getName();
+		Configuration.logger_.severe("Class " + name +
+				" does not implement method setLowerBound()");
+		throw new JMException("Exception in " + name + ".setLowerBound()") ;
+	} // setLowerBound
+
+	/**
+	 * Sets the upper bound for a variable. As not all objects belonging to a
+	 * subclass of <code>Variable</code> have an upper bound, a call to this method
+	 * is considered a fatal error by default, and the program is terminated.
+	 * Those classes requiring this method must redefine it.
+	 */
+	public void setUpperBound(final double upperBound) throws JMException {
+		final Class cls = java.lang.String.class;
+		final String name = cls.getName();
+		Configuration.logger_.severe("Class " + name +
+				" does not implement method setUpperBound()");
+		throw new JMException("Exception in " + name + ".setUpperBound()") ;
+	} // setUpperBound
+
+	/**
+	 * Sets the type of the variable. The types are defined in class Problem.
+	 */
+	/*
   public void setVariableType(VariableType_ variableType) {
     type_ = variableType ;
   } // setVariableType
-*/
-  /**
-   * Gets the type of the variable. The types are defined in class Problem.
-   * @return The type of the variable
-   */
-  
-  public Class getVariableType() {
-    return this.getClass() ;
-  } // getVariableType
+	 */
+	/**
+	 * Gets the type of the variable. The types are defined in class Problem.
+	 * @return The type of the variable
+	 */
+
+	public Class getVariableType() {
+		return this.getClass() ;
+	} // getVariableType
 } // Variable

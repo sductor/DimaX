@@ -1,17 +1,12 @@
 package frameworks.horizon.negotiatingagent;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.horizon.parameters.HorizonAllocableParameters;
-import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SimpleAgentState;
 
@@ -234,8 +229,8 @@ public class SubstrateNodeState extends SimpleAgentState {
 	}
 
 	@Override
-	public boolean hasResource(AgentIdentifier id) {
-		return getMyResourceIdentifiers().contains(id);
+	public boolean hasResource(final AgentIdentifier id) {
+		return this.getMyResourceIdentifiers().contains(id);
 	}
 	/**
 	 * Returns the class of the "resources" of a SubstrateNode

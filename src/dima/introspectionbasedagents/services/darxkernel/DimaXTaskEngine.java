@@ -42,7 +42,7 @@ public class DimaXTaskEngine extends Thread {
 				this.task.dimaComponent.tryToResumeActivity();
 				try {
 					Thread.sleep(200,10);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					e.printStackTrace();
 				}
 			}

@@ -2,22 +2,10 @@ package frameworks.faulttolerance.negotiatingagent;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
-import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
-import dima.introspectionbasedagents.modules.distribution.PoissonLaw;
-import dima.introspectionbasedagents.services.information.ObservationService.Information;
-import frameworks.experimentation.ExperimentationParameters;
-import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.opinion.SimpleOpinionService;
-import frameworks.negotiation.opinion.OpinionService.Opinion;
-import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SimpleAgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
@@ -97,19 +85,20 @@ public class ReplicaState  extends SimpleAgentState  {
 	}
 
 
-	public ReplicaState allocate (final HostState newRep, boolean creation) {
+	public ReplicaState allocate (final HostState newRep, final boolean creation) {
 		assert newRep!=null;
 		assert newRep.getMyAgentIdentifier()!=null;
-//		assert !(newRep.getMyAgentIdentifier() instanceof ResourceIdentifier):newRep;
+		//		assert !(newRep.getMyAgentIdentifier() instanceof ResourceIdentifier):newRep;
 		assert this.myReplicas!=null;
-		boolean ok = 
-				(creation && !this.myReplicas.contains(newRep.getMyAgentIdentifier())) 
-				|| 
-				(!creation && this.myReplicas.contains(newRep.getMyAgentIdentifier()));
-		if (ok)
-			return allocate(newRep);
-		else
+		final boolean ok =
+				creation && !this.myReplicas.contains(newRep.getMyAgentIdentifier())
+				||
+				!creation && this.myReplicas.contains(newRep.getMyAgentIdentifier());
+		if (ok) {
+			return this.allocate(newRep);
+		} else {
 			return this;
+		}
 	}
 	// Clone with modification of replicas
 	public ReplicaState allocate (final HostState newRep) {
@@ -133,14 +122,14 @@ public class ReplicaState  extends SimpleAgentState  {
 				this.getStateCounter()+1);
 	}
 
-	public ReplicaState allocateAll(Collection<HostState> toAllocate){
+	public ReplicaState allocateAll(final Collection<HostState> toAllocate){
 		ReplicaState s = this;
-		for (HostState ress : toAllocate)	{		
-				s =  s.allocate(ress);
+		for (final HostState ress : toAllocate)	{
+			s =  s.allocate(ress);
 		}
 		return s;
 	}
-	
+
 	public ReplicaState freeAllResources() {
 
 		return new ReplicaState(this.getMyAgentIdentifier(),
@@ -184,7 +173,7 @@ public class ReplicaState  extends SimpleAgentState  {
 	}
 
 	public Double getMyDisponibility() {
-		return 1 - myFailureProb;
+		return 1 - this.myFailureProb;
 	}
 
 	public Double getMyCriticity() {
@@ -207,7 +196,7 @@ public class ReplicaState  extends SimpleAgentState  {
 		return this.myReplicas;
 	}
 	@Override
-	public boolean hasResource(AgentIdentifier id) {
+	public boolean hasResource(final AgentIdentifier id) {
 		return  this.myReplicas.contains(id);
 	}
 	@Override
@@ -285,7 +274,7 @@ public class ReplicaState  extends SimpleAgentState  {
 	}
 
 	public Double getMyFailureProb() {
-		return myFailureProb;
+		return this.myFailureProb;
 	}
 
 

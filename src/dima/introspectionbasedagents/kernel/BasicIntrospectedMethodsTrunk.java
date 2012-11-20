@@ -9,7 +9,6 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import dima.basicinterfaces.ActiveComponentInterface;
-import dima.basicinterfaces.DimaComponentInterface;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.ProactivityFinalisation;

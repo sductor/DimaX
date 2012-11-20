@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -28,12 +28,17 @@ import java.io.Serializable;
  * jMetal exception class
  */
 public class JMException extends Exception implements Serializable {
-  
-  /**
-   * Constructor
-   * @param Error message
-   */
-  public JMException (String message){
-     super(message);      
-  } // JmetalException
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -605255893391212996L;
+
+	/**
+	 * Constructor
+	 * @param Error message
+	 */
+	public JMException (final String message){
+		super(message);
+	} // JmetalException
 }

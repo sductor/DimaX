@@ -3,7 +3,7 @@
 //  Author:
 //       Antonio J. Nebro <antonio@lcc.uma.es>
 //       Juan J. Durillo <durillo@lcc.uma.es>
-// 
+//
 //  Copyright (c) 2011 Antonio J. Nebro, Juan J. Durillo
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -31,139 +31,149 @@ import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
  * This class implements a generic binary string variable.It can be used as
  * a base class other binary string based classes (e.g., binary coded integer
  * or real variables).
- */ 
+ */
 public class Binary extends Variable {
-  
-  /**
-   * Stores the bits constituting the binary string. It is
-   * implemented using a BitSet object
-   */
-  public BitSet bits_;
-  
-  /**
-   * Store the length of the binary string
-   */
-  protected int numberOfBits_;
-        
-  /**
-   * Default constructor.
-   */
-  public Binary() {       
-  } //Binary
-  
-  /**
-   *  Constructor
-   *  @param numberOfBits Length of the bit string
-   */
-  public Binary(int numberOfBits){   
-    numberOfBits_ = numberOfBits;
 
-    bits_ = new BitSet(numberOfBits_);      
-    for (int i = 0; i < numberOfBits_; i++){ 
-      if (PseudoRandom.randDouble() < 0.5) {
-        bits_.set(i,true);
-      } else {
-        bits_.set(i,false);                      
-      }
-    }
-  } //Binary
-  
-  /**
-   * Copy constructor.
-   * @param variable The Binary variable to copy.
-   */
-  public Binary(Binary variable){
-    numberOfBits_ = variable.numberOfBits_;
-        
-    bits_ = new BitSet(numberOfBits_);
-    for (int i = 0; i < numberOfBits_; i++) {
-      bits_.set(i,variable.bits_.get(i));      
-    }
-  } //Binary
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3977638641616131231L;
 
-  /**
-   * This method is intended to be used in subclass of <code>Binary</code>, 
-   * for examples the classes, <code>BinaryReal</code> and <code>BinaryInt<codes>. 
-   * In this classes, the method allows to decode the 
-   * value enconded in the binary string. As generic variables do not encode any
-   * value, this method do noting 
-   */
-  public void decode() {
-    //do nothing
-  } //decode
-  
-  /** 
-   * Creates an exact copy of a Binary object
-   * @return An exact copy of the object.
-   **/
-  public Variable deepCopy() {
-    return new Binary(this);
-  } //deepCopy
+	/**
+	 * Stores the bits constituting the binary string. It is
+	 * implemented using a BitSet object
+	 */
+	public BitSet bits_;
 
-  /**
-   * Returns the length of the binary string.
-   * @return The length
-   */
-  public int getNumberOfBits(){
-    return numberOfBits_;
-  } //getNumberOfBits
-  
-  /**
-   * Returns the value of the ith bit.
-   * @param bit The bit to retrieve
-   * @return The ith bit
-   */
-  public boolean getIth(int bit){
-    return bits_.get(bit);
-  } //getNumberOfBits
+	/**
+	 * Store the length of the binary string
+	 */
+	protected int numberOfBits_;
 
-  /**
-   * Sets the value of the ith bit.
-   * @param bit The bit to set
-   */
-  public void setIth(int bit, boolean value){
-    bits_.set(bit, value) ;
-  } //getNumberOfBits
+	/**
+	 * Default constructor.
+	 */
+	public Binary() {
+	} //Binary
 
-  
- /**
-  * Obtain the hamming distance between two binary strings
-  * @param other The binary string to compare
-  * @return The hamming distance
-  */
-  public int hammingDistance(Binary other) {
-    int distance = 0;
-    int i = 0;
-    while (i < bits_.size()) {
-      if (bits_.get(i) != other.bits_.get(i)) {
-        distance++;
-      }
-      i++;
-    }
-    return distance;
-  } // hammingDistance
+	/**
+	 *  Constructor
+	 *  @param numberOfBits Length of the bit string
+	 */
+	public Binary(final int numberOfBits){
+		this.numberOfBits_ = numberOfBits;
 
-  public boolean equals(Object o){
-	  if (!(o instanceof Binary)){
-		  return false;
-	  }  else {
-		  return ((Binary)o).bits_.equals(this.bits_);
-	  }
-  }
-  
- /**
-  *  
-  */
-  public String toString() {
-    String result ;
-    
-    result = "" ;
-    for (int i = 0; i < numberOfBits_; i ++)
-      if (bits_.get(i))
-        result = result + "1" ;
-      else
-        result = result + "0" ;
-        
-    return result ;
-  } // toString
+		this.bits_ = new BitSet(this.numberOfBits_);
+		for (int i = 0; i < this.numberOfBits_; i++){
+			if (PseudoRandom.randDouble() < 0.5) {
+				this.bits_.set(i,true);
+			} else {
+				this.bits_.set(i,false);
+			}
+		}
+	} //Binary
+
+	/**
+	 * Copy constructor.
+	 * @param variable The Binary variable to copy.
+	 */
+	public Binary(final Binary variable){
+		this.numberOfBits_ = variable.numberOfBits_;
+
+		this.bits_ = new BitSet(this.numberOfBits_);
+		for (int i = 0; i < this.numberOfBits_; i++) {
+			this.bits_.set(i,variable.bits_.get(i));
+		}
+	} //Binary
+
+	/**
+	 * This method is intended to be used in subclass of <code>Binary</code>,
+	 * for examples the classes, <code>BinaryReal</code> and <code>BinaryInt<codes>.
+	 * In this classes, the method allows to decode the
+	 * value enconded in the binary string. As generic variables do not encode any
+	 * value, this method do noting
+	 */
+	public void decode() {
+		//do nothing
+	} //decode
+
+	/**
+	 * Creates an exact copy of a Binary object
+	 * @return An exact copy of the object.
+	 **/
+	@Override
+	public Variable deepCopy() {
+		return new Binary(this);
+	} //deepCopy
+
+	/**
+	 * Returns the length of the binary string.
+	 * @return The length
+	 */
+	public int getNumberOfBits(){
+		return this.numberOfBits_;
+	} //getNumberOfBits
+
+	/**
+	 * Returns the value of the ith bit.
+	 * @param bit The bit to retrieve
+	 * @return The ith bit
+	 */
+	public boolean getIth(final int bit){
+		return this.bits_.get(bit);
+	} //getNumberOfBits
+
+	/**
+	 * Sets the value of the ith bit.
+	 * @param bit The bit to set
+	 */
+	public void setIth(final int bit, final boolean value){
+		this.bits_.set(bit, value) ;
+	} //getNumberOfBits
+
+
+	/**
+	 * Obtain the hamming distance between two binary strings
+	 * @param other The binary string to compare
+	 * @return The hamming distance
+	 */
+	public int hammingDistance(final Binary other) {
+		int distance = 0;
+		int i = 0;
+		while (i < this.bits_.size()) {
+			if (this.bits_.get(i) != other.bits_.get(i)) {
+				distance++;
+			}
+			i++;
+		}
+		return distance;
+	} // hammingDistance
+
+	@Override
+	public boolean equals(final Object o){
+		if (!(o instanceof Binary)){
+			return false;
+		}  else {
+			return ((Binary)o).bits_.equals(this.bits_);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		String result ;
+
+		result = "" ;
+		for (int i = 0; i < this.numberOfBits_; i ++) {
+			if (this.bits_.get(i)) {
+				result = result + "1" ;
+			} else {
+				result = result + "0" ;
+			}
+		}
+
+		return result ;
+	} // toString
 } // Binary

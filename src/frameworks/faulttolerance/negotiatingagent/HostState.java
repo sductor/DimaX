@@ -3,21 +3,13 @@ package frameworks.faulttolerance.negotiatingagent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
-import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
-import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
 import dima.introspectionbasedagents.modules.distribution.PoissonLaw;
-import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.opinion.OpinionService.Opinion;
-import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SimpleAgentState;
 
 public class HostState extends SimpleAgentState{
@@ -35,7 +27,7 @@ public class HostState extends SimpleAgentState{
 	private final Double memChargeMax;
 	private final Double memCurrentCharge;
 
-	 final double lambda;
+	final double lambda;
 	private boolean isFaulty;
 
 
@@ -48,20 +40,21 @@ public class HostState extends SimpleAgentState{
 			final double hostMaxMem,
 			final double lambda) {
 		this(myAgent,
-				hostMaxProc, 0., 
+				hostMaxProc, 0.,
 				hostMaxMem, 0.,
-				new HashSet<AgentIdentifier>(), 
+				new HashSet<AgentIdentifier>(),
 				lambda,
 				-1);
 	}
 
-	public HostState allocate (final ReplicaState newRep, boolean creation) {
-		boolean ok = (creation &&!this.myReplicatedAgents.contains(newRep.getMyAgentIdentifier())) 
-				|| (!creation && this.myReplicatedAgents.contains(newRep.getMyAgentIdentifier()));
-		if (ok)
-			return allocate(newRep);
-		else
+	public HostState allocate (final ReplicaState newRep, final boolean creation) {
+		final boolean ok = creation &&!this.myReplicatedAgents.contains(newRep.getMyAgentIdentifier())
+				|| !creation && this.myReplicatedAgents.contains(newRep.getMyAgentIdentifier());
+		if (ok) {
+			return this.allocate(newRep);
+		} else {
 			return this;
+		}
 	}
 	public HostState allocate(final ReplicaState newRep){
 		final HashSet<AgentIdentifier> rep =new HashSet<AgentIdentifier>(this.myReplicatedAgents);
@@ -88,14 +81,14 @@ public class HostState extends SimpleAgentState{
 				this.getStateCounter()+1);
 	}
 
-	public HostState allocateAll(Collection<ReplicaState> toAllocate){
+	public HostState allocateAll(final Collection<ReplicaState> toAllocate){
 		HostState s = this;
-		for (ReplicaState ress : toAllocate)	{		
-				s =  s.allocate(ress);
+		for (final ReplicaState ress : toAllocate)	{
+			s =  s.allocate(ress);
 		}
 		return s;
 	}
-	
+
 	public HostState freeAllResources() {
 		return new HostState(
 				this.getMyAgentIdentifier(),
@@ -109,11 +102,11 @@ public class HostState extends SimpleAgentState{
 	HostState(
 			final ResourceIdentifier myAgent,
 			final Double procChargeMax,
-			final Double procCurrentCharge, 
+			final Double procCurrentCharge,
 			final Double memChargeMax,
-			final Double memCurrentCharge, 
+			final Double memCurrentCharge,
 			final Set<AgentIdentifier> myReplicatedAgents,
-			final double lambda, 
+			final double lambda,
 			final int stateNumber) {
 		super(myAgent, stateNumber);
 		this.myReplicatedAgents = myReplicatedAgents;
@@ -129,10 +122,10 @@ public class HostState extends SimpleAgentState{
 	//
 
 	public boolean isFaulty() {
-		return isFaulty;
+		return this.isFaulty;
 	}
 
-	public void setFaulty(boolean isFaulty) {
+	public void setFaulty(final boolean isFaulty) {
 		this.isFaulty = isFaulty;
 	}
 	//pas propre!!! camarche uniquement pcq le h ne change pas de charge
@@ -152,12 +145,12 @@ public class HostState extends SimpleAgentState{
 	}
 
 	public Double getMyCharge() {
-//		if (ReplicationExperimentationParameters.multiDim) {
-			return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
-					this.getCurrentProcCharge() / this.getProcChargeMax());
-//		} else {
-//			return this.getCurrentMemCharge() / this.getMemChargeMax();
-//		}
+		//		if (ReplicationExperimentationParameters.multiDim) {
+		return Math.max(this.getCurrentMemCharge() / this.getMemChargeMax(),
+				this.getCurrentProcCharge() / this.getProcChargeMax());
+		//		} else {
+		//			return this.getCurrentMemCharge() / this.getMemChargeMax();
+		//		}
 	}
 
 	public boolean ImSurcharged() {
@@ -170,7 +163,7 @@ public class HostState extends SimpleAgentState{
 		return  Collections.unmodifiableSet(this.myReplicatedAgents);
 	}
 	@Override
-	public boolean hasResource(AgentIdentifier id) {
+	public boolean hasResource(final AgentIdentifier id) {
 		return  this.myReplicatedAgents.contains(id);
 	}
 	@Override
@@ -194,10 +187,10 @@ public class HostState extends SimpleAgentState{
 	public double getFailureProb() {
 		switch (ReplicationExperimentationParameters.choosenType) {
 		case Static:
-			return lambda;
+			return this.lambda;
 		case Poisson:
 			final long nbInterval = ExperimentationParameters._maxSimulationTime / ReplicationExperimentationParameters._host_maxFaultfrequency;
-			return PoissonLaw.getPoissonLaw(lambda * nbInterval, 1);
+			return PoissonLaw.getPoissonLaw(this.lambda * nbInterval, 1);
 		default:
 			throw new RuntimeException("impossible");
 		}
@@ -218,7 +211,7 @@ public class HostState extends SimpleAgentState{
 	public Double getMemChargeMax() {
 		return this.memChargeMax;
 	}
-	
+
 	/*
 	 *
 	 */
@@ -292,7 +285,7 @@ public class HostState extends SimpleAgentState{
 	}
 
 	public Double getLambda() {
-		return lambda;
+		return this.lambda;
 	}
 
 

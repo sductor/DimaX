@@ -13,9 +13,7 @@ import frameworks.experimentation.ExperimentationResults;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.faulttolerance.experimentation.ReplicationResultAgent;
-import frameworks.faulttolerance.faulsimulation.FaultObservationService;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.SimpleNegotiatingAgent;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
@@ -66,10 +64,10 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 			return myInfo;
 		}
 	};
-	
+
 	@EventHookedMethod(ReplicaState.class)
 	public void updateStateStatus(final ReplicaState h){
-//		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+		//		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
 		//		if (firstModifTime==-2){
 		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
 		//			firstModifTime=-1;
@@ -80,19 +78,19 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 		//
 		this.lastModifTime=this.getUptime();
 	}
-//	@Competence
-//	FaultObservationService myFaultAwareService =
-//	new FaultObservationService() {
-//
-//		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
-//			return Replica.this.generateDestructionContract(id);
-//		}
-//
-//		@Override
-//		public void endSimulation() {
-//			mySelfObservationService.endSimulation();			
-//		}
-//	};
+	//	@Competence
+	//	FaultObservationService myFaultAwareService =
+	//	new FaultObservationService() {
+	//
+	//		public ReplicationCandidature generateDestructionContract(final AgentIdentifier id){
+	//			return Replica.this.generateDestructionContract(id);
+	//		}
+	//
+	//		@Override
+	//		public void endSimulation() {
+	//			mySelfObservationService.endSimulation();
+	//		}
+	//	};
 
 	//
 	// Constructor

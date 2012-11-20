@@ -8,17 +8,17 @@ import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
-import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.opinion.OpinionHandler;
-import frameworks.negotiation.opinion.SimpleOpinionService;
-import frameworks.negotiation.opinion.OpinionService.Opinion;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class ReplicaStateOpinionHandler
 implements OpinionHandler<ReplicaState> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -465165237059185739L;
 	/*
 	 * Opinion
 	 */
@@ -26,8 +26,8 @@ implements OpinionHandler<ReplicaState> {
 	private final AgentIdentifier myAgentIdentifer;
 
 
-	public ReplicaStateOpinionHandler(SocialChoiceType socialWelfare,
-			AgentIdentifier myAgentIdentifer) {
+	public ReplicaStateOpinionHandler(final SocialChoiceType socialWelfare,
+			final AgentIdentifier myAgentIdentifer) {
 		super();
 		this.socialWelfare = socialWelfare;
 		this.myAgentIdentifer = new AgentName("opinion of "+myAgentIdentifer.toString());
@@ -35,7 +35,7 @@ implements OpinionHandler<ReplicaState> {
 
 	@Override
 	public Double getNumericValue(final ReplicaState o) {
-			return o.getMyReliability();
+		return o.getMyReliability();
 	}
 
 	@Override
@@ -54,15 +54,15 @@ implements OpinionHandler<ReplicaState> {
 		meanProc = new LightAverageDoubleAggregation();
 
 		for (final ReplicaState e : elems) {
-				meanCrit.add(e.getMyCriticity());
-				meanDisp.add(e.getMyFailureProb());
-				meanMem.add(e.getMyMemCharge());
-				meanProc.add(e.getMyProcCharge());
-		
+			meanCrit.add(e.getMyCriticity());
+			meanDisp.add(e.getMyFailureProb());
+			meanMem.add(e.getMyMemCharge());
+			meanProc.add(e.getMyProcCharge());
+
 		}
 
 		final ReplicaState rep = new ReplicaState(
-				myAgentIdentifer,
+				this.myAgentIdentifer,
 				meanCrit.getRepresentativeElement(),
 				null,
 				meanProc.getRepresentativeElement(),
@@ -83,13 +83,13 @@ implements OpinionHandler<ReplicaState> {
 		meanProc = new LightWeightedAverageDoubleAggregation();
 
 		for (final ReplicaState e : elems.keySet()) {
-				meanCrit.add(e.getMyCriticity(),elems.get(e));
-				meanDisp.add(e.getMyFailureProb(),elems.get(e));
-				meanMem.add(e.getMyMemCharge(),elems.get(e));
-				meanProc.add(e.getMyProcCharge(),elems.get(e));
+			meanCrit.add(e.getMyCriticity(),elems.get(e));
+			meanDisp.add(e.getMyFailureProb(),elems.get(e));
+			meanMem.add(e.getMyMemCharge(),elems.get(e));
+			meanProc.add(e.getMyProcCharge(),elems.get(e));
 		}
 		final ReplicaState rep = new ReplicaState(
-				myAgentIdentifer,
+				this.myAgentIdentifer,
 				meanCrit.getRepresentativeElement(),
 				null,
 				meanProc.getRepresentativeElement(),
@@ -106,7 +106,7 @@ implements OpinionHandler<ReplicaState> {
 	}
 
 }
-	
+
 //}  else if (o instanceof Opinion && ((Opinion)o).getRepresentativeElement() instanceof ReplicaState) {
 //	final ReplicaState e = (ReplicaState) ((Opinion)o).getRepresentativeElement();
 //	meanCrit.add(myCriticity,elems.get(e));

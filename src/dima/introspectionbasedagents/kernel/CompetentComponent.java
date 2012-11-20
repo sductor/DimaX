@@ -8,12 +8,7 @@ import java.util.Random;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.basicinterfaces.IdentifiedComponentInterface;
-import dima.basicinterfaces.ProactiveComponentInterface;
 import dima.introspectionbasedagents.services.AgentCompetence;
-import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
-import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
 
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 

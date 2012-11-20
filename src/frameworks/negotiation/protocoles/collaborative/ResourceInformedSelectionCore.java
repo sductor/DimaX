@@ -17,20 +17,17 @@ import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxExcepti
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.faulttolerance.experimentation.SearchTimeNotif;
 import frameworks.negotiation.NegotiatingAgent;
+import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.contracts.ContractTransition;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.contracts.UnknownContractException;
-import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.rationality.AgentState;
-import frameworks.negotiation.selection.GreedySelectionModule;
-import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 import frameworks.negotiation.selection.SelectionModule;
-import frameworks.negotiation.selection.SimpleSelectionCore;
 
 public abstract class ResourceInformedSelectionCore <
 PersonalState extends AgentState,
@@ -133,10 +130,10 @@ InformedCandidature<Contract>> {
 						}
 					}
 				} else {
-//					final GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>> gsm =
-//							new GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>>(this.initialSelectionType);
-					gsm.setMyAgent(this.getMyAgent());
-					accepted.addAll(gsm.selection(currentState, allContracts));
+					//					final GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>> gsm =
+					//							new GreedySelectionModule<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,PersonalState, InformedCandidature<Contract>>(this.initialSelectionType);
+					this.gsm.setMyAgent(this.getMyAgent());
+					accepted.addAll(this.gsm.selection(currentState, allContracts));
 					try {
 						currentState=ReallocationContract.computeResultingState(currentState, accepted);
 					} catch (final IncompleteContractException e) {
@@ -371,8 +368,8 @@ InformedCandidature<Contract>> {
 					new HashSet<InformedCandidature<Contract>>();
 			final Date startingExploringTime = new Date();
 			//			logWarning("beginning exploration");
-			while (this.solver.hasNext() && (new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime)){
-				Collection<Contract> realloc = solver.getNextLocalSolution();
+			while (this.solver.hasNext() && new Date().getTime() - startingExploringTime.getTime()<this.maxComputingTime){
+				final Collection<Contract> realloc = this.solver.getNextLocalSolution();
 				if (!realloc.isEmpty()){
 					final Set<InformedCandidature<Contract>> contractsToKeep =
 							new HashSet<InformedCandidature<Contract>>();

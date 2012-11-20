@@ -6,14 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 import dima.introspectionbasedagents.kernel.NotReadyException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.protocoles.AtMostKCandidaturesProposer;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.ProposerCore;
+import frameworks.negotiation.protocoles.AtMostKCandidaturesProposer;
 import frameworks.negotiation.protocoles.status.StatusObservationCompetence.AgentStateStatus;
 import frameworks.negotiation.rationality.AgentState;
 
@@ -54,10 +53,10 @@ PersonalState, Contract> {
 			while (this.getMyAgent().stateStatusIs(nextState, AgentStateStatus.Wastefull)
 					&& !replicas.isEmpty()){
 
-				AgentState rId = replicas.remove(0);
+				final AgentState rId = replicas.remove(0);
 				final Contract destructionCandidature =
 						this.constructDestructionCandidature((ResourceIdentifier) rId.getMyAgentIdentifier());
-				destructionCandidature.setInitialState(getMyAgent().getMyCurrentState());
+				destructionCandidature.setInitialState(this.getMyAgent().getMyCurrentState());
 				destructionCandidature.setInitialState(rId);
 
 				if (!this.getMyAgent().getMyResultingState(nextState,
@@ -85,8 +84,8 @@ PersonalState, Contract> {
 			//				this.getMyAgent().execute(c);
 
 		} else if (this.getMyAgent().stateStatusIs(this.getMyAgent().getMyCurrentState(),
-				AgentStateStatus.Fragile) || (this.getMyAgent().stateStatusIs(this.getMyAgent().getMyCurrentState(),
-						AgentStateStatus.Empty))) {
+				AgentStateStatus.Fragile) || this.getMyAgent().stateStatusIs(this.getMyAgent().getMyCurrentState(),
+						AgentStateStatus.Empty)) {
 			candidatures.addAll(super.getNextContractsToPropose());
 		}
 
@@ -113,12 +112,12 @@ PersonalState, Contract> {
 	@Override
 	public boolean IWantToNegotiate(
 			final ContractTrunk<Contract> contracts) {
-//		this.getMyAgent().updateThreshold();
+		//		this.getMyAgent().updateThreshold();
 		//		System.out.println(super.IWantToNegotiate(s)+" "+this.getStatus(s)+(super.IWantToNegotiate(s)
 		//				&& (this.getStatus(s).equals(AgentStateStatus.Fragile) || this
 		//						.getStatus(s).equals(AgentStateStatus.Wastefull))));
 		final PersonalState s = this.getMyAgent().getMyCurrentState();
-		AgentStateStatus status = this.getMyAgent().getStatus(s);
+		final AgentStateStatus status = this.getMyAgent().getStatus(s);
 		return super.IWantToNegotiate(contracts)
 				&& (status.equals(AgentStateStatus.Fragile) ||
 						status.equals(AgentStateStatus.Wastefull));

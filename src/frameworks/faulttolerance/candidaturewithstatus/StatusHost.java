@@ -10,12 +10,9 @@ import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
-import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.opinion.SimpleOpinionService;
 import frameworks.negotiation.protocoles.InactiveProposerCore;
-import frameworks.negotiation.protocoles.ReverseCFPProtocol;
-import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.protocoles.status.StatusObservationCompetence;
 import frameworks.negotiation.protocoles.status.StatusProtocol;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -34,7 +31,7 @@ public class StatusHost extends Host {
 			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
 			final AgentIdentifier myLaborantin,
-			double alpha_low, double alpha_high) throws CompetenceException {
+			final double alpha_low, final double alpha_high) throws CompetenceException {
 		this(id, myState, participantCore, _socialWelfare,true);
 		this.soc=new StatusObservationCompetence(myLaborantin,false, ReplicaState.class, alpha_low, alpha_high);
 		this.soc.setActive(false);
@@ -46,7 +43,7 @@ public class StatusHost extends Host {
 			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
 			final int numberToContact,
-			double alpha_low, double alpha_high) throws CompetenceException {
+			final double alpha_low, final double alpha_high) throws CompetenceException {
 		this(id, myState, participantCore, _socialWelfare,false);
 		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class, alpha_low, alpha_high);
 	}
@@ -64,16 +61,16 @@ public class StatusHost extends Host {
 				participantCore,
 				new InactiveProposerCore(),
 				centralised?new SimpleObservationService():new SimpleOpinionService(new ReplicaStateOpinionHandler(_socialWelfare, id)),
-						new StatusProtocol((participantCore.getSelectionModule() instanceof OptimalSelectionModule)));
-		
+						new StatusProtocol(participantCore.getSelectionModule() instanceof OptimalSelectionModule));
+
 	}
 
-//	@Override
-//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-//		return new ReplicationCandidature((ResourceIdentifier) this.getIdentifier(),id,  false, false);
-//	}
-//	@Override
-//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-//		return new ReplicationCandidature((ResourceIdentifier)  this.getIdentifier(),id, true, false);
-//	}
+	//	@Override
+	//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+	//		return new ReplicationCandidature((ResourceIdentifier) this.getIdentifier(),id,  false, false);
+	//	}
+	//	@Override
+	//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+	//		return new ReplicationCandidature((ResourceIdentifier)  this.getIdentifier(),id, true, false);
+	//	}
 }

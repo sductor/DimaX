@@ -4,8 +4,6 @@ import java.util.Collection;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
-import frameworks.faulttolerance.negotiatingagent.HostState;
-import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 
 public interface AgentState extends Information {
 
@@ -32,9 +30,9 @@ public interface AgentState extends Information {
 // }
 //
 
-	//	void resetUptime();
-	//	// Return true if action had an effect
-	//	boolean setLost(ResourceIdentifier h, boolean isLost);
+//	void resetUptime();
+//	// Return true if action had an effect
+//	boolean setLost(ResourceIdentifier h, boolean isLost);
 
 
 // void reset();

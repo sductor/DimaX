@@ -1,11 +1,7 @@
 package frameworks.horizon.contracts;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
-
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import frameworks.negotiation.contracts.AbstractActionSpecif;
 
@@ -63,6 +59,7 @@ public abstract class HorizonSpecification implements AbstractActionSpecif {
 		}
 	}
 
+	@Override
 	public HorizonSpecification clone(){
 		return this;
 	}

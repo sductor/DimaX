@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PostStepComposant;
@@ -145,11 +143,11 @@ public abstract class PatternObserverService extends BasicCommunicatingCompetenc
 		if (notification==null) {
 			System.err.print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhh"+key);
 		}
-		NotificationMessage n = new NotificationMessage<Notification>(key, notification);
+		final NotificationMessage n = new NotificationMessage<Notification>(key, notification);
 		try {
-		n.setDebugCallingMethod(getMyAgent().getMyCurrentStatus().getCurrentlyExecutedBehavior());
-		n.setDebugInReplyTo(getMyAgent().getMyCurrentStatus().getCurrentlyReadedMail());
-		} catch (NullPointerException e){/*shell non instancié*/}
+			n.setDebugCallingMethod(this.getMyAgent().getMyCurrentStatus().getCurrentlyExecutedBehavior());
+			n.setDebugInReplyTo(this.getMyAgent().getMyCurrentStatus().getCurrentlyReadedMail());
+		} catch (final NullPointerException e){/*shell non instancié*/}
 		return this.notificationsToSend.add(n);
 	}
 	/**

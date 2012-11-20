@@ -7,10 +7,9 @@ import frameworks.horizon.SubstrateNode;
 import frameworks.horizon.contracts.HorizonContract;
 import frameworks.horizon.contracts.SubstrateNodeSpecification;
 import frameworks.negotiation.SimpleNegotiatingAgent;
-import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
+import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.rationality.RationalCore;
-import frameworks.negotiation.rationality.SimpleRationalAgent;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 /**

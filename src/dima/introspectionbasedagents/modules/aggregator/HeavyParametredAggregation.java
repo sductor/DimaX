@@ -6,73 +6,89 @@ import java.util.Map;
 
 public class HeavyParametredAggregation<Element extends Object> extends HeavyAggregation<Element>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 650833063798649323L;
+
+
 	public interface Agg<Element> extends
 	FunctionnalCompensativeAggregator<Element>,
-	UtilitaristAnalyser<Element>{}; 
-	
-	
+	UtilitaristAnalyser<Element>{};
+
+
 	Agg<Element> myAggregator;
 
 
-	public HeavyParametredAggregation(Agg<Element> myAggregator) {
+	public HeavyParametredAggregation(final Agg<Element> myAggregator) {
 		super();
 		this.myAggregator = myAggregator;
 	}
 
 
-	public HeavyParametredAggregation(Agg<Element> myAggregator,
-			Comparator<? super Element> arg0) {
+	public HeavyParametredAggregation(final Agg<Element> myAggregator,
+			final Comparator<? super Element> arg0) {
 		super(arg0);
 		this.myAggregator = myAggregator;
 	}
 
 
-	public Double getNumericValue(Element e) {
-		return myAggregator.getNumericValue(e);
+	@Override
+	public Double getNumericValue(final Element e) {
+		return this.myAggregator.getNumericValue(e);
 	}
 
 
+	@Override
 	public Element getRepresentativeElement() {
-		return myAggregator.getRepresentativeElement(this);
+		return this.myAggregator.getRepresentativeElement(this);
 	}
 
 
+	@Override
 	public Double getProd() {
 		double prod=1;
-		for (Element d : this.keySet())
-			prod*=myAggregator.getNumericValue(d);
+		for (final Element d : this.keySet()) {
+			prod*=this.myAggregator.getNumericValue(d);
+		}
 		return prod;
 	}
 
 
-	public Object getRepresentativeElement(Collection elems) {
-		return myAggregator.getRepresentativeElement(elems);
+	@Override
+	public Object getRepresentativeElement(final Collection elems) {
+		return this.myAggregator.getRepresentativeElement(elems);
 	}
 
 
+	@Override
 	public int getNumberOfAggregatedElements() {
 		return this.keySet().size();
 	}
 
 
+	@Override
 	public double getWeightOfAggregatedElements() {
 		double weight=0;
-		for (Double d : this.values())
+		for (final Double d : this.values()) {
 			weight+=d;
+		}
 		return weight;
 	}
 
 
-	public Object getRepresentativeElement(Map elems) {
-		return myAggregator.getRepresentativeElement(elems);
+	@Override
+	public Object getRepresentativeElement(final Map elems) {
+		return this.myAggregator.getRepresentativeElement(elems);
 	}
 
 
-	public AbstractCompensativeAggregation fuse(Collection averages) {
-		return myAggregator.fuse(averages);
+	@Override
+	public AbstractCompensativeAggregation fuse(final Collection averages) {
+		return this.myAggregator.fuse(averages);
 	}
-	
-	
-	
+
+
+
 
 }

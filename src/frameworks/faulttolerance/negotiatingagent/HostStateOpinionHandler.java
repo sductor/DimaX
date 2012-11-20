@@ -6,28 +6,28 @@ import java.util.Map;
 import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.modules.aggregator.LightWeightedAverageDoubleAggregation;
-import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
-import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.opinion.OpinionDataBase;
 import frameworks.negotiation.opinion.OpinionHandler;
-import frameworks.negotiation.opinion.OpinionService.Opinion;
 
 public class HostStateOpinionHandler
 implements OpinionHandler<HostState>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8085031452971024650L;
 	final ResourceIdentifier myAgentIdentifer;
-	
-	public HostStateOpinionHandler(ResourceIdentifier myAgentIdentifer) {
+
+	public HostStateOpinionHandler(final ResourceIdentifier myAgentIdentifer) {
 		super();
 		this.myAgentIdentifer = new ResourceIdentifier("opinion of "+this.myAgentIdentifer.getUrl(), myAgentIdentifer.getPort());
 	}
 
 	@Override
 	public Double getNumericValue(final HostState o) {
-			final HostState e = (HostState) o;
-			return e.getMyCharge();
+		final HostState e = o;
+		return e.getMyCharge();
 	}
 
 	@Override
@@ -47,16 +47,16 @@ implements OpinionHandler<HostState>{
 		meanLambda = new LightAverageDoubleAggregation();
 
 		for (final HostState o : elems) {
-				final HostState e = (HostState) o;
-				meanProcCu.add(e.getCurrentProcCharge());
-				meanProcMax.add(e.getProcChargeMax());
-				meanMemCu.add(e.getCurrentMemCharge());
-				meanMemMax.add(e.getMemChargeMax());
-				meanLambda.add(e.lambda);
+			final HostState e = o;
+			meanProcCu.add(e.getCurrentProcCharge());
+			meanProcMax.add(e.getProcChargeMax());
+			meanMemCu.add(e.getCurrentMemCharge());
+			meanMemMax.add(e.getMemChargeMax());
+			meanLambda.add(e.lambda);
 		}
 
 		return new HostState(
-				myAgentIdentifer,
+				this.myAgentIdentifer,
 				meanLambda.getRepresentativeElement(),
 				meanProcMax.getRepresentativeElement(),
 				meanProcCu.getRepresentativeElement(),
@@ -90,7 +90,7 @@ implements OpinionHandler<HostState>{
 		}
 
 		return new HostState(
-				myAgentIdentifer,
+				this.myAgentIdentifer,
 				meanProcMax.getRepresentativeElement(),
 				meanProcCu.getRepresentativeElement(),
 				meanMemMax.getRepresentativeElement(),

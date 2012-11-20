@@ -76,10 +76,10 @@ implements RationalCore<Agent, PersonalState, Contract>{
 	 *
 	 */
 
-//	@Override
-//	public boolean isActive() {
-//		return this.myPersonalCore.isActive();
-//	}
+	//	@Override
+	//	public boolean isActive() {
+	//		return this.myPersonalCore.isActive();
+	//	}
 
 	@Override
 	public Agent getMyAgent() {
@@ -101,10 +101,10 @@ implements RationalCore<Agent, PersonalState, Contract>{
 		return this.myPersonalCore.getIdentifier();
 	}
 
-//	@Override
-//	public void setActive(final boolean active) {
-//		this.myPersonalCore.setActive(active);
-//	}
+	//	@Override
+	//	public void setActive(final boolean active) {
+	//		this.myPersonalCore.setActive(active);
+	//	}
 
 	//
 	// Assertion test

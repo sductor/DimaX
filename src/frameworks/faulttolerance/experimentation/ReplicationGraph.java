@@ -24,7 +24,7 @@ public interface ReplicationGraph {
 
 	public abstract Collection<ResourceIdentifier> getAccessibleHosts(
 			final AgentIdentifier id);
-	
+
 	public abstract Collection<AgentIdentifier> getAccessibleAgents(
 			final ResourceIdentifier id);
 

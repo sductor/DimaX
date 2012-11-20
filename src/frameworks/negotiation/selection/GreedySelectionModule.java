@@ -18,7 +18,7 @@ public class GreedySelectionModule<
 Agent extends NegotiatingAgent<PersonalState, Contract>,
 PersonalState extends AgentState,
 Contract extends AbstractContractTransition>
-extends BasicAgentModule<Agent> 
+extends BasicAgentModule<Agent>
 implements SelectionModule<Agent, PersonalState, Contract>{
 	private static final long serialVersionUID = 438513006322441185L;
 

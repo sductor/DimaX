@@ -202,7 +202,7 @@ public class Message extends AbstractMessage implements Serializable {
 	 */
 	@Override
 	public void setSender(final dima.basicagentcomponents.AgentIdentifier newSender) {
-//		assert this.sender==null || this.sender.equals(newSender);
+		//		assert this.sender==null || this.sender.equals(newSender);
 		this.sender = newSender;
 	}
 	/**
@@ -227,7 +227,7 @@ public class Message extends AbstractMessage implements Serializable {
 	@Override
 	public Message clone(){
 		return this;
-//		throw new RuntimeException("clone must be implemented");
+		//		throw new RuntimeException("clone must be implemented");
 		//		Message m = new Message((String) content, args);
 		//		m.type=new String(this.type);
 		//		m.sender=sender.clone();

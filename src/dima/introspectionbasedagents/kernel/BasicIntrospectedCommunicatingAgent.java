@@ -71,7 +71,7 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 		this.creation = horloge;
 	}
 
-	
+
 	//
 	// Proactivity
 	//
@@ -80,15 +80,15 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	@Override
 	public final void proactivityInitialize() {
 		this.myShell =this.initiateMyShell();
-		assert myShell!=null;
+		assert this.myShell!=null;
 		this.myShell.proactivityInitialize(this.creation);
-//		Thread.yield();
+		//		Thread.yield();
 	}
 
 	@Override
 	public final void preActivity() {
 		this.myShell.preActivity(this.creation);
-//		Thread.yield();
+		//		Thread.yield();
 	}
 
 	@Override
@@ -99,20 +99,20 @@ public class BasicIntrospectedCommunicatingAgent extends BasicCommunicatingAgent
 	@Override
 	public final void postActivity(){
 		this.myShell.postActivity(this.creation);
-//		Thread.yield();
+		//		Thread.yield();
 	}
 
 	@Override
 	public  void tryToResumeActivity() {
 		this.myShell.resumeActivity(this.creation);
-//		Thread.yield();
+		//		Thread.yield();
 	}
 
 	@Override
 	public final  void proactivityTerminate() {
 		this.myShell.proactivityTerminate(this.creation);
 		this.myShell=null;
-//		Thread.yield();
+		//		Thread.yield();
 	}
 
 	//

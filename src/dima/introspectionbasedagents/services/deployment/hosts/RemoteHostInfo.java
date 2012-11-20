@@ -2,7 +2,6 @@ package dima.introspectionbasedagents.services.deployment.hosts;
 
 import org.jdom.Element;
 
-import dima.introspectionbasedagents.services.communicating.remoteexecution.SSHExecutor;
 import dima.introspectionbasedagents.services.communicating.remoteexecution.SSHInfo;
 import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 
@@ -27,7 +26,7 @@ public class RemoteHostInfo extends SSHInfo {
 	//
 
 	public void setAdress(final Element host){
-		url = host.getAttributeValue("ip");
+		this.url = host.getAttributeValue("ip");
 		this.port= new Integer(host.getAttributeValue("port"));
 	}
 

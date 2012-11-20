@@ -3,7 +3,6 @@ package dima.introspectionbasedagents.services.darxkernel;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 
-
 import darx.DarxTask;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.IdentifiedComponentInterface;

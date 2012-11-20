@@ -9,7 +9,6 @@ import choco.kernel.model.variables.integer.IntegerVariable;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.BasicAgentModule;
-import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
@@ -63,8 +62,8 @@ PersonalState extends AgentState> extends BasicAgentModule<CompetentComponent> i
 	public Collection<Contract> getBestLocalSolution(){
 		this.s.resetSearchStrategy();
 		this.s.setObjective(this.s.getVar(this.socialWelfareValue));
-		Boolean feasible = this.s.maximize(true);
-		Collection<Contract> result = new ArrayList<Contract>(); 
+		final Boolean feasible = this.s.maximize(true);
+		Collection<Contract> result = new ArrayList<Contract>();
 		if (feasible!=null && feasible){
 			result = this.generateSolution();
 		}
@@ -84,21 +83,21 @@ PersonalState extends AgentState> extends BasicAgentModule<CompetentComponent> i
 	 */
 	@Override
 	public boolean hasNext() {
-		if (this.hasNext==null){//initialisation			
+		if (this.hasNext==null){//initialisation
 			this.hasNext=this.s.solve();
-//			assert Assert.Imply(s.isFeasible()==null,hasNext==null):hasNext+" "+s.isFeasible();
-//			assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
+			//			assert Assert.Imply(s.isFeasible()==null,hasNext==null):hasNext+" "+s.isFeasible();
+			//			assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
 			if (this.hasNext==null) {
 				this.hasNext=false;
 			}
-//			assert Assert.Imply(s.isFeasible()==null,hasNext==false):hasNext+" "+s.isFeasible();
-//			assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
+			//			assert Assert.Imply(s.isFeasible()==null,hasNext==false):hasNext+" "+s.isFeasible();
+			//			assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
 		}
 
-//		assert this.hasNext!=null;
-//		assert s!=null;
-//		assert Assert.Imply(s.isFeasible()!=null,hasNext==s.isFeasible()):hasNext+" "+s.isFeasible();
-//		assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
+		//		assert this.hasNext!=null;
+		//		assert s!=null;
+		//		assert Assert.Imply(s.isFeasible()!=null,hasNext==s.isFeasible()):hasNext+" "+s.isFeasible();
+		//		assert Assert.Imply(hasNext,s.isFeasible()!=null):hasNext+" "+s.isFeasible();
 		return this.hasNext;
 	}
 
@@ -107,21 +106,21 @@ PersonalState extends AgentState> extends BasicAgentModule<CompetentComponent> i
 	 */
 	@Override
 	public Collection<Contract> getNextLocalSolution(){
-		assert Assert.Imply(s.isFeasible()!=null,hasNext==s.isFeasible()):hasNext+" "+s.isFeasible();
+		assert Assert.Imply(this.s.isFeasible()!=null,this.hasNext==this.s.isFeasible()):this.hasNext+" "+this.s.isFeasible();
 		if (!this.hasNext){
 			throw new NoSuchElementException();
-		} else if (hasNext==null){
-			hasNext();
-			return getNextLocalSolution();
+		} else if (this.hasNext==null){
+			this.hasNext();
+			return this.getNextLocalSolution();
 		} else {
-			assert hasNext:hasNext;
-			final Collection<Contract> result = this.generateSolution();
-			assert s!=null;
-			this.hasNext = this.s.nextSolution();
-			if (this.hasNext==null) {
-				this.hasNext=false;
-			}
-			return result;
+			assert this.hasNext:this.hasNext;
+		final Collection<Contract> result = this.generateSolution();
+		assert this.s!=null;
+		this.hasNext = this.s.nextSolution();
+		if (this.hasNext==null) {
+			this.hasNext=false;
+		}
+		return result;
 		}
 	}
 
@@ -146,7 +145,7 @@ PersonalState extends AgentState> extends BasicAgentModule<CompetentComponent> i
 		}
 		return results;
 	}
-	
+
 }
 
 

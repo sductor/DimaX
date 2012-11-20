@@ -10,16 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.jdom.JDOMException;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.basicinterfaces.ProactiveComponentInterface;
 import dima.introspectionbasedagents.annotations.MessageHandler;
-//import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
-import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.deployment.DimaXDeploymentScript;
@@ -442,7 +439,7 @@ public class APIAgent extends BasicCompetentAgent {
 					ag.start(m);
 				} else {
 					ag.start(m);
-//	TODO				this.getMyAgent().sendMessage(ag.getIdentifier(), m);
+					//	TODO				this.getMyAgent().sendMessage(ag.getIdentifier(), m);
 				}
 				//						getMyAgent().logMonologue("Start order sended to "+ag.getIdentifier(),LogService.onBoth);//_logKeyForAPIManagement);
 			}

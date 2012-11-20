@@ -3,7 +3,6 @@ package frameworks.negotiation.protocoles.collaborative;
 import java.util.Collection;
 
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import frameworks.negotiation.contracts.AbstractActionSpecif;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.rationality.AgentState;
@@ -51,11 +50,12 @@ extends AbstractCommunicationProtocol<State,Contract>{
 	}
 
 	@Override
-	protected boolean ImAllowedToNegotiate(ContractTrunk<Contract> contracts) {
-		if (ImDecider)
+	protected boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
+		if (this.ImDecider) {
 			return true;
-		else
+		} else {
 			return  contracts.getAllInitiatorContracts().isEmpty();
+		}
 	}
 }
 

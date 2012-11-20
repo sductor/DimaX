@@ -2,9 +2,7 @@ package frameworks.negotiation.protocoles.status;
 
 import java.util.Collection;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import frameworks.negotiation.contracts.AbstractContractTransition;
 import frameworks.negotiation.protocoles.status.StatusObservationCompetence.AgentStateStatus;
@@ -62,16 +60,17 @@ implements RationalCore<StatusAgent<PersonalState,Contract>,PersonalState,Contra
 	//
 
 
-//
-//	@Override
-//	public void setActive(boolean active) {
-//		this.referenceCore.setActive(active);
-//	}
+	//
+	//	@Override
+	//	public void setActive(boolean active) {
+	//		this.referenceCore.setActive(active);
+	//	}
 
 
-	public void setMyAgent(StatusAgent<PersonalState,Contract> ag) {
+	@Override
+	public void setMyAgent(final StatusAgent<PersonalState,Contract> ag) {
 		super.setMyAgent(ag);
-		referenceCore.setMyAgent(ag);
+		this.referenceCore.setMyAgent(ag);
 	}
 
 	@Override
@@ -86,10 +85,10 @@ implements RationalCore<StatusAgent<PersonalState,Contract>,PersonalState,Contra
 	}
 
 
-//	@Override
-//	public void setActive(final boolean active) {
-//		this.referenceCore.setActive(active);
-//	}
+	//	@Override
+	//	public void setActive(final boolean active) {
+	//		this.referenceCore.setActive(active);
+	//	}
 
 
 	@Override

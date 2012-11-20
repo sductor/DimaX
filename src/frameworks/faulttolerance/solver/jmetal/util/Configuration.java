@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -29,9 +29,13 @@ import java.util.logging.Logger;
  */
 public class Configuration implements Serializable {
 
-  /** 
-   * Logger object 
-   */
-  public static Logger logger_ = Logger.getLogger("jMetal");
-    
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3374218604261605172L;
+	/**
+	 * Logger object
+	 */
+	public static Logger logger_ = Logger.getLogger("jMetal");
+
 } // Configuration

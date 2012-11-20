@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import frameworks.negotiation.rationality.AgentState;

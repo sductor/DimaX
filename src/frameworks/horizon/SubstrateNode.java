@@ -13,8 +13,8 @@ import frameworks.horizon.parameters.HorizonAllocableParameters;
 import frameworks.horizon.parameters.HorizonMeasurableParameters;
 import frameworks.negotiation.SimpleNegotiatingAgent;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
-import frameworks.negotiation.protocoles.InactiveProposerCore;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
+import frameworks.negotiation.protocoles.InactiveProposerCore;
 
 /**
  * A SubstrateNode is an agent representing a physical computer, able to
@@ -83,10 +83,10 @@ SimpleNegotiatingAgent<SubstrateNodeState, HorizonContract> {
 		super(
 				id,
 				new SubstrateNodeState(id, 0, nativeParameters,	energyConsumptionCoef),
-						myRationality,
-						selectionCore,
-						new InactiveProposerCore<HorizonSpecification, SubstrateNodeState, HorizonContract>(),
-						myInformation, protocol);
+				myRationality,
+				selectionCore,
+				new InactiveProposerCore<HorizonSpecification, SubstrateNodeState, HorizonContract>(),
+				myInformation, protocol);
 		this.nativeMachineParameters = nativeParameters.getMachineParameters();
 		this.myMeasureHandler = measureHandler;
 	}

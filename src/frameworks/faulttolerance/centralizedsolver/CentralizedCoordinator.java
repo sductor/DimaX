@@ -1,28 +1,22 @@
 package frameworks.faulttolerance.centralizedsolver;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-
-
-import frameworks.faulttolerance.Host;
-import frameworks.faulttolerance.negotiatingagent.HostCore;
-import frameworks.faulttolerance.negotiatingagent.HostState;
-import frameworks.faulttolerance.negotiatingagent.ReplicaState;
-import frameworks.faulttolerance.solver.jmetal.core.Solution;
-import frameworks.faulttolerance.solver.jmetal.core.SolutionSet;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.StepComposant;
-import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import frameworks.faulttolerance.solver.JMetalElitistES;
+import frameworks.faulttolerance.Host;
+import frameworks.faulttolerance.negotiatingagent.HostCore;
+import frameworks.faulttolerance.negotiatingagent.HostState;
+import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.solver.JMetalRessAllocProblem;
 import frameworks.faulttolerance.solver.RessourceAllocationProblem;
+import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.core.SolutionSortedSet;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.InactiveCommunicationProtocole;
@@ -32,6 +26,10 @@ import frameworks.negotiation.selection.InactiveSelectionCore;
 
 public class CentralizedCoordinator extends Host {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7349678256844655400L;
 	final SolutionSortedSet parallelParents;
 	Solution currentSol;
 
@@ -42,81 +40,81 @@ public class CentralizedCoordinator extends Host {
 
 
 	public CentralizedCoordinator(
-			ResourceIdentifier id, HostState myState,
-			RessourceAllocationProblem<Solution> p) throws CompetenceException {
+			final ResourceIdentifier id, final HostState myState,
+			final RessourceAllocationProblem<Solution> p) throws CompetenceException {
 		super(
-				id, 
-				myState, 
+				id,
+				myState,
 				new HostCore(null, false, false),
 				new InactiveSelectionCore(),
 				new InactiveProposerCore(),
 				new SimpleObservationService(),
 				new InactiveCommunicationProtocole());
-		agents=new HashMap<AgentIdentifier, ReplicaState>();
-		hosts=new HashMap<ResourceIdentifier, HostState>();
-		for (ReplicaState s :p.rig.getAgentStates()){
-			agents.put(s.getMyAgentIdentifier(), s);
+		this.agents=new HashMap<AgentIdentifier, ReplicaState>();
+		this.hosts=new HashMap<ResourceIdentifier, HostState>();
+		for (final ReplicaState s :p.rig.getAgentStates()){
+			this.agents.put(s.getMyAgentIdentifier(), s);
 		}
-		for (HostState s :p.rig.getHostsStates()){
-			hosts.put(s.getMyAgentIdentifier(), s);
+		for (final HostState s :p.rig.getHostsStates()){
+			this.hosts.put(s.getMyAgentIdentifier(), s);
 		}
 		this.p = p;
-		JMetalRessAllocProblem jp = new JMetalRessAllocProblem(p);
-		currentSol = jp.getUnallocatedSolution();
-		parallelParents = new SolutionSortedSet(jp.mu,jp.getComparator());
-		parallelParents.add(currentSol);
+		final JMetalRessAllocProblem jp = new JMetalRessAllocProblem(p);
+		this.currentSol = jp.getUnallocatedSolution();
+		this.parallelParents = new SolutionSortedSet(jp.mu,jp.getComparator());
+		this.parallelParents.add(this.currentSol);
 	}
 
-	public void register(CentralizedHost h){
-		h.solver.setParallelParents(parallelParents);
+	public void register(final CentralizedHost h){
+		h.solver.setParallelParents(this.parallelParents);
 	}
 
 	@StepComposant
 	public void updatesStates(){
-		if (!parallelParents.best().equals(currentSol)){
-			currentSol=parallelParents.best();
-			for (AgentIdentifier id : agents.keySet()){
-				ReplicaState oldS = agents.get(id);
-				ReplicaState newState = agents.get(id);
-				Collection<AgentIdentifier> newAlloc = p.getRessources(currentSol, id);
+		if (!this.parallelParents.best().equals(this.currentSol)){
+			this.currentSol=this.parallelParents.best();
+			for (final AgentIdentifier id : this.agents.keySet()){
+				final ReplicaState oldS = this.agents.get(id);
+				ReplicaState newState = this.agents.get(id);
+				final Collection<AgentIdentifier> newAlloc = this.p.getRessources(this.currentSol, id);
 
-				for (ResourceIdentifier h : oldS.getMyResourceIdentifiers()){
+				for (final ResourceIdentifier h : oldS.getMyResourceIdentifiers()){
 					if (!newAlloc.contains(h)){
-						newState=newState.allocate(p.rig.getHostState(h), false);
+						newState=newState.allocate(this.p.rig.getHostState(h), false);
 					}
-				}	
+				}
 
-				for (AgentIdentifier h : newAlloc){
+				for (final AgentIdentifier h : newAlloc){
 					if (!oldS.getMyResourceIdentifiers().contains(h)){
-						newState=newState.allocate(p.rig.getHostState((ResourceIdentifier)h), true);
+						newState=newState.allocate(this.p.rig.getHostState((ResourceIdentifier)h), true);
 					}
 				}
 
 				if (!newState.equals(oldS)){
-					sendMessage(id, new StateUpdate(newState));
-					agents.put(id, newState);
+					this.sendMessage(id, new StateUpdate(newState));
+					this.agents.put(id, newState);
 				}
 			}
-			for (ResourceIdentifier h : hosts.keySet()){
-				HostState oldS = hosts.get(h);
-				HostState newState = hosts.get(h);
-				Collection<AgentIdentifier> newAlloc = p.getRessources(currentSol, h);
+			for (final ResourceIdentifier h : this.hosts.keySet()){
+				final HostState oldS = this.hosts.get(h);
+				HostState newState = this.hosts.get(h);
+				final Collection<AgentIdentifier> newAlloc = this.p.getRessources(this.currentSol, h);
 
-				for (AgentIdentifier ag : oldS.getMyResourceIdentifiers()){
+				for (final AgentIdentifier ag : oldS.getMyResourceIdentifiers()){
 					if (!newAlloc.contains(ag)){
-						newState=newState.allocate(p.rig.getAgentState(ag), false);
+						newState=newState.allocate(this.p.rig.getAgentState(ag), false);
 					}
-				}	
+				}
 
-				for (AgentIdentifier ag : newAlloc){
+				for (final AgentIdentifier ag : newAlloc){
 					if (!oldS.getMyResourceIdentifiers().contains(ag)){
-						newState=newState.allocate(p.rig.getAgentState(ag), true);
+						newState=newState.allocate(this.p.rig.getAgentState(ag), true);
 					}
 				}
 
 				if (!newState.equals(oldS)){
-					sendMessage(h, new StateUpdate(newState));
-					hosts.put(h, newState);
+					this.sendMessage(h, new StateUpdate(newState));
+					this.hosts.put(h, newState);
 				}
 			}
 		}
@@ -128,20 +126,24 @@ public class CentralizedCoordinator extends Host {
 	//
 
 	public class StateUpdate extends Message{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2643834137531125907L;
 		private final AgentState newState;
 
-		public StateUpdate(AgentState newState) {
+		public StateUpdate(final AgentState newState) {
 			super();
 			this.newState = newState;
 		}
 
 		public AgentState getNewState() {
-			return newState;
+			return this.newState;
 		}
 	}
 	@MessageHandler
-	public void updateMyState(StateUpdate m){
-		logMonologue("state update",LogService.onBoth);
-		setNewState((HostState) m.getNewState());
+	public void updateMyState(final StateUpdate m){
+		this.logMonologue("state update",LogService.onBoth);
+		this.setNewState((HostState) m.getNewState());
 	}
 }

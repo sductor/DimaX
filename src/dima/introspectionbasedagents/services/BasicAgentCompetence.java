@@ -5,15 +5,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.kernel.NotReadyException;
-import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
-import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
-import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
-import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
@@ -60,7 +55,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 
 	@Override
 	public final boolean isActive() {
-		return getMyAgent().isActive() && this.active;
+		return this.getMyAgent().isActive() && this.active;
 	}
 
 	@Override
@@ -299,12 +294,14 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 		return this.myAgent.getObservers(notificationKey);
 	}
 
+	@Override
 	public Date getCreationTime() {
-		return myAgent.getCreationTime();
+		return this.myAgent.getCreationTime();
 	}
 
+	@Override
 	public long getUptime() {
-		return myAgent.getUptime();
+		return this.myAgent.getUptime();
 	}
 
 	@Override

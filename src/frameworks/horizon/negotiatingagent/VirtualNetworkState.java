@@ -1,7 +1,6 @@
 package frameworks.horizon.negotiatingagent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,15 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import jtp.util.UnexpectedException;
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.modules.mappedcollections.ElementsNotLinkedException;
 import dima.introspectionbasedagents.modules.mappedcollections.OrderedPair;
 import dima.introspectionbasedagents.modules.mappedcollections.SymmetricBinaryAdjacencyMap;
-import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.support.GimaObject;
 import frameworks.horizon.negotiatingagent.HorizonPreferenceFunction.Service;
 import frameworks.horizon.negotiatingagent.VirtualNetworkIdentifier.VirtualNodeIdentifier;
@@ -32,9 +28,8 @@ import frameworks.horizon.parameters.MachineMeasurableParameters;
 import frameworks.horizon.parameters.NetworkLinkParameters;
 import frameworks.horizon.parameters.NodeParameters;
 import frameworks.horizon.parameters.UnexistingLinkException;
-import frameworks.horizon.util.Interval;
 import frameworks.horizon.util.EmptyInterval.EmptyIntervalException;
-import frameworks.negotiation.contracts.ResourceIdentifier;
+import frameworks.horizon.util.Interval;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SimpleAgentState;
 
@@ -355,8 +350,8 @@ Comparable<VirtualNetworkState> {
 		return myResIds;
 	}
 	@Override
-	public boolean hasResource(AgentIdentifier id) {
-		return getMyResourceIdentifiers().contains(id);
+	public boolean hasResource(final AgentIdentifier id) {
+		return this.getMyResourceIdentifiers().contains(id);
 	}
 	/**
 	 * Resources of the VirtualNetwork are SubstrateNodes.

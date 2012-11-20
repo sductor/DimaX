@@ -5,20 +5,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
-import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.modules.aggregator.AbstractCompensativeAggregation;
 import dima.introspectionbasedagents.modules.aggregator.AbstractMinMaxAggregation;
 import dima.introspectionbasedagents.modules.aggregator.LightAverageDoubleAggregation;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import dima.introspectionbasedagents.services.observingagent.NotificationEnvelopeClass.NotificationEnvelope;
+import dima.introspectionbasedagents.services.observingagent.NotificationMessage;
 import frameworks.experimentation.ObservingSelfService.ActivityLog;
 
 public abstract class ObservingGlobalService<Agent extends Laborantin>
@@ -131,7 +128,7 @@ extends BasicCommunicatingCompetence<Agent>{
 			return false;
 		}
 	}
-	
+
 	protected abstract long timeBeforeForcingSimulationEnd();
 	protected abstract long timeBeforeKillingSimulation();
 
@@ -168,8 +165,8 @@ extends BasicCommunicatingCompetence<Agent>{
 			//			} else {
 			this.allAgent.add(id);
 			this.remainingAgent.add(id);
-			assert !remainingAgent.contains(getIdentifier());
-			remainingAgent.remove(getIdentifier());
+			assert !this.remainingAgent.contains(this.getIdentifier());
+			this.remainingAgent.remove(this.getIdentifier());
 			//			}
 		}
 	}

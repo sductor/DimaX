@@ -9,7 +9,7 @@ public class FaultStatusMessage extends Message {
 	private final ResourceIdentifier r;
 	private final boolean isFaultEvent;
 
-	public FaultStatusMessage(ResourceIdentifier r, boolean isFaultEvent) {
+	public FaultStatusMessage(final ResourceIdentifier r, final boolean isFaultEvent) {
 		super();
 		this.r = r;
 		this.isFaultEvent = isFaultEvent;
@@ -20,6 +20,6 @@ public class FaultStatusMessage extends Message {
 	}
 
 	public boolean isFaultEvent() {
-		return isFaultEvent;
+		return this.isFaultEvent;
 	}
 }

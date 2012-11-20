@@ -37,9 +37,9 @@ public class SimpleMailBox extends AbstractMailBox
 	 * SimpleMailBox .
 	 */
 	@Override
-	public  boolean hasMail(){ 
+	public  boolean hasMail(){
 		return !this.messageList.isEmpty();
-		}
+	}
 	/**
 	 * SimpleMailBox initialization.
 	 */
@@ -80,13 +80,13 @@ public class SimpleMailBox extends AbstractMailBox
 	public synchronized boolean writeMail(final AbstractMessageInterface m) {
 		this.messageList.addLast(m);
 		return true; }
-//
-//	/**
-//	 * Insert the method's description here.
-//	 * Creation date: (01/03/2000 23:19:52)
-//	 * @return java.lang.Object
-//	 */
-//	public AbstractMessage removeFirstMessage(){
-//		return (AbstractMessage)this.messageList.remove(0);
-//	}
+	//
+	//	/**
+	//	 * Insert the method's description here.
+	//	 * Creation date: (01/03/2000 23:19:52)
+	//	 * @return java.lang.Object
+	//	 */
+	//	public AbstractMessage removeFirstMessage(){
+	//		return (AbstractMessage)this.messageList.remove(0);
+	//	}
 }

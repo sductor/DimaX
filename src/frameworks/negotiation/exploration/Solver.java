@@ -1,7 +1,5 @@
 package frameworks.negotiation.exploration;
 
-import java.util.Collection;
-
 import frameworks.negotiation.NegotiationException;
 
 public interface Solver {
@@ -16,14 +14,28 @@ public interface Solver {
 
 	public class UnsatisfiableException extends NegotiationException{
 
-		public UnsatisfiableException(String string) {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1556722149681744457L;
+		public UnsatisfiableException(final String string) {
 			super(string);
 		}
 		public UnsatisfiableException() {
 		}
 	}
 
-	public class UnsolvedException extends NegotiationException{}
+	public class UnsolvedException extends NegotiationException{
 
-	public class ExceedLimitException extends NegotiationException{}
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 892999519405216489L;}
+
+	public class ExceedLimitException extends NegotiationException{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6677775370022039495L;}
 }

@@ -16,9 +16,7 @@ import frameworks.negotiation.protocoles.collaborative.ResourceInformedProposerC
 import frameworks.negotiation.protocoles.collaborative.ResourceInformedSelectionCore;
 import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
-import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 import frameworks.negotiation.selection.SelectionModule;
-import frameworks.negotiation.selection.SimpleSelectionCore;
 
 public class CollaborativeHost extends Host{
 	private static final long serialVersionUID = -8478683967125467116L;
@@ -55,15 +53,15 @@ public class CollaborativeHost extends Host{
 	}
 
 
-//	@Override
-//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
-//		return new ReplicationCandidature((ResourceIdentifier) getIdentifier(),id,false,false);
-//	}
-//
-//
-//	@Override
-//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
-//		assert false;
-//		return null;
-//	}
+	//	@Override
+	//	public ReplicationCandidature generateDestructionContract(AgentIdentifier id) {
+	//		return new ReplicationCandidature((ResourceIdentifier) getIdentifier(),id,false,false);
+	//	}
+	//
+	//
+	//	@Override
+	//	public ReplicationCandidature generateCreationContract(AgentIdentifier id) {
+	//		assert false;
+	//		return null;
+	//	}
 }

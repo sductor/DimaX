@@ -9,8 +9,8 @@ import java.util.Map;
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.support.GimaObject;
 import frameworks.negotiation.contracts.AbstractContractTransition;
-import frameworks.negotiation.contracts.ReallocationContract;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
+import frameworks.negotiation.contracts.ReallocationContract;
 
 
 public abstract class SocialChoiceFunction<Contract extends AbstractContractTransition> extends GimaObject{

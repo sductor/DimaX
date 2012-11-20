@@ -1,21 +1,22 @@
 package frameworks.negotiation.protocoles.dcopProtocol;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basiccommunicationcomponents.Message;
 
 public class DcopValueMessage<State> extends Message{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3506995441115202346L;
 	final State myState;
 	int remainingHops;
 
 	final AgentIdentifier variable;
 
 	public DcopValueMessage(
-			int remainingHops,
-			AgentIdentifier variable,
-			State myState) {
+			final int remainingHops,
+			final AgentIdentifier variable,
+			final State myState) {
 		super();
 		this.remainingHops = remainingHops;
 		this.variable = variable;
@@ -23,23 +24,24 @@ public class DcopValueMessage<State> extends Message{
 	}
 
 	public AgentIdentifier getVariable() {
-		return variable;
+		return this.variable;
 	}
 
 	public boolean mustBeForwarded() {
-		return remainingHops>=0;
+		return this.remainingHops>=0;
 	}
 
 	public void decreaseHops(){
-		remainingHops--;
+		this.remainingHops--;
 	}
-	
+
 	State getMyState(){
-		return myState;
-	}	
-	
+		return this.myState;
+	}
+
+	@Override
 	public DcopValueMessage<State> clone(){
-		DcopValueMessage<State> dcopValueMessage = new DcopValueMessage<State>(new Integer(remainingHops), variable, myState);
+		final DcopValueMessage<State> dcopValueMessage = new DcopValueMessage<State>(new Integer(this.remainingHops), this.variable, this.myState);
 		return dcopValueMessage;
 	}
-}	
+}

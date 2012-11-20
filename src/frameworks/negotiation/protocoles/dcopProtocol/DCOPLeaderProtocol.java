@@ -1,11 +1,9 @@
 package frameworks.negotiation.protocoles.dcopProtocol;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,16 +14,13 @@ import dima.introspectionbasedagents.annotations.ProactivityInitialisation;
 import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
-import dima.introspectionbasedagents.services.loggingactivity.LogException;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-import frameworks.experimentation.ExperimentationParameters;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.experimentation.SearchTimeNotif;
 import frameworks.negotiation.contracts.AbstractContractTransition.IncompleteContractException;
 import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
-import frameworks.negotiation.contracts.ValuedContract;
 import frameworks.negotiation.exploration.CombinaisonIterator;
 import frameworks.negotiation.exploration.ResourceAllocationSolver;
 import frameworks.negotiation.exploration.Solver.ExceedLimitException;
@@ -33,9 +28,14 @@ import frameworks.negotiation.exploration.Solver.UnsatisfiableException;
 import frameworks.negotiation.rationality.AgentState;
 
 public class DCOPLeaderProtocol<
-State extends AgentState, 
-Contract extends MatchingCandidature> 
+State extends AgentState,
+Contract extends MatchingCandidature>
 extends DcopAgentProtocol<State, Contract>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 856514418947631064L;
 
 	public static String dcopProtocol="key for dcop protocol log";
 
@@ -92,8 +92,8 @@ extends DcopAgentProtocol<State, Contract>{
 	// Constructor
 	//
 
-	public DCOPLeaderProtocol(int k, int t,
-			ResourceAllocationSolver<Contract, State> solver,
+	public DCOPLeaderProtocol(final int k, final int t,
+			final ResourceAllocationSolver<Contract, State> solver,
 			final long maxComputingTime)
 					throws UnrespectedCompetenceSyntaxException {
 		super(k);
@@ -104,7 +104,7 @@ extends DcopAgentProtocol<State, Contract>{
 	}
 
 	LocalViewInformationService<State, Contract> getMyInformation(){
-		return (LocalViewInformationService<State, Contract>) getMyAgent().getMyInformation();
+		return (LocalViewInformationService<State, Contract>) this.getMyAgent().getMyInformation();
 	}
 
 	//
@@ -114,53 +114,58 @@ extends DcopAgentProtocol<State, Contract>{
 	@ProactivityInitialisation
 	public void initView(){
 		//		logMonologue("init");
-		getMyInformation().setState(getMyAgent().getMyCurrentState());
-		for (AgentIdentifier id : getMyAgent().getKnownResources()){
-			getMyInformation().addAcquaintance(getIdentifier(), id);		
+		this.getMyInformation().setState(this.getMyAgent().getMyCurrentState());
+		for (final AgentIdentifier id : this.getMyAgent().getKnownResources()){
+			this.getMyInformation().addAcquaintance(this.getIdentifier(), id);
 		}
-		neighberhood.add(getIdentifier());
+		this.neighberhood.add(this.getIdentifier());
 	}
 
 	@Override
-	public void beInformed(DcopValueMessage<State> m){
+	public void beInformed(final DcopValueMessage<State> m){
 		//update
 		if (m instanceof DcopConstraintsMessage){
 			//			if (m.getVariable() instanceof ResourceIdentifier)logMonologue("receiving  constraint message of "+m.getVariable());
-			DcopConstraintsMessage<State> constraintM = (DcopConstraintsMessage<State> )m;
+			final DcopConstraintsMessage<State> constraintM = (DcopConstraintsMessage<State> )m;
 			assert constraintM.getMyState()!=null;
-			getMyInformation().setState(constraintM.getMyState());
+			this.getMyInformation().setState(constraintM.getMyState());
 			if (m.mustBeForwarded()){//It belongs to my k-distance neighberhood
-				if (neighberhood.add(constraintM.getVariable())){
-					if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("grapChanged",LogService.onFile);						
-					for (AgentIdentifier id : constraintM.getMyAcquaintances()){
-						getMyInformation().addAcquaintance(constraintM.getVariable(), id);
+				if (this.neighberhood.add(constraintM.getVariable())){
+					if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone)) {
+						this.logMonologue("grapChanged",LogService.onFile);
+					}
+					for (final AgentIdentifier id : constraintM.getMyAcquaintances()){
+						this.getMyInformation().addAcquaintance(constraintM.getVariable(), id);
 					}
 				}
 			}
-		} else if (m instanceof DcopValueMessage){ 
+		} else if (m instanceof DcopValueMessage){
 			//						logMonologue("receiving new value message of "+m.getVariable(),DCOPLeaderProtocol.dcopProtocol);
 			//trigger new computation for fringe variable
-			if (fringeNodes2ring.containsKey(m.getVariable()) && 
-					(getMyInformation().getAgentsIdentifier().contains(m.getVariable()) && !getMyInformation().getAgentState(m.getVariable()).equals(((DcopValueMessage<State>)m).getMyState()))
-					|| !getMyInformation().getAgentsIdentifier().contains(m.getVariable())){
-				changeFlag.addAll(fringeNodes2ring.get(m.getVariable()));
+			if (this.fringeNodes2ring.containsKey(m.getVariable()) &&
+					this.getMyInformation().getAgentsIdentifier().contains(m.getVariable()) && !this.getMyInformation().getAgentState(m.getVariable()).equals(m.getMyState())
+					|| !this.getMyInformation().getAgentsIdentifier().contains(m.getVariable())){
+				this.changeFlag.addAll(this.fringeNodes2ring.get(m.getVariable()));
 			}
-			getMyInformation().setState(((DcopValueMessage<State>)m).getMyState());
+			this.getMyInformation().setState(m.getMyState());
 		}
 		//forward
 		super.beInformed(m);
 	}
 
-	public boolean iveFullInfo(Collection<AgentIdentifier> group){
-		for (AgentIdentifier id : group){
-			if (getMyInformation().getState(id)==null)
+	public boolean iveFullInfo(final Collection<AgentIdentifier> group){
+		for (final AgentIdentifier id : group){
+			if (this.getMyInformation().getState(id)==null) {
 				return false;
+			}
 			//			logMonologue(group+"\n"+localView);
-			for (AgentIdentifier ac : getMyInformation().getAcquaintances(id)){
-				if (getMyInformation().getState(ac)==null)
+			for (final AgentIdentifier ac : this.getMyInformation().getAcquaintances(id)){
+				if (this.getMyInformation().getState(ac)==null) {
 					return false;
-				if  (getMyInformation().getState(ac).hasResource(id)!=getMyInformation().getState(id).hasResource(ac))
+				}
+				if  (this.getMyInformation().getState(ac).hasResource(id)!=this.getMyInformation().getState(id).hasResource(ac)) {
 					return false;
+				}
 			}
 		}
 		return true;
@@ -169,26 +174,30 @@ extends DcopAgentProtocol<State, Contract>{
 	@StepComposant
 	public void computeLeaderShip(){
 		//		logMonologue("computing leader ship"+localView.getHostsIdentifier());
-		if (getMyInformation().isCoherent()){
-			if ((graphChanged || (currentlyOptimizedRig.size()<numberOfSimulateonuslyOptimizedRig))){// && iveFullInfo()){
-				assert localViewCheck(); 
-				if (kSizeGroups==null || !kSizeGroups.hasNext())kSizeGroups=new CombinaisonIterator<AgentIdentifier>(new ArrayList(neighberhood), k);
-				while (kSizeGroups.hasNext()){
-					Collection<AgentIdentifier> group = kSizeGroups.next();
+		if (this.getMyInformation().isCoherent()){
+			if (this.graphChanged || this.currentlyOptimizedRig.size()<this.numberOfSimulateonuslyOptimizedRig){// && iveFullInfo()){
+				assert this.localViewCheck();
+				if (this.kSizeGroups==null || !this.kSizeGroups.hasNext()) {
+					this.kSizeGroups=new CombinaisonIterator<AgentIdentifier>(new ArrayList(this.neighberhood), this.k);
+				}
+				while (this.kSizeGroups.hasNext()){
+					final Collection<AgentIdentifier> group = this.kSizeGroups.next();
 					//				if ( iveFullInfo(group) ) logWarning("yeah!");
 					//				logMonologue("analysing "+group);
-					if ( iveFullInfo(group) && iMLeader(group)){
+					if ( this.iveFullInfo(group) && this.iMLeader(group)){
 						//					logWarning("double    yeeaaaaaaaaaa yeah!");
-						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone))logMonologue("i'm leader of "+group,LogService.onBoth);
+						if (!DCOPLeaderProtocol.dcopProtocol.equals(LogService.onNone)) {
+							this.logMonologue("i'm leader of "+group,LogService.onBoth);
+						}
 						//Initialisation du rig
 						//						assert getMyInformation().assertValidity();
-						ReplicationInstanceGraph neoRig = getRig(group);
-						//Calcul des fringe	
-						Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
+						final ReplicationInstanceGraph neoRig = this.getRig(group);
+						//Calcul des fringe
+						final Collection<AgentIdentifier> fringeNodes = new HashSet<AgentIdentifier>();
 						fringeNodes.addAll(neoRig.getAgentsIdentifier());
 						fringeNodes.addAll(neoRig.getHostsIdentifier());
 						fringeNodes.removeAll(group);
-						for (AgentIdentifier f : fringeNodes){
+						for (final AgentIdentifier f : fringeNodes){
 							this.fringeNodes2ring.add(f,group);
 							this.rig2fringeNodes.add(group,f);
 						}
@@ -205,11 +214,11 @@ extends DcopAgentProtocol<State, Contract>{
 						//						this.fringeNodes.add(f,neoRig);
 						//					}
 						//update
-						changeFlag.add(group);
-						currentlyOptimizedRig.add(group);
-						graphChanged=false;
+						this.changeFlag.add(group);
+						this.currentlyOptimizedRig.add(group);
+						this.graphChanged=false;
 						break;
-					} else {					
+					} else {
 						//					logMonologue("no ! leader is  ");
 					}
 				}
@@ -217,14 +226,14 @@ extends DcopAgentProtocol<State, Contract>{
 		}
 	}
 
-	private ReplicationInstanceGraph getRig(Collection<AgentIdentifier> group) {
-		ReplicationInstanceGraph neoRig = new ReplicationInstanceGraph(null);
-		for (AgentIdentifier id : group){
-			neoRig.setState(getMyInformation().getState(id));
-			for (AgentIdentifier r : getMyInformation().getAcquaintances(id)){
+	private ReplicationInstanceGraph getRig(final Collection<AgentIdentifier> group) {
+		final ReplicationInstanceGraph neoRig = new ReplicationInstanceGraph(null);
+		for (final AgentIdentifier id : group){
+			neoRig.setState(this.getMyInformation().getState(id));
+			for (final AgentIdentifier r : this.getMyInformation().getAcquaintances(id)){
 				neoRig.addAcquaintance(id, r);
-				neoRig.setState(getMyInformation().getState(r));
-				for (AgentIdentifier rp : getMyInformation().getAcquaintances(r)){
+				neoRig.setState(this.getMyInformation().getState(r));
+				for (final AgentIdentifier rp : this.getMyInformation().getAcquaintances(r)){
 					if (neoRig.getEveryIdentifier().contains(rp)){
 						//																	if (group.contains(rp)){
 						neoRig.addAcquaintance(r, rp);
@@ -234,31 +243,31 @@ extends DcopAgentProtocol<State, Contract>{
 		}
 		try {
 			//						assert neoRig.assertNeigborhoodValidity():group+"\n----------------------------------\n"+getMyInformation()+"\n----------------------------------\n"+neoRig;
-		} catch (AssertionError e){
-			logWarning("is not valid!!! :"+group+"\n"+getMyInformation()+"\n----------------------------------\n"+neoRig,e);
+		} catch (final AssertionError e){
+			this.logWarning("is not valid!!! :"+group+"\n"+this.getMyInformation()+"\n----------------------------------\n"+neoRig,e);
 		}
 		return neoRig;
 	}
 
 	public boolean localViewCheck(){
-		Collection<AgentIdentifier> allKnownStates = new ArrayList<AgentIdentifier>();
-		allKnownStates.addAll(getMyInformation().getAgentsIdentifier());
-		allKnownStates.addAll(getMyInformation().getHostsIdentifier());
-		assert allKnownStates.containsAll(neighberhood);
+		final Collection<AgentIdentifier> allKnownStates = new ArrayList<AgentIdentifier>();
+		allKnownStates.addAll(this.getMyInformation().getAgentsIdentifier());
+		allKnownStates.addAll(this.getMyInformation().getHostsIdentifier());
+		assert allKnownStates.containsAll(this.neighberhood);
 		return true;
 	}
 	//		@StepComposant(ticker=1000)
 	//		public void sayAlive2() {
 	//			logWarning("I'M STILL ALIVE",LogService.onScreen);
 	//		}
-	private boolean iMLeader(Collection<AgentIdentifier> group) {
-		assert getIdentifier()instanceof ResourceIdentifier;
+	private boolean iMLeader(final Collection<AgentIdentifier> group) {
+		assert this.getIdentifier()instanceof ResourceIdentifier;
 		int nbHost=0;
 		boolean hasAgent=false;
 		Integer max=Integer.MIN_VALUE;
-		Integer min=Integer.MAX_VALUE;		
+		Integer min=Integer.MAX_VALUE;
 
-		for (AgentIdentifier id : group){
+		for (final AgentIdentifier id : group){
 			if (id instanceof ResourceIdentifier){
 				max=Math.max(max, ReplicationInstanceGraph.identifierToInt(id));
 				min=Math.min(min, ReplicationInstanceGraph.identifierToInt(id));
@@ -269,15 +278,15 @@ extends DcopAgentProtocol<State, Contract>{
 		}
 		//		logMonologue("imLeader of "+group+"?\n"+" ---> nbHost="+nbHost+", min = "+min+", max="+max+", me="+ReplicationInstanceGraph.identifierToInt(getIdentifier()));
 		if (nbHost==0 || !hasAgent){
-			assert min==Integer.MAX_VALUE && max==Integer.MIN_VALUE;	
+			assert min==Integer.MAX_VALUE && max==Integer.MIN_VALUE;
 			//le groupe n'a pas d'hote ou d'agent : pas de réallocation possible
 			return false;
-		} else if (group.contains(getIdentifier())){
-			assert ReplicationInstanceGraph.identifierToInt(getIdentifier())<=max && ReplicationInstanceGraph.identifierToInt(getIdentifier())>=min;
+		} else if (group.contains(this.getIdentifier())){
+			assert ReplicationInstanceGraph.identifierToInt(this.getIdentifier())<=max && ReplicationInstanceGraph.identifierToInt(this.getIdentifier())>=min;
 			if (nbHost%2==0){
-				return ReplicationInstanceGraph.identifierToInt(getIdentifier()).equals(max);
+				return ReplicationInstanceGraph.identifierToInt(this.getIdentifier()).equals(max);
 			} else {
-				return ReplicationInstanceGraph.identifierToInt(getIdentifier()).equals(min);
+				return ReplicationInstanceGraph.identifierToInt(this.getIdentifier()).equals(min);
 			}
 		} else {
 			return false;
@@ -286,64 +295,64 @@ extends DcopAgentProtocol<State, Contract>{
 
 	@StepComposant
 	public void computeNewGain(){
-		if (!changeFlag.isEmpty() && getMyInformation().isCoherent()){
-			for (Collection<AgentIdentifier> group : changeFlag){
-				ReplicationInstanceGraph rig = getRig(group);
+		if (!this.changeFlag.isEmpty() && this.getMyInformation().isCoherent()){
+			for (final Collection<AgentIdentifier> group : this.changeFlag){
+				final ReplicationInstanceGraph rig = this.getRig(group);
 				assert rig.assertNeigborhoodValidity():rig;
-				Date startingExploringTime=new Date();
-				solver.setProblem(rig, rig2fringeNodes.get(group));
-				solver.setTimeLimit((int) maxComputingTime);
+				final Date startingExploringTime=new Date();
+				this.solver.setProblem(rig, this.rig2fringeNodes.get(group));
+				this.solver.setTimeLimit((int) this.maxComputingTime);
 				try {
 					//					logMonologue("compution new allocation "+rig.getEveryIdentifier());// for "+rig+"\n fringe are "+rig2fringeNodes.get(rig));
-					Set<Contract> opt =  new HashSet(solver.getBestLocalSolution());
+					final Set<Contract> opt =  new HashSet(this.solver.getBestLocalSolution());
 					this.notify(new SearchTimeNotif(new Double(new Date().getTime() - startingExploringTime.getTime())));
-					assert solValidity(opt);
+					assert this.solValidity(opt);
 					//					logMonologue("new allo computed");// for "+rig+"\n fringe are "+rig2fringeNodes.get(rig));
-					Collection<Contract> fusedContract= gainContracts.getAllValues();
-					for (Contract c : fusedContract){
+					final Collection<Contract> fusedContract= this.gainContracts.getAllValues();
+					for (final Contract c : fusedContract){
 						try {
 							if (opt.contains(c)){
 								opt.remove(c);
 								opt.add(c);
 							}
-						} catch (AssertionError e){//l'assertion assurant qu'il n'y a pas deux contrat identique en circulation
+						} catch (final AssertionError e){//l'assertion assurant qu'il n'y a pas deux contrat identique en circulation
 							opt.remove(c);
 							opt.add(c);
 						}
 					}
-					Collection<Contract> courant = gainContracts.containsKey(group)?gainContracts.get(group):new ArrayList<Contract>();
+					final Collection<Contract> courant = this.gainContracts.containsKey(group)?this.gainContracts.get(group):new ArrayList<Contract>();
 					assert opt!=null;
 					assert courant!=null;
-					if (getMyAgent().getMyAllocationPreferenceComparator().compare(opt, courant)>0){
-						gainContracts.put(group,opt);
-						gainFlag.add(group);
-						logMonologue("new allocation  find!!!!!!!!!!!!!!! =D ",DCOPLeaderProtocol.dcopProtocol);
+					if (this.getMyAgent().getMyAllocationPreferenceComparator().compare(opt, courant)>0){
+						this.gainContracts.put(group,opt);
+						this.gainFlag.add(group);
+						this.logMonologue("new allocation  find!!!!!!!!!!!!!!! =D ",DCOPLeaderProtocol.dcopProtocol);
 					}
-				} 
-				catch (UnsatisfiableException e) {/*do nothing*/
-					logMonologue("unsatisfiable >=[");} 
-				catch (ExceedLimitException e) {/*do nothing*/
-					logMonologue("time limits! >=[");}
+				}
+				catch (final UnsatisfiableException e) {/*do nothing*/
+					this.logMonologue("unsatisfiable >=[");}
+				catch (final ExceedLimitException e) {/*do nothing*/
+					this.logMonologue("time limits! >=[");}
 
 				//								logMonologue("no allocation  find!!!!!!!!!!!!!!! =(");
 			}
 		}
-		changeFlag.clear();
+		this.changeFlag.clear();
 	}
 
-	private boolean solValidity(Set<Contract> opt){
-		ReplicationInstanceGraph rig = new ReplicationInstanceGraph(null);
-		for (AgentState s : getMyInformation().getAgentStates()){
+	private boolean solValidity(final Set<Contract> opt){
+		final ReplicationInstanceGraph rig = new ReplicationInstanceGraph(null);
+		for (final AgentState s : this.getMyInformation().getAgentStates()){
 			rig.setState(s);
 		}
-		for (AgentState s : getMyInformation().getHostsStates()){
+		for (final AgentState s : this.getMyInformation().getHostsStates()){
 			rig.setState(s);
 		}
-		for (Contract c : opt){
+		for (final Contract c : opt){
 			try {
 				rig.setState(c.computeResultingState(rig.getState(c.getAgent())));
 				rig.setState(c.computeResultingState(rig.getState(c.getResource())));
-			} catch (IncompleteContractException e) {
+			} catch (final IncompleteContractException e) {
 				throw new RuntimeException("impossible");
 			}
 		}
@@ -360,57 +369,59 @@ extends DcopAgentProtocol<State, Contract>{
 	 */
 
 	public HashedHashSet<AgentIdentifier, Contract> getWannaLockContract(){
-		return ((DcopLeaderProposerCore)getMyAgent().getMyProposerCore()).iWannaLock;
+		return ((DcopLeaderProposerCore)this.getMyAgent().getMyProposerCore()).iWannaLock;
 	}
 
-	public boolean iCanAcceptLock(Contract lockRequest){
-		if (!super.iCanAcceptLock(lockRequest))
+	@Override
+	public boolean iCanAcceptLock(final Contract lockRequest){
+		if (!super.iCanAcceptLock(lockRequest)) {
 			return false;
-		else if (getWannaLockContract().isEmpty())  {
+		} else if (this.getWannaLockContract().isEmpty())  {
 			return true;
 		} else {
-			List<Contract> myContracts = new ArrayList(getWannaLockContract().getAllValues());
-			Contract myBest = Collections.min(myContracts, getContractComparator());
-			assert myBest.getInitiator().equals(getIdentifier());
-			
-			return getContractComparator().compare(lockRequest,myBest)<=0;
+			final List<Contract> myContracts = new ArrayList(this.getWannaLockContract().getAllValues());
+			final Contract myBest = Collections.min(myContracts, this.getContractComparator());
+			assert myBest.getInitiator().equals(this.getIdentifier());
+
+			return this.getContractComparator().compare(lockRequest,myBest)<=0;
 		}
 	}
 
 	@Override
-	protected boolean ImAllowedToNegotiate(ContractTrunk<Contract> contracts) {
+	protected boolean ImAllowedToNegotiate(final ContractTrunk<Contract> contracts) {
 		return true;
 	}
-	
+
+	@Override
 	protected Receivers getProposalReceivers() {
 		return Receivers.NotInitiatingParticipant;
 	}
-	
+
 	@Override
-	protected void answerAccepted(Collection<Contract> toAccept) {
-		Collection<Contract> confirm = new ArrayList<Contract>();
-		Collection<Contract> acceptLock = new ArrayList<Contract>();
-		for (Contract c : toAccept){
-			if (c.getInitiator().equals(getMyAgent().getIdentifier())){
+	protected void answerAccepted(final Collection<Contract> toAccept) {
+		final Collection<Contract> confirm = new ArrayList<Contract>();
+		final Collection<Contract> acceptLock = new ArrayList<Contract>();
+		for (final Contract c : toAccept){
+			if (c.getInitiator().equals(this.getMyAgent().getIdentifier())){
 				confirm.add(c);
-				myLock.get(c.getInitiator()).remove(c.getContractIdentifier());
-				ArrayList<Contract> cs = new ArrayList<Contract>(getContracts().getAllContracts());
+				this.myLock.get(c.getInitiator()).remove(c.getContractIdentifier());
+				final ArrayList<Contract> cs = new ArrayList<Contract>(this.getContracts().getAllContracts());
 				try {
-					AgentState newRessState = c.computeResultingState(getMyInformation().getState(c.getResource()));
-					AgentState newAgState = c.computeResultingState(getMyInformation().getState(c.getAgent()));
-					if (!c.getResource().equals(getIdentifier())){
-						getMyInformation().setState(newRessState);
+					final AgentState newRessState = c.computeResultingState(this.getMyInformation().getState(c.getResource()));
+					final AgentState newAgState = c.computeResultingState(this.getMyInformation().getState(c.getAgent()));
+					if (!c.getResource().equals(this.getIdentifier())){
+						this.getMyInformation().setState(newRessState);
 					}
-					getMyInformation().setState(newAgState);
-//					for (ReplicationInstanceGraph rig : currentlyOptimizedRig){
-//						if (!c.getResource().equals(getIdentifier())){
-//							rig.setState(newRessState);
-//						}
-//						rig.setState(newAgState);						
-//					}
+					this.getMyInformation().setState(newAgState);
+					//					for (ReplicationInstanceGraph rig : currentlyOptimizedRig){
+					//						if (!c.getResource().equals(getIdentifier())){
+					//							rig.setState(newRessState);
+					//						}
+					//						rig.setState(newAgState);
+					//					}
 
 
-				} catch (IncompleteContractException e) {
+				} catch (final IncompleteContractException e) {
 					throw new RuntimeException("impossible");
 				}
 				//				for (Contract c2 : cs){
@@ -425,24 +436,24 @@ extends DcopAgentProtocol<State, Contract>{
 				//				myLock.add(c.getInitiator(),c);
 			}
 		}
-		confirmContract(confirm, Receivers.NotInitiatingParticipant);
-		acceptContract(acceptLock, Receivers.Initiator);
+		this.confirmContract(confirm, Receivers.NotInitiatingParticipant);
+		this.acceptContract(acceptLock, Receivers.Initiator);
 	}
 
 	@Override
-	protected void answerRejected(Collection<Contract> toReject) {
-		Collection<Contract> cancel = new ArrayList<Contract>();
-		Collection<Contract> refuseLock = new ArrayList<Contract>();
-		for (Contract c : toReject){
-			if (c.getInitiator().equals(getMyAgent().getIdentifier())){
+	protected void answerRejected(final Collection<Contract> toReject) {
+		final Collection<Contract> cancel = new ArrayList<Contract>();
+		final Collection<Contract> refuseLock = new ArrayList<Contract>();
+		for (final Contract c : toReject){
+			if (c.getInitiator().equals(this.getMyAgent().getIdentifier())){
 				cancel.add(c);
-				myLock.remove(c.getInitiator(),c);
-			}
-			else
+				this.myLock.remove(c.getInitiator(),c);
+			} else {
 				refuseLock.add(c);
+			}
 		}
-		cancelContract(cancel, Receivers.NotInitiatingParticipant);
-		rejectContract(refuseLock, Receivers.Initiator);
+		this.cancelContract(cancel, Receivers.NotInitiatingParticipant);
+		this.rejectContract(refuseLock, Receivers.Initiator);
 	}
 
 }

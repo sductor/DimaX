@@ -3,7 +3,7 @@
 //  Authors:
 //       Antonio J. Nebro <antonio@lcc.uma.es>
 //       Juan J. Durillo <durillo@lcc.uma.es>
-// 
+//
 //  Copyright (c) 2011 Antonio J. Nebro, Juan J. Durillo
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -24,42 +24,42 @@ package frameworks.faulttolerance.solver.jmetal.core;
 import java.util.Arrays;
 
 /**
- * Abstract class representing solution types, which define the types of the 
- * variables constituting a solution 
+ * Abstract class representing solution types, which define the types of the
+ * variables constituting a solution
  */
-public abstract class SolutionType {	
-	
+public abstract class SolutionType {
+
 	public Problem problem_ ; /** Problem to be solved */
-	
-  /**
-   * Constructor
-   * @param problem The problem to solve
-   */
-  public SolutionType(Problem problem) {
-  	problem_ = problem ;
-  } // Constructor
-    
-  /**
-   * Abstract method to create the variables of the solution
-   * @param decisionVariables
-   */
+
+	/**
+	 * Constructor
+	 * @param problem The problem to solve
+	 */
+	public SolutionType(final Problem problem) {
+		this.problem_ = problem ;
+	} // Constructor
+
+	/**
+	 * Abstract method to create the variables of the solution
+	 * @param decisionVariables
+	 */
 	public abstract Variable[] createVariables() throws ClassNotFoundException ;
-	
+
 	/**
 	 * Copies the decision variables
 	 * @param decisionVariables
 	 * @return An array of variables
 	 */
-	public Variable[] copyVariables(Variable[] vars) {
+	public Variable[] copyVariables(final Variable[] vars) {
 		Variable[] variables ;
-		
+
 		variables = new Variable[vars.length];
 		for (int var = 0; var < vars.length; var++) {
 			assert vars[var]!=null:Arrays.asList(vars);
 			variables[var] = vars[var].deepCopy();
 		} // for
-		
+
 		return variables ;
 	} // copyVariables
-	  
+
 } // SolutionType

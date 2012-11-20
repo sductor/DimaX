@@ -5,9 +5,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedList;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.kernel.BasicCompetentAgent;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.services.BasicAgentModule;
 import dima.introspectionbasedagents.services.CompetenceException;
@@ -15,7 +13,6 @@ import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
-import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 
 
 /**
@@ -48,23 +45,23 @@ extends BasicAgentModule<Agent> implements Comparable{
 	protected final File resultPath;
 	final File finalResultPath;
 
-//		public static final long _maxSimulationTime = 1000 * 10; //10 secondes
-//		public static final long _maxSimulationTime = 1000 * 30; //30 secondes
-//	public static final long _maxSimulationTime = 60000 * 1; //1 minute
-//		public static final long _maxSimulationTime = 60000 * 5;//5 minutes
-//		public static final long _maxSimulationTime = 60000 * 10;//10 minutes
-//		public static final long _maxSimulationTime = 60000 * 15;//15 minutes
-		public static final long _maxSimulationTime = 60000 * 20;//20 minutes
-//	public static final long _maxSimulationTime = 60000 * 30;//30 minutes
+	//		public static final long _maxSimulationTime = 1000 * 10; //10 secondes
+//			public static final long _maxSimulationTime = 1000 * 30; //30 secondes
+	//	public static final long _maxSimulationTime = 60000 * 1; //1 minute
+	//		public static final long _maxSimulationTime = 60000 * 5;//5 minutes
+			public static final long _maxSimulationTime = 60000 * 10;//10 minutes
+	//		public static final long _maxSimulationTime = 60000 * 15;//15 minutes
+//	public static final long _maxSimulationTime = 60000 * 20;//20 minutes
+	//	public static final long _maxSimulationTime = 60000 * 30;//30 minutes
 	//	public static final long _maxSimulationTime = 60000 * 45;//45 minutes
-//		public static final long _maxSimulationTime = 60000 * 60;//60 minutes
-	
+	//		public static final long _maxSimulationTime = 60000 * 60;//60 minutes
 
-//			public  long maxIndividualComputingTime = 60000;//1 min
+
+	//			public  long maxIndividualComputingTime = 60000;//1 min
 	//	public  long maxIndividualComputingTime = 120000;//2 min
 	//	public  long maxIndividualComputingTime = 3000;//30 sec
-	public  long maxIndividualComputingTime = _maxSimulationTime/5;
-	
+	public  long maxIndividualComputingTime = ExperimentationParameters._maxSimulationTime/5;
+
 	//
 	// Fields
 	//
@@ -93,7 +90,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 		return this.resultPath;
 	}
 
-	public void setSeed(Long seed) {
+	public void setSeed(final Long seed) {
 		this.randSeed = seed;
 	}
 	//

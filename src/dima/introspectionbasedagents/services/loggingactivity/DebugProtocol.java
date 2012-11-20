@@ -12,23 +12,28 @@ import dima.introspectionbasedagents.services.communicating.AbstractMessageInter
 
 public class DebugProtocol extends Protocol<BasicCompetentAgent> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8607152727363967066L;
+
 	@MessageHandler
 	@FipaACLEnvelope(performative = Performative.Failure, protocol = DebugProtocol.class)
-	public void receiveFailure(FipaACLMessage m){
-		AbstractMessageInterface ami = handleFailure(m);
-		propagateFailure(ami);
+	public void receiveFailure(final FipaACLMessage m){
+		final AbstractMessageInterface ami = this.handleFailure(m);
+		this.propagateFailure(ami);
 	}
 
-	public AbstractMessageInterface handleFailure(FipaACLMessage m) {
-		AbstractMessageInterface ami = m.getInreplyto();
-		signalException("RECEIVE FAILURE !!! send of message has raised exception : "+ami+"\n"+ami.getProtocolTrace(), ami.getLocalStackTrace());
+	public AbstractMessageInterface handleFailure(final FipaACLMessage m) {
+		final AbstractMessageInterface ami = m.getInreplyto();
+		this.signalException("RECEIVE FAILURE !!! send of message has raised exception : "+ami+"\n"+ami.getProtocolTrace(), ami.getLocalStackTrace());
 		return ami;
 	}
 
-	public void propagateFailure(AbstractMessageInterface ami) {
+	public void propagateFailure(final AbstractMessageInterface ami) {
 		if (ami.getDebugInReplyTo()!=null){
-			AbstractMessageInterface jeSuisTonPere = ami.getDebugInReplyTo();
-			answerFailure(getMyAgent(), jeSuisTonPere,ami.getLocalStackTrace());
+			final AbstractMessageInterface jeSuisTonPere = ami.getDebugInReplyTo();
+			DebugProtocol.answerFailure(this.getMyAgent(), jeSuisTonPere,ami.getLocalStackTrace());
 		}
 	}
 
@@ -38,63 +43,67 @@ public class DebugProtocol extends Protocol<BasicCompetentAgent> {
 
 	@MessageHandler
 	@FipaACLEnvelope(performative = Performative.NotUnderstood, protocol = DebugProtocol.class)
-	public void receiveNotUnderstood(FipaACLMessage m){
-		AbstractMessageInterface ami = m.getInreplyto();
-		signalException("send of message has raised exception : "+ami, ami.getLocalStackTrace());
+	public void receiveNotUnderstood(final FipaACLMessage m){
+		final AbstractMessageInterface ami = m.getInreplyto();
+		this.signalException("send of message has raised exception : "+ami, ami.getLocalStackTrace());
 	}
-	
+
 	/*
 	 * 
 	 */
 
 	public static void answerNotUnderstood(final CommunicatingCompetentComponent ccc, final AbstractMessageInterface ami, final String text) {
-		FipaACLMessage m =  new FipaACLMessage(Performative.NotUnderstood, DebugProtocol.class);
+		final FipaACLMessage m =  new FipaACLMessage(Performative.NotUnderstood, DebugProtocol.class);
 		m.setAdditionalInformation(text);
 		m.setInreplyto(ami);
 		AgentIdentifier repylTo;
-		if (ami instanceof FipaACLMessage)
+		if (ami instanceof FipaACLMessage) {
 			repylTo = ((FipaACLMessage)ami).getReplyTo();
-		else
+		} else {
 			repylTo= ami.getSender();
+		}
 		ccc.sendMessage(repylTo,m);
 	}
 
 	public static void  answerFailure(final CommunicatingCompetentComponent ccc, final AbstractMessageInterface ami, final String text) {
-		FipaACLMessage m =  new FipaACLMessage(Performative.Failure, DebugProtocol.class);
+		final FipaACLMessage m =  new FipaACLMessage(Performative.Failure, DebugProtocol.class);
 		m.setAdditionalInformation(text);
 		m.setInreplyto(ami);
 		AgentIdentifier repylTo;
-		if (ami instanceof FipaACLMessage)
+		if (ami instanceof FipaACLMessage) {
 			repylTo = ((FipaACLMessage)ami).getReplyTo();
-		else
+		} else {
 			repylTo= ami.getSender();
+		}
 		ccc.sendMessage(repylTo,m);
 	}
 
 	public static void answerFailure(final CommunicatingCompetentComponent ccc, final AbstractMessageInterface ami, final Throwable e) {
-		FipaACLMessage m =  new FipaACLMessage(Performative.Failure, DebugProtocol.class);
+		final FipaACLMessage m =  new FipaACLMessage(Performative.Failure, DebugProtocol.class);
 		m.setAttachedException(e);
 		m.setInreplyto(ami);
 		AgentIdentifier repylTo;
-		if (ami instanceof FipaACLMessage)
+		if (ami instanceof FipaACLMessage) {
 			repylTo = ((FipaACLMessage)ami).getReplyTo();
-		else
+		} else {
 			repylTo= ami.getSender();
+		}
 		ccc.sendMessage(repylTo,m);
 	}
 
 	public static void answerFailure(
-			final CommunicatingCompetentComponent ccc, final AbstractMessageInterface ami,  
+			final CommunicatingCompetentComponent ccc, final AbstractMessageInterface ami,
 			final String text,	final Throwable e) {
-		FipaACLMessage m =  new FipaACLMessage(Performative.Failure, DebugProtocol.class);
+		final FipaACLMessage m =  new FipaACLMessage(Performative.Failure, DebugProtocol.class);
 		m.setAdditionalInformation(text);
 		m.setAttachedException(e);
 		m.setInreplyto(ami);
 		AgentIdentifier repylTo;
-		if (ami instanceof FipaACLMessage)
+		if (ami instanceof FipaACLMessage) {
 			repylTo = ((FipaACLMessage)ami).getReplyTo();
-		else
+		} else {
 			repylTo= ami.getSender();
+		}
 		ccc.sendMessage(repylTo,m);
 	}
 }

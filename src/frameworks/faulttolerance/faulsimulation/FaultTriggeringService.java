@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import dima.basicagentcomponents.AgentIdentifier;
-import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.BasicAgentCompetence;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
@@ -40,7 +39,7 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 	int i = 0;
 
 
-//	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
+	//	@StepComposant(ticker=ReplicationExperimentationParameters._host_maxFaultfrequency)
 	public void toggleFault() {
 		int nbMax = this.p.getMaxSimultFailure().intValue();
 		if (nbMax>0){
@@ -50,14 +49,14 @@ public class FaultTriggeringService extends BasicAgentCompetence<ReplicationLabo
 			Collections.shuffle(hosts);
 			for (final ResourceIdentifier h : hosts) {
 				final FaultStatusMessage sentence =
-						HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h, currentlyFaultyHost.contains(h));
+						HostDisponibilityComputer.eventOccur(this.getMyAgent().myInformationService, h, this.currentlyFaultyHost.contains(h));
 
 				if (sentence != null) {
 					// Execution de la sentence!! muahaha!!!
-					boolean b = currentlyFaultyHost.add(h);
+					final boolean b = this.currentlyFaultyHost.add(h);
 					assert b;
-										this.logWarning("executing this sentence : " + sentence
-												+ " (" + this.i + ")",LogService.onBoth);
+					this.logWarning("executing this sentence : " + sentence
+							+ " (" + this.i + ")",LogService.onBoth);
 					// Déclaration public
 					for (final AgentIdentifier id : this.getMyAgent().myInformationService.getKnownAgents()) {
 						this.getMyAgent().sendMessage(id, sentence);

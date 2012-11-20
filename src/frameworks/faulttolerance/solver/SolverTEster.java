@@ -7,11 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
-
 import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
@@ -21,227 +19,247 @@ import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class SolverTEster {
 
-	public static void main(String[] args) throws Exception {
-		Random rand = new Random(65646);
+	public static void main(final String[] args) throws Exception {
+		final Random rand = new Random(65646);
 		PseudoRandom.seed=rand.nextDouble();
 
-		boolean knitro=false;
-		boolean metal=true; 
-		boolean bbTest=false;
-		boolean bestTest=false;
-		
+		final boolean knitro=false;
+		final boolean metal=true;
+		final boolean bbTest=false;
+		final boolean bestTest=false;
+
 
 		double knitroOp=0;
 		double knitorApprox=0.;
-		double knitorfaux=0 ; 
+		double knitorfaux=0 ;
 		double knitorEstimatedTime=0 ;
 
-		double metalOpt=0;   
-		double metalfaux=0 ;   
-		double metalApprox=0.; 
+		double metalOpt=0;
+		double metalfaux=0 ;
+		double metalApprox=0.;
 		double metalEstimatedTime=0 ;
 
-		double bbOpt=0;   
-		double bbfaux=0 ;   
-		double bbApprox=0.; 
-		double bbEstimatedTime=0 ;
+		final double bbOpt=0;
+		final double bbfaux=0 ;
+		final double bbApprox=0.;
+		final double bbEstimatedTime=0 ;
 
 
-		double initTime; 
-		double total=0; 
+		double initTime;
+		double total=0;
 		double metalBetterKnitro=0;
 		LogService.logOnFile(new File("yo"),"*************************",false,false);
-			
-		int nbAgent=500;
-		double hostCap=150;
-//		for (hostCap=5; hostCap<nbAgent; hostCap*=2)  {
-			
-//		for (int heuristic=1; heuristic<=2; heuristic++){
-//			System.out.println("yo");
-//			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+heuristic);
-//			try {
-				for (int i = 0; i < 10; i++){
-					total++;
-					ReplicationInstanceGraph rig = new ReplicationInstanceGraph(SocialChoiceType.Utility);
 
-					try {
-						rig.randomInitiaition(
-								"to", rand.nextInt(),
-								/*5+rand.nextInt(5)*/nbAgent, 1,//nbAgent,nbHost
-								0.5, DispersionSymbolicValue.Moyen, //criticity
-								1., DispersionSymbolicValue.Nul, //agent load
-								hostCap, DispersionSymbolicValue.Nul, //hostCap
-								0.5, DispersionSymbolicValue.Moyen, //hostDisp
-								100,100);
-					} catch (IfailedException e1) {
-//										e1.printStackTrace();
-					}
-//					rig = rig.getUnallocatedGraph();
-					//			System.out.println(rig);
-					//
-					// Opt
-					//
-					KnitroResourceAllocationSolver kas2 = null;
-					double[] bestPossible = null;
-					if (bestTest){
-					List<ReplicaState> best = new ArrayList<ReplicaState>();
-					kas2 = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
-					kas2.myState=rig.getHostsStates().iterator().next();
-					kas2.setProblem(rig, new ArrayList<AgentIdentifier>());
-					if(rig.getHostsIdentifier().size()==1)	kas2.initialSolution=kas2.getInitialAllocAsSolution(new double[kas2.getVariableNumber()]);
-					kas2.initiateSolver();
-					bestPossible = kas2.getBestTriviaSol(best,hostCap);
-					}
-					//
-					// Knitro
-					//
+		final int nbAgent=500;
+		final double hostCap=150;
+		//		for (hostCap=5; hostCap<nbAgent; hostCap*=2)  {
 
-					RessourceAllocationSimpleSolutionType kasbestSolution=null;
-					KnitroResourceAllocationSolver kas = null;
-					if (knitro){
-						System.out.println("knitro");
-						//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 5, false, 5);
-						initTime = System.currentTimeMillis();
-//						kas = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
-						kas = new KnitroAllocationLocalSolver(rig.getSocialWelfare(),  false, true, 2, false, -1);
-						kas.myState=rig.getHostsStates().iterator().next();
-						kas.setProblem(rig, new ArrayList<AgentIdentifier>());
-						if(rig.getHostsIdentifier().size()==1)	kas.initialSolution=kas.getInitialAllocAsSolution(new double[kas.getVariableNumber()]);
-						kas.initiateSolver();
-						System.out.println("solving");
-						kasbestSolution = kas.solveProb(true);
-						System.out.println("ok");
-						knitorEstimatedTime += System.currentTimeMillis() - initTime;
-					}
+		//		for (int heuristic=1; heuristic<=2; heuristic++){
+		//			System.out.println("yo");
+		//			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+heuristic);
+		//			try {
+		for (int i = 0; i < 10; i++){
+			total++;
+			final ReplicationInstanceGraph rig = new ReplicationInstanceGraph(SocialChoiceType.Utility);
 
-					//
-					// Metal
-					//
+			try {
+				rig.randomInitiaition(
+						"to", rand.nextInt(),
+						/*5+rand.nextInt(5)*/nbAgent, 1,//nbAgent,nbHost
+						0.5, DispersionSymbolicValue.Moyen, //criticity
+						1., DispersionSymbolicValue.Nul, //agent load
+						hostCap, DispersionSymbolicValue.Nul, //hostCap
+						0.5, DispersionSymbolicValue.Moyen, //hostDisp
+						100,100);
+			} catch (final IfailedException e1) {
+				//										e1.printStackTrace();
+			}
+			//					rig = rig.getUnallocatedGraph();
+			//			System.out.println(rig);
+			//
+			// Opt
+			//
+			KnitroResourceAllocationSolver kas2 = null;
+			double[] bestPossible = null;
+			if (bestTest){
+				final List<ReplicaState> best = new ArrayList<ReplicaState>();
+				kas2 = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
+				kas2.myState=rig.getHostsStates().iterator().next();
+				kas2.setProblem(rig, new ArrayList<AgentIdentifier>());
+				if(rig.getHostsIdentifier().size()==1) {
+					kas2.initialSolution=kas2.getInitialAllocAsSolution(new double[kas2.getVariableNumber()]);
+				}
+				kas2.initiateSolver();
+				bestPossible = kas2.getBestTriviaSol(best,hostCap);
+			}
+			//
+			// Knitro
+			//
 
-					Solution jmsbestSolution=null;
-					JMetalSolver jms=null;
-					if (metal){
-						initTime = System.currentTimeMillis();
-						jms = new JMetalSolver(rig.getSocialWelfare(), rig.getHostsIdentifier().size()>1, true);
-						jms.myState=rig.getHostsStates().iterator().next();
-						jms.setProblem(rig, new ArrayList<AgentIdentifier>());
-//						if(rig.getHostsIdentifier().size()==1)jms.initialSolution=jms.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
-//						jms.setTimeLimit(30000);	
-						System.out.println("solving "+new Date()+" "+jms.initialSolution);		
-						jmsbestSolution = jms.solveProb(true);
-						System.out.println("ok "+ new Date()+" "+jmsbestSolution);
-						metalEstimatedTime += System.currentTimeMillis() - initTime;
-					}
+			RessourceAllocationSimpleSolutionType kasbestSolution=null;
+			KnitroResourceAllocationSolver kas = null;
+			if (knitro){
+				System.out.println("knitro");
+				//		KnitroAllocationSolver kas = new KnitroAllocationSolver(rig.getSocialWelfare(), false, true, 5, false, 5);
+				initTime = System.currentTimeMillis();
+				//						kas = new KnitroAllocationGlobalSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true, 2, false, -1);
+				kas = new KnitroAllocationLocalSolver(rig.getSocialWelfare(),  false, true, 2, false, -1);
+				kas.myState=rig.getHostsStates().iterator().next();
+				kas.setProblem(rig, new ArrayList<AgentIdentifier>());
+				if(rig.getHostsIdentifier().size()==1) {
+					kas.initialSolution=kas.getInitialAllocAsSolution(new double[kas.getVariableNumber()]);
+				}
+				kas.initiateSolver();
+				System.out.println("solving");
+				kasbestSolution = kas.solveProb(true);
+				System.out.println("ok");
+				knitorEstimatedTime += System.currentTimeMillis() - initTime;
+			}
+
+			//
+			// Metal
+			//
+
+			Solution jmsbestSolution=null;
+			JMetalSolver jms=null;
+			if (metal){
+				initTime = System.currentTimeMillis();
+				jms = new JMetalSolver(rig.getSocialWelfare(), rig.getHostsIdentifier().size()>1, true);
+				jms.myState=rig.getHostsStates().iterator().next();
+				jms.setProblem(rig, new ArrayList<AgentIdentifier>());
+				//						if(rig.getHostsIdentifier().size()==1)jms.initialSolution=jms.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
+				//						jms.setTimeLimit(30000);
+				System.out.println("solving "+new Date()+" "+jms.initialSolution);
+				jmsbestSolution = jms.solveProb(true);
+				System.out.println("ok "+ new Date()+" "+jmsbestSolution);
+				metalEstimatedTime += System.currentTimeMillis() - initTime;
+			}
 
 
-					//
-					// BB
-					//
+			//
+			// BB
+			//
 
-					HashMap<Integer, Integer> bbbestSolution=null;
-//					DcopBranchAndBoundSolver bb=null;
-//					if (bbTest){
-//						initTime = System.currentTimeMillis();
-//						bb = new DcopBranchAndBoundSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true);
-//						bb.myState=rig.getHostsStates().iterator().next();
-//						bb.setProblem(rig);
-//						bb.initiateSolver();
-//						if(rig.getHostsIdentifier().size()==1)bb.initialSolution=bb.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
-//						bbbestSolution = bb.solveProb(true);
-//						bbEstimatedTime += System.currentTimeMillis() - initTime;
-//					}
-					//
-					// Result
-					// 
+			final HashMap<Integer, Integer> bbbestSolution=null;
+			//					DcopBranchAndBoundSolver bb=null;
+			//					if (bbTest){
+			//						initTime = System.currentTimeMillis();
+			//						bb = new DcopBranchAndBoundSolver(rig.getSocialWelfare(),  rig.getHostsIdentifier().size()>1, true);
+			//						bb.myState=rig.getHostsStates().iterator().next();
+			//						bb.setProblem(rig);
+			//						bb.initiateSolver();
+			//						if(rig.getHostsIdentifier().size()==1)bb.initialSolution=bb.getInitialAllocAsSolution(new double[jms.getVariableNumber()]);
+			//						bbbestSolution = bb.solveProb(true);
+			//						bbEstimatedTime += System.currentTimeMillis() - initTime;
+			//					}
+			//
+			// Result
+			//
 
-					if (knitro)System.out.println("kas best     !!!!!!!!!!!!!!!! "+kas.getSocWelfare(kasbestSolution)+"\t\t"+kas.isViable(kasbestSolution)+"\t"+kas.print(kasbestSolution));
-					if (metal)System.out.println("jms best      !!!!!!!!!!!!!!! "+jms.getSocWelfare(jmsbestSolution)+"\t\t"+jms.isViable(jmsbestSolution)+"\t"+jms.print(jmsbestSolution));
-//					if (bbTest)System.out.println("bb best     !!!!!!!!!!!!!!!! "+bb.getSocWelfare(bbbestSolution)+"\t\t"+bb.isViable(bbbestSolution)+"\t"+bb.print(bbbestSolution));
+			if (knitro) {
+				System.out.println("kas best     !!!!!!!!!!!!!!!! "+kas.getSocWelfare(kasbestSolution)+"\t\t"+kas.isViable(kasbestSolution)+"\t"+kas.print(kasbestSolution));
+			}
+			if (metal)
+			{
+				System.out.println("jms best      !!!!!!!!!!!!!!! "+jms.getSocWelfare(jmsbestSolution)+"\t\t"+jms.isViable(jmsbestSolution)+"\t"+jms.print(jmsbestSolution));
+				//					if (bbTest)System.out.println("bb best     !!!!!!!!!!!!!!!! "+bb.getSocWelfare(bbbestSolution)+"\t\t"+bb.isViable(bbbestSolution)+"\t"+bb.print(bbbestSolution));
+			}
 
-					if (bestTest)
-					System.out.println("best possible !!!!!!!!!!!!!!! "+" "+kas2.getSocWelfare(new RessourceAllocationSimpleSolutionType(bestPossible))
-							+"\t\t\t"+kas2.print(new RessourceAllocationSimpleSolutionType(bestPossible)));
+			if (bestTest) {
+				System.out.println("best possible !!!!!!!!!!!!!!! "+" "+kas2.getSocWelfare(new RessourceAllocationSimpleSolutionType(bestPossible))
+						+"\t\t\t"+kas2.print(new RessourceAllocationSimpleSolutionType(bestPossible)));
+			}
 
-					if (knitro && bestTest){
-						if (kas.getSocWelfare(kasbestSolution)==kas.getSocWelfare(kas.getInitialAllocAsSolution(bestPossible)))
-							knitroOp++;
-						if (!kas.isViable(kasbestSolution)){
-							knitorfaux++;
-						}
-
-						knitorApprox+=kas.getSocWelfare(kasbestSolution)/kas.getSocWelfare(kas.getInitialAllocAsSolution(bestPossible));
-					}
-					if (metal && bestTest){
-						if (jms.getSocWelfare(jmsbestSolution)==jms.getSocWelfare(jms.getInitialAllocAsSolution(bestPossible)))
-							metalOpt++;
-						if (!jms.isViable(jmsbestSolution))
-							metalfaux++;
-
-						metalApprox+=jms.getSocWelfare(jmsbestSolution)/jms.getSocWelfare(jms.getInitialAllocAsSolution(bestPossible));
-					}
-//					if (bbTest && bestTest){
-//						if (bb.getSocWelfare(bbbestSolution)==kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible)))
-//							bbOpt++;
-//						if (!bb.isViable(bbbestSolution)){
-//							bbfaux++;
-//						}
-//
-//						bbApprox+=bb.getSocWelfare(bbbestSolution)/kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible));
-//					}
-					if (knitro && metal){
-						if (jms.getSocWelfare(jmsbestSolution)>kas.getSocWelfare(kasbestSolution))
-							metalBetterKnitro++;
-					}
+			if (knitro && bestTest){
+				if (kas.getSocWelfare(kasbestSolution)==kas.getSocWelfare(kas.getInitialAllocAsSolution(bestPossible))) {
+					knitroOp++;
+				}
+				if (!kas.isViable(kasbestSolution)){
+					knitorfaux++;
 				}
 
-				if (knitro)	System.out.println("KNITRO  :  OPT = "+knitroOp/total+" FAUX ="+knitorfaux/total
-						+" APPROX = "+knitorApprox/total+" TIME "+knitorEstimatedTime/total);
-//				if (metal)LogService.logOnFile(new File("yo"), "NBAGENT "+nbAgent+" JMS     :  OPT = "+metalOpt/total+" FAUX ="+metalfaux/total
-//						+" APPROX = "+metalApprox/total+" TIME "+metalEstimatedTime/total+" HEURISTIC = "+heuristic,true,true);
-				if (metal)LogService.logOnFile(new File("yo"), "NBAGENT "+nbAgent+" HOSTCAP "+hostCap+" JMS     :  OPT = "+metalOpt/total+" FAUX ="+metalfaux/total
-				+" APPROX = "+metalApprox/total+" TIME "+metalEstimatedTime/total,true,true);
-				if (bbTest)System.out.println("JMS     :  OPT = "+bbOpt/total+" FAUX ="+bbfaux/total
-						+" APPROX = "+bbApprox/total+" TIME "+bbEstimatedTime/total);
+				knitorApprox+=kas.getSocWelfare(kasbestSolution)/kas.getSocWelfare(kas.getInitialAllocAsSolution(bestPossible));
+			}
+			if (metal && bestTest){
+				if (jms.getSocWelfare(jmsbestSolution)==jms.getSocWelfare(jms.getInitialAllocAsSolution(bestPossible))) {
+					metalOpt++;
+				}
+				if (!jms.isViable(jmsbestSolution)) {
+					metalfaux++;
+				}
+
+				metalApprox+=jms.getSocWelfare(jmsbestSolution)/jms.getSocWelfare(jms.getInitialAllocAsSolution(bestPossible));
+			}
+			//					if (bbTest && bestTest){
+			//						if (bb.getSocWelfare(bbbestSolution)==kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible)))
+			//							bbOpt++;
+			//						if (!bb.isViable(bbbestSolution)){
+			//							bbfaux++;
+			//						}
+			//
+			//						bbApprox+=bb.getSocWelfare(bbbestSolution)/kas2.getSocWelfare(kas2.getInitialAllocAsSolution(bestPossible));
+			//					}
+			if (knitro && metal){
+				if (jms.getSocWelfare(jmsbestSolution)>kas.getSocWelfare(kasbestSolution)) {
+					metalBetterKnitro++;
+				}
+			}
+		}
+
+		if (knitro) {
+			System.out.println("KNITRO  :  OPT = "+knitroOp/total+" FAUX ="+knitorfaux/total
+					+" APPROX = "+knitorApprox/total+" TIME "+knitorEstimatedTime/total);
+		}
+		//				if (metal)LogService.logOnFile(new File("yo"), "NBAGENT "+nbAgent+" JMS     :  OPT = "+metalOpt/total+" FAUX ="+metalfaux/total
+		//						+" APPROX = "+metalApprox/total+" TIME "+metalEstimatedTime/total+" HEURISTIC = "+heuristic,true,true);
+		if (metal) {
+			LogService.logOnFile(new File("yo"), "NBAGENT "+nbAgent+" HOSTCAP "+hostCap+" JMS     :  OPT = "+metalOpt/total+" FAUX ="+metalfaux/total
+					+" APPROX = "+metalApprox/total+" TIME "+metalEstimatedTime/total,true,true);
+		}
+		if (bbTest) {
+			System.out.println("JMS     :  OPT = "+bbOpt/total+" FAUX ="+bbfaux/total
+					+" APPROX = "+bbApprox/total+" TIME "+bbEstimatedTime/total);
+		}
 	}
-//			} catch (Exception e){
-//				System.out.println("heuristic number "+heuristic+" has raised "+e);
-//				e.printStackTrace();
-//			}
-//		}
-	}
+	//			} catch (Exception e){
+	//				System.out.println("heuristic number "+heuristic+" has raised "+e);
+	//				e.printStackTrace();
+	//			}
+	//		}
+}
 //}
 
 
 
 
 
-	//		System.out.println("charge "+kas.getMemCharge(bestSolution, 0)+"  max  "+kas.getMemCharge(new double[]{1.,1.,1.,1.}, 0));
-	//		System.out.println(print(kas.agents));
+//		System.out.println("charge "+kas.getMemCharge(bestSolution, 0)+"  max  "+kas.getMemCharge(new double[]{1.,1.,1.,1.}, 0));
+//		System.out.println(print(kas.agents));
 
 
 
 
 
-	//			
+//
 
-	//		System.out.println("1 1 1 0  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,1.,0.}));
-	//		System.out.println("0 1 1 1  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,1.,1.,1.}));
-	//		System.out.println("1 1 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,0.,0.}));
-	//		System.out.println("1 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,0.,0.,0.}));
-	//		System.out.println("0 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,0.,0.,0.}));
-	//		for (AgentState s : kas.getAllocation(bestSolution).values()){
-	//			if (s instanceof HostState)
-	//				System.out.println(s);
-	//		}
-	//		System.out.println(best);
-	//		for (int i = 1; i < 5; i++)
-	//		for (AgentState s : kas.getAllocation(kas.getBestSolution()).values()){
-	//			if (s instanceof HostState)
-	//				System.out.println(s);
-	//		}
-	//		System.out.println(kas.getSolution(kas.bestSolution));
-	//		}
-	//		System.out.println("alors???????"+knitroOp+" "+((double)metalOpt)/((double)total)+" "+metalBetterKnitro);
-	//	}
+//		System.out.println("1 1 1 0  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,1.,0.}));
+//		System.out.println("0 1 1 1  !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,1.,1.,1.}));
+//		System.out.println("1 1 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,1.,0.,0.}));
+//		System.out.println("1 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{1.,0.,0.,0.}));
+//		System.out.println("0 0 0 0 !!!!!!!!!!!!!!!! "+kas.getSocWelfare(new double[]{0.,0.,0.,0.}));
+//		for (AgentState s : kas.getAllocation(bestSolution).values()){
+//			if (s instanceof HostState)
+//				System.out.println(s);
+//		}
+//		System.out.println(best);
+//		for (int i = 1; i < 5; i++)
+//		for (AgentState s : kas.getAllocation(kas.getBestSolution()).values()){
+//			if (s instanceof HostState)
+//				System.out.println(s);
+//		}
+//		System.out.println(kas.getSolution(kas.bestSolution));
+//		}
+//		System.out.println("alors???????"+knitroOp+" "+((double)metalOpt)/((double)total)+" "+metalBetterKnitro);
+//	}
 
-	//}
+//}

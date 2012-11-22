@@ -28,7 +28,8 @@ public class CentralizedHost extends Host{
 	JMetalElitistES solver;
 
 	public CentralizedHost(
-			final ResourceIdentifier id, final HostState myState,final JMetalSolver p)
+			final ResourceIdentifier id, final HostState myState,final JMetalSolver p,
+			Double collectiveSeed)
 					throws CompetenceException {
 		super(
 				id,
@@ -37,7 +38,8 @@ public class CentralizedHost extends Host{
 				new InactiveSelectionCore(),
 				new InactiveProposerCore(),
 				new SimpleObservationService(),
-				new InactiveCommunicationProtocole());
+				new InactiveCommunicationProtocole(),
+				collectiveSeed);
 		this.solver = new JMetalElitistES(p.getProblem());
 		this.solver.getProblem().setMaxGeneration(1);
 		this.solver.getProblem().setStagnationCounter(Integer.MAX_VALUE);

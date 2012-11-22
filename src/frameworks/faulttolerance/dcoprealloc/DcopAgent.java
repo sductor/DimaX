@@ -22,13 +22,14 @@ public class DcopAgent extends Replica<ReplicationCandidature>  {
 			final AgentIdentifier id,
 			final ReplicaState myState,
 			final int k,
-			final boolean dynamicCriticity)
+			final boolean dynamicCriticity,
+			Double collectiveSeed)
 					throws CompetenceException {
 		super(id, myState,new ReplicaCore(false,false),
 				new DcopAgentSelectionCore(),
 				new InactiveProposerCore(),
 				new SimpleObservationService(),
 				new DcopAgentProtocol(k),
-				dynamicCriticity);
+				dynamicCriticity,collectiveSeed);
 	}
 }

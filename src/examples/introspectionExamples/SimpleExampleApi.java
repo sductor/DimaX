@@ -23,7 +23,7 @@ public class SimpleExampleApi extends APIAgent{
 
 	public SimpleExampleApi()
 			throws CompetenceException {
-		super("simple example agent launcher");
+		super("simple example agent launcher",0.);
 		for (int i = 0; i < this.nbAgent; i++) {
 			this.agents.add(new SimpleAgent(i, this.nbAgent, this.nbTour));
 		}

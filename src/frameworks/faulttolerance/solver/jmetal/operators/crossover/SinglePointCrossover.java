@@ -25,13 +25,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.IntSolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
-import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 
 /**
  * This class allows to apply a Single Point crossover operator using two parent
@@ -49,14 +50,16 @@ public class SinglePointCrossover extends Crossover {
 	private static List VALID_TYPES = Arrays.asList(BinarySolutionType.class,
 			IntSolutionType.class) ;
 
+	private final PseudoRandom seed;
 	private Double crossoverProbability_ = null;
 
 	/**
 	 * Constructor
 	 * Creates a new instance of the single point crossover operator
 	 */
-	public SinglePointCrossover(final HashMap<String, Object> parameters) {
+	public SinglePointCrossover(final HashMap<String, Object> parameters, PseudoRandom seed) {
 		super(parameters) ;
+		this.seed=seed;
 		if (parameters.get("probability") != null) {
 			this.crossoverProbability_ = (Double) parameters.get("probability") ;
 		}
@@ -86,7 +89,7 @@ public class SinglePointCrossover extends Crossover {
 		offSpring[0] = new Solution(parent1);
 		offSpring[1] = new Solution(parent2);
 		try {
-			if (PseudoRandom.randDouble() < probability) {
+			if (seed.randDouble() < probability) {
 				if (parent1.getType().getClass() == BinarySolutionType.class) {
 					//1. Compute the total number of bits
 					int totalNumberOfBits = 0;
@@ -96,7 +99,7 @@ public class SinglePointCrossover extends Crossover {
 					}
 
 					//2. Calcule the point to make the crossover
-					final int crossoverPoint = PseudoRandom.randInt(0, totalNumberOfBits - 1);
+					final int crossoverPoint = seed.randInt(0, totalNumberOfBits - 1);
 
 					//3. Compute the variable that containt the crossoverPoint bit
 					int variable = 0;
@@ -149,7 +152,7 @@ public class SinglePointCrossover extends Crossover {
 					}
 				} // Binary or BinaryReal
 				else { // Integer representation
-					final int crossoverPoint = PseudoRandom.randInt(0, parent1.numberOfVariables() - 1);
+					final int crossoverPoint = seed.randInt(0, parent1.numberOfVariables() - 1);
 					int valueX1;
 					int valueX2;
 					for (int i = crossoverPoint; i < parent1.numberOfVariables(); i++) {

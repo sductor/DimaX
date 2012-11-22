@@ -19,14 +19,14 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package frameworks.faulttolerance.solver.jmetal.util;
+package dima.introspectionbasedagents.kernel;
 
 /**
  * Class representing a pseudo-random number generator
  */
-public class PseudoRandom {
+public class PseudoRandom extends java.util.Random  {
 
-	public static double seed;
+	public Double seed=null;
 
 	/**
 	 * generator used to obtain the random values
@@ -36,17 +36,18 @@ public class PseudoRandom {
 	/**
 	 * other generator used to obtain the random values
 	 */
-	private static java.util.Random randomJava = null;
+//	private static java.util.Random randomJava = null;
 
 	/**
 	 * Constructor.
 	 * Creates a new instance of PseudoRandom.
 	 */
-	private PseudoRandom() {
+	public PseudoRandom(Double seed) {
+		super(seed.longValue());
 		if (PseudoRandom.random == null){
 			//this.random = new java.util.Random((long)seed);
-			PseudoRandom.random = new RandomGenerator(PseudoRandom.seed);
-			PseudoRandom.randomJava = new java.util.Random((long) PseudoRandom.seed);
+			PseudoRandom.random = new RandomGenerator(seed);
+//			PseudoRandom.randomJava = new java.util.Random((long) seed.doubleValue());
 		}
 	} // PseudoRandom
 
@@ -54,20 +55,20 @@ public class PseudoRandom {
 	 * Returns a random int value using the Java random generator.
 	 * @return A random int value.
 	 */
-	public static int randInt() {
+	public int randInt() {
 		if (PseudoRandom.random == null) {
-			new PseudoRandom();
+			new PseudoRandom(seed);
 		}
-		return PseudoRandom.randomJava.nextInt();
+		return nextInt();
 	} // randInt
 
 	/**
 	 * Returns a random double value using the PseudoRandom generator.
 	 * Returns A random double value.
 	 */
-	public static double randDouble() {
+	public double randDouble() {
 		if (PseudoRandom.random == null) {
-			new PseudoRandom();
+			new PseudoRandom(seed);
 		}
 		return PseudoRandom.random.rndreal(0.0,1.0);
 		//return randomJava.nextDouble();
@@ -80,9 +81,9 @@ public class PseudoRandom {
 	 * @param maxBound The maximum bound.
 	 * Return A pseudo random int value between minBound and maxBound.
 	 */
-	public static int randInt(final int minBound, final int maxBound) {
+	public int randInt(final int minBound, final int maxBound) {
 		if (PseudoRandom.random == null) {
-			new PseudoRandom();
+			new PseudoRandom(seed);
 		}
 		return PseudoRandom.random.rnd(minBound,maxBound);
 		//return minBound + randomJava.nextInt(maxBound-minBound+1);
@@ -94,9 +95,9 @@ public class PseudoRandom {
 	 * @param maxBound The maximum bound.
 	 * @return A pseudo random double value between minBound and maxBound
 	 */
-	public static double randDouble(final double minBound, final double maxBound) {
+	public double randDouble(final double minBound, final double maxBound) {
 		if (PseudoRandom.random == null) {
-			new PseudoRandom();
+			new PseudoRandom(seed);
 		}
 		return PseudoRandom.random.rndreal(minBound,maxBound);
 		//return minBound + (maxBound - minBound)*randomJava.nextDouble();

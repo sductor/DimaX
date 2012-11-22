@@ -37,10 +37,10 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	private final AbstractCommunicationProtocol<PersonalState,Contract> protocol;
 
 	@Competence()
-	private final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore;
+	private final SelectionCore<? extends SimpleNegotiatingAgent<PersonalState,Contract>, PersonalState, Contract> selectionCore;
 
 	@Competence()
-	private final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> myProposerCore;
+	private final ProposerCore<? extends SimpleNegotiatingAgent<PersonalState,Contract>, PersonalState, Contract> myProposerCore;
 
 	//
 	// Constructors
@@ -49,13 +49,14 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	public SimpleNegotiatingAgent(
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
-			final RationalCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> myRationality,
-			final SelectionCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> selectionCore,
-			final ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> proposerCore,
+			final RationalCore<? extends SimpleNegotiatingAgent<PersonalState,Contract>, PersonalState, Contract> myRationality,
+			final SelectionCore<? extends SimpleNegotiatingAgent<PersonalState,Contract>, PersonalState, Contract> selectionCore,
+			final ProposerCore<? extends SimpleNegotiatingAgent<PersonalState,Contract>, PersonalState, Contract> proposerCore,
 			final ObservationService myInformation,
-			final AbstractCommunicationProtocol<PersonalState,Contract> protocol)
+			final AbstractCommunicationProtocol<PersonalState,Contract> protocol,
+			Double collectiveSeed)
 					throws CompetenceException {
-		super(id, myInitialState, myRationality, myInformation);
+		super(id, myInitialState, myRationality, myInformation,collectiveSeed);
 
 		this.selectionCore = selectionCore;
 		((AgentCompetence<SimpleNegotiatingAgent<PersonalState, Contract>>)
@@ -88,12 +89,12 @@ implements NegotiatingAgent<PersonalState, Contract>{
 	}
 
 	@Override
-	public ProposerCore<? extends SimpleNegotiatingAgent, PersonalState, Contract> getMyProposerCore() {
+	public ProposerCore<? extends SimpleNegotiatingAgent<PersonalState,Contract>, PersonalState, Contract> getMyProposerCore() {
 		return this.myProposerCore;
 	}
 
 	@Override
-	public SelectionCore<? extends SimpleNegotiatingAgent,PersonalState, Contract> getMySelectionCore() {
+	public SelectionCore<? extends SimpleNegotiatingAgent<PersonalState,Contract>,PersonalState, Contract> getMySelectionCore() {
 		return this.selectionCore;
 	}
 

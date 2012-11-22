@@ -21,6 +21,7 @@
 
 package frameworks.faulttolerance.solver.jmetal.encodings.solutionType;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
 import frameworks.faulttolerance.solver.jmetal.core.Problem;
 import frameworks.faulttolerance.solver.jmetal.core.SolutionType;
 import frameworks.faulttolerance.solver.jmetal.core.Variable;
@@ -51,7 +52,7 @@ public class IntSolutionType extends SolutionType {
 
 		for (int var = 0; var < this.problem_.getNumberOfVariables(); var++) {
 			variables[var] = new Int((int)this.problem_.getLowerLimit(var),
-					(int)this.problem_.getUpperLimit(var));
+					(int)this.problem_.getUpperLimit(var),problem_.getRandom());
 		}
 
 		return variables ;

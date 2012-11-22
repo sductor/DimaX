@@ -38,6 +38,7 @@ public class JMetalRessAllocProblem extends Problem	{
 	private int stagnationCounter=2;
 
 	public JMetalRessAllocProblem(final RessourceAllocationProblem<Solution> p){
+		super(p.getMyAgent().getRandom());
 		try {
 			this.p=p;
 			this.numberOfVariables_   = p.getVariableNumber() ;
@@ -144,7 +145,7 @@ public class JMetalRessAllocProblem extends Problem	{
 					for (int i = 0; i < this.p.n; i++){
 						for (int j=0; j < this.p.m; j++){
 							if (this.p.getPos(i,j)!=-1){
-								vars[this.p.getPos(i,j)]= new Binary(1);
+								vars[this.p.getPos(i,j)]= new Binary(1,p.getMyAgent().getRandom());
 								vars[this.p.getPos(i,j)].setIth(0,false);
 							}
 						}
@@ -184,7 +185,7 @@ public class JMetalRessAllocProblem extends Problem	{
 					for (int i = 0; i < this.p.n; i++){
 						for (int j=0; j < this.p.m; j++){
 							if (this.p.getPos(i,j)!=-1){
-								vars[this.p.getPos(i,j)]= new Binary(1);
+								vars[this.p.getPos(i,j)]= new Binary(1,p.getMyAgent().getRandom());
 								vars[this.p.getPos(i,j)].setIth(0,true);
 							}
 						}
@@ -236,7 +237,7 @@ public class JMetalRessAllocProblem extends Problem	{
 		HashMap parameters;
 		parameters = new HashMap() ;
 		parameters.put("probability", 1.) ;
-		return new HUXCrossover(parameters);
+		return new HUXCrossover(parameters,p.getMyAgent().getRandom());
 	}
 
 	public static <T> boolean vectorVerif(final Solution y){

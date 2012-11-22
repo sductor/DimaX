@@ -23,6 +23,8 @@ package frameworks.faulttolerance.solver.jmetal.operators.crossover;
 
 import java.util.HashMap;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
 /**
@@ -35,23 +37,23 @@ public class CrossoverFactory {
 	 * @param name Name of the operator
 	 * @return The operator
 	 */
-	public static Crossover getCrossoverOperator(final String name, final HashMap parameters) throws JMException {
+	public static Crossover getCrossoverOperator(final String name, final HashMap parameters, PseudoRandom seed) throws JMException {
 		if (name.equalsIgnoreCase("SBXCrossover")){
 			System.out.println("wicked!");
-			return new SinglePointCrossover(parameters);
+			return new SinglePointCrossover(parameters,seed);
 		}else if (name.equalsIgnoreCase("SinglePointCrossover")){
-			return new SinglePointCrossover(parameters);
+			return new SinglePointCrossover(parameters,seed);
 		} else if (name.equalsIgnoreCase("PMXCrossover")){
 			System.out.println("wicked!");
-			return new SinglePointCrossover(parameters);
+			return new SinglePointCrossover(parameters,seed);
 		} else if (name.equalsIgnoreCase("TwoPointsCrossover")){
 			System.out.println("wicked!");
-			return new SinglePointCrossover(parameters);
+			return new SinglePointCrossover(parameters,seed);
 		} else if (name.equalsIgnoreCase("HUXCrossover")){
-			return new HUXCrossover(parameters);
+			return new HUXCrossover(parameters,seed);
 		} else if (name.equalsIgnoreCase("DifferentialEvolutionCrossover")){
 			System.out.println("wicked!");
-			return new SinglePointCrossover(parameters);
+			return new SinglePointCrossover(parameters,seed);
 		} else {
 			Configuration.logger_.severe("CrossoverFactory.getCrossoverOperator. " +
 					"Operator '" + name + "' not found ");

@@ -39,7 +39,7 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 
 	public static int nbCompetentAgent=0;
 	public DimaXTask<BasicCompetentAgent> darxEngine=null;
-	private Random r;
+	private PseudoRandom r;
 	boolean isActive=true;
 
 	@Competence
@@ -49,19 +49,27 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	// Constructor
 	//
 
-	public BasicCompetentAgent(final AgentIdentifier newId)  throws CompetenceException {
+	public BasicCompetentAgent(final AgentIdentifier newId, final Double collectiveSeed)  throws CompetenceException {
 		super(newId);
 		this.log= new LogService<BasicCompetentAgent>(this);
 		this.observer=	new PatternObserverWithHookservice(this);
 		this.apiService = new ApiLaunchService(this);
+		if (collectiveSeed!=null)
+			r = new PseudoRandom((collectiveSeed*newId.hashCode()));
+		else
+			r  = null;
 		BasicCompetentAgent.nbCompetentAgent++;
 	}
 
-	public BasicCompetentAgent(final String newId) throws CompetenceException {
+	public BasicCompetentAgent(final String newId, final Double collectiveSeed) throws CompetenceException {
 		super(newId);
 		this.log= new LogService<BasicCompetentAgent>(this);
 		this.observer=	new PatternObserverWithHookservice(this);
 		this.apiService = new ApiLaunchService(this);
+		if (collectiveSeed!=null)
+			r = new PseudoRandom((collectiveSeed*newId.hashCode()));
+		else
+			r  = null;
 		BasicCompetentAgent.nbCompetentAgent++;
 	}
 
@@ -141,20 +149,17 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 	}
 
 	@Override
-	public Random getRandom(){
-		if (this.r==null) {
-			this.r=new Random();
-		}
+	public PseudoRandom getRandom(){
 		return this.r;
 	}
 
-	public void setRandomSeed(final long seed){
-		if (this.r==null) {
-			this.r=new Random(seed);
-		} else {
-			this.r.setSeed(seed);
-		}
-	}
+	//	public void setRandomSeed(final long seed){
+	//		if (this.r==null) {
+	//			this.r=new PseudoRandom(seed);
+	//		} else {
+	//			this.r.setSeed(seed);
+	//		}
+	//	}
 	//
 	// Hook
 	//

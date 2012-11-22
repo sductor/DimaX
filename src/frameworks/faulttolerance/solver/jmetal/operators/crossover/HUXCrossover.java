@@ -25,12 +25,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
-import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 
 /**
  * This class allows to apply a HUX crossover operator using two parent
@@ -49,15 +50,15 @@ public class HUXCrossover extends Crossover{
 	 * Valid solution types to apply this operator
 	 */
 	private static List VALID_TYPES = Arrays.asList(BinarySolutionType.class) ;
-
+	private final PseudoRandom seed;
 	private Double probability_ = null ;
 	/**
 	 * Constructor
 	 * Create a new instance of the HUX crossover operator.
 	 */
-	public HUXCrossover(final HashMap<String, Object> parameters) {
+	public HUXCrossover(final HashMap<String, Object> parameters, PseudoRandom seed) {
 		super(parameters) ;
-
+		this.seed=seed;
 		if (parameters.get("probability") != null) {
 			this.probability_ = (Double) parameters.get("probability") ;
 		}
@@ -89,14 +90,14 @@ public class HUXCrossover extends Crossover{
 		offSpring[0] = new Solution(parent1);
 		offSpring[1] = new Solution(parent2);
 		try {
-			if (PseudoRandom.randDouble() < probability) {
+			if (seed.randDouble() < probability) {
 				for (int var = 0; var < parent1.getDecisionVariables().length; var++) {
 					final Binary p1 = (Binary)parent1.getDecisionVariables()[var];
 					final Binary p2 = (Binary)parent2.getDecisionVariables()[var];
 
 					for (int bit = 0; bit < p1.getNumberOfBits(); bit++) {
 						if (p1.bits_.get(bit) != p2.bits_.get(bit)) {
-							if (PseudoRandom.randDouble() < 0.5) {
+							if (seed.randDouble() < 0.5) {
 								((Binary)offSpring[0].getDecisionVariables()[var])
 								.bits_.set(bit,p2.bits_.get(bit));
 								((Binary)offSpring[1].getDecisionVariables()[var])

@@ -23,8 +23,9 @@ package frameworks.faulttolerance.solver.jmetal.encodings.variable;
 
 import java.util.BitSet;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.core.Variable;
-import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 
 
 /**
@@ -44,6 +45,7 @@ public class Binary extends Variable {
 	 * implemented using a BitSet object
 	 */
 	public BitSet bits_;
+	private final PseudoRandom seed;
 
 	/**
 	 * Store the length of the binary string
@@ -53,19 +55,21 @@ public class Binary extends Variable {
 	/**
 	 * Default constructor.
 	 */
-	public Binary() {
+	public Binary(PseudoRandom seed) {
+		this.seed=seed;
 	} //Binary
 
 	/**
 	 *  Constructor
 	 *  @param numberOfBits Length of the bit string
 	 */
-	public Binary(final int numberOfBits){
+	public Binary(final int numberOfBits,PseudoRandom seed){
 		this.numberOfBits_ = numberOfBits;
+		this.seed=seed;
 
 		this.bits_ = new BitSet(this.numberOfBits_);
 		for (int i = 0; i < this.numberOfBits_; i++){
-			if (PseudoRandom.randDouble() < 0.5) {
+			if (seed.randDouble() < 0.5) {
 				this.bits_.set(i,true);
 			} else {
 				this.bits_.set(i,false);
@@ -77,8 +81,9 @@ public class Binary extends Variable {
 	 * Copy constructor.
 	 * @param variable The Binary variable to copy.
 	 */
-	public Binary(final Binary variable){
+	public Binary(final Binary variable,PseudoRandom seed){
 		this.numberOfBits_ = variable.numberOfBits_;
+		this.seed=seed;
 
 		this.bits_ = new BitSet(this.numberOfBits_);
 		for (int i = 0; i < this.numberOfBits_; i++) {
@@ -103,7 +108,7 @@ public class Binary extends Variable {
 	 **/
 	@Override
 	public Variable deepCopy() {
-		return new Binary(this);
+		return new Binary(this,seed);
 	} //deepCopy
 
 	/**

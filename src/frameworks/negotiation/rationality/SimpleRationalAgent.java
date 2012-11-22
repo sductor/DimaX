@@ -50,9 +50,10 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 			final AgentIdentifier id,
 			final PersonalState myInitialState,
 			final RationalCore<? extends SimpleRationalAgent,PersonalState, Contract> myRationality,
-			final ObservationService myInformation)
+			final ObservationService myInformation,
+			Double collectiveSeed)
 					throws CompetenceException {
-		super(id);
+		super(id,collectiveSeed);
 		this.myCore = myRationality;
 		((RationalCore<SimpleRationalAgent<PersonalState, Contract>,PersonalState, Contract>)this.myCore).setMyAgent(this);
 		this.myInformation = myInformation;

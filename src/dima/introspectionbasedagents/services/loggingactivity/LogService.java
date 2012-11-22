@@ -24,6 +24,7 @@ import dima.introspectionbasedagents.kernel.CommunicatingCompetentComponent;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.kernel.MethodHandler;
 import dima.introspectionbasedagents.kernel.NotReadyException;
+import dima.introspectionbasedagents.kernel.PseudoRandom;
 import dima.introspectionbasedagents.kernel.SimpleAgentStatus;
 import dima.introspectionbasedagents.kernel.SimpleExceptionHandler;
 import dima.introspectionbasedagents.services.AgentCompetence;
@@ -872,7 +873,7 @@ implements AgentCompetence<Agent>, CompetentComponent{
 	}
 
 	@Override
-	public Random getRandom() {
+	public PseudoRandom getRandom() {
 		return this.myAgent.getRandom();
 	}
 

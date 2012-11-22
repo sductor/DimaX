@@ -69,7 +69,7 @@ public class Laborantin extends BasicCompetentAgent {
 
 	public Laborantin(final ExperimentationParameters p, final ObservingGlobalService observingService, final APILauncherModule api)
 			throws CompetenceException, IfailedException, NotEnoughMachinesException{
-		super("Laborantin_of_"+p.getSimulationName());
+		super("Laborantin_of_"+p.getSimulationName(),(double)p.randSeed);
 		this.p = p;
 		this.observingService=observingService;
 		this.api=api;

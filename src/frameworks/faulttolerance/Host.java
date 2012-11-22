@@ -12,14 +12,15 @@ import frameworks.faulttolerance.experimentation.SearchTimeNotif;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.negotiation.SimpleNegotiatingAgent;
+import frameworks.negotiation.contracts.MatchingCandidature;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.ProposerCore;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.rationality.RationalCore;
 
-public abstract class Host
-extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
+public abstract class Host<Contract extends MatchingCandidature>
+extends	SimpleNegotiatingAgent<HostState, Contract>
 {
 	private static final long serialVersionUID = -8478683967125467116L;
 
@@ -78,9 +79,10 @@ extends	SimpleNegotiatingAgent<HostState, ReplicationCandidature>
 			final SelectionCore participantCore,
 			final ProposerCore 	proposerCore,
 			final ObservationService myInformation,
-			final AbstractCommunicationProtocol protocol)
+			final AbstractCommunicationProtocol protocol,
+			Double collectiveSeed)
 					throws CompetenceException {
-		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
+		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol,collectiveSeed);
 	}
 
 

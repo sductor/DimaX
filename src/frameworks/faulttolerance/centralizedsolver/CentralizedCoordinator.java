@@ -41,7 +41,8 @@ public class CentralizedCoordinator extends Host {
 
 	public CentralizedCoordinator(
 			final ResourceIdentifier id, final HostState myState,
-			final RessourceAllocationProblem<Solution> p) throws CompetenceException {
+			final RessourceAllocationProblem<Solution> p,
+			Double collectiveSeed) throws CompetenceException {
 		super(
 				id,
 				myState,
@@ -49,7 +50,7 @@ public class CentralizedCoordinator extends Host {
 				new InactiveSelectionCore(),
 				new InactiveProposerCore(),
 				new SimpleObservationService(),
-				new InactiveCommunicationProtocole());
+				new InactiveCommunicationProtocole(),collectiveSeed);
 		this.agents=new HashMap<AgentIdentifier, ReplicaState>();
 		this.hosts=new HashMap<ResourceIdentifier, HostState>();
 		for (final ReplicaState s :p.rig.getAgentStates()){

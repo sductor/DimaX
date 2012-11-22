@@ -8,6 +8,7 @@ import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.faulttolerance.solver.SolverFactory;
+import frameworks.negotiation.SimpleNegotiatingAgent;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.collaborative.InformedCandidature;
 import frameworks.negotiation.protocoles.collaborative.InformedCandidatureRationality;
@@ -18,7 +19,7 @@ import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 import frameworks.negotiation.selection.SelectionModule;
 
-public class CollaborativeHost extends Host{
+public class CollaborativeHost extends Host<InformedCandidature<ReplicationCandidature>>{
 	private static final long serialVersionUID = -8478683967125467116L;
 
 
@@ -28,13 +29,14 @@ public class CollaborativeHost extends Host{
 			final SocialChoiceType socialWelfare,
 			final int maxCAccepts,
 			final SelectionModule initialSelectionType,
-			final long maxComputingTime)
+			final long maxComputingTime,
+			Double collectiveSeed)
 					throws CompetenceException {
 		super(
 				myId,
 				myState,
-				new InformedCandidatureRationality(new HostCore(socialWelfare,true,true),false),
-				new ResourceInformedSelectionCore(SolverFactory.getHostSolver(socialWelfare),maxCAccepts,initialSelectionType,maxComputingTime){
+				new InformedCandidatureRationality<HostState, ReplicationCandidature>(new HostCore(socialWelfare,true,true),false),
+				new ResourceInformedSelectionCore<CollaborativeHost,HostState, ReplicationCandidature>(SolverFactory.getHostSolver(socialWelfare),maxCAccepts,initialSelectionType,maxComputingTime){
 					private static final long serialVersionUID = -1578866978817500691L;
 					@Override
 					protected InformedCandidature generateDestructionContract(final AgentIdentifier id) {
@@ -48,8 +50,9 @@ public class CollaborativeHost extends Host{
 				},//new GreedyBasicSelectionCore(true, false),//
 				new ResourceInformedProposerCore(),
 				new SimpleObservationService(),
-				new OneDeciderCommunicationProtocol(true) );
+				new OneDeciderCommunicationProtocol(true),collectiveSeed );
 		this.getMyProtocol().getContracts().setMyAgent(this);
+		((ResourceInformedSelectionCore) this.getMySelectionCore()).setMyAgent(this);
 	}
 
 

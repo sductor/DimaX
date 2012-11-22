@@ -108,7 +108,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 				for (int i = 0; i < this.n; i++){
 					for (int j = 0; j < this.m; j++){
 						if (!this.isConstant(i,j)){
-							vars[this.getPos(i,j)]= new Binary(1);
+							vars[this.getPos(i,j)]= new Binary(1,getMyAgent().getRandom());
 							vars[this.getPos(i,j)].setIth(0,intialAlloc[this.getPos(i,j)]==1.);
 						}
 					}

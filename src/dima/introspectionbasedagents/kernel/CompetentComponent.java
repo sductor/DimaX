@@ -13,7 +13,7 @@ import dima.introspectionbasedagents.services.AgentCompetence;
 public interface CompetentComponent extends ActiveComponentInterface, IdentifiedComponentInterface{
 
 
-	public Random getRandom();
+	public PseudoRandom getRandom();
 	//
 	// Hook
 	//

@@ -23,6 +23,8 @@ package frameworks.faulttolerance.solver.jmetal.core;
 
 import java.io.Serializable;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
 
 /**
@@ -35,6 +37,7 @@ public abstract class Problem implements Serializable {
 	 */
 	private static final long serialVersionUID = -20731126095983496L;
 
+	private final PseudoRandom seed;
 	/**
 	 * Defines the default precision of binary-coded variables
 	 */
@@ -95,15 +98,17 @@ public abstract class Problem implements Serializable {
 	/**
 	 * Constructor.
 	 */
-	public Problem() {
+	public Problem(PseudoRandom seed) {
 		this.solutionType_ = null ;
+		this.seed=seed;
 	} // Problem
 
 	/**
 	 * Constructor.
 	 */
-	public Problem(final SolutionType solutionType) {
+	public Problem(final SolutionType solutionType,PseudoRandom seed) {
 		this.solutionType_ = solutionType ;
+		this.seed=seed;
 	} // Problem
 
 	/**
@@ -244,4 +249,8 @@ public abstract class Problem implements Serializable {
 		}
 		return result;
 	} // getNumberOfBits();
+
+	public PseudoRandom getRandom() {
+		return seed;
+	}
 } // Problem

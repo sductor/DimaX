@@ -23,6 +23,8 @@ package frameworks.faulttolerance.solver.jmetal.operators.mutation;
 
 import java.util.HashMap;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
 
@@ -37,16 +39,16 @@ public class MutationFactory {
 	 * @return the operator
 	 * @throws JMException
 	 */
-	public static Mutation getMutationOperator(final String name, final HashMap parameters) throws JMException{
+	public static Mutation getMutationOperator(final String name, final HashMap parameters, PseudoRandom seed) throws JMException{
 
 		if (name.equalsIgnoreCase("PolynomialMutation")){
 			System.out.println("wicked!");
-			return new BitFlipMutation(parameters);
+			return new BitFlipMutation(parameters,seed);
 		}  else if (name.equalsIgnoreCase("BitFlipMutation")){
-			return new BitFlipMutation(parameters);
+			return new BitFlipMutation(parameters,seed);
 		}  else if (name.equalsIgnoreCase("SwapMutation")){
 			System.out.println("wicked!");
-			return new BitFlipMutation(parameters);
+			return new BitFlipMutation(parameters,seed);
 		} else
 		{
 			Configuration.logger_.severe("Operator '" + name + "' not found ");

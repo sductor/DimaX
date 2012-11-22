@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.IntSolutionType;
@@ -34,7 +36,6 @@ import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
 import frameworks.faulttolerance.solver.jmetal.operators.mutation.Mutation;
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
-import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 
 /**
  * This class implements a bit flip mutation operator.
@@ -60,6 +61,7 @@ public class JMetalBitFlipMutation extends Mutation {
 	double[] addedCharge;
 	double[] addedRep;
 	int equityInd;
+	double seed;
 
 	/**
 	 * Constructor
@@ -119,7 +121,7 @@ public class JMetalBitFlipMutation extends Mutation {
 							agentSoftCrit,
 							alphaChargeJ,
 							numberOfAgent);
-					if (PseudoRandom.randDouble() < mutProb) {
+					if (p.getMyAgent().getRandom().randDouble() < mutProb) {
 						((Binary) solution.getDecisionVariables()[this.p.getPos(i, j)]).bits_.flip(0);
 						this.addedCharge[j]+=allocated?-optimistAgentcharge:+optimistAgentcharge;
 						this.addedRep[i]+=allocated?-1:+1;

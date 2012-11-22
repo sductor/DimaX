@@ -27,14 +27,15 @@ public class DcopHost extends Host {
 			final SocialChoiceType socialWelfare,
 			final int k,
 			final ResourceAllocationSolver solver,
-			final long maxComputingTime) throws CompetenceException {
+			final long maxComputingTime,
+			Double collectiveSeed) throws CompetenceException {
 		super(id, myState,
 				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),
 						new HostCore(socialWelfare,false,false)),
 						new DcopLeaderSelectionCore(),
 						new DcopLeaderProposerCore(),
 						new LocalViewInformationService(),
-						new DCOPLeaderProtocol(k,1,solver,maxComputingTime));
+						new DCOPLeaderProtocol(k,1,solver,maxComputingTime),collectiveSeed);
 	}
 	//	@StepComposant(ticker=1000)
 	//	public void sayAlive() {

@@ -8,20 +8,19 @@ import java.util.List;
 import java.util.Random;
 
 import dima.basicagentcomponents.AgentIdentifier;
+import dima.introspectionbasedagents.kernel.PseudoRandom;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.IfailedException;
 import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
-import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 
 public class SolverTEster {
 
 	public static void main(final String[] args) throws Exception {
 		final Random rand = new Random(65646);
-		PseudoRandom.seed=rand.nextDouble();
 
 		final boolean knitro=false;
 		final boolean metal=true;

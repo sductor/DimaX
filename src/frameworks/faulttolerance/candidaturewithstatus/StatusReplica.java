@@ -43,8 +43,9 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			final int simultaneousCandidature,
 			final boolean dynamicCriticity,
 			final AgentIdentifier myLaborantin,
-			final double alpha_low, final double alpha_high) throws CompetenceException{
-		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
+			final double alpha_low, final double alpha_high,
+			Double collectiveSeed) throws CompetenceException{
+		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity,collectiveSeed);
 		this.soc=new StatusObservationCompetence(myLaborantin,true, ReplicaState.class, alpha_low, alpha_high);
 	}
 	public StatusReplica(final AgentIdentifier id,
@@ -53,8 +54,9 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			final int simultaneousCandidature,
 			final boolean dynamicCriticity,
 			final int numberToContact,
-			final double alpha_low, final double alpha_high) throws CompetenceException{
-		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity);
+			final double alpha_low, final double alpha_high,
+			Double collectiveSeed) throws CompetenceException{
+		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity,collectiveSeed);
 		this.soc=new StatusObservationCompetence(numberToContact, true, ReplicaState.class, alpha_low, alpha_high);
 	}
 
@@ -62,7 +64,8 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			final ReplicaState myState,
 			final SelectionCore participantCore,
 			final int simultaneousCandidature,
-			final boolean dynamicCriticity)
+			final boolean dynamicCriticity,
+			Double collectiveSeed)
 					throws CompetenceException {
 		super(id,
 				myState,
@@ -89,7 +92,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 		},
 		new SimpleOpinionService(new ReplicaStateOpinionHandler(myState.getSocialWelfare(),id)),
 		new StatusProtocol(null),
-		dynamicCriticity);
+		dynamicCriticity,collectiveSeed);
 	}
 
 	//

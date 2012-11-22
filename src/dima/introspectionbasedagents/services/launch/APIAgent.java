@@ -44,12 +44,13 @@ public class APIAgent extends BasicCompetentAgent {
 	 *
 	 */
 
-	public APIAgent(final AgentIdentifier newId)
+	public APIAgent(final AgentIdentifier newId, Double coolectiveSeed)
 			throws CompetenceException {
-		super(newId);
+		super(newId,coolectiveSeed);
 	}
-	public APIAgent(final String newId) throws CompetenceException {
-		super(newId);
+	public APIAgent(final String newId, Double coolectiveSeed) throws CompetenceException {
+		super(newId,coolectiveSeed
+				);
 	}
 
 	/*

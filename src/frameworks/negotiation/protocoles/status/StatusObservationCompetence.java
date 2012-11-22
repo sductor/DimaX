@@ -46,7 +46,6 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 
 	//sinon
 	private final Integer numberTodiffuse;
-	private final Random rand;
 
 	private final boolean iDiffuseOriginalState;
 	private final Class<? extends AgentState> stateTypeToDiffuse;
@@ -66,7 +65,6 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			final Class<? extends AgentState> stateTypeToDiffuse,
 			final double alpha_low, final double alpha_high)
 					throws UnrespectedCompetenceSyntaxException {
-		this.rand = new Random();
 		this.centralised = false;
 		this.myLaborantin = null;
 		this.numberTodiffuse = numberTodiffuse;
@@ -83,7 +81,6 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			final Class<? extends AgentState> stateTypeToDiffuse,
 			final double alpha_low, final double alpha_high)
 					throws UnrespectedCompetenceSyntaxException {
-		this.rand = new Random();
 		this.centralised = true;
 		this.myLaborantin = myLaborantin;
 		this.numberTodiffuse = null;
@@ -161,7 +158,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			final ArrayList<AgentIdentifier> allAgents = new ArrayList<AgentIdentifier>(this.getMyAgent().getMyInformation().getKnownAgents());
 			allAgents.remove(this.getMyAgent().getIdentifier());
 			while (numberdiffused < this.numberTodiffuse && !allAgents.isEmpty()){
-				final AgentIdentifier id = allAgents.remove(this.rand.nextInt(allAgents.size()));
+				final AgentIdentifier id = allAgents.remove(getMyAgent().getRandom().nextInt(allAgents.size()));
 				assert Assert.Imply(!(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier),id instanceof ResourceIdentifier):id;
 				assert Assert.Imply(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier, id instanceof AgentIdentifier):id;
 				this.sendInfo(id);

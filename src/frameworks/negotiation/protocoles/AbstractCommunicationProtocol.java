@@ -509,7 +509,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 		}
 
 		assert !contract.hasReachedExpirationTime();
-		assert !(this.getMyAgent() instanceof Host)	|| !((Host) this.getMyAgent()).getMyCurrentState().isFaulty();
+		assert !(this.getMyAgent() instanceof Host)	|| !((Host<?>) this.getMyAgent()).getMyCurrentState().isFaulty();
 		assert this.contracts.getContractsAcceptedBy(this.getMyAgent().getIdentifier()).contains(contract);
 		assert this.alreadyExecuted.add(contract.getContractIdentifier());
 		assert delta.getMyInitialState()!=null;

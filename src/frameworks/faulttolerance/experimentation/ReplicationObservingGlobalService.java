@@ -474,7 +474,15 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 
 	public static String entete(){
-		return "protocol ; welfare ; nbagent ; k; alpha_low ; alpha_high ; opinion ; mean util ; mean min ; mean dispo ; nbModif ; lastTime ; nbMessage/ag ; nbMessage/h ; repId ; randomSeed";
+		return "protocol ; welfare ; " +
+				"nbagent ; k; " +
+				"alpha_low ; alpha_high ; opinion ; " +
+				"mean util ; min min ; mean dispo ; " +
+				"nbModif min ; nbModif mean ; nbModif max ; " +
+				"lastTime min ; lastTime mean ; lastTime max; " +
+				"nbMessage/ag min; nbMessage/ag mean; nbMessage/ag max; " +
+				"nbMessage/h min; nbMessage/h mean; nbMessage/h max; " +
+				"repId ; randomSeed";
 	}
 
 	public String getResult(){
@@ -495,12 +503,12 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						this.getMyAgent().getSimulationParameters().alpha_high +" ; "+
 						this.getMyAgent().getSimulationParameters().opinionDiffusionDegree/this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
 						this.agentsExpectedReliabilityEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
-						this.agentsMinReliabilityEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
+						this.agentsMinReliabilityEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getMinElement()+" ; "+
 						this.agentsDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
-						this.nbOfStateModif.getRepresentativeElement()+" ; "+
-						this.lastReplicationtime.getRepresentativeElement()+" ; "+
-						this.agMessageSEnded.getRepresentativeElement()+" ; "+
-						this.hostMessageSEnded.getRepresentativeElement()+" ; "+
+						this.nbOfStateModif.getMinElement()+" ; "+this.nbOfStateModif.getRepresentativeElement()+" ; "+this.nbOfStateModif.getMaxElement()+" ; "+
+						this.lastReplicationtime.getMinElement()+" ; "+this.lastReplicationtime.getRepresentativeElement()+" ; "+this.lastReplicationtime.getMaxElement()+" ; "+
+						this.agMessageSEnded.getMinElement()+" ; "+this.agMessageSEnded.getRepresentativeElement()+" ; "+this.agMessageSEnded.getMaxElement()+" ; "+
+						this.hostMessageSEnded.getMinElement()+" ; "+this.hostMessageSEnded.getRepresentativeElement()+" ; "+this.hostMessageSEnded.getMaxElement()+" ; "+
 						this.getMyAgent().getSimulationParameters().getSimulationName()+" ; "+
 						this.getMyAgent().getSimulationParameters().randSeed
 						;

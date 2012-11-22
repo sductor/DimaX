@@ -50,7 +50,7 @@ public class BinarySolutionType extends SolutionType {
 		final Variable[]  variables = new Variable[this.problem_.getNumberOfVariables()];
 
 		for (int var = 0; var < this.problem_.getNumberOfVariables(); var++) {
-			variables[var] = new Binary(this.problem_.getLength(var));
+			variables[var] = new Binary(this.problem_.getLength(var), problem_.getRandom());
 		}
 
 		return variables ;

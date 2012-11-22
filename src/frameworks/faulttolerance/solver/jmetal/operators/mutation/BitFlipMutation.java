@@ -25,13 +25,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
+
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.BinarySolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.solutionType.IntSolutionType;
 import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
-import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 
 /**
  * This class implements a bit flip mutation operator.
@@ -51,13 +52,15 @@ public class BitFlipMutation extends Mutation {
 			IntSolutionType.class) ;
 
 	private Double mutationProbability_ = null ;
+	private final PseudoRandom seed;
 
 	/**
 	 * Constructor
 	 * Creates a new instance of the Bit Flip mutation operator
 	 */
-	public BitFlipMutation(final HashMap<String, Object> parameters) {
+	public BitFlipMutation(final HashMap<String, Object> parameters, PseudoRandom seed) {
 		super(parameters) ;
+		this.seed=seed;
 		if (parameters.get("probability") != null) {
 			this.mutationProbability_ = (Double) parameters.get("probability") ;
 		}
@@ -74,7 +77,7 @@ public class BitFlipMutation extends Mutation {
 			if (solution.getType().getClass() == BinarySolutionType.class ) {
 				for (int i = 0; i < solution.getDecisionVariables().length; i++) {
 					for (int j = 0; j < ((Binary) solution.getDecisionVariables()[i]).getNumberOfBits(); j++) {
-						if (PseudoRandom.randDouble() < probability) {
+						if (seed.randDouble() < probability) {
 							((Binary) solution.getDecisionVariables()[i]).bits_.flip(j);
 						}
 					}
@@ -87,8 +90,8 @@ public class BitFlipMutation extends Mutation {
 			else { // Integer representation
 				for (int i = 0; i < solution.getDecisionVariables().length; i++)
 				{
-					if (PseudoRandom.randDouble() < probability) {
-						final int value = PseudoRandom.randInt(
+					if (seed.randDouble() < probability) {
+						final int value = seed.randInt(
 								(int)solution.getDecisionVariables()[i].getLowerBound(),
 								(int)solution.getDecisionVariables()[i].getUpperBound());
 						solution.getDecisionVariables()[i].setValue(value);

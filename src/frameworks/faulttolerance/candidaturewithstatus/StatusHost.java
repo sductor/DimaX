@@ -31,8 +31,9 @@ public class StatusHost extends Host {
 			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
 			final AgentIdentifier myLaborantin,
-			final double alpha_low, final double alpha_high) throws CompetenceException {
-		this(id, myState, participantCore, _socialWelfare,true);
+			final double alpha_low, final double alpha_high,
+			Double collectiveSeed) throws CompetenceException {
+		this(id, myState, participantCore, _socialWelfare,true,collectiveSeed);
 		this.soc=new StatusObservationCompetence(myLaborantin,false, ReplicaState.class, alpha_low, alpha_high);
 		this.soc.setActive(false);
 	}
@@ -43,8 +44,9 @@ public class StatusHost extends Host {
 			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
 			final int numberToContact,
-			final double alpha_low, final double alpha_high) throws CompetenceException {
-		this(id, myState, participantCore, _socialWelfare,false);
+			final double alpha_low, final double alpha_high,
+			Double collectiveSeed) throws CompetenceException {
+		this(id, myState, participantCore, _socialWelfare,false,collectiveSeed);
 		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class, alpha_low, alpha_high);
 	}
 
@@ -54,14 +56,15 @@ public class StatusHost extends Host {
 			final HostState myState,
 			final SimpleSelectionCore participantCore,
 			final SocialChoiceType _socialWelfare,
-			final boolean centralised) throws UnrespectedCompetenceSyntaxException, CompetenceException{
+			final boolean centralised,
+			Double collectiveSeed) throws UnrespectedCompetenceSyntaxException, CompetenceException{
 		super(id,
 				myState,
 				new HostCore(_socialWelfare,true,true),
 				participantCore,
 				new InactiveProposerCore(),
 				centralised?new SimpleObservationService():new SimpleOpinionService(new ReplicaStateOpinionHandler(_socialWelfare, id)),
-						new StatusProtocol(participantCore.getSelectionModule() instanceof OptimalSelectionModule));
+						new StatusProtocol(participantCore.getSelectionModule() instanceof OptimalSelectionModule),collectiveSeed);
 
 	}
 

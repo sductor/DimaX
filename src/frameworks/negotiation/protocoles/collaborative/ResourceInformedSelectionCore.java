@@ -30,12 +30,13 @@ import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.selection.SelectionModule;
 
 public abstract class ResourceInformedSelectionCore <
+Agent extends NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
 PersonalState extends AgentState,
 Contract extends MatchingCandidature>
 extends
-BasicAgentCompetence<NegotiatingAgent<PersonalState, InformedCandidature<Contract>>>
+BasicAgentCompetence<Agent>
 implements SelectionCore<
-NegotiatingAgent<PersonalState, InformedCandidature<Contract>>,
+Agent,
 PersonalState,
 InformedCandidature<Contract>> {
 	private static final long serialVersionUID = 5994721006483536151L;
@@ -72,7 +73,7 @@ InformedCandidature<Contract>> {
 			final Collection<InformedCandidature<Contract>> accepted,
 			final Collection<InformedCandidature<Contract>> rejected,
 			final Collection<InformedCandidature<Contract>> onWait)  {
-
+		this.solver.setMyAgent(getMyAgent());
 		assert accepted.isEmpty();
 		assert rejected.isEmpty();
 		assert onWait.isEmpty();

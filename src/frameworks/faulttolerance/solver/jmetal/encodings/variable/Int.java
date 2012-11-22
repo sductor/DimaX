@@ -21,10 +21,10 @@
 
 package frameworks.faulttolerance.solver.jmetal.encodings.variable;
 
+import dima.introspectionbasedagents.kernel.PseudoRandom;
 import frameworks.faulttolerance.solver.jmetal.core.Variable;
 import frameworks.faulttolerance.solver.jmetal.util.Configuration;
 import frameworks.faulttolerance.solver.jmetal.util.JMException;
-import frameworks.faulttolerance.solver.jmetal.util.PseudoRandom;
 
 /**
  * This class implements an integer decision variable
@@ -53,10 +53,10 @@ public class Int extends Variable {
 	 * @param lowerBound Variable lower bound
 	 * @param upperBound Variable upper bound
 	 */
-	public Int(final int lowerBound, final int upperBound){
+	public Int(final int lowerBound, final int upperBound,PseudoRandom seed){
 		this.lowerBound_ = lowerBound;
 		this.upperBound_ = upperBound;
-		this.value_ = PseudoRandom.randInt(lowerBound, upperBound) ;
+		this.value_ = seed.randInt(lowerBound, upperBound) ;
 	} // Int
 
 	/**

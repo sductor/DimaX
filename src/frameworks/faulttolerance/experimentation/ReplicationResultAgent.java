@@ -23,7 +23,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	final Double criticity;
 	final Double disponibility;
 	private final long lastModifTime;
-	int nbOfModif;
+	 final int nbOfModif;
 
 	final int messageSended;
 
@@ -57,6 +57,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 	public ReplicationResultAgent(final ReplicaState s,
 			final long lastModifTime,
 			final int messageSended,
+			final int initialStateCounter,
 			final Date agentCreationTime) {
 		super();
 		this.creation = new Date().getTime() - agentCreationTime.getTime();
@@ -64,6 +65,7 @@ public class ReplicationResultAgent implements ExperimentationResults {
 		this.criticity = s.getMyCriticity();
 		this.disponibility = s.getMyDisponibility();
 		this.lastInfo = s.getMyDisponibility() == 0;
+		this.nbOfModif = s.getStateCounter()-initialStateCounter;
 		this.lastModifTime=lastModifTime;
 		this.numberOfAllocatedResources=s.getMyResourceIdentifiers().size();
 		this.status = null;

@@ -20,7 +20,8 @@ public class CentralizedReplica extends Replica{
 	 */
 	private static final long serialVersionUID = 5854849267426769347L;
 
-	public CentralizedReplica(final AgentIdentifier id, final ReplicaState myState,final boolean dynamicCriticity)
+	public CentralizedReplica(final AgentIdentifier id, final ReplicaState myState,final boolean dynamicCriticity,
+			Double collectiveSeed)
 			throws CompetenceException {
 		super(id,
 				myState,
@@ -28,7 +29,8 @@ public class CentralizedReplica extends Replica{
 				new InactiveSelectionCore(),
 				new InactiveProposerCore(),
 				new SimpleObservationService(),
-				new InactiveCommunicationProtocole(), dynamicCriticity);
+				new InactiveCommunicationProtocole(), dynamicCriticity,
+				collectiveSeed);
 	}
 
 	@MessageHandler

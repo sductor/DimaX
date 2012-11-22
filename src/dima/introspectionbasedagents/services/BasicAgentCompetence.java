@@ -9,6 +9,7 @@ import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicinterfaces.ActiveComponentInterface;
 import dima.introspectionbasedagents.kernel.CompetentComponent;
 import dima.introspectionbasedagents.kernel.NotReadyException;
+import dima.introspectionbasedagents.kernel.PseudoRandom;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 
 public class BasicAgentCompetence<Agent extends CompetentComponent> implements AgentCompetence<Agent>, CompetentComponent{
@@ -305,7 +306,7 @@ public class BasicAgentCompetence<Agent extends CompetentComponent> implements A
 	}
 
 	@Override
-	public Random getRandom() {
+	public PseudoRandom getRandom() {
 		return this.myAgent.getRandom();
 	}
 }

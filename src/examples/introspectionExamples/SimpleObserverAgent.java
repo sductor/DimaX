@@ -18,7 +18,7 @@ public class SimpleObserverAgent extends BasicCompetentAgent {
 	int nbAgent;
 
 	public SimpleObserverAgent(final int nbAgent) throws CompetenceException {
-		super("OBSERVER");
+		super("OBSERVER",0.);
 		this.nbAgent=nbAgent;
 	}
 

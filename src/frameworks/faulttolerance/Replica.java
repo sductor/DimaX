@@ -59,6 +59,7 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 						Replica.this.getMyCurrentState(),
 						Replica.this.lastModifTime,
 						Replica.this.getMyProtocol().messageSended,
+						Replica.this.initialStateNumber,
 						Replica.this.getCreationTime());
 			}
 			return myInfo;
@@ -106,9 +107,10 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 			final ProposerCore proposerCore,
 			final ObservationService myInformation,
 			final AbstractCommunicationProtocol protocol,
-			final boolean dynamicCriticity)
+			final boolean dynamicCriticity,
+			Double collectiveSeed)
 					throws CompetenceException {
-		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol);
+		super(id, myState, myRationality, participantCore, proposerCore, myInformation, protocol, collectiveSeed);
 		this.myStateType = ReplicaState.class;
 		this.dynamicCrticity=dynamicCriticity;
 	}

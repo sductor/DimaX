@@ -27,7 +27,8 @@ public class CollaborativeReplica extends Replica<InformedCandidature<Replicatio
 			final ReplicaState myState,
 			final SocialChoiceType socialWelfare,
 			final int simulateanousKCadidature,
-			final boolean dynamicCriticity)
+			final boolean dynamicCriticity,
+			Double collectiveSeed)
 					throws CompetenceException {
 		super(id, myState,
 				new AltruistRationalCore(new ReplicationSocialOptimisation(socialWelfare),new InformedCandidatureRationality(new ReplicaCore(false,false),true)),
@@ -50,7 +51,7 @@ public class CollaborativeReplica extends Replica<InformedCandidature<Replicatio
 			}
 		},
 		new SimpleObservationService(),
-		new OneDeciderCommunicationProtocol(false),dynamicCriticity);
+		new OneDeciderCommunicationProtocol(false),dynamicCriticity,collectiveSeed);
 	}
 
 

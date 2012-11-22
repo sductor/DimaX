@@ -13,6 +13,7 @@ import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
+import frameworks.faulttolerance.experimentation.ReplicationLaborantin;
 
 
 /**
@@ -45,16 +46,16 @@ extends BasicAgentModule<Agent> implements Comparable{
 	protected final File resultPath;
 	final File finalResultPath;
 
-	//		public static final long _maxSimulationTime = 1000 * 10; //10 secondes
+//			public static final long _maxSimulationTime = 1000 * 10; //10 secondes
 //			public static final long _maxSimulationTime = 1000 * 30; //30 secondes
 //		public static final long _maxSimulationTime = 60000 * 1; //1 minute
-	//		public static final long _maxSimulationTime = 60000 * 5;//5 minutes
+//			public static final long _maxSimulationTime = 60000 * 5;//5 minutes
 //			public static final long _maxSimulationTime = 60000 * 10;//10 minutes
 	//		public static final long _maxSimulationTime = 60000 * 15;//15 minutes
 //	public static final long _maxSimulationTime = 60000 * 20;//20 minutes
-//		public static final long _maxSimulationTime = 60000 * 30;//30 minutes
+		public static final long _maxSimulationTime = 60000 * 30;//30 minutes
 //		public static final long _maxSimulationTime = 60000 * 45;//45 minutes
-			public static final long _maxSimulationTime = 60000 * 60;//60 minutes
+//			public static final long _maxSimulationTime = 60000 * 60;//60 minutes
 
 
 	//			public  long maxIndividualComputingTime = 60000;//1 min
@@ -148,7 +149,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 	private static int id = -1;
 	private static String newName(){
 		ExperimentationParameters.id++;
-		return "simu_"+ExperimentationParameters.id;
+		return "simu_part"+ReplicationLaborantin.informativeParameterNumber+"__#"+ExperimentationParameters.id;
 	}
 
 	@Override

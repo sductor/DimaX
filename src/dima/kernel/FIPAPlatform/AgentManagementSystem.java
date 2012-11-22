@@ -52,10 +52,11 @@ public class AgentManagementSystem extends dima.kernel.communicatingAgent.BasicC
 		ad.receive(m);}
 		else {
 			System.err.println(
-					"From AMS : Message lost! \n"+m+" "+m.getClass()
-					+"\n sender : "+m.getSender()
-					//					+"\n receiver -------> "+m.getReceiver()
-					+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
+					"From AMS : Message lost! \n");
+//			+m+" "+m.getClass()
+//					+"\n sender : "+m.getSender()
+//					//					+"\n receiver -------> "+m.getReceiver()
+//					+ " address does not exit\n  ams known adress are ->");//+this.aquaintances);
 		}
 	}
 	/**

@@ -1,5 +1,8 @@
 package frameworks.faulttolerance.centralizedsolver;
 
+import java.util.ArrayList;
+
+import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.MessageHandler;
 import dima.introspectionbasedagents.annotations.PreStepComposant;
 import dima.introspectionbasedagents.annotations.StepComposant;
@@ -10,6 +13,7 @@ import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.ExperimentationParameters;
 import frameworks.faulttolerance.Host;
 import frameworks.faulttolerance.centralizedsolver.CentralizedCoordinator.StateUpdate;
+import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.solver.JMetalElitistES;
@@ -28,7 +32,7 @@ public class CentralizedHost extends Host{
 	JMetalElitistES solver;
 
 	public CentralizedHost(
-			final ResourceIdentifier id, final HostState myState,final JMetalSolver p,
+			final ResourceIdentifier id, final HostState myState,final JMetalSolver p,ReplicationInstanceGraph rig,
 			Double collectiveSeed)
 					throws CompetenceException {
 		super(
@@ -40,6 +44,10 @@ public class CentralizedHost extends Host{
 				new SimpleObservationService(),
 				new InactiveCommunicationProtocole(),
 				collectiveSeed);
+
+		p.setMyAgent(this);
+		p.setProblem(rig, new ArrayList<AgentIdentifier>());
+		p.setTimeLimit((int) ExperimentationParameters._maxSimulationTime);
 		this.solver = new JMetalElitistES(p.getProblem());
 		this.solver.getProblem().setMaxGeneration(1);
 		this.solver.getProblem().setStagnationCounter(Integer.MAX_VALUE);

@@ -326,8 +326,8 @@ public class APIAgent extends BasicCompetentAgent {
 			final boolean removed1 = this.registeredAgent.remove(c)!=null;
 			final boolean removed2 =  this.locations.remove(c)!=null;
 			this.killed.add(c);
-
-			assert removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
+			if (!(removed1 && removed2))
+				logWarning("killing fail");// : "+c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations);
 
 			APIAgent.this.sendMessage(c, new SigKillOrder());
 			return true;
@@ -346,7 +346,8 @@ public class APIAgent extends BasicCompetentAgent {
 
 			//			logMonologue("Agent destroyed : "+c);
 
-			assert this.killed.contains(c) || removed1 && removed2:c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations;
+			if(!( this.killed.contains(c) || removed1 && removed2))
+				logWarning("destroy failed");// :"+c+" \n REGISTERD \n "+this.registeredAgent+" \n LOCATIONS \n "+this.locations);
 
 			switch (this.myLaunchType) {
 			case NotThreaded:

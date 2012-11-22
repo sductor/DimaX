@@ -1,7 +1,12 @@
 package frameworks.faulttolerance.solver;
 
+import java.util.Collection;
 import java.util.Iterator;
 
+import dima.basicagentcomponents.AgentIdentifier;
+
+import frameworks.faulttolerance.experimentation.ReplicationGraph;
+import frameworks.faulttolerance.negotiatingagent.ReplicationCandidature;
 import frameworks.faulttolerance.solver.jmetal.core.Algorithm;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.encodings.variable.Binary;
@@ -19,7 +24,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 	private final boolean useBinary=true;
 
 	private boolean solved=false;
-	private Iterator<Solution> solutions;
+	private Iterator<Solution> solutions=null;
 
 	private JMetalRessAllocProblem p=null;
 
@@ -28,6 +33,20 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 	public JMetalSolver(final SocialChoiceType socialChoice, final boolean isAgent,
 			final boolean isHost) {
 		super(socialChoice, isAgent, isHost);
+	}
+
+	@Override
+	public void setProblem(final Collection<ReplicationCandidature> concerned) {
+		super.setProblem(concerned);
+		this.solved=false;
+		solutions=null;
+	}
+
+	@Override
+	public void setProblem(final ReplicationGraph rig, final Collection<AgentIdentifier> fixedVar) {
+		super.setProblem(rig, fixedVar);
+		this.solved=false;
+		solutions=null;
 	}
 
 	@Override
@@ -44,35 +63,35 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 
 	@Override
 	protected Solution solveProb(final boolean opt) throws UnsatisfiableException {
-		try{
-			if (!opt){
-				if (!this.solved){
-					this.solutions = this.algorithm.execute().iterator();
-					this.solved=true;
-				}
-				assert this.solutions.hasNext();
-				final Solution sik = this.solutions.next();
-				assert this.assertIsViable(sik):sik;
-				return sik;
-			} else {
+		if (!opt){
+			assert this.solved=true;
+			assert this.solutions.hasNext();
+			final Solution sik = this.solutions.next();
+			assert this.assertIsViable(sik):sik;
+			return sik;
+		} else {
+			try{
 				final Solution bestSol = this.algorithm.execute().best(((JMetalRessAllocProblem)this.algorithm.getProblem()).getComparator());
 				assert this.isViable(bestSol);
 				return bestSol;
+			} catch (final Exception e) {
+				throw new RuntimeException(e);
 			}
-		} catch (final Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public boolean hasNext() {
 		if (!this.solved) {
-			return true;
-		} else if (!this.solutions.hasNext()){
-			this.solved=false;
-			return false;
+			try{
+				this.solutions = this.algorithm.execute().iterator();
+			} catch (final Exception e) {
+				throw new RuntimeException(e);
+			}
+			this.solved=true;
+			return hasNext();
 		} else {
-			return true;
+			return this.solutions.hasNext();
 		}
 	}
 
@@ -141,8 +160,7 @@ public class JMetalSolver extends ResourceAllocationInterface<Solution> {
 
 	@Override
 	protected void initiateSolverPost() throws UnsatisfiableException {
-		// TODO Auto-generated method stub
-
+		// ne fait rien
 	}
 
 }

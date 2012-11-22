@@ -1,5 +1,6 @@
 package frameworks.faulttolerance.centralizedsolver;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -10,11 +11,14 @@ import dima.introspectionbasedagents.annotations.StepComposant;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
+import frameworks.experimentation.ExperimentationParameters;
 import frameworks.faulttolerance.Host;
+import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.solver.JMetalRessAllocProblem;
+import frameworks.faulttolerance.solver.JMetalSolver;
 import frameworks.faulttolerance.solver.RessourceAllocationProblem;
 import frameworks.faulttolerance.solver.jmetal.core.Solution;
 import frameworks.faulttolerance.solver.jmetal.core.SolutionSortedSet;
@@ -41,7 +45,7 @@ public class CentralizedCoordinator extends Host {
 
 	public CentralizedCoordinator(
 			final ResourceIdentifier id, final HostState myState,
-			final RessourceAllocationProblem<Solution> p,
+			final JMetalSolver p,ReplicationInstanceGraph rig,
 			Double collectiveSeed) throws CompetenceException {
 		super(
 				id,
@@ -52,6 +56,10 @@ public class CentralizedCoordinator extends Host {
 				new SimpleObservationService(),
 				new InactiveCommunicationProtocole(),collectiveSeed);
 		this.agents=new HashMap<AgentIdentifier, ReplicaState>();
+		this.p = p;
+		p.setMyAgent(this);
+		p.setProblem(rig, new ArrayList<AgentIdentifier>());
+		p.setTimeLimit((int) ExperimentationParameters._maxSimulationTime);
 		this.hosts=new HashMap<ResourceIdentifier, HostState>();
 		for (final ReplicaState s :p.rig.getAgentStates()){
 			this.agents.put(s.getMyAgentIdentifier(), s);
@@ -59,7 +67,6 @@ public class CentralizedCoordinator extends Host {
 		for (final HostState s :p.rig.getHostsStates()){
 			this.hosts.put(s.getMyAgentIdentifier(), s);
 		}
-		this.p = p;
 		final JMetalRessAllocProblem jp = new JMetalRessAllocProblem(p);
 		this.currentSol = jp.getUnallocatedSolution();
 		this.parallelParents = new SolutionSortedSet(jp.mu,jp.getComparator());

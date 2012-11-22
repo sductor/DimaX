@@ -439,19 +439,17 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					.equals(NegotiationParameters.key4GeneticProto)){
 
 				final JMetalSolver p = new JMetalSolver(this._socialWelfare, true, true);
-				p.setProblem(this.rig, new ArrayList<AgentIdentifier>());
-				p.setTimeLimit((int) ExperimentationParameters._maxSimulationTime);
 
 				if (cc==null){
 					hostAg = new CentralizedCoordinator(
 							hostId,
-							this.rig.getHostState(hostId),p,new Double(randSeed));
+							this.rig.getHostState(hostId),p,this.rig,new Double(randSeed));
 					cc=(CentralizedCoordinator) hostAg;
 
 				} else {
 					hostAg = new CentralizedHost(
 							hostId,
-							this.rig.getHostState(hostId),p,new Double(randSeed));
+							this.rig.getHostState(hostId),p,this.rig,new Double(randSeed));
 
 					cc.register((CentralizedHost) hostAg);
 				}
@@ -623,23 +621,23 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		assert this.alpha_high!=0.;
 		final ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
 		if (!this._usedProtocol.equals(that._usedProtocol)){
-			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) ||
-					that._usedProtocol.equals(NegotiationParameters.key4statusProto)){//en premier
-				if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)) {
-					return -1;
-				} else {
-					return 1;
-				}
-
-			} else  if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) ||
-					that._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){//en deuxieme
+			 if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) ||
+					that._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){//en premier
 				if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto)) {
 					return -1;
 				} else {
 					return 1;
 				}
 
-			} else  if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto) ||
+			} else if  (this._usedProtocol.equals(NegotiationParameters.key4DcopProto) ||
+					that._usedProtocol.equals(NegotiationParameters.key4DcopProto)){//en deuxieme
+				if (this._usedProtocol.equals(NegotiationParameters.key4DcopProto)) {
+					return -1;
+				} else {
+					return 1;
+				}
+
+			} else  if(this._usedProtocol.equals(NegotiationParameters.key4GeneticProto) ||
 					that._usedProtocol.equals(NegotiationParameters.key4GeneticProto)){//en troisieme
 				if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto)) {
 					return -1;
@@ -856,9 +854,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.instanciateReg();
 		LinkedList<ExperimentationParameters<ReplicationLaborantin>> simulations = this.reg.generateSimulation();
 		Collections.sort(simulations);
-		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, 10);
+		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
 		return simulations;
 	}
+	public static int nbPart=23;
 	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){
 		final LinkedList<T> results = new LinkedList<T>();
 		

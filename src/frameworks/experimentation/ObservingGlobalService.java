@@ -103,7 +103,7 @@ extends BasicCommunicatingCompetence<Agent>{
 		}else if (this.getMyAgent().getUptime()>this.timeBeforeForcingSimulationEnd() && this.getMyAgent().getUptime()<=this.timeBeforeKillingSimulation()){
 			//			if (!endRequestSended){
 			if (!this.shouldHAveEndedActivated) {
-				this.logWarning("FORCING END REQUEST!!!! I SHOULD HAVE ALREADY END!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
+				this.logWarning("FORCING END REQUEST!!!! TAIN' BOUGEZ VOUS LES MICHES!!!!");//(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
 				this.shouldHAveEndedActivated=true;
 				this.endRequestSended=true;
 				for (final AgentIdentifier r : this.getAllAgents()) {
@@ -122,7 +122,7 @@ extends BasicCommunicatingCompetence<Agent>{
 			return false;//waiting 5 more minutes
 		}else if (this.getMyAgent().getUptime()>this.timeBeforeKillingSimulation()){
 			this.getMyAgent().getApi().kill(this.getActiveAgents());
-			this.logWarning("ENDING FORCED!!!! i should have end!!!!(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
+			this.logWarning("KILLING EVERYONE!!!! OMG C'EST UN PUGILAT!!!!");//(rem ag, rem host)="+this.getActiveAgents(),LogService.onBoth);
 			return true;
 		} else {
 			return false;

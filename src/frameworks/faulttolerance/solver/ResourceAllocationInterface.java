@@ -214,7 +214,7 @@ implements Solver, ResourceAllocationSolver<ReplicationCandidature, HostState>  
 		//		assert this.s.isFeasible()!=null && this.s.isFeasible():this.s.isFeasible()+" "+hasNext;
 		//		assert hasNext:hasNext;
 		final ArrayList<ReplicationCandidature> results = new ArrayList<ReplicationCandidature>();
-		assert this.isViable(sol);
+		assert this.isViable(sol):sol;
 		if (!this.isViable(sol)) {
 			return results;
 		} else {

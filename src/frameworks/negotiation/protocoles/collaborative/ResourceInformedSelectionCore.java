@@ -47,7 +47,11 @@ InformedCandidature<Contract>> {
 	final SelectionModule gsm;
 
 	Random rand = new Random();
-
+	@Override
+	public void setMyAgent(final Agent ag)  {
+		super.setMyAgent(ag);
+		this.solver.setMyAgent(ag);
+	}
 	//
 	// Methods
 	//
@@ -73,7 +77,6 @@ InformedCandidature<Contract>> {
 			final Collection<InformedCandidature<Contract>> accepted,
 			final Collection<InformedCandidature<Contract>> rejected,
 			final Collection<InformedCandidature<Contract>> onWait)  {
-		this.solver.setMyAgent(getMyAgent());
 		assert accepted.isEmpty();
 		assert rejected.isEmpty();
 		assert onWait.isEmpty();

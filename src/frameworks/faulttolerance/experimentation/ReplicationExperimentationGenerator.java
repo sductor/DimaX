@@ -24,7 +24,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	 */
 	private static final long serialVersionUID = -3325093836959956134L;
 	//problem
-	private final Long[] seeds = new Long[]{(long) 889757,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
+	private final Long[] seeds = new Long[]{(long) 889757};//,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
 	//
 	//		private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
 	//	public static int _AgentDefault=2500;
@@ -34,14 +34,17 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			public static int _AgentDefault=100;
 	//		private Integer[] nbAgentDomain = new Integer[]{50,100,500,1000,5000,10000};
 	//		public static int _AgentDefault=1000;
+//	private final Integer[] nbAgentDomain = new Integer[]{25,50};
+//	public static int _AgentDefault=50;
 	private final Integer[] nbAgentDomain = new Integer[]{250,500,1000,2500,5000,7500,10000};
 	public static int _AgentDefault=500;
 	int maxAgentNb = Collections.max(Arrays.asList(this.nbAgentDomain));
 
 //	private final Integer[] nbHostDomain = new Integer[]{6};
 	//			private Integer[] nbHostDomain = new Integer[]{24};
-			private Integer[] nbHostDomain = new Integer[]{16};
-//			private Integer[] nbHostDomain = new Integer[]{5};
+//			private Integer[] nbHostDomain = new Integer[]{16};
+			private Integer[] nbHostDomain = new Integer[]{staticNbHost};
+			private static Integer staticNbHost=5;//16;//24;//
 	int maxHostNb = Collections.max(Arrays.asList(this.nbHostDomain));
 
 	//solveur
@@ -51,8 +54,10 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//	private Integer[] kDomain= new Integer[]{50,250,500,750,1000};
 	//		public static int _kDefault1=1000;
 	//		public static int _kDefault2=200;
+//	private final Integer[] kDomain= new Integer[]{5,25};
+//	public static int _kDefault=25;
 	private final Integer[] kDomain= new Integer[]{5,50,100,250,500};
-	public static int _kDefault=250;
+	public static int _kDefault=100;
 	//		private Integer[] kDomain= new Integer[]{5,10,50,100,500,1000};
 	//		public static int _kDefault=100;
 	//		public static int _kDefaultAll=100;
@@ -237,19 +242,19 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	}
 
 	public static String getProtocolId() {
-		return ExperimentationParameters._maxSimulationTime / 1000
-				+ "secs"
-				+ (ReplicationExperimentationGenerator.varyAgentSelection==true?"varyAgentSelection":"")
-				+ (ReplicationExperimentationGenerator.varyHostSelection?"varyHostSelection":"")
-				+ (ReplicationExperimentationGenerator.varyProtocol?"varyProtocol":"")
-				+ (ReplicationExperimentationGenerator.varyHostDispo?"varyHostDispo":"")
-				+ (ReplicationExperimentationGenerator.varyHostSelection?"varyHostSelection":"")
-				+ (ReplicationExperimentationGenerator.varyOptimizers?"varyOptimizers":"")
-				+ (ReplicationExperimentationGenerator.varyAccessibleAgent?"varyAccessibleHost":"")
-				+ (ReplicationExperimentationGenerator.varySimultaneousAcceptation?"varySimultaneousAcceptation":"")
-				+ (ReplicationExperimentationGenerator.varyOpinionDiffusion?"varyOpinionDiffusion":"")
-				+ (ReplicationExperimentationGenerator.varyAgentLoad?"varyAgentLoad":"")
-				+ (ReplicationExperimentationGenerator.varyHostCapacity?"varyHostCapacity":"");
+		return "part"+ReplicationLaborantin.informativeParameterNumber+"/"+ReplicationExperimentationParameters.nbPart+"__time="+ExperimentationParameters._maxSimulationTime / 1000
+				+ "secs"+"__nbHost="+staticNbHost;
+//				+ (ReplicationExperimentationGenerator.varyAgentSelection==true?"varyAgentSelection":"")
+//				+ (ReplicationExperimentationGenerator.varyHostSelection?"varyHostSelection":"")
+//				+ (ReplicationExperimentationGenerator.varyProtocol?"varyProtocol":"")
+//				+ (ReplicationExperimentationGenerator.varyHostDispo?"varyHostDispo":"")
+//				+ (ReplicationExperimentationGenerator.varyHostSelection?"varyHostSelection":"")
+//				+ (ReplicationExperimentationGenerator.varyOptimizers?"varyOptimizers":"")
+//				+ (ReplicationExperimentationGenerator.varyAccessibleAgent?"varyAccessibleHost":"")
+//				+ (ReplicationExperimentationGenerator.varySimultaneousAcceptation?"varySimultaneousAcceptation":"")
+//				+ (ReplicationExperimentationGenerator.varyOpinionDiffusion?"varyOpinionDiffusion":"")
+//				+ (ReplicationExperimentationGenerator.varyAgentLoad?"varyAgentLoad":"")
+//				+ (ReplicationExperimentationGenerator.varyHostCapacity?"varyHostCapacity":"");
 	}
 
 	public LinkedList<ExperimentationParameters<ReplicationLaborantin>> generateSimulation() {

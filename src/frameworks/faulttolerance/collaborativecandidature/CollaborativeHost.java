@@ -53,6 +53,7 @@ public class CollaborativeHost extends Host<InformedCandidature<ReplicationCandi
 				new OneDeciderCommunicationProtocol(true),collectiveSeed );
 		this.getMyProtocol().getContracts().setMyAgent(this);
 		((ResourceInformedSelectionCore) this.getMySelectionCore()).setMyAgent(this);
+		
 	}
 
 

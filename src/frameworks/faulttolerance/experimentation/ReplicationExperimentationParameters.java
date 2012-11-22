@@ -856,7 +856,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.instanciateReg();
 		LinkedList<ExperimentationParameters<ReplicationLaborantin>> simulations = this.reg.generateSimulation();
 		Collections.sort(simulations);
-		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, 10);
+		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, 23);
 		return simulations;
 	}
 	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){

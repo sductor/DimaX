@@ -857,7 +857,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
 		return simulations;
 	}
-	public static int nbPart=23;
+	public static int nbPart=5;
 	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){
 		final LinkedList<T> results = new LinkedList<T>();
 		

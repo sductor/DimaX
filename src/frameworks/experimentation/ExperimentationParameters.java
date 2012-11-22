@@ -13,6 +13,7 @@ import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import frameworks.experimentation.Laborantin.NotEnoughMachinesException;
+import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.faulttolerance.experimentation.ReplicationLaborantin;
 
 
@@ -149,7 +150,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 	private static int id = -1;
 	private static String newName(){
 		ExperimentationParameters.id++;
-		return "simu_part"+ReplicationLaborantin.informativeParameterNumber+"__#"+ExperimentationParameters.id;
+		return "simu_part"+ReplicationLaborantin.informativeParameterNumber+"_"+ReplicationExperimentationParameters.nbPart+"__#"+ExperimentationParameters.id;
 	}
 
 	@Override

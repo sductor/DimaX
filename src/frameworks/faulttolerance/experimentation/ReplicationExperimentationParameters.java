@@ -856,19 +856,31 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.instanciateReg();
 		LinkedList<ExperimentationParameters<ReplicationLaborantin>> simulations = this.reg.generateSimulation();
 		Collections.sort(simulations);
-		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, 23);
+		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, 10);
 		return simulations;
 	}
 	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){
 		final LinkedList<T> results = new LinkedList<T>();
-		final int numberOfPartElements = objets.size()/numberOfPart;
+		
+		final int numberOfPartElements = (int)Math.ceil((double)objets.size()/(double)numberOfPart);
+//		System.out.println("number of element for part "+partNumber+" : "+numberOfPartElements);
 		final int startPoint = partNumber*numberOfPartElements;
+//		System.out.println("startPoint for part "+partNumber+" : "+startPoint);
 		final int finalPoint = Math.min(objets.size(), startPoint+numberOfPartElements);
+//		System.out.println("finalPoint for part "+partNumber+" : "+finalPoint);
 		for (int i = startPoint; i < finalPoint; i++){
 			results.add(objets.get(i));
 		}
 		return results;
 	}
+//	public static void main(String args[]){
+//		final LinkedList<Integer> results = new LinkedList<Integer>();
+//		for (int i = 0; i < 138; i++)
+//			results.add(i);
+//		ReplicationExperimentationParameters rep = new ReplicationExperimentationGenerator().getDefaultParameters();
+//		for (int i = 0; i < 10; i++)
+//			rep.getPart(results, i, 10);
+//	}
 }
 
 

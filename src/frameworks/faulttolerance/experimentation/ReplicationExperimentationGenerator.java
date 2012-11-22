@@ -40,8 +40,8 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 //	private final Integer[] nbHostDomain = new Integer[]{6};
 	//			private Integer[] nbHostDomain = new Integer[]{24};
-//			private Integer[] nbHostDomain = new Integer[]{16};
-			private Integer[] nbHostDomain = new Integer[]{5};
+			private Integer[] nbHostDomain = new Integer[]{16};
+//			private Integer[] nbHostDomain = new Integer[]{5};
 	int maxHostNb = Collections.max(Arrays.asList(this.nbHostDomain));
 
 	//solveur

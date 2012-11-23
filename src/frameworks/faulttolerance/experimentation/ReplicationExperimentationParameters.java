@@ -621,7 +621,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		assert this.alpha_high!=0.;
 		final ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
 		if (!this._usedProtocol.equals(that._usedProtocol)){
-			 if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) ||
+			if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) ||
 					that._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){//en premier
 				if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto)) {
 					return -1;
@@ -648,37 +648,54 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				throw new RuntimeException("impossible avec 4 protos");
 			}
 		} else {
-			if (this.nbAgents!=that.nbAgents){
-				return this.nbAgents-that.nbAgents;
-			} else {
-				if (this.kSolver!=that.kSolver){
-					return this.kSolver-that.kSolver;
+			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) && 
+					(!this.opinionDiffusionDegree.equals(that.opinionDiffusionDegree) ||
+							!this.alpha_low.equals(that.alpha_low)	||
+							!this.alpha_high.equals(that.alpha_high))){
+				if (!this.opinionDiffusionDegree.equals(that.opinionDiffusionDegree)){
+					if (this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
+							ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents))))
+						return -1;
+					else
+						return 1;
+				} else if (!this.alpha_low.equals(that.alpha_low)){
+					if ( this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault))
+						return -1;
+					else
+						return 1;
+				} else if (!this.alpha_high.equals(that.alpha_high)){
+					if ( this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))
+						return -1;
+					else
+						return 1;
 				} else {
-					if (!this._socialWelfare.equals(that._socialWelfare)){
-						return this._socialWelfare.compareTo(that._socialWelfare);
-					} else	{
-						if (this.agentAccessiblePerHost!=that.agentAccessiblePerHost) {
-							return this.agentAccessiblePerHost-that.agentAccessiblePerHost;
+					throw new RuntimeException("impossible");
+				}
+			} else {
+				if (!this._socialWelfare.equals(that._socialWelfare)){
+					return this._socialWelfare.compareTo(that._socialWelfare);
+				} else	{
+					if (this.nbAgents!=that.nbAgents){
+						return this.nbAgents-that.nbAgents;
+					} else {
+						if (this.kSolver!=that.kSolver){
+							return this.kSolver-that.kSolver;
 						} else {
-							//					if (!this.alpha_low.equals(that.alpha_low) ) {//trie  les protos
-							//						return this.alpha_low.compareTo(that.alpha_low);
-							//					} else {
-							//						if (!this.opinionDiffusionDegree.equals(that.opinionDiffusionDegree)){
-							//							return this.opinionDiffusionDegree.compareTo(that.opinionDiffusionDegree);
-							//						} else {
-
-							if (this.hostCapacityMean/this.nbAgents!=that.hostCapacityMean/that.nbAgents){
-								return new Double(this.hostCapacityMean/this.nbAgents).compareTo(that.hostCapacityMean/that.nbAgents);
+							if (this.agentAccessiblePerHost!=that.agentAccessiblePerHost) {
+								return this.agentAccessiblePerHost-that.agentAccessiblePerHost;
 							} else {
-								if (!this._hostSelection.equals(that._hostSelection)){
-									return this._hostSelection.compareTo(that._hostSelection);
-								} else {	//									assert this.equals(that):this+"\n-->"+that;
-									return 0;
+								if (this.hostCapacityMean/this.nbAgents!=that.hostCapacityMean/that.nbAgents){
+									return new Double(this.hostCapacityMean/this.nbAgents).compareTo(that.hostCapacityMean/that.nbAgents);
+								} else {
+									if (!this._hostSelection.equals(that._hostSelection)){
+										return this._hostSelection.compareTo(that._hostSelection);
+									} else {	
+										assert this.equals(that):this+"\n-->"+that;
+										return 0;
+									}
 								}
 							}
 						}
-						//							}
-						//						}
 					}
 				}
 			}
@@ -718,57 +735,47 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		//		return true;
 		//SOUHAITE
 		//
-		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
-				this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+		////parametrage auto reg
+		if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) &&
+				this.kSolver==ReplicationExperimentationGenerator._kDefault &&
 				this._socialWelfare.equals(SocialChoiceType.Utility) &&
-				this._hostSelection.equals(SelectionType.RoolettWheel)){
-			//						if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){
-			//							return true;
-			//						} else 
-			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
-				if (!this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
-						|| !this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)){
-					return this.opinionDiffusionDegree.equals(
-							ReplicationExperimentationGenerator.getValue(
-									ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents))) &&
-									this._hostSelection.equals(SelectionType.RoolettWheel);
-				} else {
-					return true;
-				}
+				this._hostSelection.equals(SelectionType.RoolettWheel)
+				){
+			if (!this.opinionDiffusionDegree.equals(
+					ReplicationExperimentationGenerator.getValue(
+							ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)))){
+				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
+						&& this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault);
+			} else {
+				return true;
 			}
 		}
 
-		if (
-				this.kSolver==ReplicationExperimentationGenerator._kDefault &&
+		/////variation de k
+		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+				this._hostSelection.equals(SelectionType.RoolettWheel) &&
+				(alpha_low==Double.NaN && alpha_high==Double.NaN && opinionDiffusionDegree==Double.NaN) &&
+				this._socialWelfare.equals(SocialChoiceType.Utility) &&						
+				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
+						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto))){
+			return true;
+		}
+
+		/////variation de agent
+		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
 				//												this._socialWelfare.equals(SocialChoiceType.Utility)  &&
 				this._hostSelection.equals(SelectionType.RoolettWheel)){
 			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
-				if (this._socialWelfare.equals(SocialChoiceType.Utility)){
-					return true;
-				} else {
-					return  //true
-							this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)
-							&& this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)
-							&& 
-							this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
-									ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)))
-									;
-				}
+				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)&&
+						this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)&&
+						this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
+								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
 			} else {
-				return this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
+				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
+				return true;
 			}
 		}
 
-
-
-		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
-				this._hostSelection.equals(SelectionType.RoolettWheel) &&
-				//				(alpha_low==Double.NaN && alpha_high==Double.NaN && opinionDiffusionDegree==Double.NaN) &&
-				this._socialWelfare.equals(SocialChoiceType.Utility
-						) &&
-						(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) || this._usedProtocol.equals(NegotiationParameters.key4DcopProto))){
-			return true;
-		}
 
 		return false;
 	}
@@ -857,29 +864,29 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
 		return simulations;
 	}
-	public static int nbPart=5;
+	public static int nbPart=3;
 	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){
 		final LinkedList<T> results = new LinkedList<T>();
-		
+
 		final int numberOfPartElements = (int)Math.ceil((double)objets.size()/(double)numberOfPart);
-//		System.out.println("number of element for part "+partNumber+" : "+numberOfPartElements);
+		//		System.out.println("number of element for part "+partNumber+" : "+numberOfPartElements);
 		final int startPoint = partNumber*numberOfPartElements;
-//		System.out.println("startPoint for part "+partNumber+" : "+startPoint);
+		//		System.out.println("startPoint for part "+partNumber+" : "+startPoint);
 		final int finalPoint = Math.min(objets.size(), startPoint+numberOfPartElements);
-//		System.out.println("finalPoint for part "+partNumber+" : "+finalPoint);
+		//		System.out.println("finalPoint for part "+partNumber+" : "+finalPoint);
 		for (int i = startPoint; i < finalPoint; i++){
 			results.add(objets.get(i));
 		}
 		return results;
 	}
-//	public static void main(String args[]){
-//		final LinkedList<Integer> results = new LinkedList<Integer>();
-//		for (int i = 0; i < 138; i++)
-//			results.add(i);
-//		ReplicationExperimentationParameters rep = new ReplicationExperimentationGenerator().getDefaultParameters();
-//		for (int i = 0; i < 10; i++)
-//			rep.getPart(results, i, 10);
-//	}
+	//	public static void main(String args[]){
+	//		final LinkedList<Integer> results = new LinkedList<Integer>();
+	//		for (int i = 0; i < 138; i++)
+	//			results.add(i);
+	//		ReplicationExperimentationParameters rep = new ReplicationExperimentationGenerator().getDefaultParameters();
+	//		for (int i = 0; i < 10; i++)
+	//			rep.getPart(results, i, 10);
+	//	}
 }
 
 

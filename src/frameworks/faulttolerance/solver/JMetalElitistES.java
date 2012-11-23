@@ -201,6 +201,9 @@ public class JMetalElitistES extends Algorithm {
 							newIndividual = new Solution(this.problem_);
 							this.getProblem().evaluate(newIndividual);
 						}
+						if (this.hasExpired()) {
+							break;
+						}
 						this.populationCourante.remove(this.populationCourante.worst(this.getProblem().getComparator()));
 						this.populationCourante.add(newIndividual);
 					}

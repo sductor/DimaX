@@ -566,7 +566,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	@Override
 	public int hashCode(){
 		return
-				2*this.agentAccessiblePerHost
+				nbAgents+nbHosts
+				+2*this.agentAccessiblePerHost
 				+4*this.hostFaultProbabilityMean.hashCode()
 				+8*this.agentLoadMean.hashCode()
 				+16*this._usedProtocol.hashCode()
@@ -691,7 +692,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 										return this._hostSelection.compareTo(that._hostSelection);
 									} else {	
 										assert this.equals(that):this+"\n-->"+that;
-										return 0;
+										return this.hashCode()-that.hashCode();
 									}
 								}
 							}

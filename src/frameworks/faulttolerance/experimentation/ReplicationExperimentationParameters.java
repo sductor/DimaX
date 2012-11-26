@@ -585,8 +585,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				+64000*this.simultaneousCandidature
 				+128000*this.kSolver
 				+256000*this.opinionDiffusionDegree.intValue()
-				+500000*this.alpha_low.intValue()
-				+1000000*this.alpha_high.intValue();
+				+500*this.alpha_low.intValue()
+				+1000*this.alpha_high.intValue();
 	}
 
 	@Override
@@ -691,8 +691,11 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 									if (!this._hostSelection.equals(that._hostSelection)){
 										return this._hostSelection.compareTo(that._hostSelection);
 									} else {	
-										assert this.equals(that):this+"\n-->"+that;
-										return this.hashCode()-that.hashCode();
+										if (this.equals(that)){
+											return 0;
+										} else {
+											return this.hashCode()-that.hashCode();
+										}
 									}
 								}
 							}
@@ -755,7 +758,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		/////variation de k
 		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
 				this._hostSelection.equals(SelectionType.RoolettWheel) &&
-				(alpha_low==Double.NaN && alpha_high==Double.NaN && opinionDiffusionDegree==Double.NaN) &&
+//				(alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN)) &&
 				this._socialWelfare.equals(SocialChoiceType.Utility) &&						
 				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
 						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto))){
@@ -862,10 +865,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.instanciateReg();
 		LinkedList<ExperimentationParameters<ReplicationLaborantin>> simulations = this.reg.generateSimulation();
 		Collections.sort(simulations);
-		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
+//		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
 		return simulations;
 	}
-	public static int nbPart=3;
+	public static int nbPart=4;
 	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){
 		final LinkedList<T> results = new LinkedList<T>();
 

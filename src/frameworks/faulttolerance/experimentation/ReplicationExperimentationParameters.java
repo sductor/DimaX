@@ -556,8 +556,9 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					this.kSolver==that.kSolver &&
 					this._usedProtocol.equals(that._usedProtocol) &&
 					this._socialWelfare.equals(that._socialWelfare) &&
-					this._agentSelection.equals(that._agentSelection) &&
-					this._hostSelection.equals(that._hostSelection);
+					this.hostFaultProbabilityDispersion.equals(that.hostFaultProbabilityDispersion) &&
+					this.agentCriticityMean.equals(that.agentCriticityMean) &&
+			this.agentCriticityDispersion.equals(that.agentCriticityDispersion);
 		} else {
 			return false;
 		}
@@ -865,7 +866,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.instanciateReg();
 		LinkedList<ExperimentationParameters<ReplicationLaborantin>> simulations = this.reg.generateSimulation();
 		Collections.sort(simulations);
-//		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
+		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
 		return simulations;
 	}
 	public static int nbPart=4;

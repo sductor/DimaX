@@ -70,13 +70,13 @@ public class CombinaisonIterator<T> implements Iterator<Collection<T>> {
 
 	public static void main(final String[] args){
 		final CombinaisonIterator<Integer> it = new CombinaisonIterator<Integer>(
-				Arrays.asList(new Integer[]{0,1,2,3,4,5}), 4);
+				Arrays.asList(new Integer[]{0,1,2,3,4,5,6,7,8}), 3);
 
 		System.out.println(it.univers);
-		System.out.println("---------");
+		System.out.println("");
 		while (it.hasNext()){
 			System.out.println(it.afficheIntel(it.next()));
-			System.out.println("---------");
+			System.out.println("");
 		}
 	}
 

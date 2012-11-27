@@ -483,7 +483,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	}
 
 	int getDcopKValue(final int k){
-		return (int) Math.sqrt(4*k);
+		return k;//(int) Math.sqrt(4*k);
 	}
 
 	private SimpleSelectionCore getSelectionCore(final SelectionType selection){

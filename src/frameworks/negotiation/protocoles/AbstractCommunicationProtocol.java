@@ -1,6 +1,7 @@
 package frameworks.negotiation.protocoles;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -443,6 +444,9 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 		try {
 			contract = this.contracts.getContract(delta.getIdentifier());
 		} catch (final UnknownContractException e) {
+//			ArrayList<Contract> toCancel = new ArrayList<Contract>();
+//			toCancel.add(contract);
+//			this.cancelContract(toCancel, delta.getSender());
 			this.faceAnUnknownContract(e);
 			return;
 		}

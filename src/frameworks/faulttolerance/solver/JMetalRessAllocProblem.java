@@ -30,7 +30,7 @@ public class JMetalRessAllocProblem extends Problem	{
 	int timeLimit=Integer.MAX_VALUE;
 	private int maxGeneration=Integer.MAX_VALUE;
 
-	public int mu     = 50 ;
+	public int mu     = 15 ;
 
 	int diversi=5;
 	int nbMutation = 10;

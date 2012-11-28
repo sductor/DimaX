@@ -398,7 +398,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 
 	public static String entete(){
 		return "protocol ; welfare ; " +
-				"nbagent ; k; " +
+				"nbagent ; nbHost; k; " +
 				"alpha_low ; alpha_high ; opinion ; " +
 				"mean util ; min min ; mean min ;mean dispo ; prod dispo ; log prod dispo ;  " +
 				"nbModif min ; nbModif mean ; nbModif max ; " +
@@ -421,6 +421,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 				this.getMyAgent().getSimulationParameters()._usedProtocol +" ; "+
 						this.getMyAgent().getSimulationParameters()._socialWelfare +" ; "+
 						this.getMyAgent().getSimulationParameters().nbAgents +" ; "+
+						this.getMyAgent().getSimulationParameters().nbHosts +" ; "+
 						this.getMyAgent().getSimulationParameters().kSolver +" ; "+
 						this.getMyAgent().getSimulationParameters().alpha_low +" ; "+
 						this.getMyAgent().getSimulationParameters().alpha_high +" ; "+

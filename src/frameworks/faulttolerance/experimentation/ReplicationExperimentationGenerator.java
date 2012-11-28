@@ -36,12 +36,14 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			public static int _AgentDefault=1000;
 //	private final Integer[] nbAgentDomain = new Integer[]{25};
 //	public static int _AgentDefault=25;
-	private final Integer[] nbAgentDomain = new Integer[]{500,750,1000,2500,5000};//,7500,10000};
+//	private final Integer[] nbAgentDomain = new Integer[]{500,750,1000,2500,5000,7500,10000};
+//	public static int _AgentDefault=1000;
+	private final Integer[] nbAgentDomain = new Integer[]{5000,7500,10000};
 	public static int _AgentDefault=1000;
 	int maxAgentNb = Collections.max(Arrays.asList(this.nbAgentDomain));
 
 			private Integer[] nbHostDomain = new Integer[]{staticNbHost};
-			private static Integer staticNbHost=16;//5;//16;//24;//
+			private static Integer staticNbHost=6;//5;//16;//24;//
 	int maxHostNb = Collections.max(Arrays.asList(this.nbHostDomain));
 
 	//solveur
@@ -218,13 +220,13 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 				this.nbHostDomain[0],
 				ReplicationExperimentationGenerator.getValue(ReplicationExperimentationGenerator.graphDensityDomain[0],this.nbAgentDomain[0]).intValue(),//ReplicationExperimentationParameters.doubleParameters.get(2),//kaccessible
 				this.dispoMeanDomain[0],//dispo mean
-				DispersionSymbolicValue.Moyen,//dispo dispersion
+				DispersionSymbolicValue.Max,//dispo dispersion
 				this.agentLoadMeanDomain[0],//ReplicationExperimentationProtocol.doubleParameters.get(1),//load mean
-				DispersionSymbolicValue.Moyen,//DispersionSymbolicValue.Moyen,//load dispersion
+				DispersionSymbolicValue.Max,//DispersionSymbolicValue.Moyen,//load dispersion
 				ReplicationExperimentationGenerator.getValue(ReplicationExperimentationGenerator.hostCapacity[0],this.nbAgentDomain[0]),//capacity mean//(double)ReplicationExperimentationParameters.startingNbAgents/(double)ReplicationExperimentationParameters.startingNbHosts,//ReplicationExperimentationParameters.doubleParameters.get(1),2.5,//
-				DispersionSymbolicValue.Faible,//DispersionSymbolicValue.Faible,//capcity dispersion
+				DispersionSymbolicValue.Moyen,//DispersionSymbolicValue.Faible,//capcity dispersion
 				this.criticityMeanDomain[0],//criticity mean
-				DispersionSymbolicValue.Fort,//criticity dispersion
+				DispersionSymbolicValue.Max,//criticity dispersion
 				Integer.MAX_VALUE,
 				this.kDomain[0],
 				ReplicationExperimentationGenerator.getValue(this.kOpinionDomain[0],this.nbAgentDomain[0]),

@@ -23,6 +23,7 @@ public class NegotiationParameters {
 	public final static String key4statusProto = "status protocol";
 	public final static String key4multiLatProto = "multi lateral protocol";
 	public static final String key4DcopProto = "dcop proto";
+	public static String key4DcopProto2 = "dcop proto avec un gros k";
 	public static final String key4GeneticProto = "genetic proto";
 
 	//Selection algorithms
@@ -32,5 +33,6 @@ public class NegotiationParameters {
 	//	public final static String key4randomSelect = "random select";
 	//	public final static String key4OptSelect = "opt select";
 	//	public static final String key4BetterSelect = "better select";
+
 
 }

@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
@@ -483,7 +485,13 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	}
 
 	int getDcopKValue(final int k){
-		return k;//(int) Math.sqrt(4*k);
+		if (_usedProtocol.equals(NegotiationParameters.key4DcopProto))
+			return k;
+		else if (_usedProtocol.equals(NegotiationParameters.key4DcopProto2)){
+			return (int) Math.sqrt(4*k);
+		} else {
+			throw new RuntimeException("imopssib");
+		}
 	}
 
 	private SimpleSelectionCore getSelectionCore(final SelectionType selection){
@@ -558,7 +566,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 					this._socialWelfare.equals(that._socialWelfare) &&
 					this.hostFaultProbabilityDispersion.equals(that.hostFaultProbabilityDispersion) &&
 					this.agentCriticityMean.equals(that.agentCriticityMean) &&
-			this.agentCriticityDispersion.equals(that.agentCriticityDispersion);
+					this.agentCriticityDispersion.equals(that.agentCriticityDispersion);
 		} else {
 			return false;
 		}
@@ -646,6 +654,14 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				} else {
 					return 1;
 				}
+			} else if  (this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) ||
+					that._usedProtocol.equals(NegotiationParameters.key4DcopProto2)){//en deuxieme
+				if (this._usedProtocol.equals(NegotiationParameters.key4DcopProto2)) {
+					return -1;
+				} else {
+					return 1;
+				}
+
 			} else {
 				throw new RuntimeException("impossible avec 4 protos");
 			}
@@ -757,18 +773,19 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		}
 
 		/////variation de k
-		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
-				this._hostSelection.equals(SelectionType.RoolettWheel) &&
-//				(alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN)) &&
-				this._socialWelfare.equals(SocialChoiceType.Utility) &&						
-				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
-						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto))){
-			return true;
-		}
+//		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+//				this._hostSelection.equals(SelectionType.RoolettWheel) &&
+//				this._socialWelfare.equals(SocialChoiceType.Utility) &&						
+//				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
+//						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
+//						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
+//			assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
+//			return true;
+//		}
 
 		/////variation de agent
 		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
-				//												this._socialWelfare.equals(SocialChoiceType.Utility)  &&
+				 !this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) &&
 				this._hostSelection.equals(SelectionType.RoolettWheel)){
 			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
 				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)&&
@@ -869,16 +886,15 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		simulations=this.getPart(simulations, ReplicationLaborantin.informativeParameterNumber, nbPart);
 		return simulations;
 	}
-	public static int nbPart=4;
 	private  <T>  LinkedList<T> getPart(final List<T> objets, final int partNumber, final int numberOfPart){
 		final LinkedList<T> results = new LinkedList<T>();
 
 		final int numberOfPartElements = (int)Math.ceil((double)objets.size()/(double)numberOfPart);
-		//		System.out.println("number of element for part "+partNumber+" : "+numberOfPartElements);
+//		System.out.println("number of element for part "+partNumber+" : "+numberOfPartElements);
 		final int startPoint = partNumber*numberOfPartElements;
-		//		System.out.println("startPoint for part "+partNumber+" : "+startPoint);
+//		System.out.println("startPoint for part "+partNumber+" : "+startPoint);
 		final int finalPoint = Math.min(objets.size(), startPoint+numberOfPartElements);
-		//		System.out.println("finalPoint for part "+partNumber+" : "+finalPoint);
+//		System.out.println("finalPoint for part "+partNumber+" : "+finalPoint);
 		for (int i = startPoint; i < finalPoint; i++){
 			results.add(objets.get(i));
 		}

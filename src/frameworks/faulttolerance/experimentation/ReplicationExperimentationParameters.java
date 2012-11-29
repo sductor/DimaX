@@ -356,7 +356,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.alpha_low, this.alpha_high,new Double(randSeed));
 
 			}else if (this._usedProtocol
-					.equals(NegotiationParameters.key4DcopProto)){
+					.equals(NegotiationParameters.key4DcopProto) ||this._usedProtocol
+					.equals(NegotiationParameters.key4DcopProto2) ){
 
 				rep = new DcopAgent(
 						replicaId,
@@ -428,7 +429,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						this.opinionDiffusionDegree.intValue(),
 						this.alpha_low, this.alpha_high,new Double(randSeed));
 			}else if (this._usedProtocol
-					.equals(NegotiationParameters.key4DcopProto)){
+					.equals(NegotiationParameters.key4DcopProto) ||this._usedProtocol
+					.equals(NegotiationParameters.key4DcopProto2)){
 
 				hostAg = new DcopHost(
 						hostId,
@@ -485,7 +487,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	}
 
 	int getDcopKValue(final int k){
-		if (_usedProtocol.equals(NegotiationParameters.key4DcopProto))
+		if (_usedProtocol.equals(NegotiationParameters.key4DcopProto) ||this._usedProtocol
+				.equals(NegotiationParameters.key4DcopProto2))
 			return k;
 		else if (_usedProtocol.equals(NegotiationParameters.key4DcopProto2)){
 			return (int) Math.sqrt(4*k);

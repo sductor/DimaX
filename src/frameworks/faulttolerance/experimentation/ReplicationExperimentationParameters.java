@@ -776,30 +776,30 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		}
 
 		/////variation de k
-		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
-				this._hostSelection.equals(SelectionType.RoolettWheel) &&
-				this._socialWelfare.equals(SocialChoiceType.Utility) &&						
-				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
-						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
-						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
-			assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
-			return true;
-		}
+//		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+//				this._hostSelection.equals(SelectionType.RoolettWheel) &&
+//				this._socialWelfare.equals(SocialChoiceType.Utility) &&						
+//				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
+//						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
+//						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
+//			assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
+//			return true;
+//		}
 
 		/////variation de agent
-		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
-				 !this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) &&
-				this._hostSelection.equals(SelectionType.RoolettWheel)){
-			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
-				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)&&
-						this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)&&
-						this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
-								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
-			} else {
-				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
-				return true;
-			}
-		}
+//		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
+//				 !this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) &&
+//				this._hostSelection.equals(SelectionType.RoolettWheel)){
+//			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
+//				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)&&
+//						this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)&&
+//						this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
+//								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
+//			} else {
+//				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
+//				return true;
+//			}
+//		}
 
 
 		return false;

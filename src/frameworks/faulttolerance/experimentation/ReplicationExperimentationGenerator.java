@@ -36,7 +36,8 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			public static int _AgentDefault=1000;
 //	private final Integer[] nbAgentDomain = new Integer[]{25};
 //	public static int _AgentDefault=25;
-	private final Integer[] nbAgentDomain = new Integer[]{100,250,500,750,1000,2500,5000,7500,10000};
+	private final Integer[] nbAgentDomain = new Integer[]{1000,2500,5000,7500,10000};
+//	private final Integer[] nbAgentDomain = new Integer[]{100,250,500,750,1000,2500,5000,7500,10000};
 	public static int _AgentDefault=1000;
 //	private final Integer[] nbAgentDomain = new Integer[]{500,750,1000,2500,5000,7500,10000};
 //	public static int _AgentDefault=1000;

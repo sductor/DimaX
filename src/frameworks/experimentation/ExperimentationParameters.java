@@ -55,8 +55,8 @@ extends BasicAgentModule<Agent> implements Comparable{
 //			public static final long _maxSimulationTime = 60000 * 10;//10 minutes
 	//		public static final long _maxSimulationTime = 60000 * 15;//15 minutes
 //	public static final long _maxSimulationTime = 60000 * 20;//20 minutes
-		public static final long _maxSimulationTime = 60000 * 30;//30 minutes
-//		public static final long _maxSimulationTime = 60000 * 45;//45 minutes
+//		public static final long _maxSimulationTime = 60000 * 30;//30 minutes
+		public static final long _maxSimulationTime = 60000 * 45;//45 minutes
 //			public static final long _maxSimulationTime = 60000 * 60;//60 minutes
 
 	public static int nbPart=3;
@@ -64,7 +64,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 	//			public  long maxIndividualComputingTime = 60000;//1 min
 	//	public  long maxIndividualComputingTime = 120000;//2 min
 	//	public  long maxIndividualComputingTime = 3000;//30 sec
-	public  long maxIndividualComputingTime = ExperimentationParameters._maxSimulationTime/6;
+	public  long maxIndividualComputingTime = ExperimentationParameters._maxSimulationTime/9;
 
 	//
 	// Fields

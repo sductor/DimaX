@@ -138,6 +138,15 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 			return value*ref;
 		}
 	}
+	
+	public static Double reverseValue(final Double value, final double ref){
+		if (value.equals(Double.NaN)) {
+			return Double.NaN;
+		} else{
+//			assert value<=1.:value;
+			return value/ref;
+		}
+	}
 
 	Double[] dispoMeanDomain = new Double[]{0.7};
 	Double[] criticityMeanDomain = new Double[]{0.5};

@@ -884,6 +884,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		/////variation de agent
 		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
 				!this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) &&
+				this._socialWelfare.equals(SocialChoiceType.Utility) &&	
 				this._hostSelection.equals(SelectionType.RoolettWheel)){
 			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
 				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)&&
@@ -892,7 +893,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
 			} else {
 				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
-				return true;
+				return this.nbAgents==ReplicationExperimentationGenerator._AgentDefault2;
 			}
 		}
 

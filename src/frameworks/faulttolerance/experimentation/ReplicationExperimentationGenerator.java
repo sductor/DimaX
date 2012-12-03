@@ -24,7 +24,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	 */
 	private static final long serialVersionUID = -3325093836959956134L;
 	//problem
-	private final Long[] seeds = new Long[]{(long) 889757};//,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
+	private final Long[] seeds = new Long[]{(long) 5649434};//,(long) 1223435,(long) 5564864,(long) 646464,(long) 94864};
 	//
 	//		private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
 	//	public static int _AgentDefault=2500;
@@ -36,9 +36,11 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			public static int _AgentDefault=1000;
 //	private final Integer[] nbAgentDomain = new Integer[]{25};
 //	public static int _AgentDefault=25;
-	private final Integer[] nbAgentDomain = new Integer[]{1000,2500,5000,7500,10000};
+	private final Integer[] nbAgentDomain = new Integer[]{50,100,250,500,750};
+//	private final Integer[] nbAgentDomain = new Integer[]{1000,2500,5000,7500,10000};
 //	private final Integer[] nbAgentDomain = new Integer[]{100,250,500,750,1000,2500,5000,7500,10000};
 	public static int _AgentDefault=1000;
+	public static int _AgentDefault2=50;
 //	private final Integer[] nbAgentDomain = new Integer[]{500,750,1000,2500,5000,7500,10000};
 //	public static int _AgentDefault=1000;
 //	private final Integer[] nbAgentDomain = new Integer[]{500,1000,5000};

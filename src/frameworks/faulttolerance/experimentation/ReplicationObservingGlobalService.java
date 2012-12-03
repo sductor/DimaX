@@ -51,7 +51,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	LightWeightedAverageDoubleAggregation[] criticite;
 	/* Disponibility */
 	LightAverageDoubleAggregation[] agentsDispoEvolution;
-//	LightAverageDoubleAggregation[] agentsLogDispoEvolution;
+	LightAverageDoubleAggregation[] agentsLogDispoEvolution;
 	/* Quantile */
 	LightAverageDoubleAggregation[] agentsSaturationEvolution;
 	/* Point */
@@ -122,7 +122,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		this.agentsExpectedReliabilityEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsMinReliabilityEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsDispoEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
-//		this.agentsLogDispoEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsLogDispoEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.criticite = new LightWeightedAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.lastTimeInfo = new LightAverageDoubleAggregation();
 		this.hostsChargeEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
@@ -140,7 +140,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			this.agentsExpectedReliabilityEvolution[i] = new LightAverageDoubleAggregation();
 			this.agentsMinReliabilityEvolution[i] = new LightAverageDoubleAggregation();
 			this.agentsDispoEvolution[i] = new LightAverageDoubleAggregation();
-//			this.agentsLogDispoEvolution[i] = new LightAverageDoubleAggregation();
+			this.agentsLogDispoEvolution[i] = new LightAverageDoubleAggregation();
 			this.criticite[i] = new LightWeightedAverageDoubleAggregation();
 			this.faulty[i] = new LightAverageDoubleAggregation();
 		}
@@ -214,7 +214,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			this.agentsExpectedReliabilityEvolution[i].add(ag.getReliability(SocialChoiceType.Utility));
 			this.agentsMinReliabilityEvolution[i].add(ag.getReliability(SocialChoiceType.Leximin));
 			this.agentsDispoEvolution[i].add(ag.getDisponibility());
-//			this.agentsLogDispoEvolution[i].add(Math.log(ag.getDisponibility()));
+			this.agentsLogDispoEvolution[i].add(Math.log(ag.getDisponibility()));
 			this.criticite[i].add(ag.disponibility==0. ? 0. : 1., ag.criticity);
 
 			if (this.iObserveStatus){
@@ -283,12 +283,12 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 								.getSimulationParameters().nbAgents), this.getMyAgent()
 								.getSimulationParameters().nbAgents), true,
 								false);
-//		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
-//				.getQuantileTimeEvolutionObs("log disponibilite",
-//						this.agentsLogDispoEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
-//								.getSimulationParameters().nbAgents), this.getMyAgent()
-//								.getSimulationParameters().nbAgents), true,
-//								false);
+		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
+				.getQuantileTimeEvolutionObs("log disponibilite",
+						this.agentsLogDispoEvolution, 0.75 * (this.getActiveAgents().size() / this.getMyAgent()
+								.getSimulationParameters().nbAgents), this.getMyAgent()
+								.getSimulationParameters().nbAgents), true,
+								false);
 		// Taux de survie = moyenne pond��r�� des (wi, li) | li ��� {0,1} agent
 		// mort/vivant
 		LogService.logOnFile(this.getMyAgent().getSimulationParameters().getResultPath(), ObservingGlobalService
@@ -400,11 +400,12 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		return "protocol ; welfare ; " +
 				"nbagent ; nbHost; k; " +
 				"alpha_low ; alpha_high ; opinion ; " +
-				"mean util ; min min ; mean min ;mean dispo ; prod dispo ; log prod dispo ;  " +
+				"mean util ; min min ; mean min ;mean dispo ; prod dispo ; log prod dispo ;  sum log dispo ; mean log dispo" +
 				"nbModif min ; nbModif mean ; nbModif max ; " +
 				"lastTime min ; lastTime mean ; lastTime max; " +
 				"nbMessage/ag min; nbMessage/ag mean; nbMessage/ag max; " +
 				"nbMessage/h min; nbMessage/h mean; nbMessage/h max; " +
+				"no rep mean util ;no rep  min min ;no rep  mean min ;no rep mean dispo ;no rep  prod dispo ; no rep log prod dispo ; no rep  sum log dispo ; no rep mean log dispo" +
 				"repId ; randomSeed";
 	}
 
@@ -432,10 +433,20 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						this.agentsDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
 						this.agentsDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getProd()+" ; "+
 						-Math.log(this.agentsDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getProd())+" ; "+
+						this.agentsLogDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getSum()+" ; "+
+						this.agentsLogDispoEvolution[ObservingGlobalService.getNumberOfTimePoints()-1].getRepresentativeElement()+" ; "+
 						this.nbOfStateModif.getMinElement()+" ; "+this.nbOfStateModif.getRepresentativeElement()+" ; "+this.nbOfStateModif.getMaxElement()+" ; "+
 						this.lastReplicationtime.getMinElement()+" ; "+this.lastReplicationtime.getRepresentativeElement()+" ; "+this.lastReplicationtime.getMaxElement()+" ; "+
 						this.agMessageSEnded.getMinElement()+" ; "+this.agMessageSEnded.getRepresentativeElement()+" ; "+this.agMessageSEnded.getMaxElement()+" ; "+
 						this.hostMessageSEnded.getMinElement()+" ; "+this.hostMessageSEnded.getRepresentativeElement()+" ; "+this.hostMessageSEnded.getMaxElement()+" ; "+
+						this.agentsExpectedReliabilityEvolution[0].getRepresentativeElement()+" ; "+
+						this.agentsMinReliabilityEvolution[0].getMinElement()+" ; "+
+						this.agentsMinReliabilityEvolution[0].getRepresentativeElement()+" ; "+
+						this.agentsDispoEvolution[0].getRepresentativeElement()+" ; "+
+						this.agentsDispoEvolution[0].getProd()+" ; "+
+						-Math.log(this.agentsDispoEvolution[0].getProd())+" ; "+
+						this.agentsLogDispoEvolution[0].getSum()+" ; "+
+						this.agentsLogDispoEvolution[0].getRepresentativeElement()+" ; "+
 						this.getMyAgent().getSimulationParameters().getSimulationName()+" ; "+
 						this.getMyAgent().getSimulationParameters().randSeed
 						;

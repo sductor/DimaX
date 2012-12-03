@@ -669,28 +669,58 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 				throw new RuntimeException("impossible avec 4 protos");
 			}
 		} else {
-			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) && 
-					(!this.opinionDiffusionDegree.equals(that.opinionDiffusionDegree) ||
-							!this.alpha_low.equals(that.alpha_low)	||
-							!this.alpha_high.equals(that.alpha_high))){
-				if (!this.opinionDiffusionDegree.equals(that.opinionDiffusionDegree)){
+			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){ 
+				if (!ReplicationExperimentationGenerator.reverseValue(this.opinionDiffusionDegree,this.nbAgents).equals(
+						ReplicationExperimentationGenerator.reverseValue(that.opinionDiffusionDegree,that.nbAgents))){
 					if (this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
 							ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents))))
 						return -1;
 					else
 						return 1;
-				} else if (!this.alpha_low.equals(that.alpha_low)){
-					if ( this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault))
-						return -1;
-					else
-						return 1;
-				} else if (!this.alpha_high.equals(that.alpha_high)){
-					if ( this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))
-						return -1;
-					else
-						return 1;
 				} else {
-					throw new RuntimeException("impossible");
+					if (!this.alpha_low.equals(that.alpha_low)){
+						if ( this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault))
+							return -1;
+						else
+							return 1;
+					} else {
+						if (!this.alpha_high.equals(that.alpha_high)){
+							if ( this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))
+								return -1;
+							else
+								return 1;
+						} else {
+							if (!this._socialWelfare.equals(that._socialWelfare)){
+								return this._socialWelfare.compareTo(that._socialWelfare);
+							} else	{
+								if (this.nbAgents!=that.nbAgents){
+									return this.nbAgents-that.nbAgents;
+								} else {
+									if (this.kSolver!=that.kSolver){
+										return this.kSolver-that.kSolver;
+									} else {
+										if (this.agentAccessiblePerHost!=that.agentAccessiblePerHost) {
+											return this.agentAccessiblePerHost-that.agentAccessiblePerHost;
+										} else {
+											if (this.hostCapacityMean/this.nbAgents!=that.hostCapacityMean/that.nbAgents){
+												return new Double(this.hostCapacityMean/this.nbAgents).compareTo(that.hostCapacityMean/that.nbAgents);
+											} else {
+												if (!this._hostSelection.equals(that._hostSelection)){
+													return this._hostSelection.compareTo(that._hostSelection);
+												} else {	
+													if (this.equals(that)){
+														return 0;
+													} else {
+														return this.hashCode()-that.hashCode();
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			} else {
 				if (!this._socialWelfare.equals(that._socialWelfare)){
@@ -725,100 +755,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 		}
 	}
-
-	//	@Override
-	//	public int compareTo(final Object o) {
-	//		assert this.alpha_high!=0.;
-	//		final ReplicationExperimentationParameters that = (ReplicationExperimentationParameters) o;
-	//		//		if (!this._usedProtocol.equals(that._usedProtocol)){
-	//		//			if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) ||
-	//		//					that._usedProtocol.equals(NegotiationParameters.key4mirrorProto)){//en premier
-	//		//				if (this._usedProtocol.equals(NegotiationParameters.key4mirrorProto)) {
-	//		//					return -1;
-	//		//				} else {
-	//		//					return 1;
-	//		//				}
-	//		//
-	//		//			} else if  (this._usedProtocol.equals(NegotiationParameters.key4DcopProto) ||
-	//		//					that._usedProtocol.equals(NegotiationParameters.key4DcopProto)){//en deuxieme
-	//		//				if (this._usedProtocol.equals(NegotiationParameters.key4DcopProto)) {
-	//		//					return -1;
-	//		//				} else {
-	//		//					return 1;
-	//		//				}
-	//		//
-	//		//			} else  if(this._usedProtocol.equals(NegotiationParameters.key4GeneticProto) ||
-	//		//					that._usedProtocol.equals(NegotiationParameters.key4GeneticProto)){//en troisieme
-	//		//				if (this._usedProtocol.equals(NegotiationParameters.key4GeneticProto)) {
-	//		//					return -1;
-	//		//				} else {
-	//		//					return 1;
-	//		//				}
-	//		//			} else if  (this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) ||
-	//		//					that._usedProtocol.equals(NegotiationParameters.key4DcopProto2)){//en deuxieme
-	//		//				if (this._usedProtocol.equals(NegotiationParameters.key4DcopProto2)) {
-	//		//					return -1;
-	//		//				} else {
-	//		//					return 1;
-	//		//				}
-	//		//
-	//		//			} else {
-	//		//				throw new RuntimeException("impossible avec 4 protos");
-	//		//			}
-	//		//		} else {
-	//		if (!ReplicationExperimentationGenerator.reverseValue(this.opinionDiffusionDegree,this.nbAgents).equals(
-	//				ReplicationExperimentationGenerator.reverseValue(that.opinionDiffusionDegree,that.nbAgents))){
-	//			if (this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
-	//					ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents))))
-	//				return -1;
-	//			else
-	//				return 1;
-	//		} else {
-	//			if (!this.alpha_low.equals(that.alpha_low)){
-	//				if ( this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault))
-	//					return -1;
-	//				else
-	//					return 1;
-	//			} else {
-	//				if (!this.alpha_high.equals(that.alpha_high)){
-	//					if ( this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))
-	//						return -1;
-	//					else
-	//						return 1;
-	//				} else {
-	//					if (!this._socialWelfare.equals(that._socialWelfare)){
-	//						return this._socialWelfare.compareTo(that._socialWelfare);
-	//					} else	{
-	//						if (this.nbAgents!=that.nbAgents){
-	//							return this.nbAgents-that.nbAgents;
-	//						} else {
-	//							if (this.kSolver!=that.kSolver){
-	//								return this.kSolver-that.kSolver;
-	//							} else {
-	//								if (this.agentAccessiblePerHost!=that.agentAccessiblePerHost) {
-	//									return this.agentAccessiblePerHost-that.agentAccessiblePerHost;
-	//								} else {
-	//									if (this.hostCapacityMean/this.nbAgents!=that.hostCapacityMean/that.nbAgents){
-	//										return new Double(this.hostCapacityMean/this.nbAgents).compareTo(that.hostCapacityMean/that.nbAgents);
-	//									} else {
-	//										if (!this._hostSelection.equals(that._hostSelection)){
-	//											return this._hostSelection.compareTo(that._hostSelection);
-	//										} else {	
-	//											if (this.equals(that)){
-	//												return 0;
-	//											} else {
-	//												return this.hashCode()-that.hashCode();
-	//											}
-	//										}
-	//									}
-	//								}
-	//							}
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
 
 
 
@@ -855,36 +791,36 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		//SOUHAITE
 		//
 		////parametrage auto reg
-		//	if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) &&
-		//			this.kSolver==ReplicationExperimentationGenerator._kDefault &&
-		//			this._socialWelfare.equals(SocialChoiceType.Utility) &&
-		//			this._hostSelection.equals(SelectionType.RoolettWheel)
-		//			){
-		//		if (!this.opinionDiffusionDegree.equals(
-		//				ReplicationExperimentationGenerator.getValue(
-		//						ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)))){
-		//			return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
-		//					&& this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault);
-		//		} else {
-		//			return true;
-		//		}
-		//	}
+//			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) &&
+//					this.kSolver==ReplicationExperimentationGenerator._kDefault &&
+//					this._socialWelfare.equals(SocialChoiceType.Utility) &&
+//					this._hostSelection.equals(SelectionType.RoolettWheel)
+//					){
+//				if (!this.opinionDiffusionDegree.equals(
+//						ReplicationExperimentationGenerator.getValue(
+//								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)))){
+//					return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
+//							&& this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault);
+//				} else {
+//					return true;
+//				}
+//			}
 
 		/////variation de k
-		//		if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
-		//				this._hostSelection.equals(SelectionType.RoolettWheel) &&
-		//				this._socialWelfare.equals(SocialChoiceType.Utility) &&						
-		//				(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
-		//						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
-		//						|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
-		//			assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
-		//			return true;
-		//		}
+//				if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+//						this._hostSelection.equals(SelectionType.RoolettWheel) &&
+//						this._socialWelfare.equals(SocialChoiceType.Utility) &&						
+//						(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
+//								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
+//								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
+//					assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
+//					return true;
+//				}
 
 		/////variation de agent
 		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
 				!this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) &&
-				this._socialWelfare.equals(SocialChoiceType.Utility) &&	
+//				this._socialWelfare.equals(SocialChoiceType.Utility) &&	
 				this._hostSelection.equals(SelectionType.RoolettWheel)){
 			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
 				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)&&
@@ -893,7 +829,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
 			} else {
 				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
-				return this.nbAgents==ReplicationExperimentationGenerator._AgentDefault2;
+				return true;
 			}
 		}
 

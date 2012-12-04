@@ -46,7 +46,7 @@ extends DcopAgentProtocol<State, Contract>{
 	//Map fringe node to k- group their are fringe of and this agent is leader
 	//
 
-	public final int maxWainttime=100000;//1000;//
+	public final int maxWainttime=1000;//1000;//
 	public int waitTime=0;
 
 	//the local view structure has changed

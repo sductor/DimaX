@@ -33,8 +33,8 @@ public class JMetalRessAllocProblem extends Problem	{
 	public int mu     = 15 ;
 
 	int diversi=5;
-	int nbMutation = 2;
-	int nbCroisement = 5;
+	int nbMutation = 3;
+	int nbCroisement = 10;
 	private int stagnationCounter=2;
 
 	public JMetalRessAllocProblem(final RessourceAllocationProblem<Solution> p){

@@ -65,7 +65,7 @@ extends BasicAgentModule<Agent> implements Comparable{
 	//			public  long maxIndividualComputingTime = 60000;//1 min
 	//	public  long maxIndividualComputingTime = 120000;//2 min
 	//	public  long maxIndividualComputingTime = 3000;//30 sec
-	public  long maxIndividualComputingTime = ExperimentationParameters._maxSimulationTime/45;
+	public  long maxIndividualComputingTime = ExperimentationParameters._maxSimulationTime/10;
 
 	//
 	// Fields

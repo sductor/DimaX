@@ -130,7 +130,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//			new Double[]{0.2,0.8}};
 	private final Double[] kOpinionDomain=
 			new Double[]{Double.NaN,0.1,0.6,0.9};//,0.6,1.};
-	static Double _kOpinionDefault=0.6;
+	static Double _kOpinionDefault=0.9;
 
 
 	public static Double getValue(final Double value, final double ref){

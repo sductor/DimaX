@@ -22,7 +22,6 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 
 	ActivityLog l = new ActivityLog();
 	public static final String observationLog = "log key for self observing service agents";
-
 	public ObservingSelfService() {
 		super();
 	}
@@ -39,7 +38,11 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 		this.logMonologue("notifying my results",ObservingSelfService.observationLog);
 		this.l.add(this.generateMyResults());
 	}
-
+	
+	public void notifyMyInitState(){
+		l.initState=this.generateMyResults();
+	}
+	
 	//
 	//
 	//
@@ -112,6 +115,7 @@ extends BasicAgentCompetence<BasicCompetentAgent>{
 
 		LinkedList<ExperimentationResults> results =
 				new LinkedList<ExperimentationResults>();
+		ExperimentationResults initState;
 
 		public LinkedList<ExperimentationResults> getResults() {
 			return this.results;

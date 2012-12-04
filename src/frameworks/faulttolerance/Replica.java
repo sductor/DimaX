@@ -10,6 +10,7 @@ import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.loggingactivity.LogService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import frameworks.experimentation.ExperimentationResults;
+import frameworks.experimentation.ObservedAgent;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.faulttolerance.experimentation.ReplicationExperimentationParameters;
 import frameworks.faulttolerance.experimentation.ReplicationResultAgent;
@@ -23,7 +24,8 @@ import frameworks.negotiation.protocoles.status.StatusAgent;
 import frameworks.negotiation.rationality.RationalCore;
 
 public abstract class Replica<Contract extends AbstractContractTransition>
-extends SimpleNegotiatingAgent<ReplicaState, Contract> {
+extends SimpleNegotiatingAgent<ReplicaState, Contract>
+implements ObservedAgent{
 	private static final long serialVersionUID = 4986143017976368579L;
 
 	//
@@ -97,7 +99,9 @@ extends SimpleNegotiatingAgent<ReplicaState, Contract> {
 	// Constructor
 	//
 
-
+	public ObservingSelfService getMySelfObservingService(){
+		return mySelfObservationService;
+	}
 
 	public Replica(
 			final AgentIdentifier id,

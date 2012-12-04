@@ -6,6 +6,7 @@ import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.information.ObservationService;
 import dima.introspectionbasedagents.services.observingagent.PatternObserverWithHookservice.EventHookedMethod;
 import frameworks.experimentation.ExperimentationResults;
+import frameworks.experimentation.ObservedAgent;
 import frameworks.experimentation.ObservingSelfService;
 import frameworks.faulttolerance.experimentation.ReplicationResultHost;
 import frameworks.faulttolerance.experimentation.SearchTimeNotif;
@@ -21,6 +22,7 @@ import frameworks.negotiation.rationality.RationalCore;
 
 public abstract class Host<Contract extends MatchingCandidature>
 extends	SimpleNegotiatingAgent<HostState, Contract>
+implements ObservedAgent
 {
 	private static final long serialVersionUID = -8478683967125467116L;
 
@@ -49,6 +51,9 @@ extends	SimpleNegotiatingAgent<HostState, Contract>
 		}
 	};
 
+	public ObservingSelfService getMySelfObservingService(){
+		return mySelfObservationService;
+	}
 	//	@Competence
 	//	public
 	//	FaultObservationService myFaultAwareService =

@@ -49,7 +49,7 @@ extends BasicCommunicatingCompetence<Agent>{
 		return this.rep;
 	}
 
-	public static final long _state_snapshot_frequency = 30000;//ExperimentationParameters._maxSimulationTime / 60;
+	public static final long _state_snapshot_frequency = ExperimentationParameters._maxSimulationTime / 5;
 
 	//
 	// Abstract
@@ -67,6 +67,7 @@ extends BasicCommunicatingCompetence<Agent>{
 	//
 	//	protected abstract void updateAgentInfo(ExperimentationResults notification);
 	protected abstract void updateInfo(ExperimentationResults notification);
+	protected abstract void setinitState(ExperimentationResults notification);
 
 
 
@@ -179,6 +180,8 @@ extends BasicCommunicatingCompetence<Agent>{
 		final LinkedList<ExperimentationResults> results =
 				new LinkedList(l.getNotification().getResults());
 
+		this.setinitState(l.getNotification().initState);
+		
 		assert this.verification(results);
 
 		if (!results.isEmpty()){

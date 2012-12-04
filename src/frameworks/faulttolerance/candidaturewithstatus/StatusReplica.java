@@ -47,6 +47,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			Double collectiveSeed) throws CompetenceException{
 		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity,collectiveSeed);
 		this.soc=new StatusObservationCompetence(myLaborantin,true, ReplicaState.class, alpha_low, alpha_high);
+		this.soc.setMyAgent(this);
 	}
 	public StatusReplica(final AgentIdentifier id,
 			final ReplicaState myState,
@@ -58,6 +59,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			Double collectiveSeed) throws CompetenceException{
 		this (id, myState, participantCore, simultaneousCandidature,dynamicCriticity,collectiveSeed);
 		this.soc=new StatusObservationCompetence(numberToContact, true, ReplicaState.class, alpha_low, alpha_high);
+		this.soc.setMyAgent(this);
 	}
 
 	private StatusReplica(final AgentIdentifier id,

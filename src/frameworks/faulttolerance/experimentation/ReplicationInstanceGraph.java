@@ -12,6 +12,7 @@ import java.util.Random;
 
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.basicagentcomponents.AgentName;
+import dima.introspectionbasedagents.kernel.PseudoRandom;
 import dima.introspectionbasedagents.modules.distribution.DistributionParameters;
 import dima.introspectionbasedagents.modules.distribution.NormalLaw.DispersionSymbolicValue;
 import dima.introspectionbasedagents.modules.mappedcollections.HashedHashSet;
@@ -316,31 +317,34 @@ extends GimaObject implements ReplicationGraph{
 		 * States
 		 */
 
-		final DistributionParameters<AgentIdentifier> agentCriticity = new DistributionParameters<AgentIdentifier>(
-				this.agents.keySet(),
-				agentCriticityMean,
-				agentCriticityDispersion,rand,false);
-		final DistributionParameters<AgentIdentifier>  agentProcessor = new DistributionParameters<AgentIdentifier>(
-				this.agents.keySet(),
-				agentLoadMean,
-				agentLoadDispersion,rand, true);
-		final DistributionParameters<AgentIdentifier> agentMemory = new DistributionParameters<AgentIdentifier>(
-				this.agents.keySet(),
-				agentLoadMean,
-				agentLoadDispersion,rand, true);
+
+	
 		final DistributionParameters<ResourceIdentifier> hostMemCapacity = new DistributionParameters<ResourceIdentifier>(
 				this.hosts.keySet(),
 				hostCapacityMean,
-				hostCapacityDispersion,rand, true);
+				hostCapacityDispersion,new Random(rand.nextInt()), true);
 		final DistributionParameters<ResourceIdentifier> hostProcCapacity = new DistributionParameters<ResourceIdentifier>(
 				this.hosts.keySet(),
 				hostCapacityMean,
-				hostCapacityDispersion,rand, true);
+				hostCapacityDispersion,new Random(rand.nextInt()), true);
 		final DistributionParameters<ResourceIdentifier> fault = new DistributionParameters<ResourceIdentifier>(
 				this.hosts.keySet(),
 				hostFaultProbabilityMean,
-				hostDisponibilityDispersion,rand,false);
-
+				hostDisponibilityDispersion,new Random(rand.nextInt()),false);
+		
+		final DistributionParameters<AgentIdentifier> agentCriticity = new DistributionParameters<AgentIdentifier>(
+				this.agents.keySet(),
+				agentCriticityMean,
+				agentCriticityDispersion,new Random(rand.nextInt()),false);
+		final DistributionParameters<AgentIdentifier>  agentProcessor = new DistributionParameters<AgentIdentifier>(
+				this.agents.keySet(),
+				agentLoadMean,
+				agentLoadDispersion,new Random(rand.nextInt()), true);	
+		final DistributionParameters<AgentIdentifier> agentMemory = new DistributionParameters<AgentIdentifier>(
+				this.agents.keySet(),
+				agentLoadMean,
+				agentLoadDispersion,new Random(rand.nextInt()), true);
+		
 		for (final AgentIdentifier id : this.agents.keySet()){
 			this.agents.put(id,
 					new ReplicaState(id,
@@ -401,6 +405,8 @@ extends GimaObject implements ReplicationGraph{
 					}
 				}
 			}
+			throw new RuntimeException("mauvais reglage");
+
 		}
 
 	}

@@ -44,6 +44,13 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	/*
 	 * Agent
 	 */
+	/*first*/
+
+	LightAverageDoubleAggregation agentsFirstExpectedReliabilityEvolution;
+	LightAverageDoubleAggregation agentsFirstMinReliabilityEvolution;
+	LightAverageDoubleAggregation agentsFirstDispoEvolution;
+	LightAverageDoubleAggregation agentsFirstLogDispoEvolution;
+
 	/* Quantile */
 	LightAverageDoubleAggregation[] agentsExpectedReliabilityEvolution;
 	LightAverageDoubleAggregation[] agentsMinReliabilityEvolution;
@@ -123,6 +130,10 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		this.agentsMinReliabilityEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsDispoEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.agentsLogDispoEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
+		this.agentsFirstExpectedReliabilityEvolution = new LightAverageDoubleAggregation();
+		this.agentsFirstMinReliabilityEvolution = new LightAverageDoubleAggregation();
+		this.agentsFirstDispoEvolution = new LightAverageDoubleAggregation();
+		this.agentsFirstLogDispoEvolution = new LightAverageDoubleAggregation();
 		this.criticite = new LightWeightedAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
 		this.lastTimeInfo = new LightAverageDoubleAggregation();
 		this.hostsChargeEvolution = new LightAverageDoubleAggregation[ObservingGlobalService.getNumberOfTimePoints()];
@@ -159,6 +170,17 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 	// Methods
 	//
 
+	@Override
+	protected void setinitState(ExperimentationResults notification) {
+
+		if (notification instanceof ReplicationResultAgent){
+			final ReplicationResultAgent ag = (ReplicationResultAgent) notification;
+			this.agentsFirstExpectedReliabilityEvolution.add(ag.getReliability(SocialChoiceType.Utility));
+			this.agentsFirstMinReliabilityEvolution.add(ag.getReliability(SocialChoiceType.Leximin));
+			this.agentsFirstDispoEvolution.add(ag.getDisponibility());
+			this.agentsFirstLogDispoEvolution.add(Math.log(ag.getDisponibility()));
+		}
+	}
 
 	@Override
 	protected void updateInfo(final ExperimentationResults notification) {
@@ -207,6 +229,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 			assert 1<0;
 		}
 	}private void updateAnAgentValue(final ReplicationResultAgent ag, final int i) {
+
+
 		if (i < ObservingGlobalService.getNumberOfTimePoints()) {
 			this.agentsSaturationEvolution[i].add(
 					(double)ag.getNumberOfAllocatedResources()/
@@ -400,12 +424,12 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		return "protocol ; welfare ; " +
 				"nbagent ; nbHost; k; " +
 				"alpha_low ; alpha_high ; opinion ; " +
-				"mean util ; min min ; mean min ;mean dispo ; prod dispo ; log prod dispo ;  sum log dispo ; mean log dispo" +
+				"mean util ; min min ; mean min ;mean dispo ; prod dispo ; log prod dispo ;  sum log dispo ; mean log dispo ; " +
 				"nbModif min ; nbModif mean ; nbModif max ; " +
 				"lastTime min ; lastTime mean ; lastTime max; " +
 				"nbMessage/ag min; nbMessage/ag mean; nbMessage/ag max; " +
 				"nbMessage/h min; nbMessage/h mean; nbMessage/h max; " +
-				"no rep mean util ;no rep  min min ;no rep  mean min ;no rep mean dispo ;no rep  prod dispo ; no rep log prod dispo ; no rep  sum log dispo ; no rep mean log dispo" +
+				"no rep mean util ;no rep  min min ;no rep  mean min ;no rep mean dispo ;no rep  prod dispo ; no rep log prod dispo ; no rep  sum log dispo ; no rep mean log dispo ; " +
 				"repId ; randomSeed";
 	}
 
@@ -439,14 +463,14 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 						this.lastReplicationtime.getMinElement()+" ; "+this.lastReplicationtime.getRepresentativeElement()+" ; "+this.lastReplicationtime.getMaxElement()+" ; "+
 						this.agMessageSEnded.getMinElement()+" ; "+this.agMessageSEnded.getRepresentativeElement()+" ; "+this.agMessageSEnded.getMaxElement()+" ; "+
 						this.hostMessageSEnded.getMinElement()+" ; "+this.hostMessageSEnded.getRepresentativeElement()+" ; "+this.hostMessageSEnded.getMaxElement()+" ; "+
-						this.agentsExpectedReliabilityEvolution[0].getRepresentativeElement()+" ; "+
-						this.agentsMinReliabilityEvolution[0].getMinElement()+" ; "+
-						this.agentsMinReliabilityEvolution[0].getRepresentativeElement()+" ; "+
-						this.agentsDispoEvolution[0].getRepresentativeElement()+" ; "+
-						this.agentsDispoEvolution[0].getProd()+" ; "+
-						-Math.log(this.agentsDispoEvolution[0].getProd())+" ; "+
-						this.agentsLogDispoEvolution[0].getSum()+" ; "+
-						this.agentsLogDispoEvolution[0].getRepresentativeElement()+" ; "+
+						this.agentsFirstExpectedReliabilityEvolution.getRepresentativeElement()+" ; "+
+						this.agentsFirstMinReliabilityEvolution.getMinElement()+" ; "+
+						this.agentsFirstMinReliabilityEvolution.getRepresentativeElement()+" ; "+
+						this.agentsFirstDispoEvolution.getRepresentativeElement()+" ; "+
+						this.agentsFirstDispoEvolution.getProd()+" ; "+
+						-Math.log(this.agentsFirstDispoEvolution.getProd())+" ; "+
+						-this.agentsFirstLogDispoEvolution.getSum()+" ; "+
+						-this.agentsFirstLogDispoEvolution.getRepresentativeElement()+" ; "+
 						this.getMyAgent().getSimulationParameters().getSimulationName()+" ; "+
 						this.getMyAgent().getSimulationParameters().randSeed
 						;
@@ -461,7 +485,7 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 		//				agentsExpectedReliabilityEvolution[0].getRepresentativeElement()+" ; "+
 		//				agentsMinReliabilityEvolution[0].getRepresentativeElement()+" ; "+
 		//				agentsDispoEvolution[0].getRepresentativeElement();
-		
+
 		this.result = result.replace(".", ",");
 	}
 
@@ -684,6 +708,8 @@ public class ReplicationObservingGlobalService extends ObservingGlobalService<Re
 					+ this.nbAgentEmpty+ this.nbAgentLost;
 		}
 	}
+
+
 }
 
 //					for (final AgentIdentifier r : this.getAllAgents()) {

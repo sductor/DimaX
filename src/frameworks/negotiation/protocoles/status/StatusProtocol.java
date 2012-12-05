@@ -22,7 +22,6 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 	 * 
 	 */
 	private static final long serialVersionUID = 1590563865576327573L;
-	Boolean destructionOptimized;
 
 	/**
 	 * 
@@ -30,10 +29,9 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 	 * @param optimizeDestruction null if not a ressource ; if false, all destruction demand will be automatically confirmed
 	 * @throws UnrespectedCompetenceSyntaxException
 	 */
-	public StatusProtocol(final Boolean destructionOptimized)
+	public StatusProtocol()
 			throws UnrespectedCompetenceSyntaxException {
 		super(new ContractTrunk<Contract>());
-		this.destructionOptimized=destructionOptimized;
 	}
 
 	/*
@@ -44,16 +42,7 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 		if (this.isActive() && !this.getContracts().isEmpty()) {
 
 			assert this.canonicVerif();
-			final Collection<Contract> extractedContracts = new ArrayList<Contract>();
-			if (this.destructionOptimized!=null && !this.destructionOptimized){
-				assert this.getMyAgent().getIdentifier() instanceof ResourceIdentifier;
-				for (final Contract n:this.getContracts().getAllContracts()){
-					if (!n.isMatchingCreation()){
-						extractedContracts.add(n);
-					}
-				}
-				this.confirmContract(extractedContracts, Receivers.Initiator);
-			}
+	
 			assert this.canonicVerif();
 			super.answer();
 			assert this.canonicVerif();

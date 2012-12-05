@@ -68,6 +68,16 @@ public interface RationalAgent<PersonalState extends AgentState, Contract extend
 	public abstract boolean Iaccept(final Contract c);
 
 	public abstract boolean Iaccept(final Collection<? extends Contract> c);
+	
+
+	public abstract boolean IdontCare(final PersonalState s, final Contract c);
+
+	public abstract boolean IdontCare(final PersonalState s,
+			final Collection<? extends Contract> c);
+
+	public abstract boolean IdontCare(final Contract c);
+
+	public abstract boolean IdontCare(final Collection<? extends Contract> c);
 
 	public abstract boolean isPersonalyValid(final PersonalState s,
 			final Collection<? extends Contract> c);

@@ -154,7 +154,7 @@ public class HostState extends SimpleAgentState{
 	}
 
 	public boolean ImSurcharged() {
-		return this.getMyCharge() > 1.;
+		return (this.getCurrentMemCharge() > this.getMemChargeMax()) || (this.getCurrentProcCharge()>this.getProcChargeMax());
 	}
 
 

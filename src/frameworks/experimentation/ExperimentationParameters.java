@@ -57,10 +57,10 @@ extends BasicAgentModule<Agent> implements Comparable{
 //	public static final long _maxSimulationTime = 60000 * 20;//20 minutes
 //		public static final long _maxSimulationTime = 60000 * 30;//30 minutes
 //		public static final long _maxSimulationTime = 60000 * 45;//45 minutes
-//			public static final long _maxSimulationTime = 60000 * 60;//60 minutes
-			public static final long _maxSimulationTime = 60000 * 90;//90 minutes
+			public static final long _maxSimulationTime = 60000 * 60;//60 minutes
+//			public static final long _maxSimulationTime = 60000 * 90;//90 minutes
 
-	public static int nbPart=7;
+	public static int nbPart=8;
 
 	//			public  long maxIndividualComputingTime = 60000;//1 min
 	//	public  long maxIndividualComputingTime = 120000;//2 min

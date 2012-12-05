@@ -159,8 +159,8 @@ implements AbstractContractTransition{
 
 
 	@Override
-	public Boolean getCreation() {
-		return this.candidature.getCreation();
+	public Boolean isCreation() {
+		return this.candidature.isCreation();
 	}
 
 

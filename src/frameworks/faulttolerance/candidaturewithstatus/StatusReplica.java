@@ -93,7 +93,7 @@ public class StatusReplica extends Replica<ReplicationCandidature> implements St
 			}
 		},
 		new SimpleOpinionService(new ReplicaStateOpinionHandler(myState.getSocialWelfare(),id)),
-		new StatusProtocol(null),
+		new StatusProtocol(),
 		dynamicCriticity,collectiveSeed);
 	}
 

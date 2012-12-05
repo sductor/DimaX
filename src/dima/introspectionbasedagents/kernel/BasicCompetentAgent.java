@@ -21,6 +21,7 @@ import dima.introspectionbasedagents.services.darxkernel.DimaXTask;
 import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.SigKillOrder;
 import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
 import dima.introspectionbasedagents.services.launch.ApiLaunchService;
 import dima.introspectionbasedagents.services.launch.LaunchableComponent;
@@ -308,6 +309,12 @@ public class BasicCompetentAgent extends BasicIntrospectedCommunicatingAgent imp
 		return this.apiService.endLive(m);
 	}
 
+	@Override
+	public boolean commitSuicide(final SigKillOrder m) {
+		//todo a refaire : similaire que endlive
+		return this.apiService.endLive();
+	}
+	
 	@Override
 	public boolean endLive() {
 		return this.apiService.endLive();

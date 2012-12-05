@@ -4,6 +4,7 @@ import dima.basicinterfaces.IdentifiedComponentInterface;
 import dima.introspectionbasedagents.services.deployment.server.HostIdentifier;
 import dima.introspectionbasedagents.services.launch.APIAgent.APILauncherModule;
 import dima.introspectionbasedagents.services.launch.APIAgent.EndLiveMessage;
+import dima.introspectionbasedagents.services.launch.APIAgent.SigKillOrder;
 import dima.introspectionbasedagents.services.launch.APIAgent.StartActivityMessage;
 
 public interface LaunchableComponent extends IdentifiedComponentInterface{
@@ -22,6 +23,8 @@ public interface LaunchableComponent extends IdentifiedComponentInterface{
 	boolean start(final StartActivityMessage m);
 
 	boolean endLive(final EndLiveMessage m);
-
+	
+	boolean commitSuicide(final SigKillOrder m);
+	
 	boolean endLive();
 }

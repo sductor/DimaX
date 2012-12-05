@@ -405,7 +405,7 @@ extends GimaObject implements ReplicationGraph{
 					}
 				}
 			}
-			throw new RuntimeException("mauvais reglage");
+			throw new RuntimeException("mauvais reglage (ensembkle de la branche else)");
 
 		}
 

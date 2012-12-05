@@ -320,6 +320,44 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 		return this.Iaccept(this.getMyCurrentState(),c);
 	}
 
+	/***********************
+	 * 
+	 */
+	
+	@Override
+	public boolean IdontCare(final PersonalState s, final Contract c) {
+		final Collection<Contract> a = new ArrayList<Contract>();
+		a.add(c);
+		return this.IdontCare(s, a);
+	}
+
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#Iaccept(PersonalState, java.util.Collection)
+	 */
+	@Override
+	public boolean IdontCare(final PersonalState s, final Collection<? extends Contract> c) {
+		final Collection<Contract> a2 = new ArrayList<Contract>();
+		return this.isPersonalyValid(s, c)
+				&& this.myCore.getAllocationPreference((Collection<Contract>) c, a2) >= 0;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#Iaccept(Contract)
+	 */
+	@Override
+	public boolean IdontCare(final Contract c) {
+		return this.IdontCare(this.getMyCurrentState(), c);
+	}
+
+	/* (non-Javadoc)
+	 * @see negotiation.negotiationframework.rationality.RationalAgent#Iaccept(java.util.Collection)
+	 */
+	@Override
+	public boolean IdontCare(final Collection<? extends Contract> c) {
+		return this.IdontCare(this.getMyCurrentState(),c);
+	}	
+	
 	/*
 	 * 
 	 */

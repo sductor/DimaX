@@ -25,6 +25,7 @@ public class NegotiationParameters {
 	public static final String key4DcopProto = "dcop proto";
 	public static String key4DcopProto2 = "dcop proto avec un gros k";
 	public static final String key4GeneticProto = "genetic proto";
+	public static final int MixedSelectionHeuristicNumberOfTry = 50;
 
 	//Selection algorithms
 	public enum SelectionType{RoolettWheel, Greedy, Better, Opt, Random}

@@ -121,7 +121,7 @@ implements RationalCore<Agent, PersonalState, Contract>{
 				}
 			}
 			for (final Contract ca : c1) {
-				assert ca.getInitialState(myAgent.getIdentifier()).equals(myAgent.getMyCurrentState());
+//				assert ca.getInitialState(myAgent.getIdentifier()).equals(myAgent.getMyCurrentState());
 			}
 			return true;
 		} catch (final IncompleteContractException c){

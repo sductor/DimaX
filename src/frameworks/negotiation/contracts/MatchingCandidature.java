@@ -53,7 +53,7 @@ implements ValuedContract {
 		return this.creation;
 	}
 
-	public Boolean getCreation() {
+	public Boolean isCreation() {
 		return this.creation;
 	}
 

@@ -10,14 +10,19 @@ import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
+import frameworks.negotiation.NegotiationParameters.SelectionType;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.opinion.SimpleOpinionService;
 import frameworks.negotiation.protocoles.InactiveProposerCore;
 import frameworks.negotiation.protocoles.status.StatusObservationCompetence;
 import frameworks.negotiation.protocoles.status.StatusProtocol;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
+import frameworks.negotiation.selection.GreedySelectionModule;
+import frameworks.negotiation.selection.MixedCandidatureTypecontractSelectionCore;
 import frameworks.negotiation.selection.OptimalSelectionModule;
+import frameworks.negotiation.selection.SelectionModule;
 import frameworks.negotiation.selection.SimpleSelectionCore;
+import frameworks.negotiation.selection.GreedySelectionModule.GreedySelectionType;
 
 public class StatusHost extends Host {
 	private static final long serialVersionUID = 1891276000545412915L;
@@ -28,12 +33,13 @@ public class StatusHost extends Host {
 	public StatusHost(
 			final ResourceIdentifier id,
 			final HostState myState,
-			final SimpleSelectionCore participantCore,
+			final SelectionModule selectionMod,
 			final SocialChoiceType _socialWelfare,
 			final AgentIdentifier myLaborantin,
 			final double alpha_low, final double alpha_high,
+			final long maxComputingTime,
 			Double collectiveSeed) throws CompetenceException {
-		this(id, myState, participantCore, _socialWelfare,true,collectiveSeed);
+		this(id, myState, selectionMod, _socialWelfare,true,maxComputingTime,collectiveSeed);
 		this.soc=new StatusObservationCompetence(myLaborantin,false, ReplicaState.class, alpha_low, alpha_high);
 		this.soc.setActive(false);
 	}
@@ -41,12 +47,13 @@ public class StatusHost extends Host {
 	public StatusHost(
 			final ResourceIdentifier id,
 			final HostState myState,
-			final SimpleSelectionCore participantCore,
+			final SelectionModule selectionMod,
 			final SocialChoiceType _socialWelfare,
 			final int numberToContact,
 			final double alpha_low, final double alpha_high,
+			final long maxComputingTime,
 			Double collectiveSeed) throws CompetenceException {
-		this(id, myState, participantCore, _socialWelfare,false,collectiveSeed);
+		this(id, myState, selectionMod, _socialWelfare,false,maxComputingTime,collectiveSeed);
 		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class, alpha_low, alpha_high);
 	}
 
@@ -54,17 +61,19 @@ public class StatusHost extends Host {
 	private StatusHost(
 			final ResourceIdentifier id,
 			final HostState myState,
-			final SimpleSelectionCore participantCore,
+			final SelectionModule selectionMod,
 			final SocialChoiceType _socialWelfare,
 			final boolean centralised,
+			final long maxComputingTime,
 			Double collectiveSeed) throws UnrespectedCompetenceSyntaxException, CompetenceException{
 		super(id,
 				myState,
 				new HostCore(_socialWelfare,true,true),
-				participantCore,
+				new SimpleSelectionCore(true,false,new MixedCandidatureTypecontractSelectionCore(selectionMod,maxComputingTime)),
 				new InactiveProposerCore(),
 				centralised?new SimpleObservationService():new SimpleOpinionService(new ReplicaStateOpinionHandler(_socialWelfare, id)),
-						new StatusProtocol(participantCore.getSelectionModule() instanceof OptimalSelectionModule),collectiveSeed);
+						new StatusProtocol(),collectiveSeed);
+		getMySelectionCore().setMyAgent(this);
 
 	}
 

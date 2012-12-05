@@ -28,7 +28,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//
 	//		private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
 	//	public static int _AgentDefault=2500;
-	//		private Integer[] nbAgentDomain = new Integer[]{50,250,500,750,1000};
+			private Integer[] nbAgentDomain = new Integer[]{50,100,250,500,750,1000,2500,5000};
 	//		public static int _AgentDefault=250;
 //		private Integer[] nbAgentDomain = new Integer[]{100};
 //			public static int _AgentDefault=100;
@@ -36,7 +36,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			public static int _AgentDefault=1000;
 //	private final Integer[] nbAgentDomain = new Integer[]{25};
 //	public static int _AgentDefault=25;
-	private final Integer[] nbAgentDomain = new Integer[]{100,500,1000,2500,5000};
+//	private final Integer[] nbAgentDomain = new Integer[]{100,500,1000,2500,5000};
 //	private final Integer[] nbAgentDomain = new Integer[]{50,100,250,500,750,1000,2500,7500,10000};
 //	private final Integer[] nbAgentDomain = new Integer[]{1000,2500,5000,7500,10000};
 //	private final Integer[] nbAgentDomain = new Integer[]{100,250,500,750,1000,2500,5000,7500,10000};
@@ -49,7 +49,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	int maxAgentNb = Collections.max(Arrays.asList(this.nbAgentDomain));
 
 			private Integer[] nbHostDomain = new Integer[]{staticNbHost};
-			private static Integer staticNbHost=12;//5;//16;//24;//
+			private static Integer staticNbHost=10;//5;//16;//24;//
 	int maxHostNb = Collections.max(Arrays.asList(this.nbHostDomain));
 
 	//solveur
@@ -62,7 +62,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //	private final Integer[] kDomain= new Integer[]{5,25};
 //	public static int _kDefault=25;
 //	private final Integer[] kDomain= new Integer[]{5,100,250,500,750,1000};
-	public static int _kDefault=100;
+	public static int _kDefault=5;
 			private Integer[] kDomain= new Integer[]{5,100,500,1000};
 	//		public static int _kDefault=100;
 	//		public static int _kDefaultAll=100;
@@ -70,7 +70,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 
 	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),
 	//	private Double[] graphDensityDomain = new Double[]{0.5};//15.,
-	private static Double[] hostCapacity = new Double[]{0.6};//null;//new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
+	private static Double[] hostCapacity = new Double[]{0.3};//null;//new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
 	private static  Double[] graphDensityDomain =new Double[]{ 1.0};//	null;// new Double[]{0.8,0.2};//15.,
 
 	//	static{
@@ -117,9 +117,10 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 			new Double[][]{new Double[]{Double.NaN,Double.NaN},
 			new Double[]{0.2,0.2},
 			new Double[]{0.3,0.6},
-			new Double[]{0.6,0.6},
 			new Double[]{0.8,0.8},
-			new Double[]{0.6,0.3}};
+			new Double[]{0.6,0.6},
+			new Double[]{0.6,0.3}
+			};
 	static Double _alpha_lowDefault=0.6;
 	static Double _alpha_highDefault=0.6;
 	//	private Double[][] alphaDomain=
@@ -130,7 +131,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//			new Double[]{0.2,0.8}};
 	private final Double[] kOpinionDomain=
 			new Double[]{Double.NaN,0.1,0.6,0.9};//,0.6,1.};
-	static Double _kOpinionDefault=0.9;
+	static Double _kOpinionDefault=0.6;
 
 
 	public static Double getValue(final Double value, final double ref){

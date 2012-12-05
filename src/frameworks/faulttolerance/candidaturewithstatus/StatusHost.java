@@ -57,6 +57,7 @@ public class StatusHost extends Host {
 		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class, alpha_low, alpha_high);
 	}
 
+	
 
 	private StatusHost(
 			final ResourceIdentifier id,

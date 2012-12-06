@@ -789,10 +789,6 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 	@Override
 	public boolean isValid() {
 		//		return true;
-
-		if ( this.alpha_low.equals(0.8) && this.alpha_high.equals(0.8)){
-			return this.nbAgents==500;
-		}
 		
 		if (!this.parametresCoherents()){
 			return false;

@@ -28,7 +28,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//
 	//		private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
 	//	public static int _AgentDefault=2500;
-			private Integer[] nbAgentDomain = new Integer[]{50,100,250,500,750,1000,2500,5000};
+			private Integer[] nbAgentDomain = new Integer[]{50,100};//,250,500,750,1000,2500,5000};
 	//		public static int _AgentDefault=250;
 //		private Integer[] nbAgentDomain = new Integer[]{100};
 //			public static int _AgentDefault=100;
@@ -115,11 +115,11 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//Social
 	private final Double[][] alphaDomain=
 			new Double[][]{new Double[]{Double.NaN,Double.NaN},
-			new Double[]{0.2,0.2},
+//			new Double[]{0.2,0.2},
 			new Double[]{0.3,0.6},
-			new Double[]{0.8,0.8},
-			new Double[]{0.6,0.6},
-			new Double[]{0.6,0.3}
+//			new Double[]{0.8,0.8},
+//			new Double[]{0.6,0.6},
+//			new Double[]{0.6,0.3}
 			};
 	static Double _alpha_lowDefault=0.6;
 	static Double _alpha_highDefault=0.6;

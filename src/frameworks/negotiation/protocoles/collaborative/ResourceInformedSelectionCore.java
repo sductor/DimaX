@@ -73,14 +73,14 @@ InformedCandidature<Contract>> {
 	@Override
 	public void select(
 			final ContractTrunk<InformedCandidature<Contract>> given,
-			PersonalState currentState,
+		
 			final Collection<InformedCandidature<Contract>> accepted,
 			final Collection<InformedCandidature<Contract>> rejected,
 			final Collection<InformedCandidature<Contract>> onWait)  {
 		assert accepted.isEmpty();
 		assert rejected.isEmpty();
 		assert onWait.isEmpty();
-
+			PersonalState currentState=getMyAgent().getMyCurrentState();
 		// Verification de la consistance
 		assert currentState.isValid():
 			"what the  (1)!!!!!!"+ this.getMyAgent().getMyCurrentState();

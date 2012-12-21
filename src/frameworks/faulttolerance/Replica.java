@@ -33,7 +33,7 @@ implements ObservedAgent{
 	//
 
 	private final boolean dynamicCrticity;
-	private long lastModifTime=-1;
+	private long lastModifTime=0;
 
 	//	public boolean replicate = true;
 
@@ -68,17 +68,22 @@ implements ObservedAgent{
 		}
 	};
 
-	@EventHookedMethod(ReplicaState.class)
-	public void updateStateStatus(final ReplicaState h){
-		//		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
-		//		if (firstModifTime==-2){
-		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
-		//			firstModifTime=-1;
-		//		}else if (firstModifTime==-1){
-		//			assert h.getStateCounter()==initialStateNumber+1;
-		//			firstModifTime=getUptime();
-		//		}
-		//
+//	@EventHookedMethod(ReplicaState.class)
+//	public void updateStateStatus(final ReplicaState h){
+//		//		System.out.println("yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+//		//		if (firstModifTime==-2){
+//		//			assert h.getStateCounter()==initialStateNumber:h.getStateCounter()+" "+initialStateNumber;
+//		//			firstModifTime=-1;
+//		//		}else if (firstModifTime==-1){
+//		//			assert h.getStateCounter()==initialStateNumber+1;
+//		//			firstModifTime=getUptime();
+//		//		}
+//		//
+//		this.lastModifTime=this.getUptime();
+//	}
+	@Override
+	public void setNewState(final ReplicaState s){
+		super.setNewState(s);
 		this.lastModifTime=this.getUptime();
 	}
 	//	@Competence

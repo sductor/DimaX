@@ -22,7 +22,7 @@ implements SelectionCore<NegotiatingAgent<PersonalState,Contract>, PersonalState
 	private static final long serialVersionUID = 4298182739752070762L;
 
 	@Override
-	public void select(final ContractTrunk<Contract> cs, final PersonalState currentState,
+	public void select(final ContractTrunk<Contract> cs, 
 			final Collection<Contract> toAccept, final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
 		//do nothing

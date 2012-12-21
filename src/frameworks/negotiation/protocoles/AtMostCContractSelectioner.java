@@ -14,7 +14,7 @@ import frameworks.negotiation.contracts.ContractTrunk;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol.SelectionCore;
 import frameworks.negotiation.rationality.AgentState;
 
-public class AtMostCContractSelectioner<
+public abstract class AtMostCContractSelectioner<
 Agent extends NegotiatingAgent<PersonalState, Contract>,
 ActionSpec extends AbstractActionSpecif,
 PersonalState extends AgentState,
@@ -48,12 +48,12 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 
 	@Override
 	public void select(final ContractTrunk<Contract> cs,
-			final PersonalState s,
 			final Collection<Contract> toAccept, final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
+		PersonalState s = getMyAgent().getMyCurrentState();
 		final List<Contract> all = cs.getParticipantOnWaitContracts();
 		all.remove(cs.getLockedContracts());
-		final int nbContracts = all.size()+s.getMyResourceIdentifiers().size();
+		final int nbContracts = all.size()+getAdditionalCost(s);//s.getMyResourceIdentifiers().size();
 		if (nbContracts>this.c && !all.isEmpty()){
 			final Collection<Contract> notAnalysed = new ArrayList<Contract>();
 			for (int i = 0; i < nbContracts-this.c; i++){
@@ -68,12 +68,12 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 			this.getMyAgent().getMyProtocol().answerRejected(notAnalysed);
 		}
 
-		this.myCore.select(cs, s, toAccept, toReject, toPutOnWait);
+		this.myCore.select(cs, toAccept, toReject, toPutOnWait);
 
 	}
 
 
-
+	public abstract int getAdditionalCost(PersonalState s);
 
 
 }

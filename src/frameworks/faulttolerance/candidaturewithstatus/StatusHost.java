@@ -1,7 +1,11 @@
 package frameworks.faulttolerance.candidaturewithstatus;
 
+import java.io.Serializable;
+import java.util.Collection;
+
 import dima.basicagentcomponents.AgentIdentifier;
 import dima.introspectionbasedagents.annotations.Competence;
+import dima.introspectionbasedagents.services.AgentCompetence;
 import dima.introspectionbasedagents.services.CompetenceException;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
@@ -10,12 +14,15 @@ import frameworks.faulttolerance.negotiatingagent.HostCore;
 import frameworks.faulttolerance.negotiatingagent.HostState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.faulttolerance.negotiatingagent.ReplicaStateOpinionHandler;
+import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.NegotiationParameters.SelectionType;
 import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.opinion.SimpleOpinionService;
+import frameworks.negotiation.protocoles.AtMostCContractSelectioner;
 import frameworks.negotiation.protocoles.InactiveProposerCore;
 import frameworks.negotiation.protocoles.status.StatusObservationCompetence;
 import frameworks.negotiation.protocoles.status.StatusProtocol;
+import frameworks.negotiation.rationality.AgentState;
 import frameworks.negotiation.rationality.SocialChoiceFunction.SocialChoiceType;
 import frameworks.negotiation.selection.GreedySelectionModule;
 import frameworks.negotiation.selection.MixedCandidatureTypecontractSelectionCore;
@@ -71,6 +78,14 @@ public class StatusHost extends Host {
 				myState,
 				new HostCore(_socialWelfare,true,true),
 				new SimpleSelectionCore(true,false,new MixedCandidatureTypecontractSelectionCore(selectionMod,maxComputingTime)),
+//				new AtMostCContractSelectioner(
+//						NegotiationParameters.MaxCNumberOfContract,
+//						new SimpleSelectionCore(true,false,new MixedCandidatureTypecontractSelectionCore(selectionMod,maxComputingTime))) {
+//							@Override
+//							public int getAdditionalCost(AgentState s) {
+//								return 0;
+//							}
+//				},
 				new InactiveProposerCore(),
 				centralised?new SimpleObservationService():new SimpleOpinionService(new ReplicaStateOpinionHandler(_socialWelfare, id)),
 						new StatusProtocol(),collectiveSeed);

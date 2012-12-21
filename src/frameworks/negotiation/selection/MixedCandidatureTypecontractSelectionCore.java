@@ -34,14 +34,14 @@ Agent,
 PersonalState,
 Contract>  {
 
-	
+
 	final SelectionModule<Agent,PersonalState,Contract> mainSelectionModule;
 	final long maxComputingTime;
 
 	public MixedCandidatureTypecontractSelectionCore(
 			SelectionModule<Agent, PersonalState, Contract> mainSelectionModule,
 			final long maxComputingTime)
-			throws UnrespectedCompetenceSyntaxException {
+					throws UnrespectedCompetenceSyntaxException {
 		super();
 		this.mainSelectionModule = mainSelectionModule;
 		this.maxComputingTime=maxComputingTime;
@@ -57,35 +57,59 @@ Contract>  {
 			Collection<Contract> contractsToExplore) {
 		Collection<Contract> toAccept = new ArrayList<Contract>();
 		Date begining = new Date();
+
+		//
+		assert currentState.isValid();
+		assert verification(getMyAgent().getMyCurrentState(), contractsToExplore);
+
+		//Extraction et conversion des contrats de destruction 
+		final Collection<Contract> destructionContracts = new ArrayList<Contract>();
+		for (final Contract c:contractsToExplore){
+			try {
+				assert c.getInitialState(c.getResource()).equals(getMyAgent().getMyCurrentState());
+			} catch (IncompleteContractException e) {
+				throw new RuntimeException();
+			}
+			if (!c.isMatchingCreation())
+				destructionContracts.add(c);
+			assert Assert.IIF(destructionContracts.contains(c), !c.isMatchingCreation()):"destruction inco";
+		}
+		PersonalState freedState = getMyAgent().getMyResultingState(currentState, destructionContracts);
+		
+		//
+		setNewStateToAll(freedState,contractsToExplore);
+		assert verification(freedState, contractsToExplore);
+
+		//execution  de ma sélection
 		for (int i = 0; i < NegotiationParameters.MixedSelectionHeuristicNumberOfTry; i++){
-			toAccept = solve(currentState, contractsToExplore);
+			toAccept = solve(freedState,contractsToExplore,destructionContracts);
 			if (new Date().getTime()-begining.getTime()>this.maxComputingTime)
 				break;
 			if (!toAccept.isEmpty())
 				break;
 		}
+		
+		//
+		setNewStateToAll(getMyAgent().getMyCurrentState(),contractsToExplore);
+		assert verification(getMyAgent().getMyCurrentState(), contractsToExplore);
+		assert verification(getMyAgent().getMyCurrentState(), toAccept);	
+
+		/*rturn*/
+		assert getMyAgent().getMyResultingState(currentState, toAccept).isValid();
+		assert getMyAgent().IdontCare(currentState,toAccept);
 		return toAccept;
 	}
-	
-	public Collection<Contract> solve(PersonalState currentState,
-			Collection<Contract> contractsToExplore) {
-		//Extraction des contrats de destruction
-		final Collection<Contract> destructionContracts = new ArrayList<Contract>();
 
-		for (final Contract c:contractsToExplore){
-			if (!c.isMatchingCreation())
-				destructionContracts.add(c);
-		}
-		PersonalState freedState = getMyAgent().getMyResultingState(currentState, destructionContracts);
+	private Collection<Contract> solve(
+			PersonalState freedState,
+			Collection<Contract> contractsToExplore, 
+			Collection<Contract> destructionContracts) {
 
 		//selection des contrats
-		setNewStateToAll(contractsToExplore,freedState);
-
 		Collection<Contract> selected = mainSelectionModule.selection(freedState, contractsToExplore);
 		boolean better = getMyAgent().getMyAllocationPreferenceComparator().compare(selected, destructionContracts)>0;
-		setNewStateToAll(contractsToExplore,currentState);
-		
-		
+
+
 		//reorga des contrats
 		final Collection<Contract> toAccept = new ArrayList<Contract>();
 		if (better){
@@ -98,16 +122,12 @@ Contract>  {
 			//on accepte rien on fait pas mieu!
 		}
 
-		//
-		assert verification(currentState, contractsToExplore, destructionContracts);
-		assert verification(currentState, toAccept, destructionContracts);
-		assert getMyAgent().getMyResultingState(currentState, toAccept).isValid();
-		assert getMyAgent().IdontCare(currentState,toAccept);
-		
 		return toAccept;
 	}
 
-	private void setNewStateToAll(Collection<Contract> cs, PersonalState myState){
+	private void setNewStateToAll(
+			PersonalState myState,
+			Collection<Contract> cs){
 		for (Contract c : cs){
 			assert myState instanceof HostState;
 			assert c instanceof MatchingCandidature;
@@ -115,21 +135,26 @@ Contract>  {
 			c.setCreation(!myState.hasResource(c.getAgent()));
 			c.setInitialState(myState);
 			try {
-				c.setInitialState(((ReplicaState) c.getInitialState(c.getAgent())).allocate((HostState) myState,myState.hasResource(c.getAgent())));
+				c.setInitialState(((ReplicaState) c.getInitialState(c.getAgent())).allocate(
+						(HostState) myState,
+						myState.hasResource(c.getAgent())));
 			} catch (IncompleteContractException e) {
 				throw new RuntimeException("impossible");
 			}
 		}
 	}
 
-	private boolean verification(PersonalState currentState,
-			Collection<Contract> contractsToExplore, Collection<Contract> destructionContracts){
+	private boolean verification(
+			PersonalState currentState,
+			Collection<Contract> contractsToExplore){
 		for (Contract c : contractsToExplore){
-			assert Assert.IIF(destructionContracts.contains(c), !c.isMatchingCreation());
 			try {
-				assert c.getInitialState(c.getResource()).equals(currentState);
-				assert Assert.IIF(c.isMatchingCreation(), !c.getInitialState(c.getAgent()).hasResource(currentState.getMyAgentIdentifier()));
-				assert Assert.IIF(c.isMatchingCreation(), !currentState.hasResource(c.getAgent()));
+				assert currentState instanceof HostState;
+				assert c.getInitialState(c.getResource()).equals(currentState):"wrong inti state";
+				assert Assert.IIF(c.isMatchingCreation(), 
+						!c.getInitialState(c.getAgent()).hasResource(currentState.getMyAgentIdentifier())):"agent inco";
+				assert Assert.IIF(c.isMatchingCreation(), 
+						!currentState.hasResource(c.getAgent())):"host inco";
 			} catch (IncompleteContractException e) {
 				throw new RuntimeException();
 			}

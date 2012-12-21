@@ -391,7 +391,20 @@ AbstractContractTransition {
 		}
 		return true;
 	}
-
+	public static <Contract extends AbstractContractTransition>
+	boolean allInitiator(final Collection<Contract> cs, AgentIdentifier id){
+		for (final Contract c : cs) {
+			assert !c.getInitiator().equals(id);
+		}
+		return true;
+	}
+	public static <Contract extends AbstractContractTransition>
+	boolean allParticipant(final Collection<Contract> cs, AgentIdentifier id){
+		for (final Contract c : cs) {
+			assert !c.getAllParticipants().contains(id);
+		}
+		return true;
+	}
 	//
 	// Sublcasses
 	//

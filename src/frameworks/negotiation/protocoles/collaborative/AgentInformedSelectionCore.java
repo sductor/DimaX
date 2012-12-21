@@ -29,11 +29,11 @@ InformedCandidature<Contract>>{
 	@Override
 	public void select(
 			final ContractTrunk<InformedCandidature<Contract>> contracts,
-			PersonalState currentState,
 			final Collection<InformedCandidature<Contract>> toAccept,
 			final Collection<InformedCandidature<Contract>> toReject,
 			final Collection<InformedCandidature<Contract>> toPutOnWait) {
 
+			PersonalState currentState=getMyAgent().getMyCurrentState();
 		// Intitiation de l'état
 		assert currentState.isValid():
 			"what the  (1)!!!!!!"+ this.getMyAgent().getMyCurrentState();

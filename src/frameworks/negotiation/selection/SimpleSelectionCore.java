@@ -59,7 +59,6 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 	@Override
 	public void select(
 			final ContractTrunk<Contract> given,
-			PersonalState currentState,
 			final Collection<Contract> toAccept,
 			final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
@@ -71,12 +70,12 @@ implements SelectionCore<Agent,PersonalState, Contract> {
 		assert given.getFailedContracts().isEmpty():given.getFailedContracts();
 
 		// Verification de la consistance
-		assert currentState.isValid():
-			"what the  (1)!!!!!!"+ currentState+"\n"+this.getMyAgent().getMyCurrentState();
+		assert this.getMyAgent().getMyCurrentState().isValid():
+			"what the  (1)!!!!!!"+this.getMyAgent().getMyCurrentState();
 
 		// Mis à jour de l'état si tous les agents ayant été accepter
 		// confirmaient :
-		currentState = this.getMyAgent()
+		PersonalState currentState = this.getMyAgent()
 				.getMyResultingState(
 						this.getMyAgent().getMyCurrentState(),
 						participantAlreadyAccepted);

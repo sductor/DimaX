@@ -674,27 +674,17 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			}
 		} else {
 			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){ 
+				
 				if (!ReplicationExperimentationGenerator.reverseValue(this.opinionDiffusionDegree,this.nbAgents).equals(
 						ReplicationExperimentationGenerator.reverseValue(that.opinionDiffusionDegree,that.nbAgents))){
 					return (ReplicationExperimentationGenerator.reverseValue(this.opinionDiffusionDegree,this.nbAgents).compareTo(
 					ReplicationExperimentationGenerator.reverseValue(that.opinionDiffusionDegree,that.nbAgents)));
-//					if (this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
-//							ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents))))
-//						return -1;
-//					else
-//						return 1;
 				} else {
 					if (!this.alpha_low.equals(that.alpha_low)){
-						if ( this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault))
-							return -1;
-						else
-							return 1;
+							return this.alpha_low.compareTo(that.alpha_low);
 					} else {
 						if (!this.alpha_high.equals(that.alpha_high)){
-							if ( this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault))
-								return -1;
-							else
-								return 1;
+								return this.alpha_high.compareTo(that.alpha_high);
 						} else {
 							if (!this._socialWelfare.equals(that._socialWelfare)){
 								return this._socialWelfare.compareTo(that._socialWelfare);
@@ -797,34 +787,34 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		//SOUHAITE
 		//
 		////parametrage auto reg
-			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) &&
-					this.kSolver==ReplicationExperimentationGenerator._kDefault &&
-					this._socialWelfare.equals(SocialChoiceType.Utility) &&
-					this._hostSelection.equals(SelectionType.RoolettWheel)
-					){
-				if (this.opinionDiffusionDegree.equals(
-						ReplicationExperimentationGenerator.getValue(
-								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)))){
-					//on fait varier tous les alphas
-					return true;					
-				} else {
-					//on n'utilise que le alpha par def
-					return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
-							&& this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault);
-				}
-			}
+//			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto) &&
+//					this.kSolver==ReplicationExperimentationGenerator._kDefault &&
+//					this._socialWelfare.equals(SocialChoiceType.Utility) &&
+//					this._hostSelection.equals(SelectionType.RoolettWheel)
+//					){
+//				if (this.opinionDiffusionDegree.equals(
+//						ReplicationExperimentationGenerator.getValue(
+//								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)))){
+//					//on fait varier tous les alphas
+//					return true;					
+//				} else {
+//					//on n'utilise que le alpha par def
+//					return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault) 
+//							&& this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault);
+//				}
+//			}
 
 		/////variation de k
-//				if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
-//						this._hostSelection.equals(SelectionType.RoolettWheel) &&
-//						this._socialWelfare.equals(SocialChoiceType.Utility) &&						
-//						(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
-//								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
-//								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
-//					assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
-//					return true;
-//				}
-//
+				if (this.nbAgents==ReplicationExperimentationGenerator._AgentDefault &&
+						this._hostSelection.equals(SelectionType.RoolettWheel) &&
+						this._socialWelfare.equals(SocialChoiceType.Utility) &&						
+						(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
+								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
+								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
+					assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
+					return true;
+				}
+
 //		/////variation de agent
 		if (this.kSolver==ReplicationExperimentationGenerator._kDefault &&
 				!this._usedProtocol.equals(NegotiationParameters.key4DcopProto2) &&
@@ -837,8 +827,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
 			} else {
 				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
-//				return true;
-				return false;
+				return true;
 			}
 		}
 

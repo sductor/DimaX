@@ -13,7 +13,7 @@ import frameworks.negotiation.contracts.ResourceIdentifier;
 import frameworks.negotiation.protocoles.AbstractCommunicationProtocol;
 import frameworks.negotiation.rationality.AgentState;
 
-public class StatusProtocol<
+public class StatusProtocolArchive<
 PersonalState extends AgentState,
 Contract extends MatchingCandidature>
 extends AbstractCommunicationProtocol<PersonalState,Contract>{
@@ -29,7 +29,7 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 	 * @param optimizeDestruction null if not a ressource ; if false, all destruction demand will be automatically confirmed
 	 * @throws UnrespectedCompetenceSyntaxException
 	 */
-	public StatusProtocol()
+	public StatusProtocolArchive()
 			throws UnrespectedCompetenceSyntaxException {
 		super(new ContractTrunk<Contract>());
 	}
@@ -41,6 +41,8 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 	protected void answer() {
 		if (this.isActive() && !this.getContracts().isEmpty()) {
 
+			assert this.canonicVerif();
+	
 			assert this.canonicVerif();
 			super.answer();
 			assert this.canonicVerif();
@@ -59,25 +61,67 @@ extends AbstractCommunicationProtocol<PersonalState,Contract>{
 
 	@Override
 	protected void answerAccepted(final Collection<Contract> toAccept) {
-		assert ContractTransition.allInitiator(toAccept, getMyAgent().getIdentifier());	
-		assert ContractTransition.allComplete(toAccept);
-//		assert AbstractCommunicationProtocol.allRequestable(toAccept, this.getContracts());	
+		final ArrayList<Contract> initiator = new ArrayList<Contract>();
+		final ArrayList<Contract> participant = new ArrayList<Contract>();
 
-		this.confirmContract(toAccept, Receivers.NotInitiatingParticipant);
+		this.separateInitiator(toAccept, initiator, participant);
+
+		assert AbstractCommunicationProtocol.allRequestable(initiator, this.getContracts());
+
+		
+		
+		assert ContractTransition.allComplete(initiator);
+		assert ContractTransition.allComplete(participant);
+		assert Assert.Imply(!initiator.isEmpty(),participant.isEmpty()):initiator+"\n -----------------------"+participant;
+		assert Assert.Imply(!participant.isEmpty(), initiator.isEmpty()):initiator+"\n -----------------------"+participant;
+		assert Assert.Imply(!participant.isEmpty(),this.getMyAgent().getIdentifier() instanceof ResourceIdentifier);
+		assert Assert.Imply(!initiator.isEmpty(),!(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier));
+
+		this.confirmContract(initiator, Receivers.NotInitiatingParticipant);
+		this.acceptContract(participant, Receivers.Initiator);
 	}
 
 
 	@Override
 	protected void answerRejected(final Collection<Contract> toReject) {
-		assert ContractTransition.allInitiator(toReject, getMyAgent().getIdentifier());	
-		assert ContractTransition.allComplete(toReject);
-//		assert AbstractCommunicationProtocol.allRequestable(toReject, this.getContracts());	
-		this.cancelContract(toReject, Receivers.Initiator);
+		final ArrayList<Contract> initiator = new ArrayList<Contract>();
+		final ArrayList<Contract> participant = new ArrayList<Contract>();
+
+		//
+		//		Collection<Contract> extractedContracts = new ArrayList<Contract>();
+		//		if (optimizeDestruction!=null && !optimizeDestruction){
+		//			assert getMyAgent().getIdentifier() instanceof ResourceIdentifier;
+		//			Iterator<Contract> itRej = toReject.iterator();
+		//			while (itRej.hasNext()){
+		//				Contract n = itRej.next();
+		//				if (!n.isMatchingCreation()){
+		//					extractedContracts.add(n);
+		//					itRej.remove();
+		//				}
+		//			}
+		//		}
+
+
+		this.separateInitiator(toReject, initiator, participant);
+
+		assert ContractTransition.allComplete(initiator);
+		assert ContractTransition.allComplete(participant);
+		assert Assert.Imply(!initiator.isEmpty(),participant.isEmpty()):initiator+"\n -----------------------"+participant;
+		assert Assert.Imply(!participant.isEmpty(), initiator.isEmpty()):initiator+"\n -----------------------"+participant;
+		assert Assert.Imply(!participant.isEmpty(),this.getMyAgent().getIdentifier() instanceof ResourceIdentifier);
+		assert Assert.Imply(!initiator.isEmpty(),!(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier));
+
+		this.cancelContract(initiator, Receivers.NotInitiatingParticipant);
+		this.cancelContract(participant, Receivers.Initiator);
+
+		//		assert Assert.Imply(!extractedContracts.isEmpty(), optimizeDestruction!=null && !optimizeDestruction);
+		//		this.confirmContract(extractedContracts, Receivers.Initiator);
 	}
 
 	@Override
 	protected void putOnWait(final Collection<Contract> toPutOnWait) {
-		throw new RuntimeException();
+		// TODO Auto-generated method stub
+
 	}
 
 	public boolean canonicVerif(){

@@ -30,11 +30,10 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract>  {
 		return (DCOPLeaderProtocol<State, Contract>) this.getMyAgent().getMyProtocol();
 	}
 	@Override
-	public void select(final ContractTrunk<Contract> cs, final State currentState,
+	public void select(final ContractTrunk<Contract> cs, 
 			final Collection<Contract> toAccept, final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
-
-		super.select(cs, currentState, toAccept, toReject, toPutOnWait);
+		super.select(cs,  toAccept, toReject, toPutOnWait);
 
 		//		if (toAccept.isEmpty() && !getMyProtocol().getWannaLockContract().isEmpty()){
 		//			getMyProtocol().myLock.putAll(getMyProtocol().getWannaLockContract());

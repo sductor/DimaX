@@ -32,10 +32,10 @@ SelectionCore<NegotiatingAgent<State,Contract>, State, Contract> {
 	}
 
 	@Override
-	public void select(final ContractTrunk<Contract> cs, final State currentState,
+	public void select(final ContractTrunk<Contract> cs,
 			final Collection<Contract> toAccept, final Collection<Contract> toReject,
 			final Collection<Contract> toPutOnWait) {
-
+		 final State currentState = getMyAgent().getMyCurrentState();
 		toPutOnWait.addAll(cs.getAllContracts());
 		toPutOnWait.removeAll(cs.getParticipantOnWaitContracts());
 		//		if (this.getClass().isAssignableFrom(DcopAgentSelectionCore.class)){

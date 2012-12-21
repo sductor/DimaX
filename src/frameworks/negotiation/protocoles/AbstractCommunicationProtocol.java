@@ -73,7 +73,6 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 		// Select contract to request/cancel for a initiator
 		public void select(
 				ContractTrunk<Contract> cs,
-				PersonalState currentState,
 				Collection<Contract> toAccept,
 				Collection<Contract> toReject,
 				Collection<Contract> toPutOnWait);
@@ -203,7 +202,7 @@ extends Protocol<NegotiatingAgent<PersonalState, Contract>> {
 			//			assert ContractTransition.allComplete(getContracts().getAllContracts());
 
 			this.getMyAgent().getMySelectionCore().select(
-					this.getContracts(), this.getMyAgent().getMyCurrentState(),toAccept, toReject, toPutOnWait);
+					this.getContracts(), toAccept, toReject, toPutOnWait);
 
 			//
 			// Validity

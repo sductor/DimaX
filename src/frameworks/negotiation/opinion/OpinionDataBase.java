@@ -1,6 +1,7 @@
 package frameworks.negotiation.opinion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -16,6 +17,7 @@ import dima.introspectionbasedagents.modules.aggregator.HeavyParametredAggregati
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.ObservationService.Information;
 import dima.introspectionbasedagents.services.information.SimpleInformationDataBase;
+import frameworks.faulttolerance.experimentation.ReplicationInstanceGraph;
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.opinion.OpinionService.Opinion;
 
@@ -29,12 +31,15 @@ extends SimpleInformationDataBase<Info>{
 	private final AgentIdentifier myAgent;
 	private final OpinionHandler<Info> myOpinionHandler;
 
-	private HashMap<AgentIdentifier,InfoDynamicity> localInfoDynamicity;
 
 	private HashMap<AgentIdentifier, SimpleOpinion> receivedOpinions;
 	private HeavyParametredAggregation<Info> globalMeanOpinions;
-	private HeavyDoubleAggregation globalOpinionDispersion;
 	private TreeSet<IdentifiedInfo> globalMinMaxinfo;
+	
+	
+	private HashMap<AgentIdentifier,InfoDynamicity> localInfoDynamicity;
+	
+	private HeavyDoubleAggregation globalOpinionDispersion;
 	private Long globalInfoMaxDynamicity=Long.MIN_VALUE;
 	private Long globalInfoMinDynamicity=Long.MAX_VALUE;
 
@@ -89,6 +94,8 @@ extends SimpleInformationDataBase<Info>{
 		//Min & Max
 		this.globalMinMaxinfo.remove(new IdentifiedInfo(i));
 		this.globalMinMaxinfo.add(new IdentifiedInfo(i));
+
+		assert verifyStructure():i+"\n ----> "+myAgent;
 		//Local Dynamicity
 		if (this.localInfoDynamicity.containsKey(i.getMyAgentIdentifier())) {
 			this.localInfoDynamicity.get(i.getMyAgentIdentifier()).update(i);
@@ -111,6 +118,7 @@ extends SimpleInformationDataBase<Info>{
 	public void addOpinion(final SimpleOpinion o){
 		this.receivedOpinions.put(o.getMyAgentIdentifier(), o);
 		//Opinion
+		assert o.getMeanInfo()!=null;
 		this.globalMeanOpinions.add(o.getMeanInfo());
 		//Dispersion
 		this.globalOpinionDispersion.put(
@@ -140,7 +148,6 @@ extends SimpleInformationDataBase<Info>{
 		while (opIt.hasNext()){
 			final AgentIdentifier i = opIt.next();
 			if (this.estObsolete(this.receivedOpinions.get(i).getMeanInfo())){
-				opIt.remove();
 				this.globalMeanOpinions.remove(this.receivedOpinions.get(i));
 				this.globalOpinionDispersion.remove(this.receivedOpinions.get(i).getOpinionDispersion());
 				if (this.globalInfoMaxDynamicity.equals(this.receivedOpinions.get(i).getMaxInformationDynamicity())) {
@@ -149,16 +156,22 @@ extends SimpleInformationDataBase<Info>{
 				if (this.globalInfoMinDynamicity.equals(this.receivedOpinions.get(i).getMinInformationDynamicity())) {
 					this.globalInfoMinDynamicity=null;
 				}
+				opIt.remove();
 			}
 		}
 		//Min & Max
+		 
+//		assert verifyStructure();
 		final Iterator<IdentifiedInfo> mmIt = this.globalMinMaxinfo.iterator();
 		while (mmIt.hasNext()){
 			final Info i = mmIt.next().getMyInfo();
 			if (this.estObsolete(i)) {
+				assert !i.getMyAgentIdentifier().equals(myAgent);
 				mmIt.remove();
 			}
 		}
+
+//		assert verifyStructure();
 		//Info & Dynami
 		//		for (Info i : super.get(my))//TODO
 	}
@@ -180,7 +193,7 @@ extends SimpleInformationDataBase<Info>{
 	}
 
 	private boolean estObsolete(final Info i){
-		return false;//!i.getMyAgentIdentifier().equals(myAgent) && (i.getUptime()>getGlobalMaxInfoDynamicity());
+		return !i.getMyAgentIdentifier().equals(myAgent) && (i.getUptime()>getGlobalMaxInfoDynamicity());//false;//
 	}
 
 	/*
@@ -244,13 +257,27 @@ extends SimpleInformationDataBase<Info>{
 	}
 
 	private Long getGlobalMaxInfoDynamicity() {
-		if (this.globalInfoMaxDynamicity.equals(Long.MIN_VALUE)) {
-			return Long.MAX_VALUE;
-		} else {
-			return Math.min(4*NegotiationParameters._timeToCollect, this.globalInfoMaxDynamicity);
-		}
+//		if (this.globalInfoMaxDynamicity.equals(Long.MIN_VALUE)) {
+//			return Long.MAX_VALUE;
+//		} else {
+			return Math.max(NegotiationParameters.ammortissementDynamiciteOpinion, this.globalInfoMaxDynamicity);
+//		}
 	}
 
+	private boolean verifyStructure(){
+		if (ReplicationInstanceGraph.isRessource(myAgent))
+			return true;
+		
+		final Iterator<IdentifiedInfo> mmIt = this.globalMinMaxinfo.iterator();
+		assert !this.globalMinMaxinfo.isEmpty();
+		while (mmIt.hasNext()){
+			if (mmIt.next().getMyInfo().getMyAgentIdentifier().equals(myAgent)){
+				return true;
+			}
+		}		
+		return false;
+	}
+	
 	//
 	// Subclasses
 	//
@@ -284,6 +311,12 @@ extends SimpleInformationDataBase<Info>{
 				final Long minInformationDynamicity,
 				final Long maxInformationDynamicity) {
 			super();
+			assert minInfo!=null;
+			assert meanInfo!=null;
+			assert maxInfo!=null;
+			assert opinionDispersion!=null;
+			assert minInformationDynamicity!=null;
+			assert minInformationDynamicity!=null;
 			assert aggregatedAgents!=null;
 			this.myAgentIdentifier = myAgentIdentifier;
 			this.aggregatedAgents = aggregatedAgents;
@@ -432,6 +465,7 @@ extends SimpleInformationDataBase<Info>{
 		}
 	}
 
+	//Permet de surcharger equals et hashcode
 	public class IdentifiedInfo implements DimaComponentInterface {
 
 		/**
@@ -463,6 +497,10 @@ extends SimpleInformationDataBase<Info>{
 			return this.myInfo.getMyAgentIdentifier().hashCode();
 		}
 
+		@Override
+		public String toString(){
+			return myInfo.toString();
+		}
 	}
 }
 

@@ -10,6 +10,7 @@ import dima.introspectionbasedagents.modules.faults.Assert;
 import dima.introspectionbasedagents.services.BasicCommunicatingCompetence;
 import dima.introspectionbasedagents.services.UnrespectedCompetenceSyntaxException;
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
+import frameworks.faulttolerance.negotiatingagent.ReplicaState;
 import frameworks.negotiation.NegotiatingAgent;
 import frameworks.negotiation.NegotiationParameters;
 import frameworks.negotiation.contracts.ResourceIdentifier;
@@ -45,7 +46,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	private final AgentIdentifier myLaborantin;
 
 	//sinon
-	private final Integer numberTodiffuse;
+	private final Integer percentToDiffuse;
 
 	private final boolean iDiffuseOriginalState;
 	private final Class<? extends AgentState> stateTypeToDiffuse;
@@ -60,14 +61,14 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	//
 
 	public StatusObservationCompetence(
-			final int numberTodiffuse,
+			final int percentToDiffuse,
 			final boolean iDiffuseOriginalState,
 			final Class<? extends AgentState> stateTypeToDiffuse,
 			final double alpha_low, final double alpha_high)
 					throws UnrespectedCompetenceSyntaxException {
 		this.centralised = false;
 		this.myLaborantin = null;
-		this.numberTodiffuse = numberTodiffuse;
+		this.percentToDiffuse = percentToDiffuse;
 		this.iDiffuseOriginalState=iDiffuseOriginalState;
 		this.stateTypeToDiffuse=stateTypeToDiffuse;
 		this.alpha_low=alpha_low;
@@ -83,7 +84,7 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 					throws UnrespectedCompetenceSyntaxException {
 		this.centralised = true;
 		this.myLaborantin = myLaborantin;
-		this.numberTodiffuse = null;
+		this.percentToDiffuse = null;
 		this.iDiffuseOriginalState=iDiffuseOriginalState;
 		this.stateTypeToDiffuse=stateTypeToDiffuse;
 		this.alpha_low=alpha_low;
@@ -105,20 +106,23 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	}
 
 	public AgentStateStatus getMyStatus() {
+		
+		printInfo();
+		
 		return this.getStatus(this.getMyAgent().getMyCurrentState());
 	}
 
 	public AgentStateStatus getStatus(final PersonalState s) {
 		this.updateThreshold();
+		Double myRelia = new Double(new Float(this.getMyOpinionHandler()
+				.getNumericValue(this.getMyAgent().getMyCurrentState())));
 		final boolean empty = this.getMyAgent().getMyCurrentState()
 				.getMyResourceIdentifiers().size() <= 1;
 		final boolean full = this.getMyAgent().getMyCurrentState()
 				.getMyResourceIdentifiers().size() == this.getMyAgent().getMyInformation()
 				.getKnownAgents().size();
-		final boolean fragile = this.getMyOpinionHandler()
-				.getNumericValue(this.getMyAgent().getMyCurrentState()) <= this.getLowerThreshold();
-		final boolean wastefull = this.getMyOpinionHandler()
-				.getNumericValue(this.getMyAgent().getMyCurrentState()) > this.getHigherThreshold();
+		final boolean fragile = myRelia <= this.getLowerThreshold();
+		final boolean wastefull = myRelia > this.getHigherThreshold();
 
 				if (wastefull && fragile) {
 					throw new RuntimeException(
@@ -148,16 +152,17 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	// Behavior
 	//
 
-	@PreStepComposant(ticker=NegotiationParameters._timeToCollect)
+	@PreStepComposant(ticker=NegotiationParameters.opinionDiffusionFrequency)
 	void diffuseInfo(){
 		assert this.isActive();
 		if (this.centralised){
 			this.sendInfo(this.myLaborantin);
 		} else {
-			int numberdiffused=0;
+			int numberdiffused=1;
 			final ArrayList<AgentIdentifier> allAgents = new ArrayList<AgentIdentifier>(this.getMyAgent().getMyInformation().getKnownAgents());
 			allAgents.remove(this.getMyAgent().getIdentifier());
-			while (numberdiffused < this.numberTodiffuse && !allAgents.isEmpty()){
+			while (numberdiffused < this.percentToDiffuse*this.getMyAgent().getMyInformation().getKnownAgents().size()){ 
+				assert !allAgents.isEmpty();
 				final AgentIdentifier id = allAgents.remove(getMyAgent().getRandom().nextInt(allAgents.size()));
 				assert Assert.Imply(!(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier),id instanceof ResourceIdentifier):id;
 				assert Assert.Imply(this.getMyAgent().getIdentifier() instanceof ResourceIdentifier, id instanceof AgentIdentifier):id;
@@ -189,6 +194,8 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 
 			final Opinion<PersonalState> o =
 					(Opinion<PersonalState>) ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType());
+//			if (((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType()).getAggregatedAgents().size()>1)
+//						logMonologue("ok opinion received!! "+((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType()));
 
 			Double mean, min, max;
 			mean = this.getMyOpinionHandler().getNumericValue(o.getMeanInfo());
@@ -200,10 +207,12 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 			//			}
 
 			assert this.lowerThreshold - this.higherThreshold < 0.000001:"arg";
+			assert lowerThreshold<=higherThreshold;
 			if (this.lowerThreshold> this.higherThreshold){
 				assert min<=mean && max>=mean:min+" "+mean+" "+max;
 				this.lowerThreshold=this.higherThreshold;
 			}
+			
 		} catch (final Exception e) {
 			this.getMyAgent().signalException(
 					"impossible on raisonne sur son propre ��tat il doit etre au moins pr��sent!\n"
@@ -219,9 +228,11 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 	private void sendInfo(final AgentIdentifier id){
 		assert this.iDiffuseOriginalState?this.stateTypeToDiffuse.equals(this.getMyAgent().getMyStateType()):true;
 		if (this.iDiffuseOriginalState){
+//			logMonologue("yo1 "+id);
 			this.sendMessage(id, new StatusMessage(this.getMyAgent().getMyCurrentState()));
 		} else {
 			try {
+//				logMonologue("yo2 "+id+" "+((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.stateTypeToDiffuse));
 				this.sendMessage(id,
 						new StatusMessage(((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.stateTypeToDiffuse)));
 			} catch (final NoInformationAvailableException e) {}
@@ -245,6 +256,42 @@ extends BasicCommunicatingCompetence<NegotiatingAgent<PersonalState,?>>{
 		} else {
 			return new Double(this.higherThreshold);
 		}
+	}
+	
+	
+	private void printInfo(){
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		Opinion<PersonalState> o;
+		try {
+			o = (Opinion<PersonalState>) ((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType());
+	
+//		if (((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType()).getAggregatedAgents().size()>1)
+//					logMonologue("ok opinion received!! "+((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType()));
+		Double mean, min, max;
+		mean = this.getMyOpinionHandler().getNumericValue(o.getMeanInfo());
+		min = this.getMyOpinionHandler().getNumericValue(o.getMinInfo());
+		max = this.getMyOpinionHandler().getNumericValue(o.getMaxInfo());
+		
+		this.getMyAgent().logMonologue(
+				" my status ---> "+getStatus(this.getMyAgent().getMyCurrentState())
+				+"\n my relia --> "+((ReplicaState)getMyAgent().getMyCurrentState()).getMyReliability()
+				+"\n my rep --> "+((ReplicaState)getMyAgent().getMyCurrentState()).getMyResourceIdentifiers()
+				+"\n known op "+((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType()).getAggregatedAgents()
+				+"\n number of known op "+((OpinionService) this.getMyAgent().getMyInformation()).getGlobalOpinion(this.getMyAgent().getMyStateType()).getAggregatedAgents().size()
+				+"\n low thresh --> "+getLowerThreshold()
+				+"\n high thesr -->   "+getHigherThreshold()
+				+"\n min op --> "+min
+				+"\n max op --> "+max
+				+"\n mean op ---> "+mean);		} catch (NoInformationAvailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoOpinionHandlerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		
 	}
 
 }

@@ -37,6 +37,7 @@ public class StatusHost extends Host {
 	@Competence
 	public StatusObservationCompetence soc;
 
+	//centralized
 	public StatusHost(
 			final ResourceIdentifier id,
 			final HostState myState,
@@ -47,6 +48,7 @@ public class StatusHost extends Host {
 			final long maxComputingTime,
 			Double collectiveSeed) throws CompetenceException {
 		this(id, myState, selectionMod, _socialWelfare,true,maxComputingTime,collectiveSeed);
+		assert false:"why are u using centralized constructor???";
 		this.soc=new StatusObservationCompetence(myLaborantin,false, ReplicaState.class, alpha_low, alpha_high);
 		this.soc.setActive(false);
 	}
@@ -62,6 +64,7 @@ public class StatusHost extends Host {
 			Double collectiveSeed) throws CompetenceException {
 		this(id, myState, selectionMod, _socialWelfare,false,maxComputingTime,collectiveSeed);
 		this.soc=new StatusObservationCompetence(numberToContact, false, ReplicaState.class, alpha_low, alpha_high);
+		this.soc.setActive(true);
 	}
 
 	

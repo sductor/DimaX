@@ -147,6 +147,7 @@ extends BasicCompetentAgent implements RationalAgent<PersonalState, Contract> {
 	 */
 	@Override
 	public void setNewState(final PersonalState s) {
+		
 		//		assert this.myInformation.hasMyInformation(this.myStateType)?this.verifyStateValidity(s):true;
 		//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),!s.equals(getMyCurrentState()));
 		//		assert Assert.Imply(this.myInformation.hasMyInformation(this.myStateType),this.verifyStateValidity(s));

@@ -24,7 +24,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	 */
 	private static final long serialVersionUID = -3325093836959956134L;
 	//problem
-	private final Long[] seeds = new Long[]{(long) 5649434,(long) 1223435,(long) 354564664};//,(long) 646464,(long) 94864};
+	private final Long[] seeds = new Long[]{(long) 4564324,(long) 78645348,(long) 12311564, (long) 646464,(long) 94864};//
 	//
 	//		private Integer[] nbAgentDomain = new Integer[]{500,2500,5000,7500,10000};
 	//	public static int _AgentDefault=2500;
@@ -36,7 +36,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //			public static int _AgentDefault=1000;
 //	private final Integer[] nbAgentDomain = new Integer[]{25};
 //	public static int _AgentDefault=25;
-	private final Integer[] nbAgentDomain = new Integer[]{100,500,1000,2000,3000,4000,5000,7500,10000};
+	private final Integer[] nbAgentDomain = new Integer[]{100,250,500,750,1000,2000,3000,4000,5000,6000,7000,8000,10000};
 //	private final Integer[] nbAgentDomain = new Integer[]{50,100,250,500,750,1000,2500,7500,10000};
 //	private final Integer[] nbAgentDomain = new Integer[]{1000,2500,5000,7500,10000};
 //	private final Integer[] nbAgentDomain = new Integer[]{100,250,500,750,1000,2500,5000,7500,10000};
@@ -63,14 +63,15 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 //	public static int _kDefault=25;
 //	private final Integer[] kDomain= new Integer[]{5,100,250,500,750,1000};
 	public static int _kDefault=100;
-			private Integer[] kDomain= new Integer[]{5,50,100,250,500,750,1000};
+//	public static int _kDefault=25;
+			private Integer[] kDomain= new Integer[]{5,25,50,100,250,500,750,1000};
 	//		public static int _kDefault=100;
 	//		public static int _kDefaultAll=100;
 
 
 	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),
 	//	private Double[] graphDensityDomain = new Double[]{0.5};//15.,
-	private static Double[] hostCapacity = new Double[]{0.3,0.6};//null;//new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
+	private static Double[] hostCapacity = new Double[]{0.3,0.6};//null;//0.3,new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
 	private static  Double[] graphDensityDomain =new Double[]{ 1.0};//	null;// new Double[]{0.8,0.2};//15.,
 
 	//	static{
@@ -119,19 +120,19 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 			new Double[]{0.3,0.6},
 			new Double[]{0.8,0.8},
 			new Double[]{0.6,0.6},
+			new Double[]{0.6,1.},
 			new Double[]{0.6,0.3}
 			};
-	static Double _alpha_lowDefault=0.6;
-	static Double _alpha_highDefault=0.6;
-	//	private Double[][] alphaDomain=
+	static Double _alpha_lowDefault=.6;
+	static Double _alpha_highDefault=1.;
 	//			new Double[][]{new Double[]{Double.NaN,Double.NaN},
 	//			new Double[]{0.2,0.4},
 	//			new Double[]{0.4,0.6},
 	//			new Double[]{0.6,0.8},
 	//			new Double[]{0.2,0.8}};
 	private final Double[] kOpinionDomain=
-			new Double[]{Double.NaN,0.1,0.6,0.9};//,0.6,1.};
-	static Double _kOpinionDefault=0.6;
+			new Double[]{Double.NaN,0.1,0.6,0.9,1.};//,0.6,1.};
+	static Double _kOpinionDefault=0.1;
 
 
 	public static Double getValue(final Double value, final double ref){
@@ -247,7 +248,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 				DispersionSymbolicValue.Max,//criticity dispersion
 				Integer.MAX_VALUE,
 				this.kDomain[0],
-				ReplicationExperimentationGenerator.getValue(this.kOpinionDomain[0],this.nbAgentDomain[0]),
+				this.kOpinionDomain[0],
 				this.protosDomain[0],//NegotiationParameters.key4statusProto,//NegotiationParameters.key4CentralisedstatusProto,//
 				this.welfareDomain[0],
 				SelectionType.Greedy,//NegotiationParameters.key4rouletteWheelSelect,//
@@ -501,7 +502,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 		for (final ReplicationExperimentationParameters p : exps) {
 			for (final Double v : Arrays.asList(this.kOpinionDomain)){
 				final ReplicationExperimentationParameters n =  p.clone();
-				n.opinionDiffusionDegree=ReplicationExperimentationGenerator.getValue(v,new Double(p.nbAgents));
+				n.opinionDiffusionDegree=v;
 				result.add(n);
 				//				System.out.println(Arrays.asList(v)+" "+n.opinionDiffusionDegree);
 			}

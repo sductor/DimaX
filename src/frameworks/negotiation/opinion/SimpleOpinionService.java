@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import dima.introspectionbasedagents.services.information.NoInformationAvailableException;
 import dima.introspectionbasedagents.services.information.SimpleObservationService;
+import frameworks.faulttolerance.candidaturewithstatus.StatusReplica;
 import frameworks.negotiation.opinion.OpinionDataBase.SimpleOpinion;
 
 public class SimpleOpinionService

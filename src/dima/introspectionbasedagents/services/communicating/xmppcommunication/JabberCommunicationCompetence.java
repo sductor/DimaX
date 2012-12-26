@@ -12,6 +12,7 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
+import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
@@ -85,8 +86,8 @@ implements AsynchronousCommunicationComponent, AcquaintancesHandler{
 		//		ConnectionConfiguration config = new ConnectionConfiguration("talk.google.com", 5222, "gmail.com");
 		final ConnectionConfiguration config = new ConnectionConfiguration(args[0], new Integer(args[1]), args[2]);
 		config.setCompressionEnabled(true);
-		//		SASLAuthentication.supportSASLMechanism("PLAIN", 0);
-		config.setSASLAuthenticationEnabled(true);
+//				SASLAuthentication.supportSASLMechanism("PLAIN", 0);
+//		config.setSASLAuthenticationEnabled(true);
 		config.setSendPresence(new Boolean(args[4]));
 		this.connection = new XMPPConnection(config);
 

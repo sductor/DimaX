@@ -12,6 +12,7 @@ public class NegotiationParameters {
 	public static final long _contractExpirationTime = Long.MAX_VALUE;//10000;//20 * ReplicationExperimentationProtocol._timeToCollect;
 
 	public static final long opinionDiffusionFrequency = NegotiationParameters._timeToCollect/2;
+	public  static final long ammortissementDynamiciteOpinion = 5*NegotiationParameters._timeToCollect;
 
 	/**
 	 * Clés statiques

@@ -266,7 +266,14 @@ extends GimaObject implements ReplicationGraph{
 			return new ResourceIdentifier("#"+simulationName+"#HostManager_-=-"+i+"-=-",77);
 		}
 	}
-
+	public static boolean isRessource(final AgentIdentifier id){
+		int i = identifierToInt(id);
+		if (i%2==0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	//
 	// Primitive

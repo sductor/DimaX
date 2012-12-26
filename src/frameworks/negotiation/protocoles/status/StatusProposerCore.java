@@ -45,7 +45,7 @@ PersonalState, Contract> {
 			final List<AgentState> replicas = new ArrayList<AgentState>();
 			replicas.addAll(this.getMyAgent().getMyResources());
 			Collections.shuffle(replicas);
-
+			logWarning("Wastefull!!!");
 
 			PersonalState nextState = this.getMyAgent().getMyCurrentState();
 
@@ -77,7 +77,7 @@ PersonalState, Contract> {
 				}
 			}
 
-			//			logMonologue("Wastefull!!! Proposing :\n"+candidatures);
+						logWarning("Wastefull!!! Proposing :\n"+candidatures);
 			// Application direct des demandes de destruction qui seront
 			// directement ex��cuter par les h��tes
 			//			for (final ReplicationCandidature c : candidatures)

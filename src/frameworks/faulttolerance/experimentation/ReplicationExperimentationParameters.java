@@ -192,6 +192,7 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		this.simultaneousCandidature=simultaneousCandidature;
 		this.kSolver=simultaneousAcceptation;
 		this.opinionDiffusionDegree=opinionDiffusionDegree;
+		assert opinionDiffusionDegree <= 1. || opinionDiffusionDegree.equals(Double.NaN);
 		this.alpha_low=alpha_low;
 		this.alpha_high=alpha_high;
 		this._usedProtocol = usedProtocol;
@@ -675,10 +676,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 		} else {
 			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){ 
 				
-				if (!ReplicationExperimentationGenerator.reverseValue(this.opinionDiffusionDegree,this.nbAgents).equals(
-						ReplicationExperimentationGenerator.reverseValue(that.opinionDiffusionDegree,that.nbAgents))){
-					return (ReplicationExperimentationGenerator.reverseValue(this.opinionDiffusionDegree,this.nbAgents).compareTo(
-					ReplicationExperimentationGenerator.reverseValue(that.opinionDiffusionDegree,that.nbAgents)));
+				if (!this.opinionDiffusionDegree.equals(that.opinionDiffusionDegree)){
+					return this.opinionDiffusionDegree.compareTo(that.opinionDiffusionDegree);
 				} else {
 					if (!this.alpha_low.equals(that.alpha_low)){
 							return this.alpha_low.compareTo(that.alpha_low);
@@ -811,7 +810,8 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 						(this._usedProtocol.equals(NegotiationParameters.key4mirrorProto) 
 								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto)
 								|| this._usedProtocol.equals(NegotiationParameters.key4DcopProto2))){
-					assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN) && opinionDiffusionDegree.equals(Double.NaN));
+					assert (alpha_low.equals(Double.NaN) && alpha_high.equals(Double.NaN)
+							&& opinionDiffusionDegree.equals(Double.NaN));
 					return true;
 				}
 
@@ -823,10 +823,10 @@ ExperimentationParameters<ReplicationLaborantin> implements Comparable {
 			if (this._usedProtocol.equals(NegotiationParameters.key4statusProto)){
 				return this.alpha_low.equals(ReplicationExperimentationGenerator._alpha_lowDefault)&&
 						this.alpha_high.equals(ReplicationExperimentationGenerator._alpha_highDefault)&&
-						this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator.getValue(
-								ReplicationExperimentationGenerator._kOpinionDefault,new Double(this.nbAgents)));
+						this.opinionDiffusionDegree.equals(ReplicationExperimentationGenerator._kOpinionDefault);
 			} else {
-				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN) && this.opinionDiffusionDegree.equals(Double.NaN);
+				assert this.alpha_high.equals(Double.NaN) && this.alpha_low.equals(Double.NaN)
+				&& this.opinionDiffusionDegree.equals(Double.NaN);
 				return true;
 			}
 		}

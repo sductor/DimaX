@@ -72,7 +72,7 @@ public class ReplicationExperimentationGenerator extends GimaObject{
 	//	private Double[] hostCapacity = new Double[]{0.5};//-((double) maxAgentNb/((double) maxHostNb)),
 	//	private Double[] graphDensityDomain = new Double[]{0.5};//15.,
 	private static Double[] hostCapacity = new Double[]{0.3,0.6};//null;//0.3,new Double[]{0.2,0.8};//-((double) maxAgentNb/((double) maxHostNb)),
-	private static  Double[] graphDensityDomain =new Double[]{ 1.0};//	null;// new Double[]{0.8,0.2};//15.,
+	private static  Double[] graphDensityDomain =new Double[]{ 0.3};//	null;// new Double[]{0.8,0.2};//15.,
 
 	//	static{
 	//		if (ReplicationLaborantin.informativeParameter4Graph==0){
